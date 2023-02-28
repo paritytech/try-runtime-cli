@@ -6,36 +6,15 @@ use sc_executor::sp_wasm_interface::HostFunctions;
 use sp_runtime::traits::{Block as BlockT, NumberFor};
 use sp_weights::Weight;
 
-use crate::{build_executor, state_machine_call_with_proof, SharedParams, State, LOG_TARGET};
+use crate::{
+    build_executor, shared_parameters::SharedParams, state::State, state_machine_call_with_proof,
+    LOG_TARGET,
+};
 
-/// Configurations of the [`crate::Command::OnRuntimeUpgrade`].
-#[derive(Debug, Clone, clap::Parser)]
-pub struct OnRuntimeUpgradeCmd {
-    /// The state type to use.
-    #[command(subcommand)]
-    pub state: State,
-
-    /// Select which optional checks to perform. Selects all when no value is given.
-    ///
-    /// - `none`: Perform no checks (default when the arg is not present).
-    /// - `all`: Perform all checks (default when the arg is present).
-    /// - `pre-and-post`: Perform pre- and post-upgrade checks.
-    /// - `try-state`: Perform the try-state checks.
-    ///
-    /// Performing any checks will potentially invalidate the measured PoV/Weight.
-    // NOTE: The clap attributes make it backwards compatible with the previous `--checks` flag.
-    #[clap(long,
-		default_value = "None",
-		default_missing_value = "All",
-		num_args = 0..=1,
-		require_equals = true,
-		verbatim_doc_comment)]
-    pub checks: UpgradeCheckSelect,
-}
-
-pub(crate) async fn on_runtime_upgrade<Block, HostFns>(
+pub async fn on_runtime_upgrade<Block, HostFns>(
     shared: SharedParams,
-    command: OnRuntimeUpgradeCmd,
+    state: State,
+    checks: UpgradeCheckSelect,
 ) -> sc_cli::Result<()>
 where
     Block: BlockT + serde::de::DeserializeOwned,
@@ -47,16 +26,15 @@ where
     HostFns: HostFunctions,
 {
     let executor = build_executor(&shared);
-    let ext = command
-        .state
-        .into_ext::<Block, HostFns>(&shared, &executor, None, true)
+    let ext = state
+        .to_ext::<Block, HostFns>(&shared, &executor, None, true)
         .await?;
 
     let (_, encoded_result) = state_machine_call_with_proof::<Block, HostFns>(
         &ext,
         &executor,
         "TryRuntime_on_runtime_upgrade",
-        command.checks.encode().as_ref(),
+        checks.encode().as_ref(),
         Default::default(), // we don't really need any extensions here.
         shared.export_proof,
     )?;
