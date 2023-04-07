@@ -34,7 +34,7 @@ where
 {
     hash_str
         .parse::<<Block as BlockT>::Hash>()
-        .map_err(|e| format!("Could not parse block hash: {:?}", e).into())
+        .map_err(|e| format!("Could not parse block hash: {e:?}").into())
 }
 
 pub(crate) fn build_executor<H: HostFunctions>(shared: &SharedParams) -> WasmExecutor<H> {
@@ -106,7 +106,7 @@ pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunction
         CallContext::Offchain,
     )
     .execute(sp_state_machine::ExecutionStrategy::AlwaysWasm)
-    .map_err(|e| format!("failed to execute {}: {}", method, e))
+    .map_err(|e| format!("failed to execute {method}: {e}"))
     .map_err::<sc_cli::Error, _>(Into::into)?;
 
     let proof = proving_backend
@@ -212,7 +212,7 @@ pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunction
         humanize(compressed_proof.len()),
     );
 
-    log::debug!(target: LOG_TARGET, "{} executed without errors.", method);
+    log::debug!(target: LOG_TARGET, "{method} executed without errors.");
 
     Ok((changes, encoded_results))
 }

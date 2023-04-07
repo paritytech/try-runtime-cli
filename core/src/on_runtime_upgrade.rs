@@ -40,7 +40,7 @@ where
     )?;
 
     let (weight, total_weight) = <(Weight, Weight) as Decode>::decode(&mut &*encoded_result)
-        .map_err(|e| format!("failed to decode weight: {:?}", e))?;
+        .map_err(|e| format!("failed to decode weight: {e:?}"))?;
 
     log::info!(
 		target: LOG_TARGET,
