@@ -126,8 +126,7 @@ impl State {
         let builder = if let Some(state_version) = shared.overwrite_state_version {
             log::warn!(
                 target: LOG_TARGET,
-                "overwriting state version to {:?}, you better know what you are doing.",
-                state_version
+                "overwriting state version to {state_version:?}, you better know what you are doing."
             );
             builder.overwrite_state_version(state_version)
         } else {
@@ -135,12 +134,13 @@ impl State {
         };
 
         // then, we prepare to replace the code based on what the CLI wishes.
-        let maybe_code_to_overwrite = match shared.runtime {
-            Runtime::Path(ref path) => Some(std::fs::read(path).map_err(|e| {
-                format!("error while reading runtime file from {:?}: {:?}", path, e)
-            })?),
-            Runtime::Existing => None,
-        };
+        let maybe_code_to_overwrite =
+            match shared.runtime {
+                Runtime::Path(ref path) => Some(std::fs::read(path).map_err(|e| {
+                    format!("error while reading runtime file from {path:?}: {e:?}")
+                })?),
+                Runtime::Existing => None,
+            };
 
         // build the main ext.
         let mut ext = builder.build().await?;
