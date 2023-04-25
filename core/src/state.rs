@@ -16,7 +16,7 @@ use sp_runtime::{
 };
 
 #[cfg(feature = "cli")]
-use crate::parse;
+use crate::parse::{parse_hash, parse_url};
 use crate::{
     ensure_try_runtime, hash_of,
     shared_parameters::{Runtime, SharedParams},
@@ -44,13 +44,13 @@ pub enum State {
 #[cfg_attr(feature = "cli", derive(clap::Args))]
 pub struct LiveState {
     /// The url to connect to.
-    #[cfg_attr(feature = "cli", arg(short, long, value_parser = parse::url))]
+    #[cfg_attr(feature = "cli", arg(short, long, value_parser = parse_url))]
     uri: String,
 
     /// The block hash at which to fetch the state.
     ///
     /// If non provided, then the latest finalized head is used.
-    #[cfg_attr(feature = "cli", arg(short, long, value_parser = parse::hash))]
+    #[cfg_attr(feature = "cli", arg(short, long, value_parser = parse_hash))]
     at: Option<String>,
 
     /// A pallet to scrape. Can be provided multiple times. If empty, entire chain state will
