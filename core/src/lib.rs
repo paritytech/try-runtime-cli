@@ -1,15 +1,23 @@
+#![allow(unused)]
+
 use std::{fmt::Debug, path::PathBuf, str::FromStr};
 
 use frame_remote_externalities::TestExternalities;
 use parity_scale_codec::Decode;
 use sc_cli::RuntimeVersion;
 use sc_executor::{sp_wasm_interface::HostFunctions, WasmExecutor};
+use sp_api::RuntimeApiInfo;
 use sp_core::{
     hexdisplay::HexDisplay,
+    offchain::{
+        testing::{TestOffchainExt, TestTransactionPoolExt},
+        OffchainDbExt, OffchainWorkerExt, TransactionPoolExt,
+    },
     storage::well_known_keys,
-    traits::{CallContext, ReadRuntimeVersion},
+    traits::{CallContext, ReadRuntimeVersion, ReadRuntimeVersionExt},
 };
 use sp_externalities::Extensions;
+use sp_keystore::{testing::MemoryKeystore, KeystoreExt};
 use sp_runtime::traits::Block as BlockT;
 use sp_state_machine::{CompactProof, OverlayedChanges, StateMachine, TrieBackendBuilder};
 
@@ -22,6 +30,7 @@ mod parse;
 mod shared_parameters;
 mod state;
 
+pub mod execute_block;
 pub mod on_runtime_upgrade;
 
 pub(crate) const LOG_TARGET: &str = "try-runtime::cli";
@@ -37,6 +46,7 @@ where
         .map_err(|e| format!("Could not parse block hash: {e:?}").into())
 }
 
+// todo: use new builder pattern
 pub(crate) fn build_executor<H: HostFunctions>(shared: &SharedParams) -> WasmExecutor<H> {
     let heap_pages = shared.heap_pages.or(Some(2048));
     let max_runtime_instances = 8;
@@ -56,7 +66,6 @@ fn ensure_try_runtime<Block: BlockT, HostFns: HostFunctions>(
     executor: &WasmExecutor<HostFns>,
     ext: &mut TestExternalities,
 ) -> bool {
-    use sp_api::RuntimeApiInfo;
     let final_code = ext
         .execute_with(|| sp_io::storage::get(well_known_keys::CODE))
         .expect("':CODE:' is always downloaded in try-runtime-cli; qed");
@@ -102,7 +111,6 @@ pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunction
         data,
         extensions,
         &runtime_code,
-        sp_core::testing::TaskExecutor::new(),
         CallContext::Offchain,
     )
     .execute(sp_state_machine::ExecutionStrategy::AlwaysWasm)
@@ -233,4 +241,24 @@ fn storage_proof_to_raw_json(storage_proof: &sp_state_machine::StorageProof) -> 
             .collect(),
     )
     .to_string()
+}
+
+pub(crate) fn rpc_err_handler(error: impl Debug) -> &'static str {
+    log::error!(target: LOG_TARGET, "rpc error: {:?}", error);
+    "rpc error."
+}
+
+/// Build all extensions that we typically use.
+pub(crate) fn full_extensions<H: HostFunctions>(wasm_executor: WasmExecutor<H>) -> Extensions {
+    let mut extensions = Extensions::default();
+    let (offchain, _offchain_state) = TestOffchainExt::new();
+    let (pool, _pool_state) = TestTransactionPoolExt::new();
+    let keystore = MemoryKeystore::new();
+    extensions.register(OffchainDbExt::new(offchain.clone()));
+    extensions.register(OffchainWorkerExt::new(offchain));
+    extensions.register(KeystoreExt::new(keystore));
+    extensions.register(TransactionPoolExt::new(pool));
+    extensions.register(ReadRuntimeVersionExt::new(wasm_executor));
+
+    extensions
 }

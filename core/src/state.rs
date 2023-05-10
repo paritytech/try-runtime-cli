@@ -45,18 +45,18 @@ pub enum State {
 pub struct LiveState {
     /// The url to connect to.
     #[cfg_attr(feature = "cli", arg(short, long, value_parser = parse_url))]
-    uri: String,
+    pub uri: String,
 
     /// The block hash at which to fetch the state.
     ///
     /// If non provided, then the latest finalized head is used.
     #[cfg_attr(feature = "cli", arg(short, long, value_parser = parse_hash))]
-    at: Option<String>,
+    pub at: Option<String>,
 
     /// A pallet to scrape. Can be provided multiple times. If empty, entire chain state will
     /// be scraped.
     #[cfg_attr(feature = "cli", arg(short, long, num_args = 1..))]
-    pallet: Vec<String>,
+    pub pallet: Vec<String>,
 
     /// Fetch the child-keys as well.
     ///
@@ -64,7 +64,7 @@ pub struct LiveState {
     /// words, if you scrape the whole state the child tree data is included out of the box.
     /// Otherwise, it must be enabled explicitly using this flag.
     #[cfg_attr(feature = "cli", arg(long))]
-    child_tree: bool,
+    pub child_tree: bool,
 }
 
 impl State {
