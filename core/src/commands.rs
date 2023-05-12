@@ -8,7 +8,10 @@ use sp_runtime::{
     DeserializeOwned,
 };
 
-use crate::{on_runtime_upgrade, shared_parameters::SharedParams, state::State};
+use crate::{
+    execute_block, on_runtime_upgrade, parse::parse_url, shared_parameters::SharedParams,
+    state::State,
+};
 
 /// Ready to use, vanilla command combining common actions.
 #[derive(Debug, Clone, clap::Parser)]
@@ -71,6 +74,42 @@ pub enum TryRuntimeAction {
         )]
         checks: UpgradeCheckSelect,
     },
+
+    /// Executes the given block against some state.
+    ///
+    /// This uses a custom runtime api call, namely "TryRuntime_execute_block". Some checks, such
+    /// as state-root and signature checks are always disabled, and additional checks like
+    /// `try-state` can be enabled.
+    ///
+    /// See [`frame_try_runtime::TryRuntime`] and [`execute_block::ExecuteBlockCmd`] for
+    /// more information.
+    ExecuteBlock {
+        /// The state type to use.
+        #[command(subcommand)]
+        state: State,
+
+        /// Which try-state targets to execute when running this command.
+        ///
+        /// Expected values:
+        /// - `all`
+        /// - `none`
+        /// - A comma separated list of pallets, as per pallet names in `construct_runtime!()`
+        ///   (e.g. `Staking, System`).
+        /// - `rr-[x]` where `[x]` is a number. Then, the given number of pallets are checked in a
+        ///   round-robin fashion.
+        #[arg(long, default_value = "all")]
+        try_state: frame_try_runtime::TryStateSelect,
+
+        /// The ws uri from which to fetch the block.
+        ///
+        /// This will always fetch the next block of whatever `state` is referring to, because this
+        /// is the only sensible combination. In other words, if you have the state of
+        /// block `n`, you should execute block `n+1` on top of it.
+        ///
+        /// If `state` is `Live`, this can be ignored and the same uri is used for both.
+        #[arg(long, value_parser = parse_url)]
+        block_ws_uri: Option<String>,
+    },
 }
 
 impl TryRuntimeAction {
@@ -91,6 +130,19 @@ impl TryRuntimeAction {
                     shared.clone(),
                     state.clone(),
                     *checks,
+                )
+                .await
+            }
+            TryRuntimeAction::ExecuteBlock {
+                state,
+                try_state,
+                block_ws_uri,
+            } => {
+                execute_block::execute_block::<Block, HostFns>(
+                    shared.clone(),
+                    state.clone(),
+                    try_state.clone(),
+                    block_ws_uri.clone(),
                 )
                 .await
             }

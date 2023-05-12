@@ -4,7 +4,7 @@ use sc_cli::{WasmExecutionMethod, WasmtimeInstantiationStrategy};
 use sp_runtime::StateVersion;
 #[cfg(feature = "cli")]
 use {
-    crate::parse,
+    crate::parse::parse_state_version,
     sc_cli::{DEFAULT_WASMTIME_INSTANTIATION_STRATEGY, DEFAULT_WASM_EXECUTION_METHOD},
 };
 
@@ -64,7 +64,7 @@ pub struct SharedParams {
     /// Overwrite the `state_version`.
     ///
     /// Otherwise `remote-externalities` will automatically set the correct state version.
-    #[cfg_attr(feature = "cli", arg(long, value_parser = parse::state_version))]
+    #[cfg_attr(feature = "cli", arg(long, value_parser = parse_state_version))]
     pub overwrite_state_version: Option<StateVersion>,
 }
 

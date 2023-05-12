@@ -1,6 +1,6 @@
 use sp_runtime::StateVersion;
 
-pub(crate) fn hash(block_hash: &str) -> Result<String, String> {
+pub(crate) fn parse_hash(block_hash: &str) -> Result<String, String> {
     let (block_hash, offset) = if let Some(block_hash) = block_hash.strip_prefix("0x") {
         (block_hash, 2)
     } else {
@@ -17,7 +17,7 @@ pub(crate) fn hash(block_hash: &str) -> Result<String, String> {
     }
 }
 
-pub(crate) fn url(s: &str) -> Result<String, String> {
+pub(crate) fn parse_url(s: &str) -> Result<String, String> {
     if s.starts_with("ws://") || s.starts_with("wss://") {
         Ok(s.to_string())
     } else {
@@ -25,7 +25,7 @@ pub(crate) fn url(s: &str) -> Result<String, String> {
     }
 }
 
-pub(crate) fn state_version(s: &str) -> Result<StateVersion, String> {
+pub(crate) fn parse_state_version(s: &str) -> Result<StateVersion, String> {
     s.parse::<u8>()
         .map_err(|_| ())
         .and_then(StateVersion::try_from)
