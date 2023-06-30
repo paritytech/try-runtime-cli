@@ -1,0 +1,58 @@
+workspace(name = "try_runtime_cli")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# To find additional information on this release or newer ones visit:
+# https://github.com/bazelbuild/rules_rust/releases
+http_archive(
+ name = "rules_rust",
+ urls = ["https://github.com/bazelbuild/rules_rust/releases/download/0.25.1/rules_rust-v0.25.1.tar.gz"],
+)
+
+load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains",)
+
+rules_rust_dependencies()
+
+rust_register_toolchains(
+ edition = "2021",
+ versions = [
+  "nightly/2023-01-17",
+  "1.70.0"
+ ],
+)
+
+http_archive(
+    name = "com_google_protobuf",
+    strip_prefix = "protobuf-4.23.3",
+    urls = [
+        "https://github.com/protocolbuffers/protobuf/archive/refs/tags/v4.23.3.tar.gz",
+    ],
+)
+load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+protobuf_deps()
+
+load("@rules_rust//crate_universe:defs.bzl", "crate", "crates_repository")
+load("@rules_rust//crate_universe:repositories.bzl", "crate_universe_dependencies")
+
+crate_universe_dependencies()
+
+crates_repository(
+    name = "crate_index",
+    cargo_lockfile = "//:Cargo.lock",
+    lockfile = "//:Cargo.Bazel.lock",
+    manifests = [
+    "//:Cargo.toml",
+    "//cli:Cargo.toml",
+    "//core:Cargo.toml",
+    ],
+    annotations = {
+     "*": [crate.annotation(
+      build_script_env = {"PROTOC": "$(execpath @com_google_protobuf//:protoc)"},
+      build_script_tools = ["@com_google_protobuf//:protoc",],
+     )],
+    }
+)
+
+load("@crate_index//:defs.bzl", "crate_repositories")
+
+crate_repositories()
