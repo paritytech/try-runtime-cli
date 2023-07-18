@@ -1,0 +1,33 @@
+stages:
+  - test
+  - build
+
+variables:
+  CI_IMAGE:                        "docker.io/paritytech/ci-unified:latest"
+  BUILDAH_IMAGE:                   "quay.io/buildah/stable:v1.29"
+  BUILDAH_COMMAND:                 "buildah --storage-driver overlay2"
+  VAULT_ADDR:                      "https://vault.parity-mgmt-vault.parity.io"
+  VAULT_AUTH_PATH:                 "gitlab-parity-io-jwt"
+  VAULT_AUTH_ROLE:                 "gitlab_${CI_PROJECT_NAME}"
+  HELM_SECRETS_DRIVER:             vals
+
+default:
+  image: $CI_IMAGE
+  tags:
+    - linux-docker-vm-c2 
+
+test-unit:
+  stage: test
+  script:
+    - echo "Test..."
+build:
+  stage: build
+  script:
+    - apt update && apt install apt-transport-https curl gnupg -y;
+      curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor >bazel-archive-keyring.gpg;
+      mv bazel-archive-keyring.gpg /usr/share/keyrings;
+      echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
+    - apt update && apt install bazel -y
+    - bazel build //cli --action_env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --remote_cache=https://storage.googleapis.com/bazel-cache-parity-build --google_default_credentials
+
+
