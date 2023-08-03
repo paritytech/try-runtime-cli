@@ -4,8 +4,10 @@ use std::{fmt::Debug, path::PathBuf, str::FromStr};
 
 use frame_remote_externalities::TestExternalities;
 use parity_scale_codec::Decode;
-use sc_cli::RuntimeVersion;
-use sc_executor::{sp_wasm_interface::HostFunctions, WasmExecutor};
+use sc_cli::{execution_method_from_cli, RuntimeVersion};
+use sc_executor::{
+    sp_wasm_interface::HostFunctions, HeapAllocStrategy, WasmExecutor, DEFAULT_HEAP_ALLOC_STRATEGY,
+};
 use sp_api::RuntimeApiInfo;
 use sp_core::{
     hexdisplay::HexDisplay,
@@ -46,19 +48,23 @@ where
         .map_err(|e| format!("Could not parse block hash: {e:?}").into())
 }
 
-// todo: use new builder pattern
+/// Build wasm executor by default config.
 pub(crate) fn build_executor<H: HostFunctions>(shared: &SharedParams) -> WasmExecutor<H> {
-    let heap_pages = shared.heap_pages.or(Some(2048));
-    let max_runtime_instances = 8;
-    let runtime_cache_size = 2;
+    let heap_pages =
+        shared
+            .heap_pages
+            .map_or(DEFAULT_HEAP_ALLOC_STRATEGY, |p| HeapAllocStrategy::Static {
+                extra_pages: p as _,
+            });
 
-    WasmExecutor::new(
-        sc_executor::WasmExecutionMethod::Interpreted,
-        heap_pages,
-        max_runtime_instances,
-        None,
-        runtime_cache_size,
-    )
+    WasmExecutor::builder()
+        .with_execution_method(execution_method_from_cli(
+            shared.wasm_method,
+            shared.wasmtime_instantiation_strategy,
+        ))
+        .with_onchain_heap_alloc_strategy(heap_pages)
+        .with_offchain_heap_alloc_strategy(heap_pages)
+        .build()
 }
 
 /// Ensure that the given `ext` is compiled with `try-runtime`
@@ -66,6 +72,7 @@ fn ensure_try_runtime<Block: BlockT, HostFns: HostFunctions>(
     executor: &WasmExecutor<HostFns>,
     ext: &mut TestExternalities,
 ) -> bool {
+    use sp_api::RuntimeApiInfo;
     let final_code = ext
         .execute_with(|| sp_io::storage::get(well_known_keys::CODE))
         .expect("':CODE:' is always downloaded in try-runtime-cli; qed");
@@ -89,7 +96,7 @@ pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunction
     executor: &WasmExecutor<HostFns>,
     method: &'static str,
     data: &[u8],
-    extensions: Extensions,
+    mut extensions: Extensions,
     maybe_export_proof: Option<PathBuf>,
 ) -> sc_cli::Result<(OverlayedChanges, Vec<u8>)> {
     use parity_scale_codec::Encode;
@@ -109,12 +116,12 @@ pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunction
         executor,
         method,
         data,
-        extensions,
+        &mut extensions,
         &runtime_code,
         CallContext::Offchain,
     )
-    .execute(sp_state_machine::ExecutionStrategy::AlwaysWasm)
-    .map_err(|e| format!("failed to execute {method}: {e}"))
+    .execute()
+    .map_err(|e| format!("failed to execute {}: {}", method, e))
     .map_err::<sc_cli::Error, _>(Into::into)?;
 
     let proof = proving_backend
@@ -132,11 +139,7 @@ pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunction
             e
         })?;
 
-        log::info!(
-            target: LOG_TARGET,
-            "Writing storage proof to {}",
-            path.to_string_lossy()
-        );
+        log::info!(target: LOG_TARGET, "Writing storage proof to {}", path.to_string_lossy());
 
         use std::io::Write as _;
         file.write_all(storage_proof_to_raw_json(&proof).as_bytes())
@@ -156,12 +159,7 @@ pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunction
         .clone()
         .into_compact_proof::<sp_runtime::traits::BlakeTwo256>(pre_root)
         .map_err(|e| {
-            log::error!(
-                target: LOG_TARGET,
-                "failed to generate compact proof {}: {:?}",
-                method,
-                e
-            );
+            log::error!(target: LOG_TARGET, "failed to generate compact proof {}: {:?}", method, e);
             e
         })
         .unwrap_or(CompactProof {
@@ -198,29 +196,18 @@ pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunction
     log::debug!(
         target: LOG_TARGET,
         "proof: 0x{}... / {} nodes",
-        HexDisplay::from(
-            &proof_nodes
-                .iter()
-                .flatten()
-                .cloned()
-                .take(10)
-                .collect::<Vec<_>>()
-        ),
+        HexDisplay::from(&proof_nodes.iter().flatten().cloned().take(10).collect::<Vec<_>>()),
         proof_nodes.len()
     );
     log::debug!(target: LOG_TARGET, "proof size: {}", humanize(proof_size));
-    log::debug!(
-        target: LOG_TARGET,
-        "compact proof size: {}",
-        humanize(compact_proof_size),
-    );
+    log::debug!(target: LOG_TARGET, "compact proof size: {}", humanize(compact_proof_size),);
     log::debug!(
         target: LOG_TARGET,
         "zstd-compressed compact proof {}",
         humanize(compressed_proof.len()),
     );
 
-    log::debug!(target: LOG_TARGET, "{method} executed without errors.");
+    log::debug!(target: LOG_TARGET, "{} executed without errors.", method);
 
     Ok((changes, encoded_results))
 }
