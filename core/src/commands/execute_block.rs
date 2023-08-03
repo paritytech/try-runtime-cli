@@ -15,12 +15,12 @@ use crate::{
     state_machine_call_with_proof, SharedParams, LOG_TARGET,
 };
 
-/// Configurations of the [`crate::Command::ExecuteBlock`].
+/// Configurations for [`run`].
 ///
 /// This will always call into `TryRuntime_execute_block`, which can optionally skip the state-root
 /// check (useful for trying a unreleased runtime), and can execute runtime sanity checks as well.
 #[derive(Debug, Clone, clap::Parser)]
-pub struct ExecuteBlockCmd {
+pub struct Command {
     /// Which try-state targets to execute when running this command.
     ///
     /// Expected values:
@@ -51,7 +51,7 @@ pub struct ExecuteBlockCmd {
     pub state: State,
 }
 
-impl ExecuteBlockCmd {
+impl Command {
     fn block_ws_uri<Block: BlockT>(&self) -> String
     where
         <Block::Hash as FromStr>::Err: Debug,
@@ -70,9 +70,10 @@ impl ExecuteBlockCmd {
     }
 }
 
-pub(crate) async fn execute_block<Block, HostFns>(
+// Runs the `execute_block` command.
+pub(crate) async fn run<Block, HostFns>(
     shared: SharedParams,
-    command: ExecuteBlockCmd,
+    command: Command,
 ) -> sc_cli::Result<()>
 where
     Block: BlockT + serde::de::DeserializeOwned,

@@ -32,9 +32,6 @@ mod parse;
 mod shared_parameters;
 mod state;
 
-pub mod execute_block;
-pub mod on_runtime_upgrade;
-
 pub(crate) const LOG_TARGET: &str = "try-runtime::cli";
 
 /// Get the hash type of the generic `Block` from a `hash_str`.

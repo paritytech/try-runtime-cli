@@ -10,9 +10,9 @@ use crate::{
     build_executor, state::State, state_machine_call_with_proof, SharedParams, LOG_TARGET,
 };
 
-/// Configurations of the [`crate::Command::OnRuntimeUpgrade`].
+/// Configuration for [`run`].
 #[derive(Debug, Clone, clap::Parser)]
-pub struct OnRuntimeUpgradeCmd {
+pub struct Command {
     /// The state type to use.
     #[command(subcommand)]
     pub state: State,
@@ -36,9 +36,10 @@ pub struct OnRuntimeUpgradeCmd {
     pub checks: UpgradeCheckSelect,
 }
 
-pub(crate) async fn on_runtime_upgrade<Block, HostFns>(
+// Runs the `on-runtime-upgrade` command.
+pub(crate) async fn run<Block, HostFns>(
     shared: SharedParams,
-    command: OnRuntimeUpgradeCmd,
+    command: Command,
 ) -> sc_cli::Result<()>
 where
     Block: BlockT + serde::de::DeserializeOwned,

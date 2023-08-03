@@ -8,9 +8,13 @@ use sp_runtime::{
     DeserializeOwned,
 };
 
-use crate::{
-    execute_block, on_runtime_upgrade, parse, shared_parameters::SharedParams, state::State,
-};
+use crate::{parse, shared_parameters::SharedParams, state::State};
+
+pub mod create_snapshot;
+pub mod execute_block;
+pub mod follow_chain;
+pub mod offchain_worker;
+pub mod on_runtime_upgrade;
 
 /// Ready to use, vanilla command combining common actions.
 #[derive(Debug, Clone, clap::Parser)]
@@ -50,7 +54,7 @@ pub enum TryRuntimeAction {
     ///
     /// See [`frame_try_runtime::TryRuntime`] and [`on_runtime_upgrade::OnRuntimeUpgradeCmd`] for
     /// more information.
-    OnRuntimeUpgrade(on_runtime_upgrade::OnRuntimeUpgradeCmd),
+    OnRuntimeUpgrade(on_runtime_upgrade::Command),
 
     /// Executes the given block against some state.
     ///
@@ -60,7 +64,38 @@ pub enum TryRuntimeAction {
     ///
     /// See [`frame_try_runtime::TryRuntime`] and [`execute_block::ExecuteBlockCmd`] for more
     /// information.
-    ExecuteBlock(execute_block::ExecuteBlockCmd),
+    ExecuteBlock(execute_block::Command),
+
+    /// Executes *the offchain worker hooks* of a given block against some state.
+    ///
+    /// This executes the same runtime api as normal block import, namely
+    /// `OffchainWorkerApi_offchain_worker`.
+    ///
+    /// See [`frame_try_runtime::TryRuntime`] and [`commands::offchain_worker::OffchainWorkerCmd`]
+    /// for more information.
+    OffchainWorker(offchain_worker::Command),
+
+    /// Follow the given chain's finalized blocks and apply all of its extrinsics.
+    ///
+    /// This is essentially repeated calls to [`Command::ExecuteBlock`].
+    ///
+    /// This allows the behavior of a new runtime to be inspected over a long period of time, with
+    /// realistic transactions coming as input.
+    ///
+    /// NOTE: this does NOT execute the offchain worker hooks of mirrored blocks. This might be
+    /// added in the future.
+    ///
+    /// This does not support snapshot states, and can only work with a remote chain. Upon first
+    /// connections, starts listening for finalized block events. Upon first block notification, it
+    /// initializes the state from the remote node, and starts applying that block, plus all the
+    /// blocks that follow, to the same growing state.
+    ///
+    /// This can only work if the block format between the remote chain and the new runtime being
+    /// tested has remained the same, otherwise block decoding might fail.
+    FollowChain(follow_chain::Command),
+
+    /// Create a new snapshot file.
+    CreateSnapshot(create_snapshot::Command),
 }
 
 impl TryRuntimeAction {
@@ -77,14 +112,19 @@ impl TryRuntimeAction {
     {
         match &self {
             TryRuntimeAction::OnRuntimeUpgrade(ref cmd) => {
-                on_runtime_upgrade::on_runtime_upgrade::<Block, HostFns>(
-                    shared.clone(),
-                    cmd.clone(),
-                )
-                .await
+                on_runtime_upgrade::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
             }
             TryRuntimeAction::ExecuteBlock(cmd) => {
-                execute_block::execute_block::<Block, HostFns>(shared.clone(), cmd.clone()).await
+                execute_block::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
+            }
+            TryRuntimeAction::OffchainWorker(cmd) => {
+                offchain_worker::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
+            }
+            TryRuntimeAction::FollowChain(cmd) => {
+                follow_chain::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
+            }
+            TryRuntimeAction::CreateSnapshot(cmd) => {
+                create_snapshot::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
             }
         }
     }

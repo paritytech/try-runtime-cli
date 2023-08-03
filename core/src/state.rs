@@ -40,12 +40,12 @@ pub struct LiveState {
 		long,
 		value_parser = parse::hash,
 	)]
-    at: Option<String>,
+    pub at: Option<String>,
 
     /// A pallet to scrape. Can be provided multiple times. If empty, entire chain state will
     /// be scraped.
     #[arg(short, long, num_args = 1..)]
-    pallet: Vec<String>,
+    pub pallet: Vec<String>,
 
     /// Fetch the child-keys as well.
     ///
@@ -53,7 +53,7 @@ pub struct LiveState {
     /// words, if you scrape the whole state the child tree data is included out of the box.
     /// Otherwise, it must be enabled explicitly using this flag.
     #[arg(long)]
-    child_tree: bool,
+    pub child_tree: bool,
 }
 
 /// The source of runtime *state* to use.
