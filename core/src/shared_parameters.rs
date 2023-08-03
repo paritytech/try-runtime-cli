@@ -4,14 +4,22 @@ use sc_cli::{WasmExecutionMethod, WasmtimeInstantiationStrategy};
 use sp_runtime::StateVersion;
 #[cfg(feature = "cli")]
 use {
-    crate::parse::parse_state_version,
+    crate::parse,
     sc_cli::{DEFAULT_WASMTIME_INSTANTIATION_STRATEGY, DEFAULT_WASM_EXECUTION_METHOD},
 };
 
 /// Shared parameters of the `try-runtime` commands
-#[derive(Debug, Clone)]
-#[cfg_attr(feature = "cli", derive(clap::Args))]
+#[derive(Debug, Clone, clap::Parser)]
+#[group(skip)]
 pub struct SharedParams {
+    /// Shared parameters of substrate cli.
+    ///
+    /// TODO: this is only needed because try-runtime is embedded in the substrate CLI. It should
+    /// go away.
+    #[allow(missing_docs)]
+    #[clap(flatten)]
+    pub shared_params: sc_cli::SharedParams,
+
     /// The runtime to use.
     ///
     /// Must be a path to a wasm blob, compiled with `try-runtime` feature flag.
@@ -20,51 +28,45 @@ pub struct SharedParams {
     /// whatever comes from the remote node, or the snapshot file. This will most likely not work
     /// against a remote node, as no (sane) blockchain should compile its onchain wasm with
     /// `try-runtime` feature.
-    #[cfg_attr(feature = "cli", arg(long))]
+    #[arg(long)]
     pub runtime: Runtime,
 
     /// Type of wasm execution used.
-    #[cfg_attr(
-        feature = "cli",
-        arg(
-            long = "wasm-execution",
-            value_name = "METHOD",
-            value_enum,
-            ignore_case = true,
-            default_value_t = DEFAULT_WASM_EXECUTION_METHOD,
-        )
-    )]
+    #[arg(
+		long = "wasm-execution",
+		value_name = "METHOD",
+		value_enum,
+		ignore_case = true,
+		default_value_t = DEFAULT_WASM_EXECUTION_METHOD,
+	)]
     pub wasm_method: WasmExecutionMethod,
 
     /// The WASM instantiation method to use.
     ///
     /// Only has an effect when `wasm-execution` is set to `compiled`.
-    #[cfg_attr(
-        feature = "cli",
-        arg(
-            long = "wasm-instantiation-strategy",
-            value_name = "STRATEGY",
-            default_value_t = DEFAULT_WASMTIME_INSTANTIATION_STRATEGY,
-            value_enum,
-        )
-    )]
+    #[arg(
+		long = "wasm-instantiation-strategy",
+		value_name = "STRATEGY",
+		default_value_t = DEFAULT_WASMTIME_INSTANTIATION_STRATEGY,
+		value_enum,
+	)]
     pub wasmtime_instantiation_strategy: WasmtimeInstantiationStrategy,
 
     /// The number of 64KB pages to allocate for Wasm execution. Defaults to
     /// [`sc_service::Configuration.default_heap_pages`].
-    #[cfg_attr(feature = "cli", arg(long))]
+    #[arg(long)]
     pub heap_pages: Option<u64>,
 
     /// Path to a file to export the storage proof into (as a JSON).
     /// If several blocks are executed, the path is interpreted as a folder
     /// where one file per block will be written (named `{block_number}-{block_hash}`).
-    #[cfg_attr(feature = "cli", arg(long))]
+    #[clap(long)]
     pub export_proof: Option<PathBuf>,
 
     /// Overwrite the `state_version`.
     ///
     /// Otherwise `remote-externalities` will automatically set the correct state version.
-    #[cfg_attr(feature = "cli", arg(long, value_parser = parse_state_version))]
+    #[arg(long, value_parser = parse::state_version)]
     pub overwrite_state_version: Option<StateVersion>,
 }
 
@@ -88,7 +90,7 @@ impl FromStr for Runtime {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(match s.to_lowercase().as_ref() {
             "existing" => Runtime::Existing,
-            x => Runtime::Path(PathBuf::from(x.to_string())),
+            x @ _ => Runtime::Path(x.into()),
         })
     }
 }

@@ -40,12 +40,11 @@ pub(crate) const LOG_TARGET: &str = "try-runtime::cli";
 /// Get the hash type of the generic `Block` from a `hash_str`.
 pub(crate) fn hash_of<Block: BlockT>(hash_str: &str) -> sc_cli::Result<Block::Hash>
 where
-    Block::Hash: FromStr,
     <Block::Hash as FromStr>::Err: Debug,
 {
     hash_str
         .parse::<<Block as BlockT>::Hash>()
-        .map_err(|e| format!("Could not parse block hash: {e:?}").into())
+        .map_err(|e| format!("Could not parse block hash: {:?}", e).into())
 }
 
 /// Build wasm executor by default config.
@@ -85,6 +84,33 @@ fn ensure_try_runtime<Block: BlockT, HostFns: HostFunctions>(
     final_version
         .api_version(&<dyn frame_try_runtime::TryRuntime<Block>>::ID)
         .is_some()
+}
+
+/// Execute the given `method` and `data` on top of `ext`, returning the results (encoded) and the
+/// state `changes`.
+pub(crate) fn state_machine_call<Block: BlockT, HostFns: HostFunctions>(
+    ext: &TestExternalities,
+    executor: &WasmExecutor<HostFns>,
+    method: &'static str,
+    data: &[u8],
+    mut extensions: Extensions,
+) -> sc_cli::Result<(OverlayedChanges, Vec<u8>)> {
+    let mut changes = Default::default();
+    let encoded_results = StateMachine::new(
+        &ext.backend,
+        &mut changes,
+        executor,
+        method,
+        data,
+        &mut extensions,
+        &sp_state_machine::backend::BackendRuntimeCode::new(&ext.backend).runtime_code()?,
+        CallContext::Offchain,
+    )
+    .execute()
+    .map_err(|e| format!("failed to execute '{}': {}", method, e))
+    .map_err::<sc_cli::Error, _>(Into::into)?;
+
+    Ok((changes, encoded_results))
 }
 
 /// Same as [`state_machine_call`], but it also computes and prints the storage proof in different

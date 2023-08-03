@@ -1,45 +1,95 @@
 use std::{fmt::Debug, str::FromStr};
 
-use frame_try_runtime::TryStateSelect;
 use parity_scale_codec::Encode;
 use sc_executor::sp_wasm_interface::HostFunctions;
-use sp_api::HeaderT;
 use sp_rpc::{list::ListOrValue, number::NumberOrHex};
 use sp_runtime::{
     generic::SignedBlock,
-    traits::{Block as BlockT, NumberFor},
+    traits::{Block as BlockT, Header as HeaderT, NumberFor},
 };
 use substrate_rpc_client::{ws_client, ChainApi};
 
 use crate::{
     build_executor, full_extensions, rpc_err_handler,
-    shared_parameters::SharedParams,
     state::{LiveState, State},
-    state_machine_call_with_proof, LOG_TARGET,
+    state_machine_call_with_proof, SharedParams, LOG_TARGET,
 };
 
-pub async fn execute_block<Block, HostFns>(
+/// Configurations of the [`crate::Command::ExecuteBlock`].
+///
+/// This will always call into `TryRuntime_execute_block`, which can optionally skip the state-root
+/// check (useful for trying a unreleased runtime), and can execute runtime sanity checks as well.
+#[derive(Debug, Clone, clap::Parser)]
+pub struct ExecuteBlockCmd {
+    /// Which try-state targets to execute when running this command.
+    ///
+    /// Expected values:
+    /// - `all`
+    /// - `none`
+    /// - A comma separated list of pallets, as per pallet names in `construct_runtime!()` (e.g.
+    ///   `Staking, System`).
+    /// - `rr-[x]` where `[x]` is a number. Then, the given number of pallets are checked in a
+    ///   round-robin fashion.
+    #[arg(long, default_value = "all")]
+    pub try_state: frame_try_runtime::TryStateSelect,
+
+    /// The ws uri from which to fetch the block.
+    ///
+    /// This will always fetch the next block of whatever `state` is referring to, because this is
+    /// the only sensible combination. In other words, if you have the state of block `n`, you
+    /// should execute block `n+1` on top of it.
+    ///
+    /// If `state` is `Live`, this can be ignored and the same uri is used for both.
+    #[arg(
+		long,
+		value_parser = crate::parse::url
+	)]
+    pub block_ws_uri: Option<String>,
+
+    /// The state type to use.
+    #[command(subcommand)]
+    pub state: State,
+}
+
+impl ExecuteBlockCmd {
+    fn block_ws_uri<Block: BlockT>(&self) -> String
+    where
+        <Block::Hash as FromStr>::Err: Debug,
+    {
+        match (&self.block_ws_uri, &self.state) {
+            (Some(block_ws_uri), State::Snap { .. }) => block_ws_uri.to_owned(),
+            (Some(block_ws_uri), State::Live { .. }) => {
+                log::error!(target: LOG_TARGET, "--block-uri is provided while state type is live, Are you sure you know what you are doing?");
+                block_ws_uri.to_owned()
+            }
+            (None, State::Live(LiveState { uri, .. })) => uri.clone(),
+            (None, State::Snap { .. }) => {
+                panic!("either `--block-uri` must be provided, or state must be `live`");
+            }
+        }
+    }
+}
+
+pub(crate) async fn execute_block<Block, HostFns>(
     shared: SharedParams,
-    state: State,
-    try_state_checks: TryStateSelect,
-    block_ws_uri: Option<String>,
+    command: ExecuteBlockCmd,
 ) -> sc_cli::Result<()>
 where
     Block: BlockT + serde::de::DeserializeOwned,
-    Block::Hash: FromStr,
     <Block::Hash as FromStr>::Err: Debug,
+    Block::Hash: serde::de::DeserializeOwned,
     Block::Header: serde::de::DeserializeOwned,
-    NumberFor<Block>: FromStr,
-    <NumberFor<Block> as FromStr>::Err: Debug,
+    <NumberFor<Block> as TryInto<u64>>::Error: Debug,
     HostFns: HostFunctions,
 {
     let executor = build_executor::<HostFns>(&shared);
-    let ext = state
-        .to_ext::<Block, HostFns>(&shared, &executor, None, true)
+    let ext = command
+        .state
+        .into_ext::<Block, HostFns>(&shared, &executor, None, true)
         .await?;
 
     // get the block number associated with this block.
-    let block_ws_uri = resolve_block_ws_uri::<Block>(block_ws_uri.as_ref(), &state);
+    let block_ws_uri = command.block_ws_uri::<Block>();
     let rpc = ws_client(&block_ws_uri).await?;
     let next_hash = next_hash_of::<Block>(&rpc, ext.block_hash).await?;
 
@@ -63,7 +113,13 @@ where
     // for now, hardcoded for the sake of simplicity. We might customize them one day.
     let state_root_check = false;
     let signature_check = false;
-    let payload = (block, state_root_check, signature_check, try_state_checks).encode();
+    let payload = (
+        block.clone(),
+        state_root_check,
+        signature_check,
+        command.try_state,
+    )
+        .encode();
 
     let _ = state_machine_call_with_proof::<Block, HostFns>(
         &ext,
@@ -77,28 +133,7 @@ where
     Ok(())
 }
 
-fn resolve_block_ws_uri<Block: BlockT>(block_ws_uri: Option<&String>, state: &State) -> String
-where
-    Block::Hash: FromStr,
-    <Block::Hash as FromStr>::Err: Debug,
-{
-    match (block_ws_uri, state) {
-        (Some(block_ws_uri), State::Snap { .. }) => block_ws_uri.to_owned(),
-        (Some(block_ws_uri), State::Live { .. }) => {
-            log::error!(
-                target: LOG_TARGET,
-                "Block uri is provided while state type is live. Are you sure you know what you are doing?"
-            );
-            block_ws_uri.to_owned()
-        }
-        (None, State::Live(LiveState { uri, .. })) => uri.clone(),
-        (None, State::Snap { .. }) => {
-            panic!("either block ws uri must be provided, or state must be `Live`");
-        }
-    }
-}
-
-async fn next_hash_of<Block: BlockT>(
+pub(crate) async fn next_hash_of<Block: BlockT>(
     rpc: &substrate_rpc_client::WsClient,
     hash: Block::Hash,
 ) -> sc_cli::Result<Block::Hash>
