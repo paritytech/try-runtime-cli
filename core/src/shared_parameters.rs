@@ -12,14 +12,6 @@ use {
 #[derive(Debug, Clone, clap::Parser)]
 #[group(skip)]
 pub struct SharedParams {
-    /// Shared parameters of substrate cli.
-    ///
-    /// TODO: this is only needed because try-runtime is embedded in the substrate CLI. It should
-    /// go away.
-    #[allow(missing_docs)]
-    #[clap(flatten)]
-    pub shared_params: sc_cli::SharedParams,
-
     /// The runtime to use.
     ///
     /// Must be a path to a wasm blob, compiled with `try-runtime` feature flag.
