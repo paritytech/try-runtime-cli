@@ -48,8 +48,8 @@ pub enum TryRuntimeAction {
     /// only triggers all of the `on_runtime_upgrade` hooks in the runtime, and optionally
     /// `try_state`.
     ///
-    /// See [`frame_try_runtime::TryRuntime`] and
-    /// [`commands::on_runtime_upgrade::OnRuntimeUpgradeCmd`] for more information.
+    /// See [`frame_try_runtime::TryRuntime`] and [`on_runtime_upgrade::OnRuntimeUpgradeCmd`] for
+    /// more information.
     OnRuntimeUpgrade(on_runtime_upgrade::OnRuntimeUpgradeCmd),
 
     /// Executes the given block against some state.
@@ -58,8 +58,8 @@ pub enum TryRuntimeAction {
     /// as state-root and signature checks are always disabled, and additional checks like
     /// `try-state` can be enabled.
     ///
-    /// See [`frame_try_runtime::TryRuntime`] and [`commands::execute_block::ExecuteBlockCmd`] for
-    /// more information.
+    /// See [`frame_try_runtime::TryRuntime`] and [`execute_block::ExecuteBlockCmd`] for more
+    /// information.
     ExecuteBlock(execute_block::ExecuteBlockCmd),
 }
 
