@@ -20,7 +20,7 @@ test-unit:
   stage: test
   script:
     - echo "Test..."
-build:
+build-bazel:
   stage: build
   script:
     - apt update && apt install apt-transport-https curl gnupg -y;
@@ -30,4 +30,11 @@ build:
     - apt update && apt install bazel -y
     - bazel build //cli --action_env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --remote_cache=https://storage.googleapis.com/bazel-cache-parity-build --google_default_credentials
 
-
+build-cargo:
+  stage: build
+  cache:
+    key: target
+    paths:
+      - target/
+  script:
+    - cargo build
