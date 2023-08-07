@@ -143,8 +143,6 @@
 <a href="#143" id="143">143</a>
 <a href="#144" id="144">144</a>
 <a href="#145" id="145">145</a>
-<a href="#146" id="146">146</a>
-<a href="#147" id="147">147</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -187,7 +185,7 @@
     </span><span class="kw">pub </span>shared: SharedParams,
 
     <span class="attr">#[command(subcommand)]
-    </span><span class="kw">pub </span>action: TryRuntimeAction,
+    </span><span class="kw">pub </span>action: Action,
 }
 
 <span class="kw">impl </span>TryRuntime {
@@ -208,15 +206,14 @@
 
 <span class="doccomment">/// Possible actions of `try-runtime`.
 </span><span class="attr">#[derive(Debug, Clone, clap::Subcommand)]
-</span><span class="kw">pub enum </span>TryRuntimeAction {
+</span><span class="kw">pub enum </span>Action {
     <span class="doccomment">/// Execute the migrations of the given runtime
     ///
     /// This uses a custom runtime api call, namely &quot;TryRuntime_on_runtime_upgrade&quot;. The code path
     /// only triggers all of the `on_runtime_upgrade` hooks in the runtime, and optionally
     /// `try_state`.
     ///
-    /// See [`frame_try_runtime::TryRuntime`] and [`on_runtime_upgrade::OnRuntimeUpgradeCmd`] for
-    /// more information.
+    /// See [`TryRuntime`] and [`on_runtime_upgrade::Command`] for more information.
     </span>OnRuntimeUpgrade(on_runtime_upgrade::Command),
 
     <span class="doccomment">/// Executes the given block against some state.
@@ -225,8 +222,7 @@
     /// as state-root and signature checks are always disabled, and additional checks like
     /// `try-state` can be enabled.
     ///
-    /// See [`frame_try_runtime::TryRuntime`] and [`execute_block::ExecuteBlockCmd`] for more
-    /// information.
+    /// See [`TryRuntime`] and [`execute_block::Command`] for more information.
     </span>ExecuteBlock(execute_block::Command),
 
     <span class="doccomment">/// Executes *the offchain worker hooks* of a given block against some state.
@@ -234,13 +230,13 @@
     /// This executes the same runtime api as normal block import, namely
     /// `OffchainWorkerApi_offchain_worker`.
     ///
-    /// See [`frame_try_runtime::TryRuntime`] and [`commands::offchain_worker::OffchainWorkerCmd`]
+    /// See [`frame_try_runtime::TryRuntime`] and [`offchain_worker::Command`]
     /// for more information.
     </span>OffchainWorker(offchain_worker::Command),
 
     <span class="doccomment">/// Follow the given chain&#39;s finalized blocks and apply all of its extrinsics.
     ///
-    /// This is essentially repeated calls to [`Command::ExecuteBlock`].
+    /// This is essentially repeated calls to [`Action::ExecuteBlock`].
     ///
     /// This allows the behavior of a new runtime to be inspected over a long period of time, with
     /// realistic transactions coming as input.
@@ -261,7 +257,7 @@
     </span>CreateSnapshot(create_snapshot::Command),
 }
 
-<span class="kw">impl </span>TryRuntimeAction {
+<span class="kw">impl </span>Action {
     <span class="kw">pub async fn </span>run&lt;Block, HostFns&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, shared: <span class="kw-2">&amp;</span>SharedParams) -&gt; sc_cli::Result&lt;()&gt;
     <span class="kw">where
         </span>Block: BlockT&lt;Hash = H256&gt; + DeserializeOwned,
@@ -274,19 +270,19 @@
         HostFns: HostFunctions,
     {
         <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self </span>{
-            TryRuntimeAction::OnRuntimeUpgrade(<span class="kw-2">ref </span>cmd) =&gt; {
+            Action::OnRuntimeUpgrade(<span class="kw-2">ref </span>cmd) =&gt; {
                 on_runtime_upgrade::run::&lt;Block, HostFns&gt;(shared.clone(), cmd.clone()).<span class="kw">await
             </span>}
-            TryRuntimeAction::ExecuteBlock(cmd) =&gt; {
+            Action::ExecuteBlock(cmd) =&gt; {
                 execute_block::run::&lt;Block, HostFns&gt;(shared.clone(), cmd.clone()).<span class="kw">await
             </span>}
-            TryRuntimeAction::OffchainWorker(cmd) =&gt; {
+            Action::OffchainWorker(cmd) =&gt; {
                 offchain_worker::run::&lt;Block, HostFns&gt;(shared.clone(), cmd.clone()).<span class="kw">await
             </span>}
-            TryRuntimeAction::FollowChain(cmd) =&gt; {
+            Action::FollowChain(cmd) =&gt; {
                 follow_chain::run::&lt;Block, HostFns&gt;(shared.clone(), cmd.clone()).<span class="kw">await
             </span>}
-            TryRuntimeAction::CreateSnapshot(cmd) =&gt; {
+            Action::CreateSnapshot(cmd) =&gt; {
                 create_snapshot::run::&lt;Block, HostFns&gt;(shared.clone(), cmd.clone()).<span class="kw">await
             </span>}
         }
