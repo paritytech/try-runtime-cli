@@ -23,7 +23,6 @@ use sc_cli::{execution_method_from_cli, RuntimeVersion};
 use sc_executor::{
     sp_wasm_interface::HostFunctions, HeapAllocStrategy, WasmExecutor, DEFAULT_HEAP_ALLOC_STRATEGY,
 };
-use sp_api::RuntimeApiInfo;
 use sp_core::{
     hexdisplay::HexDisplay,
     offchain::{
