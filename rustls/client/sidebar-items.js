@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ServerName"],"struct":["ClientConfig","ClientConnection","ClientConnectionData","ClientSessionMemoryCache","InvalidDnsNameError","NoClientSessionStorage","WantsClientCert","WantsTransparencyPolicyOrClientCert","WriteEarlyData"],"trait":["ResolvesClientCert","StoresClientSessions"]};

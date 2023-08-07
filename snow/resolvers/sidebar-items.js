@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["DefaultResolver","FallbackResolver","RingResolver"],"trait":["CryptoResolver"],"type":["BoxedCryptoResolver"]};

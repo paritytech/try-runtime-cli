@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["Arena","ComponentVec","DedupArena","GuardedEntity","Iter","IterMut"],"trait":["ArenaIndex"]};

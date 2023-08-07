@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"kitchensink_runtime":[["impl <a class=\"trait\" href=\"sp_runtime/traits/trait.GetRuntimeBlockType.html\" title=\"trait sp_runtime::traits::GetRuntimeBlockType\">GetRuntimeBlockType</a> for <a class=\"struct\" href=\"kitchensink_runtime/struct.Runtime.html\" title=\"struct kitchensink_runtime::Runtime\">Runtime</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

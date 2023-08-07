@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"trait":["AddMod","ArrayDecoding","ArrayEncoding","Bounded","CheckedAdd","CheckedMul","CheckedSub","Concat","Encoding","Integer","Invert","MulMod","NegMod","Pow","PowBoundedExp","Random","RandomMod","Split","Square","SubMod","Zero"]};

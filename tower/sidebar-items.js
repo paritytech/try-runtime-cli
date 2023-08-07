@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["builder","layer"],"struct":["ServiceBuilder"],"trait":["Layer","Service"],"type":["BoxError"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["ChaChaPoly1305"],"type":["ChaCha20Poly1305","Key","Nonce","Tag","XChaCha20Poly1305","XNonce"]};

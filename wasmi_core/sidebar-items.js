@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["TrapCode","UntypedError","ValueType"],"struct":["F32","F64","Pages","Trap","UntypedValue"],"trait":["DecodeUntypedSlice","EncodeUntypedSlice","HostError"]};
