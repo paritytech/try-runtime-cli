@@ -29,8 +29,8 @@ use crate::shared_parameters::SharedParams;
 pub mod commands;
 #[cfg(feature = "cli")]
 mod parse;
-mod shared_parameters;
-mod state;
+pub mod shared_parameters;
+pub mod state;
 
 pub(crate) const LOG_TARGET: &str = "try-runtime::cli";
 
