@@ -84,10 +84,7 @@ async fn start_subscribing<Header: DeserializeOwned + Serialize + Send + Sync + 
 }
 
 // Runs the `follow_chain` command.
-pub(crate) async fn run<Block, HostFns>(
-    shared: SharedParams,
-    command: Command,
-) -> sc_cli::Result<()>
+pub async fn run<Block, HostFns>(shared: SharedParams, command: Command) -> sc_cli::Result<()>
 where
     Block: BlockT<Hash = H256> + DeserializeOwned,
     Block::Header: DeserializeOwned,

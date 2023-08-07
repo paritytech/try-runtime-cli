@@ -88,10 +88,7 @@ impl Command {
 }
 
 // Runs the `execute_block` command.
-pub(crate) async fn run<Block, HostFns>(
-    shared: SharedParams,
-    command: Command,
-) -> sc_cli::Result<()>
+pub async fn run<Block, HostFns>(shared: SharedParams, command: Command) -> sc_cli::Result<()>
 where
     Block: BlockT + serde::de::DeserializeOwned,
     <Block::Hash as FromStr>::Err: Debug,

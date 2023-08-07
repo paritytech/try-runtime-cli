@@ -87,11 +87,10 @@ pub enum State {
 }
 
 impl State {
-    /// Create the [`remote_externalities::RemoteExternalities`] using [`remote-externalities`] from
-    /// self.
+    /// Create the [`RemoteExternalities`].
     ///
-    /// This will override the code as it sees fit based on [`SharedParams::Runtime`]. It will also
-    /// check the spec-version and name.
+    /// This will override the code as it sees fit based on [`Runtime`]. It will also check the
+    /// spec-version and name.
     pub(crate) async fn into_ext<Block: BlockT + DeserializeOwned, HostFns: HostFunctions>(
         &self,
         shared: &SharedParams,

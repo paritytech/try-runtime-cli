@@ -68,10 +68,7 @@ impl Command {
 }
 
 // Runs the `offchain_worker` command.
-pub(crate) async fn run<Block, HostFns>(
-    shared: SharedParams,
-    command: Command,
-) -> sc_cli::Result<()>
+pub async fn run<Block, HostFns>(shared: SharedParams, command: Command) -> sc_cli::Result<()>
 where
     Block: BlockT + serde::de::DeserializeOwned,
     Block::Header: serde::de::DeserializeOwned,

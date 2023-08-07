@@ -40,7 +40,7 @@ pub struct TryRuntime {
     pub shared: SharedParams,
 
     #[command(subcommand)]
-    pub action: TryRuntimeAction,
+    pub action: Action,
 }
 
 impl TryRuntime {
@@ -61,15 +61,14 @@ impl TryRuntime {
 
 /// Possible actions of `try-runtime`.
 #[derive(Debug, Clone, clap::Subcommand)]
-pub enum TryRuntimeAction {
+pub enum Action {
     /// Execute the migrations of the given runtime
     ///
     /// This uses a custom runtime api call, namely "TryRuntime_on_runtime_upgrade". The code path
     /// only triggers all of the `on_runtime_upgrade` hooks in the runtime, and optionally
     /// `try_state`.
     ///
-    /// See [`frame_try_runtime::TryRuntime`] and [`on_runtime_upgrade::OnRuntimeUpgradeCmd`] for
-    /// more information.
+    /// See [`TryRuntime`] and [`on_runtime_upgrade::Command`] for more information.
     OnRuntimeUpgrade(on_runtime_upgrade::Command),
 
     /// Executes the given block against some state.
@@ -78,8 +77,7 @@ pub enum TryRuntimeAction {
     /// as state-root and signature checks are always disabled, and additional checks like
     /// `try-state` can be enabled.
     ///
-    /// See [`frame_try_runtime::TryRuntime`] and [`execute_block::ExecuteBlockCmd`] for more
-    /// information.
+    /// See [`TryRuntime`] and [`execute_block::Command`] for more information.
     ExecuteBlock(execute_block::Command),
 
     /// Executes *the offchain worker hooks* of a given block against some state.
@@ -87,13 +85,13 @@ pub enum TryRuntimeAction {
     /// This executes the same runtime api as normal block import, namely
     /// `OffchainWorkerApi_offchain_worker`.
     ///
-    /// See [`frame_try_runtime::TryRuntime`] and [`commands::offchain_worker::OffchainWorkerCmd`]
+    /// See [`frame_try_runtime::TryRuntime`] and [`offchain_worker::Command`]
     /// for more information.
     OffchainWorker(offchain_worker::Command),
 
     /// Follow the given chain's finalized blocks and apply all of its extrinsics.
     ///
-    /// This is essentially repeated calls to [`Command::ExecuteBlock`].
+    /// This is essentially repeated calls to [`Action::ExecuteBlock`].
     ///
     /// This allows the behavior of a new runtime to be inspected over a long period of time, with
     /// realistic transactions coming as input.
@@ -114,7 +112,7 @@ pub enum TryRuntimeAction {
     CreateSnapshot(create_snapshot::Command),
 }
 
-impl TryRuntimeAction {
+impl Action {
     pub async fn run<Block, HostFns>(&self, shared: &SharedParams) -> sc_cli::Result<()>
     where
         Block: BlockT<Hash = H256> + DeserializeOwned,
@@ -127,19 +125,19 @@ impl TryRuntimeAction {
         HostFns: HostFunctions,
     {
         match &self {
-            TryRuntimeAction::OnRuntimeUpgrade(ref cmd) => {
+            Action::OnRuntimeUpgrade(ref cmd) => {
                 on_runtime_upgrade::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
             }
-            TryRuntimeAction::ExecuteBlock(cmd) => {
+            Action::ExecuteBlock(cmd) => {
                 execute_block::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
             }
-            TryRuntimeAction::OffchainWorker(cmd) => {
+            Action::OffchainWorker(cmd) => {
                 offchain_worker::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
             }
-            TryRuntimeAction::FollowChain(cmd) => {
+            Action::FollowChain(cmd) => {
                 follow_chain::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
             }
-            TryRuntimeAction::CreateSnapshot(cmd) => {
+            Action::CreateSnapshot(cmd) => {
                 create_snapshot::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
             }
         }
