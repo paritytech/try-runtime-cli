@@ -38,8 +38,8 @@
 //! ## Background Knowledge
 //!
 //! The basis of all try-runtime commands is the same: connect to a live node, scrape its *state*
-//! and put it inside a `TestExternalities`, then call into a *specific runtime-api* using the given
-//! state and some *runtime*.
+//! and put it inside a [`TestExternalities`], then call into a *specific runtime-api* using the
+//! given state and some *runtime*.
 //!
 //! Alternatively, the state could come from a snapshot file.
 //!
@@ -47,9 +47,9 @@
 //!
 //! 1. **State** is the key-value pairs of data that comprise the canonical information that any
 //!    blockchain is keeping. A state can be full (all key-value pairs), or be partial (only pairs
-//!    related to some pallets/prefixes). Moreover, some keys are especial and are not related to
-//!    specific pallets, known as `well_known_keys` in substrate. The most important of these is the
-//!    `:CODE:` key, which contains the code used for execution, when wasm execution is chosen.
+//!    related to some pallets/prefixes). Moreover, some keys are special and are not related to
+//!    specific pallets, known as [`well_known_keys`] in substrate. The most important of these is
+//!    the `:CODE:` key, which contains the code used for execution, when wasm execution is chosen.
 //!
 //! 2. *A runtime-api* call is a call into a function defined in the runtime, *on top of a given
 //!    state*. Each subcommand of `try-runtime` utilizes a specific *runtime-api*.
@@ -76,14 +76,14 @@
 //!
 //! Briefly, this CLI is capable of executing:
 //!
-//! * [`Action::OnRuntimeUpgrade`]: execute all the `on_runtime_upgrade` hooks.
+//! * [`Action::OnRuntimeUpgrade`]: execute all the [`OnRuntimeUpgrade`] hooks.
 //! * [`Action::ExecuteBlock`]: re-execute the given block.
 //! * [`Action::OffchainWorker`]: re-execute the given block's offchain worker code path.
 //! * [`Action::FollowChain`]: continuously execute the blocks of a remote chain on top of a given
 //!   runtime.
 //! * [`Action::CreateSnapshot`]: Create a snapshot file from a remote node.
 //!
-//! Finally, To make sure there are no errors regarding this, always run any `try-runtime` command
+//! Finally, to make sure there are no errors regarding this, always run any `try-runtime` command
 //! with `executor=trace` logging targets, which will specify which runtime is being used per api
 //! call. Moreover, `remote-ext`, `try-runtime` and `runtime` logs targets will also be useful.
 //!
@@ -159,8 +159,7 @@
 //! ```
 //!
 //! which is called on numerous code paths in the try-runtime tool. These checks should ensure that
-//! the state of the pallet is consistent and correct. See [`frame_support::traits::TryState`] for
-//! more info.
+//! the state of the pallet is consistent and correct. See [`TryState`] for more info.
 //!
 //! ### Logging
 //!
@@ -241,8 +240,8 @@
 //! This can still be customized at a given block with `--at`. If you want to use a snapshot, you
 //! can still use `--block-ws-uri` to provide a node form which the block data can be fetched.
 //!
-//! Moreover, this runs the [`frame_support::traits::TryState`] hooks as well. The hooks to run can
-//! be customized with the `--try-state`. For example:
+//! Moreover, this runs the [`TryState`] hooks as well. The hooks to run can be customized with the
+//! `--try-state`. For example:
 //!
 //! ```bash
 //! ./try-runtime-cli \
@@ -272,24 +271,32 @@
 //!     --uri ws://localhost:9999 \
 //!     --try-state rr-3
 //! ```
+//!
+//! [`VersionedRuntimeUpgrade`]: https://paritytech.github.io/substrate/master/frame_support/migrations/struct.VersionedRuntimeUpgrade.html
+//! [`OnRuntimeUpgrade`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.OnRuntimeUpgrade.html
+//! [`OnRuntimeUpgrade::pre_upgrade`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.OnRuntimeUpgrade.html#method.pre_upgrade
+//! [`OnRuntimeUpgrade::post_upgrade`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.OnRuntimeUpgrade.html#method.post_upgrade
+//! [`TryState`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.TryState.html
+//! [`TryStateSelect`]: https://paritytech.github.io/substrate/master/frame_support/traits/enum.TryStateSelect.html
+//! [`Action`]: ../try_runtime_core/commands/enum.Action.html
+//! [`Action::FollowChain`]: ../try_runtime_core/commands/enum.Action.html#variant.FollowChain
+//! [`Action::OnRuntimeUpgrade`]: ../try_runtime_core/commands/enum.Action.html#variant.OnRuntimeUpgrade
+//! [`Action::ExecuteBlock`]: ../try_runtime_core/commands/enum.Action.html#variant.ExecuteBlock
+//! [`Action::OffchainWorker`]: ../try_runtime_core/commands/enum.Action.html#variant.OffchainWorker
+//! [`Action::CreateSnapshot`]: ../try_runtime_core/commands/enum.Action.html#variant.CreateSnapshot
+//! [`SharedParams`]: ../try_runtime_core/shared_parameters/struct.SharedParams.html
+//! [`SharedParams::runtime`]: ../try_runtime_core/shared_parameters/struct.SharedParams.html#structfield.runtime
+//! [`SharedParams::overwrite_state_version`]: ../try_runtime_core/shared_parameters/struct.SharedParams.html#structfield.overwrite_state_version
+//! [`TryState`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.TryState.html
+//! [`TestExternalities`]: https://paritytech.github.io/substrate/master/sp_state_machine/struct.TestExternalities.html
+//! [`well_known_keys`]: https://paritytech.github.io/substrate/master/sp_storage/well_known_keys/index.html
 
 use std::env;
 
 use clap::Parser;
-#[allow(unused_imports)] // used in doc generation
-use frame_support::migrations::VersionedRuntimeUpgrade;
-#[allow(unused_imports)] // used in doc generation
-use frame_support::traits::{OnRuntimeUpgrade, TryState};
-#[allow(unused_imports)] // used in doc generation
-use frame_try_runtime::TryStateSelect;
 use node_executor::ExecutorDispatch;
 use node_primitives::Block;
 use try_runtime_core::commands::TryRuntime;
-#[allow(unused_imports)] // used in doc generation
-use try_runtime_core::{
-    commands::Action,
-    shared_parameters::{Runtime, SharedParams},
-};
 
 fn init_env() {
     if env::var(env_logger::DEFAULT_FILTER_ENV).is_err() {
