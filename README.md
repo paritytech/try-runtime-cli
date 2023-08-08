@@ -1,6 +1,6 @@
 # try-runtime-cli
 
-Substrate's programatic testing framework for power users.
+Substrate's programmatic testing framework for power users.
 
 📖 [Documentation](https://paritytech.github.io/try-runtime-cli/try_runtime_cli)
 

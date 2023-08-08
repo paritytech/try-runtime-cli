@@ -17,7 +17,7 @@
 
 //! # Try-runtime
 //!
-//! Substrate's programatic testing framework for power users.
+//! Substrate's programmatic testing framework for power users.
 //!
 //! > As the name suggests, `try-runtime` is a detailed testing framework that gives you a lot of
 //! control over what is being executed in which environment. It is recommended that user's first
