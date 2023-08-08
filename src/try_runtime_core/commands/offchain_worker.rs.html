@@ -104,9 +104,6 @@
 <a href="#104" id="104">104</a>
 <a href="#105" id="105">105</a>
 <a href="#106" id="106">106</a>
-<a href="#107" id="107">107</a>
-<a href="#108" id="108">108</a>
-<a href="#109" id="109">109</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -158,10 +155,7 @@
 }
 
 <span class="kw">impl </span>Command {
-    <span class="kw">fn </span>header_ws_uri&lt;Block: BlockT&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String
-    <span class="kw">where
-        </span>&lt;Block::Hash <span class="kw">as </span>FromStr&gt;::Err: Debug,
-    {
+    <span class="kw">fn </span>header_ws_uri(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; String {
         <span class="kw">match </span>(<span class="kw-2">&amp;</span><span class="self">self</span>.header_ws_uri, <span class="kw-2">&amp;</span><span class="self">self</span>.state) {
             (<span class="prelude-val">Some</span>(header_ws_uri), State::Snap { .. }) =&gt; header_ws_uri.to_owned(),
             (<span class="prelude-val">Some</span>(header_ws_uri), State::Live { .. }) =&gt; {
@@ -190,10 +184,10 @@
     <span class="comment">// we first build the externalities with the remote code.
     </span><span class="kw">let </span>ext = command
         .state
-        .into_ext::&lt;Block, HostFns&gt;(<span class="kw-2">&amp;</span>shared, <span class="kw-2">&amp;</span>executor, <span class="prelude-val">None</span>, <span class="bool-val">true</span>)
+        .to_ext::&lt;Block, HostFns&gt;(<span class="kw-2">&amp;</span>shared, <span class="kw-2">&amp;</span>executor, <span class="prelude-val">None</span>, <span class="bool-val">true</span>)
         .<span class="kw">await</span><span class="question-mark">?</span>;
 
-    <span class="kw">let </span>header_ws_uri = command.header_ws_uri::&lt;Block&gt;();
+    <span class="kw">let </span>header_ws_uri = command.header_ws_uri();
 
     <span class="kw">let </span>rpc = ws_client(<span class="kw-2">&amp;</span>header_ws_uri).<span class="kw">await</span><span class="question-mark">?</span>;
     <span class="kw">let </span>next_hash = next_hash_of::&lt;Block&gt;(<span class="kw-2">&amp;</span>rpc, ext.block_hash).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -205,7 +199,7 @@
         .map(|maybe_header| maybe_header.ok_or(<span class="string">&quot;Header does not exist&quot;</span>))<span class="question-mark">??</span>;
     <span class="kw">let </span>payload = header.encode();
 
-    <span class="kw">let _ </span>= state_machine_call::&lt;Block, HostFns&gt;(
+    <span class="kw">let _ </span>= state_machine_call::&lt;HostFns&gt;(
         <span class="kw-2">&amp;</span>ext,
         <span class="kw-2">&amp;</span>executor,
         <span class="string">&quot;OffchainWorkerApi_offchain_worker&quot;</span>,

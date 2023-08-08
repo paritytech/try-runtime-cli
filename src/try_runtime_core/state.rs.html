@@ -210,8 +210,6 @@
 <a href="#210" id="210">210</a>
 <a href="#211" id="211">211</a>
 <a href="#212" id="212">212</a>
-<a href="#213" id="213">213</a>
-<a href="#214" id="214">214</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -305,7 +303,7 @@
     ///
     /// This will override the code as it sees fit based on [`Runtime`]. It will also check the
     /// spec-version and name.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>into_ext&lt;Block: BlockT + DeserializeOwned, HostFns: HostFunctions&gt;(
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>to_ext&lt;Block: BlockT + DeserializeOwned, HostFns: HostFunctions&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         shared: <span class="kw-2">&amp;</span>SharedParams,
         executor: <span class="kw-2">&amp;</span>WasmExecutor&lt;HostFns&gt;,
@@ -417,10 +415,8 @@
         }
 
         <span class="comment">// whatever runtime we have in store now must have been compiled with try-runtime feature.
-        </span><span class="kw">if </span>try_runtime_check {
-            <span class="kw">if </span>!ensure_try_runtime::&lt;Block, HostFns&gt;(<span class="kw-2">&amp;</span>executor, <span class="kw-2">&amp;mut </span>ext) {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;given runtime is NOT compiled with try-runtime feature!&quot;</span>.into());
-            }
+        </span><span class="kw">if </span>try_runtime_check &amp;&amp; !ensure_try_runtime::&lt;Block, HostFns&gt;(executor, <span class="kw-2">&amp;mut </span>ext) {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;given runtime is NOT compiled with try-runtime feature!&quot;</span>.into());
         }
 
         <span class="prelude-val">Ok</span>(ext)
