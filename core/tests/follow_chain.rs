@@ -31,15 +31,19 @@ async fn follow_chain_works() {
 
     // Spawn a dev node.
     let _ = std::thread::spawn(move || {
-        match common::start_node_inline(vec!["--dev", format!("--rpc-port={}", port).as_str()]) {
+        match common::start_node_inline(vec![
+            "--no-hardware-benchmarks",
+            "--dev",
+            format!("--rpc-port={}", port).as_str(),
+        ]) {
             Ok(_) => {}
             Err(e) => {
                 panic!("Node exited with error: {}", e);
             }
         }
     });
-    // Wait 30 seconds to ensure the node is warmed up.
-    std::thread::sleep(Duration::from_secs(30));
+    // Wait some time to ensure the node is warmed up.
+    std::thread::sleep(Duration::from_secs(90));
 
     common::run_with_timeout(Duration::from_secs(60), async move {
         fn start_follow(ws_url: &str) -> tokio::process::Child {
