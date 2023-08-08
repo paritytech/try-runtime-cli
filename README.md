@@ -2,7 +2,7 @@
 
 Substrate’s testing framework for the power users.
 
-👉 [Documentation](https://paritytech.github.io/try-runtime-cli)
+📖 [Documentation](https://paritytech.github.io/try-runtime-cli)
 
 ## Usage
 
