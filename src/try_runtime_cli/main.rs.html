@@ -311,6 +311,13 @@
 <a href="#311" id="311">311</a>
 <a href="#312" id="312">312</a>
 <a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
+<a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -351,8 +358,8 @@
 //! ## Background Knowledge
 //!
 //! The basis of all try-runtime commands is the same: connect to a live node, scrape its *state*
-//! and put it inside a `TestExternalities`, then call into a *specific runtime-api* using the given
-//! state and some *runtime*.
+//! and put it inside a [`TestExternalities`], then call into a *specific runtime-api* using the
+//! given state and some *runtime*.
 //!
 //! Alternatively, the state could come from a snapshot file.
 //!
@@ -360,9 +367,9 @@
 //!
 //! 1. **State** is the key-value pairs of data that comprise the canonical information that any
 //!    blockchain is keeping. A state can be full (all key-value pairs), or be partial (only pairs
-//!    related to some pallets/prefixes). Moreover, some keys are especial and are not related to
-//!    specific pallets, known as `well_known_keys` in substrate. The most important of these is the
-//!    `:CODE:` key, which contains the code used for execution, when wasm execution is chosen.
+//!    related to some pallets/prefixes). Moreover, some keys are special and are not related to
+//!    specific pallets, known as [`well_known_keys`] in substrate. The most important of these is
+//!    the `:CODE:` key, which contains the code used for execution, when wasm execution is chosen.
 //!
 //! 2. *A runtime-api* call is a call into a function defined in the runtime, *on top of a given
 //!    state*. Each subcommand of `try-runtime` utilizes a specific *runtime-api*.
@@ -389,14 +396,14 @@
 //!
 //! Briefly, this CLI is capable of executing:
 //!
-//! * [`Action::OnRuntimeUpgrade`]: execute all the `on_runtime_upgrade` hooks.
+//! * [`Action::OnRuntimeUpgrade`]: execute all the [`OnRuntimeUpgrade`] hooks.
 //! * [`Action::ExecuteBlock`]: re-execute the given block.
 //! * [`Action::OffchainWorker`]: re-execute the given block&#39;s offchain worker code path.
 //! * [`Action::FollowChain`]: continuously execute the blocks of a remote chain on top of a given
 //!   runtime.
 //! * [`Action::CreateSnapshot`]: Create a snapshot file from a remote node.
 //!
-//! Finally, To make sure there are no errors regarding this, always run any `try-runtime` command
+//! Finally, to make sure there are no errors regarding this, always run any `try-runtime` command
 //! with `executor=trace` logging targets, which will specify which runtime is being used per api
 //! call. Moreover, `remote-ext`, `try-runtime` and `runtime` logs targets will also be useful.
 //!
@@ -472,8 +479,7 @@
 //! ```
 //!
 //! which is called on numerous code paths in the try-runtime tool. These checks should ensure that
-//! the state of the pallet is consistent and correct. See [`frame_support::traits::TryState`] for
-//! more info.
+//! the state of the pallet is consistent and correct. See [`TryState`] for more info.
 //!
 //! ### Logging
 //!
@@ -554,8 +560,8 @@
 //! This can still be customized at a given block with `--at`. If you want to use a snapshot, you
 //! can still use `--block-ws-uri` to provide a node form which the block data can be fetched.
 //!
-//! Moreover, this runs the [`frame_support::traits::TryState`] hooks as well. The hooks to run can
-//! be customized with the `--try-state`. For example:
+//! Moreover, this runs the [`TryState`] hooks as well. The hooks to run can be customized with the
+//! `--try-state`. For example:
 //!
 //! ```bash
 //! ./try-runtime-cli \
@@ -585,24 +591,32 @@
 //!     --uri ws://localhost:9999 \
 //!     --try-state rr-3
 //! ```
+//!
+//! [`VersionedRuntimeUpgrade`]: https://paritytech.github.io/substrate/master/frame_support/migrations/struct.VersionedRuntimeUpgrade.html
+//! [`OnRuntimeUpgrade`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.OnRuntimeUpgrade.html
+//! [`OnRuntimeUpgrade::pre_upgrade`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.OnRuntimeUpgrade.html#method.pre_upgrade
+//! [`OnRuntimeUpgrade::post_upgrade`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.OnRuntimeUpgrade.html#method.post_upgrade
+//! [`TryState`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.TryState.html
+//! [`TryStateSelect`]: https://paritytech.github.io/substrate/master/frame_support/traits/enum.TryStateSelect.html
+//! [`Action`]: ../try_runtime_core/commands/enum.Action.html
+//! [`Action::FollowChain`]: ../try_runtime_core/commands/enum.Action.html#variant.FollowChain
+//! [`Action::OnRuntimeUpgrade`]: ../try_runtime_core/commands/enum.Action.html#variant.OnRuntimeUpgrade
+//! [`Action::ExecuteBlock`]: ../try_runtime_core/commands/enum.Action.html#variant.ExecuteBlock
+//! [`Action::OffchainWorker`]: ../try_runtime_core/commands/enum.Action.html#variant.OffchainWorker
+//! [`Action::CreateSnapshot`]: ../try_runtime_core/commands/enum.Action.html#variant.CreateSnapshot
+//! [`SharedParams`]: ../try_runtime_core/shared_parameters/struct.SharedParams.html
+//! [`SharedParams::runtime`]: ../try_runtime_core/shared_parameters/struct.SharedParams.html#structfield.runtime
+//! [`SharedParams::overwrite_state_version`]: ../try_runtime_core/shared_parameters/struct.SharedParams.html#structfield.overwrite_state_version
+//! [`TryState`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.TryState.html
+//! [`TestExternalities`]: https://paritytech.github.io/substrate/master/sp_state_machine/struct.TestExternalities.html
+//! [`well_known_keys`]: https://paritytech.github.io/substrate/master/sp_storage/well_known_keys/index.html
 
 </span><span class="kw">use </span>std::env;
 
 <span class="kw">use </span>clap::Parser;
-<span class="attr">#[allow(unused_imports)] </span><span class="comment">// used in doc generation
-</span><span class="kw">use </span>frame_support::migrations::VersionedRuntimeUpgrade;
-<span class="attr">#[allow(unused_imports)] </span><span class="comment">// used in doc generation
-</span><span class="kw">use </span>frame_support::traits::{OnRuntimeUpgrade, TryState};
-<span class="attr">#[allow(unused_imports)] </span><span class="comment">// used in doc generation
-</span><span class="kw">use </span>frame_try_runtime::TryStateSelect;
 <span class="kw">use </span>node_executor::ExecutorDispatch;
 <span class="kw">use </span>node_primitives::Block;
 <span class="kw">use </span>try_runtime_core::commands::TryRuntime;
-<span class="attr">#[allow(unused_imports)] </span><span class="comment">// used in doc generation
-</span><span class="kw">use </span>try_runtime_core::{
-    commands::Action,
-    shared_parameters::{Runtime, SharedParams},
-};
 
 <span class="kw">fn </span>init_env() {
     <span class="kw">if </span>env::var(env_logger::DEFAULT_FILTER_ENV).is_err() {
