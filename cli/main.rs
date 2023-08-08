@@ -74,7 +74,7 @@
 //! Then, the specific command has to be specified. See [`Action`] for more information about each
 //! command's specific customization flags, and assumptions regarding the runtime being used.
 //!
-//! Said briefly, this CLI is capable of executing:
+//! Briefly, this CLI is capable of executing:
 //!
 //! * [`Action::OnRuntimeUpgrade`]: execute all the `on_runtime_upgrade` hooks.
 //! * [`Action::ExecuteBlock`]: re-execute the given block.
@@ -110,15 +110,16 @@
 //!
 //! ## Best Practices
 //!
-//! Try-runtime is all about battle-testing unreleased runtime. The following list of suggestions
-//! help developers maximize the testing coverage and make base use of `try-runtime`.
+//! Try-runtime is all about battle-testing unreleased runtimes. The following list of suggestions
+//! help developers maximize their testing coverage and make the best use of `try-runtime` features.
 //!
-//! #### Adding pre/post hooks
+//! ### Testing Runtime Upgrades
 //!
-//! One of the gems that come only in the `try-runtime` feature flag is the `pre_upgrade` and
-//! `post_upgrade` hooks for `OnRuntimeUpgrade`. This trait is implemented either inside the pallet,
-//! or manually in a runtime, to define a migration. In both cases, these functions can be added,
-//! given the right flag:
+//! One of the most powerful abilities of `try-runtime` is using the
+//! [`OnRuntimeUpgrade::pre_upgrade`] and [`OnRuntimeUpgrade::post_upgrade`] hooks to test runtime
+//! upgrades implemented with [`OnRuntimeUpgrade`]. [`OnRuntimeUpgrade`] can be implemented inside
+//! the pallet, or standalone in a runtime to define a migration to execute next runtime upgrade. In
+//! both cases, these methods can be added:
 //!
 //! ```ignore
 //! #[cfg(feature = "try-runtime")]
@@ -130,12 +131,25 @@
 //!
 //! (The pallet macro syntax will support this simply as a part of `#[pallet::hooks]`).
 //!
-//! These hooks allow you to execute some code, only within the `on-runtime-upgrade` command, before
-//! and after the migration. Moreover, `pre_upgrade` can return a `Vec<u8>` that contains arbitrary
-//! encoded data (usually some pre-upgrade state) which will be passed to `post_upgrade` after
-//! upgrading and used for post checking.
+//! These hooks will be called when you execute the [`Action::OnRuntimeUpgrade`] command, before and
+//! after the migration. [`OnRuntimeUpgrade::pre_upgrade`] returns a [`Vec<u8>`] that can contain
+//! arbitrary encoded data (usually some pre-upgrade state) which will be passed to
+//! [`OnRuntimeUpgrade::pre_upgrade`] after upgrading and used for post checking.
 //!
-//! ## State Consistency
+//! ### Guarding migrations and [`VersionedRuntimeUpgrade`]
+//!
+//! Always make sure that any migration code is guarded either by `StorageVersion`, or by some
+//! custom storage item, so that it is NEVER executed twice, even if the code lives in two
+//! consecutive runtimes.
+//!
+//! TODO: Briefly explain [`VersionedRuntimeUpgrade`] and link out to its docs.
+//!
+//! #### Examples
+//!
+//! TODO: Provide end-to-end examples of writing a runtime upgrade, and testing it with the CLI. One
+//! example with [`VersionedRuntimeUpgrade`], one without.
+//!
+//! ### State Consistency
 //!
 //! Similarly, each pallet can expose a function in `#[pallet::hooks]` section as follows:
 //!
@@ -145,20 +159,14 @@
 //! ```
 //!
 //! which is called on numerous code paths in the try-runtime tool. These checks should ensure that
-//! the state of the pallet is consistent and correct. See `frame_support::try_runtime::TryState`
-//! for more info.
+//! the state of the pallet is consistent and correct. See [`frame_support::traits::TryState`] for
+//! more info.
 //!
-//! #### Logging
+//! ### Logging
 //!
 //! It is super helpful to make sure your migration code uses logging (always with a `runtime` log
 //! target prefix, e.g. `runtime::balance`) and state exactly at which stage it is, and what it is
 //! doing.
-//!
-//! #### Guarding migrations
-//!
-//! Always make sure that any migration code is guarded either by `StorageVersion`, or by some
-//! custom storage item, so that it is NEVER executed twice, even if the code lives in two
-//! consecutive runtimes.
 //!
 //! ## Examples
 //!
@@ -233,8 +241,8 @@
 //! This can still be customized at a given block with `--at`. If you want to use a snapshot, you
 //! can still use `--block-ws-uri` to provide a node form which the block data can be fetched.
 //!
-//! Moreover, this runs the `frame_support::try_runtime::TryState` hooks as well. The hooks to run
-//! can be customized with the `--try-state`. For example:
+//! Moreover, this runs the [`frame_support::traits::TryState`] hooks as well. The hooks to run can
+//! be customized with the `--try-state`. For example:
 //!
 //! ```bash
 //! ./try-runtime-cli \
@@ -268,6 +276,10 @@
 use std::env;
 
 use clap::Parser;
+#[allow(unused_imports)] // used in doc generation
+use frame_support::migrations::VersionedRuntimeUpgrade;
+#[allow(unused_imports)] // used in doc generation
+use frame_support::traits::{OnRuntimeUpgrade, TryState};
 #[allow(unused_imports)] // used in doc generation
 use frame_try_runtime::TryStateSelect;
 use node_executor::ExecutorDispatch;
