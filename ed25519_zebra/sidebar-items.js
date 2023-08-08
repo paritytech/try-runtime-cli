@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Error"],"mod":["batch"],"struct":["Signature","SigningKey","VerificationKey","VerificationKeyBytes"]};

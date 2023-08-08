@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["ValueDef"],"struct":["BlockData","Blocks","DataFlowGraph","DisplayInst","Insts","Values"]};

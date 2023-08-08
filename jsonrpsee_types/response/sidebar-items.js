@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["Response","SubscriptionPayload","SubscriptionPayloadError"],"type":["SubscriptionError","SubscriptionResponse"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Error","OpCode"],"struct":["Codec","Header","UnknownOpCode"]};

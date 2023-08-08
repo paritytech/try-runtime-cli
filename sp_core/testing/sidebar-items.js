@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["BLS377","BLS381","ECDSA","ED25519","SR25519"],"struct":["TaskExecutor"]};

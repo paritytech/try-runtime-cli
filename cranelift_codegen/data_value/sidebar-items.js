@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["DataValue","DataValueCastFailure"],"fn":["write_data_value_list"],"struct":["DisplayDataValues"]};

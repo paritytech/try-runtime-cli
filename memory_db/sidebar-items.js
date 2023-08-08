@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["hash_key","legacy_prefixed_key","prefixed_key"],"struct":["HashKey","LegacyPrefixedKey","MemoryDB","PrefixedKey"],"trait":["KeyFunction"]};

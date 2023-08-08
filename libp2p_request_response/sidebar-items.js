@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Event","InboundFailure","Message","OutboundFailure","ProtocolSupport"],"struct":["Behaviour","Config","RequestId","ResponseChannel"],"trait":["Codec"]};

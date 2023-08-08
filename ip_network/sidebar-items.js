@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["IpNetwork","IpNetworkError","IpNetworkParseError","Ipv6MulticastScope"],"mod":["iterator"],"struct":["Ipv4Network","Ipv6Network"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["StackSlotKind"],"struct":["DynamicStackSlotData","StackSlotData"],"type":["DynamicStackSlots","StackSize","StackSlots"]};

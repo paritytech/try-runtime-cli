@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["is_upgrade_request"],"struct":["Server"],"type":["Error"]};

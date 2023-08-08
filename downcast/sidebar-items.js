@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"macro":["downcast","downcast_methods","downcast_sync","impl_downcast","impl_downcast_sync"],"struct":["DowncastError","TypeMismatch"],"trait":["Any","AnySync","Downcast","DowncastSync"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"macro":["indexmap","indexset"],"mod":["map","serde_seq","set"],"trait":["Equivalent"]};

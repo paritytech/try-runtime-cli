@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["TransportTimeoutError"],"struct":["Timeout","TransportTimeout"]};

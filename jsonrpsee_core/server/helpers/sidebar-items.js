@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["prepare_error"],"struct":["BatchResponse","BatchResponseBuilder","BoundedSubscriptions","BoundedWriter","MethodResponse","MethodSink","SubscriptionPermit"]};

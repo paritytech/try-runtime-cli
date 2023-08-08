@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["VERSION"],"fn":["builder","builder_with_options","infer_native_flags"]};

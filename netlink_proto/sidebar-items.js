@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Error"],"fn":["new_connection","new_connection_with_codec","new_connection_with_socket"],"mod":["sys"],"struct":["Connection","ConnectionHandle","NetlinkCodec","NetlinkFramed"],"trait":["NetlinkMessageCodec"]};

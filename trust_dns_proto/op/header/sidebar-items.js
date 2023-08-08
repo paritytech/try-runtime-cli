@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["MessageType"],"struct":["Flags","Header"]};

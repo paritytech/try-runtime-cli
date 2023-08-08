@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["CertUsage","Matching","Selector"],"fn":["emit","read"],"struct":["TLSA"]};

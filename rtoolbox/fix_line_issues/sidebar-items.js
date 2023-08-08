@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["fix_line_issues"]};

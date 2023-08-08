@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["MAX_DEPTH"],"fn":["triplet_mix"],"trait":["TripletMix"]};

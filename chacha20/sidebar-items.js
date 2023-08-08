@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["BLOCK_SIZE","KEY_SIZE"],"struct":["ChaCha","XChaCha"],"type":["ChaCha12","ChaCha20","ChaCha8","Key","Nonce","XChaCha12","XChaCha20","XChaCha8","XNonce"]};

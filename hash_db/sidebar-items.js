@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"static":["EMPTY_PREFIX"],"trait":["AsHashDB","AsPlainDB","HashDB","HashDBRef","Hasher","MaybeDebug","PlainDB","PlainDBRef"],"type":["Prefix"]};

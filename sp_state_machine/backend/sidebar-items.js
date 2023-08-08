@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["BackendRuntimeCode","IterArgs","KeysIter","PairsIter"],"trait":["AsTrieBackend","Backend","Consolidate","StorageIterator"]};

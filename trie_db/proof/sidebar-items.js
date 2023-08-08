@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["VerifyError"],"fn":["generate_proof","verify_proof"]};

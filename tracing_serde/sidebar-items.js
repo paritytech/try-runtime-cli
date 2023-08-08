@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["fields"],"struct":["SerdeMapVisitor","SerdeStructVisitor","SerializeAttributes","SerializeEvent","SerializeField","SerializeFieldSet","SerializeId","SerializeLevel","SerializeMetadata","SerializeRecord"],"trait":["AsSerde"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["error","framed","tls"],"struct":["BytesConnection","WsConfig"],"type":["InnerFuture","WrapperFn"]};

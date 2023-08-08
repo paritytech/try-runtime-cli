@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["errno","fcntl","mount","sched","sys","unistd"],"trait":["NixPath"],"type":["Error","Result"]};

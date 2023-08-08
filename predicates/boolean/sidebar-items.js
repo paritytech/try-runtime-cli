@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["AndPredicate","NotPredicate","OrPredicate"],"trait":["PredicateBooleanExt"]};

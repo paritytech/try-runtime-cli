@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["GasMeter","MemoryGrowCost"],"fn":["inject"],"mod":["host_function","mutable_global"],"struct":["ConstantCostRules"],"trait":["Backend","Rules"]};

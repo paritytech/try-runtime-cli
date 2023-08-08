@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["ffi_func"],"mod":["__mock_MockBoo","__mock_MockBoo_Bah","__mock_MockFoo","__mock_MockFoo_Foo","mock_ffi"],"struct":["MockBoo","MockFoo"],"trait":["Bah","Foo"]};

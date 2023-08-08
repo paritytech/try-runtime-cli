@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["NegotiationError","ProtocolError","Version"],"fn":["read_length_prefixed","read_varint","write_length_prefixed","write_varint"],"struct":["DeniedUpgrade","NegotiatedComplete","PendingUpgrade","ReadyUpgrade","SelectUpgrade"],"trait":["InboundUpgrade","OutboundUpgrade","UpgradeInfo"],"type":["Negotiated"]};

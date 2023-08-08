@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["Complex","ParseComplexError"],"type":["Complex32","Complex64"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Id","SubscriptionId"],"struct":["Params","ParamsSequence","TwoPointZero"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["strategy"],"struct":["Retry","RetryIf"],"trait":["Action","Condition"]};

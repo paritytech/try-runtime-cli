@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["always","eq","function","ge","gt","in_hash","in_iter","le","lt","ne","never"],"mod":["float","path","str"]};

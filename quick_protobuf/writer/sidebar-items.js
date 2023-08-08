@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["serialize_into_slice","serialize_into_vec"],"struct":["BytesWriter","Writer"],"trait":["WriterBackend"]};

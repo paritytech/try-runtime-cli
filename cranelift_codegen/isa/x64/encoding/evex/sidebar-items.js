@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["EvexContext","EvexMasking","EvexRoundingControl","EvexVectorLength"],"struct":["EvexInstruction","Register"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"trait":["IsContiguous","RawStorage","RawStorageMut","ReshapableStorage","Storage","StorageMut"],"type":["CStride","Owned","OwnedUninit","RStride","SameShapeStorage"]};

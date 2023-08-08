@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["store"],"struct":["Key","ProviderRecord","Record"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Error"],"trait":["AsByteSlice","AsMutByteSlice","AsMutSliceOf","AsSliceOf","FromByteSlice","ToByteSlice","ToMutByteSlice"]};

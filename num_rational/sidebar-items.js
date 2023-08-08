@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["ParseRatioError","Ratio"],"type":["Rational","Rational32","Rational64"]};

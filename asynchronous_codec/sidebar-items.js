@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["Bytes","BytesCodec","BytesMut","Framed","FramedParts","FramedRead","FramedReadParts","FramedWrite","FramedWriteParts","LengthCodec","LinesCodec"],"trait":["Decoder","Encoder"]};

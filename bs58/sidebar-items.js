@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["decode","encode"],"mod":["alphabet","decode","encode"],"struct":["Alphabet"]};

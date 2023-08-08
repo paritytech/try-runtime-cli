@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Func","Predicate","TargetPredicate"],"mod":["lexer"],"struct":["Expression"],"trait":["Logic","TargetMatcher"]};

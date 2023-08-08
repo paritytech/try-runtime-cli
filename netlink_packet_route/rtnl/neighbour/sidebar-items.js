@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["NEIGHBOUR_HEADER_LEN"],"mod":["nlas"],"struct":["NeighbourHeader","NeighbourMessage","NeighbourMessageBuffer"]};

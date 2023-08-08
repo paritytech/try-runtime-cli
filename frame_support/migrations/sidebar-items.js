@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["migrate_from_pallet_version_to_storage_version"],"struct":["RemovePallet"],"trait":["PalletVersionToStorageVersionHelper","StoreCurrentStorageVersion"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["CHAIN_CODE_LENGTH"],"struct":["ChainCode","ExtendedKey"],"trait":["Derivation"]};

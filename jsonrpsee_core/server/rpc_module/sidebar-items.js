@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["InnerSubscriptionResult","MethodKind","MethodResult"],"struct":["ConnState","MethodCallback","MethodResourcesBuilder","Methods","RpcModule","Subscription","SubscriptionSink"],"type":["AsyncMethod","ConnectionId","MaxResponseSize","RawRpcResponse","SubscriptionMethod","SyncMethod"]};

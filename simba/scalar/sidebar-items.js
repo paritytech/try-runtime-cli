@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"trait":["ClosedAdd","ClosedDiv","ClosedMul","ClosedNeg","ClosedSub","ComplexField","Field","RealField","SubsetOf","SupersetOf"]};

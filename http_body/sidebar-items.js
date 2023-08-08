@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["combinators"],"struct":["Data","Empty","Full","LengthLimitError","Limited","SizeHint","Trailers"],"trait":["Body"]};

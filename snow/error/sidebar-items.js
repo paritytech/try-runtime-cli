@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Error","InitStage","PatternProblem","Prerequisite","StateProblem"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["CustomMetadata","CustomValueMetadata","ExtrinsicMetadata","OuterEnums","PalletMetadata","RuntimeApiMetadata","RuntimeApiMethodMetadata","RuntimeApiMethodParamMetadata","RuntimeMetadataV15","SignedExtensionMetadata"],"type":["RuntimeMetadataLastVersion"]};

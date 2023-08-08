@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["CompressionMode"],"fn":["compress","compress_bound","compress_to_buffer","decompress","decompress_to_buffer"]};

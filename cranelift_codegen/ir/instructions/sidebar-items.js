@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["CallInfo","InstructionData","InstructionFormat","Opcode","ResolvedConstraint"],"struct":["BlockCall","DisplayBlockCall","OpcodeConstraints","ValueTypeSet","VariableArgs"],"type":["ValueList","ValueListPool"]};

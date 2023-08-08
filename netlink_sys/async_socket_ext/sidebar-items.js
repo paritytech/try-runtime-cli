@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["PollRecv","PollRecvFrom","PollRecvFromFull","PollSend","PollSendTo"],"trait":["AsyncSocketExt"]};

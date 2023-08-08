@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["ADJECTIVES","NOUNS"],"enum":["Name"],"struct":["Generator"]};

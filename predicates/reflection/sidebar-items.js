@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["Case","CaseChildren","CaseProducts","Child","Parameter","Product"],"trait":["PredicateReflection"]};

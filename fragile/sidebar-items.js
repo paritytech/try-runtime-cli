@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"macro":["stack_token"],"struct":["Fragile","InvalidThreadAccess","SemiSticky","StackToken","Sticky"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["ProtoErrorKind"],"mod":["not_openssl","not_ring"],"struct":["ProtoError"],"trait":["FromProtoError"],"type":["ProtoResult"]};

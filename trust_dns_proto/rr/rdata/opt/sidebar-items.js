@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["EdnsCode","EdnsOption"],"fn":["emit","read"],"struct":["OPT"]};

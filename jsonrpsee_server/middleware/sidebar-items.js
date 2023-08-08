@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["proxy_get_request"]};

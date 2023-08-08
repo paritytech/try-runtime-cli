@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["partial_sort"],"trait":["PartialSort"]};

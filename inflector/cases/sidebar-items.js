@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["camelcase","classcase","kebabcase","pascalcase","screamingsnakecase","sentencecase","snakecase","tablecase","titlecase","traincase"]};

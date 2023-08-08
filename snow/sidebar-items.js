@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["error","params","resolvers","types"],"struct":["Builder","HandshakeState","Keypair","StatelessTransportState","TransportState"]};

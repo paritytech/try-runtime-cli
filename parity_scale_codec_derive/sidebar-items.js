@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"derive":["CompactAs","Decode","Encode","MaxEncodedLen"]};

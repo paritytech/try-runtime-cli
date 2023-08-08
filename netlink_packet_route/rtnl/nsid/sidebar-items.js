@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["NSID_HEADER_LEN"],"mod":["nlas"],"struct":["NsidHeader","NsidMessage","NsidMessageBuffer"]};

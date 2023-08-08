@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["clear_cache","pipeline_flush_mt"]};

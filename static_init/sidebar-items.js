@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"attr":["constructor","destructor","dynamic"],"mod":["lazy","phase","raw_static"],"struct":["AccessError","Lazy","LockedLazy","Phase","UnSyncLazy","UnSyncLockedLazy"],"trait":["Finaly","Generator","GeneratorTolerance","LazyAccess","Phased","Uninit"]};

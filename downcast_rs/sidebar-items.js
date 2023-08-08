@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"macro":["impl_downcast"],"trait":["Downcast","DowncastSync"]};

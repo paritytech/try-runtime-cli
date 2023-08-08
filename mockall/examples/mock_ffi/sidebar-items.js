@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["checkpoint","ffi_func","ffi_func_context"],"mod":["__ffi_func"]};

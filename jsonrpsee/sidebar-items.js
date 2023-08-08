@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"macro":["rpc_params"],"struct":["RpcModule","SubscriptionSink"]};
