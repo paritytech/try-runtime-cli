@@ -70,13 +70,13 @@ where
                 command.from.at.clone().unwrap_or("latest".to_owned())
             );
             log::info!(target: LOG_TARGET, "snapshot path not provided (-s), using '{}'", path_str);
-            path_str.into()
+            path_str
         }
     };
 
     let executor = build_executor::<HostFns>(&shared);
     let _ = State::Live(command.from)
-        .into_ext::<Block, HostFns>(&shared, &executor, Some(path.into()), false)
+        .to_ext::<Block, HostFns>(&shared, &executor, Some(path.into()), false)
         .await?;
 
     Ok(())

@@ -41,15 +41,15 @@ async fn follow_chain_works() {
                 .stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())
                 .arg("--runtime=existing")
-                .args(&["follow-chain", format!("--uri={}", ws_url).as_str()])
+                .args(["follow-chain", format!("--uri={}", ws_url).as_str()])
                 .kill_on_drop(true)
                 .spawn()
                 .unwrap()
         }
 
         // Kick off the follow-chain process and wait for it to process at least 3 blocks.
-        let mut follow = start_follow(&ws_url);
-        let re = Regex::new(r#".*executed block ([3-9]|[1-9]\d+).*"#).unwrap();
+        let mut follow = start_follow(ws_url);
+        let re = Regex::new(r".*executed block ([3-9]|[1-9]\d+).*").unwrap();
         let matched =
             common::wait_for_stream_pattern_match(follow.stderr.take().unwrap(), re).await;
 

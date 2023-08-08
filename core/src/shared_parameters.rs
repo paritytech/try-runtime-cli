@@ -99,7 +99,7 @@ impl FromStr for Runtime {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(match s.to_lowercase().as_ref() {
             "existing" => Runtime::Existing,
-            x @ _ => Runtime::Path(x.into()),
+            x => Runtime::Path(x.into()),
         })
     }
 }

@@ -69,10 +69,7 @@ pub struct Command {
 }
 
 impl Command {
-    fn block_ws_uri<Block: BlockT>(&self) -> String
-    where
-        <Block::Hash as FromStr>::Err: Debug,
-    {
+    fn block_ws_uri(&self) -> String {
         match (&self.block_ws_uri, &self.state) {
             (Some(block_ws_uri), State::Snap { .. }) => block_ws_uri.to_owned(),
             (Some(block_ws_uri), State::Live { .. }) => {
@@ -100,11 +97,11 @@ where
     let executor = build_executor::<HostFns>(&shared);
     let ext = command
         .state
-        .into_ext::<Block, HostFns>(&shared, &executor, None, true)
+        .to_ext::<Block, HostFns>(&shared, &executor, None, true)
         .await?;
 
     // get the block number associated with this block.
-    let block_ws_uri = command.block_ws_uri::<Block>();
+    let block_ws_uri = command.block_ws_uri();
     let rpc = ws_client(&block_ws_uri).await?;
     let next_hash = next_hash_of::<Block>(&rpc, ext.block_hash).await?;
 
@@ -136,7 +133,7 @@ where
     )
         .encode();
 
-    let _ = state_machine_call_with_proof::<Block, HostFns>(
+    let _ = state_machine_call_with_proof::<HostFns>(
         &ext,
         &executor,
         "TryRuntime_execute_block",

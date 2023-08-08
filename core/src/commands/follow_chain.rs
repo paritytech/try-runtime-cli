@@ -107,7 +107,7 @@ where
         let block =
             ChainApi::<(), Block::Hash, Block::Header, SignedBlock<Block>>::block(&rpc, Some(hash))
                 .await
-                .or_else(|e| {
+                .map_err(|e| {
                     if matches!(e, substrate_rpc_client::Error::ParseError(_)) {
                         log::error!(
                             target: LOG_TARGET,
@@ -118,7 +118,7 @@ where
                             block with an empty one."
                         );
                     }
-                    Err(rpc_err_handler(e))
+                    rpc_err_handler(e)
                 })?
                 .expect("if header exists, block should also exist.")
                 .block;
@@ -142,7 +142,7 @@ where
                 child_tree: true,
             });
             let ext = state
-                .into_ext::<Block, HostFns>(&shared, &executor, None, true)
+                .to_ext::<Block, HostFns>(&shared, &executor, None, true)
                 .await?;
             maybe_state_ext = Some(ext);
         }
@@ -151,7 +151,7 @@ where
             .as_mut()
             .expect("state_ext either existed or was just created");
 
-        let result = state_machine_call_with_proof::<Block, HostFns>(
+        let result = state_machine_call_with_proof::<HostFns>(
             state_ext,
             &executor,
             "TryRuntime_execute_block",
@@ -167,7 +167,7 @@ where
             shared
                 .export_proof
                 .as_ref()
-                .map(|path| path.as_path().join(&format!("{}.json", number))),
+                .map(|path| path.as_path().join(format!("{}.json", number))),
         );
 
         if let Err(why) = result {

@@ -49,10 +49,7 @@ pub struct Command {
 }
 
 impl Command {
-    fn header_ws_uri<Block: BlockT>(&self) -> String
-    where
-        <Block::Hash as FromStr>::Err: Debug,
-    {
+    fn header_ws_uri(&self) -> String {
         match (&self.header_ws_uri, &self.state) {
             (Some(header_ws_uri), State::Snap { .. }) => header_ws_uri.to_owned(),
             (Some(header_ws_uri), State::Live { .. }) => {
@@ -81,10 +78,10 @@ where
     // we first build the externalities with the remote code.
     let ext = command
         .state
-        .into_ext::<Block, HostFns>(&shared, &executor, None, true)
+        .to_ext::<Block, HostFns>(&shared, &executor, None, true)
         .await?;
 
-    let header_ws_uri = command.header_ws_uri::<Block>();
+    let header_ws_uri = command.header_ws_uri();
 
     let rpc = ws_client(&header_ws_uri).await?;
     let next_hash = next_hash_of::<Block>(&rpc, ext.block_hash).await?;
@@ -96,7 +93,7 @@ where
         .map(|maybe_header| maybe_header.ok_or("Header does not exist"))??;
     let payload = header.encode();
 
-    let _ = state_machine_call::<Block, HostFns>(
+    let _ = state_machine_call::<HostFns>(
         &ext,
         &executor,
         "OffchainWorkerApi_offchain_worker",

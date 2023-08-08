@@ -42,19 +42,19 @@ async fn execute_block_works() {
                 .stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())
                 .arg("--runtime=existing")
-                .args(&["execute-block"])
-                .args(&["live", format!("--uri={}", ws_url).as_str()])
-                .args(&["--at", format!("{:?}", at).as_str()])
+                .args(["execute-block"])
+                .args(["live", format!("--uri={}", ws_url).as_str()])
+                .args(["--at", format!("{:?}", at).as_str()])
                 .kill_on_drop(true)
                 .spawn()
                 .unwrap()
         }
 
         let block_number = 1;
-        let block_hash = common::block_hash(block_number, &ws_url).await.unwrap();
+        let block_hash = common::block_hash(block_number, ws_url).await.unwrap();
 
         // Try to execute the block.
-        let mut block_execution = execute_block(&ws_url, block_hash);
+        let mut block_execution = execute_block(ws_url, block_hash);
 
         // The execute-block command is actually executing the next block.
         let expected_output = format!(

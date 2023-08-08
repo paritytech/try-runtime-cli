@@ -53,20 +53,20 @@ async fn create_snapshot_works() {
                 .stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())
                 .arg("--runtime=existing")
-                .args(&["create-snapshot", format!("--uri={}", ws_url).as_str()])
+                .args(["create-snapshot", format!("--uri={}", ws_url).as_str()])
                 .arg(snap_file)
-                .args(&["--at", format!("{:?}", at).as_str()])
+                .args(["--at", format!("{:?}", at).as_str()])
                 .kill_on_drop(true)
                 .spawn()
                 .unwrap()
         }
         let block_number = 2;
-        let block_hash = common::block_hash(block_number, &ws_url).await.unwrap();
+        let block_hash = common::block_hash(block_number, ws_url).await.unwrap();
 
         // Try to create a snapshot.
-        let mut snapshot_creation = create_snapshot(&ws_url, &snap_file_path, block_hash);
+        let mut snapshot_creation = create_snapshot(ws_url, &snap_file_path, block_hash);
 
-        let re = Regex::new(r#".*writing snapshot of (\d+) bytes to .*"#).unwrap();
+        let re = Regex::new(r".*writing snapshot of (\d+) bytes to .*").unwrap();
         let matched =
             common::wait_for_stream_pattern_match(snapshot_creation.stderr.take().unwrap(), re)
                 .await;

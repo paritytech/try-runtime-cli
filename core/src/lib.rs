@@ -99,7 +99,7 @@ fn ensure_try_runtime<Block: BlockT, HostFns: HostFunctions>(
 
 /// Execute the given `method` and `data` on top of `ext`, returning the results (encoded) and the
 /// state `changes`.
-pub(crate) fn state_machine_call<Block: BlockT, HostFns: HostFunctions>(
+pub(crate) fn state_machine_call<HostFns: HostFunctions>(
     ext: &TestExternalities,
     executor: &WasmExecutor<HostFns>,
     method: &'static str,
@@ -128,7 +128,7 @@ pub(crate) fn state_machine_call<Block: BlockT, HostFns: HostFunctions>(
 /// size and formats.
 ///
 /// Make sure [`LOG_TARGET`] is enabled in logging.
-pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunctions>(
+pub(crate) fn state_machine_call_with_proof<HostFns: HostFunctions>(
     ext: &TestExternalities,
     executor: &WasmExecutor<HostFns>,
     method: &'static str,
