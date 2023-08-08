@@ -26,11 +26,17 @@ use tokio::process::Command;
 
 #[tokio::test]
 async fn follow_chain_works() {
-    let ws_url = "ws://localhost:45789";
+    let port = 45789;
+    let ws_url = format!("ws://localhost:{}", port);
 
     // Spawn a dev node.
     let _ = std::thread::spawn(move || {
-        common::start_node_without_binary();
+        match common::start_node_inline(vec!["--dev", format!("--rpc-port={}", port).as_str()]) {
+            Ok(_) => {}
+            Err(e) => {
+                panic!("Node exited with error: {}", e);
+            }
+        }
     });
     // Wait 30 seconds to ensure the node is warmed up.
     std::thread::sleep(Duration::from_secs(30));
@@ -48,7 +54,7 @@ async fn follow_chain_works() {
         }
 
         // Kick off the follow-chain process and wait for it to process at least 3 blocks.
-        let mut follow = start_follow(ws_url);
+        let mut follow = start_follow(&ws_url);
         let re = Regex::new(r".*executed block ([3-9]|[1-9]\d+).*").unwrap();
         let matched =
             common::wait_for_stream_pattern_match(follow.stderr.take().unwrap(), re).await;

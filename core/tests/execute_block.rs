@@ -27,11 +27,17 @@ use tokio::process::Command;
 
 #[tokio::test]
 async fn execute_block_works() {
-    let ws_url = "ws://localhost:45789";
+    let port = 45789;
+    let ws_url = format!("ws://localhost:{}", port);
 
     // Spawn a dev node.
     let _ = std::thread::spawn(move || {
-        common::start_node_without_binary();
+        match common::start_node_inline(vec!["--dev", format!("--rpc-port={}", port).as_str()]) {
+            Ok(_) => {}
+            Err(e) => {
+                panic!("Node exited with error: {}", e);
+            }
+        }
     });
     // Wait 30 seconds to ensure the node is warmed up.
     std::thread::sleep(Duration::from_secs(30));
@@ -51,10 +57,10 @@ async fn execute_block_works() {
         }
 
         let block_number = 1;
-        let block_hash = common::block_hash(block_number, ws_url).await.unwrap();
+        let block_hash = common::block_hash(block_number, &ws_url).await.unwrap();
 
         // Try to execute the block.
-        let mut block_execution = execute_block(ws_url, block_hash);
+        let mut block_execution = execute_block(&ws_url, block_hash);
 
         // The execute-block command is actually executing the next block.
         let expected_output = format!(
