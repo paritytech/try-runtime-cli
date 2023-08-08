@@ -2,7 +2,7 @@
 
 Substrate's programatic testing framework for power users.
 
-📖 [Documentation](https://paritytech.github.io/try-runtime-cli)
+📖 [Documentation](https://paritytech.github.io/try-runtime-cli/try_runtime_cli)
 
 ## Usage
 
