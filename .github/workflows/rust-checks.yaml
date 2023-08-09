@@ -34,13 +34,16 @@ jobs:
           command: fmt
           args: --all
 
-      - name: Run Linter
+      - name: Install C++ linker
+        run: sudo apt install --assume-yes build-essential git clang curl libssl-dev llvm libudev-dev make protobuf-compiler
+
+      - name: Tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+      - name: Clippy
         uses: actions-rs/cargo@v1
         with:
           command: clippy
           args: --all-targets -- --no-deps -D warnings
-
-      - name: Run Unit Test Suite
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
