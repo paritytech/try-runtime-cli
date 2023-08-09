@@ -14,4 +14,4 @@ try-runtime-cli on-runtime-upgrade --help
 
 ## Updating
 
-Simply re-run `cargo install --git https://github.com/paritytech/try-runtime-cli try-runtime-cli`.
+Simply re-run `cargo install --git https://github.com/paritytech/try-runtime-cli`.
