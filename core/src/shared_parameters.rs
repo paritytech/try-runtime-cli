@@ -37,7 +37,7 @@ pub struct SharedParams {
     /// whatever comes from the remote node, or the snapshot file. This will most likely not work
     /// against a remote node, as no (sane) blockchain should compile its onchain wasm with
     /// `try-runtime` feature.
-    #[arg(long)]
+    #[arg(long, default_value = "existing")]
     pub runtime: Runtime,
 
     /// Type of wasm execution used.
