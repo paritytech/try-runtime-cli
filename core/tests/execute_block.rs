@@ -48,7 +48,7 @@ async fn execute_block_works() {
 
     common::run_with_timeout(Duration::from_secs(60), async move {
         fn execute_block(ws_url: &str, at: Hash) -> tokio::process::Child {
-            Command::new(cargo_bin("try-runtime-cli"))
+            Command::new(cargo_bin("try-runtime"))
                 .stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())
                 .arg("--runtime=existing")
