@@ -174,7 +174,7 @@
 //! 1. a substrate node compiled with `--feature try-runtime`, called `substrate`. This will be
 //! the running node that you connect to, and provide a wasm blob that has try-runtime
 //! functionality enabled.
-//! 2. a `try-runtime-cli` binary.
+//! 2. the `try-runtime` CLI binary on your path.
 //!
 //! ```bash
 //! # this is like your running deployed node.
@@ -188,7 +188,7 @@
 //!
 //! ```bash
 //! # assuming there's `./substrate --dev --tmp --ws-port 9999` or similar running.
-//! ./try-runtime-cli \
+//! try-runtime \
 //!     --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
 //!     on-runtime-upgrade \
 //!     live --uri ws://localhost:9999
@@ -198,7 +198,7 @@
 //! block hash's state shall not yet have been pruned in `rpc.polkadot.io`.
 //!
 //! ```bash
-//! ./try-runtime-cli \
+//! try-runtime \
 //!     --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
 //!     on-runtime-upgrade \
 //!     live --uri ws://localhost:9999 \
@@ -209,7 +209,7 @@
 //! * Now, let's use a snapshot file. First, we create the snapshot:
 //!
 //! ```bash
-//! ./try-runtime-cli --runtime existing create-snapshot --uri ws://localhost:9999 my-snapshot.snap
+//! try-runtime --runtime existing create-snapshot --uri ws://localhost:9999 my-snapshot.snap
 //! 2022-12-13 10:28:17.516  INFO                 main remote-ext: since no at is provided, setting it to latest finalized head, 0xe7d0b614dfe89af65b33577aae46a6f958c974bf52f8a5e865a0f4faeb578d22
 //! 2022-12-13 10:28:17.516  INFO                 main remote-ext: since no prefix is filtered, the data for all pallets will be downloaded
 //! 2022-12-13 10:28:17.550  INFO                 main remote-ext: writing snapshot of 1611464 bytes to "node-268@latest.snap"
@@ -222,7 +222,7 @@
 //! Then, we can use it to have the same command as before, `on-runtime-upgrade`
 //!
 //! ```bash
-//! ./try-runtime-cli \
+//! try-runtime \
 //!     --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
 //!     on-runtime-upgrade \
 //!     snap -s my-snapshot.snap
@@ -231,7 +231,7 @@
 //! * Execute the latest finalized block with the given runtime.
 //!
 //! ```bash
-//! ./try-runtime-cli \
+//! try-runtime \
 //!     --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
 //!     execute-block live \
 //!     --uri ws://localhost:9999
@@ -244,7 +244,7 @@
 //! `--try-state`. For example:
 //!
 //! ```bash
-//! ./try-runtime-cli \
+//! try-runtime \
 //!     --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
 //!    execute-block \
 //!    --try-state System,Staking \
@@ -265,7 +265,7 @@
 //!   in a round robin fashion
 //!
 //! ```bash
-//! ./try-runtime-cli \
+//! try-runtime \
 //!     --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
 //!     follow-chain \
 //!     --uri ws://localhost:9999 \

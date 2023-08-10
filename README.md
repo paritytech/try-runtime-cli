@@ -8,10 +8,6 @@ Substrate's programmatic testing framework for power users.
 
 ```bash
 cargo install --git https://github.com/paritytech/try-runtime-cli
-try-runtime-cli --help
-try-runtime-cli on-runtime-upgrade --help
+try-runtime --help
+try-runtime on-runtime-upgrade --help
 ```
-
-## Updating
-
-Simply re-run `cargo install --git https://github.com/paritytech/try-runtime-cli`.
