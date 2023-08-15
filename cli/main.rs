@@ -17,7 +17,7 @@
 
 //! # Try-runtime
 //!
-//! Substrate's programmatic testing framework for power users.
+//! Substrate's programmatic testing framework.
 //!
 //! > As the name suggests, `try-runtime` is a detailed testing framework that gives you a lot of
 //! control over what is being executed in which environment. It is recommended that user's first
@@ -63,6 +63,14 @@
 //! 1. Download the state of a live chain, and write to an `externalities`.
 //! 2. Overwrite the `:CODE:` with a given wasm blob
 //! 3. Test some functionality via calling a runtime-api.
+//!
+//! ## Installation
+
+//!```bash
+//! cargo install --git https://github.com/paritytech/try-runtime-cli
+//! try-runtime --help
+//! try-runtime on-runtime-upgrade --help
+//! ```
 //!
 //! ## Usage
 //!
