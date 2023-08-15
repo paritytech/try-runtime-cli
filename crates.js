@@ -1,1 +1,1 @@
-window.ALL_CRATES = ["try_runtime_cli","try_runtime_core"];
+window.ALL_CRATES = ["try_runtime","try_runtime_core"];
