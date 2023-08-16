@@ -1,3 +1,20 @@
+// This file is part of try-runtime-cli.
+
+// Copyright (C) Parity Technologies (UK) Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 	http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 use std::{fmt::Debug, path::PathBuf, str::FromStr};
 
 use frame_remote_externalities::{
@@ -15,47 +32,36 @@ use sp_runtime::{
     DeserializeOwned,
 };
 
-#[cfg(feature = "cli")]
-use crate::parse::{parse_hash, parse_url};
 use crate::{
-    ensure_try_runtime, hash_of,
+    ensure_try_runtime, hash_of, parse,
     shared_parameters::{Runtime, SharedParams},
     LOG_TARGET,
 };
 
-/// The source of runtime *state* to use.
-#[derive(Debug, Clone)]
-#[cfg_attr(feature = "cli", derive(clap::Subcommand))]
-pub enum State {
-    /// Use a state snapshot as the source of runtime state.
-    ///
-    /// This can be crated by passing a value to [`State::Live::snapshot_path`].
-    Snap {
-        #[cfg_attr(feature = "cli", arg(short, long))]
-        snapshot_path: PathBuf,
-    },
-
-    /// Use a live chain as the source of runtime state.
-    Live(LiveState),
-}
-
-/// A `Live` variant [`State`]
-#[derive(Debug, Clone)]
-#[cfg_attr(feature = "cli", derive(clap::Args))]
+/// A `Live` variant for [`State`]
+#[derive(Debug, Clone, clap::Args)]
 pub struct LiveState {
     /// The url to connect to.
-    #[cfg_attr(feature = "cli", arg(short, long, value_parser = parse_url))]
+    #[arg(
+		short,
+		long,
+		value_parser = parse::url,
+	)]
     pub uri: String,
 
     /// The block hash at which to fetch the state.
     ///
     /// If non provided, then the latest finalized head is used.
-    #[cfg_attr(feature = "cli", arg(short, long, value_parser = parse_hash))]
+    #[arg(
+		short,
+		long,
+		value_parser = parse::hash,
+	)]
     pub at: Option<String>,
 
     /// A pallet to scrape. Can be provided multiple times. If empty, entire chain state will
     /// be scraped.
-    #[cfg_attr(feature = "cli", arg(short, long, num_args = 1..))]
+    #[arg(short, long, num_args = 1..)]
     pub pallet: Vec<String>,
 
     /// Fetch the child-keys as well.
@@ -63,16 +69,28 @@ pub struct LiveState {
     /// Default is `false`, if specific `--pallets` are specified, `true` otherwise. In other
     /// words, if you scrape the whole state the child tree data is included out of the box.
     /// Otherwise, it must be enabled explicitly using this flag.
-    #[cfg_attr(feature = "cli", arg(long))]
+    #[arg(long)]
     pub child_tree: bool,
 }
 
+/// The source of runtime *state* to use.
+#[derive(Debug, Clone, clap::Subcommand)]
+pub enum State {
+    /// Use a state snapshot as the source of runtime state.
+    Snap {
+        #[arg(short, long)]
+        snapshot_path: PathBuf,
+    },
+
+    /// Use a live chain as the source of runtime state.
+    Live(LiveState),
+}
+
 impl State {
-    /// Create the [`remote_externalities::RemoteExternalities`] using [`remote-externalities`] from
-    /// self.
+    /// Create the [`RemoteExternalities`].
     ///
-    /// This will override the code as it sees fit based on [`SharedParams::Runtime`]. It will also
-    /// check the spec-version and name.
+    /// This will override the code as it sees fit based on [`Runtime`]. It will also check the
+    /// spec-version and name.
     pub(crate) async fn to_ext<Block: BlockT + DeserializeOwned, HostFns: HostFunctions>(
         &self,
         shared: &SharedParams,
@@ -81,9 +99,7 @@ impl State {
         try_runtime_check: bool,
     ) -> sc_cli::Result<RemoteExternalities<Block>>
     where
-        Block::Hash: FromStr,
         Block::Header: DeserializeOwned,
-        Block::Hash: DeserializeOwned,
         <Block::Hash as FromStr>::Err: Debug,
     {
         let builder = match self {
@@ -126,7 +142,8 @@ impl State {
         let builder = if let Some(state_version) = shared.overwrite_state_version {
             log::warn!(
                 target: LOG_TARGET,
-                "overwriting state version to {state_version:?}, you better know what you are doing."
+                "overwriting state version to {:?}, you better know what you are doing.",
+                state_version
             );
             builder.overwrite_state_version(state_version)
         } else {
@@ -134,13 +151,12 @@ impl State {
         };
 
         // then, we prepare to replace the code based on what the CLI wishes.
-        let maybe_code_to_overwrite =
-            match shared.runtime {
-                Runtime::Path(ref path) => Some(std::fs::read(path).map_err(|e| {
-                    format!("error while reading runtime file from {path:?}: {e:?}")
-                })?),
-                Runtime::Existing => None,
-            };
+        let maybe_code_to_overwrite = match shared.runtime {
+            Runtime::Path(ref path) => Some(std::fs::read(path).map_err(|e| {
+                format!("error while reading runtime file from {:?}: {:?}", path, e)
+            })?),
+            Runtime::Existing => None,
+        };
 
         // build the main ext.
         let mut ext = builder.build().await?;

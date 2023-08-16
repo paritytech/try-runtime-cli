@@ -1,2 +1,5 @@
 # try-runtime-cli
-demo repo to experiment with moving the CLI out
+
+Substrate's programmatic testing framework.
+
+📖 [Documentation](https://paritytech.github.io/try-runtime-cli/try_runtime_cli)

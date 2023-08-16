@@ -17,16 +17,16 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Install Rust Toolchain
-        uses: actions-rs/toolchain@v1
-
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
         with:
-          version: '3.6.1'
+          version: "3.6.1"
 
       - name: Install clippy and fmt
         run: rustup component add clippy rustfmt
+
+      - name: Add wasm32-unknown-unknown target
+        run: rustup target add wasm32-unknown-unknown
 
       - name: Run Format Checks
         uses: actions-rs/cargo@v1
@@ -34,13 +34,8 @@ jobs:
           command: fmt
           args: --all
 
-      - name: Run Linter
+      - name: Clippy
         uses: actions-rs/cargo@v1
         with:
           command: clippy
           args: --all-targets -- --no-deps -D warnings
-
-      - name: Run Unit Test Suite
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
