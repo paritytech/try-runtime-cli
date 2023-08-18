@@ -67,7 +67,7 @@
 //! ## Installation
 
 //!```bash
-//! cargo install --git https://github.com/paritytech/try-runtime-cli
+//! cargo install --git https://github.com/paritytech/try-runtime-cli --tag v0.1.0
 //! try-runtime --help
 //! try-runtime on-runtime-upgrade --help
 //! ```
