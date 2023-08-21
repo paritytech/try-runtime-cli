@@ -17,7 +17,7 @@
 
 use std::{fmt::Debug, str::FromStr};
 
-use parity_scale_codec::{Decode, Encode};
+use parity_scale_codec::Encode;
 use sc_executor::sp_wasm_interface::HostFunctions;
 use serde::{de::DeserializeOwned, Serialize};
 use sp_core::H256;
@@ -180,10 +180,7 @@ where
             continue;
         }
 
-        let (mut changes, encoded_result) = result.expect("checked to be Ok; qed");
-
-        let consumed_weight = <sp_weights::Weight as Decode>::decode(&mut &*encoded_result)
-            .map_err(|e| format!("failed to decode weight: {:?}", e))?;
+        let (mut changes, _, _) = result.expect("checked to be Ok; qed");
 
         let storage_changes = changes
             .drain_storage_changes(
@@ -203,9 +200,8 @@ where
 
         log::info!(
             target: LOG_TARGET,
-            "executed block {}, consumed weight {}, new storage root {:?}",
+            "executed block {}, new storage root {:?}",
             number,
-            consumed_weight,
             state_ext.as_backend().root(),
         );
     }

@@ -15,16 +15,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::{fmt::Debug, path::PathBuf, str::FromStr};
+use std::{fmt::Debug, path::PathBuf, str::FromStr, time::Duration};
 
 use frame_remote_externalities::TestExternalities;
-use parity_scale_codec::Decode;
+use parity_scale_codec::{Decode, DecodeAll};
 use sc_cli::{execution_method_from_cli, RuntimeVersion};
 use sc_executor::{
     sp_wasm_interface::HostFunctions, HeapAllocStrategy, WasmExecutor, DEFAULT_HEAP_ALLOC_STRATEGY,
 };
 use sp_core::{
-    hexdisplay::HexDisplay,
     offchain::{
         testing::{TestOffchainExt, TestTransactionPoolExt},
         OffchainDbExt, OffchainWorkerExt, TransactionPoolExt,
@@ -35,7 +34,8 @@ use sp_core::{
 use sp_externalities::Extensions;
 use sp_keystore::{testing::MemoryKeystore, KeystoreExt};
 use sp_runtime::traits::Block as BlockT;
-use sp_state_machine::{CompactProof, OverlayedChanges, StateMachine, TrieBackendBuilder};
+use sp_state_machine::{OverlayedChanges, StateMachine, StorageProof, TrieBackendBuilder};
+use sp_weights::Weight;
 
 use crate::shared_parameters::SharedParams;
 
@@ -107,7 +107,7 @@ pub(crate) fn state_machine_call<HostFns: HostFunctions>(
     mut extensions: Extensions,
 ) -> sc_cli::Result<(OverlayedChanges, Vec<u8>)> {
     let mut changes = Default::default();
-    let encoded_results = StateMachine::new(
+    let encoded_result = StateMachine::new(
         &ext.backend,
         &mut changes,
         executor,
@@ -121,11 +121,16 @@ pub(crate) fn state_machine_call<HostFns: HostFunctions>(
     .map_err(|e| format!("failed to execute '{}': {}", method, e))
     .map_err::<sc_cli::Error, _>(Into::into)?;
 
-    Ok((changes, encoded_results))
+    Ok((changes, encoded_result))
 }
 
-/// Same as [`state_machine_call`], but it also computes and prints the storage proof in different
-/// size and formats.
+pub struct RefTimeInfo {
+    pub used: Duration,
+    pub max: Duration,
+}
+
+/// Same as [`state_machine_call`], but it also computes and returns the storage proof and ref time
+/// information.
 ///
 /// Make sure [`LOG_TARGET`] is enabled in logging.
 pub(crate) fn state_machine_call_with_proof<HostFns: HostFunctions>(
@@ -135,9 +140,7 @@ pub(crate) fn state_machine_call_with_proof<HostFns: HostFunctions>(
     data: &[u8],
     mut extensions: Extensions,
     maybe_export_proof: Option<PathBuf>,
-) -> sc_cli::Result<(OverlayedChanges, Vec<u8>)> {
-    use parity_scale_codec::Encode;
-
+) -> sc_cli::Result<(OverlayedChanges, StorageProof, RefTimeInfo)> {
     let mut changes = Default::default();
     let backend = ext.backend.clone();
     let runtime_code_backend = sp_state_machine::backend::BackendRuntimeCode::new(&backend);
@@ -146,8 +149,7 @@ pub(crate) fn state_machine_call_with_proof<HostFns: HostFunctions>(
         .build();
     let runtime_code = runtime_code_backend.runtime_code()?;
 
-    let pre_root = *backend.root();
-    let encoded_results = StateMachine::new(
+    let encoded_result = StateMachine::new(
         &proving_backend,
         &mut changes,
         executor,
@@ -191,62 +193,18 @@ pub(crate) fn state_machine_call_with_proof<HostFns: HostFunctions>(
             })?;
     }
 
-    let proof_size = proof.encoded_size();
-    let compact_proof = proof
-        .clone()
-        .into_compact_proof::<sp_runtime::traits::BlakeTwo256>(pre_root)
-        .map_err(|e| {
-            log::error!(target: LOG_TARGET, "failed to generate compact proof {}: {:?}", method, e);
-            e
-        })
-        .unwrap_or(CompactProof {
-            encoded_nodes: Default::default(),
-        });
+    let (weight_used, weight_max) = <(Weight, Weight)>::decode_all(&mut &*encoded_result)
+        .map_err(|e| format!("failed to decode weight: {:?}", e))?;
 
-    let compact_proof_size = compact_proof.encoded_size();
-    let compressed_proof = zstd::stream::encode_all(&compact_proof.encode()[..], 0)
-        .map_err(|e| {
-            log::error!(
-                target: LOG_TARGET,
-                "failed to generate compressed proof {}: {:?}",
-                method,
-                e
-            );
-            e
-        })
-        .unwrap_or_default();
-
-    let proof_nodes = proof.into_nodes();
-
-    let humanize = |s| {
-        if s < 1024 * 1024 {
-            format!("{:.2} KB ({} bytes)", s as f64 / 1024f64, s)
-        } else {
-            format!(
-                "{:.2} MB ({} KB) ({} bytes)",
-                s as f64 / (1024f64 * 1024f64),
-                s as f64 / 1024f64,
-                s
-            )
-        }
-    };
-    log::debug!(
-        target: LOG_TARGET,
-        "proof: 0x{}... / {} nodes",
-        HexDisplay::from(&proof_nodes.iter().flatten().cloned().take(10).collect::<Vec<_>>()),
-        proof_nodes.len()
-    );
-    log::debug!(target: LOG_TARGET, "proof size: {}", humanize(proof_size));
-    log::debug!(target: LOG_TARGET, "compact proof size: {}", humanize(compact_proof_size),);
-    log::debug!(
-        target: LOG_TARGET,
-        "zstd-compressed compact proof {}",
-        humanize(compressed_proof.len()),
-    );
-
-    log::debug!(target: LOG_TARGET, "{} executed without errors.", method);
-
-    Ok((changes, encoded_results))
+    Ok((
+        changes,
+        proof,
+        RefTimeInfo {
+            // 1000 picoseconds == 1 nanosecond
+            used: Duration::from_nanos(weight_used.ref_time() / 1000),
+            max: Duration::from_nanos(weight_max.ref_time() / 1000),
+        },
+    ))
 }
 
 /// Converts a [`sp_state_machine::StorageProof`] into a JSON string.

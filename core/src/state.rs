@@ -78,8 +78,12 @@ pub struct LiveState {
 pub enum State {
     /// Use a state snapshot as the source of runtime state.
     Snap {
+        /// DEPRECATED: use `--path` instead.
         #[arg(short, long)]
-        snapshot_path: PathBuf,
+        snapshot_path: Option<PathBuf>,
+
+        #[clap(short = 'p', long = "path")]
+        path: Option<PathBuf>,
     },
 
     /// Use a live chain as the source of runtime state.
@@ -103,9 +107,24 @@ impl State {
         <Block::Hash as FromStr>::Err: Debug,
     {
         let builder = match self {
-            State::Snap { snapshot_path } => {
+            State::Snap {
+                snapshot_path,
+                path,
+            } => {
+                // we allow both `--snapshot-path` and `--path` for now, but `--snapshot-path` is
+                // deprecated.
+                if let Some(_) = snapshot_path {
+                    log::warn!(
+                        target: LOG_TARGET,
+                        "`--snapshot-path` is deprecated and will be removed some time after Jan 2024. Use `--path` instead."
+                    );
+                }
+                let path = snapshot_path
+                    .as_ref()
+                    .or_else(|| path.as_ref())
+                    .ok_or_else(|| "no snapshot path provided".to_string())?;
                 Builder::<Block>::new().mode(Mode::Offline(OfflineConfig {
-                    state_snapshot: SnapshotConfig::new(snapshot_path),
+                    state_snapshot: SnapshotConfig::new(path),
                 }))
             }
             State::Live(LiveState {
@@ -176,12 +195,20 @@ impl State {
                     .unwrap(),
             )
             .unwrap();
+            let old_code_hash =
+                HexDisplay::from(BlakeTwo256::hash(&original_code).as_fixed_bytes()).to_string();
             log::info!(
                 target: LOG_TARGET,
-                "original spec: {:?}-{:?}, code hash: {:?}",
+                "Original runtime [Name: {:?}] [Version: {:?}] [Code hash: 0x{}...{}]",
                 old_version.spec_name,
                 old_version.spec_version,
-                HexDisplay::from(BlakeTwo256::hash(&original_code).as_fixed_bytes()),
+                &old_code_hash[0..4],
+                &old_code_hash[old_code_hash.len() - 4..],
+            );
+            log::debug!(
+                target: LOG_TARGET,
+                "Original runtime full code hash: 0x{:?}",
+                old_code_hash,
             );
             let new_version = <RuntimeVersion as Decode>::decode(
                 &mut &*executor
@@ -189,12 +216,20 @@ impl State {
                     .unwrap(),
             )
             .unwrap();
+            let new_code_hash =
+                HexDisplay::from(BlakeTwo256::hash(&new_code).as_fixed_bytes()).to_string();
             log::info!(
                 target: LOG_TARGET,
-                "new spec: {:?}-{:?}, code hash: {:?}",
+                "New runtime      [Name: {:?}] [Version: {:?}] [Code hash: 0x{}...{}]",
                 new_version.spec_name,
                 new_version.spec_version,
-                HexDisplay::from(BlakeTwo256::hash(&new_code).as_fixed_bytes())
+                &new_code_hash[0..4],
+                &new_code_hash[new_code_hash.len() - 4..],
+            );
+            log::debug!(
+                target: LOG_TARGET,
+                "New runtime code hash: 0x{:?}",
+                new_code_hash
             );
 
             if new_version.spec_name != old_version.spec_name {
