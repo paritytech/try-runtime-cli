@@ -57,8 +57,8 @@ pub struct Command {
 }
 
 enum WeightSafety {
-    Safe,
-    Unsafe,
+    ProbabySafe,
+    PotentiallyUnsafe,
 }
 
 /// Analyse the given ref_times and return if there is a potential weight safety issue.
@@ -96,24 +96,22 @@ fn analyse_pov(proof: StorageProof, pre_root: H256) -> WeightSafety {
     );
     log::debug!(target: LOG_TARGET, "Encoded proof size: {}", ByteSize(encoded_proof_size as u64));
     log::debug!(target: LOG_TARGET, "Compact proof size: {}", ByteSize(compact_proof_size as u64),);
-    // if it's greater than 4MB, log a warning
     log::info!(
         target: LOG_TARGET,
-        "PoV (zstd-compressed compact proof) size: {}. If you are planning to submit this PoV to a relay chain, please ensure it is not greater than the maximum PoV size.",
+        "PoV size (zstd-compressed compact proof): {}. For parachains, it's your responsibility \
+        to verify that a PoV of this size fits within any relaychain constraints.",
         ByteSize(compressed_compact_proof.len() as u64),
     );
     if compressed_compact_proof.len() > 4 * 1024 * 1024 {
         log::warn!(
             target: LOG_TARGET,
-            "PoV (zstd-compressed compact proof) size ({}) is large. \
-            Relay chains typically only accept PoVs up to 5MB in size. \
-            If you are planning to submit this PoV to a relay chain, you may want to consider \
-            reducing the number of changes in your runtime upgrade.",
+            "A PoV size of {} is significant. Most relay chains usually accept PoVs up to 5MB. \
+            Proceed with caution.",
             ByteSize(compressed_compact_proof.len() as u64)
         );
-        WeightSafety::Unsafe
+        WeightSafety::PotentiallyUnsafe
     } else {
-        WeightSafety::Safe
+        WeightSafety::ProbabySafe
     }
 }
 
@@ -127,16 +125,15 @@ fn analyse_ref_time(ref_time_results: RefTimeInfo) -> WeightSafety {
         used.as_secs_f64() / max.as_secs_f64() * 100.0,
         max.as_secs_f64(),
     );
-    if used >= max {
+    if used.as_secs_f32() >= max.as_secs_f32() * 0.8 {
         log::warn!(
             target: LOG_TARGET,
-            "The consumed ref_time is greater than the max allowed ref_time. \
-            If this is a parachain runtime, the migration upgrade is likely too computationally \
-            expensive to be included in a single block."
+            "Consumed ref_time is >= 80% of the max allowed ref_time. Please ensure the \
+            migration is not be too computationally expensive to be fit in a single block."
         );
-        WeightSafety::Unsafe
+        WeightSafety::PotentiallyUnsafe
     } else {
-        WeightSafety::Safe
+        WeightSafety::ProbabySafe
     }
 }
 
@@ -156,15 +153,16 @@ where
         .to_ext::<Block, HostFns>(&shared, &executor, None, true)
         .await?;
 
-    match command.state {
-        State::Live(_) => {
-            log::info!(target: LOG_TARGET, "🥱 Tired of slow state downloads? Create and use snapshots instead for almost instant state loading. See `try-runtime create-snapshot --help` for more.");
-        }
-        _ => {}
+    if let State::Live(_) = command.state {
+        log::info!(
+            target: LOG_TARGET,
+            "🚀 Speed up your workflow by using snapshots instead of live state. \
+            See `try-runtime create-snapshot --help`."
+        );
     }
 
     let method = "TryRuntime_on_runtime_upgrade";
-    let pre_root = ext.backend.root().clone();
+    let pre_root = ext.backend.root();
     let (_, proof, ref_time_results) = state_machine_call_with_proof::<HostFns>(
         &ext,
         &executor,
@@ -174,15 +172,23 @@ where
         shared.export_proof,
     )?;
 
-    let pov_safety = analyse_pov(proof, pre_root);
+    let pov_safety = analyse_pov(proof, *pre_root);
     let ref_time_safety = analyse_ref_time(ref_time_results);
 
     match (pov_safety, ref_time_safety) {
-        (WeightSafety::Safe, WeightSafety::Safe) => {
-            log::info!(target: LOG_TARGET, "✅ TryRuntime_on_runtime_upgrade executed without errors or weight safety warnings.");
+        (WeightSafety::ProbabySafe, WeightSafety::ProbabySafe) => {
+            log::info!(
+                target: LOG_TARGET,
+                "✅ TryRuntime_on_runtime_upgrade executed without errors or weight safety \
+                warnings. Please note this does not guarantee a successful runtime upgrade. \
+                Always test your runtime upgrade with recent state, and ensure that the weight usage \
+                of your migrations will not drastically differ between testing and actual on-chain \
+                execution."
+            );
         }
         _ => {
-            log::warn!(target: LOG_TARGET, "⚠️ TryRuntime_on_runtime_upgrade executed with weight safety warnings.");
+            log::warn!(target: LOG_TARGET, "⚠️  TryRuntime_on_runtime_upgrade executed \
+            successfully but with weight safety warnings.");
         }
     }
 
