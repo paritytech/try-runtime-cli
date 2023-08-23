@@ -210,6 +210,41 @@
 <a href="#210" id="210">210</a>
 <a href="#211" id="211">211</a>
 <a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a>
+<a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
+<a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -290,8 +325,12 @@
 </span><span class="kw">pub enum </span>State {
     <span class="doccomment">/// Use a state snapshot as the source of runtime state.
     </span>Snap {
-        <span class="attr">#[arg(short, long)]
-        </span>snapshot_path: PathBuf,
+        <span class="doccomment">/// DEPRECATED: use `--path` instead.
+        </span><span class="attr">#[arg(short, long)]
+        </span>snapshot_path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
+
+        <span class="attr">#[clap(short = <span class="string">&#39;p&#39;</span>, long = <span class="string">&quot;path&quot;</span>)]
+        </span>path: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
     },
 
     <span class="doccomment">/// Use a live chain as the source of runtime state.
@@ -315,9 +354,24 @@
         &lt;Block::Hash <span class="kw">as </span>FromStr&gt;::Err: Debug,
     {
         <span class="kw">let </span>builder = <span class="kw">match </span><span class="self">self </span>{
-            State::Snap { snapshot_path } =&gt; {
+            State::Snap {
+                snapshot_path,
+                path,
+            } =&gt; {
+                <span class="comment">// we allow both `--snapshot-path` and `--path` for now, but `--snapshot-path` is
+                // deprecated.
+                </span><span class="kw">if </span>snapshot_path.is_some() {
+                    <span class="macro">log::warn!</span>(
+                        target: LOG_TARGET,
+                        <span class="string">&quot;`--snapshot-path` is deprecated and will be removed some time after Jan 2024. Use `--path` instead.&quot;
+                    </span>);
+                }
+                <span class="kw">let </span>path = snapshot_path
+                    .as_ref()
+                    .or(path.as_ref())
+                    .ok_or_else(|| <span class="string">&quot;no snapshot path provided&quot;</span>.to_string())<span class="question-mark">?</span>;
                 Builder::&lt;Block&gt;::new().mode(Mode::Offline(OfflineConfig {
-                    state_snapshot: SnapshotConfig::new(snapshot_path),
+                    state_snapshot: SnapshotConfig::new(path),
                 }))
             }
             State::Live(LiveState {
@@ -388,12 +442,20 @@
                     .unwrap(),
             )
             .unwrap();
+            <span class="kw">let </span>old_code_hash =
+                HexDisplay::from(BlakeTwo256::hash(<span class="kw-2">&amp;</span>original_code).as_fixed_bytes()).to_string();
             <span class="macro">log::info!</span>(
                 target: LOG_TARGET,
-                <span class="string">&quot;original spec: {:?}-{:?}, code hash: {:?}&quot;</span>,
+                <span class="string">&quot;Original runtime [Name: {:?}] [Version: {:?}] [Code hash: 0x{}...{}]&quot;</span>,
                 old_version.spec_name,
                 old_version.spec_version,
-                HexDisplay::from(BlakeTwo256::hash(<span class="kw-2">&amp;</span>original_code).as_fixed_bytes()),
+                <span class="kw-2">&amp;</span>old_code_hash[<span class="number">0</span>..<span class="number">4</span>],
+                <span class="kw-2">&amp;</span>old_code_hash[old_code_hash.len() - <span class="number">4</span>..],
+            );
+            <span class="macro">log::debug!</span>(
+                target: LOG_TARGET,
+                <span class="string">&quot;Original runtime full code hash: 0x{:?}&quot;</span>,
+                old_code_hash,
             );
             <span class="kw">let </span>new_version = &lt;RuntimeVersion <span class="kw">as </span>Decode&gt;::decode(
                 <span class="kw-2">&amp;mut &amp;*</span>executor
@@ -401,12 +463,20 @@
                     .unwrap(),
             )
             .unwrap();
+            <span class="kw">let </span>new_code_hash =
+                HexDisplay::from(BlakeTwo256::hash(<span class="kw-2">&amp;</span>new_code).as_fixed_bytes()).to_string();
             <span class="macro">log::info!</span>(
                 target: LOG_TARGET,
-                <span class="string">&quot;new spec: {:?}-{:?}, code hash: {:?}&quot;</span>,
+                <span class="string">&quot;New runtime      [Name: {:?}] [Version: {:?}] [Code hash: 0x{}...{}]&quot;</span>,
                 new_version.spec_name,
                 new_version.spec_version,
-                HexDisplay::from(BlakeTwo256::hash(<span class="kw-2">&amp;</span>new_code).as_fixed_bytes())
+                <span class="kw-2">&amp;</span>new_code_hash[<span class="number">0</span>..<span class="number">4</span>],
+                <span class="kw-2">&amp;</span>new_code_hash[new_code_hash.len() - <span class="number">4</span>..],
+            );
+            <span class="macro">log::debug!</span>(
+                target: LOG_TARGET,
+                <span class="string">&quot;New runtime code hash: 0x{:?}&quot;</span>,
+                new_code_hash
             );
 
             <span class="kw">if </span>new_version.spec_name != old_version.spec_name {
