@@ -113,7 +113,7 @@ impl State {
             } => {
                 // we allow both `--snapshot-path` and `--path` for now, but `--snapshot-path` is
                 // deprecated.
-                if let Some(_) = snapshot_path {
+                if snapshot_path.is_some() {
                     log::warn!(
                         target: LOG_TARGET,
                         "`--snapshot-path` is deprecated and will be removed some time after Jan 2024. Use `--path` instead."
@@ -121,7 +121,7 @@ impl State {
                 }
                 let path = snapshot_path
                     .as_ref()
-                    .or_else(|| path.as_ref())
+                    .or(path.as_ref())
                     .ok_or_else(|| "no snapshot path provided".to_string())?;
                 Builder::<Block>::new().mode(Mode::Offline(OfflineConfig {
                     state_snapshot: SnapshotConfig::new(path),
