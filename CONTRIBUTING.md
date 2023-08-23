@@ -15,7 +15,7 @@ The latest code on the master branch is maintained to be compatible with polkado
 It's important to note that while we try to guarantee master compatibility with the latest polkadot versions, there's no assurance that older versions will work with any specific runtime and should be considered deprecated.
 
 ### Tags for Polkadot Releases
-To cater to the project's unique nature and its reliance on different runtime versions, we maintain Git tags or branches corresponding to every Polkadot release >=v1.0.0. This ensures that:
+In addition to SemVer on master, we maintain Git tags or branches corresponding to every Polkadot release >=v1.0.0. This ensures that:
 
 - We provide versions of try-runtime-cli that are guaranteed to be compatible with specific Polkadot releases.
 - In the case of patches or minor changes, we can move or adjust these tags or branches, ensuring continued compatibility with their counterparts in the Substrate repo.
