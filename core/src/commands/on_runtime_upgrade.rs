@@ -57,7 +57,7 @@ pub struct Command {
 }
 
 enum WeightSafety {
-    ProbabySafe,
+    ProbablySafe,
     PotentiallyUnsafe,
 }
 
@@ -111,7 +111,7 @@ fn analyse_pov(proof: StorageProof, pre_root: H256) -> WeightSafety {
         );
         WeightSafety::PotentiallyUnsafe
     } else {
-        WeightSafety::ProbabySafe
+        WeightSafety::ProbablySafe
     }
 }
 
@@ -133,7 +133,7 @@ fn analyse_ref_time(ref_time_results: RefTimeInfo) -> WeightSafety {
         );
         WeightSafety::PotentiallyUnsafe
     } else {
-        WeightSafety::ProbabySafe
+        WeightSafety::ProbablySafe
     }
 }
 
@@ -176,7 +176,7 @@ where
     let ref_time_safety = analyse_ref_time(ref_time_results);
 
     match (pov_safety, ref_time_safety) {
-        (WeightSafety::ProbabySafe, WeightSafety::ProbabySafe) => {
+        (WeightSafety::ProbablySafe, WeightSafety::ProbablySafe) => {
             log::info!(
                 target: LOG_TARGET,
                 "✅ TryRuntime_on_runtime_upgrade executed without errors or weight safety \
