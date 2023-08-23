@@ -17,14 +17,17 @@
 
 use std::{fmt::Debug, str::FromStr};
 
+use bytesize::ByteSize;
 use frame_try_runtime::UpgradeCheckSelect;
-use parity_scale_codec::{Decode, Encode};
+use parity_scale_codec::Encode;
 use sc_executor::sp_wasm_interface::HostFunctions;
+use sp_core::{hexdisplay::HexDisplay, H256};
 use sp_runtime::traits::{Block as BlockT, NumberFor};
-use sp_weights::Weight;
+use sp_state_machine::{CompactProof, StorageProof};
 
 use crate::{
-    build_executor, state::State, state_machine_call_with_proof, SharedParams, LOG_TARGET,
+    build_executor, state::State, state_machine_call_with_proof, RefTimeInfo, SharedParams,
+    LOG_TARGET,
 };
 
 /// Configuration for [`run`].
@@ -48,9 +51,15 @@ pub struct Command {
 		default_value = "pre-and-post",
 		default_missing_value = "all",
 		num_args = 0..=1,
-		require_equals = true,
-		verbatim_doc_comment)]
+		verbatim_doc_comment
+    )]
     pub checks: UpgradeCheckSelect,
+
+    /// Whether to assume that the runtime is a relay chain runtime.
+    ///
+    /// This is used to adjust the behavior of weight measurement warnings.
+    #[clap(long, default_value = "false", default_missing_value = "true")]
+    pub no_weight_warnings: bool,
 }
 
 // Runs the `on-runtime-upgrade` command.
@@ -69,7 +78,16 @@ where
         .to_ext::<Block, HostFns>(&shared, &executor, None, true)
         .await?;
 
-    let (_, encoded_result) = state_machine_call_with_proof::<HostFns>(
+    if let State::Live(_) = command.state {
+        log::info!(
+            target: LOG_TARGET,
+            "🚀 Speed up your workflow by using snapshots instead of live state. \
+            See `try-runtime create-snapshot --help`."
+        );
+    }
+
+    let pre_root = ext.backend.root();
+    let (_, proof, ref_time_results) = state_machine_call_with_proof::<HostFns>(
         &ext,
         &executor,
         "TryRuntime_on_runtime_upgrade",
@@ -78,17 +96,121 @@ where
         shared.export_proof,
     )?;
 
-    let (weight, total_weight) = <(Weight, Weight) as Decode>::decode(&mut &*encoded_result)
-        .map_err(|e| format!("failed to decode weight: {:?}", e))?;
+    let pov_safety = analyse_pov(proof, *pre_root, command.no_weight_warnings);
+    let ref_time_safety = analyse_ref_time(ref_time_results, command.no_weight_warnings);
 
-    log::info!(
-        target: LOG_TARGET,
-        "TryRuntime_on_runtime_upgrade executed without errors. Consumed weight = ({} ps, {} byte), total weight = ({} ps, {} byte) ({:.2} %, {:.2} %).",
-        weight.ref_time(), weight.proof_size(),
-        total_weight.ref_time(), total_weight.proof_size(),
-        (weight.ref_time() as f64 / total_weight.ref_time().max(1) as f64) * 100.0,
-        (weight.proof_size() as f64 / total_weight.proof_size().max(1) as f64) * 100.0,
-    );
+    match (pov_safety, ref_time_safety, command.no_weight_warnings) {
+        (_, _, true) => {
+            log::info!("✅ TryRuntime_on_runtime_upgrade executed without errors")
+        }
+        (WeightSafety::ProbablySafe, WeightSafety::ProbablySafe, _) => {
+            log::info!(
+                target: LOG_TARGET,
+                "✅ TryRuntime_on_runtime_upgrade executed without errors or weight safety \
+                warnings. Please note this does not guarantee a successful runtime upgrade. \
+                Always test your runtime upgrade with recent state, and ensure that the weight usage \
+                of your migrations will not drastically differ between testing and actual on-chain \
+                execution."
+            );
+        }
+        _ => {
+            log::warn!(target: LOG_TARGET, "⚠️  TryRuntime_on_runtime_upgrade executed \
+            successfully but with weight safety warnings.");
+        }
+    }
 
     Ok(())
+}
+
+enum WeightSafety {
+    ProbablySafe,
+    PotentiallyUnsafe,
+}
+
+/// The default maximum PoV size in MB.
+const DEFAULT_MAX_POV_SIZE: ByteSize = ByteSize::mb(5);
+
+/// The fraction of the total avaliable ref_time or pov size afterwhich a warning should be logged.
+const DEFAULT_WARNING_THRESHOLD: f32 = 0.8;
+
+/// Analyse the given ref_times and return if there is a potential weight safety issue.
+fn analyse_pov(proof: StorageProof, pre_root: H256, no_weight_warnings: bool) -> WeightSafety {
+    let encoded_proof_size = proof.encoded_size();
+    let compact_proof = proof
+        .clone()
+        .into_compact_proof::<sp_runtime::traits::BlakeTwo256>(pre_root)
+        .map_err(|e| {
+            log::error!(target: LOG_TARGET, "failed to generate compact proof: {:?}", e);
+            e
+        })
+        .unwrap_or(CompactProof {
+            encoded_nodes: Default::default(),
+        });
+
+    let compact_proof_size = compact_proof.encoded_size();
+    let compressed_compact_proof = zstd::stream::encode_all(&compact_proof.encode()[..], 0)
+        .map_err(|e| {
+            log::error!(
+                target: LOG_TARGET,
+                "failed to generate compressed proof: {:?}",
+                e
+            );
+            e
+        })
+        .unwrap_or_default();
+
+    let proof_nodes = proof.into_nodes();
+    log::debug!(
+        target: LOG_TARGET,
+        "Proof: 0x{}... / {} nodes",
+        HexDisplay::from(&proof_nodes.iter().flatten().cloned().take(10).collect::<Vec<_>>()),
+        proof_nodes.len()
+    );
+    log::debug!(target: LOG_TARGET, "Encoded proof size: {}", ByteSize(encoded_proof_size as u64));
+    log::debug!(target: LOG_TARGET, "Compact proof size: {}", ByteSize(compact_proof_size as u64),);
+    log::info!(
+        target: LOG_TARGET,
+        "PoV size (zstd-compressed compact proof): {}. For parachains, it's your responsibility \
+        to verify that a PoV of this size fits within any relaychain constraints.",
+        ByteSize(compressed_compact_proof.len() as u64),
+    );
+    if !no_weight_warnings
+        && compressed_compact_proof.len() as f32
+            > DEFAULT_MAX_POV_SIZE.as_u64() as f32 * DEFAULT_WARNING_THRESHOLD
+    {
+        log::warn!(
+            target: LOG_TARGET,
+            "A PoV size of {} is significant. Most relay chains usually accept PoVs up to {}. \
+            Proceed with caution.",
+            ByteSize(compressed_compact_proof.len() as u64),
+            DEFAULT_MAX_POV_SIZE,
+        );
+        WeightSafety::PotentiallyUnsafe
+    } else {
+        WeightSafety::ProbablySafe
+    }
+}
+
+/// Analyse the given ref_times and return if there is a potential weight safety issue.
+fn analyse_ref_time(ref_time_results: RefTimeInfo, no_weight_warnings: bool) -> WeightSafety {
+    let RefTimeInfo { used, max } = ref_time_results;
+    let (used, max) = (used.as_secs_f32(), max.as_secs_f32());
+    log::info!(
+        target: LOG_TARGET,
+        "Consumed ref_time: {}s ({:.2}% of max {}s)",
+        used,
+        used / max * 100.0,
+        max,
+    );
+    if !no_weight_warnings && used >= max * DEFAULT_WARNING_THRESHOLD {
+        log::warn!(
+            target: LOG_TARGET,
+            "Consumed ref_time is >= {}% of the max allowed ref_time. Please ensure the \
+            migration is not be too computationally expensive to be fit in a single block.",
+            DEFAULT_WARNING_THRESHOLD * 100.0,
+        );
+        WeightSafety::PotentiallyUnsafe
+    } else {
+        WeightSafety::ProbablySafe
+    }
 }

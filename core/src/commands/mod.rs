@@ -108,7 +108,22 @@ pub enum Action {
     /// tested has remained the same, otherwise block decoding might fail.
     FollowChain(follow_chain::Command),
 
-    /// Create a new snapshot file.
+    /// Create snapshot files.
+    ///
+    /// The `create-snapshot` subcommand facilitates the creation of a snapshot from a node's
+    /// state. This snapshot can be loaded rapidly into memory from disk, providing an
+    /// efficient alternative to downloading state from the node for every new command
+    /// execution.
+    ///
+    /// **Usage**:
+    ///
+    /// 1. Create a snapshot from a remote node:
+    ///
+    /// try-runtime create-snapshot --uri <remote-node-uri> my_state.snap
+    ///
+    /// 2. Utilize the snapshot with `on-runtime-upgrade`:
+    ///
+    /// try-runtime --runtime ./path/to/runtime.wasm on-runtime-upgrade snap --path my_state.snap
     CreateSnapshot(create_snapshot::Command),
 }
 
