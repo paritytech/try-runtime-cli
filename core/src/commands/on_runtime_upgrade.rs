@@ -51,9 +51,75 @@ pub struct Command {
 		default_value = "pre-and-post",
 		default_missing_value = "all",
 		num_args = 0..=1,
-		require_equals = true,
-		verbatim_doc_comment)]
+		verbatim_doc_comment
+    )]
     pub checks: UpgradeCheckSelect,
+
+    /// Whether to assume that the runtime is a relay chain runtime.
+    ///
+    /// This is used to adjust the behavior of weight measurement warnings.
+    #[clap(long, default_value = "false", default_missing_value = "true")]
+    pub no_weight_warnings: bool,
+}
+
+// Runs the `on-runtime-upgrade` command.
+pub async fn run<Block, HostFns>(shared: SharedParams, command: Command) -> sc_cli::Result<()>
+where
+    Block: BlockT + serde::de::DeserializeOwned,
+    <Block::Hash as FromStr>::Err: Debug,
+    Block::Header: serde::de::DeserializeOwned,
+    NumberFor<Block>: FromStr,
+    <NumberFor<Block> as FromStr>::Err: Debug,
+    HostFns: HostFunctions,
+{
+    let executor = build_executor(&shared);
+    let ext = command
+        .state
+        .to_ext::<Block, HostFns>(&shared, &executor, None, true)
+        .await?;
+
+    if let State::Live(_) = command.state {
+        log::info!(
+            target: LOG_TARGET,
+            "🚀 Speed up your workflow by using snapshots instead of live state. \
+            See `try-runtime create-snapshot --help`."
+        );
+    }
+
+    let pre_root = ext.backend.root();
+    let (_, proof, ref_time_results) = state_machine_call_with_proof::<HostFns>(
+        &ext,
+        &executor,
+        "TryRuntime_on_runtime_upgrade",
+        command.checks.encode().as_ref(),
+        Default::default(), // we don't really need any extensions here.
+        shared.export_proof,
+    )?;
+
+    let pov_safety = analyse_pov(proof, *pre_root, command.no_weight_warnings);
+    let ref_time_safety = analyse_ref_time(ref_time_results, command.no_weight_warnings);
+
+    match (pov_safety, ref_time_safety, command.no_weight_warnings) {
+        (_, _, true) => {
+            log::info!("✅ TryRuntime_on_runtime_upgrade executed without errors")
+        }
+        (WeightSafety::ProbablySafe, WeightSafety::ProbablySafe, _) => {
+            log::info!(
+                target: LOG_TARGET,
+                "✅ TryRuntime_on_runtime_upgrade executed without errors or weight safety \
+                warnings. Please note this does not guarantee a successful runtime upgrade. \
+                Always test your runtime upgrade with recent state, and ensure that the weight usage \
+                of your migrations will not drastically differ between testing and actual on-chain \
+                execution."
+            );
+        }
+        _ => {
+            log::warn!(target: LOG_TARGET, "⚠️  TryRuntime_on_runtime_upgrade executed \
+            successfully but with weight safety warnings.");
+        }
+    }
+
+    Ok(())
 }
 
 enum WeightSafety {
@@ -61,8 +127,14 @@ enum WeightSafety {
     PotentiallyUnsafe,
 }
 
+/// The default maximum PoV size in MB.
+const DEFAULT_MAX_POV_SIZE: ByteSize = ByteSize::mb(5);
+
+/// The fraction of the total avaliable ref_time or pov size afterwhich a warning should be logged.
+const DEFAULT_WARNING_THRESHOLD: f32 = 0.8;
+
 /// Analyse the given ref_times and return if there is a potential weight safety issue.
-fn analyse_pov(proof: StorageProof, pre_root: H256) -> WeightSafety {
+fn analyse_pov(proof: StorageProof, pre_root: H256, no_weight_warnings: bool) -> WeightSafety {
     let encoded_proof_size = proof.encoded_size();
     let compact_proof = proof
         .clone()
@@ -102,12 +174,16 @@ fn analyse_pov(proof: StorageProof, pre_root: H256) -> WeightSafety {
         to verify that a PoV of this size fits within any relaychain constraints.",
         ByteSize(compressed_compact_proof.len() as u64),
     );
-    if compressed_compact_proof.len() > 4 * 1024 * 1024 {
+    if !no_weight_warnings
+        && compressed_compact_proof.len() as f32
+            > DEFAULT_MAX_POV_SIZE.as_u64() as f32 * DEFAULT_WARNING_THRESHOLD
+    {
         log::warn!(
             target: LOG_TARGET,
-            "A PoV size of {} is significant. Most relay chains usually accept PoVs up to 5MB. \
+            "A PoV size of {} is significant. Most relay chains usually accept PoVs up to {}. \
             Proceed with caution.",
-            ByteSize(compressed_compact_proof.len() as u64)
+            ByteSize(compressed_compact_proof.len() as u64),
+            DEFAULT_MAX_POV_SIZE,
         );
         WeightSafety::PotentiallyUnsafe
     } else {
@@ -116,81 +192,25 @@ fn analyse_pov(proof: StorageProof, pre_root: H256) -> WeightSafety {
 }
 
 /// Analyse the given ref_times and return if there is a potential weight safety issue.
-fn analyse_ref_time(ref_time_results: RefTimeInfo) -> WeightSafety {
+fn analyse_ref_time(ref_time_results: RefTimeInfo, no_weight_warnings: bool) -> WeightSafety {
     let RefTimeInfo { used, max } = ref_time_results;
+    let (used, max) = (used.as_secs_f32(), max.as_secs_f32());
     log::info!(
         target: LOG_TARGET,
         "Consumed ref_time: {}s ({:.2}% of max {}s)",
-        used.as_secs_f64(),
-        used.as_secs_f64() / max.as_secs_f64() * 100.0,
-        max.as_secs_f64(),
+        used,
+        used / max * 100.0,
+        max,
     );
-    if used.as_secs_f32() >= max.as_secs_f32() * 0.8 {
+    if !no_weight_warnings && used >= max * DEFAULT_WARNING_THRESHOLD {
         log::warn!(
             target: LOG_TARGET,
-            "Consumed ref_time is >= 80% of the max allowed ref_time. Please ensure the \
-            migration is not be too computationally expensive to be fit in a single block."
+            "Consumed ref_time is >= {}% of the max allowed ref_time. Please ensure the \
+            migration is not be too computationally expensive to be fit in a single block.",
+            DEFAULT_WARNING_THRESHOLD * 100.0,
         );
         WeightSafety::PotentiallyUnsafe
     } else {
         WeightSafety::ProbablySafe
     }
-}
-
-// Runs the `on-runtime-upgrade` command.
-pub async fn run<Block, HostFns>(shared: SharedParams, command: Command) -> sc_cli::Result<()>
-where
-    Block: BlockT + serde::de::DeserializeOwned,
-    <Block::Hash as FromStr>::Err: Debug,
-    Block::Header: serde::de::DeserializeOwned,
-    NumberFor<Block>: FromStr,
-    <NumberFor<Block> as FromStr>::Err: Debug,
-    HostFns: HostFunctions,
-{
-    let executor = build_executor(&shared);
-    let ext = command
-        .state
-        .to_ext::<Block, HostFns>(&shared, &executor, None, true)
-        .await?;
-
-    if let State::Live(_) = command.state {
-        log::info!(
-            target: LOG_TARGET,
-            "🚀 Speed up your workflow by using snapshots instead of live state. \
-            See `try-runtime create-snapshot --help`."
-        );
-    }
-
-    let method = "TryRuntime_on_runtime_upgrade";
-    let pre_root = ext.backend.root();
-    let (_, proof, ref_time_results) = state_machine_call_with_proof::<HostFns>(
-        &ext,
-        &executor,
-        method,
-        command.checks.encode().as_ref(),
-        Default::default(), // we don't really need any extensions here.
-        shared.export_proof,
-    )?;
-
-    let pov_safety = analyse_pov(proof, *pre_root);
-    let ref_time_safety = analyse_ref_time(ref_time_results);
-
-    match (pov_safety, ref_time_safety) {
-        (WeightSafety::ProbablySafe, WeightSafety::ProbablySafe) => {
-            log::info!(
-                target: LOG_TARGET,
-                "✅ TryRuntime_on_runtime_upgrade executed without errors or weight safety \
-                warnings. Please note this does not guarantee a successful runtime upgrade. \
-                Always test your runtime upgrade with recent state, and ensure that the weight usage \
-                of your migrations will not drastically differ between testing and actual on-chain \
-                execution."
-            );
-        }
-        _ => {
-            log::warn!(target: LOG_TARGET, "⚠️  TryRuntime_on_runtime_upgrade executed \
-            successfully but with weight safety warnings.");
-        }
-    }
-
-    Ok(())
 }
