@@ -17,12 +17,12 @@
 
 use std::{fmt::Debug, path::PathBuf, str::FromStr, time::Duration};
 
-use frame_remote_externalities::TestExternalities;
 use parity_scale_codec::{Decode, DecodeAll};
 use sc_cli::{execution_method_from_cli, RuntimeVersion};
 use sc_executor::{
     sp_wasm_interface::HostFunctions, HeapAllocStrategy, WasmExecutor, DEFAULT_HEAP_ALLOC_STRATEGY,
 };
+use sp_api::HashingFor;
 use sp_core::{
     offchain::{
         testing::{TestOffchainExt, TestTransactionPoolExt},
@@ -34,13 +34,16 @@ use sp_core::{
 use sp_externalities::Extensions;
 use sp_keystore::{testing::MemoryKeystore, KeystoreExt};
 use sp_runtime::traits::Block as BlockT;
-use sp_state_machine::{OverlayedChanges, StateMachine, StorageProof, TrieBackendBuilder};
+use sp_state_machine::{
+    OverlayedChanges, StateMachine, StorageProof, TestExternalities, TrieBackendBuilder,
+};
 use sp_weights::Weight;
 
 use crate::shared_parameters::SharedParams;
 
 #[cfg(feature = "cli")]
 pub mod commands;
+pub mod inherent_provider;
 #[cfg(feature = "cli")]
 mod parse;
 pub mod shared_parameters;
@@ -80,7 +83,7 @@ pub(crate) fn build_executor<H: HostFunctions>(shared: &SharedParams) -> WasmExe
 /// Ensure that the given `ext` is compiled with `try-runtime`
 fn ensure_try_runtime<Block: BlockT, HostFns: HostFunctions>(
     executor: &WasmExecutor<HostFns>,
-    ext: &mut TestExternalities,
+    ext: &mut TestExternalities<HashingFor<Block>>,
 ) -> bool {
     use sp_api::RuntimeApiInfo;
     let final_code = ext
@@ -99,13 +102,13 @@ fn ensure_try_runtime<Block: BlockT, HostFns: HostFunctions>(
 
 /// Execute the given `method` and `data` on top of `ext`, returning the results (encoded) and the
 /// state `changes`.
-pub(crate) fn state_machine_call<HostFns: HostFunctions>(
-    ext: &TestExternalities,
+pub(crate) fn state_machine_call<Block: BlockT, HostFns: HostFunctions>(
+    ext: &TestExternalities<HashingFor<Block>>,
     executor: &WasmExecutor<HostFns>,
     method: &'static str,
     data: &[u8],
     mut extensions: Extensions,
-) -> sc_cli::Result<(OverlayedChanges, Vec<u8>)> {
+) -> sc_cli::Result<(OverlayedChanges<HashingFor<Block>>, Vec<u8>)> {
     let mut changes = Default::default();
     let encoded_result = StateMachine::new(
         &ext.backend,
@@ -133,14 +136,18 @@ pub struct RefTimeInfo {
 /// information.
 ///
 /// Make sure [`LOG_TARGET`] is enabled in logging.
-pub(crate) fn state_machine_call_with_proof<HostFns: HostFunctions>(
-    ext: &TestExternalities,
+pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunctions>(
+    ext: &TestExternalities<HashingFor<Block>>,
     executor: &WasmExecutor<HostFns>,
     method: &'static str,
     data: &[u8],
     mut extensions: Extensions,
     maybe_export_proof: Option<PathBuf>,
-) -> sc_cli::Result<(OverlayedChanges, StorageProof, RefTimeInfo)> {
+) -> sc_cli::Result<(
+    OverlayedChanges<HashingFor<Block>>,
+    StorageProof,
+    RefTimeInfo,
+)> {
     let mut changes = Default::default();
     let backend = ext.backend.clone();
     let runtime_code_backend = sp_state_machine::backend::BackendRuntimeCode::new(&backend);

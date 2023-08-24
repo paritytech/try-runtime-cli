@@ -21,7 +21,8 @@ use bytesize::ByteSize;
 use frame_try_runtime::UpgradeCheckSelect;
 use parity_scale_codec::Encode;
 use sc_executor::sp_wasm_interface::HostFunctions;
-use sp_core::{hexdisplay::HexDisplay, H256};
+use sp_api::HashingFor;
+use sp_core::{hexdisplay::HexDisplay, Hasher};
 use sp_runtime::traits::{Block as BlockT, NumberFor};
 use sp_state_machine::{CompactProof, StorageProof};
 
@@ -87,7 +88,7 @@ where
     }
 
     let pre_root = ext.backend.root();
-    let (_, proof, ref_time_results) = state_machine_call_with_proof::<HostFns>(
+    let (_, proof, ref_time_results) = state_machine_call_with_proof::<Block, HostFns>(
         &ext,
         &executor,
         "TryRuntime_on_runtime_upgrade",
@@ -96,7 +97,7 @@ where
         shared.export_proof,
     )?;
 
-    let pov_safety = analyse_pov(proof, *pre_root, command.no_weight_warnings);
+    let pov_safety = analyse_pov::<HashingFor<Block>>(proof, *pre_root, command.no_weight_warnings);
     let ref_time_safety = analyse_ref_time(ref_time_results, command.no_weight_warnings);
 
     match (pov_safety, ref_time_safety, command.no_weight_warnings) {
@@ -134,11 +135,14 @@ const DEFAULT_MAX_POV_SIZE: ByteSize = ByteSize::mb(5);
 const DEFAULT_WARNING_THRESHOLD: f32 = 0.8;
 
 /// Analyse the given ref_times and return if there is a potential weight safety issue.
-fn analyse_pov(proof: StorageProof, pre_root: H256, no_weight_warnings: bool) -> WeightSafety {
+fn analyse_pov<H>(proof: StorageProof, pre_root: H::Out, no_weight_warnings: bool) -> WeightSafety
+where
+    H: Hasher,
+{
     let encoded_proof_size = proof.encoded_size();
     let compact_proof = proof
         .clone()
-        .into_compact_proof::<sp_runtime::traits::BlakeTwo256>(pre_root)
+        .into_compact_proof::<H>(pre_root)
         .map_err(|e| {
             log::error!(target: LOG_TARGET, "failed to generate compact proof: {:?}", e);
             e

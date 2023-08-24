@@ -28,6 +28,7 @@ use crate::shared_parameters::SharedParams;
 
 pub mod create_snapshot;
 pub mod execute_block;
+pub mod fast_forward;
 pub mod follow_chain;
 pub mod offchain_worker;
 pub mod on_runtime_upgrade;
@@ -125,6 +126,9 @@ pub enum Action {
     ///
     /// try-runtime --runtime ./path/to/runtime.wasm on-runtime-upgrade snap --path my_state.snap
     CreateSnapshot(create_snapshot::Command),
+
+    /// Fast forward the chain N blocks.
+    FastForward(fast_forward::Command),
 }
 
 impl Action {
@@ -154,6 +158,9 @@ impl Action {
             }
             Action::CreateSnapshot(cmd) => {
                 create_snapshot::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
+            }
+            Action::FastForward(cmd) => {
+                fast_forward::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
             }
         }
     }
