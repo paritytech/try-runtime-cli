@@ -77,7 +77,7 @@ pub struct Command {
 impl Command {
     fn block_ws_uri(&self) -> &str {
         match self.state {
-            State::Live(LiveState { ref uri, .. }) => &uri,
+            State::Live(LiveState { ref uri, .. }) => uri,
             _ => self
                 .block_ws_uri
                 .as_ref()
@@ -153,7 +153,7 @@ async fn next_empty_block<Block: BlockT, HostFns: HostFunctions>(
     executor: &WasmExecutor<HostFns>,
     parent_height: NumberFor<Block>,
     parent_hash: Block::Hash,
-    inherent_provider: &Box<dyn InherentProvider<Err = String>>,
+    inherent_provider: &dyn InherentProvider<Err = String>,
     previous_block_building_info: Option<(InherentData, Digest)>,
 ) -> Result<(Block, Option<(InherentData, Digest)>)> {
     let (inherent_data_provider, pre_digest) =
@@ -258,7 +258,7 @@ where
             &executor,
             last_block_number,
             last_block_hash,
-            &inherent_provider,
+            inherent_provider.as_ref(),
             prev_block_building_info,
         )
         .await?;

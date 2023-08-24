@@ -38,8 +38,12 @@ pub trait InherentProvider {
     fn get_inherent_providers_and_pre_digest(
         &self,
         maybe_prev_info: Option<(InherentData, Digest)>,
-    ) -> Result<(Box<dyn sp_inherents::InherentDataProvider>, Vec<DigestItem>), Self::Err>;
+    ) -> InherentProviderResult<Self::Err>;
 }
+
+// Clippy suggests this abstraction
+type InherentProviderResult<Err> =
+    Result<(Box<dyn sp_inherents::InherentDataProvider>, Vec<DigestItem>), Err>;
 
 /// List of chains we have [`InherentProviders`] for.
 #[derive(Debug, Clone, clap::Parser, EnumIter)]
