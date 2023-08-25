@@ -19,7 +19,6 @@ use std::{path::PathBuf, str::FromStr};
 
 use sc_cli::{WasmExecutionMethod, WasmtimeInstantiationStrategy};
 use sp_runtime::StateVersion;
-#[cfg(feature = "cli")]
 use {
     crate::parse,
     sc_cli::{DEFAULT_WASMTIME_INSTANTIATION_STRATEGY, DEFAULT_WASM_EXECUTION_METHOD},
