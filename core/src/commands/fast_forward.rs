@@ -71,7 +71,7 @@ pub struct Command {
     /// - `rr-[x]` where `[x]` is a number. Then, the given number of pallets are checked in a
     ///   round-robin fashion.
     #[arg(long, default_value = "all")]
-    checks: frame_try_runtime::TryStateSelect,
+    pub try_state: frame_try_runtime::TryStateSelect,
 
     /// Whether to run pending migrations before fast-forwarding.
     #[arg(long, default_value = "true")]
@@ -244,7 +244,7 @@ where
             &ext,
             &executor,
             "TryRuntime_on_runtime_upgrade",
-            command.checks.encode().as_ref(),
+            command.try_state.encode().as_ref(),
             Default::default(), // we don't really need any extensions here.
             None,
         )?;
@@ -288,7 +288,7 @@ where
             next_block.clone(),
             state_root_check,
             signature_check,
-            command.checks.clone(),
+            command.try_state.clone(),
         )
             .encode();
         call::<Block, _>(&mut ext, &executor, "TryRuntime_execute_block", &payload).await?;
