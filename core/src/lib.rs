@@ -39,9 +39,7 @@ use sp_weights::Weight;
 
 use crate::shared_parameters::SharedParams;
 
-#[cfg(feature = "cli")]
 pub mod commands;
-#[cfg(feature = "cli")]
 mod parse;
 pub mod shared_parameters;
 pub mod state;
