@@ -16,7 +16,7 @@
 // limitations under the License.
 //! TODO: Docs
 
-use std::{str::FromStr, time::Duration};
+use std::time::Duration;
 
 use parity_scale_codec::Encode;
 use sp_consensus_aura::{Slot, SlotDuration, AURA_ENGINE_ID};
@@ -28,8 +28,7 @@ use sp_inherents::InherentData;
 use sp_runtime::{Digest, DigestItem};
 use sp_std::prelude::*;
 use sp_timestamp::TimestampInherentData;
-use strum::IntoEnumIterator;
-use strum_macros::EnumIter;
+use strum_macros::{EnumIter, EnumString};
 
 /// Trait for providing the inherent data and digest items for block construction.
 pub trait InherentProvider {
@@ -41,62 +40,58 @@ pub trait InherentProvider {
     ) -> InherentProviderResult<Self::Err>;
 }
 
-// Clippy suggests this abstraction
+// Clippy asks that we abstract the return type because it's so long
 type InherentProviderResult<Err> =
     Result<(Box<dyn sp_inherents::InherentDataProvider>, Vec<DigestItem>), Err>;
 
-/// List of chains we have [`InherentProviders`] for.
-#[derive(Debug, Clone, clap::Parser, EnumIter)]
-pub enum SupportedChain {
+/// List of chains we support have [`InherentProviders`] for.
+#[derive(Debug, Clone, clap::Parser, EnumIter, EnumString)]
+pub enum Chain {
+    // Relay chains
     Polkadot,
     Kusama,
     Rococo,
     Westend,
+
+    // Parachains
+    AlephZero,
+
+    // Development chains
     SubstrateNodeTemplate,
     SubstrateKitchenSink,
 }
 
-impl FromStr for SupportedChain {
+impl InherentProvider for Chain {
     type Err = String;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        // TODO: how do i make sure this match is exhastive of all SupportedChains?
-        match s {
-            "Polkadot" => Ok(SupportedChain::Polkadot),
-            "Kusama" => Ok(SupportedChain::Kusama),
-            "Rococo" => Ok(SupportedChain::Rococo),
-            "Westend" => Ok(SupportedChain::Westend),
-            "SubstrateNodeTemplate" => Ok(SupportedChain::SubstrateNodeTemplate),
-            "SubstrateKitchenSink" => Ok(SupportedChain::SubstrateKitchenSink),
-            _ => Err(format!(
-                "Supported chains: {:?}\nDon't see your chain? Open an issue: <https://github.com/paritytech/try-runtime-cli/issues/new>",
-                SupportedChain::iter().collect::<Vec<_>>()
-            )),
-        }
-    }
-}
+    fn get_inherent_providers_and_pre_digest(
+        &self,
+        maybe_prev_info: Option<(InherentData, Digest)>,
+    ) -> InherentProviderResult<Self::Err> {
+        match *self {
+            // Relay chains
+            Chain::Polkadot | Chain::Kusama | Chain::Rococo | Chain::Westend => {
+                TimestampWithBabeInfoInherentProvider {
+                    blocktime: Duration::from_secs(6),
+                }
+                .get_inherent_providers_and_pre_digest(maybe_prev_info)
+            }
 
-impl From<SupportedChain> for Box<dyn InherentProvider<Err = String>> {
-    fn from(chain: SupportedChain) -> Self {
-        match chain {
-            SupportedChain::Polkadot
-            | SupportedChain::Kusama
-            | SupportedChain::Rococo
-            | SupportedChain::Westend => {
-                Box::new(TimestampWithBabeInfoInherentProvider {
-                    // hardcode all blocktimes for now rather than adding polkadot repo as a dep
-                    // because we're migrating to monorepo before this PR will be merged
-                    blocktime: Duration::from_secs(6),
-                })
-            }
-            SupportedChain::SubstrateNodeTemplate => {
-                Box::new(TimestampWithAuraInfoInherentProvider {
-                    blocktime: Duration::from_secs(6),
-                })
-            }
-            SupportedChain::SubstrateKitchenSink => Box::new(SubstrateInherentProvider {
+            // Parachains
+            Chain::AlephZero => TimestampWithAuraInfoInherentProvider {
                 blocktime: Duration::from_secs(6),
-            }),
+            }
+            .get_inherent_providers_and_pre_digest(maybe_prev_info),
+
+            // Development chains
+            Chain::SubstrateNodeTemplate => TimestampWithAuraInfoInherentProvider {
+                blocktime: Duration::from_secs(6),
+            }
+            .get_inherent_providers_and_pre_digest(maybe_prev_info),
+            Chain::SubstrateKitchenSink => SubstrateInherentProvider {
+                blocktime: Duration::from_secs(6),
+            }
+            .get_inherent_providers_and_pre_digest(maybe_prev_info),
         }
     }
 }

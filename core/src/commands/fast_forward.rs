@@ -33,10 +33,10 @@ use substrate_rpc_client::{ws_client, ChainApi};
 
 use crate::{
     build_executor, full_extensions,
-    inherent_provider::{InherentProvider, SupportedChain},
+    inherent_provider::{Chain, InherentProvider},
     rpc_err_handler,
     state::{LiveState, State},
-    state_machine_call, BlockT, SharedParams,
+    state_machine_call, state_machine_call_with_proof, BlockT, SharedParams,
 };
 
 /// Configurations of the [`crate::Command::FastForward`].
@@ -49,7 +49,7 @@ pub struct Command {
     /// Chain
     /// TODO: docs
     #[arg(long)]
-    chain: SupportedChain,
+    chain: Chain,
 
     /// The state type to use.
     #[command(subcommand)]
@@ -71,7 +71,11 @@ pub struct Command {
     /// - `rr-[x]` where `[x]` is a number. Then, the given number of pallets are checked in a
     ///   round-robin fashion.
     #[arg(long, default_value = "all")]
-    try_state: frame_try_runtime::TryStateSelect,
+    checks: frame_try_runtime::TryStateSelect,
+
+    /// Whether to run pending migrations before fast-forwarding.
+    #[arg(long, default_value = "true")]
+    run_migrations: bool,
 }
 
 impl Command {
@@ -228,15 +232,25 @@ where
     <NumberFor<Block> as FromStr>::Err: Debug,
     HostFns: HostFunctions,
 {
-    // Create the inherent provider based on the provided chain.
-    let inherent_provider: Box<dyn InherentProvider<Err = String>> = command.chain.clone().into();
-
     let executor = build_executor::<HostFns>(&shared);
     let ext = command
         .state
         .to_ext::<Block, HostFns>(&shared, &executor, None, true)
         .await?;
 
+    if command.run_migrations {
+        log::info!("Running migrations...");
+        state_machine_call_with_proof::<Block, HostFns>(
+            &ext,
+            &executor,
+            "TryRuntime_on_runtime_upgrade",
+            command.checks.encode().as_ref(),
+            Default::default(), // we don't really need any extensions here.
+            None,
+        )?;
+    }
+
+    log::info!("Fast forwarding {} blocks...", command.n_blocks);
     let mut last_block_hash = ext.block_hash;
     let mut last_block_number =
         get_block_number::<Block>(last_block_hash, command.block_ws_uri()).await?;
@@ -258,7 +272,7 @@ where
             &executor,
             last_block_number,
             last_block_hash,
-            inherent_provider.as_ref(),
+            &command.chain,
             prev_block_building_info,
         )
         .await?;
@@ -274,7 +288,7 @@ where
             next_block.clone(),
             state_root_check,
             signature_check,
-            command.try_state.clone(),
+            command.checks.clone(),
         )
             .encode();
         call::<Block, _>(&mut ext, &executor, "TryRuntime_execute_block", &payload).await?;
