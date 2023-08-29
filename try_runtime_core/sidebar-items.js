@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["commands","shared_parameters","state"],"struct":["RefTimeInfo"]};
+window.SIDEBAR_ITEMS = {"mod":["commands","inherent_provider","shared_parameters","state"],"struct":["RefTimeInfo"]};

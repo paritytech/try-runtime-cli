@@ -242,6 +242,13 @@
 <a href="#242" id="242">242</a>
 <a href="#243" id="243">243</a>
 <a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -261,12 +268,12 @@
 
 </span><span class="kw">use </span>std::{fmt::Debug, path::PathBuf, str::FromStr, time::Duration};
 
-<span class="kw">use </span>frame_remote_externalities::TestExternalities;
 <span class="kw">use </span>parity_scale_codec::{Decode, DecodeAll};
 <span class="kw">use </span>sc_cli::{execution_method_from_cli, RuntimeVersion};
 <span class="kw">use </span>sc_executor::{
     sp_wasm_interface::HostFunctions, HeapAllocStrategy, WasmExecutor, DEFAULT_HEAP_ALLOC_STRATEGY,
 };
+<span class="kw">use </span>sp_api::HashingFor;
 <span class="kw">use </span>sp_core::{
     offchain::{
         testing::{TestOffchainExt, TestTransactionPoolExt},
@@ -278,12 +285,15 @@
 <span class="kw">use </span>sp_externalities::Extensions;
 <span class="kw">use </span>sp_keystore::{testing::MemoryKeystore, KeystoreExt};
 <span class="kw">use </span>sp_runtime::traits::Block <span class="kw">as </span>BlockT;
-<span class="kw">use </span>sp_state_machine::{OverlayedChanges, StateMachine, StorageProof, TrieBackendBuilder};
+<span class="kw">use </span>sp_state_machine::{
+    OverlayedChanges, StateMachine, StorageProof, TestExternalities, TrieBackendBuilder,
+};
 <span class="kw">use </span>sp_weights::Weight;
 
 <span class="kw">use </span><span class="kw">crate</span>::shared_parameters::SharedParams;
 
 <span class="kw">pub mod </span>commands;
+<span class="kw">pub mod </span>inherent_provider;
 <span class="kw">mod </span>parse;
 <span class="kw">pub mod </span>shared_parameters;
 <span class="kw">pub mod </span>state;
@@ -322,7 +332,7 @@
 <span class="doccomment">/// Ensure that the given `ext` is compiled with `try-runtime`
 </span><span class="kw">fn </span>ensure_try_runtime&lt;Block: BlockT, HostFns: HostFunctions&gt;(
     executor: <span class="kw-2">&amp;</span>WasmExecutor&lt;HostFns&gt;,
-    ext: <span class="kw-2">&amp;mut </span>TestExternalities,
+    ext: <span class="kw-2">&amp;mut </span>TestExternalities&lt;HashingFor&lt;Block&gt;&gt;,
 ) -&gt; bool {
     <span class="kw">use </span>sp_api::RuntimeApiInfo;
     <span class="kw">let </span>final_code = ext
@@ -341,13 +351,13 @@
 
 <span class="doccomment">/// Execute the given `method` and `data` on top of `ext`, returning the results (encoded) and the
 /// state `changes`.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>state_machine_call&lt;HostFns: HostFunctions&gt;(
-    ext: <span class="kw-2">&amp;</span>TestExternalities,
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>state_machine_call&lt;Block: BlockT, HostFns: HostFunctions&gt;(
+    ext: <span class="kw-2">&amp;</span>TestExternalities&lt;HashingFor&lt;Block&gt;&gt;,
     executor: <span class="kw-2">&amp;</span>WasmExecutor&lt;HostFns&gt;,
     method: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
     data: <span class="kw-2">&amp;</span>[u8],
     <span class="kw-2">mut </span>extensions: Extensions,
-) -&gt; sc_cli::Result&lt;(OverlayedChanges, Vec&lt;u8&gt;)&gt; {
+) -&gt; sc_cli::Result&lt;(OverlayedChanges&lt;HashingFor&lt;Block&gt;&gt;, Vec&lt;u8&gt;)&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>changes = Default::default();
     <span class="kw">let </span>encoded_result = StateMachine::new(
         <span class="kw-2">&amp;</span>ext.backend,
@@ -375,14 +385,18 @@
 /// information.
 ///
 /// Make sure [`LOG_TARGET`] is enabled in logging.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>state_machine_call_with_proof&lt;HostFns: HostFunctions&gt;(
-    ext: <span class="kw-2">&amp;</span>TestExternalities,
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>state_machine_call_with_proof&lt;Block: BlockT, HostFns: HostFunctions&gt;(
+    ext: <span class="kw-2">&amp;</span>TestExternalities&lt;HashingFor&lt;Block&gt;&gt;,
     executor: <span class="kw-2">&amp;</span>WasmExecutor&lt;HostFns&gt;,
     method: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
     data: <span class="kw-2">&amp;</span>[u8],
     <span class="kw-2">mut </span>extensions: Extensions,
     maybe_export_proof: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
-) -&gt; sc_cli::Result&lt;(OverlayedChanges, StorageProof, RefTimeInfo)&gt; {
+) -&gt; sc_cli::Result&lt;(
+    OverlayedChanges&lt;HashingFor&lt;Block&gt;&gt;,
+    StorageProof,
+    RefTimeInfo,
+)&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>changes = Default::default();
     <span class="kw">let </span>backend = ext.backend.clone();
     <span class="kw">let </span>runtime_code_backend = sp_state_machine::backend::BackendRuntimeCode::new(<span class="kw-2">&amp;</span>backend);

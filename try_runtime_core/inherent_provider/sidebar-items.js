@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Chain"],"struct":["ChainIter"],"trait":["InherentProvider"]};

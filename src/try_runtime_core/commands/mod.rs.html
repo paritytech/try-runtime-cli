@@ -158,6 +158,18 @@
 <a href="#158" id="158">158</a>
 <a href="#159" id="159">159</a>
 <a href="#160" id="160">160</a>
+<a href="#161" id="161">161</a>
+<a href="#162" id="162">162</a>
+<a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -188,6 +200,7 @@
 
 <span class="kw">pub mod </span>create_snapshot;
 <span class="kw">pub mod </span>execute_block;
+<span class="kw">pub mod </span>fast_forward;
 <span class="kw">pub mod </span>follow_chain;
 <span class="kw">pub mod </span>offchain_worker;
 <span class="kw">pub mod </span>on_runtime_upgrade;
@@ -279,12 +292,20 @@
     ///
     /// 1. Create a snapshot from a remote node:
     ///
-    /// try-runtime create-snapshot --uri &lt;remote-node-uri&gt; my_state.snap
+    /// try-runtime create-snapshot --uri ws://remote-node-uri my_state.snap
     ///
     /// 2. Utilize the snapshot with `on-runtime-upgrade`:
     ///
     /// try-runtime --runtime ./path/to/runtime.wasm on-runtime-upgrade snap --path my_state.snap
     </span>CreateSnapshot(create_snapshot::Command),
+
+    <span class="doccomment">/// Executes a runtime upgrade (optional), then mines a number of blocks while performing
+    /// try-state checks.
+    ///
+    /// The try-state checks are performed using the `TryRuntime_execute_block` runtime api.
+    ///
+    /// See [`TryRuntime`] and [`fast_forward::Command`] for more information.
+    </span>FastForward(fast_forward::Command),
 }
 
 <span class="kw">impl </span>Action {
@@ -314,6 +335,9 @@
             </span>}
             Action::CreateSnapshot(cmd) =&gt; {
                 create_snapshot::run::&lt;Block, HostFns&gt;(shared.clone(), cmd.clone()).<span class="kw">await
+            </span>}
+            Action::FastForward(cmd) =&gt; {
+                fast_forward::run::&lt;Block, HostFns&gt;(shared.clone(), cmd.clone()).<span class="kw">await
             </span>}
         }
     }

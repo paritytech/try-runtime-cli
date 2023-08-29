@@ -214,6 +214,10 @@
 <a href="#214" id="214">214</a>
 <a href="#215" id="215">215</a>
 <a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -237,7 +241,8 @@
 <span class="kw">use </span>frame_try_runtime::UpgradeCheckSelect;
 <span class="kw">use </span>parity_scale_codec::Encode;
 <span class="kw">use </span>sc_executor::sp_wasm_interface::HostFunctions;
-<span class="kw">use </span>sp_core::{hexdisplay::HexDisplay, H256};
+<span class="kw">use </span>sp_api::HashingFor;
+<span class="kw">use </span>sp_core::{hexdisplay::HexDisplay, Hasher};
 <span class="kw">use </span>sp_runtime::traits::{Block <span class="kw">as </span>BlockT, NumberFor};
 <span class="kw">use </span>sp_state_machine::{CompactProof, StorageProof};
 
@@ -303,7 +308,7 @@
     }
 
     <span class="kw">let </span>pre_root = ext.backend.root();
-    <span class="kw">let </span>(<span class="kw">_</span>, proof, ref_time_results) = state_machine_call_with_proof::&lt;HostFns&gt;(
+    <span class="kw">let </span>(<span class="kw">_</span>, proof, ref_time_results) = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
         <span class="kw-2">&amp;</span>ext,
         <span class="kw-2">&amp;</span>executor,
         <span class="string">&quot;TryRuntime_on_runtime_upgrade&quot;</span>,
@@ -312,7 +317,7 @@
         </span>shared.export_proof,
     )<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>pov_safety = analyse_pov(proof, <span class="kw-2">*</span>pre_root, command.no_weight_warnings);
+    <span class="kw">let </span>pov_safety = analyse_pov::&lt;HashingFor&lt;Block&gt;&gt;(proof, <span class="kw-2">*</span>pre_root, command.no_weight_warnings);
     <span class="kw">let </span>ref_time_safety = analyse_ref_time(ref_time_results, command.no_weight_warnings);
 
     <span class="kw">match </span>(pov_safety, ref_time_safety, command.no_weight_warnings) {
@@ -350,11 +355,14 @@
 </span><span class="kw">const </span>DEFAULT_WARNING_THRESHOLD: f32 = <span class="number">0.8</span>;
 
 <span class="doccomment">/// Analyse the given ref_times and return if there is a potential weight safety issue.
-</span><span class="kw">fn </span>analyse_pov(proof: StorageProof, pre_root: H256, no_weight_warnings: bool) -&gt; WeightSafety {
+</span><span class="kw">fn </span>analyse_pov&lt;H&gt;(proof: StorageProof, pre_root: H::Out, no_weight_warnings: bool) -&gt; WeightSafety
+<span class="kw">where
+    </span>H: Hasher,
+{
     <span class="kw">let </span>encoded_proof_size = proof.encoded_size();
     <span class="kw">let </span>compact_proof = proof
         .clone()
-        .into_compact_proof::&lt;sp_runtime::traits::BlakeTwo256&gt;(pre_root)
+        .into_compact_proof::&lt;H&gt;(pre_root)
         .map_err(|e| {
             <span class="macro">log::error!</span>(target: LOG_TARGET, <span class="string">&quot;failed to generate compact proof: {:?}&quot;</span>, e);
             e

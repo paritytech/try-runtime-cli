@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Action"],"mod":["create_snapshot","execute_block","follow_chain","offchain_worker","on_runtime_upgrade"],"struct":["TryRuntime"]};
+window.SIDEBAR_ITEMS = {"enum":["Action"],"mod":["create_snapshot","execute_block","fast_forward","follow_chain","offchain_worker","on_runtime_upgrade"],"struct":["TryRuntime"]};
