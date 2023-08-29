@@ -29,9 +29,8 @@
 //!
 //! Some resources about the above:
 //!
-//! 1. <https://docs.substrate.io/reference/command-line-tools/try-runtime/>
-//! 2. <https://www.crowdcast.io/e/substrate-seminar/41>
-//! 3. <https://docs.substrate.io/fundamentals/runtime-development/>
+//! 1. <https://www.crowdcast.io/e/substrate-seminar/41>
+//! 2. <https://docs.substrate.io/fundamentals/runtime-development/>
 //!
 //! ---
 //!
@@ -67,7 +66,10 @@
 //! ## Installation
 
 //!```bash
+//! # Install latest version (recommended for local development)
 //! cargo install --git https://github.com/paritytech/try-runtime-cli --locked
+//! # Install a specific verkion (recommended for tools like CI)
+//! cargo install --git https://github.com/paritytech/try-runtime-cli --tag vX.Y.Z --locked
 //! try-runtime --help
 //! try-runtime on-runtime-upgrade --help
 //! ```
