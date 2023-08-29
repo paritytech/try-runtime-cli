@@ -133,7 +133,7 @@ where
     )
         .encode();
 
-    let _ = state_machine_call_with_proof::<HostFns>(
+    let _ = state_machine_call_with_proof::<Block, HostFns>(
         &ext,
         &executor,
         "TryRuntime_execute_block",

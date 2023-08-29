@@ -28,6 +28,7 @@ use crate::shared_parameters::SharedParams;
 
 pub mod create_snapshot;
 pub mod execute_block;
+pub mod fast_forward;
 pub mod follow_chain;
 pub mod offchain_worker;
 pub mod on_runtime_upgrade;
@@ -119,12 +120,20 @@ pub enum Action {
     ///
     /// 1. Create a snapshot from a remote node:
     ///
-    /// try-runtime create-snapshot --uri <remote-node-uri> my_state.snap
+    /// try-runtime create-snapshot --uri ws://remote-node-uri my_state.snap
     ///
     /// 2. Utilize the snapshot with `on-runtime-upgrade`:
     ///
     /// try-runtime --runtime ./path/to/runtime.wasm on-runtime-upgrade snap --path my_state.snap
     CreateSnapshot(create_snapshot::Command),
+
+    /// Executes a runtime upgrade (optional), then mines a number of blocks while performing
+    /// try-state checks.
+    ///
+    /// The try-state checks are performed using the `TryRuntime_execute_block` runtime api.
+    ///
+    /// See [`TryRuntime`] and [`fast_forward::Command`] for more information.
+    FastForward(fast_forward::Command),
 }
 
 impl Action {
@@ -154,6 +163,9 @@ impl Action {
             }
             Action::CreateSnapshot(cmd) => {
                 create_snapshot::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
+            }
+            Action::FastForward(cmd) => {
+                fast_forward::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
             }
         }
     }

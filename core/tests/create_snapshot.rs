@@ -99,7 +99,8 @@ async fn create_snapshot_works() {
 
         assert!(
             snapshot_loading_result.is_ok(),
-            "Snapshot couldn't be loaded"
+            "Snapshot couldn't be loaded: {:?}",
+            snapshot_loading_result.err().unwrap()
         );
     })
     .await;

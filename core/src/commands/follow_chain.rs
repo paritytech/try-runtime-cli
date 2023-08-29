@@ -151,7 +151,7 @@ where
             .as_mut()
             .expect("state_ext either existed or was just created");
 
-        let result = state_machine_call_with_proof::<HostFns>(
+        let result = state_machine_call_with_proof::<Block, HostFns>(
             state_ext,
             &executor,
             "TryRuntime_execute_block",
@@ -185,7 +185,6 @@ where
         let storage_changes = changes
             .drain_storage_changes(
                 &state_ext.backend,
-                &mut Default::default(),
                 // Note that in case a block contains a runtime upgrade, state version could
                 // potentially be incorrect here, this is very niche and would only result in
                 // unaligned roots, so this use case is ignored for now.

@@ -93,7 +93,7 @@ where
         .map(|maybe_header| maybe_header.ok_or("Header does not exist"))??;
     let payload = header.encode();
 
-    let _ = state_machine_call::<HostFns>(
+    let _ = state_machine_call::<Block, HostFns>(
         &ext,
         &executor,
         "OffchainWorkerApi_offchain_worker",
