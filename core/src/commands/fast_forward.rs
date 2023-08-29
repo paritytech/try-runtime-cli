@@ -25,7 +25,7 @@ use sp_api::HashingFor;
 use sp_core::H256;
 use sp_inherents::InherentData;
 use sp_runtime::{
-    traits::{Header, NumberFor, One},
+    traits::{Header, NumberFor, One, Saturating},
     Digest,
 };
 use sp_state_machine::TestExternalities;
@@ -39,27 +39,22 @@ use crate::{
     state_machine_call, state_machine_call_with_proof, BlockT, SharedParams,
 };
 
-/// Configurations of the [`crate::Command::FastForward`].
+/// Configuration for [`run`].
 #[derive(Debug, Clone, clap::Parser)]
 pub struct Command {
     /// How many empty blocks should be processed.
     #[arg(long)]
-    n_blocks: u64,
+    pub n_blocks: u64,
 
     /// Chain
-    /// TODO: docs
     #[arg(long)]
-    chain: Chain,
-
-    /// The state type to use.
-    #[command(subcommand)]
-    state: State,
+    pub chain: Chain,
 
     /// The ws uri from which to fetch the block.
     ///
     /// If `state` is `Live`, this is ignored. Otherwise, it must not be empty.
     #[arg(long, value_parser = crate::parse::url)]
-    block_ws_uri: Option<String>,
+    pub block_ws_uri: Option<String>,
 
     /// Which try-state targets to execute when running this command.
     ///
@@ -75,7 +70,11 @@ pub struct Command {
 
     /// Whether to run pending migrations before fast-forwarding.
     #[arg(long, default_value = "true")]
-    run_migrations: bool,
+    pub run_migrations: bool,
+
+    /// The state type to use.
+    #[command(subcommand)]
+    pub state: State,
 }
 
 impl Command {
@@ -151,8 +150,8 @@ async fn call<Block: BlockT, HostFns: HostFunctions>(
     Ok(())
 }
 
-/// Produce next empty block.
-async fn next_empty_block<Block: BlockT, HostFns: HostFunctions>(
+/// Produces next block containing only inherents.
+async fn produce_next_block<Block: BlockT, HostFns: HostFunctions>(
     externalities: &mut TestExternalities<HashingFor<Block>>,
     executor: &WasmExecutor<HostFns>,
     parent_height: NumberFor<Block>,
@@ -223,7 +222,7 @@ async fn next_empty_block<Block: BlockT, HostFns: HostFunctions>(
     ))
 }
 
-pub(crate) async fn run<Block, HostFns>(shared: SharedParams, command: Command) -> Result<()>
+pub async fn run<Block, HostFns>(shared: SharedParams, command: Command) -> Result<()>
 where
     Block: BlockT<Hash = H256> + DeserializeOwned,
     Block::Header: DeserializeOwned,
@@ -267,7 +266,7 @@ where
             last_block_number + One::one()
         );
 
-        let (next_block, new_block_building_info) = next_empty_block::<Block, HostFns>(
+        let (next_block, new_block_building_info) = produce_next_block::<Block, HostFns>(
             &mut ext,
             &executor,
             last_block_number,
@@ -297,7 +296,7 @@ where
 
         prev_block_building_info = new_block_building_info;
         last_block_hash = next_block.hash();
-        last_block_number += One::one();
+        last_block_number.saturating_inc();
     }
 
     Ok(())

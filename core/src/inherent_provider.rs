@@ -16,8 +16,9 @@
 // limitations under the License.
 //! TODO: Docs
 
-use std::time::Duration;
+use std::{str::FromStr, time::Duration};
 
+use itertools::Itertools;
 use parity_scale_codec::Encode;
 use sp_consensus_aura::{Slot, SlotDuration, AURA_ENGINE_ID};
 use sp_consensus_babe::{
@@ -28,7 +29,8 @@ use sp_inherents::InherentData;
 use sp_runtime::{Digest, DigestItem};
 use sp_std::prelude::*;
 use sp_timestamp::TimestampInherentData;
-use strum_macros::{EnumIter, EnumString};
+use strum::IntoEnumIterator;
+use strum_macros::{Display, EnumIter};
 
 /// Trait for providing the inherent data and digest items for block construction.
 pub trait InherentProvider {
@@ -44,8 +46,8 @@ pub trait InherentProvider {
 type InherentProviderResult<Err> =
     Result<(Box<dyn sp_inherents::InherentDataProvider>, Vec<DigestItem>), Err>;
 
-/// List of chains we support have [`InherentProviders`] for.
-#[derive(Debug, Clone, clap::Parser, EnumIter, EnumString)]
+/// Chains that have [`InherentProvider`] implemented.
+#[derive(Debug, Clone, clap::Parser, EnumIter, Display)]
 pub enum Chain {
     // Relay chains
     Polkadot,
@@ -59,6 +61,27 @@ pub enum Chain {
     // Development chains
     SubstrateNodeTemplate,
     SubstrateKitchenSink,
+}
+
+/// Implement FromStr so chain can be parsed as a CLI argument.
+impl FromStr for Chain {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        for chain in Chain::iter() {
+            if chain.to_string().to_lowercase() == s.to_lowercase() {
+                return Ok(chain);
+            }
+        }
+
+        // Clap error message already includes "Invalid value {s} for --chain <CHAIN>"
+        // This error will be logged after, so the user knows what the valid values are.
+        Err(format!(
+            "\nValid CHAIN values:\n{}\n{}",
+            Chain::iter().map(|s| format!("- {}", s)).join("\n"),
+            "Don't see your chain? Open a PR adding it to `inherent_provider.rs` on Github: https://github.com/paritytech/try-runtime-cli"
+        ))
+    }
 }
 
 impl InherentProvider for Chain {

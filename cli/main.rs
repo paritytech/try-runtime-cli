@@ -86,6 +86,8 @@
 //!
 //! * [`Action::OnRuntimeUpgrade`]: execute all the [`OnRuntimeUpgrade`] hooks.
 //! * [`Action::ExecuteBlock`]: re-execute the given block.
+//! * [`Action::FastForward`]: execute [`OnRuntimeUpgrade`] hooks, then fast-forward the chain a
+//!   given number of blocks while checking try-state invarients.
 //! * [`Action::OffchainWorker`]: re-execute the given block's offchain worker code path.
 //! * [`Action::FollowChain`]: continuously execute the blocks of a remote chain on top of a given
 //!   runtime.
@@ -292,6 +294,7 @@
 //! [`Action::ExecuteBlock`]: ../try_runtime_core/commands/enum.Action.html#variant.ExecuteBlock
 //! [`Action::OffchainWorker`]: ../try_runtime_core/commands/enum.Action.html#variant.OffchainWorker
 //! [`Action::CreateSnapshot`]: ../try_runtime_core/commands/enum.Action.html#variant.CreateSnapshot
+//! [`Action::FastForward`]: ../try_runtime_core/commands/enum.Action.html#variant.FastForward
 //! [`SharedParams`]: ../try_runtime_core/shared_parameters/struct.SharedParams.html
 //! [`SharedParams::runtime`]: ../try_runtime_core/shared_parameters/struct.SharedParams.html#structfield.runtime
 //! [`SharedParams::overwrite_state_version`]: ../try_runtime_core/shared_parameters/struct.SharedParams.html#structfield.overwrite_state_version
