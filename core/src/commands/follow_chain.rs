@@ -140,6 +140,7 @@ where
                 at: Some(hex::encode(header.parent_hash().encode())),
                 pallet: vec![],
                 child_tree: true,
+                hashed_prefixes: vec![],
             });
             let ext = state
                 .to_ext::<Block, HostFns>(&shared, &executor, None, true)

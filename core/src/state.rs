@@ -61,8 +61,14 @@ pub struct LiveState {
 
     /// A pallet to scrape. Can be provided multiple times. If empty, entire chain state will
     /// be scraped.
+    ///
+    /// This is equivalent to passing the `xx_hash_64(pallet)` to `prefix`.
     #[arg(short, long, num_args = 1..)]
     pub pallet: Vec<String>,
+
+    /// A hashed prefix to scrape.
+    #[arg(long = "prefix", value_parser = parse::hash, num_args = 1..)]
+    pub hashed_prefixes: Vec<String>,
 
     /// Fetch the child-keys as well.
     ///
@@ -132,11 +138,23 @@ impl State {
                 uri,
                 at,
                 child_tree,
+                hashed_prefixes,
             }) => {
                 let at = match at {
                     Some(at_str) => Some(hash_of::<Block>(at_str)?),
                     None => None,
                 };
+                let hashed_prefixes = hashed_prefixes
+                    .into_iter()
+                    .map(|p_str| {
+                        hex::decode(p_str).map_err(|e| {
+                            format!(
+                                "error while decoding prefix {:?} as hex string: {:?}",
+                                p_str, e
+                            )
+                        })
+                    })
+                    .collect::<Result<Vec<_>, _>>()?;
                 Builder::<Block>::new().mode(Mode::Online(OnlineConfig {
                     at,
                     transport: uri.to_owned().into(),
@@ -152,7 +170,7 @@ impl State {
                         [twox_128(b"System"), twox_128(b"LastRuntimeUpgrade")].concat(),
                         [twox_128(b"System"), twox_128(b"Number")].concat(),
                     ],
-                    hashed_prefixes: vec![],
+                    hashed_prefixes,
                 }))
             }
         };
