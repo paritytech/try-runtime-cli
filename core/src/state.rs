@@ -145,7 +145,7 @@ impl State {
                     None => None,
                 };
                 let hashed_prefixes = hashed_prefixes
-                    .into_iter()
+                    .iter()
                     .map(|p_str| {
                         hex::decode(p_str).map_err(|e| {
                             format!(
