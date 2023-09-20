@@ -31,6 +31,7 @@
 //!
 //! 1. <https://www.crowdcast.io/e/substrate-seminar/41>
 //! 2. <https://docs.substrate.io/fundamentals/runtime-development/>
+//! 3. <https://www.youtube.com/watch?v=a_u3KMG-n-I>
 //!
 //! ---
 //!
