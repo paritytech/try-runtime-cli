@@ -205,14 +205,15 @@
 //!     live --uri ws://localhost:9999
 //! ```
 //!
-//! * Same as the previous one, but run it at specific block number's state. This means that this
-//! block hash's state shall not yet have been pruned in `rpc.polkadot.io`.
+//! * Same as the previous example, but run it at specific block number's state and using the live
+//! polkadot network. This means that this block hash's state should not yet have been pruned by the
+//! node running at `rpc.polkadot.io`.
 //!
 //! ```bash
 //! try-runtime \
-//!     --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
+//!     --runtime /path-to-polkadot-runtimes/target/release/wbuild/polkadot-runtime/polkadot-runtime.wasm \
 //!     on-runtime-upgrade \
-//!     live --uri ws://localhost:9999 \
+//!     live --uri wss://rpc.polkadot.io:443 \
 //!     # replace with your desired block hash!
 //!     --at 0xa1b16c1efd889a9f17375ec4dd5c1b4351a2be17fa069564fced10d23b9b3836
 //! ```
