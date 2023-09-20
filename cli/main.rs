@@ -69,7 +69,7 @@
 //!```bash
 //! # Install latest version (recommended for local development)
 //! cargo install --git https://github.com/paritytech/try-runtime-cli --locked
-//! # Install a specific verkion (recommended for tools like CI)
+//! # Install a specific version (recommended for tools like CI)
 //! cargo install --git https://github.com/paritytech/try-runtime-cli --tag vX.Y.Z --locked
 //! try-runtime --help
 //! try-runtime on-runtime-upgrade --help
