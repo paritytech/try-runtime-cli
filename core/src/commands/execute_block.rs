@@ -97,7 +97,7 @@ where
     let executor = build_executor::<HostFns>(&shared);
     let ext = command
         .state
-        .to_ext::<Block, HostFns>(&shared, &executor, None, true)
+        .to_ext::<Block, HostFns>(&shared, &executor, None, true, false)
         .await?;
 
     // get the block number associated with this block.

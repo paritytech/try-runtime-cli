@@ -143,7 +143,7 @@ where
                 hashed_prefixes: vec![],
             });
             let ext = state
-                .to_ext::<Block, HostFns>(&shared, &executor, None, true)
+                .to_ext::<Block, HostFns>(&shared, &executor, None, true, false)
                 .await?;
             maybe_state_ext = Some(ext);
         }

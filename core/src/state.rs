@@ -66,7 +66,8 @@ pub struct LiveState {
     #[arg(short, long, num_args = 1..)]
     pub pallet: Vec<String>,
 
-    /// Storage entry key prefixes to scrape and inject into the test externalities. Pass as 0x prefixed hex strings. By default, all keys are scraped and included.
+    /// Storage entry key prefixes to scrape and inject into the test externalities. Pass as 0x
+    /// prefixed hex strings. By default, all keys are scraped and included.
     #[arg(long = "prefix", value_parser = parse::hash, num_args = 1..)]
     pub hashed_prefixes: Vec<String>,
 
@@ -107,6 +108,7 @@ impl State {
         executor: &WasmExecutor<HostFns>,
         state_snapshot: Option<SnapshotConfig>,
         try_runtime_check: bool,
+        spec_version_check: bool,
     ) -> sc_cli::Result<RemoteExternalities<Block>>
     where
         Block::Header: DeserializeOwned,
@@ -252,6 +254,13 @@ impl State {
 
             if new_version.spec_name != old_version.spec_name {
                 return Err("Spec names must match.".into());
+            }
+
+            if spec_version_check && new_version.spec_version <= old_version.spec_version {
+                log::warn!(
+                    target: LOG_TARGET,
+                    "New runtime spec version is not greater than the on-chain runtime spec version. Don't forget to increment the spec version if you intend to use the new code in a runtime upgrade."
+                );
             }
         }
 
