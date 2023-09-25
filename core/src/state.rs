@@ -62,7 +62,7 @@ pub struct LiveState {
     /// A pallet to scrape. Can be provided multiple times. If empty, entire chain state will
     /// be scraped.
     ///
-    /// This is equivalent to passing the `xx_hash_64(pallet)` to `prefix`.
+    /// This is equivalent to passing `xx_hash_64(pallet)` to `--hashed_prefixes`.
     #[arg(short, long, num_args = 1..)]
     pub pallet: Vec<String>,
 
