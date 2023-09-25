@@ -66,7 +66,7 @@ pub struct LiveState {
     #[arg(short, long, num_args = 1..)]
     pub pallet: Vec<String>,
 
-    /// A hashed prefix to scrape.
+    /// Storage entry key prefixes to scrape and inject into the test externalities. Pass as 0x prefixed hex strings. By default, all keys are scraped and included.
     #[arg(long = "prefix", value_parser = parse::hash, num_args = 1..)]
     pub hashed_prefixes: Vec<String>,
 
