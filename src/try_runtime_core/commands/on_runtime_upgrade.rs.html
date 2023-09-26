@@ -218,6 +218,33 @@
 <a href="#218" id="218">218</a>
 <a href="#219" id="219">219</a>
 <a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a>
+<a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
+<a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -307,16 +334,43 @@
         </span>);
     }
 
-    <span class="kw">let </span>pre_root = ext.backend.root();
+    <span class="comment">// Run `TryRuntime_on_runtime_upgrade` with the given checks.
+    </span><span class="macro">log::info!</span>(
+        <span class="string">&quot;🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}&quot;</span>,
+        command.checks
+    );
     <span class="kw">let </span>(<span class="kw">_</span>, proof, ref_time_results) = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
         <span class="kw-2">&amp;</span>ext,
         <span class="kw-2">&amp;</span>executor,
         <span class="string">&quot;TryRuntime_on_runtime_upgrade&quot;</span>,
         command.checks.encode().as_ref(),
         Default::default(), <span class="comment">// we don&#39;t really need any extensions here.
-        </span>shared.export_proof,
+        </span>shared.export_proof.clone(),
     )<span class="question-mark">?</span>;
 
+    <span class="comment">// If the above call ran with checks then we need to run the call again without checks to
+    // measure PoV correctly.
+    // Otherwise, storage lookups from try-runtime logic like pre/post hooks are included in the PoV
+    // calculation.
+    </span><span class="kw">let </span>(proof, ref_time_results) = <span class="kw">match </span>command.checks {
+        UpgradeCheckSelect::None =&gt; (proof, ref_time_results),
+        <span class="kw">_ </span>=&gt; {
+            <span class="macro">log::info!</span>(
+                <span class="string">&quot;🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements.&quot;
+            </span>);
+            <span class="kw">let </span>(<span class="kw">_</span>, proof, ref_time_results) = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
+                <span class="kw-2">&amp;</span>ext,
+                <span class="kw-2">&amp;</span>executor,
+                <span class="string">&quot;TryRuntime_on_runtime_upgrade&quot;</span>,
+                UpgradeCheckSelect::None.encode().as_ref(),
+                Default::default(), <span class="comment">// we don&#39;t really need any extensions here.
+                </span>shared.export_proof,
+            )<span class="question-mark">?</span>;
+            (proof, ref_time_results)
+        }
+    };
+
+    <span class="kw">let </span>pre_root = ext.backend.root();
     <span class="kw">let </span>pov_safety = analyse_pov::&lt;HashingFor&lt;Block&gt;&gt;(proof, <span class="kw-2">*</span>pre_root, command.no_weight_warnings);
     <span class="kw">let </span>ref_time_safety = analyse_ref_time(ref_time_results, command.no_weight_warnings);
 
