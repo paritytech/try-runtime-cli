@@ -78,7 +78,7 @@ where
     // we first build the externalities with the remote code.
     let ext = command
         .state
-        .to_ext::<Block, HostFns>(&shared, &executor, None, true)
+        .to_ext::<Block, HostFns>(&shared, &executor, None, true, false)
         .await?;
 
     let header_ws_uri = command.header_ws_uri();

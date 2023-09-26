@@ -76,7 +76,7 @@ where
 
     let executor = build_executor::<HostFns>(&shared);
     let _ = State::Live(command.from)
-        .to_ext::<Block, HostFns>(&shared, &executor, Some(path.into()), false)
+        .to_ext::<Block, HostFns>(&shared, &executor, Some(path.into()), false, false)
         .await?;
 
     Ok(())
