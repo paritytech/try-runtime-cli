@@ -263,6 +263,15 @@
 <a href="#263" id="263">263</a>
 <a href="#264" id="264">264</a>
 <a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -331,7 +340,8 @@
     </span><span class="attr">#[arg(short, long, num_args = <span class="number">1</span>..)]
     </span><span class="kw">pub </span>pallet: Vec&lt;String&gt;,
 
-    <span class="doccomment">/// Storage entry key prefixes to scrape and inject into the test externalities. Pass as 0x prefixed hex strings. By default, all keys are scraped and included.
+    <span class="doccomment">/// Storage entry key prefixes to scrape and inject into the test externalities. Pass as 0x
+    /// prefixed hex strings. By default, all keys are scraped and included.
     </span><span class="attr">#[arg(long = <span class="string">&quot;prefix&quot;</span>, value_parser = parse::hash, num_args = <span class="number">1</span>..)]
     </span><span class="kw">pub </span>hashed_prefixes: Vec&lt;String&gt;,
 
@@ -372,6 +382,7 @@
         executor: <span class="kw-2">&amp;</span>WasmExecutor&lt;HostFns&gt;,
         state_snapshot: <span class="prelude-ty">Option</span>&lt;SnapshotConfig&gt;,
         try_runtime_check: bool,
+        spec_version_check: bool,
     ) -&gt; sc_cli::Result&lt;RemoteExternalities&lt;Block&gt;&gt;
     <span class="kw">where
         </span>Block::Header: DeserializeOwned,
@@ -517,6 +528,13 @@
 
             <span class="kw">if </span>new_version.spec_name != old_version.spec_name {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;Spec names must match.&quot;</span>.into());
+            }
+
+            <span class="kw">if </span>spec_version_check &amp;&amp; new_version.spec_version &lt;= old_version.spec_version {
+                <span class="macro">log::warn!</span>(
+                    target: LOG_TARGET,
+                    <span class="string">&quot;New runtime spec version is not greater than the on-chain runtime spec version. Don&#39;t forget to increment the spec version if you intend to use the new code in a runtime upgrade.&quot;
+                </span>);
             }
         }
 
