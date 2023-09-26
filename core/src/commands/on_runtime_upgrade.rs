@@ -87,16 +87,43 @@ where
         );
     }
 
-    let pre_root = ext.backend.root();
+    // Run `TryRuntime_on_runtime_upgrade` with the given checks.
+    log::info!(
+        "🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}",
+        command.checks
+    );
     let (_, proof, ref_time_results) = state_machine_call_with_proof::<Block, HostFns>(
         &ext,
         &executor,
         "TryRuntime_on_runtime_upgrade",
         command.checks.encode().as_ref(),
         Default::default(), // we don't really need any extensions here.
-        shared.export_proof,
+        shared.export_proof.clone(),
     )?;
 
+    // If the above call ran with checks then we need to run the call again without checks to
+    // measure PoV correctly.
+    // Otherwise, storage lookups from try-runtime logic like pre/post hooks are included in the PoV
+    // calculation.
+    let (proof, ref_time_results) = match command.checks {
+        UpgradeCheckSelect::None => (proof, ref_time_results),
+        _ => {
+            log::info!(
+                "🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements."
+            );
+            let (_, proof, ref_time_results) = state_machine_call_with_proof::<Block, HostFns>(
+                &ext,
+                &executor,
+                "TryRuntime_on_runtime_upgrade",
+                UpgradeCheckSelect::None.encode().as_ref(),
+                Default::default(), // we don't really need any extensions here.
+                shared.export_proof,
+            )?;
+            (proof, ref_time_results)
+        }
+    };
+
+    let pre_root = ext.backend.root();
     let pov_safety = analyse_pov::<HashingFor<Block>>(proof, *pre_root, command.no_weight_warnings);
     let ref_time_safety = analyse_ref_time(ref_time_results, command.no_weight_warnings);
 
