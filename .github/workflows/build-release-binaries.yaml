@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         platform: 
-          - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-musl }
           - { os: macos-latest, target: x86_64-apple-darwin }
 
     runs-on: ${{ matrix.platform.os }}
@@ -19,7 +19,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    
     - name: Install Protoc
       uses: arduino/setup-protoc@v1
       with:
@@ -31,6 +30,17 @@ jobs:
         profile: minimal
         toolchain: stable
         override: true
+
+    - name: Add musl target
+      if: matrix.platform.os == 'ubuntu-latest'
+      run: rustup target add x86_64-unknown-linux-musl
+
+    - name: Install deps for musl build
+      if: matrix.platform.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y musl-tools clang build-essential curl llvm-dev libclang-dev linux-headers-generic libsnappy-dev liblz4-dev libzstd-dev libgflags-dev zlib1g-dev libbz2-dev
+        sudo ln -s /usr/bin/g++ /usr/bin/musl-g++
 
     - name: Build Rust project
       run: cargo build --release --target ${{ matrix.platform.target }}
