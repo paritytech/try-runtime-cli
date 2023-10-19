@@ -29,7 +29,7 @@ use substrate_rpc_client::{ws_client, ChainApi};
 use crate::{
     build_executor, full_extensions, rpc_err_handler,
     state::{LiveState, State},
-    state_machine_call_with_proof, SharedParams, LOG_TARGET,
+    state_machine_call, SharedParams, LOG_TARGET,
 };
 
 /// Configurations for [`run`].
@@ -133,13 +133,12 @@ where
     )
         .encode();
 
-    let _ = state_machine_call_with_proof::<Block, HostFns>(
+    let _ = state_machine_call::<Block, HostFns>(
         &ext,
         &executor,
         "TryRuntime_execute_block",
         &payload,
         full_extensions(executor.clone()),
-        shared.export_proof,
     )?;
 
     Ok(())
