@@ -184,7 +184,7 @@
 //!
 //! For the following examples, we assume the existence of the following:
 //!
-//! 1. a substrate node compiled with `--feature try-runtime`, called `substrate`. This will be
+//! 1. a substrate node compiled with `--features try-runtime`, called `substrate`. This will be
 //! the running node that you connect to, and provide a wasm blob that has try-runtime
 //! functionality enabled.
 //! 2. the `try-runtime` CLI binary on your path.
