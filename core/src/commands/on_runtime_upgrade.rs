@@ -144,6 +144,8 @@ where
         _ => {
             log::warn!(target: LOG_TARGET, "⚠️  TryRuntime_on_runtime_upgrade executed \
             successfully but with weight safety warnings.");
+            // Exit with a non-zero exit code to indicate that the runtime upgrade may not be safe.
+            std::process::exit(1);
         }
     }
 
