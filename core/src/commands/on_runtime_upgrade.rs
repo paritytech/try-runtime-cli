@@ -92,7 +92,7 @@ where
         "🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}",
         command.checks
     );
-    let (_, proof, ref_time_results) = state_machine_call_with_proof::<Block, HostFns>(
+    let (_, proof, encoded_result) = state_machine_call_with_proof::<Block, HostFns>(
         &ext,
         &executor,
         "TryRuntime_on_runtime_upgrade",
@@ -100,6 +100,8 @@ where
         Default::default(), // we don't really need any extensions here.
         shared.export_proof.clone(),
     )?;
+
+    let ref_time_results = encoded_result.try_into()?;
 
     // If the above call ran with checks then we need to run the call again without checks to
     // measure PoV correctly.
@@ -111,7 +113,7 @@ where
             log::info!(
                 "🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements."
             );
-            let (_, proof, ref_time_results) = state_machine_call_with_proof::<Block, HostFns>(
+            let (_, proof, encoded_result) = state_machine_call_with_proof::<Block, HostFns>(
                 &ext,
                 &executor,
                 "TryRuntime_on_runtime_upgrade",
@@ -119,6 +121,7 @@ where
                 Default::default(), // we don't really need any extensions here.
                 shared.export_proof,
             )?;
+            let ref_time_results = encoded_result.try_into()?;
             (proof, ref_time_results)
         }
     };
