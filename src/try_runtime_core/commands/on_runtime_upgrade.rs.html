@@ -247,6 +247,9 @@
 <a href="#247" id="247">247</a>
 <a href="#248" id="248">248</a>
 <a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -341,7 +344,7 @@
         <span class="string">&quot;🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}&quot;</span>,
         command.checks
     );
-    <span class="kw">let </span>(<span class="kw">_</span>, proof, ref_time_results) = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
+    <span class="kw">let </span>(<span class="kw">_</span>, proof, encoded_result) = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
         <span class="kw-2">&amp;</span>ext,
         <span class="kw-2">&amp;</span>executor,
         <span class="string">&quot;TryRuntime_on_runtime_upgrade&quot;</span>,
@@ -349,6 +352,8 @@
         Default::default(), <span class="comment">// we don&#39;t really need any extensions here.
         </span>shared.export_proof.clone(),
     )<span class="question-mark">?</span>;
+
+    <span class="kw">let </span>ref_time_results = encoded_result.try_into()<span class="question-mark">?</span>;
 
     <span class="comment">// If the above call ran with checks then we need to run the call again without checks to
     // measure PoV correctly.
@@ -360,7 +365,7 @@
             <span class="macro">log::info!</span>(
                 <span class="string">&quot;🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements.&quot;
             </span>);
-            <span class="kw">let </span>(<span class="kw">_</span>, proof, ref_time_results) = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
+            <span class="kw">let </span>(<span class="kw">_</span>, proof, encoded_result) = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
                 <span class="kw-2">&amp;</span>ext,
                 <span class="kw-2">&amp;</span>executor,
                 <span class="string">&quot;TryRuntime_on_runtime_upgrade&quot;</span>,
@@ -368,6 +373,7 @@
                 Default::default(), <span class="comment">// we don&#39;t really need any extensions here.
                 </span>shared.export_proof,
             )<span class="question-mark">?</span>;
+            <span class="kw">let </span>ref_time_results = encoded_result.try_into()<span class="question-mark">?</span>;
             (proof, ref_time_results)
         }
     };

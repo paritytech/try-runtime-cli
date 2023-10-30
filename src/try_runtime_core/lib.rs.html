@@ -249,6 +249,7 @@
 <a href="#249" id="249">249</a>
 <a href="#250" id="250">250</a>
 <a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -381,6 +382,22 @@
     <span class="kw">pub </span>max: Duration,
 }
 
+<span class="kw">impl </span>TryFrom&lt;Vec&lt;u8&gt;&gt; <span class="kw">for </span>RefTimeInfo {
+    <span class="kw">type </span>Error = String;
+
+    <span class="doccomment">/// try_from Vec encoded as (Weight, Weight) tuple
+    </span><span class="kw">fn </span>try_from(value: Vec&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        <span class="kw">let </span>(weight_used, weight_max) = &lt;(Weight, Weight)&gt;::decode_all(<span class="kw-2">&amp;mut &amp;*</span>value)
+            .map_err(|e| <span class="macro">format!</span>(<span class="string">&quot;failed to decode weight: {:?}&quot;</span>, e))<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(RefTimeInfo {
+            <span class="comment">// 1000 picoseconds == 1 nanosecond
+            </span>used: Duration::from_nanos(weight_used.ref_time() / <span class="number">1000</span>),
+            max: Duration::from_nanos(weight_max.ref_time() / <span class="number">1000</span>),
+        })
+    }
+}
+
 <span class="doccomment">/// Same as [`state_machine_call`], but it also computes and returns the storage proof and ref time
 /// information.
 ///
@@ -392,11 +409,7 @@
     data: <span class="kw-2">&amp;</span>[u8],
     <span class="kw-2">mut </span>extensions: Extensions,
     maybe_export_proof: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
-) -&gt; sc_cli::Result&lt;(
-    OverlayedChanges&lt;HashingFor&lt;Block&gt;&gt;,
-    StorageProof,
-    RefTimeInfo,
-)&gt; {
+) -&gt; sc_cli::Result&lt;(OverlayedChanges&lt;HashingFor&lt;Block&gt;&gt;, StorageProof, Vec&lt;u8&gt;)&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>changes = Default::default();
     <span class="kw">let </span>backend = ext.backend.clone();
     <span class="kw">let </span>runtime_code_backend = sp_state_machine::backend::BackendRuntimeCode::new(<span class="kw-2">&amp;</span>backend);
@@ -449,18 +462,7 @@
             })<span class="question-mark">?</span>;
     }
 
-    <span class="kw">let </span>(weight_used, weight_max) = &lt;(Weight, Weight)&gt;::decode_all(<span class="kw-2">&amp;mut &amp;*</span>encoded_result)
-        .map_err(|e| <span class="macro">format!</span>(<span class="string">&quot;failed to decode weight: {:?}&quot;</span>, e))<span class="question-mark">?</span>;
-
-    <span class="prelude-val">Ok</span>((
-        changes,
-        proof,
-        RefTimeInfo {
-            <span class="comment">// 1000 picoseconds == 1 nanosecond
-            </span>used: Duration::from_nanos(weight_used.ref_time() / <span class="number">1000</span>),
-            max: Duration::from_nanos(weight_max.ref_time() / <span class="number">1000</span>),
-        },
-    ))
+    <span class="prelude-val">Ok</span>((changes, proof, encoded_result))
 }
 
 <span class="doccomment">/// Converts a [`sp_state_machine::StorageProof`] into a JSON string.
