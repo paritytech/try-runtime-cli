@@ -130,6 +130,22 @@ pub struct RefTimeInfo {
     pub max: Duration,
 }
 
+impl TryFrom<Vec<u8>> for RefTimeInfo {
+    type Error = String;
+
+    /// try_from Vec encoded as (Weight, Weight) tuple
+    fn try_from(value: Vec<u8>) -> Result<Self, Self::Error> {
+        let (weight_used, weight_max) = <(Weight, Weight)>::decode_all(&mut &*value)
+            .map_err(|e| format!("failed to decode weight: {:?}", e))?;
+
+        Ok(RefTimeInfo {
+            // 1000 picoseconds == 1 nanosecond
+            used: Duration::from_nanos(weight_used.ref_time() / 1000),
+            max: Duration::from_nanos(weight_max.ref_time() / 1000),
+        })
+    }
+}
+
 /// Same as [`state_machine_call`], but it also computes and returns the storage proof and ref time
 /// information.
 ///
@@ -141,11 +157,7 @@ pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunction
     data: &[u8],
     mut extensions: Extensions,
     maybe_export_proof: Option<PathBuf>,
-) -> sc_cli::Result<(
-    OverlayedChanges<HashingFor<Block>>,
-    StorageProof,
-    RefTimeInfo,
-)> {
+) -> sc_cli::Result<(OverlayedChanges<HashingFor<Block>>, StorageProof, Vec<u8>)> {
     let mut changes = Default::default();
     let backend = ext.backend.clone();
     let runtime_code_backend = sp_state_machine::backend::BackendRuntimeCode::new(&backend);
@@ -198,18 +210,7 @@ pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunction
             })?;
     }
 
-    let (weight_used, weight_max) = <(Weight, Weight)>::decode_all(&mut &*encoded_result)
-        .map_err(|e| format!("failed to decode weight: {:?}", e))?;
-
-    Ok((
-        changes,
-        proof,
-        RefTimeInfo {
-            // 1000 picoseconds == 1 nanosecond
-            used: Duration::from_nanos(weight_used.ref_time() / 1000),
-            max: Duration::from_nanos(weight_max.ref_time() / 1000),
-        },
-    ))
+    Ok((changes, proof, encoded_result))
 }
 
 /// Converts a [`sp_state_machine::StorageProof`] into a JSON string.
