@@ -152,7 +152,7 @@ impl TryFrom<Vec<u8>> for RefTimeInfo {
 /// Make sure [`LOG_TARGET`] is enabled in logging.
 pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunctions>(
     ext: &TestExternalities<HashingFor<Block>>,
-    mut storage_overlay: &mut OverlayedChanges<HashingFor<Block>>,
+    storage_overlay: &mut OverlayedChanges<HashingFor<Block>>,
     executor: &WasmExecutor<HostFns>,
     method: &'static str,
     data: &[u8],
