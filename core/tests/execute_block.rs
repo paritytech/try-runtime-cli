@@ -77,6 +77,9 @@ async fn execute_block_works() {
 
         // Assert that the block-execution process has executed a block.
         assert!(matched.is_ok());
+
+        let out = block_execution.wait_with_output().await.unwrap();
+        assert!(out.status.success());
     })
     .await
 }

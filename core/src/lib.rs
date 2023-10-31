@@ -152,23 +152,22 @@ impl TryFrom<Vec<u8>> for RefTimeInfo {
 /// Make sure [`LOG_TARGET`] is enabled in logging.
 pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunctions>(
     ext: &TestExternalities<HashingFor<Block>>,
+    mut storage_overlay: &mut OverlayedChanges<HashingFor<Block>>,
     executor: &WasmExecutor<HostFns>,
     method: &'static str,
     data: &[u8],
     mut extensions: Extensions,
     maybe_export_proof: Option<PathBuf>,
-) -> sc_cli::Result<(OverlayedChanges<HashingFor<Block>>, StorageProof, Vec<u8>)> {
-    let mut changes = Default::default();
-    let backend = ext.backend.clone();
-    let runtime_code_backend = sp_state_machine::backend::BackendRuntimeCode::new(&backend);
-    let proving_backend = TrieBackendBuilder::wrap(&backend)
+) -> sc_cli::Result<(StorageProof, Vec<u8>)> {
+    let runtime_code_backend = sp_state_machine::backend::BackendRuntimeCode::new(&ext.backend);
+    let proving_backend = TrieBackendBuilder::wrap(&ext.backend)
         .with_recorder(Default::default())
         .build();
     let runtime_code = runtime_code_backend.runtime_code()?;
 
     let encoded_result = StateMachine::new(
         &proving_backend,
-        &mut changes,
+        storage_overlay,
         executor,
         method,
         data,
@@ -210,7 +209,7 @@ pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunction
             })?;
     }
 
-    Ok((changes, proof, encoded_result))
+    Ok((proof, encoded_result))
 }
 
 /// Converts a [`sp_state_machine::StorageProof`] into a JSON string.

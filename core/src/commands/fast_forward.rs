@@ -241,6 +241,7 @@ where
         log::info!("Running migrations...");
         state_machine_call_with_proof::<Block, HostFns>(
             &ext,
+            &mut Default::default(),
             &executor,
             "TryRuntime_on_runtime_upgrade",
             command.try_state.encode().as_ref(),

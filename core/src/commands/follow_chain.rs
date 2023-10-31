@@ -152,8 +152,10 @@ where
             .as_mut()
             .expect("state_ext either existed or was just created");
 
+        let mut overlayed_changes = Default::default();
         let result = state_machine_call_with_proof::<Block, HostFns>(
             state_ext,
+            &mut overlayed_changes,
             &executor,
             "TryRuntime_execute_block",
             (
@@ -181,9 +183,7 @@ where
             continue;
         }
 
-        let (mut changes, _, _) = result.expect("checked to be Ok; qed");
-
-        let storage_changes = changes
+        let storage_changes = overlayed_changes
             .drain_storage_changes(
                 &state_ext.backend,
                 // Note that in case a block contains a runtime upgrade, state version could
