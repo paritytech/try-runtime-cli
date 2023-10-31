@@ -38,7 +38,7 @@ async fn on_runtime_upgrade_works() {
                 .arg(format!("--runtime={}", runtime_path))
                 .arg("on-runtime-upgrade")
                 .args(extra_args)
-                .args(&["snap", format!("--path={}", snap_path).as_str()])
+                .args(["snap", format!("--path={}", snap_path).as_str()])
                 .kill_on_drop(true)
                 .spawn()
                 .unwrap()
