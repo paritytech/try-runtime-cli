@@ -23,7 +23,7 @@ use substrate_rpc_client::{ws_client, StateApi};
 
 use crate::{
     build_executor,
-    state::{LiveState, State},
+    state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
     SharedParams, LOG_TARGET,
 };
 
@@ -76,7 +76,13 @@ where
 
     let executor = build_executor::<HostFns>(&shared);
     let _ = State::Live(command.from)
-        .to_ext::<Block, HostFns>(&shared, &executor, Some(path.into()), false, false)
+        .to_ext::<Block, HostFns>(
+            &shared,
+            &executor,
+            Some(path.into()),
+            TryRuntimeFeatureCheck::Skip,
+            SpecVersionCheck::Skip,
+        )
         .await?;
 
     Ok(())
