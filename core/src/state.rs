@@ -109,12 +109,15 @@ pub enum TryRuntimeFeatureCheck {
 }
 /// Options for [`to_ext`]
 ///
-/// Whether to check if the new runtime `spec_version` is greater than the previous runtime `spec_version`
+/// Whether to check if the new runtime `spec_version` is greater than the previous runtime
+/// `spec_version`
 #[derive(PartialEq, PartialOrd)]
 pub enum SpecVersionCheck {
-    /// Check that the new runtime `spec_version` is greater than the previous runtime `spec_version`
+    /// Check that the new runtime `spec_version` is greater than the previous runtime
+    /// `spec_version`
     Check,
-    /// Don't check that the new runtime `spec_version` is greater than the previous runtime `spec_version`
+    /// Don't check that the new runtime `spec_version` is greater than the previous runtime
+    /// `spec_version`
     Skip,
 }
 
