@@ -99,10 +99,12 @@ pub enum State {
 
 /// Options for [`to_ext`]
 ///
-/// Check if runtime is compiled with try-runtime option or not
+/// Whether to check that the runtime was compiled with try-runtime feature
 #[derive(PartialEq, PartialOrd)]
 pub enum TryRuntimeFeatureCheck {
+    /// Check the runtime was compiled with try-runtime feature
     Check,
+    /// Don't check if the runtime was compiled with try-runtime feature
     Skip,
 }
 /// Options for [`to_ext`]
