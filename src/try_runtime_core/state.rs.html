@@ -272,6 +272,34 @@
 <a href="#272" id="272">272</a>
 <a href="#273" id="273">273</a>
 <a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -371,6 +399,30 @@
     </span>Live(LiveState),
 }
 
+<span class="doccomment">/// Options for [`to_ext`]
+///
+/// Whether to check that the runtime was compiled with try-runtime feature
+</span><span class="attr">#[derive(PartialEq, PartialOrd)]
+</span><span class="kw">pub enum </span>TryRuntimeFeatureCheck {
+    <span class="doccomment">/// Check the runtime was compiled with try-runtime feature
+    </span>Check,
+    <span class="doccomment">/// Don&#39;t check if the runtime was compiled with try-runtime feature
+    </span>Skip,
+}
+<span class="doccomment">/// Options for [`to_ext`]
+///
+/// Whether to check if the new runtime `spec_version` is greater than the previous runtime
+/// `spec_version`
+</span><span class="attr">#[derive(PartialEq, PartialOrd)]
+</span><span class="kw">pub enum </span>SpecVersionCheck {
+    <span class="doccomment">/// Check that the new runtime `spec_version` is greater than the previous runtime
+    /// `spec_version`
+    </span>Check,
+    <span class="doccomment">/// Don&#39;t check that the new runtime `spec_version` is greater than the previous runtime
+    /// `spec_version`
+    </span>Skip,
+}
+
 <span class="kw">impl </span>State {
     <span class="doccomment">/// Create the [`RemoteExternalities`].
     ///
@@ -381,8 +433,8 @@
         shared: <span class="kw-2">&amp;</span>SharedParams,
         executor: <span class="kw-2">&amp;</span>WasmExecutor&lt;HostFns&gt;,
         state_snapshot: <span class="prelude-ty">Option</span>&lt;SnapshotConfig&gt;,
-        try_runtime_check: bool,
-        spec_version_check: bool,
+        try_runtime_check: TryRuntimeFeatureCheck,
+        spec_version_check: SpecVersionCheck,
     ) -&gt; sc_cli::Result&lt;RemoteExternalities&lt;Block&gt;&gt;
     <span class="kw">where
         </span>Block::Header: DeserializeOwned,
@@ -530,7 +582,9 @@
                 <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;Spec names must match.&quot;</span>.into());
             }
 
-            <span class="kw">if </span>spec_version_check &amp;&amp; new_version.spec_version &lt;= old_version.spec_version {
+            <span class="kw">if </span>spec_version_check == SpecVersionCheck::Check
+                &amp;&amp; new_version.spec_version &lt;= old_version.spec_version
+            {
                 <span class="macro">log::warn!</span>(
                     target: LOG_TARGET,
                     <span class="string">&quot;New runtime spec version is not greater than the on-chain runtime spec version. Don&#39;t forget to increment the spec version if you intend to use the new code in a runtime upgrade.&quot;
@@ -539,7 +593,9 @@
         }
 
         <span class="comment">// whatever runtime we have in store now must have been compiled with try-runtime feature.
-        </span><span class="kw">if </span>try_runtime_check &amp;&amp; !ensure_try_runtime::&lt;Block, HostFns&gt;(executor, <span class="kw-2">&amp;mut </span>ext) {
+        </span><span class="kw">if </span>try_runtime_check == TryRuntimeFeatureCheck::Check
+            &amp;&amp; !ensure_try_runtime::&lt;Block, HostFns&gt;(executor, <span class="kw-2">&amp;mut </span>ext)
+        {
             <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;given runtime is NOT compiled with try-runtime feature!&quot;</span>.into());
         }
 

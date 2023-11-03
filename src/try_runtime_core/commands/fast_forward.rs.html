@@ -301,6 +301,12 @@
 <a href="#301" id="301">301</a>
 <a href="#302" id="302">302</a>
 <a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -338,7 +344,7 @@
     build_executor, full_extensions,
     inherent_provider::{Chain, InherentProvider},
     rpc_err_handler,
-    state::{LiveState, State},
+    state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
     state_machine_call, state_machine_call_with_proof, BlockT, SharedParams,
 };
 
@@ -537,7 +543,13 @@
     <span class="kw">let </span>executor = build_executor::&lt;HostFns&gt;(<span class="kw-2">&amp;</span>shared);
     <span class="kw">let </span>ext = command
         .state
-        .to_ext::&lt;Block, HostFns&gt;(<span class="kw-2">&amp;</span>shared, <span class="kw-2">&amp;</span>executor, <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>)
+        .to_ext::&lt;Block, HostFns&gt;(
+            <span class="kw-2">&amp;</span>shared,
+            <span class="kw-2">&amp;</span>executor,
+            <span class="prelude-val">None</span>,
+            TryRuntimeFeatureCheck::Check,
+            SpecVersionCheck::Skip,
+        )
         .<span class="kw">await</span><span class="question-mark">?</span>;
 
     <span class="kw">if </span>command.run_migrations {

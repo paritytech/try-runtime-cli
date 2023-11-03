@@ -104,6 +104,12 @@
 <a href="#104" id="104">104</a>
 <a href="#105" id="105">105</a>
 <a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -132,7 +138,7 @@
     build_executor,
     commands::execute_block::next_hash_of,
     full_extensions, parse, rpc_err_handler,
-    state::{LiveState, State},
+    state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
     state_machine_call, SharedParams, LOG_TARGET,
 };
 
@@ -184,7 +190,13 @@
     <span class="comment">// we first build the externalities with the remote code.
     </span><span class="kw">let </span>ext = command
         .state
-        .to_ext::&lt;Block, HostFns&gt;(<span class="kw-2">&amp;</span>shared, <span class="kw-2">&amp;</span>executor, <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>)
+        .to_ext::&lt;Block, HostFns&gt;(
+            <span class="kw-2">&amp;</span>shared,
+            <span class="kw-2">&amp;</span>executor,
+            <span class="prelude-val">None</span>,
+            TryRuntimeFeatureCheck::Check,
+            SpecVersionCheck::Skip,
+        )
         .<span class="kw">await</span><span class="question-mark">?</span>;
 
     <span class="kw">let </span>header_ws_uri = command.header_ws_uri();

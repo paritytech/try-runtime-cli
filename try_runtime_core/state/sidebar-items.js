@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["State"],"struct":["LiveState"]};
+window.SIDEBAR_ITEMS = {"enum":["SpecVersionCheck","State","TryRuntimeFeatureCheck"],"struct":["LiveState"]};

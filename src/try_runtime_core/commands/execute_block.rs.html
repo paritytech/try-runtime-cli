@@ -176,6 +176,12 @@
 <a href="#176" id="176">176</a>
 <a href="#177" id="177">177</a>
 <a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -206,7 +212,7 @@
 
 <span class="kw">use crate</span>::{
     build_executor, full_extensions, rpc_err_handler,
-    state::{LiveState, State},
+    state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
     state_machine_call_with_proof, SharedParams, LOG_TARGET,
 };
 
@@ -275,7 +281,13 @@
     <span class="kw">let </span>executor = build_executor::&lt;HostFns&gt;(<span class="kw-2">&amp;</span>shared);
     <span class="kw">let </span>ext = command
         .state
-        .to_ext::&lt;Block, HostFns&gt;(<span class="kw-2">&amp;</span>shared, <span class="kw-2">&amp;</span>executor, <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>)
+        .to_ext::&lt;Block, HostFns&gt;(
+            <span class="kw-2">&amp;</span>shared,
+            <span class="kw-2">&amp;</span>executor,
+            <span class="prelude-val">None</span>,
+            TryRuntimeFeatureCheck::Check,
+            SpecVersionCheck::Skip,
+        )
         .<span class="kw">await</span><span class="question-mark">?</span>;
 
     <span class="comment">// get the block number associated with this block.

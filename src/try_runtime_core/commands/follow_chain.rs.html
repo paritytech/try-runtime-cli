@@ -209,6 +209,12 @@
 <a href="#209" id="209">209</a>
 <a href="#210" id="210">210</a>
 <a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -240,7 +246,7 @@
 
 <span class="kw">use crate</span>::{
     build_executor, full_extensions, parse, rpc_err_handler,
-    state::{LiveState, State},
+    state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
     state_machine_call_with_proof, SharedParams, LOG_TARGET,
 };
 
@@ -354,7 +360,13 @@
                 hashed_prefixes: <span class="macro">vec!</span>[],
             });
             <span class="kw">let </span>ext = state
-                .to_ext::&lt;Block, HostFns&gt;(<span class="kw-2">&amp;</span>shared, <span class="kw-2">&amp;</span>executor, <span class="prelude-val">None</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>)
+                .to_ext::&lt;Block, HostFns&gt;(
+                    <span class="kw-2">&amp;</span>shared,
+                    <span class="kw-2">&amp;</span>executor,
+                    <span class="prelude-val">None</span>,
+                    TryRuntimeFeatureCheck::Check,
+                    SpecVersionCheck::Skip,
+                )
                 .<span class="kw">await</span><span class="question-mark">?</span>;
             maybe_state_ext = <span class="prelude-val">Some</span>(ext);
         }
