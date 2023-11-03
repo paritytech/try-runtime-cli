@@ -14,6 +14,7 @@ jobs:
   rust-tests:
     runs-on: ubuntu-20.04
     steps:
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
       - name: Checkout source code
         uses: actions/checkout@v4
 
@@ -55,20 +56,8 @@ jobs:
           sudo apt-get autoremove -y >/dev/null 2>&1
           sudo apt-get autoclean -y >/dev/null 2>&1
 
-      - name: Check disk space
-        run: |
-          sudo dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -nr | head
-          df . -h
-          sudo du /usr/ -hx -d 4 --threshold=1G | sort -hr | head
+      - name: cargo build binary required for test
+        run: SKIP_WASM_BUILD=1 cargo build -p try-runtime-cli
 
-      - name: Build binary for test
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release
-
-      - name: Run Tests
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --release
+      - name: cargo test
+        run: SKIP_WASM_BUILD=1 cargo test
