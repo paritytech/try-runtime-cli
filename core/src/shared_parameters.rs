@@ -17,12 +17,13 @@
 
 use std::{path::PathBuf, str::FromStr};
 
-use sc_cli::{WasmExecutionMethod, WasmtimeInstantiationStrategy};
-use sp_runtime::StateVersion;
-use {
-    crate::parse,
-    sc_cli::{DEFAULT_WASMTIME_INSTANTIATION_STRATEGY, DEFAULT_WASM_EXECUTION_METHOD},
+use sc_cli::{
+    WasmExecutionMethod, WasmtimeInstantiationStrategy, DEFAULT_WASMTIME_INSTANTIATION_STRATEGY,
+    DEFAULT_WASM_EXECUTION_METHOD,
 };
+use sp_runtime::StateVersion;
+
+use crate::parse;
 
 /// Shared parameters of the `try-runtime` commands
 #[derive(Debug, Clone, clap::Parser)]
