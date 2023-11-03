@@ -35,7 +35,7 @@ use crate::{
     build_executor, full_extensions,
     inherent_provider::{Chain, InherentProvider},
     rpc_err_handler,
-    state::{LiveState, State},
+    state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
     state_machine_call, state_machine_call_with_proof, BlockT, SharedParams,
 };
 
@@ -234,7 +234,13 @@ where
     let executor = build_executor::<HostFns>(&shared);
     let ext = command
         .state
-        .to_ext::<Block, HostFns>(&shared, &executor, None, true, false)
+        .to_ext::<Block, HostFns>(
+            &shared,
+            &executor,
+            None,
+            TryRuntimeFeatureCheck::Check,
+            SpecVersionCheck::Skip,
+        )
         .await?;
 
     if command.run_migrations {

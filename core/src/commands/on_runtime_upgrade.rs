@@ -27,8 +27,9 @@ use sp_runtime::traits::{Block as BlockT, NumberFor};
 use sp_state_machine::{CompactProof, StorageProof};
 
 use crate::{
-    build_executor, state::State, state_machine_call_with_proof, RefTimeInfo, SharedParams,
-    LOG_TARGET,
+    build_executor,
+    state::{SpecVersionCheck, State, TryRuntimeFeatureCheck},
+    state_machine_call_with_proof, RefTimeInfo, SharedParams, LOG_TARGET,
 };
 
 /// Configuration for [`run`].
@@ -76,7 +77,13 @@ where
     let executor = build_executor(&shared);
     let ext = command
         .state
-        .to_ext::<Block, HostFns>(&shared, &executor, None, true, true)
+        .to_ext::<Block, HostFns>(
+            &shared,
+            &executor,
+            None,
+            TryRuntimeFeatureCheck::Check,
+            SpecVersionCheck::Check,
+        )
         .await?;
 
     if let State::Live(_) = command.state {
