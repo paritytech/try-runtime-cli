@@ -107,12 +107,12 @@ pub enum TryRuntimeFeatureCheck {
 }
 /// Options for [`to_ext`]
 ///
-/// Enable of disable check wether new runtime spec version is not greater
-/// than the on-chain runtime spec version in [`to_ext`]
-
+/// Whether to check if the new runtime `spec_version` is greater than the previous runtime `spec_version`
 #[derive(PartialEq, PartialOrd)]
 pub enum SpecVersionCheck {
+    /// Check that the new runtime `spec_version` is greater than the previous runtime `spec_version`
     Check,
+    /// Don't check that the new runtime `spec_version` is greater than the previous runtime `spec_version`
     Skip,
 }
 
