@@ -161,7 +161,7 @@ where
                 shared.export_proof.clone(),
             ) {
                 Ok(_) => {
-                    // Exeuction was OK, check if the storage root changed.
+                    // Execution was OK, check if the storage root changed.
                     let (oc_post_root, _) =
                         overlayed_changes.storage_root(&ext.backend, ext.state_version);
                     if oc_pre_root != oc_post_root {
