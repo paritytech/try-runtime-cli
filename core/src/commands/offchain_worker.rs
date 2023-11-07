@@ -26,7 +26,7 @@ use crate::{
     build_executor,
     commands::execute_block::next_hash_of,
     full_extensions, parse, rpc_err_handler,
-    state::{LiveState, State},
+    state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
     state_machine_call, SharedParams, LOG_TARGET,
 };
 
@@ -78,7 +78,13 @@ where
     // we first build the externalities with the remote code.
     let ext = command
         .state
-        .to_ext::<Block, HostFns>(&shared, &executor, None, true, false)
+        .to_ext::<Block, HostFns>(
+            &shared,
+            &executor,
+            None,
+            TryRuntimeFeatureCheck::Check,
+            SpecVersionCheck::Skip,
+        )
         .await?;
 
     let header_ws_uri = command.header_ws_uri();
