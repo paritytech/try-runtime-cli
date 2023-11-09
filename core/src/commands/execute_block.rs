@@ -105,7 +105,6 @@ where
     };
 
     // The block we want to *execute* at is the block passed by the user
-    dbg!(live_state.at.clone());
     let execute_at = live_state
         .at
         .clone()
