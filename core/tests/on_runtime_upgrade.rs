@@ -47,7 +47,7 @@ mod on_runtime_upgrade {
             let project_root = env!("CARGO_MANIFEST_DIR");
             let snap_path = format!("{}/tests/snaps/rococo-bridge-hub.snap", project_root);
             let runtime_path = format!(
-                "{}/tests/runtimes/bridge_hub_rococo_runtime_OK.compact.compressed.wasm",
+                "{}/tests/runtimes/bridge_hub_rococo_runtime_ok.compact.compressed.wasm",
                 project_root
             );
             let child = on_runtime_upgrade(snap_path.as_str(), runtime_path.as_str(), &[]);
@@ -101,7 +101,7 @@ mod on_runtime_upgrade {
         let project_root = env!("CARGO_MANIFEST_DIR");
         let snap_path = format!("{}/tests/snaps/rococo-bridge-hub.snap", project_root);
         let runtime_path = format!(
-            "{}/tests/runtimes/bridge_hub_rococo_runtime_NOT_IDEMPOTENT_EXECUTION.compact.compressed.wasm",
+            "{}/tests/runtimes/bridge_hub_rococo_runtime_not_idempotent_execution.compact.compressed.wasm",
             project_root
         );
 
@@ -118,7 +118,7 @@ mod on_runtime_upgrade {
         let project_root = env!("CARGO_MANIFEST_DIR");
         let snap_path = format!("{}/tests/snaps/rococo-bridge-hub.snap", project_root);
         let runtime_path = format!(
-            "{}/tests/runtimes/bridge_hub_rococo_runtime_NOT_IDEMPOTENT_EXECUTION.compact.compressed.wasm",
+            "{}/tests/runtimes/bridge_hub_rococo_runtime_not_idempotent_execution.compact.compressed.wasm",
             project_root
         );
 
@@ -139,7 +139,7 @@ mod on_runtime_upgrade {
         let project_root = env!("CARGO_MANIFEST_DIR");
         let snap_path = format!("{}/tests/snaps/rococo-bridge-hub.snap", project_root);
         let runtime_path = format!(
-            "{}/tests/runtimes/bridge_hub_rococo_runtime_NOT_IDEMPOTENT_EXECUTION.compact.compressed.wasm",
+            "{}/tests/runtimes/bridge_hub_rococo_runtime_not_idempotent_state_root.compact.compressed.wasm",
             project_root
         );
 
@@ -156,7 +156,7 @@ mod on_runtime_upgrade {
         let project_root = env!("CARGO_MANIFEST_DIR");
         let snap_path = format!("{}/tests/snaps/rococo-bridge-hub.snap", project_root);
         let runtime_path = format!(
-            "{}/tests/runtimes/bridge_hub_rococo_runtime_NOT_IDEMPOTENT_EXECUTION.compact.compressed.wasm",
+            "{}/tests/runtimes/bridge_hub_rococo_runtime_not_idempotent_state_root.compact.compressed.wasm",
             project_root
         );
         let child = on_runtime_upgrade(
