@@ -23,9 +23,7 @@ use sp_runtime::traits::{Block as BlockT, NumberFor};
 use substrate_rpc_client::{ws_client, ChainApi};
 
 use crate::{
-    build_executor,
-    commands::execute_block::next_hash_of,
-    full_extensions, parse, rpc_err_handler,
+    build_executor, full_extensions, hash_of, parse, rpc_err_handler,
     state::{LiveState, State},
     state_machine_call, SharedParams, LOG_TARGET,
 };
@@ -74,20 +72,33 @@ where
     <NumberFor<Block> as FromStr>::Err: Debug,
     HostFns: HostFunctions,
 {
-    let executor = build_executor(&shared);
-    // we first build the externalities with the remote code.
-    let ext = command
-        .state
+    let executor = build_executor::<HostFns>(&shared);
+    let block_ws_uri = command.header_ws_uri();
+    let rpc = ws_client(&block_ws_uri).await?;
+
+    let live_state = match command.state {
+        State::Live(live_state) => live_state,
+        _ => {
+            unreachable!("execute block currently only supports Live state")
+        }
+    };
+
+    // The block we want to *execute* at is the block passed by the user
+    let execute_at = live_state
+        .at
+        .clone()
+        .map(|s| hash_of::<Block>(s.as_str()))
+        .transpose()?;
+
+    // let prev_block_live_state = prev_block_live_state::<Block>(&rpc, &live_state).await?;
+    let prev_block_live_state = live_state.to_prev_block_live_state::<Block>().await?;
+
+    // Get state for the prev block
+    let ext = State::Live(prev_block_live_state)
         .to_ext::<Block, HostFns>(&shared, &executor, None, true, false)
         .await?;
 
-    let header_ws_uri = command.header_ws_uri();
-
-    let rpc = ws_client(&header_ws_uri).await?;
-    let next_hash = next_hash_of::<Block>(&rpc, ext.block_hash).await?;
-    log::info!(target: LOG_TARGET, "fetching next header: {:?} ", next_hash);
-
-    let header = ChainApi::<(), Block::Hash, Block::Header, ()>::header(&rpc, Some(next_hash))
+    let header = ChainApi::<(), Block::Hash, Block::Header, ()>::header(&rpc, execute_at)
         .await
         .map_err(rpc_err_handler)
         .map(|maybe_header| maybe_header.ok_or("Header does not exist"))??;

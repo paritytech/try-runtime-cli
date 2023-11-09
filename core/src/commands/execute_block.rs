@@ -19,7 +19,6 @@ use std::{fmt::Debug, str::FromStr};
 
 use parity_scale_codec::Encode;
 use sc_executor::sp_wasm_interface::HostFunctions;
-use sp_rpc::{list::ListOrValue, number::NumberOrHex};
 use sp_runtime::{
     generic::SignedBlock,
     traits::{Block as BlockT, Header as HeaderT, NumberFor},
@@ -27,7 +26,7 @@ use sp_runtime::{
 use substrate_rpc_client::{ws_client, ChainApi};
 
 use crate::{
-    build_executor, full_extensions, rpc_err_handler,
+    build_executor, full_extensions, hash_of, rpc_err_handler,
     state::{LiveState, State},
     state_machine_call_with_proof, SharedParams, LOG_TARGET,
 };
@@ -95,26 +94,39 @@ where
     HostFns: HostFunctions,
 {
     let executor = build_executor::<HostFns>(&shared);
-    let ext = command
-        .state
+    let block_ws_uri = command.block_ws_uri();
+    let rpc = ws_client(&block_ws_uri).await?;
+
+    let live_state = match command.state {
+        State::Live(live_state) => live_state,
+        _ => {
+            unreachable!("execute block currently only supports Live state")
+        }
+    };
+
+    // The block we want to *execute* at is the block passed by the user
+    dbg!(live_state.at.clone());
+    let execute_at = live_state
+        .at
+        .clone()
+        .map(|s| hash_of::<Block>(s.as_str()))
+        .transpose()?;
+
+    // let prev_block_live_state = prev_block_live_state::<Block>(&rpc, &live_state).await?;
+    let prev_block_live_state = live_state.to_prev_block_live_state::<Block>().await?;
+
+    // Get state for the prev block
+    let ext = State::Live(prev_block_live_state)
         .to_ext::<Block, HostFns>(&shared, &executor, None, true, false)
         .await?;
 
-    // get the block number associated with this block.
-    let block_ws_uri = command.block_ws_uri();
-    let rpc = ws_client(&block_ws_uri).await?;
-    let next_hash = next_hash_of::<Block>(&rpc, ext.block_hash).await?;
-
-    log::info!(target: LOG_TARGET, "fetching next block: {:?} ", next_hash);
-
-    let block = ChainApi::<(), Block::Hash, Block::Header, SignedBlock<Block>>::block(
-        &rpc,
-        Some(next_hash),
-    )
-    .await
-    .map_err(rpc_err_handler)?
-    .expect("header exists, block should also exist; qed")
-    .block;
+    // Execute the desired block on top of it
+    let block =
+        ChainApi::<(), Block::Hash, Block::Header, SignedBlock<Block>>::block(&rpc, execute_at)
+            .await
+            .map_err(rpc_err_handler)?
+            .expect("header exists, block should also exist; qed")
+            .block;
 
     // A digest item gets added when the runtime is processing the block, so we need to pop
     // the last one to be consistent with what a gossiped block would contain.
@@ -143,36 +155,4 @@ where
     )?;
 
     Ok(())
-}
-
-pub(crate) async fn next_hash_of<Block: BlockT>(
-    rpc: &substrate_rpc_client::WsClient,
-    hash: Block::Hash,
-) -> sc_cli::Result<Block::Hash>
-where
-    Block: BlockT + serde::de::DeserializeOwned,
-    Block::Header: serde::de::DeserializeOwned,
-{
-    let number = ChainApi::<(), Block::Hash, Block::Header, ()>::header(rpc, Some(hash))
-        .await
-        .map_err(rpc_err_handler)
-        .and_then(|maybe_header| maybe_header.ok_or("header_not_found").map(|h| *h.number()))?;
-
-    let next = number + sp_runtime::traits::One::one();
-
-    let next_hash = match ChainApi::<(), Block::Hash, Block::Header, ()>::block_hash(
-        rpc,
-        Some(ListOrValue::Value(NumberOrHex::Number(
-            next.try_into()
-                .map_err(|_| "failed to convert number to block number")?,
-        ))),
-    )
-    .await
-    .map_err(rpc_err_handler)?
-    {
-        ListOrValue::Value(t) => t.expect("value passed in; value comes out; qed"),
-        _ => unreachable!(),
-    };
-
-    Ok(next_hash)
 }

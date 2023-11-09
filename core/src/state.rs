@@ -23,17 +23,19 @@ use frame_remote_externalities::{
 use parity_scale_codec::Decode;
 use sc_cli::RuntimeVersion;
 use sc_executor::{sp_wasm_interface::HostFunctions, WasmExecutor};
-use sp_api::HashT;
+use sp_api::{HashT, HeaderT};
 use sp_core::{
     hexdisplay::HexDisplay, storage::well_known_keys, traits::ReadRuntimeVersion, twox_128,
 };
+use sp_rpc::{list::ListOrValue, number::NumberOrHex};
 use sp_runtime::{
-    traits::{BlakeTwo256, Block as BlockT},
+    traits::{BlakeTwo256, Block as BlockT, CheckedSub, One},
     DeserializeOwned,
 };
+use substrate_rpc_client::{ws_client, ChainApi};
 
 use crate::{
-    ensure_try_runtime, hash_of, parse,
+    ensure_try_runtime, hash_of, parse, rpc_err_handler,
     shared_parameters::{Runtime, SharedParams},
     LOG_TARGET,
 };
@@ -78,6 +80,60 @@ pub struct LiveState {
     /// Otherwise, it must be enabled explicitly using this flag.
     #[arg(long)]
     pub child_tree: bool,
+}
+
+impl LiveState {
+    /// Converts this `LiveState` into a `LiveState` for the previous block.
+    ///
+    /// Useful for opertations like when you want to execute a block, but also need the state of the
+    /// block *before* it.
+    pub async fn to_prev_block_live_state<Block: BlockT>(self) -> sc_cli::Result<LiveState>
+    where
+        <Block::Hash as FromStr>::Err: Debug,
+    {
+        // We want to execute the block `at`, therefore need the state of the block *before* it.
+        dbg!(self.at.clone());
+        let at = self
+            .at
+            .clone()
+            .map(|s| hash_of::<Block>(s.as_str()))
+            .transpose()?;
+
+        // Get the block number requested by the user, or the current block number if they
+        // didn't specify one.
+        let rpc = ws_client(&self.uri).await?;
+        let number = ChainApi::<(), Block::Hash, Block::Header, ()>::header(&rpc, at)
+            .await
+            .map_err(rpc_err_handler)
+            .and_then(|maybe_header| maybe_header.ok_or("header_not_found").map(|h| *h.number()))?;
+
+        // Get the previous number.
+        let prev_number = number
+            .checked_sub(&One::one())
+            .expect("cannot get block number below 0");
+
+        // Get the previous block hash
+        let previous_hash = match ChainApi::<(), Block::Hash, Block::Header, ()>::block_hash(
+            &rpc,
+            Some(ListOrValue::Value(NumberOrHex::Number(
+                prev_number
+                    .try_into()
+                    .map_err(|_| "failed to convert number to block number")?,
+            ))),
+        )
+        .await
+        .map_err(rpc_err_handler)?
+        {
+            ListOrValue::Value(t) => t.expect("tried to fetch a block that doesn't exist"),
+            _ => unreachable!(),
+        };
+
+        dbg!(hex::encode(&previous_hash));
+        Ok(LiveState {
+            at: Some(hex::encode(previous_hash)),
+            ..self
+        })
+    }
 }
 
 /// The source of runtime *state* to use.
