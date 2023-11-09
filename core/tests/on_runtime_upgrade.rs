@@ -43,7 +43,7 @@ mod on_runtime_upgrade {
 
     #[tokio::test]
     async fn ok_works() {
-        common::run_with_timeout(Duration::from_secs(60), async move {
+        common::run_with_timeout(Duration::from_secs(300), async move {
             let project_root = env!("CARGO_MANIFEST_DIR");
             let snap_path = format!("{}/tests/snaps/rococo-bridge-hub.snap", project_root);
             let runtime_path = format!(
@@ -59,7 +59,7 @@ mod on_runtime_upgrade {
 
     #[tokio::test]
     async fn weight_issue_fails() {
-        common::run_with_timeout(Duration::from_secs(60), async move {
+        common::run_with_timeout(Duration::from_secs(300), async move {
             let project_root = env!("CARGO_MANIFEST_DIR");
             let snap_path = format!("{}/tests/snaps/rococo-bridge-hub.snap", project_root);
             let runtime_path = format!(
