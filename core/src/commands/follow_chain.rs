@@ -29,7 +29,7 @@ use substrate_rpc_client::{ws_client, ChainApi, FinalizedHeaders, Subscription, 
 
 use crate::{
     build_executor, full_extensions, parse, rpc_err_handler,
-    state::{LiveState, State},
+    state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
     state_machine_call_with_proof, SharedParams, LOG_TARGET,
 };
 
@@ -143,7 +143,13 @@ where
                 hashed_prefixes: vec![],
             });
             let ext = state
-                .to_ext::<Block, HostFns>(&shared, &executor, None, true, false)
+                .to_ext::<Block, HostFns>(
+                    &shared,
+                    &executor,
+                    None,
+                    TryRuntimeFeatureCheck::Check,
+                    SpecVersionCheck::Skip,
+                )
                 .await?;
             maybe_state_ext = Some(ext);
         }
