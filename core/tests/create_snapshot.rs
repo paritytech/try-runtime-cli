@@ -74,15 +74,10 @@ async fn create_snapshot_works() {
         let block_hash = common::block_hash(block_number, &ws_url).await.unwrap();
 
         // Try to create a snapshot.
-        let mut snapshot_creation = create_snapshot(&ws_url, &snap_file_path, block_hash);
+        let mut child = create_snapshot(&ws_url, &snap_file_path, block_hash);
+        let out = child.wait_with_output().await.unwrap();
 
-        let re = Regex::new(r".*writing snapshot of (\d+) bytes to .*").unwrap();
-        let matched =
-            common::wait_for_stream_pattern_match(snapshot_creation.stderr.take().unwrap(), re)
-                .await;
-
-        // Assert that the snapshot creation succeded.
-        assert!(matched.is_ok(), "Failed to create snapshot");
+        assert!(out.status.success());
 
         let snapshot_is_on_disk = Path::new(&snap_file_path).exists();
         assert!(snapshot_is_on_disk, "Snapshot was not written to disk");
