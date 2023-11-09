@@ -25,7 +25,6 @@ use std::{
 use assert_cmd::cargo::cargo_bin;
 use frame_remote_externalities::{Builder, Mode, OfflineConfig, SnapshotConfig};
 use node_primitives::{Block, Hash};
-use regex::Regex;
 use substrate_cli_test_utils as common;
 use tokio::process::Command;
 
@@ -74,7 +73,7 @@ async fn create_snapshot_works() {
         let block_hash = common::block_hash(block_number, &ws_url).await.unwrap();
 
         // Try to create a snapshot.
-        let mut child = create_snapshot(&ws_url, &snap_file_path, block_hash);
+        let child = create_snapshot(&ws_url, &snap_file_path, block_hash);
         let out = child.wait_with_output().await.unwrap();
 
         assert!(out.status.success());
