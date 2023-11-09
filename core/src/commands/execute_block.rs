@@ -111,7 +111,6 @@ where
         .map(|s| hash_of::<Block>(s.as_str()))
         .transpose()?;
 
-    // let prev_block_live_state = prev_block_live_state::<Block>(&rpc, &live_state).await?;
     let prev_block_live_state = live_state.to_prev_block_live_state::<Block>().await?;
 
     // Get state for the prev block
