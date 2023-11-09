@@ -52,6 +52,7 @@ mod on_runtime_upgrade {
             );
             let child = on_runtime_upgrade(snap_path.as_str(), runtime_path.as_str(), &[]);
             let out = child.wait_with_output().await.unwrap();
+            dbg!(&out);
             assert!(out.status.success());
         })
         .await;
