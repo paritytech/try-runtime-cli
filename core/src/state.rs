@@ -83,6 +83,17 @@ pub struct LiveState {
 }
 
 impl LiveState {
+    /// Return the `at` block hash as a `Hash`, if it exists.
+    pub fn at<Block: BlockT>(&self) -> sc_cli::Result<Option<<Block>::Hash>>
+    where
+        <Block::Hash as FromStr>::Err: Debug,
+    {
+        self.at
+            .clone()
+            .map(|s| hash_of::<Block>(s.as_str()))
+            .transpose()
+    }
+
     /// Converts this `LiveState` into a `LiveState` for the previous block.
     ///
     /// Useful for opertations like when you want to execute a block, but also need the state of the
@@ -92,11 +103,7 @@ impl LiveState {
         <Block::Hash as FromStr>::Err: Debug,
     {
         // We want to execute the block `at`, therefore need the state of the block *before* it.
-        let at = self
-            .at
-            .clone()
-            .map(|s| hash_of::<Block>(s.as_str()))
-            .transpose()?;
+        let at = self.at::<Block>()?;
 
         // Get the block number requested by the user, or the current block number if they
         // didn't specify one.

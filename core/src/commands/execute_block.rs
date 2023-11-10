@@ -26,7 +26,7 @@ use sp_runtime::{
 use substrate_rpc_client::{ws_client, ChainApi};
 
 use crate::{
-    build_executor, full_extensions, hash_of, rpc_err_handler,
+    build_executor, full_extensions, rpc_err_handler,
     state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
     state_machine_call_with_proof, SharedParams, LOG_TARGET,
 };
@@ -105,11 +105,7 @@ where
     };
 
     // The block we want to *execute* at is the block passed by the user
-    let execute_at = live_state
-        .at
-        .clone()
-        .map(|s| hash_of::<Block>(s.as_str()))
-        .transpose()?;
+    let execute_at = live_state.at::<Block>()?;
 
     let prev_block_live_state = live_state.to_prev_block_live_state::<Block>().await?;
 
