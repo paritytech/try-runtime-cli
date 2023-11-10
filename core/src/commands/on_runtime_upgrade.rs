@@ -57,11 +57,13 @@ pub struct Command {
     )]
     pub checks: UpgradeCheckSelect,
 
-    /// Whether to assume that the runtime is a relay chain runtime.
-    ///
-    /// This is used to adjust the behavior of weight measurement warnings.
+    /// Whether to disable weight warnings, useful if the runtime is for a relay chain.
     #[clap(long, default_value = "false", default_missing_value = "true")]
     pub no_weight_warnings: bool,
+
+    /// Whether to disable migration idempotency checks
+    #[clap(long, default_value = "false", default_missing_value = "true")]
+    pub no_idempotency_checks: bool,
 }
 
 // Runs the `on-runtime-upgrade` command.
@@ -99,15 +101,18 @@ where
         "🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}",
         command.checks
     );
-    let (_, proof, encoded_result) = state_machine_call_with_proof::<Block, HostFns>(
+    // Save the overlayed changes from the first run, so we can use them later for idempotency
+    // checks.
+    let mut overlayed_changes = Default::default();
+    let (proof, encoded_result) = state_machine_call_with_proof::<Block, HostFns>(
         &ext,
+        &mut overlayed_changes,
         &executor,
         "TryRuntime_on_runtime_upgrade",
         command.checks.encode().as_ref(),
         Default::default(), // we don't really need any extensions here.
         shared.export_proof.clone(),
     )?;
-
     let ref_time_results = encoded_result.try_into()?;
 
     // If the above call ran with checks then we need to run the call again without checks to
@@ -120,43 +125,93 @@ where
             log::info!(
                 "🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements."
             );
-            let (_, proof, encoded_result) = state_machine_call_with_proof::<Block, HostFns>(
+            let (proof, encoded_result) = state_machine_call_with_proof::<Block, HostFns>(
                 &ext,
+                &mut Default::default(),
                 &executor,
                 "TryRuntime_on_runtime_upgrade",
                 UpgradeCheckSelect::None.encode().as_ref(),
                 Default::default(), // we don't really need any extensions here.
-                shared.export_proof,
+                shared.export_proof.clone(),
             )?;
             let ref_time_results = encoded_result.try_into()?;
             (proof, ref_time_results)
         }
     };
 
+    // Check idempotency
+    let idempotency_ok = match command.no_idempotency_checks {
+        true => {
+            log::info!("ℹ Skipping idempotency check");
+            true
+        }
+        false => {
+            log::info!(
+                "🔬 Running TryRuntime_on_runtime_upgrade again to check idempotency: {:?}",
+                command.checks
+            );
+            let (oc_pre_root, _) = overlayed_changes.storage_root(&ext.backend, ext.state_version);
+            match state_machine_call_with_proof::<Block, HostFns>(
+                &ext,
+                &mut overlayed_changes,
+                &executor,
+                "TryRuntime_on_runtime_upgrade",
+                command.checks.encode().as_ref(),
+                Default::default(), // we don't really need any extensions here.
+                shared.export_proof.clone(),
+            ) {
+                Ok(_) => {
+                    // Execution was OK, check if the storage root changed.
+                    let (oc_post_root, _) =
+                        overlayed_changes.storage_root(&ext.backend, ext.state_version);
+                    if oc_pre_root != oc_post_root {
+                        log::error!("❌ Migrations are not idempotent. Selectively remove migrations from Executive until you find the culprit.");
+                        false
+                    } else {
+                        // Exeuction was OK and state root didn't change
+                        true
+                    }
+                }
+                Err(e) => {
+                    log::error!(
+                        "❌ Migrations are not idempotent, they failed during the second execution.",
+                    );
+                    log::debug!("{:?}", e);
+                    false
+                }
+            }
+        }
+    };
+
+    // Check weight safety
     let pre_root = ext.backend.root();
     let pov_safety = analyse_pov::<HashingFor<Block>>(proof, *pre_root, command.no_weight_warnings);
     let ref_time_safety = analyse_ref_time(ref_time_results, command.no_weight_warnings);
-
-    match (pov_safety, ref_time_safety, command.no_weight_warnings) {
+    let weight_ok = match (pov_safety, ref_time_safety, command.no_weight_warnings) {
         (_, _, true) => {
-            log::info!("✅ TryRuntime_on_runtime_upgrade executed without errors")
+            log::info!("ℹ Skipped checking weight safety");
+            true
         }
         (WeightSafety::ProbablySafe, WeightSafety::ProbablySafe, _) => {
             log::info!(
                 target: LOG_TARGET,
-                "✅ TryRuntime_on_runtime_upgrade executed without errors or weight safety \
-                warnings. Please note this does not guarantee a successful runtime upgrade. \
+                "✅ No weight safety issues detected. \
+                Please note this does not guarantee a successful runtime upgrade. \
                 Always test your runtime upgrade with recent state, and ensure that the weight usage \
                 of your migrations will not drastically differ between testing and actual on-chain \
                 execution."
             );
+            true
         }
         _ => {
-            log::warn!(target: LOG_TARGET, "⚠️  TryRuntime_on_runtime_upgrade executed \
-            successfully but with weight safety warnings.");
-            // Exit with a non-zero exit code to indicate that the runtime upgrade may not be safe.
-            std::process::exit(1);
+            log::error!(target: LOG_TARGET, "❌ Weight safety issues detected.");
+            false
         }
+    };
+
+    if !weight_ok || !idempotency_ok {
+        log::error!("❌ Issues detected, exiting non-zero. See logs.");
+        std::process::exit(1);
     }
 
     Ok(())
