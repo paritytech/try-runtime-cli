@@ -27,9 +27,8 @@ use sp_api::{HashT, HeaderT};
 use sp_core::{
     hexdisplay::HexDisplay, storage::well_known_keys, traits::ReadRuntimeVersion, twox_128,
 };
-use sp_rpc::{list::ListOrValue, number::NumberOrHex};
 use sp_runtime::{
-    traits::{BlakeTwo256, Block as BlockT, CheckedSub, One},
+    traits::{BlakeTwo256, Block as BlockT},
     DeserializeOwned,
 };
 use substrate_rpc_client::{ws_client, ChainApi};
@@ -108,31 +107,14 @@ impl LiveState {
         // Get the block number requested by the user, or the current block number if they
         // didn't specify one.
         let rpc = ws_client(&self.uri).await?;
-        let number = ChainApi::<(), Block::Hash, Block::Header, ()>::header(&rpc, at)
+        let previous_hash = ChainApi::<(), Block::Hash, Block::Header, ()>::header(&rpc, at)
             .await
             .map_err(rpc_err_handler)
-            .and_then(|maybe_header| maybe_header.ok_or("header_not_found").map(|h| *h.number()))?;
-
-        // Get the previous number.
-        let prev_number = number
-            .checked_sub(&One::one())
-            .expect("cannot get block number below 0");
-
-        // Get the previous block hash
-        let previous_hash = match ChainApi::<(), Block::Hash, Block::Header, ()>::block_hash(
-            &rpc,
-            Some(ListOrValue::Value(NumberOrHex::Number(
-                prev_number
-                    .try_into()
-                    .map_err(|_| "failed to convert number to block number")?,
-            ))),
-        )
-        .await
-        .map_err(rpc_err_handler)?
-        {
-            ListOrValue::Value(t) => t.expect("tried to fetch a block that doesn't exist"),
-            _ => unreachable!(),
-        };
+            .and_then(|maybe_header| {
+                maybe_header
+                    .ok_or("header_not_found")
+                    .map(|h| *h.parent_hash())
+            })?;
 
         Ok(LiveState {
             at: Some(hex::encode(previous_hash)),
