@@ -60,26 +60,28 @@ async fn execute_block_works() {
                 .unwrap()
         }
 
-        let block_number = 1;
+        let block_number = 3;
         let block_hash = common::block_hash(block_number, &ws_url).await.unwrap();
 
         // Try to execute the block.
         let mut block_execution = execute_block(&ws_url, block_hash);
 
         // The execute-block command is actually executing the next block.
-        let expected_output = format!(
-            r#".*Block #{} successfully executed"#,
-            block_number.saturating_add(1)
-        );
+        let expected_output = format!(r#".*Block #{} successfully executed"#, block_number);
         let re = Regex::new(expected_output.as_str()).unwrap();
         let matched =
             common::wait_for_stream_pattern_match(block_execution.stderr.take().unwrap(), re).await;
 
-        // Assert that the block-execution process has executed a block.
+        // Assert that the block-execution process has executed the expected block.
         assert!(matched.is_ok());
 
-        let out = block_execution.wait_with_output().await.unwrap();
-        assert!(out.status.success());
+        // Assert that the block-execution exited succesfully
+        assert!(block_execution
+            .wait_with_output()
+            .await
+            .unwrap()
+            .status
+            .success());
     })
     .await
 }
