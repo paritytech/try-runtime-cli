@@ -147,6 +147,7 @@ where
 
     let _ = state_machine_call_with_proof::<Block, HostFns>(
         &ext,
+        &mut Default::default(),
         &executor,
         "TryRuntime_execute_block",
         &payload,
