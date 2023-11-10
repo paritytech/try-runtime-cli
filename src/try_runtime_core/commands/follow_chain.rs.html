@@ -375,8 +375,10 @@
             .as_mut()
             .expect(<span class="string">&quot;state_ext either existed or was just created&quot;</span>);
 
+        <span class="kw">let </span><span class="kw-2">mut </span>overlayed_changes = Default::default();
         <span class="kw">let </span>result = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
             state_ext,
+            <span class="kw-2">&amp;mut </span>overlayed_changes,
             <span class="kw-2">&amp;</span>executor,
             <span class="string">&quot;TryRuntime_execute_block&quot;</span>,
             (
@@ -404,9 +406,7 @@
             <span class="kw">continue</span>;
         }
 
-        <span class="kw">let </span>(<span class="kw-2">mut </span>changes, <span class="kw">_</span>, <span class="kw">_</span>) = result.expect(<span class="string">&quot;checked to be Ok; qed&quot;</span>);
-
-        <span class="kw">let </span>storage_changes = changes
+        <span class="kw">let </span>storage_changes = overlayed_changes
             .drain_storage_changes(
                 <span class="kw-2">&amp;</span>state_ext.backend,
                 <span class="comment">// Note that in case a block contains a runtime upgrade, state version could

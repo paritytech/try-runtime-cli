@@ -249,7 +249,6 @@
 <a href="#249" id="249">249</a>
 <a href="#250" id="250">250</a>
 <a href="#251" id="251">251</a>
-<a href="#252" id="252">252</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -404,23 +403,22 @@
 /// Make sure [`LOG_TARGET`] is enabled in logging.
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>state_machine_call_with_proof&lt;Block: BlockT, HostFns: HostFunctions&gt;(
     ext: <span class="kw-2">&amp;</span>TestExternalities&lt;HashingFor&lt;Block&gt;&gt;,
+    storage_overlay: <span class="kw-2">&amp;mut </span>OverlayedChanges&lt;HashingFor&lt;Block&gt;&gt;,
     executor: <span class="kw-2">&amp;</span>WasmExecutor&lt;HostFns&gt;,
     method: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
     data: <span class="kw-2">&amp;</span>[u8],
     <span class="kw-2">mut </span>extensions: Extensions,
     maybe_export_proof: <span class="prelude-ty">Option</span>&lt;PathBuf&gt;,
-) -&gt; sc_cli::Result&lt;(OverlayedChanges&lt;HashingFor&lt;Block&gt;&gt;, StorageProof, Vec&lt;u8&gt;)&gt; {
-    <span class="kw">let </span><span class="kw-2">mut </span>changes = Default::default();
-    <span class="kw">let </span>backend = ext.backend.clone();
-    <span class="kw">let </span>runtime_code_backend = sp_state_machine::backend::BackendRuntimeCode::new(<span class="kw-2">&amp;</span>backend);
-    <span class="kw">let </span>proving_backend = TrieBackendBuilder::wrap(<span class="kw-2">&amp;</span>backend)
+) -&gt; sc_cli::Result&lt;(StorageProof, Vec&lt;u8&gt;)&gt; {
+    <span class="kw">let </span>runtime_code_backend = sp_state_machine::backend::BackendRuntimeCode::new(<span class="kw-2">&amp;</span>ext.backend);
+    <span class="kw">let </span>proving_backend = TrieBackendBuilder::wrap(<span class="kw-2">&amp;</span>ext.backend)
         .with_recorder(Default::default())
         .build();
     <span class="kw">let </span>runtime_code = runtime_code_backend.runtime_code()<span class="question-mark">?</span>;
 
     <span class="kw">let </span>encoded_result = StateMachine::new(
         <span class="kw-2">&amp;</span>proving_backend,
-        <span class="kw-2">&amp;mut </span>changes,
+        storage_overlay,
         executor,
         method,
         data,
@@ -462,7 +460,7 @@
             })<span class="question-mark">?</span>;
     }
 
-    <span class="prelude-val">Ok</span>((changes, proof, encoded_result))
+    <span class="prelude-val">Ok</span>((proof, encoded_result))
 }
 
 <span class="doccomment">/// Converts a [`sp_state_machine::StorageProof`] into a JSON string.

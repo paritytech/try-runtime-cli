@@ -257,6 +257,61 @@
 <a href="#257" id="257">257</a>
 <a href="#258" id="258">258</a>
 <a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -316,11 +371,13 @@
     )]
     </span><span class="kw">pub </span>checks: UpgradeCheckSelect,
 
-    <span class="doccomment">/// Whether to assume that the runtime is a relay chain runtime.
-    ///
-    /// This is used to adjust the behavior of weight measurement warnings.
+    <span class="doccomment">/// Whether to disable weight warnings, useful if the runtime is for a relay chain.
     </span><span class="attr">#[clap(long, default_value = <span class="string">&quot;false&quot;</span>, default_missing_value = <span class="string">&quot;true&quot;</span>)]
     </span><span class="kw">pub </span>no_weight_warnings: bool,
+
+    <span class="doccomment">/// Whether to disable migration idempotency checks
+    </span><span class="attr">#[clap(long, default_value = <span class="string">&quot;false&quot;</span>, default_missing_value = <span class="string">&quot;true&quot;</span>)]
+    </span><span class="kw">pub </span>no_idempotency_checks: bool,
 }
 
 <span class="comment">// Runs the `on-runtime-upgrade` command.
@@ -358,15 +415,18 @@
         <span class="string">&quot;🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}&quot;</span>,
         command.checks
     );
-    <span class="kw">let </span>(<span class="kw">_</span>, proof, encoded_result) = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
+    <span class="comment">// Save the overlayed changes from the first run, so we can use them later for idempotency
+    // checks.
+    </span><span class="kw">let </span><span class="kw-2">mut </span>overlayed_changes = Default::default();
+    <span class="kw">let </span>(proof, encoded_result) = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
         <span class="kw-2">&amp;</span>ext,
+        <span class="kw-2">&amp;mut </span>overlayed_changes,
         <span class="kw-2">&amp;</span>executor,
         <span class="string">&quot;TryRuntime_on_runtime_upgrade&quot;</span>,
         command.checks.encode().as_ref(),
         Default::default(), <span class="comment">// we don&#39;t really need any extensions here.
         </span>shared.export_proof.clone(),
     )<span class="question-mark">?</span>;
-
     <span class="kw">let </span>ref_time_results = encoded_result.try_into()<span class="question-mark">?</span>;
 
     <span class="comment">// If the above call ran with checks then we need to run the call again without checks to
@@ -379,43 +439,93 @@
             <span class="macro">log::info!</span>(
                 <span class="string">&quot;🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements.&quot;
             </span>);
-            <span class="kw">let </span>(<span class="kw">_</span>, proof, encoded_result) = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
+            <span class="kw">let </span>(proof, encoded_result) = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
                 <span class="kw-2">&amp;</span>ext,
+                <span class="kw-2">&amp;mut </span>Default::default(),
                 <span class="kw-2">&amp;</span>executor,
                 <span class="string">&quot;TryRuntime_on_runtime_upgrade&quot;</span>,
                 UpgradeCheckSelect::None.encode().as_ref(),
                 Default::default(), <span class="comment">// we don&#39;t really need any extensions here.
-                </span>shared.export_proof,
+                </span>shared.export_proof.clone(),
             )<span class="question-mark">?</span>;
             <span class="kw">let </span>ref_time_results = encoded_result.try_into()<span class="question-mark">?</span>;
             (proof, ref_time_results)
         }
     };
 
-    <span class="kw">let </span>pre_root = ext.backend.root();
+    <span class="comment">// Check idempotency
+    </span><span class="kw">let </span>idempotency_ok = <span class="kw">match </span>command.no_idempotency_checks {
+        <span class="bool-val">true </span>=&gt; {
+            <span class="macro">log::info!</span>(<span class="string">&quot;ℹ Skipping idempotency check&quot;</span>);
+            <span class="bool-val">true
+        </span>}
+        <span class="bool-val">false </span>=&gt; {
+            <span class="macro">log::info!</span>(
+                <span class="string">&quot;🔬 Running TryRuntime_on_runtime_upgrade again to check idempotency: {:?}&quot;</span>,
+                command.checks
+            );
+            <span class="kw">let </span>(oc_pre_root, <span class="kw">_</span>) = overlayed_changes.storage_root(<span class="kw-2">&amp;</span>ext.backend, ext.state_version);
+            <span class="kw">match </span>state_machine_call_with_proof::&lt;Block, HostFns&gt;(
+                <span class="kw-2">&amp;</span>ext,
+                <span class="kw-2">&amp;mut </span>overlayed_changes,
+                <span class="kw-2">&amp;</span>executor,
+                <span class="string">&quot;TryRuntime_on_runtime_upgrade&quot;</span>,
+                command.checks.encode().as_ref(),
+                Default::default(), <span class="comment">// we don&#39;t really need any extensions here.
+                </span>shared.export_proof.clone(),
+            ) {
+                <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {
+                    <span class="comment">// Execution was OK, check if the storage root changed.
+                    </span><span class="kw">let </span>(oc_post_root, <span class="kw">_</span>) =
+                        overlayed_changes.storage_root(<span class="kw-2">&amp;</span>ext.backend, ext.state_version);
+                    <span class="kw">if </span>oc_pre_root != oc_post_root {
+                        <span class="macro">log::error!</span>(<span class="string">&quot;❌ Migrations are not idempotent. Selectively remove migrations from Executive until you find the culprit.&quot;</span>);
+                        <span class="bool-val">false
+                    </span>} <span class="kw">else </span>{
+                        <span class="comment">// Exeuction was OK and state root didn&#39;t change
+                        </span><span class="bool-val">true
+                    </span>}
+                }
+                <span class="prelude-val">Err</span>(e) =&gt; {
+                    <span class="macro">log::error!</span>(
+                        <span class="string">&quot;❌ Migrations are not idempotent, they failed during the second execution.&quot;</span>,
+                    );
+                    <span class="macro">log::debug!</span>(<span class="string">&quot;{:?}&quot;</span>, e);
+                    <span class="bool-val">false
+                </span>}
+            }
+        }
+    };
+
+    <span class="comment">// Check weight safety
+    </span><span class="kw">let </span>pre_root = ext.backend.root();
     <span class="kw">let </span>pov_safety = analyse_pov::&lt;HashingFor&lt;Block&gt;&gt;(proof, <span class="kw-2">*</span>pre_root, command.no_weight_warnings);
     <span class="kw">let </span>ref_time_safety = analyse_ref_time(ref_time_results, command.no_weight_warnings);
-
-    <span class="kw">match </span>(pov_safety, ref_time_safety, command.no_weight_warnings) {
+    <span class="kw">let </span>weight_ok = <span class="kw">match </span>(pov_safety, ref_time_safety, command.no_weight_warnings) {
         (<span class="kw">_</span>, <span class="kw">_</span>, <span class="bool-val">true</span>) =&gt; {
-            <span class="macro">log::info!</span>(<span class="string">&quot;✅ TryRuntime_on_runtime_upgrade executed without errors&quot;</span>)
-        }
+            <span class="macro">log::info!</span>(<span class="string">&quot;ℹ Skipped checking weight safety&quot;</span>);
+            <span class="bool-val">true
+        </span>}
         (WeightSafety::ProbablySafe, WeightSafety::ProbablySafe, <span class="kw">_</span>) =&gt; {
             <span class="macro">log::info!</span>(
                 target: LOG_TARGET,
-                <span class="string">&quot;✅ TryRuntime_on_runtime_upgrade executed without errors or weight safety \
-                warnings. Please note this does not guarantee a successful runtime upgrade. \
+                <span class="string">&quot;✅ No weight safety issues detected. \
+                Please note this does not guarantee a successful runtime upgrade. \
                 Always test your runtime upgrade with recent state, and ensure that the weight usage \
                 of your migrations will not drastically differ between testing and actual on-chain \
                 execution.&quot;
             </span>);
-        }
+            <span class="bool-val">true
+        </span>}
         <span class="kw">_ </span>=&gt; {
-            <span class="macro">log::warn!</span>(target: LOG_TARGET, <span class="string">&quot;⚠️  TryRuntime_on_runtime_upgrade executed \
-            successfully but with weight safety warnings.&quot;</span>);
-            <span class="comment">// Exit with a non-zero exit code to indicate that the runtime upgrade may not be safe.
-            </span>std::process::exit(<span class="number">1</span>);
-        }
+            <span class="macro">log::error!</span>(target: LOG_TARGET, <span class="string">&quot;❌ Weight safety issues detected.&quot;</span>);
+            <span class="bool-val">false
+        </span>}
+    };
+
+    <span class="kw">if </span>!weight_ok || !idempotency_ok {
+        <span class="macro">log::error!</span>(<span class="string">&quot;❌ Issues detected, exiting non-zero. See logs.&quot;</span>);
+        std::process::exit(<span class="number">1</span>);
     }
 
     <span class="prelude-val">Ok</span>(())
