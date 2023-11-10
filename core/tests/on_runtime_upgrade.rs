@@ -50,6 +50,7 @@ mod on_runtime_upgrade {
                 "{}/tests/runtimes/bridge_hub_rococo_runtime_ok.compact.compressed.wasm",
                 project_root
             );
+            dbg!(&runtime_path, &snap_path);
             let child = on_runtime_upgrade(snap_path.as_str(), runtime_path.as_str(), &[]);
             let out = child.wait_with_output().await.unwrap();
             dbg!(&out);
