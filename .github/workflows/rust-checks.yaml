@@ -10,57 +10,44 @@ concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
-jobs:
-  rust-fmt:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: nightly
-          components: rustfmt
-      - uses: actions-rust-lang/rustfmt@v1
+env:
+  RUST_BACKTRACE: 1
+  TOOLCHAIN_LINT: nightly
 
-  clippy-lint:
+jobs:
+  lint:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Install Rust ${{ env.TOOLCHAIN_LINT }}
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
-          components: clippy
+          toolchain: ${{ env.TOOLCHAIN_LINT }}
+          targets: wasm32-unknown-unknown
+          components: rustfmt, clippy
+      - name: cargo fmt
+        run: cargo +nightly fmt --all -- --check
       - name: Install deps for musl build
         run: |
           sudo apt-get update
           sudo apt-get install -y protobuf-compiler musl-tools clang build-essential curl llvm-dev libclang-dev linux-headers-generic libsnappy-dev liblz4-dev libzstd-dev libgflags-dev zlib1g-dev libbz2-dev
-          sudo ln -s /usr/bin/g++ /usr/bin/musl-g++      
-      - name: Clippy
+          sudo ln -s /usr/bin/g++ /usr/bin/musl-g++
+      - name: cargo clippy
         uses: actions-rs-plus/clippy-check@v2
         with:
-          toolchain: stable
-          args: --all-targets --all-features
+          # toolchain: ${{ env.TOOLCHAIN_LINT }}
+          args: --all-targets --all-features -- --deny warnings
 
-  rust-tests:
-    runs-on: ubuntu-20.04
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+        toolchain: [stable]
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: stable
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
-        with:
-          version: "3.6.1"
-
-      - name: Add wasm32-unknown-unknown target
-        run: rustup target add wasm32-unknown-unknown
-
+      - uses: actions/checkout@v4
       - name: Check disk space
         run: df . -h
-
       - name: Free disk space
         run: |
           sudo docker rmi $(docker image ls -aq) >/dev/null 2>&1 || true
@@ -87,14 +74,20 @@ jobs:
             sudo aptitude purge '~n ^dotnet' -f -y >/dev/null 2>&1
             sudo apt-get autoremove -y >/dev/null 2>&1
             sudo apt-get autoclean -y >/dev/null 2>&1
-
       - name: Check disk space
         run: df . -h
-  
-      - name: cargo build binary required for test
+      - name: Install Rust ${{ matrix.toolchain }}
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          targets: wasm32-unknown-unknown
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          version: "3.6.1"
+      - name: build try-runtime-cli
+        # this is required for testing
         # build --release or the execution time of the test is too long
         run: cargo build --release -p try-runtime-cli
-
       - name: cargo test
-        # build --release or the execution time of the test is too long
         run: cargo test --release
