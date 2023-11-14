@@ -25,6 +25,7 @@ jobs:
           toolchain: ${{ env.TOOLCHAIN_LINT }}
           targets: wasm32-unknown-unknown
           components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
       - name: cargo fmt
         run: cargo +nightly fmt --all -- --check
       - name: Install deps for musl build
@@ -36,7 +37,7 @@ jobs:
         uses: actions-rs-plus/clippy-check@v2
         with:
           toolchain: ${{ env.TOOLCHAIN_LINT }}
-          args: --all-targets --all-features -- --deny warnings
+          args: --all-targets --all-features --locked -- --deny warnings
 
   test:
     strategy:
@@ -46,6 +47,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - name: Install Rust ${{ matrix.toolchain }}
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
       - name: Check disk space
         run: df . -h
       - name: Free disk space
@@ -59,28 +66,23 @@ jobs:
           sudo aptitude purge aria2 ansible azure-cli shellcheck rpm xorriso zsync \
             esl-erlang firefox gfortran-8 gfortran-9 google-chrome-stable \
             google-cloud-sdk imagemagick \
-              libmagickcore-dev libmagickwand-dev libmagic-dev ant ant-optional kubectl \
-              mercurial apt-transport-https mono-complete libmysqlclient \
-              unixodbc-dev yarn chrpath libssl-dev libxft-dev \
-              libfreetype6 libfreetype6-dev libfontconfig1 libfontconfig1-dev \
-              snmp pollinate libpq-dev postgresql-client powershell ruby-full \
-              sphinxsearch subversion mongodb-org azure-cli microsoft-edge-stable \
-              -y -f >/dev/null 2>&1
-            sudo aptitude purge google-cloud-sdk -f -y >/dev/null 2>&1
-            sudo aptitude purge microsoft-edge-stable -f -y >/dev/null 2>&1 || true
-            sudo apt purge microsoft-edge-stable -f -y >/dev/null 2>&1 || true
-            sudo aptitude purge '~n ^mysql' -f -y >/dev/null 2>&1
-            sudo aptitude purge '~n ^php' -f -y >/dev/null 2>&1
-            sudo aptitude purge '~n ^dotnet' -f -y >/dev/null 2>&1
-            sudo apt-get autoremove -y >/dev/null 2>&1
-            sudo apt-get autoclean -y >/dev/null 2>&1
+            libmagickcore-dev libmagickwand-dev libmagic-dev ant ant-optional kubectl \
+            mercurial apt-transport-https mono-complete libmysqlclient \
+            unixodbc-dev yarn chrpath libssl-dev libxft-dev \
+            libfreetype6 libfreetype6-dev libfontconfig1 libfontconfig1-dev \
+            snmp pollinate libpq-dev postgresql-client powershell ruby-full \
+            sphinxsearch subversion mongodb-org azure-cli microsoft-edge-stable \
+            -y -f >/dev/null 2>&1
+          sudo aptitude purge google-cloud-sdk -f -y >/dev/null 2>&1
+          sudo aptitude purge microsoft-edge-stable -f -y >/dev/null 2>&1 || true
+          sudo apt purge microsoft-edge-stable -f -y >/dev/null 2>&1 || true
+          sudo aptitude purge '~n ^mysql' -f -y >/dev/null 2>&1
+          sudo aptitude purge '~n ^php' -f -y >/dev/null 2>&1
+          sudo aptitude purge '~n ^dotnet' -f -y >/dev/null 2>&1
+          sudo apt-get autoremove -y >/dev/null 2>&1
+          sudo apt-get autoclean -y >/dev/null 2>&1
       - name: Check disk space
         run: df . -h
-      - name: Install Rust ${{ matrix.toolchain }}
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: ${{ matrix.toolchain }}
-          targets: wasm32-unknown-unknown
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
         with:
