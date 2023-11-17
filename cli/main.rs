@@ -149,18 +149,10 @@
 //! arbitrary encoded data (usually some pre-upgrade state) which will be passed to
 //! [`OnRuntimeUpgrade::pre_upgrade`] after upgrading and used for post checking.
 //!
-//! ### Guarding migrations and [`VersionedRuntimeUpgrade`]
+//! ### [`VersionedMigration`]
 //!
-//! Always make sure that any migration code is guarded either by `StorageVersion`, or by some
-//! custom storage item, so that it is NEVER executed twice, even if the code lives in two
-//! consecutive runtimes.
-//!
-//! TODO: Briefly explain [`VersionedRuntimeUpgrade`] and link out to its docs.
-//!
-//! #### Examples
-//!
-//! TODO: Provide end-to-end examples of writing a runtime upgrade, and testing it with the CLI. One
-//! example with [`VersionedRuntimeUpgrade`], one without.
+//! It is strongly suggested to use [`VersionedMigration`] when writing custom migrations for
+//! pallets.
 //!
 //! ### State Consistency
 //!
@@ -286,7 +278,7 @@
 //!     --try-state rr-3
 //! ```
 //!
-//! [`VersionedRuntimeUpgrade`]: https://paritytech.github.io/substrate/master/frame_support/migrations/struct.VersionedRuntimeUpgrade.html
+//! [`VersionedMigration`]: https://paritytech.github.io/polkadot-sdk/master/frame_support/migrations/struct.VersionedMigration.html
 //! [`OnRuntimeUpgrade`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.OnRuntimeUpgrade.html
 //! [`OnRuntimeUpgrade::pre_upgrade`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.OnRuntimeUpgrade.html#method.pre_upgrade
 //! [`OnRuntimeUpgrade::post_upgrade`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.OnRuntimeUpgrade.html#method.post_upgrade

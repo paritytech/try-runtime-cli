@@ -16,6 +16,20 @@ env:
   TOOLCHAIN_LINT: nightly-2023-11-13
 
 jobs:
+  check-doc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust ${{ env.TOOLCHAIN_LINT }}
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: check-doc-v0
+      - name: cargo doc
+        run: RUST_FLAGS="-D warnings" cargo doc
+
   lint:
     runs-on: ubuntu-latest
     steps:

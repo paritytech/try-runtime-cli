@@ -140,7 +140,7 @@ pub enum State {
     Live(LiveState),
 }
 
-/// Options for [`to_ext`]
+/// Options for [`State::to_ext`]
 ///
 /// Whether to check that the runtime was compiled with try-runtime feature
 #[derive(PartialEq, PartialOrd)]
@@ -150,7 +150,7 @@ pub enum TryRuntimeFeatureCheck {
     /// Don't check if the runtime was compiled with try-runtime feature
     Skip,
 }
-/// Options for [`to_ext`]
+/// Options for [`State::to_ext`]
 ///
 /// Whether to check if the new runtime `spec_version` is greater than the previous runtime
 /// `spec_version`
@@ -169,7 +169,7 @@ impl State {
     ///
     /// This will override the code as it sees fit based on [`Runtime`]. It will also check the
     /// spec-version and name.
-    pub(crate) async fn to_ext<Block: BlockT + DeserializeOwned, HostFns: HostFunctions>(
+    pub async fn to_ext<Block: BlockT + DeserializeOwned, HostFns: HostFunctions>(
         &self,
         shared: &SharedParams,
         executor: &WasmExecutor<HostFns>,
