@@ -66,7 +66,7 @@ pub struct Command {
     /// Whether to enforce the new runtime `spec_version` is greater or equal to the existing
     /// `spec_version`.
     #[clap(long, default_value = "true", default_missing_value = "true")]
-    pub check_spec_version_increases: bool,
+    pub check_spec_version: bool,
 }
 
 // Runs the `on-runtime-upgrade` command.
@@ -82,7 +82,7 @@ where
     let executor = build_executor(&shared);
     let runtime_checks = RuntimeChecks {
         name_matches: shared.check_spec_name,
-        version_increases: command.check_spec_version_increases,
+        version_increases: command.check_spec_version,
         try_runtime_feature_enabled: true,
     };
     let ext = command
