@@ -94,16 +94,6 @@ where
     HostFns: HostFunctions,
 {
     let executor = build_executor::<HostFns>(&shared);
-    let runtime_checks = RuntimeChecks {
-        name_matches: shared.check_spec_name,
-        version_increases: false,
-        try_runtime_feature_enabled: true,
-    };
-    let ext = command
-        .state
-        .to_ext::<Block, HostFns>(&shared, &executor, None, runtime_checks)
-        .await?;
-
     // get the block number associated with this block.
     let block_ws_uri = command.block_ws_uri();
     let rpc = ws_client(&block_ws_uri).await?;
@@ -121,14 +111,13 @@ where
     let prev_block_live_state = live_state.to_prev_block_live_state::<Block>().await?;
 
     // Get state for the prev block
+    let runtime_checks = RuntimeChecks {
+        name_matches: shared.check_spec_name,
+        version_increases: false,
+        try_runtime_feature_enabled: true,
+    };
     let ext = State::Live(prev_block_live_state)
-        .to_ext::<Block, HostFns>(
-            &shared,
-            &executor,
-            None,
-            TryRuntimeFeatureCheck::Check,
-            SpecVersionCheck::Skip,
-        )
+        .to_ext::<Block, HostFns>(&shared, &executor, None, runtime_checks)
         .await?;
 
     // Execute the desired block on top of it
