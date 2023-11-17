@@ -27,8 +27,9 @@ use sp_runtime::traits::{Block as BlockT, NumberFor};
 use sp_state_machine::{CompactProof, StorageProof};
 
 use crate::{
-    build_executor, state::State, state_machine_call_with_proof, RefTimeInfo, SharedParams,
-    LOG_TARGET,
+    build_executor,
+    state::{RuntimeChecks, State},
+    state_machine_call_with_proof, RefTimeInfo, SharedParams, LOG_TARGET,
 };
 
 /// Configuration for [`run`].
@@ -61,6 +62,11 @@ pub struct Command {
     /// This is used to adjust the behavior of weight measurement warnings.
     #[clap(long, default_value = "false", default_missing_value = "true")]
     pub no_weight_warnings: bool,
+
+    /// Whether to enforce the new runtime `spec_version` is greater or equal to the existing
+    /// `spec_version`.
+    #[clap(long, default_value = "true", default_missing_value = "true")]
+    pub check_spec_version_increases: bool,
 }
 
 // Runs the `on-runtime-upgrade` command.
@@ -74,9 +80,14 @@ where
     HostFns: HostFunctions,
 {
     let executor = build_executor(&shared);
+    let runtime_checks = RuntimeChecks {
+        name_matches: shared.check_spec_name,
+        version_increases: command.check_spec_version_increases,
+        try_runtime_feature_enabled: true,
+    };
     let ext = command
         .state
-        .to_ext::<Block, HostFns>(&shared, &executor, None, true, true)
+        .to_ext::<Block, HostFns>(&shared, &executor, None, runtime_checks)
         .await?;
 
     if let State::Live(_) = command.state {

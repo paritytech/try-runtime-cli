@@ -97,6 +97,17 @@ pub enum State {
     Live(LiveState),
 }
 
+/// Checks to perform on the given runtime, compared to the existing runtime.
+pub struct RuntimeChecks {
+    /// Enforce the `spec_name`s match
+    pub name_matches: bool,
+    /// Enforce the `spec_version` of the given is greater or equal to the existing
+    /// runtime.
+    pub version_increases: bool,
+    /// Enforce that the given runtime is compiled with the try-runtime feature.
+    pub try_runtime_feature_enabled: bool,
+}
+
 impl State {
     /// Create the [`RemoteExternalities`].
     ///
@@ -107,8 +118,7 @@ impl State {
         shared: &SharedParams,
         executor: &WasmExecutor<HostFns>,
         state_snapshot: Option<SnapshotConfig>,
-        try_runtime_check: bool,
-        spec_version_check: bool,
+        runtime_checks: RuntimeChecks,
     ) -> sc_cli::Result<RemoteExternalities<Block>>
     where
         Block::Header: DeserializeOwned,
@@ -252,21 +262,25 @@ impl State {
                 new_code_hash
             );
 
-            if new_version.spec_name != old_version.spec_name {
+            if runtime_checks.name_matches && new_version.spec_name != old_version.spec_name {
                 return Err("Spec names must match.".into());
+            } else {
+                log::info!("Skipping spec name check.")
             }
 
-            if spec_version_check && new_version.spec_version <= old_version.spec_version {
-                log::warn!(
-                    target: LOG_TARGET,
-                    "New runtime spec version is not greater than the on-chain runtime spec version. Don't forget to increment the spec version if you intend to use the new code in a runtime upgrade."
-                );
+            if runtime_checks.version_increases
+                && new_version.spec_version <= old_version.spec_version
+            {
+                return Err("New runtime spec version must be greater than the on-chain runtime spec version.".into());
+            } else {
+                log::info!("Skipping spec version check.")
             }
         }
 
-        // whatever runtime we have in store now must have been compiled with try-runtime feature.
-        if try_runtime_check && !ensure_try_runtime::<Block, HostFns>(executor, &mut ext) {
-            return Err("given runtime is NOT compiled with try-runtime feature!".into());
+        if runtime_checks.try_runtime_feature_enabled
+            && !ensure_try_runtime::<Block, HostFns>(executor, &mut ext)
+        {
+            return Err("Given runtime is not compiled with the try-runtime feature.".into());
         }
 
         Ok(ext)

@@ -17,12 +17,13 @@
 
 use std::{path::PathBuf, str::FromStr};
 
-use sc_cli::{WasmExecutionMethod, WasmtimeInstantiationStrategy};
-use sp_runtime::StateVersion;
-use {
-    crate::parse,
-    sc_cli::{DEFAULT_WASMTIME_INSTANTIATION_STRATEGY, DEFAULT_WASM_EXECUTION_METHOD},
+use sc_cli::{
+    WasmExecutionMethod, WasmtimeInstantiationStrategy, DEFAULT_WASMTIME_INSTANTIATION_STRATEGY,
+    DEFAULT_WASM_EXECUTION_METHOD,
 };
+use sp_runtime::StateVersion;
+
+use crate::parse;
 
 /// Shared parameters of the `try-runtime` commands
 #[derive(Debug, Clone, clap::Parser)]
@@ -38,6 +39,10 @@ pub struct SharedParams {
     /// `try-runtime` feature.
     #[arg(long, default_value = "existing")]
     pub runtime: Runtime,
+
+    /// Whether to enforce the new runtime `spec_name` matches the existing `spec_name`.
+    #[clap(long, default_value = "true", default_missing_value = "true")]
+    pub check_spec_name: bool,
 
     /// Type of wasm execution used.
     #[arg(

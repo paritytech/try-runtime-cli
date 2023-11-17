@@ -28,7 +28,7 @@ use substrate_rpc_client::{ws_client, ChainApi};
 
 use crate::{
     build_executor, full_extensions, rpc_err_handler,
-    state::{LiveState, State},
+    state::{LiveState, RuntimeChecks, State},
     state_machine_call_with_proof, SharedParams, LOG_TARGET,
 };
 
@@ -95,9 +95,14 @@ where
     HostFns: HostFunctions,
 {
     let executor = build_executor::<HostFns>(&shared);
+    let runtime_checks = RuntimeChecks {
+        name_matches: shared.check_spec_name,
+        version_increases: false,
+        try_runtime_feature_enabled: true,
+    };
     let ext = command
         .state
-        .to_ext::<Block, HostFns>(&shared, &executor, None, true, false)
+        .to_ext::<Block, HostFns>(&shared, &executor, None, runtime_checks)
         .await?;
 
     // get the block number associated with this block.
