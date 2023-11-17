@@ -58,15 +58,12 @@ pub struct Command {
     pub checks: UpgradeCheckSelect,
 
     /// Whether to disable weight warnings, useful if the runtime is for a relay chain.
-    ///
-    /// This is used to adjust the behavior of weight measurement warnings.
     #[clap(long, default_value = "false", default_missing_value = "true")]
     pub no_weight_warnings: bool,
 
     /// Whether to enforce the new runtime `spec_version` is greater or equal to the existing
     /// `spec_version`.
     #[clap(long, default_value = "true", default_missing_value = "true")]
-
     pub check_spec_version: bool,
     /// Whether to disable migration idempotency checks
     #[clap(long, default_value = "false", default_missing_value = "true")]
