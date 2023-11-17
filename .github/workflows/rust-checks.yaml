@@ -10,32 +10,61 @@ concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
-jobs:
-  rust-checks:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
+env:
+  RUST_BACKTRACE: 1
+  # pin nightly to avoid constantly throwing out cache
+  TOOLCHAIN_LINT: nightly-2023-11-13
 
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust ${{ env.TOOLCHAIN_LINT }}
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ env.TOOLCHAIN_LINT }}
+          targets: wasm32-unknown-unknown
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: lint-v0
+      - name: cargo fmt
+        run: cargo +${{ env.TOOLCHAIN_LINT }} fmt --all -- --check
+      - name: Install deps for musl build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler musl-tools clang build-essential curl llvm-dev libclang-dev linux-headers-generic libsnappy-dev liblz4-dev libzstd-dev libgflags-dev zlib1g-dev libbz2-dev
+          sudo ln -s /usr/bin/g++ /usr/bin/musl-g++
+      - name: cargo clippy
+        uses: actions-rs-plus/clippy-check@v2
+        with:
+          toolchain: ${{ env.TOOLCHAIN_LINT }}
+          args: --all-targets --all-features --locked --no-deps -- --deny warnings
+
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        toolchain: [stable]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust ${{ matrix.toolchain }}
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
       - name: Install Protoc
         uses: arduino/setup-protoc@v1
         with:
           version: "3.6.1"
-
-      - name: Install clippy and fmt
-        run: rustup component add clippy rustfmt
-
-      - name: Add wasm32-unknown-unknown target
-        run: rustup target add wasm32-unknown-unknown
-
-      - name: Run Format Checks
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all
-
-      - name: Clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --all-targets -- --no-deps -D warnings
+      - name: build try-runtime-cli
+        # this is required for testing
+        # build --release or the execution time of the test is too long
+        run: cargo build --release -p try-runtime-cli
+      - name: cargo test
+        run: cargo test --release
+      - name: Check disk space
+        run: df . -h

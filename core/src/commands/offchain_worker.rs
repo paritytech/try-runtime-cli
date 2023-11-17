@@ -26,7 +26,7 @@ use crate::{
     build_executor,
     commands::execute_block::next_hash_of,
     full_extensions, parse, rpc_err_handler,
-    state::{LiveState, RuntimeChecks, State},
+    state::{LiveState, RuntimeChecks, SpecVersionCheck, State, TryRuntimeFeatureCheck},
     state_machine_call, SharedParams, LOG_TARGET,
 };
 
@@ -85,14 +85,20 @@ where
         .state
         .to_ext::<Block, HostFns>(&shared, &executor, None, runtime_checks)
         .await?;
+    let block_ws_uri = command.header_ws_uri();
+    let rpc = ws_client(&block_ws_uri).await?;
 
-    let header_ws_uri = command.header_ws_uri();
+    // The block we want to *execute* at is the block passed by the user
+    let execute_at = live_state.at::<Block>()?;
 
-    let rpc = ws_client(&header_ws_uri).await?;
-    let next_hash = next_hash_of::<Block>(&rpc, ext.block_hash).await?;
-    log::info!(target: LOG_TARGET, "fetching next header: {:?} ", next_hash);
+    let prev_block_live_state = live_state.to_prev_block_live_state::<Block>().await?;
 
-    let header = ChainApi::<(), Block::Hash, Block::Header, ()>::header(&rpc, Some(next_hash))
+    // Get state for the prev block
+    let ext = State::Live(prev_block_live_state)
+        .to_ext::<Block, HostFns>(&shared, &executor, None, runtime_checks)
+        .await?;
+
+    let header = ChainApi::<(), Block::Hash, Block::Header, ()>::header(&rpc, execute_at)
         .await
         .map_err(rpc_err_handler)
         .map(|maybe_header| maybe_header.ok_or("Header does not exist"))??;
