@@ -278,25 +278,24 @@
 //!     --try-state rr-3
 //! ```
 //!
-//! [`VersionedMigration`]: https://paritytech.github.io/polkadot-sdk/master/frame_support/migrations/struct.VersionedMigration.html
-//! [`OnRuntimeUpgrade`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.OnRuntimeUpgrade.html
-//! [`OnRuntimeUpgrade::pre_upgrade`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.OnRuntimeUpgrade.html#method.pre_upgrade
-//! [`OnRuntimeUpgrade::post_upgrade`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.OnRuntimeUpgrade.html#method.post_upgrade
-//! [`TryState`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.TryState.html
-//! [`TryStateSelect`]: https://paritytech.github.io/substrate/master/frame_support/traits/enum.TryStateSelect.html
-//! [`Action`]: ../try_runtime_core/commands/enum.Action.html
-//! [`Action::FollowChain`]: ../try_runtime_core/commands/enum.Action.html#variant.FollowChain
-//! [`Action::OnRuntimeUpgrade`]: ../try_runtime_core/commands/enum.Action.html#variant.OnRuntimeUpgrade
-//! [`Action::ExecuteBlock`]: ../try_runtime_core/commands/enum.Action.html#variant.ExecuteBlock
-//! [`Action::OffchainWorker`]: ../try_runtime_core/commands/enum.Action.html#variant.OffchainWorker
-//! [`Action::CreateSnapshot`]: ../try_runtime_core/commands/enum.Action.html#variant.CreateSnapshot
-//! [`Action::FastForward`]: ../try_runtime_core/commands/enum.Action.html#variant.FastForward
-//! [`SharedParams`]: ../try_runtime_core/shared_parameters/struct.SharedParams.html
-//! [`SharedParams::runtime`]: ../try_runtime_core/shared_parameters/struct.SharedParams.html#structfield.runtime
-//! [`SharedParams::overwrite_state_version`]: ../try_runtime_core/shared_parameters/struct.SharedParams.html#structfield.overwrite_state_version
-//! [`TryState`]: https://paritytech.github.io/substrate/master/frame_support/traits/trait.TryState.html
-//! [`TestExternalities`]: https://paritytech.github.io/substrate/master/sp_state_machine/struct.TestExternalities.html
-//! [`well_known_keys`]: https://paritytech.github.io/substrate/master/sp_storage/well_known_keys/index.html
+//! [`VersionedMigration`]: frame_support::migrations::VersionedMigration
+//! [`OnRuntimeUpgrade`]: frame_support::traits::OnRuntimeUpgrade
+//! [`OnRuntimeUpgrade::pre_upgrade`]: frame_support::traits::OnRuntimeUpgrade::pre_upgrade
+//! [`OnRuntimeUpgrade::post_upgrade`]: frame_support::traits::OnRuntimeUpgrade::post_upgrade
+//! [`TryStateSelect`]: frame_support::traits::TryStateSelect
+//! [`TryState`]: frame_support::traits::TryState
+//! [`TestExternalities`]: sp_state_machine::TestExternalities
+//! [`well_known_keys`]: sp_storage::well_known_keys
+//! [`Action`]: try_runtime_core::commands::Action
+//! [`Action::FollowChain`]: try_runtime_core::commands::Action::FollowChain
+//! [`Action::OnRuntimeUpgrade`]: try_runtime_core::commands::Action::OnRuntimeUpgrade
+//! [`Action::ExecuteBlock`]: try_runtime_core::commands::Action::ExecuteBlock
+//! [`Action::OffchainWorker`]: try_runtime_core::commands::Action::OffchainWorker
+//! [`Action::CreateSnapshot`]: try_runtime_core::commands::Action::CreateSnapshot
+//! [`Action::FastForward`]: try_runtime_core::commands::Action::FastForward
+//! [`SharedParams`]: try_runtime_core::shared_parameters::SharedParams
+//! [`SharedParams::runtime`]: try_runtime_core::shared_parameters::SharedParams::runtime
+//! [`SharedParams::overwrite_state_version`]: try_runtime_core::shared_parameters::SharedParams::overwrite_state_version
 
 use std::env;
 
