@@ -46,8 +46,6 @@ async fn create_snapshot_works() {
             }
         }
     });
-    // Wait some time to ensure the node is warmed up.
-    std::thread::sleep(Duration::from_secs(90));
 
     // Run the command with tokio
     let temp_dir = tempfile::Builder::new()
@@ -56,7 +54,43 @@ async fn create_snapshot_works() {
         .expect("Failed to create a tempdir");
     let snap_file_path = temp_dir.path().join("snapshot.snap");
 
-    common::run_with_timeout(Duration::from_secs(60), async move {
+    common::run_with_timeout(Duration::from_secs(360), async move {
+        async fn block_hash(block_number: u64, url: &str, timeout: u64) -> Result<Hash, String> {
+            use substrate_rpc_client::{ws_client, ChainApi};
+            use sp_rpc::{list::ListOrValue, number::NumberOrHex};
+            use node_primitives::{Header};
+
+            let start = std::time::Instant::now();
+            let mut interval = 27;
+
+            let rpc = loop {
+                match ws_client(url).await {
+                    Ok(rpc) => break rpc,
+                    Err(err) => {
+                        let elapse = start.elapsed();
+                        if elapse > Duration::from_secs(timeout) {
+                            panic!("Failed to connect within {:?}: {}", elapse, err);
+                        }
+                    }
+                }
+                tokio::time::sleep(Duration::from_secs(interval)).await;
+                interval = (interval / 3 * 2).max(8);
+            };
+
+            let result = ChainApi::<(), Hash, Header, ()>::block_hash(
+                &rpc,
+                Some(ListOrValue::Value(NumberOrHex::Number(block_number))),
+            )
+            .await
+            .map_err(|_| "Couldn't get block hash".to_string())?;
+
+            match result {
+                ListOrValue::Value(maybe_block_hash) if maybe_block_hash.is_some() =>
+                    Ok(maybe_block_hash.unwrap()),
+                _ => Err("Couldn't get block hash".to_string()),
+            }
+        }
+
         fn create_snapshot(ws_url: &str, snap_file: &PathBuf, at: Hash) -> tokio::process::Child {
             Command::new(cargo_bin("try-runtime"))
                 .stdout(std::process::Stdio::piped())
@@ -69,8 +103,9 @@ async fn create_snapshot_works() {
                 .spawn()
                 .unwrap()
         }
+
         let block_number = 2;
-        let block_hash = common::block_hash(block_number, &ws_url).await.unwrap();
+        let block_hash = block_hash(block_number, &ws_url, 300).await.unwrap();
 
         // Try to create a snapshot.
         let child = create_snapshot(&ws_url, &snap_file_path, block_hash);

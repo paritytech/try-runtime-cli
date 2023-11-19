@@ -75,7 +75,7 @@ async fn execute_block_works() {
         // Assert that the block-execution process has executed the expected block.
         assert!(matched.is_ok());
 
-        // Assert that the block-execution exited succesfully
+        // Assert that the block-execution exited successfully
         assert!(block_execution
             .wait_with_output()
             .await
