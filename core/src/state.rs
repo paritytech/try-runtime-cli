@@ -156,7 +156,7 @@ impl State {
     ///
     /// This will override the code as it sees fit based on [`Runtime`]. It will also check the
     /// spec-version and name.
-    pub(crate) async fn to_ext<Block: BlockT + DeserializeOwned, HostFns: HostFunctions>(
+    pub async fn to_ext<Block: BlockT + DeserializeOwned, HostFns: HostFunctions>(
         &self,
         shared: &SharedParams,
         executor: &WasmExecutor<HostFns>,
