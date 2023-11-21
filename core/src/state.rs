@@ -306,8 +306,6 @@ impl State {
                 new_code_hash
             );
 
-            dbg!(&runtime_checks);
-
             if runtime_checks.name_matches && new_version.spec_name != old_version.spec_name {
                 return Err(
                     "Spec names must match. Use `--disable-spec-name-check` to disable this check."
