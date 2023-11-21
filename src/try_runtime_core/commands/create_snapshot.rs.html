@@ -86,7 +86,6 @@
 <a href="#86" id="86">86</a>
 <a href="#87" id="87">87</a>
 <a href="#88" id="88">88</a>
-<a href="#89" id="89">89</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -112,7 +111,7 @@
 
 <span class="kw">use crate</span>::{
     build_executor,
-    state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
+    state::{LiveState, RuntimeChecks, State},
     SharedParams, LOG_TARGET,
 };
 
@@ -164,14 +163,13 @@
     };
 
     <span class="kw">let </span>executor = build_executor::&lt;HostFns&gt;(<span class="kw-2">&amp;</span>shared);
+    <span class="kw">let </span>runtime_checks = RuntimeChecks {
+        name_matches: <span class="bool-val">false</span>,
+        version_increases: <span class="bool-val">false</span>,
+        try_runtime_feature_enabled: <span class="bool-val">false</span>,
+    };
     <span class="kw">let _ </span>= State::Live(command.from)
-        .to_ext::&lt;Block, HostFns&gt;(
-            <span class="kw-2">&amp;</span>shared,
-            <span class="kw-2">&amp;</span>executor,
-            <span class="prelude-val">Some</span>(path.into()),
-            TryRuntimeFeatureCheck::Skip,
-            SpecVersionCheck::Skip,
-        )
+        .to_ext::&lt;Block, HostFns&gt;(<span class="kw-2">&amp;</span>shared, <span class="kw-2">&amp;</span>executor, <span class="prelude-val">Some</span>(path.into()), runtime_checks)
         .<span class="kw">await</span><span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())

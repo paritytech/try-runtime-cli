@@ -114,8 +114,6 @@
 <a href="#114" id="114">114</a>
 <a href="#115" id="115">115</a>
 <a href="#116" id="116">116</a>
-<a href="#117" id="117">117</a>
-<a href="#118" id="118">118</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -142,7 +140,7 @@
 
 <span class="kw">use crate</span>::{
     build_executor, full_extensions, parse, rpc_err_handler,
-    state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
+    state::{LiveState, RuntimeChecks, State},
     state_machine_call, SharedParams, LOG_TARGET,
 };
 
@@ -190,7 +188,7 @@
     &lt;NumberFor&lt;Block&gt; <span class="kw">as </span>FromStr&gt;::Err: Debug,
     HostFns: HostFunctions,
 {
-    <span class="kw">let </span>executor = build_executor::&lt;HostFns&gt;(<span class="kw-2">&amp;</span>shared);
+    <span class="kw">let </span>executor = build_executor(<span class="kw-2">&amp;</span>shared);
     <span class="kw">let </span>block_ws_uri = command.header_ws_uri();
     <span class="kw">let </span>rpc = ws_client(<span class="kw-2">&amp;</span>block_ws_uri).<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -204,17 +202,15 @@
     <span class="comment">// The block we want to *execute* at is the block passed by the user
     </span><span class="kw">let </span>execute_at = live_state.at::&lt;Block&gt;()<span class="question-mark">?</span>;
 
-    <span class="kw">let </span>prev_block_live_state = live_state.to_prev_block_live_state::&lt;Block&gt;().<span class="kw">await</span><span class="question-mark">?</span>;
-
     <span class="comment">// Get state for the prev block
-    </span><span class="kw">let </span>ext = State::Live(prev_block_live_state)
-        .to_ext::&lt;Block, HostFns&gt;(
-            <span class="kw-2">&amp;</span>shared,
-            <span class="kw-2">&amp;</span>executor,
-            <span class="prelude-val">None</span>,
-            TryRuntimeFeatureCheck::Check,
-            SpecVersionCheck::Skip,
-        )
+    </span><span class="kw">let </span>prev_block_live_state = live_state.to_prev_block_live_state::&lt;Block&gt;().<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="kw">let </span>runtime_checks = RuntimeChecks {
+        name_matches: !shared.disable_spec_name_check,
+        version_increases: <span class="bool-val">false</span>,
+        try_runtime_feature_enabled: <span class="bool-val">true</span>,
+    };
+    <span class="kw">let </span>ext = State::Live(prev_block_live_state)
+        .to_ext::&lt;Block, HostFns&gt;(<span class="kw-2">&amp;</span>shared, <span class="kw-2">&amp;</span>executor, <span class="prelude-val">None</span>, runtime_checks)
         .<span class="kw">await</span><span class="question-mark">?</span>;
 
     <span class="kw">let </span>header = ChainApi::&lt;(), Block::Hash, Block::Header, ()&gt;::header(<span class="kw-2">&amp;</span>rpc, execute_at)

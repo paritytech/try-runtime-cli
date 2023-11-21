@@ -312,6 +312,10 @@
 <a href="#312" id="312">312</a>
 <a href="#313" id="313">313</a>
 <a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+<a href="#317" id="317">317</a>
+<a href="#318" id="318">318</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -342,7 +346,7 @@
 
 <span class="kw">use crate</span>::{
     build_executor,
-    state::{SpecVersionCheck, State, TryRuntimeFeatureCheck},
+    state::{RuntimeChecks, State},
     state_machine_call_with_proof, RefTimeInfo, SharedParams, LOG_TARGET,
 };
 
@@ -375,9 +379,14 @@
     </span><span class="attr">#[clap(long, default_value = <span class="string">&quot;false&quot;</span>, default_missing_value = <span class="string">&quot;true&quot;</span>)]
     </span><span class="kw">pub </span>no_weight_warnings: bool,
 
+    <span class="doccomment">/// Whether to skip enforcing that the new runtime `spec_version` is greater or equal to the
+    /// existing `spec_version`.
+    </span><span class="attr">#[clap(long, default_value = <span class="string">&quot;false&quot;</span>, default_missing_value = <span class="string">&quot;true&quot;</span>)]
+    </span><span class="kw">pub </span>disable_spec_version_check: bool,
+
     <span class="doccomment">/// Whether to disable migration idempotency checks
     </span><span class="attr">#[clap(long, default_value = <span class="string">&quot;false&quot;</span>, default_missing_value = <span class="string">&quot;true&quot;</span>)]
-    </span><span class="kw">pub </span>no_idempotency_checks: bool,
+    </span><span class="kw">pub </span>disable_idempotency_checks: bool,
 }
 
 <span class="comment">// Runs the `on-runtime-upgrade` command.
@@ -391,15 +400,14 @@
     HostFns: HostFunctions,
 {
     <span class="kw">let </span>executor = build_executor(<span class="kw-2">&amp;</span>shared);
+    <span class="kw">let </span>runtime_checks = RuntimeChecks {
+        name_matches: !shared.disable_spec_name_check,
+        version_increases: !command.disable_spec_version_check,
+        try_runtime_feature_enabled: <span class="bool-val">true</span>,
+    };
     <span class="kw">let </span>ext = command
         .state
-        .to_ext::&lt;Block, HostFns&gt;(
-            <span class="kw-2">&amp;</span>shared,
-            <span class="kw-2">&amp;</span>executor,
-            <span class="prelude-val">None</span>,
-            TryRuntimeFeatureCheck::Check,
-            SpecVersionCheck::Check,
-        )
+        .to_ext::&lt;Block, HostFns&gt;(<span class="kw-2">&amp;</span>shared, <span class="kw-2">&amp;</span>executor, <span class="prelude-val">None</span>, runtime_checks)
         .<span class="kw">await</span><span class="question-mark">?</span>;
 
     <span class="kw">if let </span>State::Live(<span class="kw">_</span>) = command.state {
@@ -454,7 +462,7 @@
     };
 
     <span class="comment">// Check idempotency
-    </span><span class="kw">let </span>idempotency_ok = <span class="kw">match </span>command.no_idempotency_checks {
+    </span><span class="kw">let </span>idempotency_ok = <span class="kw">match </span>command.disable_idempotency_checks {
         <span class="bool-val">true </span>=&gt; {
             <span class="macro">log::info!</span>(<span class="string">&quot;ℹ Skipping idempotency check&quot;</span>);
             <span class="bool-val">true

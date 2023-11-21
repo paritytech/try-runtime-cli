@@ -156,7 +156,6 @@
 <a href="#156" id="156">156</a>
 <a href="#157" id="157">157</a>
 <a href="#158" id="158">158</a>
-<a href="#159" id="159">159</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -186,7 +185,7 @@
 
 <span class="kw">use crate</span>::{
     build_executor, full_extensions, rpc_err_handler,
-    state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
+    state::{LiveState, RuntimeChecks, State},
     state_machine_call_with_proof, SharedParams, LOG_TARGET,
 };
 
@@ -269,14 +268,13 @@
     <span class="kw">let </span>prev_block_live_state = live_state.to_prev_block_live_state::&lt;Block&gt;().<span class="kw">await</span><span class="question-mark">?</span>;
 
     <span class="comment">// Get state for the prev block
-    </span><span class="kw">let </span>ext = State::Live(prev_block_live_state)
-        .to_ext::&lt;Block, HostFns&gt;(
-            <span class="kw-2">&amp;</span>shared,
-            <span class="kw-2">&amp;</span>executor,
-            <span class="prelude-val">None</span>,
-            TryRuntimeFeatureCheck::Check,
-            SpecVersionCheck::Skip,
-        )
+    </span><span class="kw">let </span>runtime_checks = RuntimeChecks {
+        name_matches: !shared.disable_spec_name_check,
+        version_increases: <span class="bool-val">false</span>,
+        try_runtime_feature_enabled: <span class="bool-val">true</span>,
+    };
+    <span class="kw">let </span>ext = State::Live(prev_block_live_state)
+        .to_ext::&lt;Block, HostFns&gt;(<span class="kw-2">&amp;</span>shared, <span class="kw-2">&amp;</span>executor, <span class="prelude-val">None</span>, runtime_checks)
         .<span class="kw">await</span><span class="question-mark">?</span>;
 
     <span class="comment">// Execute the desired block on top of it

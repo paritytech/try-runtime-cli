@@ -329,20 +329,6 @@
 <a href="#329" id="329">329</a>
 <a href="#330" id="330">330</a>
 <a href="#331" id="331">331</a>
-<a href="#332" id="332">332</a>
-<a href="#333" id="333">333</a>
-<a href="#334" id="334">334</a>
-<a href="#335" id="335">335</a>
-<a href="#336" id="336">336</a>
-<a href="#337" id="337">337</a>
-<a href="#338" id="338">338</a>
-<a href="#339" id="339">339</a>
-<a href="#340" id="340">340</a>
-<a href="#341" id="341">341</a>
-<a href="#342" id="342">342</a>
-<a href="#343" id="343">343</a>
-<a href="#344" id="344">344</a>
-<a href="#345" id="345">345</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -485,28 +471,16 @@
     </span>Live(LiveState),
 }
 
-<span class="doccomment">/// Options for [`State::to_ext`]
-///
-/// Whether to check that the runtime was compiled with try-runtime feature
-</span><span class="attr">#[derive(PartialEq, PartialOrd)]
-</span><span class="kw">pub enum </span>TryRuntimeFeatureCheck {
-    <span class="doccomment">/// Check the runtime was compiled with try-runtime feature
-    </span>Check,
-    <span class="doccomment">/// Don&#39;t check if the runtime was compiled with try-runtime feature
-    </span>Skip,
-}
-<span class="doccomment">/// Options for [`State::to_ext`]
-///
-/// Whether to check if the new runtime `spec_version` is greater than the previous runtime
-/// `spec_version`
-</span><span class="attr">#[derive(PartialEq, PartialOrd)]
-</span><span class="kw">pub enum </span>SpecVersionCheck {
-    <span class="doccomment">/// Check that the new runtime `spec_version` is greater than the previous runtime
-    /// `spec_version`
-    </span>Check,
-    <span class="doccomment">/// Don&#39;t check that the new runtime `spec_version` is greater than the previous runtime
-    /// `spec_version`
-    </span>Skip,
+<span class="doccomment">/// Checks to perform on the given runtime, compared to the existing runtime.
+</span><span class="attr">#[derive(Debug)]
+</span><span class="kw">pub struct </span>RuntimeChecks {
+    <span class="doccomment">/// Enforce the `spec_name`s match
+    </span><span class="kw">pub </span>name_matches: bool,
+    <span class="doccomment">/// Enforce the `spec_version` of the given is greater or equal to the existing
+    /// runtime.
+    </span><span class="kw">pub </span>version_increases: bool,
+    <span class="doccomment">/// Enforce that the given runtime is compiled with the try-runtime feature.
+    </span><span class="kw">pub </span>try_runtime_feature_enabled: bool,
 }
 
 <span class="kw">impl </span>State {
@@ -519,8 +493,7 @@
         shared: <span class="kw-2">&amp;</span>SharedParams,
         executor: <span class="kw-2">&amp;</span>WasmExecutor&lt;HostFns&gt;,
         state_snapshot: <span class="prelude-ty">Option</span>&lt;SnapshotConfig&gt;,
-        try_runtime_check: TryRuntimeFeatureCheck,
-        spec_version_check: SpecVersionCheck,
+        runtime_checks: RuntimeChecks,
     ) -&gt; sc_cli::Result&lt;RemoteExternalities&lt;Block&gt;&gt;
     <span class="kw">where
         </span>Block::Header: DeserializeOwned,
@@ -664,25 +637,24 @@
                 new_code_hash
             );
 
-            <span class="kw">if </span>new_version.spec_name != old_version.spec_name {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;Spec names must match.&quot;</span>.into());
+            <span class="kw">if </span>runtime_checks.name_matches &amp;&amp; new_version.spec_name != old_version.spec_name {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(
+                    <span class="string">&quot;Spec names must match. Use `--disable-spec-name-check` to disable this check.&quot;
+                        </span>.into(),
+                );
             }
 
-            <span class="kw">if </span>spec_version_check == SpecVersionCheck::Check
+            <span class="kw">if </span>runtime_checks.version_increases
                 &amp;&amp; new_version.spec_version &lt;= old_version.spec_version
             {
-                <span class="macro">log::warn!</span>(
-                    target: LOG_TARGET,
-                    <span class="string">&quot;New runtime spec version is not greater than the on-chain runtime spec version. Don&#39;t forget to increment the spec version if you intend to use the new code in a runtime upgrade.&quot;
-                </span>);
+                <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;New runtime spec version must be greater than the on-chain runtime spec version. Use `--disable-spec-version-check` to disable this check.&quot;</span>.into());
             }
         }
 
-        <span class="comment">// whatever runtime we have in store now must have been compiled with try-runtime feature.
-        </span><span class="kw">if </span>try_runtime_check == TryRuntimeFeatureCheck::Check
+        <span class="kw">if </span>runtime_checks.try_runtime_feature_enabled
             &amp;&amp; !ensure_try_runtime::&lt;Block, HostFns&gt;(executor, <span class="kw-2">&amp;mut </span>ext)
         {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;given runtime is NOT compiled with try-runtime feature!&quot;</span>.into());
+            <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;Given runtime is not compiled with the try-runtime feature.&quot;</span>.into());
         }
 
         <span class="prelude-val">Ok</span>(ext)
