@@ -94,7 +94,6 @@ where
     HostFns: HostFunctions,
 {
     let executor = build_executor::<HostFns>(&shared);
-    // get the block number associated with this block.
     let block_ws_uri = command.block_ws_uri();
     let rpc = ws_client(&block_ws_uri).await?;
 
