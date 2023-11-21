@@ -27,7 +27,7 @@ use substrate_rpc_client::{ws_client, ChainApi};
 
 use crate::{
     build_executor, full_extensions, rpc_err_handler,
-    state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
+    state::{LiveState, RuntimeChecks, State},
     state_machine_call_with_proof, SharedParams, LOG_TARGET,
 };
 
@@ -110,14 +110,13 @@ where
     let prev_block_live_state = live_state.to_prev_block_live_state::<Block>().await?;
 
     // Get state for the prev block
+    let runtime_checks = RuntimeChecks {
+        name_matches: !shared.disable_spec_name_check,
+        version_increases: false,
+        try_runtime_feature_enabled: true,
+    };
     let ext = State::Live(prev_block_live_state)
-        .to_ext::<Block, HostFns>(
-            &shared,
-            &executor,
-            None,
-            TryRuntimeFeatureCheck::Check,
-            SpecVersionCheck::Skip,
-        )
+        .to_ext::<Block, HostFns>(&shared, &executor, None, runtime_checks)
         .await?;
 
     // Execute the desired block on top of it

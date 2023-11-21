@@ -28,7 +28,7 @@ use sp_state_machine::{CompactProof, StorageProof};
 
 use crate::{
     build_executor,
-    state::{SpecVersionCheck, State, TryRuntimeFeatureCheck},
+    state::{RuntimeChecks, State},
     state_machine_call_with_proof, RefTimeInfo, SharedParams, LOG_TARGET,
 };
 
@@ -61,9 +61,14 @@ pub struct Command {
     #[clap(long, default_value = "false", default_missing_value = "true")]
     pub no_weight_warnings: bool,
 
+    /// Whether to skip enforcing that the new runtime `spec_version` is greater or equal to the
+    /// existing `spec_version`.
+    #[clap(long, default_value = "false", default_missing_value = "true")]
+    pub disable_spec_version_check: bool,
+
     /// Whether to disable migration idempotency checks
     #[clap(long, default_value = "false", default_missing_value = "true")]
-    pub no_idempotency_checks: bool,
+    pub disable_idempotency_checks: bool,
 }
 
 // Runs the `on-runtime-upgrade` command.
@@ -77,15 +82,14 @@ where
     HostFns: HostFunctions,
 {
     let executor = build_executor(&shared);
+    let runtime_checks = RuntimeChecks {
+        name_matches: !shared.disable_spec_name_check,
+        version_increases: !command.disable_spec_version_check,
+        try_runtime_feature_enabled: true,
+    };
     let ext = command
         .state
-        .to_ext::<Block, HostFns>(
-            &shared,
-            &executor,
-            None,
-            TryRuntimeFeatureCheck::Check,
-            SpecVersionCheck::Check,
-        )
+        .to_ext::<Block, HostFns>(&shared, &executor, None, runtime_checks)
         .await?;
 
     if let State::Live(_) = command.state {
@@ -140,7 +144,7 @@ where
     };
 
     // Check idempotency
-    let idempotency_ok = match command.no_idempotency_checks {
+    let idempotency_ok = match command.disable_idempotency_checks {
         true => {
             log::info!("ℹ Skipping idempotency check");
             true
