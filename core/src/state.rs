@@ -141,6 +141,7 @@ pub enum State {
 }
 
 /// Checks to perform on the given runtime, compared to the existing runtime.
+#[derive(Debug)]
 pub struct RuntimeChecks {
     /// Enforce the `spec_name`s match
     pub name_matches: bool,
@@ -305,18 +306,19 @@ impl State {
                 new_code_hash
             );
 
+            dbg!(&runtime_checks);
+
             if runtime_checks.name_matches && new_version.spec_name != old_version.spec_name {
-                return Err("Spec names must match.".into());
-            } else {
-                log::info!("Skipping spec name check.")
+                return Err(
+                    "Spec names must match. Use `--disable-spec-name-check` to disable this check."
+                        .into(),
+                );
             }
 
             if runtime_checks.version_increases
                 && new_version.spec_version <= old_version.spec_version
             {
-                return Err("New runtime spec version must be greater than the on-chain runtime spec version.".into());
-            } else {
-                log::info!("Skipping spec version check.")
+                return Err("New runtime spec version must be greater than the on-chain runtime spec version. Use `--disable-spec-version-check` to disable this check.".into());
             }
         }
 

@@ -233,7 +233,7 @@ where
 {
     let executor = build_executor::<HostFns>(&shared);
     let runtime_checks = RuntimeChecks {
-        name_matches: shared.check_spec_name,
+        name_matches: !shared.disable_spec_name_check,
         version_increases: false,
         try_runtime_feature_enabled: true,
     };

@@ -61,13 +61,14 @@ pub struct Command {
     #[clap(long, default_value = "false", default_missing_value = "true")]
     pub no_weight_warnings: bool,
 
-    /// Whether to enforce the new runtime `spec_version` is greater or equal to the existing
-    /// `spec_version`.
-    #[clap(long, default_value = "true", default_missing_value = "true")]
-    pub check_spec_version: bool,
+    /// Whether to skip enforcing that the new runtime `spec_version` is greater or equal to the
+    /// existing `spec_version`.
+    #[clap(long, default_value = "false", default_missing_value = "true")]
+    pub disable_spec_version_check: bool,
+
     /// Whether to disable migration idempotency checks
     #[clap(long, default_value = "false", default_missing_value = "true")]
-    pub no_idempotency_checks: bool,
+    pub disable_idempotency_checks: bool,
 }
 
 // Runs the `on-runtime-upgrade` command.
@@ -82,8 +83,8 @@ where
 {
     let executor = build_executor(&shared);
     let runtime_checks = RuntimeChecks {
-        name_matches: shared.check_spec_name,
-        version_increases: command.check_spec_version,
+        name_matches: !shared.disable_spec_name_check,
+        version_increases: !command.disable_spec_version_check,
         try_runtime_feature_enabled: true,
     };
     let ext = command
@@ -143,7 +144,7 @@ where
     };
 
     // Check idempotency
-    let idempotency_ok = match command.no_idempotency_checks {
+    let idempotency_ok = match command.disable_idempotency_checks {
         true => {
             log::info!("ℹ Skipping idempotency check");
             true

@@ -40,9 +40,9 @@ pub struct SharedParams {
     #[arg(long, default_value = "existing")]
     pub runtime: Runtime,
 
-    /// Whether to enforce the new runtime `spec_name` matches the existing `spec_name`.
-    #[clap(long, default_value = "true", default_missing_value = "true")]
-    pub check_spec_name: bool,
+    /// Whether to disable enforcing the new runtime `spec_name` matches the existing `spec_name`.
+    #[clap(long, default_value = "false", default_missing_value = "true")]
+    pub disable_spec_name_check: bool,
 
     /// Type of wasm execution used.
     #[arg(

@@ -91,7 +91,7 @@ where
     // Get state for the prev block
     let prev_block_live_state = live_state.to_prev_block_live_state::<Block>().await?;
     let runtime_checks = RuntimeChecks {
-        name_matches: shared.check_spec_name,
+        name_matches: !shared.disable_spec_name_check,
         version_increases: false,
         try_runtime_feature_enabled: true,
     };
