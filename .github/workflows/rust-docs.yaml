@@ -18,8 +18,14 @@ jobs:
         with:
           version: "3.6.1"
 
-      - name: Add wasm32-unknwon-unknown target
-        run: rustup target add wasm32-unknown-unknown
+      - uses: actions/checkout@v4
+      - name: Install Rust Stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+          components: rust-src
+      - uses: Swatinem/rust-cache@v2
 
       - name: Build docs
         uses: actions-rs/cargo@v1
