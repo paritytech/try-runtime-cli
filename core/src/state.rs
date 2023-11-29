@@ -23,12 +23,11 @@ use frame_remote_externalities::{
 use parity_scale_codec::Decode;
 use sc_cli::RuntimeVersion;
 use sc_executor::{sp_wasm_interface::HostFunctions, WasmExecutor};
-use sp_api::{HashT, HeaderT};
 use sp_core::{
-    hexdisplay::HexDisplay, storage::well_known_keys, traits::ReadRuntimeVersion, twox_128,
+    hexdisplay::HexDisplay, storage::well_known_keys, traits::ReadRuntimeVersion, twox_128, Hasher,
 };
 use sp_runtime::{
-    traits::{BlakeTwo256, Block as BlockT},
+    traits::{BlakeTwo256, Block as BlockT, Header as HeaderT},
     DeserializeOwned,
 };
 use substrate_rpc_client::{ws_client, ChainApi};

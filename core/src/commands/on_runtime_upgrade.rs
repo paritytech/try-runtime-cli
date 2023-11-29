@@ -21,9 +21,8 @@ use bytesize::ByteSize;
 use frame_try_runtime::UpgradeCheckSelect;
 use parity_scale_codec::Encode;
 use sc_executor::sp_wasm_interface::HostFunctions;
-use sp_api::HashingFor;
 use sp_core::{hexdisplay::HexDisplay, Hasher};
-use sp_runtime::traits::{Block as BlockT, NumberFor};
+use sp_runtime::traits::{Block as BlockT, HashingFor, NumberFor};
 use sp_state_machine::{CompactProof, StorageProof};
 
 use crate::{

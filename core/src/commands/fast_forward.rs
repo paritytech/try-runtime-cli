@@ -21,11 +21,10 @@ use parity_scale_codec::{Decode, Encode};
 use sc_cli::Result;
 use sc_executor::{sp_wasm_interface::HostFunctions, WasmExecutor};
 use serde::de::DeserializeOwned;
-use sp_api::HashingFor;
 use sp_core::H256;
 use sp_inherents::InherentData;
 use sp_runtime::{
-    traits::{Header, NumberFor, One, Saturating},
+    traits::{HashingFor, Header, NumberFor, One, Saturating},
     Digest,
 };
 use sp_state_machine::TestExternalities;
