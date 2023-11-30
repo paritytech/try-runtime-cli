@@ -55,39 +55,44 @@ async fn create_snapshot_works() {
     let snap_file_path = temp_dir.path().join("snapshot.snap");
 
     common::run_with_timeout(Duration::from_secs(360), async move {
-        async fn block_hash(block_number: u64, url: &str, timeout: u64) -> Result<Hash, String> {
-            use substrate_rpc_client::{ws_client, ChainApi};
+        async fn block_hash(block_number: u64, uri: &str, timeout: u64) -> Result<Hash, String> {
+            use std::time::Duration;
+
+            use node_primitives::Header;
             use sp_rpc::{list::ListOrValue, number::NumberOrHex};
-            use node_primitives::{Header};
+            use substrate_rpc_client::{ws_client, ChainApi};
 
             let start = std::time::Instant::now();
-            let mut interval = 27;
 
             let rpc = loop {
-                match ws_client(url).await {
+                match ws_client(uri).await {
                     Ok(rpc) => break rpc,
                     Err(err) => {
-                        let elapse = start.elapsed();
-                        if elapse > Duration::from_secs(timeout) {
-                            panic!("Failed to connect within {:?}: {}", elapse, err);
+                        if start.elapsed() > Duration::from_secs(timeout) {
+                            return Err(format!("Connection timed out: {}", err));
                         }
                     }
                 }
-                tokio::time::sleep(Duration::from_secs(interval)).await;
-                interval = (interval / 3 * 2).max(8);
+                tokio::time::sleep(Duration::from_secs(8)).await;
             };
 
-            let result = ChainApi::<(), Hash, Header, ()>::block_hash(
-                &rpc,
-                Some(ListOrValue::Value(NumberOrHex::Number(block_number))),
-            )
-            .await
-            .map_err(|_| "Couldn't get block hash".to_string())?;
+            loop {
+                let result = ChainApi::<(), Hash, Header, ()>::block_hash(
+                    &rpc,
+                    Some(ListOrValue::Value(NumberOrHex::Number(block_number))),
+                )
+                .await;
 
-            match result {
-                ListOrValue::Value(maybe_block_hash) if maybe_block_hash.is_some() =>
-                    Ok(maybe_block_hash.unwrap()),
-                _ => Err("Couldn't get block hash".to_string()),
+                match result {
+                    Ok(ListOrValue::Value(Some(block_hash))) => break Ok(block_hash),
+                    Err(err) => break Err(err.to_string()),
+                    _ => {
+                        if start.elapsed() > Duration::from_secs(timeout) {
+                            break Err(format!("Mining block timed out"));
+                        }
+                    }
+                }
+                tokio::time::sleep(Duration::from_secs(8)).await;
             }
         }
 
