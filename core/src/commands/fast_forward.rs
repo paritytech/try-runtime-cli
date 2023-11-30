@@ -21,11 +21,10 @@ use parity_scale_codec::{Decode, Encode};
 use sc_cli::Result;
 use sc_executor::{sp_wasm_interface::HostFunctions, WasmExecutor};
 use serde::de::DeserializeOwned;
-use sp_api::HashingFor;
 use sp_core::H256;
 use sp_inherents::InherentData;
 use sp_runtime::{
-    traits::{Header, NumberFor, One, Saturating},
+    traits::{HashingFor, Header, NumberFor, One, Saturating},
     Digest,
 };
 use sp_state_machine::TestExternalities;
@@ -35,7 +34,7 @@ use crate::{
     build_executor, full_extensions,
     inherent_provider::{Chain, InherentProvider},
     rpc_err_handler,
-    state::{LiveState, SpecVersionCheck, State, TryRuntimeFeatureCheck},
+    state::{LiveState, RuntimeChecks, State},
     state_machine_call, state_machine_call_with_proof, BlockT, SharedParams,
 };
 
@@ -232,15 +231,14 @@ where
     HostFns: HostFunctions,
 {
     let executor = build_executor::<HostFns>(&shared);
+    let runtime_checks = RuntimeChecks {
+        name_matches: !shared.disable_spec_name_check,
+        version_increases: false,
+        try_runtime_feature_enabled: true,
+    };
     let ext = command
         .state
-        .to_ext::<Block, HostFns>(
-            &shared,
-            &executor,
-            None,
-            TryRuntimeFeatureCheck::Check,
-            SpecVersionCheck::Skip,
-        )
+        .to_ext::<Block, HostFns>(&shared, &executor, None, runtime_checks)
         .await?;
 
     if command.run_migrations {
