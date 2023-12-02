@@ -29,19 +29,8 @@ async fn follow_chain_works() {
     let port = 45789;
     let ws_url = format!("ws://localhost:{}", port);
 
-    // Spawn a dev node.
-    let _ = std::thread::spawn(move || {
-        match common::start_node_inline(vec![
-            "--no-hardware-benchmarks",
-            "--dev",
-            format!("--rpc-port={}", port).as_str(),
-        ]) {
-            Ok(_) => {}
-            Err(e) => {
-                panic!("Node exited with error: {}", e);
-            }
-        }
-    });
+    crate::start_dev_node(port);
+
     // Wait some time to ensure the node is warmed up.
     std::thread::sleep(Duration::from_secs(90));
 

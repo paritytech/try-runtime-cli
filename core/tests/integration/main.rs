@@ -19,3 +19,23 @@ mod create_snapshot;
 mod execute_block;
 mod follow_chain;
 mod on_runtime_upgrade;
+
+use std::sync::OnceLock;
+
+fn start_dev_node(port: u32) {
+    static NODE: OnceLock<()> = OnceLock::new();
+    NODE.get_or_init(|| {
+        let _ = std::thread::spawn(move || {
+            match substrate_cli_test_utils::start_node_inline(vec![
+                "--no-hardware-benchmarks",
+                "--dev",
+                format!("--rpc-port={}", port).as_str(),
+            ]) {
+                Ok(_) => {}
+                Err(e) => {
+                    panic!("Node exited with error: {}", e);
+                }
+            }
+        });
+    });
+}

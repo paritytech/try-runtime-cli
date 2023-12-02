@@ -33,19 +33,7 @@ async fn create_snapshot_works() {
     let port = 45789;
     let ws_url = format!("ws://localhost:{}", port);
 
-    // Spawn a dev node.
-    let _ = std::thread::spawn(move || {
-        match common::start_node_inline(vec![
-            "--no-hardware-benchmarks",
-            "--dev",
-            format!("--rpc-port={}", port).as_str(),
-        ]) {
-            Ok(_) => {}
-            Err(e) => {
-                panic!("Node exited with error: {}", e);
-            }
-        }
-    });
+    crate::start_dev_node(port);
 
     // Run the command with tokio
     let temp_dir = tempfile::Builder::new()
@@ -88,7 +76,7 @@ async fn create_snapshot_works() {
                     Err(err) => break Err(err.to_string()),
                     _ => {
                         if start.elapsed() > Duration::from_secs(timeout) {
-                            break Err(format!("Mining block timed out"));
+                            break Err(String::from("Mining block timed out"));
                         }
                     }
                 }
