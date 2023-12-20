@@ -245,7 +245,7 @@ where
         }
     };
 
-    if !weight_ok || idempotency_ok {
+    if !weight_ok || !idempotency_ok {
         log::error!(
             "{}",
             colorize_string("<bold><red>-------------------------------------------------------------------\n\n")
