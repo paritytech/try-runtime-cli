@@ -19,6 +19,7 @@ use std::{fmt::Debug, str::FromStr};
 
 use bytesize::ByteSize;
 use frame_try_runtime::UpgradeCheckSelect;
+use paris::formatter::colorize_string;
 use parity_scale_codec::Encode;
 use sc_executor::sp_wasm_interface::HostFunctions;
 use sp_core::{hexdisplay::HexDisplay, Hasher};
@@ -101,8 +102,23 @@ where
 
     // Run `TryRuntime_on_runtime_upgrade` with the given checks.
     log::info!(
-        "🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}",
-        command.checks
+        "{}",
+        colorize_string(
+            "<bold><blue>-------------------------------------------------------------------\n\n"
+        )
+    );
+    log::info!(
+        "{}",
+        colorize_string(format!(
+            "🔬 <bold><blue>Running TryRuntime_on_runtime_upgrade with checks: {:?}\n\n",
+            command.checks
+        ))
+    );
+    log::info!(
+        "{}",
+        colorize_string(
+            "<bold><blue>-------------------------------------------------------------------"
+        )
     );
     // Save the overlayed changes from the first run, so we can use them later for idempotency
     // checks.
@@ -126,7 +142,16 @@ where
         UpgradeCheckSelect::None => (proof, ref_time_results),
         _ => {
             log::info!(
-                "🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements."
+                "{}",
+                colorize_string("<bold><blue>-------------------------------------------------------------------\n\n")
+            );
+            log::info!(
+                "{}",
+                colorize_string("🔬 <bold><blue>TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements.\n\n"),
+            );
+            log::info!(
+                "{}",
+                colorize_string("<bold><blue>-------------------------------------------------------------------")
             );
             let (proof, encoded_result) = state_machine_call_with_proof::<Block, HostFns>(
                 &ext,
@@ -150,8 +175,16 @@ where
         }
         false => {
             log::info!(
-                "🔬 Running TryRuntime_on_runtime_upgrade again to check idempotency: {:?}",
-                command.checks
+                "{}",
+                colorize_string("<bold><blue>-------------------------------------------------------------------\n\n")
+            );
+            log::info!(
+                "{}",
+                colorize_string(format!("🔬 <bold><blue>Running TryRuntime_on_runtime_upgrade again to check idempotency: {:?}\n\n", command.checks)),
+            );
+            log::info!(
+                "{}",
+                colorize_string("<bold><blue>-------------------------------------------------------------------")
             );
             let (oc_pre_root, _) = overlayed_changes.storage_root(&ext.backend, ext.state_version);
             match state_machine_call_with_proof::<Block, HostFns>(
@@ -212,8 +245,19 @@ where
         }
     };
 
-    if !weight_ok || !idempotency_ok {
-        log::error!("❌ Issues detected, exiting non-zero. See logs.");
+    if !weight_ok || idempotency_ok {
+        log::error!(
+            "{}",
+            colorize_string("<bold><red>-------------------------------------------------------------------\n\n")
+        );
+        log::error!(
+            "{}",
+            colorize_string("❌ <bold><red>Issues detected, exiting non-zero. See logs.\n\n"),
+        );
+        log::error!(
+            "{}",
+            colorize_string("<bold><red>-------------------------------------------------------------------")
+        );
         std::process::exit(1);
     }
 
