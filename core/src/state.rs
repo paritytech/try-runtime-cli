@@ -127,11 +127,7 @@ impl LiveState {
 pub enum State {
     /// Use a state snapshot as the source of runtime state.
     Snap {
-        /// DEPRECATED: use `--path` instead.
-        #[arg(short, long)]
-        snapshot_path: Option<PathBuf>,
-
-        #[clap(short = 'p', long = "path")]
+        #[clap(short = 'p', long = "path", alias = "snapshot-path")]
         path: Option<PathBuf>,
     },
 
@@ -168,22 +164,11 @@ impl State {
         <Block::Hash as FromStr>::Err: Debug,
     {
         let builder = match self {
-            State::Snap {
-                snapshot_path,
-                path,
-            } => {
-                // we allow both `--snapshot-path` and `--path` for now, but `--snapshot-path` is
-                // deprecated.
-                if snapshot_path.is_some() {
-                    log::warn!(
-                        target: LOG_TARGET,
-                        "`--snapshot-path` is deprecated and will be removed some time after Jan 2024. Use `--path` instead."
-                    );
-                }
-                let path = snapshot_path
+            State::Snap { path } => {
+                let path = path
                     .as_ref()
-                    .or(path.as_ref())
                     .ok_or_else(|| "no snapshot path provided".to_string())?;
+
                 Builder::<Block>::new().mode(Mode::Offline(OfflineConfig {
                     state_snapshot: SnapshotConfig::new(path),
                 }))
