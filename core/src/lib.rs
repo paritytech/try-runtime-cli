@@ -74,6 +74,9 @@ pub(crate) fn build_executor<H: HostFunctions>(shared: &SharedParams) -> WasmExe
         ))
         .with_onchain_heap_alloc_strategy(heap_pages)
         .with_offchain_heap_alloc_strategy(heap_pages)
+        // There is not that much we can do if someone is using unknown host functions.
+        // They would need to fork the `cli` to add their custom host functions.
+        .with_allow_missing_host_functions(true)
         .build()
 }
 
