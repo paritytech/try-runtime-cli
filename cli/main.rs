@@ -231,7 +231,7 @@
 //! try-runtime \
 //!     --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
 //!     on-runtime-upgrade \
-//!     snap -s my-snapshot.snap
+//!     snap -p my-snapshot.snap
 //! ```
 //!
 //! * Execute the latest finalized block with the given runtime.
