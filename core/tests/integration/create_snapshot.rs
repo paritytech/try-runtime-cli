@@ -33,21 +33,7 @@ async fn create_snapshot_works() {
     let port = 45789;
     let ws_url = format!("ws://localhost:{}", port);
 
-    // Spawn a dev node.
-    let _ = std::thread::spawn(move || {
-        match common::start_node_inline(vec![
-            "--no-hardware-benchmarks",
-            "--dev",
-            format!("--rpc-port={}", port).as_str(),
-        ]) {
-            Ok(_) => {}
-            Err(e) => {
-                panic!("Node exited with error: {}", e);
-            }
-        }
-    });
-    // Wait some time to ensure the node is warmed up.
-    std::thread::sleep(Duration::from_secs(90));
+    crate::start_dev_node(port);
 
     // Run the command with tokio
     let temp_dir = tempfile::Builder::new()
@@ -56,7 +42,48 @@ async fn create_snapshot_works() {
         .expect("Failed to create a tempdir");
     let snap_file_path = temp_dir.path().join("snapshot.snap");
 
-    common::run_with_timeout(Duration::from_secs(60), async move {
+    common::run_with_timeout(Duration::from_secs(360), async move {
+        async fn block_hash(block_number: u64, uri: &str, timeout: u64) -> Result<Hash, String> {
+            use std::time::Duration;
+
+            use node_primitives::Header;
+            use sp_rpc::{list::ListOrValue, number::NumberOrHex};
+            use substrate_rpc_client::{ws_client, ChainApi};
+
+            let start = std::time::Instant::now();
+
+            let rpc = loop {
+                match ws_client(uri).await {
+                    Ok(rpc) => break rpc,
+                    Err(err) => {
+                        if start.elapsed() > Duration::from_secs(timeout) {
+                            return Err(format!("Connection timed out: {}", err));
+                        }
+                    }
+                }
+                tokio::time::sleep(Duration::from_secs(8)).await;
+            };
+
+            loop {
+                let result = ChainApi::<(), Hash, Header, ()>::block_hash(
+                    &rpc,
+                    Some(ListOrValue::Value(NumberOrHex::Number(block_number))),
+                )
+                .await;
+
+                match result {
+                    Ok(ListOrValue::Value(Some(block_hash))) => break Ok(block_hash),
+                    Err(err) => break Err(err.to_string()),
+                    _ => {
+                        if start.elapsed() > Duration::from_secs(timeout) {
+                            break Err(String::from("Mining block timed out"));
+                        }
+                    }
+                }
+                tokio::time::sleep(Duration::from_secs(8)).await;
+            }
+        }
+
         fn create_snapshot(ws_url: &str, snap_file: &PathBuf, at: Hash) -> tokio::process::Child {
             Command::new(cargo_bin("try-runtime"))
                 .stdout(std::process::Stdio::piped())
@@ -69,8 +96,9 @@ async fn create_snapshot_works() {
                 .spawn()
                 .unwrap()
         }
+
         let block_number = 2;
-        let block_hash = common::block_hash(block_number, &ws_url).await.unwrap();
+        let block_hash = block_hash(block_number, &ws_url, 300).await.unwrap();
 
         // Try to create a snapshot.
         let child = create_snapshot(&ws_url, &snap_file_path, block_hash);
