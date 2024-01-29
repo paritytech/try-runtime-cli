@@ -282,6 +282,11 @@ fn analyse_pov<H>(proof: StorageProof, pre_root: H::Out, no_weight_warnings: boo
 where
     H: Hasher,
 {
+    if proof.is_empty() {
+        log::info!(target: LOG_TARGET, "Empty PoV detected");
+        return WeightSafety::ProbablySafe;
+    }
+
     let encoded_proof_size = proof.encoded_size();
     let compact_proof = proof
         .clone()
@@ -304,7 +309,7 @@ where
             );
             e
         })
-        .unwrap_or_default();
+        .expect("generating compressed proof should never fail if proof is valid");
 
     let proof_nodes = proof.into_nodes();
     log::debug!(

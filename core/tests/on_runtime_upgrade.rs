@@ -249,4 +249,25 @@ mod on_runtime_upgrade {
         })
         .await;
     }
+
+    #[tokio::test]
+    async fn no_migrations_works() {
+        common::run_with_timeout(Duration::from_secs(300), async move {
+            let project_root = env!("CARGO_MANIFEST_DIR");
+            let snap_path = format!("{}/tests/snaps/kusama-asset-hub.snap", project_root);
+            let runtime_path = format!(
+                "{}/tests/runtimes/asset_hub_kusama_runtime_no_migrations.compact.compressed.wasm",
+                project_root
+            );
+            let child = on_runtime_upgrade(
+                snap_path.as_str(),
+                runtime_path.as_str(),
+                &[],
+                &["--disable-spec-version-check"],
+            );
+            let out = child.wait_with_output().await.unwrap();
+            assert!(out.status.success());
+        })
+        .await;
+    }
 }
