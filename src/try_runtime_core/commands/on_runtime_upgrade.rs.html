@@ -361,6 +361,11 @@
 <a href="#361" id="361">361</a>
 <a href="#362" id="362">362</a>
 <a href="#363" id="363">363</a>
+<a href="#364" id="364">364</a>
+<a href="#365" id="365">365</a>
+<a href="#366" id="366">366</a>
+<a href="#367" id="367">367</a>
+<a href="#368" id="368">368</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -645,6 +650,11 @@
 <span class="kw">where
     </span>H: Hasher,
 {
+    <span class="kw">if </span>proof.is_empty() {
+        <span class="macro">log::info!</span>(target: LOG_TARGET, <span class="string">&quot;Empty PoV detected&quot;</span>);
+        <span class="kw">return </span>WeightSafety::ProbablySafe;
+    }
+
     <span class="kw">let </span>encoded_proof_size = proof.encoded_size();
     <span class="kw">let </span>compact_proof = proof
         .clone()
@@ -667,7 +677,7 @@
             );
             e
         })
-        .unwrap_or_default();
+        .expect(<span class="string">&quot;generating compressed proof should never fail if proof is valid&quot;</span>);
 
     <span class="kw">let </span>proof_nodes = proof.into_nodes();
     <span class="macro">log::debug!</span>(
