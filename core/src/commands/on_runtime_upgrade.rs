@@ -15,7 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::{fmt::Debug, str::FromStr};
+use std::{collections::BTreeMap, fmt::Debug, str::FromStr};
 
 use bytesize::ByteSize;
 use frame_try_runtime::UpgradeCheckSelect;
@@ -24,7 +24,7 @@ use parity_scale_codec::Encode;
 use sc_executor::sp_wasm_interface::HostFunctions;
 use sp_core::{hexdisplay::HexDisplay, Hasher};
 use sp_runtime::traits::{Block as BlockT, HashingFor, NumberFor};
-use sp_state_machine::{CompactProof, StorageProof};
+use sp_state_machine::{CompactProof, OverlayedChanges, StorageProof};
 
 use crate::{
     build_executor,
@@ -69,6 +69,11 @@ pub struct Command {
     /// Whether to disable migration idempotency checks
     #[clap(long, default_value = "false", default_missing_value = "true")]
     pub disable_idempotency_checks: bool,
+
+    /// When migrations are detected as not idempotent, enabling this will output a diff of the
+    /// storage before and after running the same set of migrations the second time.
+    #[clap(long, default_value = "false", default_missing_value = "true")]
+    pub print_storage_diff: bool,
 }
 
 // Runs the `on-runtime-upgrade` command.
@@ -187,6 +192,7 @@ where
                 colorize_string("<bold><blue>-------------------------------------------------------------------")
             );
             let (oc_pre_root, _) = overlayed_changes.storage_root(&ext.backend, ext.state_version);
+            overlayed_changes.start_transaction();
             match state_machine_call_with_proof::<Block, HostFns>(
                 &ext,
                 &mut overlayed_changes,
@@ -202,6 +208,19 @@ where
                         overlayed_changes.storage_root(&ext.backend, ext.state_version);
                     if oc_pre_root != oc_post_root {
                         log::error!("❌ Migrations are not idempotent. Selectively remove migrations from Executive until you find the culprit.");
+                        if command.print_storage_diff {
+                            log::info!("Changed storage keys:");
+                            let changes_after =
+                                collect_storage_changes_as_hex::<Block>(&overlayed_changes);
+                            overlayed_changes.rollback_transaction().unwrap();
+                            let changes_before =
+                                collect_storage_changes_as_hex::<Block>(&overlayed_changes);
+
+                            similar_asserts::assert_eq!(changes_before, changes_after);
+                        } else {
+                            log::error!("Run with --print-storage-diff to see list of changed storage keys.");
+                        }
+
                         false
                     } else {
                         // Exeuction was OK and state root didn't change
@@ -365,4 +384,18 @@ fn analyse_ref_time(ref_time_results: RefTimeInfo, no_weight_warnings: bool) -> 
     } else {
         WeightSafety::ProbablySafe
     }
+}
+
+fn collect_storage_changes_as_hex<Block: BlockT>(
+    overlayed_changes: &OverlayedChanges<HashingFor<Block>>,
+) -> BTreeMap<String, String> {
+    overlayed_changes
+        .changes()
+        .filter_map(|(key, entry)| {
+            Some((
+                HexDisplay::from(key).to_string(),
+                HexDisplay::from(entry.value_ref().as_ref()?).to_string(),
+            ))
+        })
+        .collect()
 }
