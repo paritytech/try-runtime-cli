@@ -212,7 +212,7 @@ where
                             log::info!("Changed storage keys:");
                             let changes_after =
                                 collect_storage_changes_as_hex::<Block>(&overlayed_changes);
-                            overlayed_changes.rollback_transaction().unwrap();
+                            overlayed_changes.rollback_transaction().expect("Migrations must not rollback transactions that they did not open");
                             let changes_before =
                                 collect_storage_changes_as_hex::<Block>(&overlayed_changes);
 
