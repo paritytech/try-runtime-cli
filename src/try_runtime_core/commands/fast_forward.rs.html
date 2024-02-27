@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/commands/fast_forward.rs`."><title>fast_forward.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="try_runtime_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.75.0 (82e1608df 2023-12-21)" data-channel="1.75.0" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/commands/fast_forward.rs`."><title>fast_forward.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="try_runtime_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -311,14 +312,14 @@
 // Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
-// Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+// Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 // 	http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+// distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
@@ -372,11 +373,11 @@
     ///   `Staking, System`).
     /// - `rr-[x]` where `[x]` is a number. Then, the given number of pallets are checked in a
     ///   round-robin fashion.
-    </span><span class="attr">#[arg(long, default_value = <span class="string">&quot;all&quot;</span>)]
+    </span><span class="attr">#[arg(long, default_value = <span class="string">"all"</span>)]
     </span><span class="kw">pub </span>try_state: frame_try_runtime::TryStateSelect,
 
     <span class="doccomment">/// Whether to run pending migrations before fast-forwarding.
-    </span><span class="attr">#[arg(long, default_value = <span class="string">&quot;true&quot;</span>)]
+    </span><span class="attr">#[arg(long, default_value = <span class="string">"true"</span>)]
     </span><span class="kw">pub </span>run_migrations: bool,
 
     <span class="doccomment">/// The state type to use.
@@ -391,7 +392,7 @@
             <span class="kw">_ </span>=&gt; <span class="self">self
                 </span>.block_ws_uri
                 .as_ref()
-                .expect(<span class="string">&quot;Either `--block-uri` must be provided, or state must be `live`&quot;</span>),
+                .expect(<span class="string">"Either `--block-uri` must be provided, or state must be `live`"</span>),
         }
     }
 }
@@ -409,7 +410,7 @@
         ChainApi::&lt;(), Block::Hash, Block::Header, ()&gt;::header(<span class="kw-2">&amp;</span>rpc, <span class="prelude-val">Some</span>(hash))
             .<span class="kw">await
             </span>.map_err(rpc_err_handler)
-            .and_then(|maybe_header| maybe_header.ok_or(<span class="string">&quot;header_not_found&quot;</span>).map(|h| <span class="kw-2">*</span>h.number()))<span class="question-mark">?</span>,
+            .and_then(|maybe_header| maybe_header.ok_or(<span class="string">"header_not_found"</span>).map(|h| <span class="kw-2">*</span>h.number()))<span class="question-mark">?</span>,
     )
 }
 
@@ -417,7 +418,7 @@
 </span><span class="kw">fn </span>dry_call&lt;T: Decode, Block: BlockT, HostFns: HostFunctions&gt;(
     externalities: <span class="kw-2">&amp;</span>TestExternalities&lt;HashingFor&lt;Block&gt;&gt;,
     executor: <span class="kw-2">&amp;</span>WasmExecutor&lt;HostFns&gt;,
-    method: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    method: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
     data: <span class="kw-2">&amp;</span>[u8],
 ) -&gt; <span class="prelude-ty">Result</span>&lt;T&gt; {
     <span class="kw">let </span>(<span class="kw">_</span>, result) = state_machine_call::&lt;Block, HostFns&gt;(
@@ -435,7 +436,7 @@
 </span><span class="kw">async fn </span>call&lt;Block: BlockT, HostFns: HostFunctions&gt;(
     externalities: <span class="kw-2">&amp;mut </span>TestExternalities&lt;HashingFor&lt;Block&gt;&gt;,
     executor: <span class="kw-2">&amp;</span>WasmExecutor&lt;HostFns&gt;,
-    method: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str,
+    method: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
     data: <span class="kw-2">&amp;</span>[u8],
 ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
     <span class="kw">let </span>(<span class="kw-2">mut </span>changes, <span class="kw">_</span>) = state_machine_call::&lt;Block, HostFns&gt;(
@@ -486,7 +487,7 @@
     call::&lt;Block, <span class="kw">_</span>&gt;(
         externalities,
         executor,
-        <span class="string">&quot;Core_initialize_block&quot;</span>,
+        <span class="string">"Core_initialize_block"</span>,
         <span class="kw-2">&amp;</span>header.encode(),
     )
     .<span class="kw">await</span><span class="question-mark">?</span>;
@@ -494,7 +495,7 @@
     <span class="kw">let </span>extrinsics = dry_call::&lt;Vec&lt;Block::Extrinsic&gt;, Block, <span class="kw">_</span>&gt;(
         externalities,
         executor,
-        <span class="string">&quot;BlockBuilder_inherent_extrinsics&quot;</span>,
+        <span class="string">"BlockBuilder_inherent_extrinsics"</span>,
         <span class="kw-2">&amp;</span>inherent_data.encode(),
     )<span class="question-mark">?</span>;
 
@@ -502,7 +503,7 @@
         call::&lt;Block, <span class="kw">_</span>&gt;(
             externalities,
             executor,
-            <span class="string">&quot;BlockBuilder_apply_extrinsic&quot;</span>,
+            <span class="string">"BlockBuilder_apply_extrinsic"</span>,
             <span class="kw-2">&amp;</span>xt.encode(),
         )
         .<span class="kw">await</span><span class="question-mark">?</span>;
@@ -511,14 +512,14 @@
     <span class="kw">let </span>header = dry_call::&lt;Block::Header, Block, <span class="kw">_</span>&gt;(
         externalities,
         executor,
-        <span class="string">&quot;BlockBuilder_finalize_block&quot;</span>,
+        <span class="string">"BlockBuilder_finalize_block"</span>,
         <span class="kw-2">&amp;</span>[<span class="number">0u8</span>; <span class="number">0</span>],
     )<span class="question-mark">?</span>;
 
     call::&lt;Block, <span class="kw">_</span>&gt;(
         externalities,
         executor,
-        <span class="string">&quot;BlockBuilder_finalize_block&quot;</span>,
+        <span class="string">"BlockBuilder_finalize_block"</span>,
         <span class="kw-2">&amp;</span>[<span class="number">0u8</span>; <span class="number">0</span>],
     )
     .<span class="kw">await</span><span class="question-mark">?</span>;
@@ -550,19 +551,19 @@
         .<span class="kw">await</span><span class="question-mark">?</span>;
 
     <span class="kw">if </span>command.run_migrations {
-        <span class="macro">log::info!</span>(<span class="string">&quot;Running migrations...&quot;</span>);
+        <span class="macro">log::info!</span>(<span class="string">"Running migrations..."</span>);
         state_machine_call_with_proof::&lt;Block, HostFns&gt;(
             <span class="kw-2">&amp;</span>ext,
             <span class="kw-2">&amp;mut </span>Default::default(),
             <span class="kw-2">&amp;</span>executor,
-            <span class="string">&quot;TryRuntime_on_runtime_upgrade&quot;</span>,
+            <span class="string">"TryRuntime_on_runtime_upgrade"</span>,
             command.try_state.encode().as_ref(),
-            Default::default(), <span class="comment">// we don&#39;t really need any extensions here.
+            Default::default(), <span class="comment">// we don't really need any extensions here.
             </span><span class="prelude-val">None</span>,
         )<span class="question-mark">?</span>;
     }
 
-    <span class="macro">log::info!</span>(<span class="string">&quot;Fast forwarding {} blocks...&quot;</span>, command.n_blocks);
+    <span class="macro">log::info!</span>(<span class="string">"Fast forwarding {} blocks..."</span>, command.n_blocks);
     <span class="kw">let </span><span class="kw-2">mut </span>last_block_hash = ext.block_hash;
     <span class="kw">let </span><span class="kw-2">mut </span>last_block_number =
         get_block_number::&lt;Block&gt;(last_block_hash, command.block_ws_uri()).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -575,7 +576,7 @@
         </span><span class="kw">let </span>backend = ext.as_backend();
 
         <span class="macro">log::info!</span>(
-            <span class="string">&quot;Producing new empty block at height {:?}&quot;</span>,
+            <span class="string">"Producing new empty block at height {:?}"</span>,
             last_block_number + One::one()
         );
 
@@ -589,7 +590,7 @@
         )
         .<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="macro">log::info!</span>(<span class="string">&quot;Produced a new block: {:?}&quot;</span>, next_block.header());
+        <span class="macro">log::info!</span>(<span class="string">"Produced a new block: {:?}"</span>, next_block.header());
 
         <span class="comment">// And now we restore previous state.
         </span>ext.backend = backend;
@@ -603,9 +604,9 @@
             command.try_state.clone(),
         )
             .encode();
-        call::&lt;Block, <span class="kw">_</span>&gt;(<span class="kw-2">&amp;mut </span>ext, <span class="kw-2">&amp;</span>executor, <span class="string">&quot;TryRuntime_execute_block&quot;</span>, <span class="kw-2">&amp;</span>payload).<span class="kw">await</span><span class="question-mark">?</span>;
+        call::&lt;Block, <span class="kw">_</span>&gt;(<span class="kw-2">&amp;mut </span>ext, <span class="kw-2">&amp;</span>executor, <span class="string">"TryRuntime_execute_block"</span>, <span class="kw-2">&amp;</span>payload).<span class="kw">await</span><span class="question-mark">?</span>;
 
-        <span class="macro">log::info!</span>(<span class="string">&quot;Executed the new block&quot;</span>);
+        <span class="macro">log::info!</span>(<span class="string">"Executed the new block"</span>);
 
         prev_block_building_info = new_block_building_info;
         last_block_hash = next_block.hash();

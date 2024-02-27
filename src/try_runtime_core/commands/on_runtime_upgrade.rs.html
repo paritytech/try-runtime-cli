@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/commands/on_runtime_upgrade.rs`."><title>on_runtime_upgrade.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="try_runtime_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.75.0 (82e1608df 2023-12-21)" data-channel="1.75.0" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/commands/on_runtime_upgrade.rs`."><title>on_runtime_upgrade.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="try_runtime_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -366,24 +367,59 @@
 <a href="#366" id="366">366</a>
 <a href="#367" id="367">367</a>
 <a href="#368" id="368">368</a>
+<a href="#369" id="369">369</a>
+<a href="#370" id="370">370</a>
+<a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
+<a href="#374" id="374">374</a>
+<a href="#375" id="375">375</a>
+<a href="#376" id="376">376</a>
+<a href="#377" id="377">377</a>
+<a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
+<a href="#380" id="380">380</a>
+<a href="#381" id="381">381</a>
+<a href="#382" id="382">382</a>
+<a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
+<a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
-// Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+// Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 // 	http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+// distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-</span><span class="kw">use </span>std::{fmt::Debug, str::FromStr};
+</span><span class="kw">use </span>std::{collections::BTreeMap, fmt::Debug, str::FromStr};
 
 <span class="kw">use </span>bytesize::ByteSize;
 <span class="kw">use </span>frame_try_runtime::UpgradeCheckSelect;
@@ -392,7 +428,7 @@
 <span class="kw">use </span>sc_executor::sp_wasm_interface::HostFunctions;
 <span class="kw">use </span>sp_core::{hexdisplay::HexDisplay, Hasher};
 <span class="kw">use </span>sp_runtime::traits::{Block <span class="kw">as </span>BlockT, HashingFor, NumberFor};
-<span class="kw">use </span>sp_state_machine::{CompactProof, StorageProof};
+<span class="kw">use </span>sp_state_machine::{CompactProof, OverlayedChanges, StorageProof};
 
 <span class="kw">use crate</span>::{
     build_executor,
@@ -418,25 +454,30 @@
     /// Performing any checks will potentially invalidate the measured PoV/Weight.
     </span><span class="comment">// NOTE: The clap attributes make it backwards compatible with the previous `--checks` flag.
     </span><span class="attr">#[clap(long,
-		default_value = <span class="string">&quot;pre-and-post&quot;</span>,
-		default_missing_value = <span class="string">&quot;all&quot;</span>,
+		default_value = <span class="string">"pre-and-post"</span>,
+		default_missing_value = <span class="string">"all"</span>,
 		num_args = <span class="number">0</span>..=<span class="number">1</span>,
 		verbatim_doc_comment
     )]
     </span><span class="kw">pub </span>checks: UpgradeCheckSelect,
 
     <span class="doccomment">/// Whether to disable weight warnings, useful if the runtime is for a relay chain.
-    </span><span class="attr">#[clap(long, default_value = <span class="string">&quot;false&quot;</span>, default_missing_value = <span class="string">&quot;true&quot;</span>)]
+    </span><span class="attr">#[clap(long, default_value = <span class="string">"false"</span>, default_missing_value = <span class="string">"true"</span>)]
     </span><span class="kw">pub </span>no_weight_warnings: bool,
 
     <span class="doccomment">/// Whether to skip enforcing that the new runtime `spec_version` is greater or equal to the
     /// existing `spec_version`.
-    </span><span class="attr">#[clap(long, default_value = <span class="string">&quot;false&quot;</span>, default_missing_value = <span class="string">&quot;true&quot;</span>)]
+    </span><span class="attr">#[clap(long, default_value = <span class="string">"false"</span>, default_missing_value = <span class="string">"true"</span>)]
     </span><span class="kw">pub </span>disable_spec_version_check: bool,
 
     <span class="doccomment">/// Whether to disable migration idempotency checks
-    </span><span class="attr">#[clap(long, default_value = <span class="string">&quot;false&quot;</span>, default_missing_value = <span class="string">&quot;true&quot;</span>)]
+    </span><span class="attr">#[clap(long, default_value = <span class="string">"false"</span>, default_missing_value = <span class="string">"true"</span>)]
     </span><span class="kw">pub </span>disable_idempotency_checks: bool,
+
+    <span class="doccomment">/// When migrations are detected as not idempotent, enabling this will output a diff of the
+    /// storage before and after running the same set of migrations the second time.
+    </span><span class="attr">#[clap(long, default_value = <span class="string">"false"</span>, default_missing_value = <span class="string">"true"</span>)]
+    </span><span class="kw">pub </span>print_storage_diff: bool,
 }
 
 <span class="comment">// Runs the `on-runtime-upgrade` command.
@@ -463,29 +504,29 @@
     <span class="kw">if let </span>State::Live(<span class="kw">_</span>) = command.state {
         <span class="macro">log::info!</span>(
             target: LOG_TARGET,
-            <span class="string">&quot;🚀 Speed up your workflow by using snapshots instead of live state. \
-            See `try-runtime create-snapshot --help`.&quot;
+            <span class="string">"🚀 Speed up your workflow by using snapshots instead of live state. \
+            See `try-runtime create-snapshot --help`."
         </span>);
     }
 
     <span class="comment">// Run `TryRuntime_on_runtime_upgrade` with the given checks.
     </span><span class="macro">log::info!</span>(
-        <span class="string">&quot;{}&quot;</span>,
+        <span class="string">"{}"</span>,
         colorize_string(
-            <span class="string">&quot;&lt;bold&gt;&lt;blue&gt;-------------------------------------------------------------------\n\n&quot;
+            <span class="string">"&lt;bold&gt;&lt;blue&gt;-------------------------------------------------------------------\n\n"
         </span>)
     );
     <span class="macro">log::info!</span>(
-        <span class="string">&quot;{}&quot;</span>,
+        <span class="string">"{}"</span>,
         colorize_string(<span class="macro">format!</span>(
-            <span class="string">&quot;🔬 &lt;bold&gt;&lt;blue&gt;Running TryRuntime_on_runtime_upgrade with checks: {:?}\n\n&quot;</span>,
+            <span class="string">"🔬 &lt;bold&gt;&lt;blue&gt;Running TryRuntime_on_runtime_upgrade with checks: {:?}\n\n"</span>,
             command.checks
         ))
     );
     <span class="macro">log::info!</span>(
-        <span class="string">&quot;{}&quot;</span>,
+        <span class="string">"{}"</span>,
         colorize_string(
-            <span class="string">&quot;&lt;bold&gt;&lt;blue&gt;-------------------------------------------------------------------&quot;
+            <span class="string">"&lt;bold&gt;&lt;blue&gt;-------------------------------------------------------------------"
         </span>)
     );
     <span class="comment">// Save the overlayed changes from the first run, so we can use them later for idempotency
@@ -495,9 +536,9 @@
         <span class="kw-2">&amp;</span>ext,
         <span class="kw-2">&amp;mut </span>overlayed_changes,
         <span class="kw-2">&amp;</span>executor,
-        <span class="string">&quot;TryRuntime_on_runtime_upgrade&quot;</span>,
+        <span class="string">"TryRuntime_on_runtime_upgrade"</span>,
         command.checks.encode().as_ref(),
-        Default::default(), <span class="comment">// we don&#39;t really need any extensions here.
+        Default::default(), <span class="comment">// we don't really need any extensions here.
         </span>shared.export_proof.clone(),
     )<span class="question-mark">?</span>;
     <span class="kw">let </span>ref_time_results = encoded_result.try_into()<span class="question-mark">?</span>;
@@ -510,24 +551,24 @@
         UpgradeCheckSelect::None =&gt; (proof, ref_time_results),
         <span class="kw">_ </span>=&gt; {
             <span class="macro">log::info!</span>(
-                <span class="string">&quot;{}&quot;</span>,
-                colorize_string(<span class="string">&quot;&lt;bold&gt;&lt;blue&gt;-------------------------------------------------------------------\n\n&quot;</span>)
+                <span class="string">"{}"</span>,
+                colorize_string(<span class="string">"&lt;bold&gt;&lt;blue&gt;-------------------------------------------------------------------\n\n"</span>)
             );
             <span class="macro">log::info!</span>(
-                <span class="string">&quot;{}&quot;</span>,
-                colorize_string(<span class="string">&quot;🔬 &lt;bold&gt;&lt;blue&gt;TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements.\n\n&quot;</span>),
+                <span class="string">"{}"</span>,
+                colorize_string(<span class="string">"🔬 &lt;bold&gt;&lt;blue&gt;TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements.\n\n"</span>),
             );
             <span class="macro">log::info!</span>(
-                <span class="string">&quot;{}&quot;</span>,
-                colorize_string(<span class="string">&quot;&lt;bold&gt;&lt;blue&gt;-------------------------------------------------------------------&quot;</span>)
+                <span class="string">"{}"</span>,
+                colorize_string(<span class="string">"&lt;bold&gt;&lt;blue&gt;-------------------------------------------------------------------"</span>)
             );
             <span class="kw">let </span>(proof, encoded_result) = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
                 <span class="kw-2">&amp;</span>ext,
                 <span class="kw-2">&amp;mut </span>Default::default(),
                 <span class="kw-2">&amp;</span>executor,
-                <span class="string">&quot;TryRuntime_on_runtime_upgrade&quot;</span>,
+                <span class="string">"TryRuntime_on_runtime_upgrade"</span>,
                 UpgradeCheckSelect::None.encode().as_ref(),
-                Default::default(), <span class="comment">// we don&#39;t really need any extensions here.
+                Default::default(), <span class="comment">// we don't really need any extensions here.
                 </span>shared.export_proof.clone(),
             )<span class="question-mark">?</span>;
             <span class="kw">let </span>ref_time_results = encoded_result.try_into()<span class="question-mark">?</span>;
@@ -538,30 +579,31 @@
     <span class="comment">// Check idempotency
     </span><span class="kw">let </span>idempotency_ok = <span class="kw">match </span>command.disable_idempotency_checks {
         <span class="bool-val">true </span>=&gt; {
-            <span class="macro">log::info!</span>(<span class="string">&quot;ℹ Skipping idempotency check&quot;</span>);
+            <span class="macro">log::info!</span>(<span class="string">"ℹ Skipping idempotency check"</span>);
             <span class="bool-val">true
         </span>}
         <span class="bool-val">false </span>=&gt; {
             <span class="macro">log::info!</span>(
-                <span class="string">&quot;{}&quot;</span>,
-                colorize_string(<span class="string">&quot;&lt;bold&gt;&lt;blue&gt;-------------------------------------------------------------------\n\n&quot;</span>)
+                <span class="string">"{}"</span>,
+                colorize_string(<span class="string">"&lt;bold&gt;&lt;blue&gt;-------------------------------------------------------------------\n\n"</span>)
             );
             <span class="macro">log::info!</span>(
-                <span class="string">&quot;{}&quot;</span>,
-                colorize_string(<span class="macro">format!</span>(<span class="string">&quot;🔬 &lt;bold&gt;&lt;blue&gt;Running TryRuntime_on_runtime_upgrade again to check idempotency: {:?}\n\n&quot;</span>, command.checks)),
+                <span class="string">"{}"</span>,
+                colorize_string(<span class="macro">format!</span>(<span class="string">"🔬 &lt;bold&gt;&lt;blue&gt;Running TryRuntime_on_runtime_upgrade again to check idempotency: {:?}\n\n"</span>, command.checks)),
             );
             <span class="macro">log::info!</span>(
-                <span class="string">&quot;{}&quot;</span>,
-                colorize_string(<span class="string">&quot;&lt;bold&gt;&lt;blue&gt;-------------------------------------------------------------------&quot;</span>)
+                <span class="string">"{}"</span>,
+                colorize_string(<span class="string">"&lt;bold&gt;&lt;blue&gt;-------------------------------------------------------------------"</span>)
             );
             <span class="kw">let </span>(oc_pre_root, <span class="kw">_</span>) = overlayed_changes.storage_root(<span class="kw-2">&amp;</span>ext.backend, ext.state_version);
+            overlayed_changes.start_transaction();
             <span class="kw">match </span>state_machine_call_with_proof::&lt;Block, HostFns&gt;(
                 <span class="kw-2">&amp;</span>ext,
                 <span class="kw-2">&amp;mut </span>overlayed_changes,
                 <span class="kw-2">&amp;</span>executor,
-                <span class="string">&quot;TryRuntime_on_runtime_upgrade&quot;</span>,
+                <span class="string">"TryRuntime_on_runtime_upgrade"</span>,
                 command.checks.encode().as_ref(),
-                Default::default(), <span class="comment">// we don&#39;t really need any extensions here.
+                Default::default(), <span class="comment">// we don't really need any extensions here.
                 </span>shared.export_proof.clone(),
             ) {
                 <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {
@@ -569,18 +611,33 @@
                     </span><span class="kw">let </span>(oc_post_root, <span class="kw">_</span>) =
                         overlayed_changes.storage_root(<span class="kw-2">&amp;</span>ext.backend, ext.state_version);
                     <span class="kw">if </span>oc_pre_root != oc_post_root {
-                        <span class="macro">log::error!</span>(<span class="string">&quot;❌ Migrations are not idempotent. Selectively remove migrations from Executive until you find the culprit.&quot;</span>);
+                        <span class="macro">log::error!</span>(<span class="string">"❌ Migrations are not idempotent. Selectively remove migrations from Executive until you find the culprit."</span>);
+                        <span class="kw">if </span>command.print_storage_diff {
+                            <span class="macro">log::info!</span>(<span class="string">"Changed storage keys:"</span>);
+                            <span class="kw">let </span>changes_after =
+                                collect_storage_changes_as_hex::&lt;Block&gt;(<span class="kw-2">&amp;</span>overlayed_changes);
+                            overlayed_changes.rollback_transaction().expect(
+                                <span class="string">"Migrations must not rollback transactions that they did not open"</span>,
+                            );
+                            <span class="kw">let </span>changes_before =
+                                collect_storage_changes_as_hex::&lt;Block&gt;(<span class="kw-2">&amp;</span>overlayed_changes);
+
+                            <span class="macro">similar_asserts::assert_eq!</span>(changes_before, changes_after);
+                        } <span class="kw">else </span>{
+                            <span class="macro">log::error!</span>(<span class="string">"Run with --print-storage-diff to see list of changed storage keys."</span>);
+                        }
+
                         <span class="bool-val">false
                     </span>} <span class="kw">else </span>{
-                        <span class="comment">// Exeuction was OK and state root didn&#39;t change
+                        <span class="comment">// Exeuction was OK and state root didn't change
                         </span><span class="bool-val">true
                     </span>}
                 }
                 <span class="prelude-val">Err</span>(e) =&gt; {
                     <span class="macro">log::error!</span>(
-                        <span class="string">&quot;❌ Migrations are not idempotent, they failed during the second execution.&quot;</span>,
+                        <span class="string">"❌ Migrations are not idempotent, they failed during the second execution."</span>,
                     );
-                    <span class="macro">log::debug!</span>(<span class="string">&quot;{:?}&quot;</span>, e);
+                    <span class="macro">log::debug!</span>(<span class="string">"{:?}"</span>, e);
                     <span class="bool-val">false
                 </span>}
             }
@@ -593,39 +650,39 @@
     <span class="kw">let </span>ref_time_safety = analyse_ref_time(ref_time_results, command.no_weight_warnings);
     <span class="kw">let </span>weight_ok = <span class="kw">match </span>(pov_safety, ref_time_safety, command.no_weight_warnings) {
         (<span class="kw">_</span>, <span class="kw">_</span>, <span class="bool-val">true</span>) =&gt; {
-            <span class="macro">log::info!</span>(<span class="string">&quot;ℹ Skipped checking weight safety&quot;</span>);
+            <span class="macro">log::info!</span>(<span class="string">"ℹ Skipped checking weight safety"</span>);
             <span class="bool-val">true
         </span>}
         (WeightSafety::ProbablySafe, WeightSafety::ProbablySafe, <span class="kw">_</span>) =&gt; {
             <span class="macro">log::info!</span>(
                 target: LOG_TARGET,
-                <span class="string">&quot;✅ No weight safety issues detected. \
+                <span class="string">"✅ No weight safety issues detected. \
                 Please note this does not guarantee a successful runtime upgrade. \
                 Always test your runtime upgrade with recent state, and ensure that the weight usage \
                 of your migrations will not drastically differ between testing and actual on-chain \
-                execution.&quot;
+                execution."
             </span>);
             <span class="bool-val">true
         </span>}
         <span class="kw">_ </span>=&gt; {
-            <span class="macro">log::error!</span>(target: LOG_TARGET, <span class="string">&quot;❌ Weight safety issues detected.&quot;</span>);
+            <span class="macro">log::error!</span>(target: LOG_TARGET, <span class="string">"❌ Weight safety issues detected."</span>);
             <span class="bool-val">false
         </span>}
     };
 
     <span class="kw">if </span>!weight_ok || !idempotency_ok {
         <span class="macro">log::error!</span>(
-            <span class="string">&quot;{}&quot;</span>,
-            colorize_string(<span class="string">&quot;&lt;bold&gt;&lt;red&gt;-------------------------------------------------------------------\n\n&quot;</span>)
+            <span class="string">"{}"</span>,
+            colorize_string(<span class="string">"&lt;bold&gt;&lt;red&gt;-------------------------------------------------------------------\n\n"</span>)
         );
         <span class="macro">log::error!</span>(
-            <span class="string">&quot;{}&quot;</span>,
-            colorize_string(<span class="string">&quot;❌ &lt;bold&gt;&lt;red&gt;Issues detected, exiting non-zero. See logs.\n\n&quot;</span>),
+            <span class="string">"{}"</span>,
+            colorize_string(<span class="string">"❌ &lt;bold&gt;&lt;red&gt;Issues detected, exiting non-zero. See logs.\n\n"</span>),
         );
         <span class="macro">log::error!</span>(
-            <span class="string">&quot;{}&quot;</span>,
+            <span class="string">"{}"</span>,
             colorize_string(
-                <span class="string">&quot;&lt;bold&gt;&lt;red&gt;-------------------------------------------------------------------&quot;
+                <span class="string">"&lt;bold&gt;&lt;red&gt;-------------------------------------------------------------------"
             </span>)
         );
         std::process::exit(<span class="number">1</span>);
@@ -651,7 +708,7 @@
     </span>H: Hasher,
 {
     <span class="kw">if </span>proof.is_empty() {
-        <span class="macro">log::info!</span>(target: LOG_TARGET, <span class="string">&quot;Empty PoV detected&quot;</span>);
+        <span class="macro">log::info!</span>(target: LOG_TARGET, <span class="string">"Empty PoV detected"</span>);
         <span class="kw">return </span>WeightSafety::ProbablySafe;
     }
 
@@ -660,7 +717,7 @@
         .clone()
         .into_compact_proof::&lt;H&gt;(pre_root)
         .map_err(|e| {
-            <span class="macro">log::error!</span>(target: LOG_TARGET, <span class="string">&quot;failed to generate compact proof: {:?}&quot;</span>, e);
+            <span class="macro">log::error!</span>(target: LOG_TARGET, <span class="string">"failed to generate compact proof: {:?}"</span>, e);
             e
         })
         .unwrap_or(CompactProof {
@@ -672,26 +729,26 @@
         .map_err(|e| {
             <span class="macro">log::error!</span>(
                 target: LOG_TARGET,
-                <span class="string">&quot;failed to generate compressed proof: {:?}&quot;</span>,
+                <span class="string">"failed to generate compressed proof: {:?}"</span>,
                 e
             );
             e
         })
-        .expect(<span class="string">&quot;generating compressed proof should never fail if proof is valid&quot;</span>);
+        .expect(<span class="string">"generating compressed proof should never fail if proof is valid"</span>);
 
     <span class="kw">let </span>proof_nodes = proof.into_nodes();
     <span class="macro">log::debug!</span>(
         target: LOG_TARGET,
-        <span class="string">&quot;Proof: 0x{}... / {} nodes&quot;</span>,
+        <span class="string">"Proof: 0x{}... / {} nodes"</span>,
         HexDisplay::from(<span class="kw-2">&amp;</span>proof_nodes.iter().flatten().cloned().take(<span class="number">10</span>).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()),
         proof_nodes.len()
     );
-    <span class="macro">log::debug!</span>(target: LOG_TARGET, <span class="string">&quot;Encoded proof size: {}&quot;</span>, ByteSize(encoded_proof_size <span class="kw">as </span>u64));
-    <span class="macro">log::debug!</span>(target: LOG_TARGET, <span class="string">&quot;Compact proof size: {}&quot;</span>, ByteSize(compact_proof_size <span class="kw">as </span>u64),);
+    <span class="macro">log::debug!</span>(target: LOG_TARGET, <span class="string">"Encoded proof size: {}"</span>, ByteSize(encoded_proof_size <span class="kw">as </span>u64));
+    <span class="macro">log::debug!</span>(target: LOG_TARGET, <span class="string">"Compact proof size: {}"</span>, ByteSize(compact_proof_size <span class="kw">as </span>u64),);
     <span class="macro">log::info!</span>(
         target: LOG_TARGET,
-        <span class="string">&quot;PoV size (zstd-compressed compact proof): {}. For parachains, it&#39;s your responsibility \
-        to verify that a PoV of this size fits within any relaychain constraints.&quot;</span>,
+        <span class="string">"PoV size (zstd-compressed compact proof): {}. For parachains, it's your responsibility \
+        to verify that a PoV of this size fits within any relaychain constraints."</span>,
         ByteSize(compressed_compact_proof.len() <span class="kw">as </span>u64),
     );
     <span class="kw">if </span>!no_weight_warnings
@@ -700,8 +757,8 @@
     {
         <span class="macro">log::warn!</span>(
             target: LOG_TARGET,
-            <span class="string">&quot;A PoV size of {} is significant. Most relay chains usually accept PoVs up to {}. \
-            Proceed with caution.&quot;</span>,
+            <span class="string">"A PoV size of {} is significant. Most relay chains usually accept PoVs up to {}. \
+            Proceed with caution."</span>,
             ByteSize(compressed_compact_proof.len() <span class="kw">as </span>u64),
             DEFAULT_MAX_POV_SIZE,
         );
@@ -717,7 +774,7 @@
     <span class="kw">let </span>(used, max) = (used.as_secs_f32(), max.as_secs_f32());
     <span class="macro">log::info!</span>(
         target: LOG_TARGET,
-        <span class="string">&quot;Consumed ref_time: {}s ({:.2}% of max {}s)&quot;</span>,
+        <span class="string">"Consumed ref_time: {}s ({:.2}% of max {}s)"</span>,
         used,
         used / max * <span class="number">100.0</span>,
         max,
@@ -725,13 +782,27 @@
     <span class="kw">if </span>!no_weight_warnings &amp;&amp; used &gt;= max * DEFAULT_WARNING_THRESHOLD {
         <span class="macro">log::warn!</span>(
             target: LOG_TARGET,
-            <span class="string">&quot;Consumed ref_time is &gt;= {}% of the max allowed ref_time. Please ensure the \
-            migration is not be too computationally expensive to be fit in a single block.&quot;</span>,
+            <span class="string">"Consumed ref_time is &gt;= {}% of the max allowed ref_time. Please ensure the \
+            migration is not be too computationally expensive to be fit in a single block."</span>,
             DEFAULT_WARNING_THRESHOLD * <span class="number">100.0</span>,
         );
         WeightSafety::PotentiallyUnsafe
     } <span class="kw">else </span>{
         WeightSafety::ProbablySafe
     }
+}
+
+<span class="kw">fn </span>collect_storage_changes_as_hex&lt;Block: BlockT&gt;(
+    overlayed_changes: <span class="kw-2">&amp;</span>OverlayedChanges&lt;HashingFor&lt;Block&gt;&gt;,
+) -&gt; BTreeMap&lt;String, String&gt; {
+    overlayed_changes
+        .changes()
+        .filter_map(|(key, entry)| {
+            <span class="prelude-val">Some</span>((
+                HexDisplay::from(key).to_string(),
+                HexDisplay::from(entry.value_ref().as_ref()<span class="question-mark">?</span>).to_string(),
+            ))
+        })
+        .collect()
 }
 </code></pre></div></section></main></body></html>

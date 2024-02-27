@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/commands/follow_chain.rs`."><title>follow_chain.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="try_runtime_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.75.0 (82e1608df 2023-12-21)" data-channel="1.75.0" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `core/src/commands/follow_chain.rs`."><title>follow_chain.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="try_runtime_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -219,14 +220,14 @@
 // Copyright (C) Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
-// Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+// Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 // 	http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+// distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
@@ -249,8 +250,8 @@
     state_machine_call_with_proof, SharedParams, LOG_TARGET,
 };
 
-<span class="kw">const </span>SUB: <span class="kw-2">&amp;</span>str = <span class="string">&quot;chain_subscribeFinalizedHeads&quot;</span>;
-<span class="kw">const </span>UN_SUB: <span class="kw-2">&amp;</span>str = <span class="string">&quot;chain_unsubscribeFinalizedHeads&quot;</span>;
+<span class="kw">const </span>SUB: <span class="kw-2">&amp;</span>str = <span class="string">"chain_subscribeFinalizedHeads"</span>;
+<span class="kw">const </span>UN_SUB: <span class="kw-2">&amp;</span>str = <span class="string">"chain_unsubscribeFinalizedHeads"</span>;
 
 <span class="doccomment">/// Configurations for [`run`].
 </span><span class="attr">#[derive(Debug, Clone, clap::Parser)]
@@ -272,7 +273,7 @@
     ///   `Staking, System`).
     /// - `rr-[x]` where `[x]` is a number. Then, the given number of pallets are checked in a
     ///   round-robin fashion.
-    </span><span class="attr">#[arg(long, default_value = <span class="string">&quot;all&quot;</span>)]
+    </span><span class="attr">#[arg(long, default_value = <span class="string">"all"</span>)]
     </span><span class="kw">pub </span>try_state: frame_try_runtime::TryStateSelect,
 
     <span class="doccomment">/// If present, a single connection to a node will be kept and reused for fetching blocks.
@@ -284,14 +285,14 @@
 ///
 /// Returns a pair `(client, subscription)` - `subscription` alone will be useless, because it
 /// relies on the related alive `client`.
-</span><span class="kw">async fn </span>start_subscribing&lt;Header: DeserializeOwned + Serialize + Send + Sync + <span class="lifetime">&#39;static</span>&gt;(
+</span><span class="kw">async fn </span>start_subscribing&lt;Header: DeserializeOwned + Serialize + Send + Sync + <span class="lifetime">'static</span>&gt;(
     url: <span class="kw-2">&amp;</span>str,
 ) -&gt; sc_cli::Result&lt;(WsClient, Subscription&lt;Header&gt;)&gt; {
     <span class="kw">let </span>client = ws_client(url)
         .<span class="kw">await
         </span>.map_err(|e| sc_cli::Error::Application(e.into()))<span class="question-mark">?</span>;
 
-    <span class="macro">log::info!</span>(target: LOG_TARGET, <span class="string">&quot;subscribing to {:?} / {:?}&quot;</span>, SUB, UN_SUB);
+    <span class="macro">log::info!</span>(target: LOG_TARGET, <span class="string">"subscribing to {:?} / {:?}"</span>, SUB, UN_SUB);
 
     <span class="kw">let </span>sub = ChainApi::&lt;(), (), Header, ()&gt;::subscribe_finalized_heads(<span class="kw-2">&amp;</span>client)
         .<span class="kw">await
@@ -327,21 +328,21 @@
                     <span class="kw">if </span><span class="macro">matches!</span>(e, substrate_rpc_client::Error::ParseError(<span class="kw">_</span>)) {
                         <span class="macro">log::error!</span>(
                             target: LOG_TARGET,
-                            <span class="string">&quot;failed to parse the block format of remote against the local \
+                            <span class="string">"failed to parse the block format of remote against the local \
                             codebase. The block format has changed, and follow-chain cannot run in \
 							this case. Try running this command in a branch of your codebase that
 							has the same block format as the remote chain. For now, we replace the \
-                            block with an empty one.&quot;
+                            block with an empty one."
                         </span>);
                     }
                     rpc_err_handler(e)
                 })<span class="question-mark">?
-                </span>.expect(<span class="string">&quot;if header exists, block should also exist.&quot;</span>)
+                </span>.expect(<span class="string">"if header exists, block should also exist."</span>)
                 .block;
 
         <span class="macro">log::debug!</span>(
             target: LOG_TARGET,
-            <span class="string">&quot;new block event: {:?} =&gt; {:?}, extrinsics: {}&quot;</span>,
+            <span class="string">"new block event: {:?} =&gt; {:?}, extrinsics: {}"</span>,
             hash,
             number,
             block.extrinsics().len()
@@ -371,14 +372,14 @@
 
         <span class="kw">let </span>state_ext = maybe_state_ext
             .as_mut()
-            .expect(<span class="string">&quot;state_ext either existed or was just created&quot;</span>);
+            .expect(<span class="string">"state_ext either existed or was just created"</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>overlayed_changes = Default::default();
         <span class="kw">let </span>result = state_machine_call_with_proof::&lt;Block, HostFns&gt;(
             state_ext,
             <span class="kw-2">&amp;mut </span>overlayed_changes,
             <span class="kw-2">&amp;</span>executor,
-            <span class="string">&quot;TryRuntime_execute_block&quot;</span>,
+            <span class="string">"TryRuntime_execute_block"</span>,
             (
                 block,
                 command.state_root_check,
@@ -391,13 +392,13 @@
             shared
                 .export_proof
                 .as_ref()
-                .map(|path| path.as_path().join(<span class="macro">format!</span>(<span class="string">&quot;{}.json&quot;</span>, number))),
+                .map(|path| path.as_path().join(<span class="macro">format!</span>(<span class="string">"{}.json"</span>, number))),
         );
 
         <span class="kw">if let </span><span class="prelude-val">Err</span>(why) = result {
             <span class="macro">log::error!</span>(
                 target: LOG_TARGET,
-                <span class="string">&quot;failed to execute block {:?} due to {:?}&quot;</span>,
+                <span class="string">"failed to execute block {:?} due to {:?}"</span>,
                 number,
                 why
             );
@@ -421,13 +422,13 @@
 
         <span class="macro">log::info!</span>(
             target: LOG_TARGET,
-            <span class="string">&quot;executed block {}, new storage root {:?}&quot;</span>,
+            <span class="string">"executed block {}, new storage root {:?}"</span>,
             number,
             state_ext.as_backend().root(),
         );
     }
 
-    <span class="macro">log::error!</span>(target: LOG_TARGET, <span class="string">&quot;ws subscription must have terminated.&quot;</span>);
+    <span class="macro">log::error!</span>(target: LOG_TARGET, <span class="string">"ws subscription must have terminated."</span>);
     <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div></section></main></body></html>
