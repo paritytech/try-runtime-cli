@@ -37,6 +37,7 @@ pub struct Command {
     /// The snapshot path to write to.
     ///
     /// If not provided `<spec-name>-<spec-version>@<block-hash>.snap` will be used.
+    #[clap(long)]
     pub snapshot_path: Option<String>,
 }
 
