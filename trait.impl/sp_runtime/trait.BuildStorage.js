@@ -1,0 +1,4 @@
+(function() {var implementors = {
+"sc_chain_spec":[["impl&lt;G: <a class=\"trait\" href=\"sc_chain_spec/trait.RuntimeGenesis.html\" title=\"trait sc_chain_spec::RuntimeGenesis\">RuntimeGenesis</a>, E, EHF&gt; <a class=\"trait\" href=\"sp_runtime/trait.BuildStorage.html\" title=\"trait sp_runtime::BuildStorage\">BuildStorage</a> for <a class=\"struct\" href=\"sc_chain_spec/struct.GenericChainSpec.html\" title=\"struct sc_chain_spec::GenericChainSpec\">ChainSpec</a>&lt;G, E, EHF&gt;<div class=\"where\">where\n    EHF: <a class=\"trait\" href=\"sp_wasm_interface/trait.HostFunctions.html\" title=\"trait sp_wasm_interface::HostFunctions\">HostFunctions</a>,</div>"]],
+"sp_runtime":[]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

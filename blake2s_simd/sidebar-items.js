@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["BLOCKBYTES","KEYBYTES","OUTBYTES","PERSONALBYTES","SALTBYTES"],"fn":["blake2s"],"mod":["blake2sp","many"],"struct":["Hash","Params","State"]};

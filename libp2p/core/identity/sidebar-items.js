@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Keypair","PublicKey"],"mod":["ed25519","error"]};

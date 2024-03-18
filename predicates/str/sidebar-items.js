@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["contains","diff","ends_with","is_empty","is_match","starts_with"],"struct":["ContainsPredicate","DifferencePredicate","EndsWithPredicate","IsEmptyPredicate","MatchesPredicate","NormalizedPredicate","RegexPredicate","StartsWithPredicate","TrimPredicate","Utf8Predicate"],"trait":["PredicateStrExt"],"type":["RegexError"]};

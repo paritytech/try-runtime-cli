@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["PROTOCOL_NAME"],"enum":["Failure","Success"],"struct":["Behaviour","Config","Event"],"type":["Ping","PingConfig","PingEvent","PingFailure","PingResult","PingSuccess","Result"]};

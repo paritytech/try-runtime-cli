@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Action"],"fn":["make_sink"],"struct":["SinkImpl"]};

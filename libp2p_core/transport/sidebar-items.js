@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["TransportError","TransportEvent"],"mod":["and_then","choice","dummy","map","map_err","memory","timeout","upgrade"],"struct":["Boxed","ListenerId","OptionalTransport"],"trait":["Transport"]};
