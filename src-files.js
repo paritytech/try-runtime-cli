@@ -509,7 +509,7 @@ var srcIndex = new Map(JSON.parse('[\
 ["trust_dns_resolver",["",[["name_server",[],["connection_provider.rs","mod.rs","name_server.rs","name_server_pool.rs","name_server_state.rs","name_server_stats.rs"]],["system_conf",[],["mod.rs","unix.rs"]]],["async_resolver.rs","caching_client.rs","config.rs","dns_lru.rs","error.rs","hosts.rs","lib.rs","lookup.rs","lookup_ip.rs","resolver.rs"]]],\
 ["try_lock",["",[],["lib.rs"]]],\
 ["try_runtime",["",[],["main.rs"]]],\
-["try_runtime_core",["",[["commands",[],["create_snapshot.rs","execute_block.rs","fast_forward.rs","follow_chain.rs","mod.rs","offchain_worker.rs","on_runtime_upgrade.rs"]]],["inherent_provider.rs","lib.rs","parse.rs","shared_parameters.rs","state.rs"]]],\
+["try_runtime_core",["",[["commands",[],["create_snapshot.rs","execute_block.rs","fast_forward.rs","follow_chain.rs","mod.rs","offchain_worker.rs","on_runtime_upgrade.rs"]]],["inherent_provider.rs","lib.rs","misc.rs","parse.rs","shared_parameters.rs","state.rs"]]],\
 ["tt_call",["",[["rust",[],["expr.rs","mod.rs","path.rs","ty.rs"]]],["lib.rs","predicate.rs","replace.rs","unexpected.rs"]]],\
 ["twox_hash",["",[],["digest_0_10_support.rs","lib.rs","sixty_four.rs","std_support.rs","thirty_two.rs","xxh3.rs"]]],\
 ["typenum",["",[],["array.rs","bit.rs","int.rs","lib.rs","marker_traits.rs","operator_aliases.rs","private.rs","type_operators.rs","uint.rs"]]],\
