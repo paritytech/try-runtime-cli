@@ -19,7 +19,7 @@ use std::{collections::BTreeMap, fmt::Debug, str::FromStr};
 
 use bytesize::ByteSize;
 use frame_try_runtime::UpgradeCheckSelect;
-use paris::formatter::colorize_string;
+use log::Level;
 use parity_scale_codec::Encode;
 use sc_executor::sp_wasm_interface::HostFunctions;
 use sp_core::{hexdisplay::HexDisplay, Hasher};
@@ -27,7 +27,7 @@ use sp_runtime::traits::{Block as BlockT, HashingFor, NumberFor};
 use sp_state_machine::{CompactProof, OverlayedChanges, StorageProof};
 
 use crate::{
-    build_executor,
+    build_executor, misc,
     state::{RuntimeChecks, State},
     state_machine_call_with_proof, RefTimeInfo, SharedParams, LOG_TARGET,
 };
@@ -106,24 +106,13 @@ where
     }
 
     // Run `TryRuntime_on_runtime_upgrade` with the given checks.
-    log::info!(
-        "{}",
-        colorize_string(
-            "<bold><blue>-------------------------------------------------------------------\n\n"
-        )
-    );
-    log::info!(
-        "{}",
-        colorize_string(format!(
-            "🔬 <bold><blue>Running TryRuntime_on_runtime_upgrade with checks: {:?}\n\n",
+    misc::basti_log(
+        Level::Info,
+        format!(
+            "🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}",
             command.checks
-        ))
-    );
-    log::info!(
-        "{}",
-        colorize_string(
-            "<bold><blue>-------------------------------------------------------------------"
         )
+        .as_str(),
     );
     // Save the overlayed changes from the first run, so we can use them later for idempotency
     // checks.
@@ -146,17 +135,9 @@ where
     let (proof, ref_time_results) = match command.checks {
         UpgradeCheckSelect::None => (proof, ref_time_results),
         _ => {
-            log::info!(
-                "{}",
-                colorize_string("<bold><blue>-------------------------------------------------------------------\n\n")
-            );
-            log::info!(
-                "{}",
-                colorize_string("🔬 <bold><blue>TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements.\n\n"),
-            );
-            log::info!(
-                "{}",
-                colorize_string("<bold><blue>-------------------------------------------------------------------")
+            misc::basti_log(
+                Level::Info,
+                "🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements.",
             );
             let (proof, encoded_result) = state_machine_call_with_proof::<Block, HostFns>(
                 &ext,
@@ -179,17 +160,13 @@ where
             true
         }
         false => {
-            log::info!(
-                "{}",
-                colorize_string("<bold><blue>-------------------------------------------------------------------\n\n")
-            );
-            log::info!(
-                "{}",
-                colorize_string(format!("🔬 <bold><blue>Running TryRuntime_on_runtime_upgrade again to check idempotency: {:?}\n\n", command.checks)),
-            );
-            log::info!(
-                "{}",
-                colorize_string("<bold><blue>-------------------------------------------------------------------")
+            misc::basti_log(
+                Level::Info,
+                format!(
+                    "🔬 Running TryRuntime_on_runtime_upgrade again to check idempotency: {:?}",
+                    command.checks
+                )
+                .as_str(),
             );
             let (oc_pre_root, _) = overlayed_changes.storage_root(&ext.backend, ext.state_version);
             overlayed_changes.start_transaction();
@@ -267,19 +244,9 @@ where
     };
 
     if !weight_ok || !idempotency_ok {
-        log::error!(
-            "{}",
-            colorize_string("<bold><red>-------------------------------------------------------------------\n\n")
-        );
-        log::error!(
-            "{}",
-            colorize_string("❌ <bold><red>Issues detected, exiting non-zero. See logs.\n\n"),
-        );
-        log::error!(
-            "{}",
-            colorize_string(
-                "<bold><red>-------------------------------------------------------------------"
-            )
+        misc::basti_log(
+            Level::Error,
+            "❌ Issues detected, exiting non-zero. See logs.",
         );
         std::process::exit(1);
     }
