@@ -105,14 +105,12 @@ async fn execute_block_works() {
 
         // Try to execute the block.
         let mut block_execution = execute_block(&ws_url);
-
-        // The execute-block command is actually executing the next block.
         let expected_output = r".*Block #(\d+) successfully executed";
         let re = Regex::new(expected_output).unwrap();
         let matched =
             common::wait_for_stream_pattern_match(block_execution.stderr.take().unwrap(), re).await;
 
-        // Assert that the block-execution process has executed the expected block.
+        // Assert that the block-execution process has executed a block.
         assert!(matched.is_ok());
 
         // Assert that the block-execution exited succesfully
