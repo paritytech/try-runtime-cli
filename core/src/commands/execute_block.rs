@@ -98,7 +98,27 @@ where
     let rpc = ws_client(&block_ws_uri).await?;
 
     let live_state = match command.state {
-        State::Live(live_state) => live_state,
+        State::Live(live_state) => {
+            // If no --at is provided, get the latest block to replay
+            if let Some(_) = live_state.at {
+                live_state
+            } else {
+                let header =
+                    ChainApi::<(), Block::Hash, Block::Header, SignedBlock<Block>>::header(
+                        &rpc, None,
+                    )
+                    .await
+                    .map_err(rpc_err_handler)?
+                    .expect("header exists, block should also exist; qed");
+                LiveState {
+                    uri: block_ws_uri,
+                    at: Some(hex::encode(header.hash().encode())),
+                    pallet: Default::default(),
+                    hashed_prefixes: Default::default(),
+                    child_tree: Default::default(),
+                }
+            }
+        }
         _ => {
             unreachable!("execute block currently only supports Live state")
         }
