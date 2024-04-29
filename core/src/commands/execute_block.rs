@@ -100,7 +100,7 @@ where
     let live_state = match command.state {
         State::Live(live_state) => {
             // If no --at is provided, get the latest block to replay
-            if let Some(_) = live_state.at {
+            if live_state.at.is_some() {
                 live_state
             } else {
                 let header =
