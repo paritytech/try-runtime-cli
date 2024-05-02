@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gimli-0.28.1/src/read/unit.rs`."><title>unit.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="gimli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.2 (25ef9e3d8 2024-04-09)" data-channel="1.77.2" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gimli-0.28.1/src/read/unit.rs`."><title>unit.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="gimli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../gimli/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -7305,11 +7305,11 @@
         // DW_FORM_addrx2
         // DW_FORM_addrx3
         // DW_FORM_addrx4
-        </span><span class="macro">macro_rules! </span>address {
+        </span><span class="macro">macro_rules!</span> address {
             () =&gt; {};
         }
         <span class="comment">// DW_FORM_sec_offset
-        </span><span class="macro">macro_rules! </span>addrptr {
+        </span><span class="macro">macro_rules!</span> addrptr {
             () =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(offset) = <span class="self">self</span>.offset_value() {
                     <span class="kw">return </span>AttributeValue::DebugAddrBase(DebugAddrBase(offset));
@@ -7320,7 +7320,7 @@
         // DW_FORM_block1
         // DW_FORM_block2
         // DW_FORM_block4
-        </span><span class="macro">macro_rules! </span>block {
+        </span><span class="macro">macro_rules!</span> block {
             () =&gt; {};
         }
         <span class="comment">// DW_FORM_sdata
@@ -7331,7 +7331,7 @@
         // DW_FORM_data8
         // DW_FORM_data16
         // DW_FORM_implicit_const
-        </span><span class="macro">macro_rules! </span>constant {
+        </span><span class="macro">macro_rules!</span> constant {
             (<span class="macro-nonterminal">$value</span>:ident, <span class="macro-nonterminal">$variant</span>:ident) =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(value) = <span class="self">self</span>.<span class="macro-nonterminal">$value</span>() {
                     <span class="kw">return </span>AttributeValue::<span class="macro-nonterminal">$variant</span>(value);
@@ -7344,7 +7344,7 @@
             };
         }
         <span class="comment">// DW_FORM_exprloc
-        </span><span class="macro">macro_rules! </span>exprloc {
+        </span><span class="macro">macro_rules!</span> exprloc {
             () =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(value) = <span class="self">self</span>.exprloc_value() {
                     <span class="kw">return </span>AttributeValue::Exprloc(value);
@@ -7353,11 +7353,11 @@
         }
         <span class="comment">// DW_FORM_flag
         // DW_FORM_flag_present
-        </span><span class="macro">macro_rules! </span>flag {
+        </span><span class="macro">macro_rules!</span> flag {
             () =&gt; {};
         }
         <span class="comment">// DW_FORM_sec_offset
-        </span><span class="macro">macro_rules! </span>lineptr {
+        </span><span class="macro">macro_rules!</span> lineptr {
             () =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(offset) = <span class="self">self</span>.offset_value() {
                     <span class="kw">return </span>AttributeValue::DebugLineRef(DebugLineOffset(offset));
@@ -7367,7 +7367,7 @@
         <span class="comment">// This also covers `loclist` in DWARF version 5.
         // DW_FORM_sec_offset
         // DW_FORM_loclistx
-        </span><span class="macro">macro_rules! </span>loclistptr {
+        </span><span class="macro">macro_rules!</span> loclistptr {
             () =&gt; {
                 <span class="comment">// DebugLocListsIndex is also an allowed form in DWARF version 5.
                 </span><span class="kw">if let </span><span class="prelude-val">Some</span>(offset) = <span class="self">self</span>.offset_value() {
@@ -7376,7 +7376,7 @@
             };
         }
         <span class="comment">// DW_FORM_sec_offset
-        </span><span class="macro">macro_rules! </span>loclistsptr {
+        </span><span class="macro">macro_rules!</span> loclistsptr {
             () =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(offset) = <span class="self">self</span>.offset_value() {
                     <span class="kw">return </span>AttributeValue::DebugLocListsBase(DebugLocListsBase(offset));
@@ -7385,7 +7385,7 @@
         }
         <span class="comment">// DWARF version &lt;= 4.
         // DW_FORM_sec_offset
-        </span><span class="macro">macro_rules! </span>macinfoptr {
+        </span><span class="macro">macro_rules!</span> macinfoptr {
             () =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(offset) = <span class="self">self</span>.offset_value() {
                     <span class="kw">return </span>AttributeValue::DebugMacinfoRef(DebugMacinfoOffset(offset));
@@ -7394,7 +7394,7 @@
         }
         <span class="comment">// DWARF version &gt;= 5.
         // DW_FORM_sec_offset
-        </span><span class="macro">macro_rules! </span>macroptr {
+        </span><span class="macro">macro_rules!</span> macroptr {
             () =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(offset) = <span class="self">self</span>.offset_value() {
                     <span class="kw">return </span>AttributeValue::DebugMacroRef(DebugMacroOffset(offset));
@@ -7410,13 +7410,13 @@
         // DW_FORM_ref_sig8
         // DW_FORM_ref_sup4
         // DW_FORM_ref_sup8
-        </span><span class="macro">macro_rules! </span>reference {
+        </span><span class="macro">macro_rules!</span> reference {
             () =&gt; {};
         }
         <span class="comment">// This also covers `rnglist` in DWARF version 5.
         // DW_FORM_sec_offset
         // DW_FORM_rnglistx
-        </span><span class="macro">macro_rules! </span>rangelistptr {
+        </span><span class="macro">macro_rules!</span> rangelistptr {
             () =&gt; {
                 <span class="comment">// DebugRngListsIndex is also an allowed form in DWARF version 5.
                 </span><span class="kw">if let </span><span class="prelude-val">Some</span>(offset) = <span class="self">self</span>.offset_value() {
@@ -7425,7 +7425,7 @@
             };
         }
         <span class="comment">// DW_FORM_sec_offset
-        </span><span class="macro">macro_rules! </span>rnglistsptr {
+        </span><span class="macro">macro_rules!</span> rnglistsptr {
             () =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(offset) = <span class="self">self</span>.offset_value() {
                     <span class="kw">return </span>AttributeValue::DebugRngListsBase(DebugRngListsBase(offset));
@@ -7441,11 +7441,11 @@
         // DW_FORM_strx4
         // DW_FORM_strp_sup
         // DW_FORM_line_strp
-        </span><span class="macro">macro_rules! </span>string {
+        </span><span class="macro">macro_rules!</span> string {
             () =&gt; {};
         }
         <span class="comment">// DW_FORM_sec_offset
-        </span><span class="macro">macro_rules! </span>stroffsetsptr {
+        </span><span class="macro">macro_rules!</span> stroffsetsptr {
             () =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(offset) = <span class="self">self</span>.offset_value() {
                     <span class="kw">return </span>AttributeValue::DebugStrOffsetsBase(DebugStrOffsetsBase(offset));
@@ -7453,7 +7453,7 @@
             };
         }
         <span class="comment">// This isn't a separate form but it's useful to distinguish it from a generic udata.
-        </span><span class="macro">macro_rules! </span>dwoid {
+        </span><span class="macro">macro_rules!</span> dwoid {
             () =&gt; {
                 <span class="kw">if let </span><span class="prelude-val">Some</span>(value) = <span class="self">self</span>.udata_value() {
                     <span class="kw">return </span>AttributeValue::DwoId(DwoId(value));

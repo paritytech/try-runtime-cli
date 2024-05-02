@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/parity-scale-codec-3.6.9/src/codec.rs`."><title>codec.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="parity_scale_codec" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.2 (25ef9e3d8 2024-04-09)" data-channel="1.77.2" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/parity-scale-codec-3.6.9/src/codec.rs`."><title>codec.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="parity_scale_codec" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../parity_scale_codec/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -2696,7 +2696,7 @@
 /// given to this macro.
 ///
 /// The last parameter is the code that should be executed for the `Unknown` type info.
-</span><span class="macro">macro_rules! </span>with_type_info {
+</span><span class="macro">macro_rules!</span> with_type_info {
 	( <span class="macro-nonterminal">$type_info</span>:expr, <span class="macro-nonterminal">$</span><span class="kw">macro</span>:<span class="macro-nonterminal">ident </span>$( ( $( <span class="macro-nonterminal">$params</span>:ident ),* ) )<span class="question-mark">?</span>, { $( <span class="macro-nonterminal">$unknown_variant</span>:tt )* }, ) =&gt; {
 		<span class="kw">match </span><span class="macro-nonterminal">$type_info </span>{
 			TypeInfo::U8 =&gt; { <span class="macro-nonterminal">$</span><span class="macro">macro!</span>(<span class="macro-nonterminal">u8 </span>$( $( , <span class="macro-nonterminal">$params </span>)* )<span class="question-mark">? </span>) },
@@ -2840,7 +2840,7 @@
 	}
 }
 
-<span class="macro">macro_rules! </span>impl_for_non_zero {
+<span class="macro">macro_rules!</span> impl_for_non_zero {
 	( $( <span class="macro-nonterminal">$name</span>:ty ),* $(,)<span class="question-mark">? </span>) =&gt; {
 		$(
 			<span class="kw">impl </span>Encode <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
@@ -2877,7 +2877,7 @@
 ///
 /// This is equivalent to encoding all the element one by one, but it is optimized for some types.
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>encode_slice_no_len&lt;T: Encode, W: Output + <span class="question-mark">?</span>Sized&gt;(slice: <span class="kw-2">&amp;</span>[T], dest: <span class="kw-2">&amp;mut </span>W) {
-	<span class="macro">macro_rules! </span>encode_to {
+	<span class="macro">macro_rules!</span> encode_to {
 		( u8, <span class="macro-nonterminal">$slice</span>:ident, <span class="macro-nonterminal">$dest</span>:ident ) =&gt; {{
 			<span class="kw">let </span>typed = <span class="kw">unsafe </span>{ mem::transmute::&lt;<span class="kw-2">&amp;</span>[T], <span class="kw-2">&amp;</span>[u8]&gt;(<span class="kw-2">&amp;</span><span class="macro-nonterminal">$slice</span>[..]) };
 			<span class="macro-nonterminal">$dest</span>.write(<span class="kw-2">&amp;</span>typed)
@@ -2900,7 +2900,7 @@
 		}};
 	}
 
-	<span class="macro">with_type_info! </span>{
+	<span class="macro">with_type_info!</span> {
 		&lt;T <span class="kw">as </span>Encode&gt;::TYPE_INFO,
 		encode_to(slice, dest),
 		{
@@ -2936,7 +2936,7 @@
 		<span class="prelude-val">Ok</span>(r)
 	}
 
-	<span class="macro">macro_rules! </span>decode {
+	<span class="macro">macro_rules!</span> decode {
 		( <span class="macro-nonterminal">$ty</span>:ty, <span class="macro-nonterminal">$input</span>:ident, <span class="macro-nonterminal">$len</span>:ident ) =&gt; {{
 			<span class="kw">if </span><span class="macro">cfg!</span>(target_endian = <span class="string">"little"</span>) || mem::size_of::&lt;T&gt;() == <span class="number">1 </span>{
 				<span class="kw">let </span>vec = read_vec_from_u8s::&lt;<span class="kw">_</span>, <span class="macro-nonterminal">$ty</span>&gt;(<span class="macro-nonterminal">$input</span>, <span class="macro-nonterminal">$len</span>)<span class="question-mark">?</span>;
@@ -2947,7 +2947,7 @@
 		}};
 	}
 
-	<span class="macro">with_type_info! </span>{
+	<span class="macro">with_type_info!</span> {
 		&lt;T <span class="kw">as </span>Decode&gt;::TYPE_INFO,
 		decode(input, len),
 		{
@@ -2956,7 +2956,7 @@
 	}
 }
 
-<span class="macro">impl_for_non_zero! </span>{
+<span class="macro">impl_for_non_zero!</span> {
 	NonZeroI8,
 	NonZeroI16,
 	NonZeroI32,
@@ -3273,7 +3273,7 @@
 	}
 }
 
-<span class="macro">macro_rules! </span>impl_codec_through_iterator {
+<span class="macro">macro_rules!</span> impl_codec_through_iterator {
 	($(
 		<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident
 		</span>{ $( <span class="macro-nonterminal">$generics</span>:ident $( : <span class="macro-nonterminal">$decode_additional</span>:ident )<span class="question-mark">? </span>),* }
@@ -3316,7 +3316,7 @@
 	)<span class="kw-2">*</span>}
 }
 
-<span class="macro">impl_codec_through_iterator! </span>{
+<span class="macro">impl_codec_through_iterator!</span> {
 	BTreeMap { K: Ord, V } { LikeK, LikeV}
 		{ K: EncodeLike&lt;LikeK&gt;, LikeK: Encode, V: EncodeLike&lt;LikeV&gt;, LikeV: Encode }
 	BTreeSet { T: Ord } { LikeT }
@@ -3341,7 +3341,7 @@
 	<span class="kw">fn </span>encode_to&lt;W: Output + <span class="question-mark">?</span>Sized&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, dest: <span class="kw-2">&amp;mut </span>W) {
 		compact_encode_len_to(dest, <span class="self">self</span>.len()).expect(<span class="string">"Compact encodes length"</span>);
 
-		<span class="macro">macro_rules! </span>encode_to {
+		<span class="macro">macro_rules!</span> encode_to {
 			( <span class="macro-nonterminal">$ty</span>:ty, <span class="macro-nonterminal">$self</span>:ident, <span class="macro-nonterminal">$dest</span>:ident ) =&gt; {{
 				<span class="kw">if </span><span class="macro">cfg!</span>(target_endian = <span class="string">"little"</span>) || mem::size_of::&lt;T&gt;() == <span class="number">1 </span>{
 					<span class="kw">let </span>slices = <span class="macro-nonterminal">$self</span>.as_slices();
@@ -3359,7 +3359,7 @@
 			}};
 		}
 
-		<span class="macro">with_type_info! </span>{
+		<span class="macro">with_type_info!</span> {
 			&lt;T <span class="kw">as </span>Encode&gt;::TYPE_INFO,
 			encode_to(<span class="self">self</span>, dest),
 			{
@@ -3398,7 +3398,7 @@
 	}
 }
 
-<span class="macro">macro_rules! </span>impl_len {
+<span class="macro">macro_rules!</span> impl_len {
 	( $( <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>&lt; $(<span class="macro-nonterminal">$g</span>:ident),* &gt; ),* ) =&gt; { $(
 		<span class="kw">impl</span>&lt;$(<span class="macro-nonterminal">$g</span>),<span class="kw-2">*</span>&gt; DecodeLength <span class="kw">for </span><span class="macro-nonterminal">$</span><span class="kw">type</span>&lt;$(<span class="macro-nonterminal">$g</span>),<span class="kw-2">*</span>&gt; {
 			<span class="kw">fn </span>len(<span class="kw-2">mut </span>self_encoded: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;usize, Error&gt; {
@@ -3412,7 +3412,7 @@
 <span class="comment">// Collection types that support compact decode length.
 </span><span class="macro">impl_len!</span>(Vec&lt;T&gt;, BTreeSet&lt;T&gt;, BTreeMap&lt;K, V&gt;, VecDeque&lt;T&gt;, BinaryHeap&lt;T&gt;, LinkedList&lt;T&gt;);
 
-<span class="macro">macro_rules! </span>tuple_impl {
+<span class="macro">macro_rules!</span> tuple_impl {
 	(
 		(<span class="macro-nonterminal">$one</span>:ident, <span class="macro-nonterminal">$extra</span>:ident),
 	) =&gt; {
@@ -3512,7 +3512,7 @@
 	);
 }
 
-<span class="macro">macro_rules! </span>impl_endians {
+<span class="macro">macro_rules!</span> impl_endians {
 	( $( <span class="macro-nonterminal">$t</span>:ty; <span class="macro-nonterminal">$ty_info</span>:ident ),* ) =&gt; { $(
 		<span class="kw">impl </span>EncodeLike <span class="kw">for </span><span class="macro-nonterminal">$t </span>{}
 
@@ -3544,7 +3544,7 @@
 		}
 	)* }
 }
-<span class="macro">macro_rules! </span>impl_one_byte {
+<span class="macro">macro_rules!</span> impl_one_byte {
 	( $( <span class="macro-nonterminal">$t</span>:ty; <span class="macro-nonterminal">$ty_info</span>:ident ),* ) =&gt; { $(
 		<span class="kw">impl </span>EncodeLike <span class="kw">for </span><span class="macro-nonterminal">$t </span>{}
 
@@ -4102,10 +4102,10 @@
 	}
 
 
-	<span class="macro">macro_rules! </span>test_array_encode_and_decode {
+	<span class="macro">macro_rules!</span> test_array_encode_and_decode {
 		( $( <span class="macro-nonterminal">$name</span>:ty ),* $(,)<span class="question-mark">? </span>) =&gt; {
 			$(
-				<span class="macro">paste::item! </span>{
+				<span class="macro">paste::item!</span> {
 					<span class="attr">#[test]
 					</span><span class="kw">fn </span>[&lt;test_array_encode_and_decode <span class="kw">_ </span><span class="macro-nonterminal">$name</span>&gt;]() {
 						<span class="kw">let </span>data: [<span class="macro-nonterminal">$name</span>; <span class="number">32</span>] = [<span class="number">123 </span><span class="kw">as </span><span class="macro-nonterminal">$name</span>; <span class="number">32</span>];

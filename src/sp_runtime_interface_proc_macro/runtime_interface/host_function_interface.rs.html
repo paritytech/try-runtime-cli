@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/primitives/runtime-interface/proc-macro/src/runtime_interface/host_function_interface.rs`."><title>host_function_interface.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sp_runtime_interface_proc_macro" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.2 (25ef9e3d8 2024-04-09)" data-channel="1.77.2" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/primitives/runtime-interface/proc-macro/src/runtime_interface/host_function_interface.rs`."><title>host_function_interface.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sp_runtime_interface_proc_macro" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../sp_runtime_interface_proc_macro/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -527,7 +527,7 @@
 	})<span class="question-mark">?</span>;
 	<span class="kw">let </span>host_functions_struct = generate_host_functions_struct(trait_def, is_wasm_only)<span class="question-mark">?</span>;
 
-	<span class="prelude-val">Ok</span>(<span class="macro">quote! </span>{
+	<span class="prelude-val">Ok</span>(<span class="macro">quote!</span> {
 		<span class="doccomment">/// The implementations of the extern host functions. This special implementation module
 		/// is required to change the extern host functions signature to
 		/// `unsafe fn name(args) -&gt; ret` to make the function implementations exchangeable.
@@ -568,19 +568,19 @@
 
 	<span class="kw">let </span>ffi_return_value = <span class="kw">match </span>method.sig.output {
 		ReturnType::Default =&gt; <span class="macro">quote!</span>(),
-		ReturnType::Type(<span class="kw">_</span>, <span class="kw-2">ref </span>ty) =&gt; <span class="macro">quote! </span>{
+		ReturnType::Type(<span class="kw">_</span>, <span class="kw-2">ref </span>ty) =&gt; <span class="macro">quote!</span> {
 			-&gt; &lt;#ty <span class="kw">as </span>#crate_::RIType&gt;::FFIType
 		},
 	};
 
 	<span class="kw">let </span>convert_return_value = <span class="kw">match </span>return_value {
 		ReturnType::Default =&gt; <span class="macro">quote!</span>(),
-		ReturnType::Type(<span class="kw">_</span>, <span class="kw-2">ref </span>ty) =&gt; <span class="macro">quote! </span>{
+		ReturnType::Type(<span class="kw">_</span>, <span class="kw-2">ref </span>ty) =&gt; <span class="macro">quote!</span> {
 			&lt;#ty <span class="kw">as </span>#crate_::wasm::FromFFIValue&gt;::from_ffi_value(result)
 		},
 	};
 
-	<span class="prelude-val">Ok</span>(<span class="macro">quote! </span>{
+	<span class="prelude-val">Ok</span>(<span class="macro">quote!</span> {
 		#(#cfg_attrs)*
 		<span class="attr">#[doc = #doc_string]
 		</span><span class="kw">pub fn </span>#function ( #( #args ),* ) #return_value {
@@ -615,7 +615,7 @@
 	<span class="kw">let </span>output = <span class="kw-2">&amp;</span>method.sig.output;
 	<span class="kw">let </span>cfg_attrs = method.attrs.iter().filter(|a| a.path().is_ident(<span class="string">"cfg"</span>));
 
-	<span class="prelude-val">Ok</span>(<span class="macro">quote! </span>{
+	<span class="prelude-val">Ok</span>(<span class="macro">quote!</span> {
 		#(#cfg_attrs)*
 		<span class="attr">#[cfg(not(feature = <span class="string">"std"</span>))]
 		#[allow(non_upper_case_globals)]
@@ -646,7 +646,7 @@
 		append_hf_bodies.push(append_hf_body);
 	}
 
-	<span class="prelude-val">Ok</span>(<span class="macro">quote! </span>{
+	<span class="prelude-val">Ok</span>(<span class="macro">quote!</span> {
 		#(#host_function_impls)*
 
 		<span class="doccomment">/// Provides implementations for the extern host functions.
@@ -661,7 +661,7 @@
 				host_functions_list
 			}
 
-			#<span class="macro">crate_::sp_wasm_interface::if_wasmtime_is_enabled! </span>{
+			#<span class="macro">crate_::sp_wasm_interface::if_wasmtime_is_enabled!</span> {
 				<span class="kw">fn </span>register_static&lt;T&gt;(registry: <span class="kw-2">&amp;mut </span>T) -&gt; core::result::Result&lt;(), T::Error&gt;
 					<span class="kw">where </span>T: #crate_::sp_wasm_interface::HostFunctionRegistry
 				{
@@ -723,9 +723,9 @@
 			<span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(<span class="string">"`generate_ffi_value_var_name` above would return an error on `Pat` != `Ident`; qed"</span>),
 		};
 
-		<span class="kw">let </span>ffi_ty = <span class="macro">quote! </span>{ &lt;#host_ty <span class="kw">as </span>#crate_::RIType&gt;::FFIType };
-		ffi_args_prototype.push(<span class="macro">quote! </span>{ #ffi_name: #ffi_ty });
-		ffi_names.push(<span class="macro">quote! </span>{ #ffi_name });
+		<span class="kw">let </span>ffi_ty = <span class="macro">quote!</span> { &lt;#host_ty <span class="kw">as </span>#crate_::RIType&gt;::FFIType };
+		ffi_args_prototype.push(<span class="macro">quote!</span> { #ffi_name: #ffi_ty });
+		ffi_names.push(<span class="macro">quote!</span> { #ffi_name });
 
 		<span class="kw">let </span>convert_arg_error = <span class="macro">format!</span>(
 			<span class="string">"could not marshal the '{}' argument through the WASM FFI boundary while executing '{}' from interface '{}'"</span>,
@@ -733,7 +733,7 @@
 			method.sig.ident,
 			trait_name
 		);
-		convert_args_static_ffi_to_host.push(<span class="macro">quote! </span>{
+		convert_args_static_ffi_to_host.push(<span class="macro">quote!</span> {
 			<span class="kw">let </span><span class="kw-2">mut </span>#host_name = &lt;#host_ty <span class="kw">as </span>#crate_::host::FromFFIValue&gt;::from_ffi_value(__function_context__, #ffi_name)
 				.map_err(|err| <span class="macro">format!</span>(<span class="string">"{}: {}"</span>, err, #convert_arg_error))<span class="question-mark">?</span>;
 		});
@@ -741,10 +741,10 @@
 		<span class="kw">let </span>ref_and_mut_tokens =
 			ref_and_mut.map(|(token_ref, token_mut)| <span class="macro">quote!</span>(#token_ref #token_mut));
 
-		host_names_with_ref.push(<span class="macro">quote! </span>{ #ref_and_mut_tokens #host_name });
+		host_names_with_ref.push(<span class="macro">quote!</span> { #ref_and_mut_tokens #host_name });
 
 		<span class="kw">if </span>ref_and_mut.map(|(<span class="kw">_</span>, token_mut)| token_mut.is_some()).unwrap_or(<span class="bool-val">false</span>) {
-			copy_data_into_ref_mut_args.push(<span class="macro">quote! </span>{
+			copy_data_into_ref_mut_args.push(<span class="macro">quote!</span> {
 				&lt;#host_ty <span class="kw">as </span>#crate_::host::IntoPreallocatedFFIValue&gt;::into_preallocated_ffi_value(
 					#host_name,
 					__function_context__,
@@ -759,7 +759,7 @@
 			method.sig.ident,
 			trait_name
 		);
-		convert_args_dynamic_ffi_to_static_ffi.push(<span class="macro">quote! </span>{
+		convert_args_dynamic_ffi_to_static_ffi.push(<span class="macro">quote!</span> {
 			<span class="kw">let </span>#ffi_name = args.next().ok_or_else(|| #arg_count_mismatch_error.to_owned())<span class="question-mark">?</span>;
 			<span class="kw">let </span>#ffi_name: #ffi_ty = #crate_::sp_wasm_interface::TryFromValue::try_from_value(#ffi_name)
 				.ok_or_else(|| #convert_arg_error.to_owned())<span class="question-mark">?</span>;
@@ -767,33 +767,33 @@
 	}
 
 	<span class="kw">let </span>ffi_return_ty = <span class="kw">match </span><span class="kw-2">&amp;</span>method.sig.output {
-		ReturnType::Type(<span class="kw">_</span>, ty) =&gt; <span class="macro">quote! </span>{ &lt;#ty <span class="kw">as </span>#crate_::RIType&gt;::FFIType },
-		ReturnType::Default =&gt; <span class="macro">quote! </span>{ () },
+		ReturnType::Type(<span class="kw">_</span>, ty) =&gt; <span class="macro">quote!</span> { &lt;#ty <span class="kw">as </span>#crate_::RIType&gt;::FFIType },
+		ReturnType::Default =&gt; <span class="macro">quote!</span> { () },
 	};
 
 	<span class="kw">let </span>convert_return_value_host_to_static_ffi = <span class="kw">match </span><span class="kw-2">&amp;</span>method.sig.output {
-		ReturnType::Type(<span class="kw">_</span>, ty) =&gt; <span class="macro">quote! </span>{
+		ReturnType::Type(<span class="kw">_</span>, ty) =&gt; <span class="macro">quote!</span> {
 			<span class="kw">let </span>__result__ = &lt;#ty <span class="kw">as </span>#crate_::host::IntoFFIValue&gt;::into_ffi_value(
 				__result__,
 				__function_context__
 			);
 		},
-		ReturnType::Default =&gt; <span class="macro">quote! </span>{
+		ReturnType::Default =&gt; <span class="macro">quote!</span> {
 			<span class="kw">let </span>__result__ = <span class="prelude-val">Ok</span>(__result__);
 		},
 	};
 
 	<span class="kw">let </span>convert_return_value_static_ffi_to_dynamic_ffi = <span class="kw">match </span><span class="kw-2">&amp;</span>method.sig.output {
-		ReturnType::Type(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="macro">quote! </span>{
+		ReturnType::Type(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="macro">quote!</span> {
 			<span class="kw">let </span>__result__ = <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(#crate_::sp_wasm_interface::IntoValue::into_value(__result__)));
 		},
-		ReturnType::Default =&gt; <span class="macro">quote! </span>{
+		ReturnType::Default =&gt; <span class="macro">quote!</span> {
 			<span class="kw">let </span>__result__ = <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
 		},
 	};
 
 	<span class="kw">if </span>is_wasm_only {
-		host_names_with_ref.push(<span class="macro">quote! </span>{
+		host_names_with_ref.push(<span class="macro">quote!</span> {
 			__function_context__
 		});
 	}
@@ -807,7 +807,7 @@
 		))
 	}
 
-	<span class="kw">let </span>implementation = <span class="macro">quote! </span>{
+	<span class="kw">let </span>implementation = <span class="macro">quote!</span> {
 		#(#cfg_attrs)*
 		<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
 		</span><span class="kw">struct </span>#struct_name;
@@ -854,7 +854,7 @@
 		}
 	};
 
-	<span class="kw">let </span>register_body = <span class="macro">quote! </span>{
+	<span class="kw">let </span>register_body = <span class="macro">quote!</span> {
 		#(#cfg_attrs)*
 		registry.register_static(
 			#crate_::sp_wasm_interface::Function::name(<span class="kw-2">&amp;</span>#struct_name),
@@ -887,7 +887,7 @@
 		)<span class="question-mark">?</span>;
 	};
 
-	<span class="kw">let </span>append_hf_body = <span class="macro">quote! </span>{
+	<span class="kw">let </span>append_hf_body = <span class="macro">quote!</span> {
 		#(#cfg_attrs)*
 		host_functions_list.push(<span class="kw-2">&amp;</span>#struct_name <span class="kw">as </span><span class="kw-2">&amp;</span><span class="kw">dyn </span>#crate_::sp_wasm_interface::Function);
 	};
@@ -899,18 +899,18 @@
 </span><span class="kw">fn </span>generate_wasm_interface_signature_for_host_function(sig: <span class="kw-2">&amp;</span>Signature) -&gt; <span class="prelude-ty">Result</span>&lt;TokenStream&gt; {
 	<span class="kw">let </span>crate_ = generate_crate_access();
 	<span class="kw">let </span>return_value = <span class="kw">match </span><span class="kw-2">&amp;</span>sig.output {
-		ReturnType::Type(<span class="kw">_</span>, ty) =&gt; <span class="macro">quote! </span>{
+		ReturnType::Type(<span class="kw">_</span>, ty) =&gt; <span class="macro">quote!</span> {
 			<span class="prelude-val">Some</span>( &lt;&lt;#ty <span class="kw">as </span>#crate_::RIType&gt;::FFIType <span class="kw">as </span>#crate_::sp_wasm_interface::IntoValue&gt;::VALUE_TYPE )
 		},
 		ReturnType::Default =&gt; <span class="macro">quote!</span>(<span class="prelude-val">None</span>),
 	};
 	<span class="kw">let </span>arg_types = get_function_argument_types_without_ref(sig).map(|ty| {
-		<span class="macro">quote! </span>{
+		<span class="macro">quote!</span> {
 			&lt;&lt;#ty <span class="kw">as </span>#crate_::RIType&gt;::FFIType <span class="kw">as </span>#crate_::sp_wasm_interface::IntoValue&gt;::VALUE_TYPE
 		}
 	});
 
-	<span class="prelude-val">Ok</span>(<span class="macro">quote! </span>{
+	<span class="prelude-val">Ok</span>(<span class="macro">quote!</span> {
 		#crate_::sp_wasm_interface::Signature {
 			args: std::borrow::Cow::Borrowed(<span class="kw-2">&amp;</span>[ #( #arg_types ),* ][..]),
 			return_value: #return_value,

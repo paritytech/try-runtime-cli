@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/portable-atomic-1.6.0/src/imp/atomic128/x86_64.rs`."><title>x86_64.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="portable_atomic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.2 (25ef9e3d8 2024-04-09)" data-channel="1.77.2" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/portable-atomic-1.6.0/src/imp/atomic128/x86_64.rs`."><title>x86_64.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="portable_atomic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../portable_atomic/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -886,7 +886,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::utils::{Pair, U128};
 
 <span class="comment">// Asserts that the function is called in the correct context.
-</span><span class="macro">macro_rules! </span>debug_assert_cmpxchg16b {
+</span><span class="macro">macro_rules!</span> debug_assert_cmpxchg16b {
     () =&gt; {
         <span class="attr">#[cfg(not(any(
             target_feature = <span class="string">"cmpxchg16b"</span>,
@@ -899,7 +899,7 @@
 }
 <span class="attr">#[cfg(not(any(portable_atomic_no_outline_atomics, target_env = <span class="string">"sgx"</span>)))]
 #[cfg(target_feature = <span class="string">"sse"</span>)]
-</span><span class="macro">macro_rules! </span>debug_assert_vmovdqa_atomic {
+</span><span class="macro">macro_rules!</span> debug_assert_vmovdqa_atomic {
     () =&gt; {{
         <span class="macro">debug_assert_cmpxchg16b!</span>();
         <span class="macro">debug_assert!</span>(detect::detect().has_vmovdqa_atomic());
@@ -908,14 +908,14 @@
 
 <span class="attr">#[allow(unused_macros)]
 #[cfg(target_pointer_width = <span class="string">"32"</span>)]
-</span><span class="macro">macro_rules! </span>ptr_modifier {
+</span><span class="macro">macro_rules!</span> ptr_modifier {
     () =&gt; {
         <span class="string">":e"
     </span>};
 }
 <span class="attr">#[allow(unused_macros)]
 #[cfg(target_pointer_width = <span class="string">"64"</span>)]
-</span><span class="macro">macro_rules! </span>ptr_modifier {
+</span><span class="macro">macro_rules!</span> ptr_modifier {
     () =&gt; {
         <span class="string">""
     </span>};
@@ -948,7 +948,7 @@
         <span class="kw">let </span>old = U128 { whole: old };
         <span class="kw">let </span>new = U128 { whole: new };
         <span class="kw">let </span>(prev_lo, prev_hi);
-        <span class="macro">macro_rules! </span>cmpxchg16b {
+        <span class="macro">macro_rules!</span> cmpxchg16b {
             (<span class="macro-nonterminal">$rdi</span>:tt) =&gt; {
                 <span class="macro">asm!</span>(
                     <span class="comment">// rbx is reserved by LLVM
@@ -1043,7 +1043,7 @@
     any(target_feature = <span class="string">"cmpxchg16b"</span>, portable_atomic_target_feature = <span class="string">"cmpxchg16b"</span>),
     any(portable_atomic_no_outline_atomics, target_env = <span class="string">"sgx"</span>, not(target_feature = <span class="string">"sse"</span>)),
 )))]
-</span><span class="macro">macro_rules! </span>load_store_detect {
+</span><span class="macro">macro_rules!</span> load_store_detect {
     (
         vmovdqa = <span class="macro-nonterminal">$vmovdqa</span>:ident
         cmpxchg16b = <span class="macro-nonterminal">$cmpxchg16b</span>:ident
@@ -1107,7 +1107,7 @@
     </span><span class="comment">// SAFETY: the caller must uphold the safety contract.
     </span><span class="kw">unsafe </span>{
         <span class="macro">ifunc!</span>(<span class="kw">unsafe fn</span>(src: <span class="kw-2">*mut </span>u128) -&gt; u128 {
-            <span class="macro">load_store_detect! </span>{
+            <span class="macro">load_store_detect!</span> {
                 vmovdqa = atomic_load_vmovdqa
                 cmpxchg16b = atomic_load_cmpxchg16b
                 <span class="comment">// Use SeqCst because cmpxchg16b and atomic load by vmovdqa is always SeqCst.
@@ -1136,7 +1136,7 @@
     </span><span class="kw">unsafe </span>{
         <span class="comment">// cmpxchg16b is always SeqCst.
         </span><span class="kw">let </span>(out_lo, out_hi);
-        <span class="macro">macro_rules! </span>cmpxchg16b {
+        <span class="macro">macro_rules!</span> cmpxchg16b {
             (<span class="macro-nonterminal">$rdi</span>:tt) =&gt; {
                 <span class="macro">asm!</span>(
                     <span class="comment">// rbx is reserved by LLVM
@@ -1186,7 +1186,7 @@
     </span><span class="comment">// SAFETY: the caller must uphold the safety contract.
     </span><span class="kw">unsafe </span>{
         <span class="attr">#[cfg(target_feature = <span class="string">"sse"</span>)]
-        </span><span class="macro">fn_alias! </span>{
+        </span><span class="macro">fn_alias!</span> {
             <span class="attr">#[target_feature(enable = <span class="string">"avx"</span>)]
             </span><span class="kw">unsafe fn</span>(dst: <span class="kw-2">*mut </span>u128, val: u128);
             <span class="comment">// atomic store by vmovdqa has at least release semantics.
@@ -1199,7 +1199,7 @@
             // core::arch's cmpxchg16b will never called here.
             </span>Ordering::Relaxed | Ordering::Release =&gt; {
                 <span class="macro">ifunc!</span>(<span class="kw">unsafe fn</span>(dst: <span class="kw-2">*mut </span>u128, val: u128) {
-                    <span class="macro">load_store_detect! </span>{
+                    <span class="macro">load_store_detect!</span> {
                         vmovdqa = atomic_store_vmovdqa_non_seqcst
                         cmpxchg16b = atomic_store_cmpxchg16b
                         fallback = atomic_store_non_seqcst
@@ -1208,7 +1208,7 @@
             }
             Ordering::SeqCst =&gt; {
                 <span class="macro">ifunc!</span>(<span class="kw">unsafe fn</span>(dst: <span class="kw-2">*mut </span>u128, val: u128) {
-                    <span class="macro">load_store_detect! </span>{
+                    <span class="macro">load_store_detect!</span> {
                         vmovdqa = atomic_store_vmovdqa_seqcst
                         cmpxchg16b = atomic_store_cmpxchg16b
                         fallback = atomic_store_seqcst
@@ -1292,7 +1292,7 @@
         <span class="comment">// cmpxchg16b is always SeqCst.
         </span><span class="kw">let </span>val = U128 { whole: val };
         <span class="kw">let </span>(<span class="kw-2">mut </span>prev_lo, <span class="kw-2">mut </span>prev_hi);
-        <span class="macro">macro_rules! </span>cmpxchg16b {
+        <span class="macro">macro_rules!</span> cmpxchg16b {
             (<span class="macro-nonterminal">$rdi</span>:tt) =&gt; {
                 <span class="macro">asm!</span>(
                     <span class="comment">// rbx is reserved by LLVM
@@ -1339,7 +1339,7 @@
 /// - rbx/rcx pair: new value that will be stored
 </span><span class="comment">// We could use CAS loop by atomic_compare_exchange here, but using an inline assembly allows
 // omitting the storing/comparing of condition flags and reducing uses of xchg/mov to handle rbx.
-</span><span class="macro">macro_rules! </span>atomic_rmw_cas_3 {
+</span><span class="macro">macro_rules!</span> atomic_rmw_cas_3 {
     (<span class="macro-nonterminal">$name</span>:ident <span class="kw">as </span><span class="macro-nonterminal">$reexport_name</span>:ident, $(<span class="macro-nonterminal">$op</span>:tt)<span class="kw-2">*</span>) =&gt; {
         <span class="attr">#[cfg(any(target_feature = <span class="string">"cmpxchg16b"</span>, portable_atomic_target_feature = <span class="string">"cmpxchg16b"</span>))]
         </span><span class="kw">use </span><span class="macro-nonterminal">$name </span><span class="kw">as </span><span class="macro-nonterminal">$reexport_name</span>;
@@ -1360,7 +1360,7 @@
                 <span class="comment">// cmpxchg16b is always SeqCst.
                 </span><span class="kw">let </span>val = U128 { whole: val };
                 <span class="kw">let </span>(<span class="kw-2">mut </span>prev_lo, <span class="kw-2">mut </span>prev_hi);
-                <span class="macro">macro_rules! </span>cmpxchg16b {
+                <span class="macro">macro_rules!</span> cmpxchg16b {
                     (<span class="macro-nonterminal">$rdi</span>:tt) =&gt; {
                         <span class="macro">asm!</span>(
                             <span class="comment">// rbx is reserved by LLVM
@@ -1410,7 +1410,7 @@
 /// - rbx/rcx pair: new value that will be stored
 </span><span class="comment">// We could use CAS loop by atomic_compare_exchange here, but using an inline assembly allows
 // omitting the storing of condition flags and avoid use of xchg to handle rbx.
-</span><span class="macro">macro_rules! </span>atomic_rmw_cas_2 {
+</span><span class="macro">macro_rules!</span> atomic_rmw_cas_2 {
     (<span class="macro-nonterminal">$name</span>:ident <span class="kw">as </span><span class="macro-nonterminal">$reexport_name</span>:ident, $(<span class="macro-nonterminal">$op</span>:tt)<span class="kw-2">*</span>) =&gt; {
         <span class="attr">#[cfg(any(target_feature = <span class="string">"cmpxchg16b"</span>, portable_atomic_target_feature = <span class="string">"cmpxchg16b"</span>))]
         </span><span class="kw">use </span><span class="macro-nonterminal">$name </span><span class="kw">as </span><span class="macro-nonterminal">$reexport_name</span>;
@@ -1430,7 +1430,7 @@
             </span><span class="kw">unsafe </span>{
                 <span class="comment">// cmpxchg16b is always SeqCst.
                 </span><span class="kw">let </span>(<span class="kw-2">mut </span>prev_lo, <span class="kw-2">mut </span>prev_hi);
-                <span class="macro">macro_rules! </span>cmpxchg16b {
+                <span class="macro">macro_rules!</span> cmpxchg16b {
                     (<span class="macro-nonterminal">$rdi</span>:tt) =&gt; {
                         <span class="macro">asm!</span>(
                             <span class="comment">// rbx is reserved by LLVM
@@ -1471,28 +1471,28 @@
     };
 }
 
-<span class="macro">atomic_rmw_cas_3! </span>{
+<span class="macro">atomic_rmw_cas_3!</span> {
     atomic_add_cmpxchg16b <span class="kw">as </span>atomic_add,
     <span class="string">"mov rbx, rax"</span>,
     <span class="string">"add rbx, rsi"</span>,
     <span class="string">"mov rcx, rdx"</span>,
     <span class="string">"adc rcx, r8"</span>,
 }
-<span class="macro">atomic_rmw_cas_3! </span>{
+<span class="macro">atomic_rmw_cas_3!</span> {
     atomic_sub_cmpxchg16b <span class="kw">as </span>atomic_sub,
     <span class="string">"mov rbx, rax"</span>,
     <span class="string">"sub rbx, rsi"</span>,
     <span class="string">"mov rcx, rdx"</span>,
     <span class="string">"sbb rcx, r8"</span>,
 }
-<span class="macro">atomic_rmw_cas_3! </span>{
+<span class="macro">atomic_rmw_cas_3!</span> {
     atomic_and_cmpxchg16b <span class="kw">as </span>atomic_and,
     <span class="string">"mov rbx, rax"</span>,
     <span class="string">"and rbx, rsi"</span>,
     <span class="string">"mov rcx, rdx"</span>,
     <span class="string">"and rcx, r8"</span>,
 }
-<span class="macro">atomic_rmw_cas_3! </span>{
+<span class="macro">atomic_rmw_cas_3!</span> {
     atomic_nand_cmpxchg16b <span class="kw">as </span>atomic_nand,
     <span class="string">"mov rbx, rax"</span>,
     <span class="string">"and rbx, rsi"</span>,
@@ -1501,14 +1501,14 @@
     <span class="string">"and rcx, r8"</span>,
     <span class="string">"not rcx"</span>,
 }
-<span class="macro">atomic_rmw_cas_3! </span>{
+<span class="macro">atomic_rmw_cas_3!</span> {
     atomic_or_cmpxchg16b <span class="kw">as </span>atomic_or,
     <span class="string">"mov rbx, rax"</span>,
     <span class="string">"or rbx, rsi"</span>,
     <span class="string">"mov rcx, rdx"</span>,
     <span class="string">"or rcx, r8"</span>,
 }
-<span class="macro">atomic_rmw_cas_3! </span>{
+<span class="macro">atomic_rmw_cas_3!</span> {
     atomic_xor_cmpxchg16b <span class="kw">as </span>atomic_xor,
     <span class="string">"mov rbx, rax"</span>,
     <span class="string">"xor rbx, rsi"</span>,
@@ -1516,14 +1516,14 @@
     <span class="string">"xor rcx, r8"</span>,
 }
 
-<span class="macro">atomic_rmw_cas_2! </span>{
+<span class="macro">atomic_rmw_cas_2!</span> {
     atomic_not_cmpxchg16b <span class="kw">as </span>atomic_not,
     <span class="string">"mov rbx, rax"</span>,
     <span class="string">"not rbx"</span>,
     <span class="string">"mov rcx, rdx"</span>,
     <span class="string">"not rcx"</span>,
 }
-<span class="macro">atomic_rmw_cas_2! </span>{
+<span class="macro">atomic_rmw_cas_2!</span> {
     atomic_neg_cmpxchg16b <span class="kw">as </span>atomic_neg,
     <span class="string">"mov rbx, rax"</span>,
     <span class="string">"neg rbx"</span>,
@@ -1531,7 +1531,7 @@
     <span class="string">"sbb rcx, rdx"</span>,
 }
 
-<span class="macro">atomic_rmw_cas_3! </span>{
+<span class="macro">atomic_rmw_cas_3!</span> {
     atomic_max_cmpxchg16b <span class="kw">as </span>atomic_max,
     <span class="string">"cmp rsi, rax"</span>,
     <span class="string">"mov rcx, r8"</span>,
@@ -1541,7 +1541,7 @@
     <span class="string">"mov rbx, rsi"</span>,
     <span class="string">"cmovl rbx, rax"</span>,
 }
-<span class="macro">atomic_rmw_cas_3! </span>{
+<span class="macro">atomic_rmw_cas_3!</span> {
     atomic_umax_cmpxchg16b <span class="kw">as </span>atomic_umax,
     <span class="string">"cmp rsi, rax"</span>,
     <span class="string">"mov rcx, r8"</span>,
@@ -1551,7 +1551,7 @@
     <span class="string">"mov rbx, rsi"</span>,
     <span class="string">"cmovb rbx, rax"</span>,
 }
-<span class="macro">atomic_rmw_cas_3! </span>{
+<span class="macro">atomic_rmw_cas_3!</span> {
     atomic_min_cmpxchg16b <span class="kw">as </span>atomic_min,
     <span class="string">"cmp rsi, rax"</span>,
     <span class="string">"mov rcx, r8"</span>,
@@ -1561,7 +1561,7 @@
     <span class="string">"mov rbx, rsi"</span>,
     <span class="string">"cmovge rbx, rax"</span>,
 }
-<span class="macro">atomic_rmw_cas_3! </span>{
+<span class="macro">atomic_rmw_cas_3!</span> {
     atomic_umin_cmpxchg16b <span class="kw">as </span>atomic_umin,
     <span class="string">"cmp rsi, rax"</span>,
     <span class="string">"mov rcx, r8"</span>,
@@ -1572,7 +1572,7 @@
     <span class="string">"cmovae rbx, rax"</span>,
 }
 
-<span class="macro">macro_rules! </span>atomic_rmw_with_ifunc {
+<span class="macro">macro_rules!</span> atomic_rmw_with_ifunc {
     (
         <span class="kw">unsafe fn </span><span class="macro-nonterminal">$name</span>:ident($(<span class="macro-nonterminal">$arg</span>:tt)<span class="kw-2">*</span>) $(-&gt; <span class="macro-nonterminal">$ret_ty</span>:ty)<span class="question-mark">?</span>;
         cmpxchg16b = <span class="macro-nonterminal">$cmpxchg16b_fn</span>:ident;
@@ -1584,7 +1584,7 @@
         )))]
         #[inline]
         </span><span class="kw">unsafe fn </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$arg</span>)<span class="kw-2">*</span>, _order: Ordering) $(-&gt; <span class="macro-nonterminal">$ret_ty</span>)<span class="question-mark">? </span>{
-            <span class="macro">fn_alias! </span>{
+            <span class="macro">fn_alias!</span> {
                 <span class="attr">#[cfg_attr(
                     not(any(
                         target_feature = <span class="string">"cmpxchg16b"</span>,
@@ -1612,67 +1612,67 @@
     };
 }
 
-<span class="macro">atomic_rmw_with_ifunc! </span>{
+<span class="macro">atomic_rmw_with_ifunc!</span> {
     <span class="kw">unsafe fn </span>atomic_swap(dst: <span class="kw-2">*mut </span>u128, val: u128) -&gt; u128;
     cmpxchg16b = atomic_swap_cmpxchg16b;
     fallback = atomic_swap_seqcst;
 }
-<span class="macro">atomic_rmw_with_ifunc! </span>{
+<span class="macro">atomic_rmw_with_ifunc!</span> {
     <span class="kw">unsafe fn </span>atomic_add(dst: <span class="kw-2">*mut </span>u128, val: u128) -&gt; u128;
     cmpxchg16b = atomic_add_cmpxchg16b;
     fallback = atomic_add_seqcst;
 }
-<span class="macro">atomic_rmw_with_ifunc! </span>{
+<span class="macro">atomic_rmw_with_ifunc!</span> {
     <span class="kw">unsafe fn </span>atomic_sub(dst: <span class="kw-2">*mut </span>u128, val: u128) -&gt; u128;
     cmpxchg16b = atomic_sub_cmpxchg16b;
     fallback = atomic_sub_seqcst;
 }
-<span class="macro">atomic_rmw_with_ifunc! </span>{
+<span class="macro">atomic_rmw_with_ifunc!</span> {
     <span class="kw">unsafe fn </span>atomic_and(dst: <span class="kw-2">*mut </span>u128, val: u128) -&gt; u128;
     cmpxchg16b = atomic_and_cmpxchg16b;
     fallback = atomic_and_seqcst;
 }
-<span class="macro">atomic_rmw_with_ifunc! </span>{
+<span class="macro">atomic_rmw_with_ifunc!</span> {
     <span class="kw">unsafe fn </span>atomic_nand(dst: <span class="kw-2">*mut </span>u128, val: u128) -&gt; u128;
     cmpxchg16b = atomic_nand_cmpxchg16b;
     fallback = atomic_nand_seqcst;
 }
-<span class="macro">atomic_rmw_with_ifunc! </span>{
+<span class="macro">atomic_rmw_with_ifunc!</span> {
     <span class="kw">unsafe fn </span>atomic_or(dst: <span class="kw-2">*mut </span>u128, val: u128) -&gt; u128;
     cmpxchg16b = atomic_or_cmpxchg16b;
     fallback = atomic_or_seqcst;
 }
-<span class="macro">atomic_rmw_with_ifunc! </span>{
+<span class="macro">atomic_rmw_with_ifunc!</span> {
     <span class="kw">unsafe fn </span>atomic_xor(dst: <span class="kw-2">*mut </span>u128, val: u128) -&gt; u128;
     cmpxchg16b = atomic_xor_cmpxchg16b;
     fallback = atomic_xor_seqcst;
 }
-<span class="macro">atomic_rmw_with_ifunc! </span>{
+<span class="macro">atomic_rmw_with_ifunc!</span> {
     <span class="kw">unsafe fn </span>atomic_max(dst: <span class="kw-2">*mut </span>u128, val: u128) -&gt; u128;
     cmpxchg16b = atomic_max_cmpxchg16b;
     fallback = atomic_max_seqcst;
 }
-<span class="macro">atomic_rmw_with_ifunc! </span>{
+<span class="macro">atomic_rmw_with_ifunc!</span> {
     <span class="kw">unsafe fn </span>atomic_umax(dst: <span class="kw-2">*mut </span>u128, val: u128) -&gt; u128;
     cmpxchg16b = atomic_umax_cmpxchg16b;
     fallback = atomic_umax_seqcst;
 }
-<span class="macro">atomic_rmw_with_ifunc! </span>{
+<span class="macro">atomic_rmw_with_ifunc!</span> {
     <span class="kw">unsafe fn </span>atomic_min(dst: <span class="kw-2">*mut </span>u128, val: u128) -&gt; u128;
     cmpxchg16b = atomic_min_cmpxchg16b;
     fallback = atomic_min_seqcst;
 }
-<span class="macro">atomic_rmw_with_ifunc! </span>{
+<span class="macro">atomic_rmw_with_ifunc!</span> {
     <span class="kw">unsafe fn </span>atomic_umin(dst: <span class="kw-2">*mut </span>u128, val: u128) -&gt; u128;
     cmpxchg16b = atomic_umin_cmpxchg16b;
     fallback = atomic_umin_seqcst;
 }
-<span class="macro">atomic_rmw_with_ifunc! </span>{
+<span class="macro">atomic_rmw_with_ifunc!</span> {
     <span class="kw">unsafe fn </span>atomic_not(dst: <span class="kw-2">*mut </span>u128) -&gt; u128;
     cmpxchg16b = atomic_not_cmpxchg16b;
     fallback = atomic_not_seqcst;
 }
-<span class="macro">atomic_rmw_with_ifunc! </span>{
+<span class="macro">atomic_rmw_with_ifunc!</span> {
     <span class="kw">unsafe fn </span>atomic_neg(dst: <span class="kw-2">*mut </span>u128) -&gt; u128;
     cmpxchg16b = atomic_neg_cmpxchg16b;
     fallback = atomic_neg_seqcst;

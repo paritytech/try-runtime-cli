@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wasm-bindgen-macro-support-0.2.90/src/parser.rs`."><title>parser.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="wasm_bindgen_macro_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.2 (25ef9e3d8 2024-04-09)" data-channel="1.77.2" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wasm-bindgen-macro-support-0.2.90/src/parser.rs`."><title>parser.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="wasm_bindgen_macro_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../wasm_bindgen_macro_support/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -1867,9 +1867,9 @@
     </span><span class="kw">pub </span>attrs: Vec&lt;(Cell&lt;bool&gt;, BindgenAttr)&gt;,
 }
 
-<span class="macro">macro_rules! </span>attrgen {
+<span class="macro">macro_rules!</span> attrgen {
     (<span class="macro-nonterminal">$mac</span>:ident) =&gt; {
-        <span class="macro-nonterminal">$</span><span class="macro">mac! </span>{
+        <span class="macro-nonterminal">$</span><span class="macro">mac!</span> {
             (<span class="macro-nonterminal">catch</span>, Catch(Span)),
             (constructor, Constructor(Span)),
             (method, Method(Span)),
@@ -1911,7 +1911,7 @@
     };
 }
 
-<span class="macro">macro_rules! </span>methods {
+<span class="macro">macro_rules!</span> methods {
     ($((<span class="macro-nonterminal">$name</span>:ident, <span class="macro-nonterminal">$variant</span>:ident($(<span class="macro-nonterminal">$contents</span>:tt)<span class="kw-2">*</span>)),)<span class="kw-2">*</span>) =&gt; {
         $(<span class="macro">methods!</span>(@method <span class="macro-nonterminal">$name</span>, <span class="macro-nonterminal">$variant</span>($(<span class="macro-nonterminal">$contents</span>)<span class="kw-2">*</span>));)*
 
@@ -2070,7 +2070,7 @@
     }
 }
 
-<span class="macro">macro_rules! </span>gen_bindgen_attr {
+<span class="macro">macro_rules!</span> gen_bindgen_attr {
     ($((<span class="macro-nonterminal">$method</span>:ident, $(<span class="macro-nonterminal">$variants</span>:tt)<span class="kw-2">*</span>),)<span class="kw-2">*</span>) =&gt; {
         <span class="doccomment">/// The possible attributes in the `#[wasm_bindgen]`.
         </span><span class="attr">#[cfg_attr(feature = <span class="string">"extra-traits"</span>, derive(Debug))]
@@ -2090,7 +2090,7 @@
         <span class="kw">let </span>attr_string = attr.to_string();
         <span class="kw">let </span>raw_attr_string = <span class="macro">format!</span>(<span class="string">"r#{}"</span>, attr_string);
 
-        <span class="macro">macro_rules! </span>parsers {
+        <span class="macro">macro_rules!</span> parsers {
             ($((<span class="macro-nonterminal">$name</span>:ident, $(<span class="macro-nonterminal">$contents</span>:tt)<span class="kw-2">*</span>),)<span class="kw-2">*</span>) =&gt; {
                 $(
                     <span class="kw">if </span>attr_string == <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>) || raw_attr_string == <span class="macro">stringify!</span>(<span class="macro-nonterminal">$name</span>) {
@@ -2785,7 +2785,7 @@
                 <span class="comment">// If the function isn't used for anything other than being exported to JS,
                 // it'll be unused when not building for the wasm target and produce a
                 // `dead_code` warning. So, add `#[allow(dead_code)]` before it to avoid that.
-                </span>tokens.extend(<span class="macro">quote::quote! </span>{ <span class="attr">#[allow(dead_code)] </span>});
+                </span>tokens.extend(<span class="macro">quote::quote!</span> { <span class="attr">#[allow(dead_code)] </span>});
                 f.to_tokens(tokens);
                 <span class="kw">if </span>opts.start().is_some() {
                     <span class="kw">if </span>!f.sig.generics.params.is_empty() {
@@ -2955,7 +2955,7 @@
             pound_token: Default::default(),
             style: syn::AttrStyle::Outer,
             bracket_token: Default::default(),
-            meta: <span class="macro">syn::parse_quote! </span>{ #wasm_bindgen::prelude::__wasm_bindgen_class_marker(#class = #js_class, wasm_bindgen = #wasm_bindgen, wasm_bindgen_futures = #wasm_bindgen_futures) },
+            meta: <span class="macro">syn::parse_quote!</span> { #wasm_bindgen::prelude::__wasm_bindgen_class_marker(#class = #js_class, wasm_bindgen = #wasm_bindgen, wasm_bindgen_futures = #wasm_bindgen_futures) },
         },
     );
 
@@ -3499,7 +3499,7 @@
         <span class="macro">assert_eq!</span>(state.parsed.get(), state.checks.get());
         <span class="kw">let </span>unused_attrs = <span class="kw-2">&amp;*</span>state.unused_attrs.borrow();
         <span class="kw">if </span>!unused_attrs.is_empty() {
-            tokens.extend(<span class="macro">quote::quote! </span>{
+            tokens.extend(<span class="macro">quote::quote!</span> {
                 <span class="comment">// Anonymous scope to prevent name clashes.
                 </span><span class="kw">const _</span>: () = {
                     #(<span class="kw">let </span>#unused_attrs: ();)*
@@ -3570,7 +3570,7 @@
 
     <span class="kw">if </span>f.sig.asyncness.take().is_some() {
         f.block = Box::new(
-            syn::parse2(<span class="macro">quote::quote! </span>{
+            syn::parse2(<span class="macro">quote::quote!</span> {
                 {
                     <span class="kw">async fn </span>__wasm_bindgen_generated_main() #r#return #body
                     #wasm_bindgen_futures::spawn_local(
@@ -3586,7 +3586,7 @@
         );
     } <span class="kw">else </span>{
         f.block = Box::new(
-            syn::parse2(<span class="macro">quote::quote! </span>{
+            syn::parse2(<span class="macro">quote::quote!</span> {
                 {
                     <span class="kw">fn </span>__wasm_bindgen_generated_main() #r#return #body
                     <span class="kw">use </span>#wasm_bindgen::__rt::Main;

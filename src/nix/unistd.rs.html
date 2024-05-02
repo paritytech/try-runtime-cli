@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nix-0.24.3/src/unistd.rs`."><title>unistd.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="nix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.2 (25ef9e3d8 2024-04-09)" data-channel="1.77.2" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/nix-0.24.3/src/unistd.rs`."><title>unistd.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="nix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../nix/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -3268,7 +3268,7 @@
 <span class="attr">#[cfg(feature = <span class="string">"fs"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::sys::stat::Mode;
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
     <span class="attr">#![feature = <span class="string">"fs"</span>]
     #[cfg(any(target_os = <span class="string">"android"</span>, target_os = <span class="string">"linux"</span>))]
     </span><span class="kw">pub use </span><span class="self">self</span>::pivot_root::<span class="kw-2">*</span>;
@@ -3288,7 +3288,7 @@
           target_os = <span class="string">"openbsd"</span>))]
 </span><span class="kw">pub use </span><span class="self">self</span>::getres::<span class="kw-2">*</span>;
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"user"</span>]
 
 </span><span class="doccomment">/// User identifier
@@ -3382,7 +3382,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"process"</span>]
 </span><span class="doccomment">/// Process identifier
 ///
@@ -3567,7 +3567,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![all(feature = <span class="string">"process"</span>, feature = <span class="string">"term"</span>)]
 </span><span class="doccomment">/// Get the terminal foreground process group (see
 /// [tcgetpgrp(3)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/tcgetpgrp.html)).
@@ -3591,7 +3591,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"process"</span>]
 </span><span class="doccomment">/// Get the group id of the calling process (see
 ///[getpgrp(3)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/getpgrp.html)).
@@ -3620,7 +3620,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"fs"</span>]
 </span><span class="doccomment">/// Create a copy of the specified file descriptor (see
 /// [dup(2)](https://pubs.opengroup.org/onlinepubs/9699919799/functions/dup.html)).
@@ -3849,7 +3849,7 @@
     <span class="prelude-val">Ok</span>(())
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"fs"</span>]
 
 </span><span class="doccomment">/// Returns the current directory as a `PathBuf`
@@ -3897,7 +3897,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![all(feature = <span class="string">"user"</span>, feature = <span class="string">"fs"</span>)]
 
 </span><span class="doccomment">/// Computes the raw UID and GID values to pass to a `*chown` call.
@@ -3996,7 +3996,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"process"</span>]
 </span><span class="kw">fn </span>to_exec_array&lt;S: AsRef&lt;CStr&gt;&gt;(args: <span class="kw-2">&amp;</span>[S]) -&gt; Vec&lt;<span class="kw-2">*const </span>c_char&gt; {
     <span class="kw">use </span>std::iter::once;
@@ -4179,7 +4179,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"hostname"</span>]
 
 </span><span class="doccomment">/// Set the system host name (see
@@ -4192,7 +4192,7 @@
 </span><span class="attr">#[cfg(not(target_os = <span class="string">"redox"</span>))]
 </span><span class="kw">pub fn </span>sethostname&lt;S: AsRef&lt;OsStr&gt;&gt;(name: S) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
     <span class="comment">// Handle some differences in type of the len arg across platforms.
-    </span><span class="macro">cfg_if! </span>{
+    </span><span class="macro">cfg_if!</span> {
         <span class="kw">if </span><span class="attr">#[cfg(any(target_os = <span class="string">"dragonfly"</span>,
                      target_os = <span class="string">"freebsd"</span>,
                      target_os = <span class="string">"illumos"</span>,
@@ -4291,7 +4291,7 @@
     Errno::result(res).map(|r| r <span class="kw">as </span>usize)
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"fs"</span>]
 
 </span><span class="doccomment">/// Directive that tells [`lseek`] and [`lseek64`] what the offset is relative to.
@@ -4361,7 +4361,7 @@
     }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"fs"</span>]
 </span><span class="doccomment">/// Like `pipe`, but allows setting certain file descriptor flags.
 ///
@@ -4591,7 +4591,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"user"</span>]
 
 </span><span class="doccomment">/// Get a real user ID
@@ -4675,7 +4675,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![all(feature = <span class="string">"fs"</span>, feature = <span class="string">"user"</span>)]
 </span><span class="doccomment">/// Set the user identity used for filesystem checks per-thread.
 /// On both success and failure, this call returns the previous filesystem user
@@ -4700,7 +4700,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"user"</span>]
 
 </span><span class="doccomment">/// Get the list of supplementary group IDs of the calling process.
@@ -4792,7 +4792,7 @@
 /// ```
 </span><span class="attr">#[cfg(not(any(target_os = <span class="string">"ios"</span>, target_os = <span class="string">"macos"</span>, target_os = <span class="string">"redox"</span>)))]
 </span><span class="kw">pub fn </span>setgroups(groups: <span class="kw-2">&amp;</span>[Gid]) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-    <span class="macro">cfg_if! </span>{
+    <span class="macro">cfg_if!</span> {
         <span class="kw">if </span><span class="attr">#[cfg(any(target_os = <span class="string">"dragonfly"</span>,
                      target_os = <span class="string">"freebsd"</span>,
                      target_os = <span class="string">"illumos"</span>,
@@ -4847,7 +4847,7 @@
     };
     <span class="kw">use </span>std::cmp::min;
     <span class="kw">let </span><span class="kw-2">mut </span>groups = Vec::&lt;Gid&gt;::with_capacity(min(ngroups_max, <span class="number">8</span>) <span class="kw">as </span>usize);
-    <span class="macro">cfg_if! </span>{
+    <span class="macro">cfg_if!</span> {
         <span class="kw">if </span><span class="attr">#[cfg(any(target_os = <span class="string">"ios"</span>, target_os = <span class="string">"macos"</span>))] </span>{
             <span class="kw">type </span>getgrouplist_group_t = c_int;
         } <span class="kw">else </span>{
@@ -4919,7 +4919,7 @@
 /// ```
 </span><span class="attr">#[cfg(not(any(target_os = <span class="string">"ios"</span>, target_os = <span class="string">"macos"</span>, target_os = <span class="string">"redox"</span>)))]
 </span><span class="kw">pub fn </span>initgroups(user: <span class="kw-2">&amp;</span>CStr, group: Gid) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-    <span class="macro">cfg_if! </span>{
+    <span class="macro">cfg_if!</span> {
         <span class="kw">if </span><span class="attr">#[cfg(any(target_os = <span class="string">"ios"</span>, target_os = <span class="string">"macos"</span>))] </span>{
             <span class="kw">type </span>initgroups_group_t = c_int;
         } <span class="kw">else </span>{
@@ -4933,7 +4933,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"signal"</span>]
 
 </span><span class="doccomment">/// Suspend the thread until a signal is received.
@@ -5043,7 +5043,7 @@
     <span class="kw">unsafe </span>{ libc::sleep(seconds) }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"acct"</span>]
 
 #[cfg(not(target_os = <span class="string">"redox"</span>))]
@@ -5072,7 +5072,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"fs"</span>]
 </span><span class="doccomment">/// Creates a regular file which persists even after process termination
 ///
@@ -5111,7 +5111,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![all(feature = <span class="string">"fs"</span>, feature = <span class="string">"feature"</span>)]
 
 </span><span class="doccomment">/// Variable names for `pathconf`
@@ -5307,7 +5307,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"feature"</span>]
 
 </span><span class="doccomment">/// Variable names for `sysconf`
@@ -5919,7 +5919,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"fs"</span>]
 
 #[cfg(any(target_os = <span class="string">"android"</span>, target_os = <span class="string">"linux"</span>))]
@@ -5948,7 +5948,7 @@
           target_os = <span class="string">"linux"</span>,
           target_os = <span class="string">"openbsd"</span>))]
 </span><span class="kw">mod </span>setres {
-    <span class="macro">feature! </span>{
+    <span class="macro">feature!</span> {
     <span class="attr">#![feature = <span class="string">"user"</span>]
 
     </span><span class="kw">use </span><span class="kw">crate</span>::Result;
@@ -5995,7 +5995,7 @@
           target_os = <span class="string">"linux"</span>,
           target_os = <span class="string">"openbsd"</span>))]
 </span><span class="kw">mod </span>getres {
-    <span class="macro">feature! </span>{
+    <span class="macro">feature!</span> {
     <span class="attr">#![feature = <span class="string">"user"</span>]
 
     </span><span class="kw">use </span><span class="kw">crate</span>::Result;
@@ -6074,7 +6074,7 @@
     }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"fs"</span>]
 
 </span><span class="doccomment">/// Checks the file named by `path` for accessibility according to the flags given by `amode`
@@ -6089,7 +6089,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"user"</span>]
 
 </span><span class="doccomment">/// Representation of a User, based on `libc::passwd`
@@ -6439,7 +6439,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![feature = <span class="string">"term"</span>]
 
 </span><span class="doccomment">/// Get the name of the terminal device that is open on file descriptor fd
@@ -6461,7 +6461,7 @@
 }
 }
 
-<span class="macro">feature! </span>{
+<span class="macro">feature!</span> {
 <span class="attr">#![all(feature = <span class="string">"socket"</span>, feature = <span class="string">"user"</span>)]
 
 </span><span class="doccomment">/// Get the effective user ID and group ID associated with a Unix domain socket.

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/portable-atomic-1.6.0/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="portable_atomic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.2 (25ef9e3d8 2024-04-09)" data-channel="1.77.2" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/portable-atomic-1.6.0/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="portable_atomic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../portable_atomic/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -4497,8 +4497,8 @@ RUSTFLAGS="--cfg portable_atomic_no_outline_atomics" cargo ...
 <span class="attr">#[cfg(miri)]
 </span><span class="kw">use </span><span class="kw">crate</span>::utils::strict;
 
-<span class="macro">cfg_has_atomic_8! </span>{
-<span class="macro">cfg_has_atomic_cas! </span>{
+<span class="macro">cfg_has_atomic_8!</span> {
+<span class="macro">cfg_has_atomic_cas!</span> {
 <span class="comment">// See https://github.com/rust-lang/rust/pull/114034 for details.
 // https://github.com/rust-lang/rust/blob/9339f446a5302cd5041d3f3b5e59761f36699167/library/core/src/sync/atomic.rs#L134
 // https://godbolt.org/z/5W85abT58
@@ -4746,7 +4746,7 @@ RUSTFLAGS="--cfg portable_atomic_no_outline_atomics" cargo ...
         <span class="self">self</span>.as_atomic_u8().store(val <span class="kw">as </span>u8, order);
     }
 
-    <span class="macro">cfg_has_atomic_cas! </span>{
+    <span class="macro">cfg_has_atomic_cas!</span> {
     <span class="doccomment">/// Stores a value into the bool, returning the previous value.
     ///
     /// `swap` takes an [`Ordering`] argument which describes the memory ordering
@@ -5324,7 +5324,7 @@ RUSTFLAGS="--cfg portable_atomic_no_outline_atomics" cargo ...
     }
     } <span class="comment">// cfg_has_atomic_cas!
 
-    </span><span class="macro">const_fn! </span>{
+    </span><span class="macro">const_fn!</span> {
         <span class="comment">// This function is actually `const fn`-compatible on Rust 1.32+,
         // but makes `const fn` only on Rust 1.58+ to match other atomic types.
         </span>const_if: <span class="attr">#[cfg(not(portable_atomic_no_const_raw_ptr_deref))]</span>;
@@ -5357,7 +5357,7 @@ RUSTFLAGS="--cfg portable_atomic_no_outline_atomics" cargo ...
 }
 } <span class="comment">// cfg_has_atomic_8!
 
-</span><span class="macro">cfg_has_atomic_ptr! </span>{
+</span><span class="macro">cfg_has_atomic_ptr!</span> {
 <span class="doccomment">/// A raw pointer type which can be safely shared between threads.
 ///
 /// This type has the same in-memory representation as a `*mut T`.
@@ -5607,7 +5607,7 @@ RUSTFLAGS="--cfg portable_atomic_no_outline_atomics" cargo ...
         <span class="self">self</span>.inner.store(ptr, order);
     }
 
-    <span class="macro">cfg_has_atomic_cas! </span>{
+    <span class="macro">cfg_has_atomic_cas!</span> {
     <span class="doccomment">/// Stores a value into the pointer, returning the previous value.
     ///
     /// `swap` takes an [`Ordering`] argument which describes the memory ordering
@@ -6312,7 +6312,7 @@ RUSTFLAGS="--cfg portable_atomic_no_outline_atomics" cargo ...
     }
     } <span class="comment">// cfg_has_atomic_cas!
 
-    </span><span class="macro">const_fn! </span>{
+    </span><span class="macro">const_fn!</span> {
         const_if: <span class="attr">#[cfg(not(portable_atomic_no_const_raw_ptr_deref))]</span>;
         <span class="doccomment">/// Returns a mutable pointer to the underlying pointer.
         ///
@@ -6336,7 +6336,7 @@ RUSTFLAGS="--cfg portable_atomic_no_outline_atomics" cargo ...
 }
 } <span class="comment">// cfg_has_atomic_ptr!
 
-</span><span class="macro">macro_rules! </span>atomic_int {
+</span><span class="macro">macro_rules!</span> atomic_int {
     <span class="comment">// TODO: support AtomicF{16,128} once https://github.com/rust-lang/rust/issues/116909 stabilized.
     </span>(AtomicU32, <span class="macro-nonterminal">$int_type</span>:ident, <span class="macro-nonterminal">$align</span>:literal) =&gt; {
         <span class="macro">atomic_int!</span>(int, AtomicU32, <span class="macro-nonterminal">$int_type</span>, <span class="macro-nonterminal">$align</span>);
@@ -6354,7 +6354,7 @@ RUSTFLAGS="--cfg portable_atomic_no_outline_atomics" cargo ...
 
     <span class="comment">// Atomic{I,U}* impls
     </span>(int, <span class="macro-nonterminal">$atomic_type</span>:ident, <span class="macro-nonterminal">$int_type</span>:ident, <span class="macro-nonterminal">$align</span>:literal) =&gt; {
-        <span class="macro">doc_comment! </span>{
+        <span class="macro">doc_comment!</span> {
             <span class="macro">concat!</span>(<span class="string">"An integer type which can be safely shared between threads.
 
 This type has the same in-memory representation as the underlying integer type,
@@ -6399,7 +6399,7 @@ atomic instructions or locks will be used.
         <span class="macro">impl_debug_and_serde!</span>(<span class="macro-nonterminal">$atomic_type</span>);
 
         <span class="kw">impl </span><span class="macro-nonterminal">$atomic_type </span>{
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(
                     <span class="string">"Creates a new atomic integer.
 
@@ -6419,7 +6419,7 @@ let atomic_forty_two = "</span>, <span class="macro">stringify!</span>(<span cla
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Creates a new reference to an atomic integer from a pointer.
 
 # Safety
@@ -6455,7 +6455,7 @@ let atomic_forty_two = "</span>, <span class="macro">stringify!</span>(<span cla
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Returns `true` if operations on values of this type are lock-free.
 
 If the compiler or the platform doesn't support the necessary
@@ -6476,7 +6476,7 @@ let is_lock_free = "</span>, <span class="macro">stringify!</span>(<span class="
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Returns `true` if operations on values of this type are lock-free.
 
 If the compiler or the platform doesn't support the necessary
@@ -6500,7 +6500,7 @@ const IS_ALWAYS_LOCK_FREE: bool = "</span>, <span class="macro">stringify!</span
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Returns a mutable reference to the underlying integer.\n
 This is safe because the mutable reference guarantees that no other threads are
 concurrently accessing the atomic data.
@@ -6524,7 +6524,7 @@ assert_eq!(some_var.load(Ordering::SeqCst), 5);
             <span class="comment">// TODO: Add from_mut/get_mut_slice/from_mut_slice once it is stable on std atomic types.
             // https://github.com/rust-lang/rust/issues/76314
 
-            </span><span class="macro">doc_comment! </span>{
+            </span><span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Consumes the atomic and returns the contained value.
 
 This is safe because passing `self` by value guarantees that no other threads are
@@ -6544,7 +6544,7 @@ assert_eq!(some_var.into_inner(), 5);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Loads a value from the atomic integer.
 
 `load` takes an [`Ordering`] argument which describes the memory ordering of this operation.
@@ -6573,7 +6573,7 @@ assert_eq!(some_var.load(Ordering::Relaxed), 5);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Stores a value into the atomic integer.
 
 `store` takes an [`Ordering`] argument which describes the memory ordering of this operation.
@@ -6603,8 +6603,8 @@ assert_eq!(some_var.load(Ordering::Relaxed), 10);
                 }
             }
 
-            <span class="macro">cfg_has_atomic_cas! </span>{
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">cfg_has_atomic_cas!</span> {
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Stores a value into the atomic integer, returning the previous value.
 
 `swap` takes an [`Ordering`] argument which describes the memory ordering
@@ -6628,7 +6628,7 @@ assert_eq!(some_var.swap(10, Ordering::Relaxed), 5);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Stores a value into the atomic integer if the current value is the same as
 the `current` value.
 
@@ -6684,7 +6684,7 @@ assert_eq!(some_var.load(Ordering::Relaxed), 10);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Stores a value into the atomic integer if the current value is the same as
 the `current` value.
 Unlike [`compare_exchange`](Self::compare_exchange)
@@ -6738,7 +6738,7 @@ loop {
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Adds to the current value, returning the previous value.
 
 This operation wraps around on overflow.
@@ -6764,7 +6764,7 @@ assert_eq!(foo.load(Ordering::SeqCst), 10);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Adds to the current value.
 
 This operation wraps around on overflow.
@@ -6796,7 +6796,7 @@ assert_eq!(foo.load(Ordering::SeqCst), 10);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Subtracts from the current value, returning the previous value.
 
 This operation wraps around on overflow.
@@ -6822,7 +6822,7 @@ assert_eq!(foo.load(Ordering::SeqCst), 10);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Subtracts from the current value.
 
 This operation wraps around on overflow.
@@ -6854,7 +6854,7 @@ assert_eq!(foo.load(Ordering::SeqCst), 10);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Bitwise \"and\" with the current value.
 
 Performs a bitwise \"and\" operation on the current value and the argument `val`, and
@@ -6883,7 +6883,7 @@ assert_eq!(foo.load(Ordering::SeqCst), 0b100001);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Bitwise \"and\" with the current value.
 
 Performs a bitwise \"and\" operation on the current value and the argument `val`, and
@@ -6921,7 +6921,7 @@ assert_eq!(foo.load(Ordering::SeqCst), 0b100001);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Bitwise \"nand\" with the current value.
 
 Performs a bitwise \"nand\" operation on the current value and the argument `val`, and
@@ -6950,7 +6950,7 @@ assert_eq!(foo.load(Ordering::SeqCst), !(0x13 &amp; 0x31));
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Bitwise \"or\" with the current value.
 
 Performs a bitwise \"or\" operation on the current value and the argument `val`, and
@@ -6979,7 +6979,7 @@ assert_eq!(foo.load(Ordering::SeqCst), 0b111111);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Bitwise \"or\" with the current value.
 
 Performs a bitwise \"or\" operation on the current value and the argument `val`, and
@@ -7017,7 +7017,7 @@ assert_eq!(foo.load(Ordering::SeqCst), 0b111111);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Bitwise \"xor\" with the current value.
 
 Performs a bitwise \"xor\" operation on the current value and the argument `val`, and
@@ -7046,7 +7046,7 @@ assert_eq!(foo.load(Ordering::SeqCst), 0b011110);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Bitwise \"xor\" with the current value.
 
 Performs a bitwise \"xor\" operation on the current value and the argument `val`, and
@@ -7084,7 +7084,7 @@ assert_eq!(foo.load(Ordering::SeqCst), 0b011110);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Fetches the value, and applies a function to it that returns an optional
 new value. Returns a `Result` of `Ok(previous_value)` if the function returned `Some(_)`, else
 `Err(previous_value)`.
@@ -7151,7 +7151,7 @@ assert_eq!(x.load(Ordering::SeqCst), 9);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Maximum with the current value.
 
 Finds the maximum of the current value and the argument `val`, and
@@ -7191,7 +7191,7 @@ assert!(max_foo == 42);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Minimum with the current value.
 
 Finds the minimum of the current value and the argument `val`, and
@@ -7233,7 +7233,7 @@ assert_eq!(min_foo, 12);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Sets the bit at the specified bit-position to 1.
 
 Returns `true` if the specified bit was previously set to 1.
@@ -7263,7 +7263,7 @@ assert_eq!(foo.load(Ordering::Relaxed), 0b0001);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Clears the bit at the specified bit-position to 1.
 
 Returns `true` if the specified bit was previously set to 1.
@@ -7291,7 +7291,7 @@ assert_eq!(foo.load(Ordering::Relaxed), 0b0000);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Toggles the bit at the specified bit-position.
 
 Returns `true` if the specified bit was previously set to 1.
@@ -7321,7 +7321,7 @@ assert_eq!(foo.load(Ordering::Relaxed), 0b0000);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Logical negates the current value, and sets the new value to the result.
 
 Returns the previous value.
@@ -7346,7 +7346,7 @@ assert_eq!(foo.load(Ordering::Relaxed), !0);
                     <span class="self">self</span>.inner.fetch_not(order)
                 }
 
-                <span class="macro">doc_comment! </span>{
+                <span class="macro">doc_comment!</span> {
                     <span class="macro">concat!</span>(<span class="string">"Logical negates the current value, and sets the new value to the result.
 
 Unlike `fetch_not`, this does not return the previous value.
@@ -7378,7 +7378,7 @@ assert_eq!(foo.load(Ordering::Relaxed), !0);
                 }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Negates the current value, and sets the new value to the result.
 
 Returns the previous value.
@@ -7405,7 +7405,7 @@ assert_eq!(foo.load(Ordering::Relaxed), 5);
                     <span class="self">self</span>.inner.fetch_neg(order)
                 }
 
-                <span class="macro">doc_comment! </span>{
+                <span class="macro">doc_comment!</span> {
                     <span class="macro">concat!</span>(<span class="string">"Negates the current value, and sets the new value to the result.
 
 Unlike `fetch_neg`, this does not return the previous value.
@@ -7439,7 +7439,7 @@ assert_eq!(foo.load(Ordering::Relaxed), 5);
             }
             } <span class="comment">// cfg_has_atomic_cas!
 
-            </span><span class="macro">const_fn! </span>{
+            </span><span class="macro">const_fn!</span> {
                 const_if: <span class="attr">#[cfg(not(portable_atomic_no_const_raw_ptr_deref))]</span>;
                 <span class="doccomment">/// Returns a mutable pointer to the underlying integer.
                 ///
@@ -7471,7 +7471,7 @@ assert_eq!(foo.load(Ordering::Relaxed), 5);
         <span class="macro-nonterminal">$int_type</span>:ident,
         <span class="macro-nonterminal">$align</span>:literal
     ) =&gt; {
-        <span class="macro">doc_comment! </span>{
+        <span class="macro">doc_comment!</span> {
             <span class="macro">concat!</span>(<span class="string">"A floating point type which can be safely shared between threads.
 
 This type has the same in-memory representation as the underlying floating point type,
@@ -7518,7 +7518,7 @@ This type has the same in-memory representation as the underlying floating point
                 <span class="self">Self </span>{ inner: imp::float::<span class="macro-nonterminal">$atomic_type::new</span>(v) }
             }
 
-            <span class="macro">doc_comment! </span>{
+            <span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Creates a new reference to an atomic float from a pointer.
 
 # Safety
@@ -7634,7 +7634,7 @@ This type has the same in-memory representation as the underlying floating point
                 <span class="self">self</span>.inner.store(val, order)
             }
 
-            <span class="macro">cfg_has_atomic_cas! </span>{
+            <span class="macro">cfg_has_atomic_cas!</span> {
             <span class="doccomment">/// Stores a value into the atomic float, returning the previous value.
             ///
             /// `swap` takes an [`Ordering`] argument which describes the memory ordering
@@ -7862,7 +7862,7 @@ This type has the same in-memory representation as the underlying floating point
             } <span class="comment">// cfg_has_atomic_cas!
 
             </span><span class="attr">#[cfg(not(portable_atomic_no_const_raw_ptr_deref))]
-            </span><span class="macro">doc_comment! </span>{
+            </span><span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Raw transmutation to `&amp;"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$atomic_int_type</span>), <span class="string">"`.
 
 See [`"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$float_type</span>) ,<span class="string">"::from_bits`] for some discussion of the
@@ -7875,7 +7875,7 @@ This is `const fn` on Rust 1.58+."</span>),
                 }
             }
             <span class="attr">#[cfg(portable_atomic_no_const_raw_ptr_deref)]
-            </span><span class="macro">doc_comment! </span>{
+            </span><span class="macro">doc_comment!</span> {
                 <span class="macro">concat!</span>(<span class="string">"Raw transmutation to `&amp;"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$atomic_int_type</span>), <span class="string">"`.
 
 See [`"</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$float_type</span>) ,<span class="string">"::from_bits`] for some discussion of the
@@ -7888,7 +7888,7 @@ This is `const fn` on Rust 1.58+."</span>),
                 }
             }
 
-            <span class="macro">const_fn! </span>{
+            <span class="macro">const_fn!</span> {
                 const_if: <span class="attr">#[cfg(not(portable_atomic_no_const_raw_ptr_deref))]</span>;
                 <span class="doccomment">/// Returns a mutable pointer to the underlying float.
                 ///
@@ -7913,7 +7913,7 @@ This is `const fn` on Rust 1.58+."</span>),
     };
 }
 
-<span class="macro">cfg_has_atomic_ptr! </span>{
+<span class="macro">cfg_has_atomic_ptr!</span> {
     <span class="attr">#[cfg(target_pointer_width = <span class="string">"16"</span>)]
     </span><span class="macro">atomic_int!</span>(AtomicIsize, isize, <span class="number">2</span>);
     <span class="attr">#[cfg(target_pointer_width = <span class="string">"16"</span>)]
@@ -7932,23 +7932,23 @@ This is `const fn` on Rust 1.58+."</span>),
     </span><span class="macro">atomic_int!</span>(AtomicUsize, usize, <span class="number">16</span>);
 }
 
-<span class="macro">cfg_has_atomic_8! </span>{
+<span class="macro">cfg_has_atomic_8!</span> {
     <span class="macro">atomic_int!</span>(AtomicI8, i8, <span class="number">1</span>);
     <span class="macro">atomic_int!</span>(AtomicU8, u8, <span class="number">1</span>);
 }
-<span class="macro">cfg_has_atomic_16! </span>{
+<span class="macro">cfg_has_atomic_16!</span> {
     <span class="macro">atomic_int!</span>(AtomicI16, i16, <span class="number">2</span>);
     <span class="macro">atomic_int!</span>(AtomicU16, u16, <span class="number">2</span>);
 }
-<span class="macro">cfg_has_atomic_32! </span>{
+<span class="macro">cfg_has_atomic_32!</span> {
     <span class="macro">atomic_int!</span>(AtomicI32, i32, <span class="number">4</span>);
     <span class="macro">atomic_int!</span>(AtomicU32, u32, <span class="number">4</span>);
 }
-<span class="macro">cfg_has_atomic_64! </span>{
+<span class="macro">cfg_has_atomic_64!</span> {
     <span class="macro">atomic_int!</span>(AtomicI64, i64, <span class="number">8</span>);
     <span class="macro">atomic_int!</span>(AtomicU64, u64, <span class="number">8</span>);
 }
-<span class="macro">cfg_has_atomic_128! </span>{
+<span class="macro">cfg_has_atomic_128!</span> {
     <span class="macro">atomic_int!</span>(AtomicI128, i128, <span class="number">16</span>);
     <span class="macro">atomic_int!</span>(AtomicU128, u128, <span class="number">16</span>);
 }

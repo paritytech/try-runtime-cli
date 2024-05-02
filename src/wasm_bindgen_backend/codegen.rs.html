@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wasm-bindgen-backend-0.2.90/src/codegen.rs`."><title>codegen.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="wasm_bindgen_backend" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.2 (25ef9e3d8 2024-04-09)" data-channel="1.77.2" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/wasm-bindgen-backend-0.2.90/src/codegen.rs`."><title>codegen.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="wasm_bindgen_backend" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../wasm_bindgen_backend/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -1763,7 +1763,7 @@
                                 <span class="kw">continue</span>;
                             }
                         };
-                        (<span class="macro">quote! </span>{
+                        (<span class="macro">quote!</span> {
                             <span class="attr">#[automatically_derived]
                             </span><span class="kw">impl </span>#ns { #kind }
                         })
@@ -1816,10 +1816,10 @@
         // it's just shoved into an anonymous static.
         </span><span class="kw">let </span>file_dependencies = encoded.included_files.iter().map(|file| {
             <span class="kw">let </span>file = file.to_str().unwrap();
-            <span class="macro">quote! </span>{ <span class="macro">include_str!</span>(#file) }
+            <span class="macro">quote!</span> { <span class="macro">include_str!</span>(#file) }
         });
 
-        (<span class="macro">quote! </span>{
+        (<span class="macro">quote!</span> {
             <span class="attr">#[cfg(target_arch = <span class="string">"wasm32"</span>)]
             #[automatically_derived]
             </span><span class="kw">const _</span>: () = {
@@ -1843,9 +1843,9 @@
         <span class="kw">let </span>link_function_name = <span class="self">self</span>.<span class="number">0</span>.link_function_name(<span class="number">0</span>);
         <span class="kw">let </span>name = Ident::new(<span class="kw-2">&amp;</span>link_function_name, Span::call_site());
         <span class="kw">let </span>wasm_bindgen = <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>.wasm_bindgen;
-        <span class="kw">let </span>abi_ret = <span class="macro">quote! </span>{ #wasm_bindgen::convert::WasmRet&lt;&lt;std::string::String <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;::Abi&gt; };
+        <span class="kw">let </span>abi_ret = <span class="macro">quote!</span> { #wasm_bindgen::convert::WasmRet&lt;&lt;std::string::String <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;::Abi&gt; };
         <span class="kw">let </span>extern_fn = extern_fn(<span class="kw-2">&amp;</span>name, <span class="kw-2">&amp;</span>[], <span class="kw-2">&amp;</span>[], <span class="kw-2">&amp;</span>[], abi_ret);
-        (<span class="macro">quote! </span>{
+        (<span class="macro">quote!</span> {
             {
                 #program
                 #extern_fn
@@ -1870,13 +1870,13 @@
         <span class="kw">let </span>free_fn = Ident::new(<span class="kw-2">&amp;</span>shared::free_function(<span class="kw-2">&amp;</span>name_str), Span::call_site());
         <span class="kw">let </span>unwrap_fn = Ident::new(<span class="kw-2">&amp;</span>shared::unwrap_function(<span class="kw-2">&amp;</span>name_str), Span::call_site());
         <span class="kw">let </span>wasm_bindgen = <span class="kw-2">&amp;</span><span class="self">self</span>.wasm_bindgen;
-        (<span class="macro">quote! </span>{
+        (<span class="macro">quote!</span> {
             <span class="attr">#[automatically_derived]
             </span><span class="kw">impl </span>#wasm_bindgen::describe::WasmDescribe <span class="kw">for </span>#name {
                 <span class="kw">fn </span>describe() {
                     <span class="kw">use </span>#wasm_bindgen::__wbindgen_if_not_std;
-                    <span class="macro">__wbindgen_if_not_std! </span>{
-                        <span class="macro">compile_error! </span>{
+                    <span class="macro">__wbindgen_if_not_std!</span> {
+                        <span class="macro">compile_error!</span> {
                             <span class="string">"exporting a class to JS requires the `std` feature to \
                              be enabled in the `wasm-bindgen` crate"
                         </span>}
@@ -2083,9 +2083,9 @@
         <span class="kw">let </span>setter = <span class="kw-2">&amp;</span><span class="self">self</span>.setter;
 
         <span class="kw">let </span>maybe_assert_copy = <span class="kw">if </span><span class="self">self</span>.getter_with_clone.is_some() {
-            <span class="macro">quote! </span>{}
+            <span class="macro">quote!</span> {}
         } <span class="kw">else </span>{
-            <span class="macro">quote! </span>{ assert_copy::&lt;#ty&gt;() }
+            <span class="macro">quote!</span> { assert_copy::&lt;#ty&gt;() }
         };
         <span class="kw">let </span>maybe_assert_copy = respan(maybe_assert_copy, ty);
 
@@ -2095,7 +2095,7 @@
         // properly because it doesn't have the same span.
         //
         // See https://github.com/rustwasm/wasm-bindgen/pull/3725.
-        </span><span class="kw">let </span>js_token = <span class="macro">quote! </span>{ js };
+        </span><span class="kw">let </span>js_token = <span class="macro">quote!</span> { js };
         <span class="kw">let </span><span class="kw-2">mut </span>val = <span class="macro">quote_spanned!</span>(<span class="self">self</span>.rust_name.span()=&gt; (<span class="kw-2">*</span>#js_token).borrow().#rust_name);
         <span class="kw">if let </span><span class="prelude-val">Some</span>(span) = <span class="self">self</span>.getter_with_clone {
             val = <span class="macro">quote_spanned!</span>(span=&gt; &lt;#ty <span class="kw">as </span>Clone&gt;::clone(<span class="kw-2">&amp;</span>#val) );
@@ -2103,7 +2103,7 @@
 
         <span class="kw">let </span>wasm_bindgen = <span class="kw-2">&amp;</span><span class="self">self</span>.wasm_bindgen;
 
-        (<span class="macro">quote! </span>{
+        (<span class="macro">quote!</span> {
             <span class="attr">#[automatically_derived]
             </span><span class="kw">const _</span>: () = {
                 <span class="attr">#[cfg_attr(all(target_arch = <span class="string">"wasm32"</span>, not(any(target_os = <span class="string">"emscripten"</span>, target_os = <span class="string">"wasi"</span>))), no_mangle)]
@@ -2128,7 +2128,7 @@
 
         Descriptor {
             ident: getter,
-            inner: <span class="macro">quote! </span>{
+            inner: <span class="macro">quote!</span> {
                 &lt;#ty <span class="kw">as </span>WasmDescribe&gt;::describe();
             },
             attrs: <span class="macro">vec!</span>[],
@@ -2140,10 +2140,10 @@
             <span class="kw">return</span>;
         }
 
-        <span class="kw">let </span>abi = <span class="macro">quote! </span>{ &lt;#ty <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;::Abi };
+        <span class="kw">let </span>abi = <span class="macro">quote!</span> { &lt;#ty <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;::Abi };
         <span class="kw">let </span>(args, names) = splat(wasm_bindgen, <span class="kw-2">&amp;</span>Ident::new(<span class="string">"val"</span>, rust_name.span()), <span class="kw-2">&amp;</span>abi);
 
-        (<span class="macro">quote! </span>{
+        (<span class="macro">quote!</span> {
             <span class="attr">#[cfg(all(target_arch = <span class="string">"wasm32"</span>, not(any(target_os = <span class="string">"emscripten"</span>, target_os = <span class="string">"wasi"</span>))))]
             #[automatically_derived]
             </span><span class="kw">const _</span>: () = {
@@ -2178,7 +2178,7 @@
         <span class="kw">let </span>ret = Ident::new(<span class="string">"_ret"</span>, Span::call_site());
 
         <span class="kw">let </span>offset = <span class="kw">if </span><span class="self">self</span>.method_self.is_some() {
-            args.push(<span class="macro">quote! </span>{ me: u32 });
+            args.push(<span class="macro">quote!</span> { me: u32 });
             <span class="number">1
         </span>} <span class="kw">else </span>{
             <span class="number">0
@@ -2190,38 +2190,38 @@
         <span class="kw">let </span>receiver = <span class="kw">match </span><span class="self">self</span>.method_self {
             <span class="prelude-val">Some</span>(ast::MethodSelf::ByValue) =&gt; {
                 <span class="kw">let </span>class = <span class="self">self</span>.rust_class.as_ref().unwrap();
-                arg_conversions.push(<span class="macro">quote! </span>{
+                arg_conversions.push(<span class="macro">quote!</span> {
                     <span class="kw">let </span>me = <span class="kw">unsafe </span>{
                         &lt;#class <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;::from_abi(me)
                     };
                 });
-                <span class="macro">quote! </span>{ me.#name }
+                <span class="macro">quote!</span> { me.#name }
             }
             <span class="prelude-val">Some</span>(ast::MethodSelf::RefMutable) =&gt; {
                 <span class="kw">let </span>class = <span class="self">self</span>.rust_class.as_ref().unwrap();
-                arg_conversions.push(<span class="macro">quote! </span>{
+                arg_conversions.push(<span class="macro">quote!</span> {
                     <span class="kw">let </span><span class="kw-2">mut </span>me = <span class="kw">unsafe </span>{
                         &lt;#class <span class="kw">as </span>#wasm_bindgen::convert::RefMutFromWasmAbi&gt;
                             ::ref_mut_from_abi(me)
                     };
                     <span class="kw">let </span>me = <span class="kw-2">&amp;mut *</span>me;
                 });
-                <span class="macro">quote! </span>{ me.#name }
+                <span class="macro">quote!</span> { me.#name }
             }
             <span class="prelude-val">Some</span>(ast::MethodSelf::RefShared) =&gt; {
                 <span class="kw">let </span>class = <span class="self">self</span>.rust_class.as_ref().unwrap();
-                arg_conversions.push(<span class="macro">quote! </span>{
+                arg_conversions.push(<span class="macro">quote!</span> {
                     <span class="kw">let </span>me = <span class="kw">unsafe </span>{
                         &lt;#class <span class="kw">as </span>#wasm_bindgen::convert::RefFromWasmAbi&gt;
                             ::ref_from_abi(me)
                     };
                     <span class="kw">let </span>me = <span class="kw-2">&amp;*</span>me;
                 });
-                <span class="macro">quote! </span>{ me.#name }
+                <span class="macro">quote!</span> { me.#name }
             }
             <span class="prelude-val">None </span>=&gt; <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.rust_class {
-                <span class="prelude-val">Some</span>(class) =&gt; <span class="macro">quote! </span>{ #class::#name },
-                <span class="prelude-val">None </span>=&gt; <span class="macro">quote! </span>{ #name },
+                <span class="prelude-val">Some</span>(class) =&gt; <span class="macro">quote!</span> { #class::#name },
+                <span class="prelude-val">None </span>=&gt; <span class="macro">quote!</span> { #name },
             },
         };
 
@@ -2245,10 +2245,10 @@
                     elem,
                     ..
                 }) =&gt; {
-                    <span class="kw">let </span>abi = <span class="macro">quote! </span>{ &lt;#elem <span class="kw">as </span>#wasm_bindgen::convert::RefMutFromWasmAbi&gt;::Abi };
+                    <span class="kw">let </span>abi = <span class="macro">quote!</span> { &lt;#elem <span class="kw">as </span>#wasm_bindgen::convert::RefMutFromWasmAbi&gt;::Abi };
                     <span class="kw">let </span>(prim_args, prim_names) = splat(wasm_bindgen, <span class="kw-2">&amp;</span>ident, <span class="kw-2">&amp;</span>abi);
                     args.extend(prim_args);
-                    arg_conversions.push(<span class="macro">quote! </span>{
+                    arg_conversions.push(<span class="macro">quote!</span> {
                         <span class="kw">let </span><span class="kw-2">mut </span>#ident = <span class="kw">unsafe </span>{
                             &lt;#elem <span class="kw">as </span>#wasm_bindgen::convert::RefMutFromWasmAbi&gt;
                                 ::ref_mut_from_abi(
@@ -2261,10 +2261,10 @@
                 syn::Type::Reference(syn::TypeReference { elem, .. }) =&gt; {
                     <span class="kw">if </span><span class="self">self</span>.function.r#async {
                         <span class="kw">let </span>abi =
-                            <span class="macro">quote! </span>{ &lt;#elem <span class="kw">as </span>#wasm_bindgen::convert::LongRefFromWasmAbi&gt;::Abi };
+                            <span class="macro">quote!</span> { &lt;#elem <span class="kw">as </span>#wasm_bindgen::convert::LongRefFromWasmAbi&gt;::Abi };
                         <span class="kw">let </span>(prim_args, prim_names) = splat(wasm_bindgen, <span class="kw-2">&amp;</span>ident, <span class="kw-2">&amp;</span>abi);
                         args.extend(prim_args);
-                        arg_conversions.push(<span class="macro">quote! </span>{
+                        arg_conversions.push(<span class="macro">quote!</span> {
                             <span class="kw">let </span>#ident = <span class="kw">unsafe </span>{
                                 &lt;#elem <span class="kw">as </span>#wasm_bindgen::convert::LongRefFromWasmAbi&gt;
                                     ::long_ref_from_abi(
@@ -2276,10 +2276,10 @@
                                 ::borrow(<span class="kw-2">&amp;</span>#ident);
                         });
                     } <span class="kw">else </span>{
-                        <span class="kw">let </span>abi = <span class="macro">quote! </span>{ &lt;#elem <span class="kw">as </span>#wasm_bindgen::convert::RefFromWasmAbi&gt;::Abi };
+                        <span class="kw">let </span>abi = <span class="macro">quote!</span> { &lt;#elem <span class="kw">as </span>#wasm_bindgen::convert::RefFromWasmAbi&gt;::Abi };
                         <span class="kw">let </span>(prim_args, prim_names) = splat(wasm_bindgen, <span class="kw-2">&amp;</span>ident, <span class="kw-2">&amp;</span>abi);
                         args.extend(prim_args);
-                        arg_conversions.push(<span class="macro">quote! </span>{
+                        arg_conversions.push(<span class="macro">quote!</span> {
                             <span class="kw">let </span>#ident = <span class="kw">unsafe </span>{
                                 &lt;#elem <span class="kw">as </span>#wasm_bindgen::convert::RefFromWasmAbi&gt;
                                     ::ref_from_abi(
@@ -2291,10 +2291,10 @@
                     }
                 }
                 <span class="kw">_ </span>=&gt; {
-                    <span class="kw">let </span>abi = <span class="macro">quote! </span>{ &lt;#ty <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;::Abi };
+                    <span class="kw">let </span>abi = <span class="macro">quote!</span> { &lt;#ty <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;::Abi };
                     <span class="kw">let </span>(prim_args, prim_names) = splat(wasm_bindgen, <span class="kw-2">&amp;</span>ident, <span class="kw-2">&amp;</span>abi);
                     args.extend(prim_args);
-                    arg_conversions.push(<span class="macro">quote! </span>{
+                    arg_conversions.push(<span class="macro">quote!</span> {
                         <span class="kw">let </span>#ident = <span class="kw">unsafe </span>{
                             &lt;#ty <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;
                                 ::from_abi(
@@ -2304,7 +2304,7 @@
                     });
                 }
             }
-            converted_arguments.push(<span class="macro">quote! </span>{ #ident });
+            converted_arguments.push(<span class="macro">quote!</span> { #ident });
         }
         <span class="kw">let </span>syn_unit = syn::Type::Tuple(syn::TypeTuple {
             elems: Default::default(),
@@ -2321,32 +2321,32 @@
         </span><span class="kw">let </span>(ret_ty, inner_ret_ty, ret_expr) = <span class="kw">if </span><span class="self">self</span>.function.r#async {
             <span class="kw">if </span><span class="self">self</span>.start {
                 (
-                    <span class="macro">quote! </span>{ () },
-                    <span class="macro">quote! </span>{ () },
-                    <span class="macro">quote! </span>{
+                    <span class="macro">quote!</span> { () },
+                    <span class="macro">quote!</span> { () },
+                    <span class="macro">quote!</span> {
                         &lt;#syn_ret <span class="kw">as </span>#wasm_bindgen::__rt::Start&gt;::start(#ret.<span class="kw">await</span>)
                     },
                 )
             } <span class="kw">else </span>{
                 (
-                    <span class="macro">quote! </span>{ #wasm_bindgen::JsValue },
-                    <span class="macro">quote! </span>{ #syn_ret },
-                    <span class="macro">quote! </span>{
+                    <span class="macro">quote!</span> { #wasm_bindgen::JsValue },
+                    <span class="macro">quote!</span> { #syn_ret },
+                    <span class="macro">quote!</span> {
                         &lt;#syn_ret <span class="kw">as </span>#wasm_bindgen::__rt::IntoJsResult&gt;::into_js_result(#ret.<span class="kw">await</span>)
                     },
                 )
             }
         } <span class="kw">else if </span><span class="self">self</span>.start {
             (
-                <span class="macro">quote! </span>{ () },
-                <span class="macro">quote! </span>{ () },
-                <span class="macro">quote! </span>{ &lt;#syn_ret <span class="kw">as </span>#wasm_bindgen::__rt::Start&gt;::start(#ret) },
+                <span class="macro">quote!</span> { () },
+                <span class="macro">quote!</span> { () },
+                <span class="macro">quote!</span> { &lt;#syn_ret <span class="kw">as </span>#wasm_bindgen::__rt::Start&gt;::start(#ret) },
             )
         } <span class="kw">else </span>{
-            (<span class="macro">quote! </span>{ #syn_ret }, <span class="macro">quote! </span>{ #syn_ret }, <span class="macro">quote! </span>{ #ret })
+            (<span class="macro">quote!</span> { #syn_ret }, <span class="macro">quote!</span> { #syn_ret }, <span class="macro">quote!</span> { #ret })
         };
 
-        <span class="kw">let </span><span class="kw-2">mut </span>call = <span class="macro">quote! </span>{
+        <span class="kw">let </span><span class="kw-2">mut </span>call = <span class="macro">quote!</span> {
             {
                 #(#arg_conversions)*
                 <span class="kw">let </span>#ret = #receiver(#(#converted_arguments),<span class="kw-2">*</span>);
@@ -2356,13 +2356,13 @@
 
         <span class="kw">if </span><span class="self">self</span>.function.r#async {
             <span class="kw">if </span><span class="self">self</span>.start {
-                call = <span class="macro">quote! </span>{
+                call = <span class="macro">quote!</span> {
                     #wasm_bindgen_futures::spawn_local(<span class="kw">async move </span>{
                         #call
                     })
                 }
             } <span class="kw">else </span>{
-                call = <span class="macro">quote! </span>{
+                call = <span class="macro">quote!</span> {
                     #wasm_bindgen_futures::future_to_promise(<span class="kw">async move </span>{
                         #call
                     }).into()
@@ -2370,9 +2370,9 @@
             }
         }
 
-        <span class="kw">let </span>projection = <span class="macro">quote! </span>{ &lt;#ret_ty <span class="kw">as </span>#wasm_bindgen::convert::ReturnWasmAbi&gt; };
-        <span class="kw">let </span>convert_ret = <span class="macro">quote! </span>{ #projection::return_abi(#ret).into() };
-        <span class="kw">let </span>describe_ret = <span class="macro">quote! </span>{
+        <span class="kw">let </span>projection = <span class="macro">quote!</span> { &lt;#ret_ty <span class="kw">as </span>#wasm_bindgen::convert::ReturnWasmAbi&gt; };
+        <span class="kw">let </span>convert_ret = <span class="macro">quote!</span> { #projection::return_abi(#ret).into() };
+        <span class="kw">let </span>describe_ret = <span class="macro">quote!</span> {
             &lt;#ret_ty <span class="kw">as </span>WasmDescribe&gt;::describe();
             &lt;#inner_ret_ty <span class="kw">as </span>WasmDescribe&gt;::describe();
         };
@@ -2380,12 +2380,12 @@
         <span class="kw">let </span>attrs = <span class="kw-2">&amp;</span><span class="self">self</span>.function.rust_attrs;
 
         <span class="kw">let </span>start_check = <span class="kw">if </span><span class="self">self</span>.start {
-            <span class="macro">quote! </span>{ <span class="kw">const </span>_ASSERT: <span class="kw">fn</span>() = || -&gt; #projection::Abi { <span class="kw">loop </span>{} }; }
+            <span class="macro">quote!</span> { <span class="kw">const </span>_ASSERT: <span class="kw">fn</span>() = || -&gt; #projection::Abi { <span class="kw">loop </span>{} }; }
         } <span class="kw">else </span>{
-            <span class="macro">quote! </span>{}
+            <span class="macro">quote!</span> {}
         };
 
-        (<span class="macro">quote! </span>{
+        (<span class="macro">quote!</span> {
             <span class="attr">#[automatically_derived]
             </span><span class="kw">const _</span>: () = {
                 #(#attrs)*
@@ -2410,12 +2410,12 @@
                     <span class="kw">if </span><span class="self">self</span>.function.r#async &amp;&amp; reference.mutability.is_none() =&gt;
                 {
                     <span class="kw">let </span>inner = <span class="kw-2">&amp;</span>reference.elem;
-                    <span class="macro">quote! </span>{
+                    <span class="macro">quote!</span> {
                         inform(LONGREF);
                         &lt;#inner <span class="kw">as </span>WasmDescribe&gt;::describe();
                     }
                 }
-                <span class="kw">_ </span>=&gt; <span class="macro">quote! </span>{ &lt;#ty <span class="kw">as </span>WasmDescribe&gt;::describe(); },
+                <span class="kw">_ </span>=&gt; <span class="macro">quote!</span> { &lt;#ty <span class="kw">as </span>WasmDescribe&gt;::describe(); },
             })
             .collect();
 
@@ -2438,7 +2438,7 @@
         </span><span class="kw">let </span>export = Ident::new(<span class="kw-2">&amp;</span>export_name, Span::call_site());
         Descriptor {
             ident: <span class="kw-2">&amp;</span>export,
-            inner: <span class="macro">quote! </span>{
+            inner: <span class="macro">quote!</span> {
                 inform(FUNCTION);
                 inform(<span class="number">0</span>);
                 inform(#nargs);
@@ -2481,30 +2481,30 @@
         <span class="kw">let </span>wasm_bindgen = <span class="kw-2">&amp;</span><span class="self">self</span>.wasm_bindgen;
         <span class="kw">let </span>internal_obj = <span class="kw">match </span><span class="self">self</span>.extends.first() {
             <span class="prelude-val">Some</span>(target) =&gt; {
-                <span class="macro">quote! </span>{ #target }
+                <span class="macro">quote!</span> { #target }
             }
             <span class="prelude-val">None </span>=&gt; {
-                <span class="macro">quote! </span>{ #wasm_bindgen::JsValue }
+                <span class="macro">quote!</span> { #wasm_bindgen::JsValue }
             }
         };
 
         <span class="kw">let </span>description = <span class="kw">if let </span><span class="prelude-val">Some</span>(typescript_type) = <span class="kw-2">&amp;</span><span class="self">self</span>.typescript_type {
             <span class="kw">let </span>typescript_type_len = typescript_type.len() <span class="kw">as </span>u32;
             <span class="kw">let </span>typescript_type_chars = typescript_type.chars().map(|c| c <span class="kw">as </span>u32);
-            <span class="macro">quote! </span>{
+            <span class="macro">quote!</span> {
                 <span class="kw">use </span>#wasm_bindgen::describe::<span class="kw-2">*</span>;
                 inform(NAMED_EXTERNREF);
                 inform(#typescript_type_len);
                 #(inform(#typescript_type_chars);)*
             }
         } <span class="kw">else </span>{
-            <span class="macro">quote! </span>{
+            <span class="macro">quote!</span> {
                 JsValue::describe()
             }
         };
 
         <span class="kw">let </span>is_type_of = <span class="self">self</span>.is_type_of.as_ref().map(|is_type_of| {
-            <span class="macro">quote! </span>{
+            <span class="macro">quote!</span> {
                 <span class="attr">#[inline]
                 </span><span class="kw">fn </span>is_type_of(val: <span class="kw-2">&amp;</span>JsValue) -&gt; bool {
                     <span class="kw">let </span>is_type_of: <span class="kw">fn</span>(<span class="kw-2">&amp;</span>JsValue) -&gt; bool = #is_type_of;
@@ -2515,7 +2515,7 @@
 
         <span class="kw">let </span>no_deref = <span class="self">self</span>.no_deref;
 
-        (<span class="macro">quote! </span>{
+        (<span class="macro">quote!</span> {
             <span class="attr">#[automatically_derived]
             </span>#(#attrs)*
             <span class="attr">#[doc = #doc_comment]
@@ -2676,7 +2676,7 @@
         .to_tokens(tokens);
 
         <span class="kw">if </span>!no_deref {
-            (<span class="macro">quote! </span>{
+            (<span class="macro">quote!</span> {
                 <span class="attr">#[automatically_derived]
                 </span><span class="kw">impl </span>core::ops::Deref <span class="kw">for </span>#rust_name {
                     <span class="kw">type </span>Target = #internal_obj;
@@ -2691,7 +2691,7 @@
         }
 
         <span class="kw">for </span>superclass <span class="kw">in </span><span class="self">self</span>.extends.iter() {
-            (<span class="macro">quote! </span>{
+            (<span class="macro">quote!</span> {
                 <span class="attr">#[automatically_derived]
                 </span><span class="kw">impl </span>From&lt;#rust_name&gt; <span class="kw">for </span>#superclass {
                     <span class="attr">#[inline]
@@ -2749,7 +2749,7 @@
 
         <span class="kw">let </span>wasm_bindgen = <span class="kw-2">&amp;</span><span class="self">self</span>.wasm_bindgen;
 
-        (<span class="macro">quote! </span>{
+        (<span class="macro">quote!</span> {
             #(#attrs)*
             #vis <span class="kw">enum </span>#name {
                 #(#variants = #variant_indexes_ref,)*
@@ -2849,7 +2849,7 @@
         }
         <span class="kw">let </span>vis = <span class="kw-2">&amp;</span><span class="self">self</span>.function.rust_vis;
         <span class="kw">let </span>ret = <span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.function.ret {
-            <span class="prelude-val">Some</span>(ty) =&gt; <span class="macro">quote! </span>{ -&gt; #ty },
+            <span class="prelude-val">Some</span>(ty) =&gt; <span class="macro">quote!</span> { -&gt; #ty },
             <span class="prelude-val">None </span>=&gt; <span class="macro">quote!</span>(),
         };
 
@@ -2877,18 +2877,18 @@
                 ),
             };
 
-            <span class="kw">let </span>abi = <span class="macro">quote! </span>{ &lt;#ty <span class="kw">as </span>#wasm_bindgen::convert::IntoWasmAbi&gt;::Abi };
+            <span class="kw">let </span>abi = <span class="macro">quote!</span> { &lt;#ty <span class="kw">as </span>#wasm_bindgen::convert::IntoWasmAbi&gt;::Abi };
             <span class="kw">let </span>(prim_args, prim_names) = splat(wasm_bindgen, <span class="kw-2">&amp;</span>name, <span class="kw-2">&amp;</span>abi);
             abi_arguments.extend(prim_args);
             abi_argument_names.extend(prim_names.iter().cloned());
 
             <span class="kw">let </span>var = <span class="kw">if </span>i == <span class="number">0 </span>&amp;&amp; is_method {
-                <span class="macro">quote! </span>{ <span class="self">self </span>}
+                <span class="macro">quote!</span> { <span class="self">self </span>}
             } <span class="kw">else </span>{
-                arguments.push(<span class="macro">quote! </span>{ #name: #ty });
-                <span class="macro">quote! </span>{ #name }
+                arguments.push(<span class="macro">quote!</span> { #name: #ty });
+                <span class="macro">quote!</span> { #name }
             };
-            arg_conversions.push(<span class="macro">quote! </span>{
+            arg_conversions.push(<span class="macro">quote!</span> {
                 <span class="kw">let </span>#name = &lt;#ty <span class="kw">as </span>#wasm_bindgen::convert::IntoWasmAbi&gt;
                     ::into_abi(#var);
                 <span class="kw">let </span>(#(#prim_names),<span class="kw-2">*</span>) = &lt;#abi <span class="kw">as </span>#wasm_bindgen::convert::WasmAbi&gt;::split(#name);
@@ -2905,25 +2905,25 @@
             }
             <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>ty) =&gt; {
                 <span class="kw">if </span><span class="self">self</span>.function.r#async {
-                    abi_ret = <span class="macro">quote! </span>{
+                    abi_ret = <span class="macro">quote!</span> {
                         #wasm_bindgen::convert::WasmRet&lt;&lt;#wasm_bindgen_futures::js_sys::Promise <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;::Abi&gt;
                     };
-                    <span class="kw">let </span>future = <span class="macro">quote! </span>{
+                    <span class="kw">let </span>future = <span class="macro">quote!</span> {
                         #wasm_bindgen_futures::JsFuture::from(
                             &lt;#wasm_bindgen_futures::js_sys::Promise <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;
                                 ::from_abi(#ret_ident.join())
                         ).<span class="kw">await
                     </span>};
                     convert_ret = <span class="kw">if </span><span class="self">self</span>.catch {
-                        <span class="macro">quote! </span>{ <span class="prelude-val">Ok</span>(#future<span class="question-mark">?</span>) }
+                        <span class="macro">quote!</span> { <span class="prelude-val">Ok</span>(#future<span class="question-mark">?</span>) }
                     } <span class="kw">else </span>{
-                        <span class="macro">quote! </span>{ #future.expect(<span class="string">"unexpected exception"</span>) }
+                        <span class="macro">quote!</span> { #future.expect(<span class="string">"unexpected exception"</span>) }
                     };
                 } <span class="kw">else </span>{
-                    abi_ret = <span class="macro">quote! </span>{
+                    abi_ret = <span class="macro">quote!</span> {
                         #wasm_bindgen::convert::WasmRet&lt;&lt;#ty <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;::Abi&gt;
                     };
-                    convert_ret = <span class="macro">quote! </span>{
+                    convert_ret = <span class="macro">quote!</span> {
                         &lt;#ty <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;
                             ::from_abi(#ret_ident.join())
                     };
@@ -2931,31 +2931,31 @@
             }
             <span class="prelude-val">None </span>=&gt; {
                 <span class="kw">if </span><span class="self">self</span>.function.r#async {
-                    abi_ret = <span class="macro">quote! </span>{
+                    abi_ret = <span class="macro">quote!</span> {
                         #wasm_bindgen::convert::WasmRet&lt;&lt;#wasm_bindgen_futures::js_sys::Promise <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;::Abi&gt;
                     };
-                    <span class="kw">let </span>future = <span class="macro">quote! </span>{
+                    <span class="kw">let </span>future = <span class="macro">quote!</span> {
                         #wasm_bindgen_futures::JsFuture::from(
                             &lt;#wasm_bindgen_futures::js_sys::Promise <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;
                                 ::from_abi(#ret_ident.join())
                         ).<span class="kw">await
                     </span>};
                     convert_ret = <span class="kw">if </span><span class="self">self</span>.catch {
-                        <span class="macro">quote! </span>{ #future<span class="question-mark">?</span>; <span class="prelude-val">Ok</span>(()) }
+                        <span class="macro">quote!</span> { #future<span class="question-mark">?</span>; <span class="prelude-val">Ok</span>(()) }
                     } <span class="kw">else </span>{
-                        <span class="macro">quote! </span>{ #future.expect(<span class="string">"uncaught exception"</span>); }
+                        <span class="macro">quote!</span> { #future.expect(<span class="string">"uncaught exception"</span>); }
                     };
                 } <span class="kw">else </span>{
-                    abi_ret = <span class="macro">quote! </span>{ () };
-                    convert_ret = <span class="macro">quote! </span>{ () };
+                    abi_ret = <span class="macro">quote!</span> { () };
+                    convert_ret = <span class="macro">quote!</span> { () };
                 }
             }
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>exceptional_ret = <span class="macro">quote!</span>();
         <span class="kw">if </span><span class="self">self</span>.catch &amp;&amp; !<span class="self">self</span>.function.r#async {
-            convert_ret = <span class="macro">quote! </span>{ <span class="prelude-val">Ok</span>(#convert_ret) };
-            exceptional_ret = <span class="macro">quote! </span>{
+            convert_ret = <span class="macro">quote!</span> { <span class="prelude-val">Ok</span>(#convert_ret) };
+            exceptional_ret = <span class="macro">quote!</span> {
                 #wasm_bindgen::__rt::take_last_exception()<span class="question-mark">?</span>;
             };
         }
@@ -2969,7 +2969,7 @@
 
         <span class="kw">let </span>doc_comment = <span class="kw-2">&amp;</span><span class="self">self</span>.doc_comment;
         <span class="kw">let </span>me = <span class="kw">if </span>is_method {
-            <span class="macro">quote! </span>{ <span class="kw-2">&amp;</span><span class="self">self</span>, }
+            <span class="macro">quote!</span> { <span class="kw-2">&amp;</span><span class="self">self</span>, }
         } <span class="kw">else </span>{
             <span class="macro">quote!</span>()
         };
@@ -3001,16 +3001,16 @@
         );
 
         <span class="kw">let </span>maybe_unsafe = <span class="kw">if </span><span class="self">self</span>.function.r#unsafe {
-            <span class="prelude-val">Some</span>(<span class="macro">quote! </span>{<span class="kw">unsafe</span>})
+            <span class="prelude-val">Some</span>(<span class="macro">quote!</span> {<span class="kw">unsafe</span>})
         } <span class="kw">else </span>{
             <span class="prelude-val">None
         </span>};
         <span class="kw">let </span>maybe_async = <span class="kw">if </span><span class="self">self</span>.function.r#async {
-            <span class="prelude-val">Some</span>(<span class="macro">quote! </span>{<span class="kw">async</span>})
+            <span class="prelude-val">Some</span>(<span class="macro">quote!</span> {<span class="kw">async</span>})
         } <span class="kw">else </span>{
             <span class="prelude-val">None
         </span>};
-        <span class="kw">let </span>invocation = <span class="macro">quote! </span>{
+        <span class="kw">let </span>invocation = <span class="macro">quote!</span> {
             <span class="comment">// This is due to `#[automatically_derived]` attribute cannot be
             // placed onto bare functions.
             </span><span class="attr">#[allow(nonstandard_style)]
@@ -3032,7 +3032,7 @@
         };
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(class) = class_ty {
-            (<span class="macro">quote! </span>{
+            (<span class="macro">quote!</span> {
                 <span class="attr">#[automatically_derived]
                 </span><span class="kw">impl </span>#class {
                     #invocation
@@ -3064,15 +3064,15 @@
         <span class="kw">let </span>argtys = f.function.arguments.iter().map(|arg| <span class="kw-2">&amp;</span>arg.ty);
         <span class="kw">let </span>nargs = f.function.arguments.len() <span class="kw">as </span>u32;
         <span class="kw">let </span>inform_ret = <span class="kw">match </span><span class="kw-2">&amp;</span>f.js_ret {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>t) =&gt; <span class="macro">quote! </span>{ &lt;#t <span class="kw">as </span>WasmDescribe&gt;::describe(); },
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>t) =&gt; <span class="macro">quote!</span> { &lt;#t <span class="kw">as </span>WasmDescribe&gt;::describe(); },
             <span class="comment">// async functions always return a JsValue, even if they say to return ()
-            </span><span class="prelude-val">None </span><span class="kw">if </span>f.function.r#async =&gt; <span class="macro">quote! </span>{ &lt;JsValue <span class="kw">as </span>WasmDescribe&gt;::describe(); },
-            <span class="prelude-val">None </span>=&gt; <span class="macro">quote! </span>{ &lt;() <span class="kw">as </span>WasmDescribe&gt;::describe(); },
+            </span><span class="prelude-val">None </span><span class="kw">if </span>f.function.r#async =&gt; <span class="macro">quote!</span> { &lt;JsValue <span class="kw">as </span>WasmDescribe&gt;::describe(); },
+            <span class="prelude-val">None </span>=&gt; <span class="macro">quote!</span> { &lt;() <span class="kw">as </span>WasmDescribe&gt;::describe(); },
         };
 
         Descriptor {
             ident: <span class="kw-2">&amp;</span>f.shim,
-            inner: <span class="macro">quote! </span>{
+            inner: <span class="macro">quote!</span> {
                 inform(FUNCTION);
                 inform(<span class="number">0</span>);
                 inform(#nargs);
@@ -3096,7 +3096,7 @@
         <span class="kw">let </span>hole = <span class="kw-2">&amp;</span><span class="self">self</span>.hole;
         <span class="kw">let </span>cast_clauses = <span class="self">self</span>.variants.iter().map(|variant| {
             <span class="kw">let </span>variant_name = <span class="kw-2">&amp;</span>variant.name;
-            <span class="macro">quote! </span>{
+            <span class="macro">quote!</span> {
                 <span class="kw">if </span>js == #enum_name::#variant_name <span class="kw">as </span>u32 {
                     #enum_name::#variant_name
                 }
@@ -3104,7 +3104,7 @@
         });
         <span class="kw">let </span>try_from_cast_clauses = cast_clauses.clone();
         <span class="kw">let </span>wasm_bindgen = <span class="kw-2">&amp;</span><span class="self">self</span>.wasm_bindgen;
-        (<span class="macro">quote! </span>{
+        (<span class="macro">quote!</span> {
             <span class="attr">#[automatically_derived]
             </span><span class="kw">impl </span>#wasm_bindgen::convert::IntoWasmAbi <span class="kw">for </span>#enum_name {
                 <span class="kw">type </span>Abi = u32;
@@ -3222,10 +3222,10 @@
         <span class="kw">let </span>vis = <span class="kw-2">&amp;</span><span class="self">self</span>.vis;
         <span class="kw">let </span>wasm_bindgen = <span class="kw-2">&amp;</span><span class="self">self</span>.wasm_bindgen;
 
-        <span class="kw">let </span>abi_ret = <span class="macro">quote! </span>{
+        <span class="kw">let </span>abi_ret = <span class="macro">quote!</span> {
             #wasm_bindgen::convert::WasmRet&lt;&lt;#ty <span class="kw">as </span>#wasm_bindgen::convert::FromWasmAbi&gt;::Abi&gt;
         };
-        (<span class="macro">quote! </span>{
+        (<span class="macro">quote!</span> {
             <span class="attr">#[automatically_derived]
             </span>#vis <span class="kw">static </span>#name: #wasm_bindgen::JsStatic&lt;#ty&gt; = {
                 <span class="kw">fn </span>init() -&gt; #ty {
@@ -3254,7 +3254,7 @@
 
         Descriptor {
             ident: shim_name,
-            inner: <span class="macro">quote! </span>{
+            inner: <span class="macro">quote!</span> {
                 &lt;#ty <span class="kw">as </span>WasmDescribe&gt;::describe();
             },
             attrs: <span class="macro">vec!</span>[],
@@ -3299,7 +3299,7 @@
         <span class="kw">let </span>inner = <span class="kw-2">&amp;</span><span class="self">self</span>.inner;
         <span class="kw">let </span>attrs = <span class="kw-2">&amp;</span><span class="self">self</span>.attrs;
         <span class="kw">let </span>wasm_bindgen = <span class="kw-2">&amp;</span><span class="self">self</span>.wasm_bindgen;
-        (<span class="macro">quote! </span>{
+        (<span class="macro">quote!</span> {
             <span class="attr">#[cfg(all(target_arch = <span class="string">"wasm32"</span>, not(any(target_os = <span class="string">"emscripten"</span>, target_os = <span class="string">"wasi"</span>))))]
             #[automatically_derived]
             </span><span class="kw">const _</span>: () = {
@@ -3325,7 +3325,7 @@
     abi_argument_names: <span class="kw-2">&amp;</span>[Ident],
     abi_ret: TokenStream,
 ) -&gt; TokenStream {
-    <span class="macro">quote! </span>{
+    <span class="macro">quote!</span> {
         <span class="attr">#[cfg(all(target_arch = <span class="string">"wasm32"</span>, not(any(target_os = <span class="string">"emscripten"</span>, target_os = <span class="string">"wasi"</span>))))]
         </span>#(#attrs)*
         <span class="attr">#[link(wasm_import_module = <span class="string">"__wbindgen_placeholder__"</span>)]
@@ -3361,7 +3361,7 @@
     <span class="kw">for </span>n <span class="kw">in </span><span class="number">1</span>..=<span class="number">4 </span>{
         <span class="kw">let </span>arg_name = <span class="macro">format_ident!</span>(<span class="string">"{name}_{n}"</span>);
         <span class="kw">let </span>prim_name = <span class="macro">format_ident!</span>(<span class="string">"Prim{n}"</span>);
-        args.push(<span class="macro">quote! </span>{
+        args.push(<span class="macro">quote!</span> {
             #arg_name: &lt;#abi <span class="kw">as </span>#wasm_bindgen::convert::WasmAbi&gt;::#prim_name
         });
         names.push(arg_name);
