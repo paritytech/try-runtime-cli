@@ -41,7 +41,7 @@ use sp_weights::Weight;
 use crate::shared_parameters::SharedParams;
 
 pub mod commands;
-pub mod inherent_provider;
+mod inherents;
 mod misc;
 mod parse;
 pub mod shared_parameters;

@@ -300,7 +300,11 @@
 use std::env;
 
 use clap::Parser;
-use node_primitives::Block;
+use sp_runtime::{
+    generic::{Block, Header},
+    traits::BlakeTwo256,
+    OpaqueExtrinsic,
+};
 use try_runtime_core::commands::TryRuntime;
 
 fn init_env() {
@@ -315,7 +319,7 @@ async fn main() {
     init_env();
 
     let cmd = TryRuntime::parse();
-    cmd.run::<Block, sp_io::SubstrateHostFunctions>()
+    cmd.run::<Block<Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sp_io::SubstrateHostFunctions>()
         .await
         .unwrap();
 }
