@@ -16,7 +16,7 @@
 // limitations under the License.
 
 use std::{fmt::Debug, str::FromStr};
-use crate::inherents::providers::pre_apply_inherents;
+
 use parity_scale_codec::{Decode, Encode};
 use sc_cli::Result;
 use sc_executor::{sp_wasm_interface::HostFunctions, WasmExecutor};
@@ -31,7 +31,10 @@ use sp_state_machine::TestExternalities;
 
 use crate::{
     build_executor, full_extensions,
-    inherents::providers::{ChainVariant, InherentProvider},
+    inherents::{
+        pre_apply::pre_apply_inherents,
+        providers::{InherentProvider, ProviderVariant},
+    },
     state::{RuntimeChecks, State},
     state_machine_call, state_machine_call_with_proof, BlockT, SharedParams,
 };
@@ -44,8 +47,8 @@ pub struct Command {
     pub n_blocks: u64,
 
     /// ChainVariant
-    #[arg(long)]
-    pub chain: ChainVariant,
+    #[arg(long, default_value = "smart")]
+    pub provider_variant: ProviderVariant,
 
     /// Which try-state targets to execute when running this command.
     ///
@@ -117,7 +120,7 @@ async fn produce_next_block<Block: BlockT, HostFns: HostFunctions>(
     externalities: &mut TestExternalities<HashingFor<Block>>,
     executor: &WasmExecutor<HostFns>,
     parent_header: Block::Header,
-    chain: ChainVariant,
+    chain: ProviderVariant,
     previous_block_building_info: Option<(InherentData, Digest)>,
 ) -> Result<(Block, Option<(InherentData, Digest)>)>
 where
@@ -128,14 +131,14 @@ where
     <NumberFor<Block> as FromStr>::Err: Debug,
 {
     let (inherent_data_provider, pre_digest) =
-        <ChainVariant as InherentProvider<Block>>::get_inherent_providers_and_pre_digest(
+        <ProviderVariant as InherentProvider<Block>>::get_inherent_providers_and_pre_digest(
             &chain,
             previous_block_building_info,
             parent_header.clone(),
             externalities,
         )?;
 
-    pre_apply_inherents::<Block>(chain, externalities);
+    pre_apply_inherents::<Block>(externalities);
     let inherent_data = inherent_data_provider
         .create_inherent_data()
         .await
@@ -248,7 +251,7 @@ where
             &mut inner_ext,
             &executor,
             parent_header.clone(),
-            command.chain,
+            command.provider_variant,
             parent_block_building_info,
         )
         .await?;
@@ -258,7 +261,7 @@ where
         // And now we restore previous state.
         inner_ext.backend = backend;
 
-        pre_apply_inherents::<Block>(command.chain, &mut inner_ext);
+        pre_apply_inherents::<Block>(&mut inner_ext);
         let state_root_check = true;
         let signature_check = true;
         let payload = (
