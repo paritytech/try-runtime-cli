@@ -16,7 +16,7 @@
 // limitations under the License.
 
 use std::{fmt::Debug, str::FromStr};
-
+use crate::inherents::providers::pre_apply_inherents;
 use parity_scale_codec::{Decode, Encode};
 use sc_cli::Result;
 use sc_executor::{sp_wasm_interface::HostFunctions, WasmExecutor};
@@ -31,7 +31,7 @@ use sp_state_machine::TestExternalities;
 
 use crate::{
     build_executor, full_extensions,
-    inherents::providers::{pre_apply_inherents, ChainVariant, InherentProvider},
+    inherents::providers::{ChainVariant, InherentProvider},
     state::{RuntimeChecks, State},
     state_machine_call, state_machine_call_with_proof, BlockT, SharedParams,
 };

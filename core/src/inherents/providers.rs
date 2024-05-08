@@ -20,8 +20,7 @@ use std::{str::FromStr, time::Duration};
 
 use cumulus_primitives_parachain_inherent::MessageQueueChain;
 use itertools::Itertools;
-use parity_scale_codec::{Decode, Encode};
-use polkadot_primitives::BlockNumber;
+use parity_scale_codec::Encode;
 use sp_consensus_aura::{Slot, SlotDuration, AURA_ENGINE_ID};
 use sp_consensus_babe::{
     digests::{PreDigest, SecondaryPlainPreDigest},
@@ -30,7 +29,7 @@ use sp_consensus_babe::{
 use sp_core::{twox_128, H256};
 use sp_inherents::InherentData;
 use sp_runtime::{
-    traits::{Block as BlockT, HashingFor, NumberFor},
+    traits::{Block as BlockT, HashingFor},
     Digest, DigestItem,
 };
 use sp_state_machine::TestExternalities;
@@ -38,6 +37,8 @@ use sp_std::prelude::*;
 use sp_timestamp::TimestampInherentData;
 use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter};
+
+use crate::inherents::custom_idps;
 
 /// Trait for providing the inherent data and digest items for block construction.
 pub trait InherentProvider<B: BlockT> {
@@ -117,7 +118,10 @@ impl FromStr for ChainVariant {
     }
 }
 
-impl<B: BlockT> InherentProvider<B> for ChainVariant {
+impl<B: BlockT> InherentProvider<B> for ChainVariant
+where
+    H256: From<<B as BlockT>::Hash>,
+{
     type Err = String;
 
     fn get_inherent_providers_and_pre_digest(
@@ -149,73 +153,41 @@ struct SystemParachainInherentProvider {
     blocktime: Duration,
 }
 
-impl<B: BlockT> InherentProvider<B> for SystemParachainInherentProvider {
+impl<B: BlockT> InherentProvider<B> for SystemParachainInherentProvider
+where
+    B::Hash: Into<H256>,
+{
     type Err = String;
 
     fn get_inherent_providers_and_pre_digest(
         &self,
         maybe_parent_info: Option<(InherentData, Digest)>,
-        _parent_header: B::Header,
+        parent_header: B::Header,
         ext: &mut TestExternalities<HashingFor<B>>,
     ) -> Result<(Box<dyn sp_inherents::InherentDataProvider>, Vec<DigestItem>), Self::Err> {
         let blocktime_millis = self.blocktime.as_millis() as u64;
 
-        let relay_parent_number_key = [
-            twox_128(b"ParachainSystem"),
-            twox_128(b"LastRelayChainBlockNumber"),
-        ]
-        .concat();
-
-        let relay_last_block_number: BlockNumber = match ext
-            .execute_with(|| sp_io::storage::get(&relay_parent_number_key))
-            .map(|b| -> std::option::Option<NumberFor<B>> { Decode::decode(&mut &b[..]).ok() })
-            .unwrap()
-            .expect("Parachain must provide last relay chain block number")
-            .try_into()
-        {
-            Ok(block_number) => block_number,
-            Err(_) => {
-                panic!("Failed to convert relay chain block number")
-            }
+        let timestamp_idp = custom_idps::timestamp::InherentDataProvider {
+            blocktime_millis,
+            maybe_parent_info,
         };
 
-        let timestamp_idp = match maybe_parent_info {
-            Some((inherent_data, _)) => sp_timestamp::InherentDataProvider::new(
-                inherent_data.timestamp_inherent_data().unwrap().unwrap() + blocktime_millis,
-            ),
-            None => sp_timestamp::InherentDataProvider::from_system_time(),
+        let para_parachain_idp = custom_idps::para_parachain::InherentDataProvider::<B> {
+            blocktime_millis,
+            parent_header,
+            timestamp: timestamp_idp.timestamp(),
+            para_id: custom_idps::para_parachain::get_para_id::<B>(ext),
+            last_relay_chain_block_number:
+                custom_idps::para_parachain::get_last_relay_chain_block_number::<B>(ext),
         };
 
-        let relay_chain_slot = cumulus_primitives_core::relay_chain::Slot::from_timestamp(
+        let slot = Slot::from_timestamp(
             timestamp_idp.timestamp(),
             SlotDuration::from_millis(blocktime_millis),
-        )
-        .encode();
-
-        // Insert relay chain slot to pass Aura check
-        // https://github.com/paritytech/polkadot-sdk/blob/ef114a422291b44f8973739ab7858a29a523e6a2/cumulus/pallets/aura-ext/src/consensus_hook.rs#L69
-        let additional_key_values: Vec<(Vec<u8>, Vec<u8>)> = vec![(
-            cumulus_primitives_core::relay_chain::well_known_keys::CURRENT_SLOT.to_vec(),
-            relay_chain_slot,
-        )];
-        let parachain_inherent_idp =
-            cumulus_client_parachain_inherent::MockValidationDataInherentDataProvider {
-                current_para_block: Default::default(),
-                relay_offset: relay_last_block_number,
-                relay_blocks_per_para_block: Default::default(),
-                para_blocks_per_relay_epoch: Default::default(),
-                relay_randomness_config: (),
-                xcm_config: cumulus_client_parachain_inherent::MockXcmConfig::default(),
-                raw_downward_messages: Default::default(),
-                raw_horizontal_messages: Default::default(),
-                additional_key_values: Some(additional_key_values),
-            };
-
-        let slot =
-            Slot::from_timestamp(*timestamp_idp, SlotDuration::from_millis(blocktime_millis));
+        );
         let digest = vec![DigestItem::PreRuntime(AURA_ENGINE_ID, slot.encode())];
 
-        Ok((Box::new((timestamp_idp, parachain_inherent_idp)), digest))
+        Ok((Box::new((timestamp_idp, para_parachain_idp)), digest))
     }
 }
 
@@ -234,20 +206,19 @@ impl<B: BlockT> InherentProvider<B> for RelayChainInherentProvider {
     ) -> Result<(Box<dyn sp_inherents::InherentDataProvider>, Vec<DigestItem>), Self::Err> {
         let blocktime_millis = self.blocktime.as_millis() as u64;
 
-        let timestamp_idp = match maybe_parent_info.clone() {
-            Some((inherent_data, _)) => sp_timestamp::InherentDataProvider::new(
-                inherent_data.timestamp_inherent_data().unwrap().unwrap() + blocktime_millis,
-            ),
-            None => sp_timestamp::InherentDataProvider::from_system_time(),
+        let timestamp_idp = crate::inherents::custom_idps::timestamp::InherentDataProvider {
+            blocktime_millis,
+            maybe_parent_info,
         };
 
-        let slot =
-            Slot::from_timestamp(*timestamp_idp, SlotDuration::from_millis(blocktime_millis));
+        let slot = Slot::from_timestamp(
+            timestamp_idp.timestamp(),
+            SlotDuration::from_millis(blocktime_millis),
+        );
         let slot_idp = sp_consensus_babe::inherents::InherentDataProvider::new(slot);
 
-        log::info!("Producing block with parent {:?}", parent_header);
-        let parachain_data_idp =
-            crate::inherents::custom_idps::ParaInherentDataProvider::<B>::new(parent_header);
+        let relay_parachain_data_idp =
+            custom_idps::relay_parachains::InherentDataProvider::<B>::new(parent_header);
 
         let digest = vec![DigestItem::PreRuntime(
             BABE_ENGINE_ID,
@@ -259,7 +230,7 @@ impl<B: BlockT> InherentProvider<B> for RelayChainInherentProvider {
         )];
 
         Ok((
-            Box::new((slot_idp, timestamp_idp, parachain_data_idp)),
+            Box::new((slot_idp, timestamp_idp, relay_parachain_data_idp)),
             digest,
         ))
     }

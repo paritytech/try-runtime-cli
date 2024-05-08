@@ -15,38 +15,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Custom InherentDataProviders.
-//!
-//! Useful to create custom inherent data providers for testing, when the one provided by
-//! Substrate is unnecessarily too complex for try-runtime-cli purposes.
+//! Relay chain parachains inherent.
 
 use sp_inherents::InherentIdentifier;
 use sp_runtime::traits::Block as BlockT;
 
-pub struct ParaInherentDataProvider<B: BlockT> {
+pub struct InherentDataProvider<B: BlockT> {
     parent_header: B::Header,
 }
 
-impl<B: BlockT> ParaInherentDataProvider<B> {
+impl<B: BlockT> InherentDataProvider<B> {
     pub fn new(parent_header: B::Header) -> Self {
         Self { parent_header }
     }
 }
 
-/// Auxiliary trait to extract para inherent data.
-pub trait ParaInherentData<B: BlockT> {
-    /// Get para inherent data.
-    fn para_inherent_data(&self) -> Result<Option<B::Header>, sp_inherents::Error>;
-}
-
-impl<B: BlockT> ParaInherentData<B> for sp_inherents::InherentData {
-    fn para_inherent_data(&self) -> Result<Option<B::Header>, sp_inherents::Error> {
-        self.get_data(&polkadot_primitives::PARACHAINS_INHERENT_IDENTIFIER)
-    }
-}
-
 #[async_trait::async_trait]
-impl<B: BlockT> sp_inherents::InherentDataProvider for ParaInherentDataProvider<B> {
+impl<B: BlockT> sp_inherents::InherentDataProvider for InherentDataProvider<B> {
     async fn provide_inherent_data(
         &self,
         inherent_data: &mut sp_inherents::InherentData,
