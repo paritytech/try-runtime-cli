@@ -18,7 +18,6 @@
 
 use std::{str::FromStr, time::Duration};
 
-use cumulus_primitives_parachain_inherent::MessageQueueChain;
 use itertools::Itertools;
 use parity_scale_codec::Encode;
 use sp_consensus_aura::{Slot, SlotDuration, AURA_ENGINE_ID};
@@ -26,7 +25,6 @@ use sp_consensus_babe::{
     digests::{PreDigest, SecondaryPlainPreDigest},
     BABE_ENGINE_ID,
 };
-use sp_core::{twox_128, H256};
 use sp_inherents::InherentData;
 use sp_runtime::{
     traits::{Block as BlockT, HashingFor},
@@ -34,7 +32,6 @@ use sp_runtime::{
 };
 use sp_state_machine::TestExternalities;
 use sp_std::prelude::*;
-use sp_timestamp::TimestampInherentData;
 use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter};
 
@@ -108,6 +105,14 @@ impl<B: BlockT> InherentProvider<B> for ProviderVariant {
     }
 }
 
+/// Attempts to provide inherents in a fashion that works for as many chains as possible.
+///
+/// It is currently tested for
+/// - Polkadot-based relay chains
+/// - Polkadot-ecosystem system parachains
+///
+/// If it does not work for your Substrate-based chain, [please open an issue](https://github.com/paritytech/try-runtime-cli/issues)
+/// and we will look into supporting it.
 struct SmartInherentProvider {
     blocktime: Duration,
 }

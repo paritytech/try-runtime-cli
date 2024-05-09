@@ -1,3 +1,23 @@
+// This file is partmilliles of Substrate.
+
+// Copyright (C) Parity Technologies (UK) Ltd.
+// SPDX-License-Identifier: Apache-2.0
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// 	http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+//! Inherent data provider for the [cumulus parachin inherents](https://github.com/paritytech/polkadot-sdk/blob/master/cumulus/primitives/parachain-inherent/src/lib.rs)
+//! for empty block production on top of an existing externalities.
+
 use parity_scale_codec::{Decode, Encode};
 use polkadot_primitives::{BlockNumber, HeadData};
 use sp_consensus_babe::SlotDuration;
@@ -5,14 +25,6 @@ use sp_core::twox_128;
 use sp_inherents::InherentIdentifier;
 use sp_runtime::traits::{Block as BlockT, HashingFor, NumberFor};
 use sp_state_machine::TestExternalities;
-
-pub fn is_parachain<B: BlockT>(ext: &mut TestExternalities<HashingFor<B>>) -> bool {
-    let para_id_key = [twox_128(b"ParachainInfo"), twox_128(b"ParachainId")].concat();
-
-    ext.execute_with(|| sp_io::storage::get(&para_id_key))
-        .map(|b| -> Option<u32> { Decode::decode(&mut &b[..]).ok() })
-        .is_some()
-}
 
 /// ext cannot be part of the InherentDataProvider (thread safety), so we need to make storage
 /// queries seperately

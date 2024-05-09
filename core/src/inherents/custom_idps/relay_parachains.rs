@@ -15,7 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Relay chain parachains inherent.
+//! Inherent data provider for the [polkadot parachins inherent](https://github.com/paritytech/polkadot-sdk/blob/master/polkadot/primitives/src/v7/mod.rs)
+//! for empty block production on top of an existing externalities.
 
 use sp_inherents::InherentIdentifier;
 use sp_runtime::traits::Block as BlockT;
