@@ -37,11 +37,9 @@ impl InherentDataProvider {
                     .unwrap()
                     + self.blocktime_millis,
             )
-            .timestamp()
-            .into(),
+            .timestamp(),
             None => sp_timestamp::InherentDataProvider::from_system_time()
-                .timestamp()
-                .into(),
+                .timestamp(),
         }
     }
 }

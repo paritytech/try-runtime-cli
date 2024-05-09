@@ -32,8 +32,7 @@ pub fn get_para_id<B: BlockT>(ext: &mut TestExternalities<HashingFor<B>>) -> Opt
     let para_id_key = [twox_128(b"ParachainInfo"), twox_128(b"ParachainId")].concat();
 
     ext.execute_with(|| sp_io::storage::get(&para_id_key))
-        .map(|b| -> Option<u32> { Decode::decode(&mut &b[..]).ok() })
-        .flatten()
+        .and_then(|b| -> Option<u32> { Decode::decode(&mut &b[..]).ok() })
 }
 
 /// ext cannot be part of the InherentDataProvider (thread safety), so we need to make storage
@@ -48,8 +47,7 @@ pub fn get_last_relay_chain_block_number<B: BlockT>(
     .concat();
 
     ext.execute_with(|| sp_io::storage::get(&last_relay_chain_block_number_key))
-        .map(|b| -> Option<NumberFor<B>> { Decode::decode(&mut &b[..]).ok() })
-        .flatten()
+        .and_then(|b| -> Option<NumberFor<B>> { Decode::decode(&mut &b[..]).ok() })
         .map(|n| match n.try_into() {
             Ok(block_number) => block_number,
             Err(_) => {
