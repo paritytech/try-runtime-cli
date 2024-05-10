@@ -23,7 +23,7 @@ use sc_cli::{
 };
 use sp_runtime::StateVersion;
 
-use crate::parse;
+use crate::common::parse;
 
 /// Shared parameters of the `try-runtime` commands
 #[derive(Debug, Clone, clap::Parser)]

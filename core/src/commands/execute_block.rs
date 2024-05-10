@@ -58,7 +58,7 @@ pub struct Command {
     /// If `state` is `Live`, this can be ignored and the same uri is used for both.
     #[arg(
 		long,
-		value_parser = crate::parse::url
+		value_parser = crate::common::parse::url
 	)]
     pub block_ws_uri: Option<String>,
 

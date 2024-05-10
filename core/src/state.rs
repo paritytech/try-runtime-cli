@@ -33,8 +33,11 @@ use sp_runtime::{
 use substrate_rpc_client::{ws_client, ChainApi};
 
 use crate::{
-    common::shared_parameters::{Runtime, SharedParams},
-    ensure_try_runtime, hash_of, parse, rpc_err_handler, LOG_TARGET,
+    common::{
+        parse,
+        shared_parameters::{Runtime, SharedParams},
+    },
+    ensure_try_runtime, hash_of, rpc_err_handler, LOG_TARGET,
 };
 
 /// A `Live` variant for [`State`]
