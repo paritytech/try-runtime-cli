@@ -27,7 +27,8 @@ use sp_runtime::traits::{Block as BlockT, HashingFor, NumberFor};
 use sp_state_machine::{CompactProof, OverlayedChanges, StorageProof};
 
 use crate::{
-    build_executor, misc,
+    build_executor,
+    common::misc_logging,
     state::{RuntimeChecks, State},
     state_machine_call_with_proof, RefTimeInfo, SharedParams, LOG_TARGET,
 };
@@ -106,7 +107,7 @@ where
     }
 
     // Run `TryRuntime_on_runtime_upgrade` with the given checks.
-    misc::basti_log(
+    misc_logging::basti_log(
         Level::Info,
         format!(
             "🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}",
@@ -114,6 +115,7 @@ where
         )
         .as_str(),
     );
+
     // Save the overlayed changes from the first run, so we can use them later for idempotency
     // checks.
     let mut overlayed_changes = Default::default();
@@ -135,7 +137,7 @@ where
     let (proof, ref_time_results) = match command.checks {
         UpgradeCheckSelect::None => (proof, ref_time_results),
         _ => {
-            misc::basti_log(
+            misc_logging::basti_log(
                 Level::Info,
                 "🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements.",
             );
@@ -160,7 +162,7 @@ where
             true
         }
         false => {
-            misc::basti_log(
+            misc_logging::basti_log(
                 Level::Info,
                 format!(
                     "🔬 Running TryRuntime_on_runtime_upgrade again to check idempotency: {:?}",
@@ -244,7 +246,7 @@ where
     };
 
     if !weight_ok || !idempotency_ok {
-        misc::basti_log(
+        misc_logging::basti_log(
             Level::Error,
             "❌ Issues detected, exiting non-zero. See logs.",
         );
