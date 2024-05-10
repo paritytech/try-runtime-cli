@@ -34,7 +34,6 @@ use sp_weights::Weight;
 
 pub mod commands;
 pub mod common;
-mod inherents;
 
 pub(crate) const LOG_TARGET: &str = "try-runtime::cli";
 

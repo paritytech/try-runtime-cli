@@ -30,15 +30,16 @@ use sp_runtime::{
 use sp_state_machine::TestExternalities;
 
 use crate::{
-    common::state::{
-        build_executor, state_machine_call, state_machine_call_with_proof, RuntimeChecks, State,
+    common::{
+        empty_block_creation::inherents::{
+            pre_apply::pre_apply_inherents,
+            providers::{InherentProvider, ProviderVariant},
+        },
+        state::{
+            build_executor, state_machine_call, state_machine_call_with_proof, RuntimeChecks, State,
+        },
     },
-    full_extensions,
-    inherents::{
-        pre_apply::pre_apply_inherents,
-        providers::{InherentProvider, ProviderVariant},
-    },
-    BlockT, SharedParams,
+    full_extensions, BlockT, SharedParams,
 };
 
 /// Configuration for [`run`].
