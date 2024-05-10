@@ -24,7 +24,7 @@ use sp_runtime::{
     DeserializeOwned,
 };
 
-use crate::shared_parameters::SharedParams;
+use crate::common::shared_parameters::SharedParams;
 
 pub mod create_snapshot;
 pub mod execute_block;

@@ -17,6 +17,7 @@
 
 use std::{fmt::Debug, path::PathBuf, str::FromStr, time::Duration};
 
+use common::shared_parameters::SharedParams;
 use parity_scale_codec::{Decode, DecodeAll};
 use sc_cli::{execution_method_from_cli, RuntimeVersion};
 use sc_executor::{
@@ -38,13 +39,11 @@ use sp_state_machine::{
 };
 use sp_weights::Weight;
 
-use crate::shared_parameters::SharedParams;
-
 pub mod commands;
+pub mod common;
 mod inherents;
 mod misc;
 mod parse;
-pub mod shared_parameters;
 pub mod state;
 
 pub(crate) const LOG_TARGET: &str = "try-runtime::cli";
