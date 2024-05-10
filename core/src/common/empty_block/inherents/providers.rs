@@ -35,7 +35,7 @@ use sp_std::prelude::*;
 use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter};
 
-use crate::common::empty_block_creation::inherents::custom_idps;
+use crate::common::empty_block::inherents::custom_idps;
 
 /// Trait for providing the inherent data and digest items for block construction.
 pub trait InherentProvider<B: BlockT> {
