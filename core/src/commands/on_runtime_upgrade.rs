@@ -27,10 +27,11 @@ use sp_runtime::traits::{Block as BlockT, HashingFor, NumberFor};
 use sp_state_machine::{CompactProof, OverlayedChanges, StorageProof};
 
 use crate::{
-    build_executor,
-    common::misc_logging,
-    state::{RuntimeChecks, State},
-    state_machine_call_with_proof, RefTimeInfo, SharedParams, LOG_TARGET,
+    common::{
+        misc_logging,
+        state::{build_executor, state_machine_call_with_proof, RuntimeChecks, State},
+    },
+    RefTimeInfo, SharedParams, LOG_TARGET,
 };
 
 /// Configuration for [`run`].

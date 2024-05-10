@@ -22,9 +22,10 @@ use sp_runtime::traits::{Block as BlockT, NumberFor};
 use substrate_rpc_client::{ws_client, StateApi};
 
 use crate::{
-    build_executor,
-    common::shared_parameters,
-    state::{LiveState, RuntimeChecks, State},
+    common::{
+        shared_parameters,
+        state::{build_executor, LiveState, RuntimeChecks, State},
+    },
     SharedParams, LOG_TARGET,
 };
 

@@ -26,9 +26,10 @@ use sp_runtime::{
 use substrate_rpc_client::{ws_client, ChainApi};
 
 use crate::{
-    build_executor, full_extensions, rpc_err_handler,
-    state::{LiveState, RuntimeChecks, State},
-    state_machine_call_with_proof, SharedParams, LOG_TARGET,
+    common::state::{
+        build_executor, state_machine_call_with_proof, LiveState, RuntimeChecks, State,
+    },
+    full_extensions, rpc_err_handler, SharedParams, LOG_TARGET,
 };
 
 /// Configurations for [`run`].
