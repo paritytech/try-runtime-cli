@@ -43,7 +43,7 @@ where
 
     let (next_block, new_block_building_info) = produce_next_block::<Block, HostFns>(
         ext,
-        &executor,
+        executor,
         parent_header.clone(),
         provider_variant,
         previous_block_building_info,
@@ -65,7 +65,7 @@ where
         try_state,
     )
         .encode();
-    call::<Block, _>(ext, &executor, "TryRuntime_execute_block", &payload).await?;
+    call::<Block, _>(ext, executor, "TryRuntime_execute_block", &payload).await?;
 
     log::info!("Executed the new block");
 
