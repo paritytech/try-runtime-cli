@@ -17,29 +17,19 @@
 
 use std::{fmt::Debug, str::FromStr};
 
-use parity_scale_codec::{Encode};
+use parity_scale_codec::Encode;
 use sc_cli::Result;
-use sc_executor::{sp_wasm_interface::HostFunctions};
+use sc_executor::sp_wasm_interface::HostFunctions;
 use serde::de::DeserializeOwned;
 use sp_core::H256;
-
-use sp_runtime::{
-    traits::{NumberFor},
-};
-
+use sp_runtime::traits::NumberFor;
 
 use crate::{
     common::{
-        empty_block::{
-            inherents::{
-                providers::{ProviderVariant},
-            },
-            production::execute_next_block,
-        },
-        state::{
-            build_executor, state_machine_call_with_proof, RuntimeChecks, State,
-        },
-    }, BlockT, SharedParams,
+        empty_block::{inherents::providers::ProviderVariant, production::execute_next_block},
+        state::{build_executor, state_machine_call_with_proof, RuntimeChecks, State},
+    },
+    BlockT, SharedParams,
 };
 
 /// Configuration for [`run`].

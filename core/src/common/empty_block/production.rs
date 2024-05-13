@@ -50,7 +50,10 @@ where
     )
     .await?;
 
-    log::info!("Produced a new block ({})", array_bytes::bytes2hex("0x", next_block.header().hash()));
+    log::info!(
+        "Produced a new block ({})",
+        array_bytes::bytes2hex("0x", next_block.header().hash())
+    );
 
     // And now we restore previous state.
     ext.backend = backend;
