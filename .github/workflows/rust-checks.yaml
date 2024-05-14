@@ -13,14 +13,14 @@ concurrency:
 env:
   RUST_BACKTRACE: 1
   # pin nightly to avoid constantly throwing out cache
-  TOOLCHAIN_LINT: nightly-2024-04-09
+  TOOLCHAIN_FMT: nightly-2024-04-09
 
 jobs:
   doc:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Rust ${{ env.TOOLCHAIN_LINT }}
+      - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
@@ -34,21 +34,35 @@ jobs:
       - name: cargo doc
         run: RUSTFLAGS="-D warnings" cargo doc --locked
 
-  lint:
+  fmt:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Rust ${{ env.TOOLCHAIN_LINT }}
+      - name: Install Rust ${{ env.TOOLCHAIN_FMT }}
         uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: ${{ env.TOOLCHAIN_LINT }}
+          toolchain: ${{ env.TOOLCHAIN_FMT }}
           targets: wasm32-unknown-unknown
           components: rustfmt, clippy, rust-src
       - uses: Swatinem/rust-cache@v2
         with:
-          key: lint-v0
+          key: fmt-v0
       - name: cargo fmt
-        run: cargo +${{ env.TOOLCHAIN_LINT }} fmt --all -- --check
+        run: cargo +${{ env.TOOLCHAIN_FMT }} fmt --all -- --check
+
+  clippy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+          components: rustfmt, clippy, rust-src
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: clippy-v0
       - name: Install deps for musl build
         run: |
           sudo apt-get update
@@ -57,7 +71,7 @@ jobs:
       - name: cargo clippy
         uses: actions-rs-plus/clippy-check@v2
         with:
-          toolchain: ${{ env.TOOLCHAIN_LINT }}
+          toolchain: stable
           args: --all-targets --all-features --locked --no-deps -- --deny warnings
 
   test:
