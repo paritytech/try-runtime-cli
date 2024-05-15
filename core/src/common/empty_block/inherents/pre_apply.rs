@@ -21,7 +21,7 @@ use sp_core::{twox_128, H256};
 use sp_runtime::traits::{Block as BlockT, HashingFor};
 use sp_state_machine::TestExternalities;
 
-/// Some operations must be to performed prior to inherents being applied.
+/// Some operations must be performed prior to inherents being applied.
 ///
 /// This fn sets the last dmq mcq head value to zero to pass [this check](https://github.com/paritytech/polkadot-sdk/blob/ef114a422291b44f8973739ab7858a29a523e6a2/cumulus/pallets/parachain-system/src/lib.rs#L1162)
 ///
