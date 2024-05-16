@@ -1,4 +1,8 @@
-use std::str::FromStr;
+use std::{
+    ops::DerefMut,
+    str::FromStr,
+    sync::{Arc, Mutex},
+};
 
 use parity_scale_codec::{Decode, Encode};
 use sc_cli::Result;
@@ -19,7 +23,7 @@ use crate::{
 };
 
 pub async fn execute_next_block<Block: BlockT, HostFns: HostFunctions>(
-    ext: &mut TestExternalities<HashingFor<Block>>,
+    ext: Arc<Mutex<TestExternalities<HashingFor<Block>>>>,
     executor: &WasmExecutor<HostFns>,
     previous_block_building_info: Option<(InherentData, Digest)>,
     parent_header: Block::Header,
@@ -34,7 +38,7 @@ where
     <NumberFor<Block> as FromStr>::Err: Debug,
 {
     // We are saving state before we overwrite it while producing new block.
-    let backend = ext.as_backend();
+    let backend = ext.lock().unwrap().deref_mut().as_backend();
 
     log::info!(
         "Producing new empty block at height {:?}",
@@ -42,7 +46,7 @@ where
     );
 
     let (next_block, new_block_building_info) = produce_next_block::<Block, HostFns>(
-        ext,
+        ext.clone(),
         executor,
         parent_header.clone(),
         provider_variant,
@@ -56,9 +60,9 @@ where
     );
 
     // And now we restore previous state.
-    ext.backend = backend;
+    ext.lock().unwrap().deref_mut().backend = backend;
 
-    pre_apply_inherents::<Block>(ext);
+    pre_apply_inherents::<Block>(ext.lock().unwrap().deref_mut());
     let state_root_check = true;
     let signature_check = true;
     let payload = (
@@ -68,7 +72,13 @@ where
         try_state,
     )
         .encode();
-    call::<Block, _>(ext, executor, "TryRuntime_execute_block", &payload).await?;
+    call::<Block, _>(
+        ext.lock().unwrap().deref_mut(),
+        executor,
+        "TryRuntime_execute_block",
+        &payload,
+    )
+    .await?;
 
     log::info!("Executed the new block");
 
@@ -77,7 +87,7 @@ where
 
 /// Produces next block containing only inherents.
 pub async fn produce_next_block<Block: BlockT, HostFns: HostFunctions>(
-    externalities: &mut TestExternalities<HashingFor<Block>>,
+    externalities: Arc<Mutex<TestExternalities<HashingFor<Block>>>>,
     executor: &WasmExecutor<HostFns>,
     parent_header: Block::Header,
     chain: ProviderVariant,
@@ -95,10 +105,10 @@ where
             &chain,
             previous_block_building_info,
             parent_header.clone(),
-            externalities,
+            externalities.clone(),
         )?;
 
-    pre_apply_inherents::<Block>(externalities);
+    pre_apply_inherents::<Block>(externalities.clone().lock().unwrap().deref_mut());
     let inherent_data = inherent_data_provider
         .create_inherent_data()
         .await
@@ -114,7 +124,7 @@ where
     );
 
     call::<Block, _>(
-        externalities,
+        externalities.lock().unwrap().deref_mut(),
         executor,
         "Core_initialize_block",
         &header.encode(),
@@ -122,7 +132,7 @@ where
     .await?;
 
     let extrinsics = dry_call::<Vec<Block::Extrinsic>, Block, _>(
-        externalities,
+        externalities.lock().unwrap().deref_mut(),
         executor,
         "BlockBuilder_inherent_extrinsics",
         &inherent_data.encode(),
@@ -130,7 +140,7 @@ where
 
     for xt in &extrinsics {
         call::<Block, _>(
-            externalities,
+            externalities.lock().unwrap().deref_mut(),
             executor,
             "BlockBuilder_apply_extrinsic",
             &xt.encode(),
@@ -139,14 +149,14 @@ where
     }
 
     let header = dry_call::<Block::Header, Block, _>(
-        externalities,
+        externalities.lock().unwrap().deref_mut(),
         executor,
         "BlockBuilder_finalize_block",
         &[0u8; 0],
     )?;
 
     call::<Block, _>(
-        externalities,
+        externalities.lock().unwrap().deref_mut(),
         executor,
         "BlockBuilder_finalize_block",
         &[0u8; 0],

@@ -16,7 +16,11 @@
 // limitations under the License.
 //! TODO: Docs
 
-use std::{str::FromStr, time::Duration};
+use std::{
+    str::FromStr,
+    sync::{Arc, Mutex},
+    time::Duration,
+};
 
 use itertools::Itertools;
 use parity_scale_codec::Encode;
@@ -45,7 +49,7 @@ pub trait InherentProvider<B: BlockT> {
         &self,
         maybe_parent_info: Option<(InherentData, Digest)>,
         parent_header: B::Header,
-        ext: &mut TestExternalities<HashingFor<B>>,
+        ext: Arc<Mutex<TestExternalities<HashingFor<B>>>>,
     ) -> InherentProviderResult<Self::Err>;
 }
 
@@ -93,7 +97,7 @@ impl<B: BlockT> InherentProvider<B> for ProviderVariant {
         &self,
         maybe_parent_info: Option<(InherentData, Digest)>,
         parent_header: B::Header,
-        ext: &mut TestExternalities<HashingFor<B>>,
+        ext: Arc<Mutex<TestExternalities<HashingFor<B>>>>,
     ) -> InherentProviderResult<Self::Err> {
         match *self {
             ProviderVariant::Smart => {
@@ -124,8 +128,8 @@ impl<B: BlockT> InherentProvider<B> for SmartInherentProvider {
         &self,
         maybe_parent_info: Option<(InherentData, Digest)>,
         parent_header: B::Header,
-        ext: &mut TestExternalities<HashingFor<B>>,
-    ) -> Result<(Box<dyn sp_inherents::InherentDataProvider>, Vec<DigestItem>), Self::Err> {
+        ext: Arc<Mutex<TestExternalities<HashingFor<B>>>>,
+    ) -> InherentProviderResult<Self::Err> {
         let blocktime_millis = self.blocktime.as_millis() as u64;
 
         let timestamp_idp = custom_idps::timestamp::InherentDataProvider {
@@ -136,9 +140,7 @@ impl<B: BlockT> InherentProvider<B> for SmartInherentProvider {
             blocktime_millis,
             parent_header: parent_header.clone(),
             timestamp: timestamp_idp.timestamp(),
-            maybe_para_id: custom_idps::para_parachain::get_para_id::<B>(ext),
-            maybe_last_relay_chain_block_number:
-                custom_idps::para_parachain::get_last_relay_chain_block_number::<B>(ext),
+            ext,
         };
         let relay_parachain_data_idp =
             custom_idps::relay_parachains::InherentDataProvider::<B>::new(parent_header);

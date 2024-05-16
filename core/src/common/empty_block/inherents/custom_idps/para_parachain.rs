@@ -18,6 +18,8 @@
 //! Inherent data provider for the [cumulus parachin inherents](https://github.com/paritytech/polkadot-sdk/blob/master/cumulus/primitives/parachain-inherent/src/lib.rs)
 //! for empty block production on top of an existing externalities.
 
+use std::sync::{Arc, Mutex};
+
 use parity_scale_codec::{Decode, Encode};
 use polkadot_primitives::{BlockNumber, HeadData};
 use sp_consensus_babe::SlotDuration;
@@ -26,8 +28,7 @@ use sp_inherents::InherentIdentifier;
 use sp_runtime::traits::{Block as BlockT, HashingFor, NumberFor};
 use sp_state_machine::TestExternalities;
 
-/// ext cannot be part of the InherentDataProvider (thread safety), so we need to make storage
-/// queries seperately
+/// Get the para id if it exists
 pub fn get_para_id<B: BlockT>(ext: &mut TestExternalities<HashingFor<B>>) -> Option<u32> {
     let para_id_key = [twox_128(b"ParachainInfo"), twox_128(b"ParachainId")].concat();
 
@@ -35,8 +36,7 @@ pub fn get_para_id<B: BlockT>(ext: &mut TestExternalities<HashingFor<B>>) -> Opt
         .and_then(|b| -> Option<u32> { Decode::decode(&mut &b[..]).ok() })
 }
 
-/// ext cannot be part of the InherentDataProvider (thread safety), so we need to make storage
-/// queries seperately
+/// Get the last relay chain block number if it exists
 pub fn get_last_relay_chain_block_number<B: BlockT>(
     ext: &mut TestExternalities<HashingFor<B>>,
 ) -> Option<BlockNumber> {
@@ -59,9 +59,8 @@ pub fn get_last_relay_chain_block_number<B: BlockT>(
 pub struct InherentDataProvider<B: BlockT> {
     pub timestamp: sp_timestamp::Timestamp,
     pub blocktime_millis: u64,
-    pub maybe_last_relay_chain_block_number: Option<BlockNumber>,
-    pub maybe_para_id: Option<u32>,
     pub parent_header: B::Header,
+    pub ext: Arc<Mutex<TestExternalities<HashingFor<B>>>>,
 }
 
 #[async_trait::async_trait]
@@ -70,8 +69,11 @@ impl<B: BlockT> sp_inherents::InherentDataProvider for InherentDataProvider<B> {
         &self,
         inherent_data: &mut sp_inherents::InherentData,
     ) -> Result<(), sp_inherents::Error> {
+        let maybe_last_relay_chain_block_number =
+            get_last_relay_chain_block_number::<B>(&mut self.ext.lock().unwrap());
+        let maybe_para_id = get_para_id::<B>(&mut self.ext.lock().unwrap());
         let (last_relay_chain_block_number, para_id) =
-            match (self.maybe_last_relay_chain_block_number, self.maybe_para_id) {
+            match (maybe_last_relay_chain_block_number, maybe_para_id) {
                 (Some(last_relay_chain_block_number), Some(para_id)) => {
                     (last_relay_chain_block_number, para_id)
                 }
@@ -104,6 +106,7 @@ impl<B: BlockT> sp_inherents::InherentDataProvider for InherentDataProvider<B> {
 
         cumulus_client_parachain_inherent::MockValidationDataInherentDataProvider {
             current_para_block: Default::default(),
+            current_para_block_head: Default::default(),
             relay_offset: last_relay_chain_block_number,
             relay_blocks_per_para_block: Default::default(),
             para_blocks_per_relay_epoch: Default::default(),
