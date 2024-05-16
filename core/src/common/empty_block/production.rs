@@ -22,7 +22,7 @@ use crate::{
     full_extensions,
 };
 
-pub async fn execute_next_block<Block: BlockT, HostFns: HostFunctions>(
+pub async fn mine_block<Block: BlockT, HostFns: HostFunctions>(
     ext: Arc<Mutex<TestExternalities<HashingFor<Block>>>>,
     executor: &WasmExecutor<HostFns>,
     previous_block_building_info: Option<(InherentData, Digest)>,

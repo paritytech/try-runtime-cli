@@ -30,7 +30,7 @@ use sp_runtime::traits::NumberFor;
 
 use crate::{
     common::{
-        empty_block::{inherents::providers::ProviderVariant, production::execute_next_block},
+        empty_block::{inherents::providers::ProviderVariant, production::mine_block},
         state::{build_executor, state_machine_call_with_proof, RuntimeChecks, State},
     },
     BlockT, SharedParams,
@@ -110,7 +110,7 @@ where
     let mut parent_block_building_info = None;
 
     for _ in 1..=command.n_blocks {
-        let (next_block_building_info, next_header) = execute_next_block::<Block, HostFns>(
+        let (next_block_building_info, next_header) = mine_block::<Block, HostFns>(
             inner_ext.clone(),
             &executor,
             parent_block_building_info,
