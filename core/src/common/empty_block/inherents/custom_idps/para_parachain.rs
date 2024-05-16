@@ -56,6 +56,7 @@ pub fn get_last_relay_chain_block_number<B: BlockT>(
         })
 }
 
+/// Provides parachain-system pallet inherents.
 pub struct InherentDataProvider<B: BlockT> {
     pub timestamp: sp_timestamp::Timestamp,
     pub blocktime_millis: u64,
