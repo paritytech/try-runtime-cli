@@ -18,12 +18,11 @@
 //! Contains providers for inherents required for empty block production.
 
 use std::{
-    str::FromStr,
     sync::{Arc, Mutex},
     time::Duration,
 };
 
-use itertools::Itertools;
+use clap::ValueEnum;
 use parity_scale_codec::Encode;
 use sp_consensus_aura::{Slot, SlotDuration, AURA_ENGINE_ID};
 use sp_consensus_babe::{
@@ -37,7 +36,6 @@ use sp_runtime::{
 };
 use sp_state_machine::TestExternalities;
 use sp_std::prelude::*;
-use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter};
 
 use crate::common::empty_block::inherents::custom_idps;
@@ -62,33 +60,12 @@ type InherentProviderResult<Err> =
 ///
 /// Currently only Smart is implemented. New implementations may be added if Smart is not suitable
 /// for some edge cases.
-#[derive(Debug, Clone, clap::Parser, EnumIter, Display, Copy)]
+#[derive(Debug, Clone, clap::Parser, EnumIter, Display, Copy, ValueEnum)]
+#[clap(rename_all = "snake_case")]
 pub enum ProviderVariant {
     /// Smart chain varient will automatically adjust provided inherents based on the given
     /// externalities.
     Smart,
-}
-
-/// Implement FromStr so chain can be parsed as a CLI argument.
-impl FromStr for ProviderVariant {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        for chain in ProviderVariant::iter() {
-            if chain.to_string().to_lowercase() == s.to_lowercase() {
-                return Ok(chain);
-            }
-        }
-
-        // Clap error message already includes "Invalid value {s} for --inherent-provider-variant
-        // <VARIANT>" This error will be logged after, so the user knows what the valid
-        // values are.
-        Err(format!(
-            "\nValid VARIANT values:\n{}\n{}",
-            ProviderVariant::iter().map(|s| format!("- {}", s)).join("\n"),
-            "No suitable inherent provider avaliable? Open a PR adding it to `inherents/providers.rs`: https://github.com/paritytech/try-runtime-cli"
-        ))
-    }
 }
 
 impl<B: BlockT> InherentProvider<B> for ProviderVariant {

@@ -46,6 +46,7 @@ pub struct Command {
     /// Which inherent provider variant to use. In most cases "smart" should be used, which
     /// attempts to support all chains.
     #[arg(long, default_value = "smart")]
+    #[clap(value_enum)]
     pub provider_variant: ProviderVariant,
 
     /// Which try-state targets to execute when running this command.
