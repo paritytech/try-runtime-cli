@@ -108,7 +108,7 @@ impl<B: BlockT> sp_inherents::InherentDataProvider for InherentDataProvider<B> {
         cumulus_client_parachain_inherent::MockValidationDataInherentDataProvider {
             current_para_block: Default::default(),
             current_para_block_head: Default::default(),
-            relay_offset: last_relay_chain_block_number,
+            relay_offset: last_relay_chain_block_number + 1u32,
             relay_blocks_per_para_block: Default::default(),
             para_blocks_per_relay_epoch: Default::default(),
             relay_randomness_config: (),
