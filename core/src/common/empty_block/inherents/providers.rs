@@ -37,6 +37,8 @@ use tokio::sync::Mutex;
 
 use crate::common::empty_block::inherents::custom_idps;
 
+const RELAYCHAIN_BLOCKTIME_MS: u64 = 6000u64;
+
 /// Trait for providing the inherent data and digest items for block construction.
 pub trait InherentProvider<B: BlockT> {
     type Err;
@@ -111,7 +113,7 @@ impl<B: BlockT> InherentProvider<B> for SmartInherentProvider {
             maybe_parent_info,
         };
         let para_parachain_idp = custom_idps::para_parachain::InherentDataProvider::<B> {
-            blocktime_millis: self.blocktime.as_millis() as u64,
+            blocktime_millis: RELAYCHAIN_BLOCKTIME_MS,
             parent_header: parent_header.clone(),
             timestamp: timestamp_idp.timestamp(),
             ext_mutex: ext,
