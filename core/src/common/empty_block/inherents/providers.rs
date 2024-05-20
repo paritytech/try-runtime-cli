@@ -17,12 +17,8 @@
 
 //! Contains providers for inherents required for empty block production.
 
-use std::{
-    sync::{Arc, Mutex},
-    time::Duration,
-};
+use std::{sync::Arc, time::Duration};
 
-use clap::ValueEnum;
 use parity_scale_codec::Encode;
 use sp_consensus_aura::{Slot, SlotDuration, AURA_ENGINE_ID};
 use sp_consensus_babe::{
@@ -37,6 +33,7 @@ use sp_runtime::{
 use sp_state_machine::TestExternalities;
 use sp_std::prelude::*;
 use strum_macros::{Display, EnumIter};
+use tokio::sync::Mutex;
 
 use crate::common::empty_block::inherents::custom_idps;
 
@@ -60,12 +57,13 @@ type InherentProviderResult<Err> =
 ///
 /// Currently only Smart is implemented. New implementations may be added if Smart is not suitable
 /// for some edge cases.
-#[derive(Debug, Clone, clap::Parser, EnumIter, Display, Copy, ValueEnum)]
-#[clap(rename_all = "snake_case")]
+#[derive(Debug, Clone, EnumIter, Display, Copy)]
 pub enum ProviderVariant {
     /// Smart chain varient will automatically adjust provided inherents based on the given
     /// externalities.
-    Smart,
+    ///
+    /// The blocktime is provided in milliseconds.
+    Smart(core::time::Duration),
 }
 
 impl<B: BlockT> InherentProvider<B> for ProviderVariant {
@@ -78,9 +76,9 @@ impl<B: BlockT> InherentProvider<B> for ProviderVariant {
         ext: Arc<Mutex<TestExternalities<HashingFor<B>>>>,
     ) -> InherentProviderResult<Self::Err> {
         match *self {
-            ProviderVariant::Smart => {
-                 <SmartInherentProvider as InherentProvider<B>>::get_inherent_providers_and_pre_digest(&SmartInherentProvider {
-                     blocktime: Duration::from_secs(6),
+            ProviderVariant::Smart(blocktime) => {
+                <SmartInherentProvider as InherentProvider<B>>::get_inherent_providers_and_pre_digest(&SmartInherentProvider {
+                     blocktime,
                  }, maybe_parent_info, parent_header, ext)
             }
         }
@@ -108,24 +106,22 @@ impl<B: BlockT> InherentProvider<B> for SmartInherentProvider {
         parent_header: B::Header,
         ext: Arc<Mutex<TestExternalities<HashingFor<B>>>>,
     ) -> InherentProviderResult<Self::Err> {
-        let blocktime_millis = self.blocktime.as_millis() as u64;
-
         let timestamp_idp = custom_idps::timestamp::InherentDataProvider {
-            blocktime_millis,
+            blocktime_millis: self.blocktime.as_millis() as u64,
             maybe_parent_info,
         };
         let para_parachain_idp = custom_idps::para_parachain::InherentDataProvider::<B> {
-            blocktime_millis,
+            blocktime_millis: self.blocktime.as_millis() as u64,
             parent_header: parent_header.clone(),
             timestamp: timestamp_idp.timestamp(),
-            ext,
+            ext_mutex: ext,
         };
         let relay_parachain_data_idp =
             custom_idps::relay_parachains::InherentDataProvider::<B>::new(parent_header);
 
         let slot = Slot::from_timestamp(
             timestamp_idp.timestamp(),
-            SlotDuration::from_millis(blocktime_millis),
+            SlotDuration::from_millis(self.blocktime.as_millis() as u64),
         );
         let digest = vec![
             DigestItem::PreRuntime(

@@ -15,11 +15,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::{
-    fmt::Debug,
-    str::FromStr,
-    sync::{Arc, Mutex},
-};
+use std::{fmt::Debug, str::FromStr, sync::Arc, time::Duration};
 
 use parity_scale_codec::Encode;
 use sc_cli::Result;
@@ -27,6 +23,7 @@ use sc_executor::sp_wasm_interface::HostFunctions;
 use serde::de::DeserializeOwned;
 use sp_core::H256;
 use sp_runtime::traits::NumberFor;
+use tokio::sync::Mutex;
 
 use crate::{
     common::{
@@ -43,11 +40,9 @@ pub struct Command {
     #[arg(long)]
     pub n_blocks: u64,
 
-    /// Which inherent provider variant to use. In most cases "smart" should be used, which
-    /// attempts to support all chains.
-    #[arg(long, default_value = "smart")]
-    #[clap(value_enum)]
-    pub provider_variant: ProviderVariant,
+    /// The chain blocktime in milliseconds.
+    #[arg(long, default_value = "6000")]
+    pub blocktime: u64,
 
     /// Which try-state targets to execute when running this command.
     ///
@@ -108,6 +103,7 @@ where
     let inner_ext = Arc::new(Mutex::new(ext.inner_ext));
     let mut parent_header = ext.header.clone();
     let mut parent_block_building_info = None;
+    let provider_variant = ProviderVariant::Smart(Duration::from_millis(command.blocktime));
 
     for _ in 1..=command.n_blocks {
         let (next_block_building_info, next_header) = mine_block::<Block, HostFns>(
@@ -115,7 +111,7 @@ where
             &executor,
             parent_block_building_info,
             parent_header.clone(),
-            command.provider_variant,
+            provider_variant,
             command.try_state.clone(),
         )
         .await?;

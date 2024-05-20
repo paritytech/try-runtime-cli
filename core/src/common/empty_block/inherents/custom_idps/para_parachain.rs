@@ -18,7 +18,7 @@
 //! Inherent data provider for the [cumulus parachin inherents](https://github.com/paritytech/polkadot-sdk/blob/master/cumulus/primitives/parachain-inherent/src/lib.rs)
 //! for empty block production on top of an existing externalities.
 
-use std::sync::{Arc, Mutex};
+use std::{ops::DerefMut, sync::Arc};
 
 use parity_scale_codec::{Decode, Encode};
 use polkadot_primitives::{BlockNumber, HeadData};
@@ -27,6 +27,7 @@ use sp_core::twox_128;
 use sp_inherents::InherentIdentifier;
 use sp_runtime::traits::{Block as BlockT, HashingFor, NumberFor};
 use sp_state_machine::TestExternalities;
+use tokio::sync::Mutex;
 
 /// Get the para id if it exists
 pub fn get_para_id<B: BlockT>(ext: &mut TestExternalities<HashingFor<B>>) -> Option<u32> {
@@ -61,7 +62,7 @@ pub struct InherentDataProvider<B: BlockT> {
     pub timestamp: sp_timestamp::Timestamp,
     pub blocktime_millis: u64,
     pub parent_header: B::Header,
-    pub ext: Arc<Mutex<TestExternalities<HashingFor<B>>>>,
+    pub ext_mutex: Arc<Mutex<TestExternalities<HashingFor<B>>>>,
 }
 
 #[async_trait::async_trait]
@@ -70,9 +71,10 @@ impl<B: BlockT> sp_inherents::InherentDataProvider for InherentDataProvider<B> {
         &self,
         inherent_data: &mut sp_inherents::InherentData,
     ) -> Result<(), sp_inherents::Error> {
-        let maybe_last_relay_chain_block_number =
-            get_last_relay_chain_block_number::<B>(&mut self.ext.lock().unwrap());
-        let maybe_para_id = get_para_id::<B>(&mut self.ext.lock().unwrap());
+        let mut ext_guard = self.ext_mutex.lock().await;
+        let ext = ext_guard.deref_mut();
+        let maybe_last_relay_chain_block_number = get_last_relay_chain_block_number::<B>(ext);
+        let maybe_para_id = get_para_id::<B>(ext);
         let (last_relay_chain_block_number, para_id) =
             match (maybe_last_relay_chain_block_number, maybe_para_id) {
                 (Some(last_relay_chain_block_number), Some(para_id)) => {
