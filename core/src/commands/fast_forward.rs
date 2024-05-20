@@ -41,7 +41,7 @@ pub struct Command {
     pub n_blocks: u64,
 
     /// The chain blocktime in milliseconds.
-    #[arg(long, default_value = "6000")]
+    #[arg(long)]
     pub blocktime: u64,
 
     /// Which try-state targets to execute when running this command.
