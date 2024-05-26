@@ -22,8 +22,10 @@ use sp_runtime::traits::{Block as BlockT, NumberFor};
 use substrate_rpc_client::{ws_client, StateApi};
 
 use crate::{
-    build_executor,
-    state::{LiveState, RuntimeChecks, State},
+    common::{
+        shared_parameters,
+        state::{build_executor, LiveState, RuntimeChecks, State},
+    },
     SharedParams, LOG_TARGET,
 };
 
@@ -53,7 +55,7 @@ where
     HostFns: HostFunctions,
 {
     let snapshot_path = command.snapshot_path;
-    if !matches!(shared.runtime, crate::shared_parameters::Runtime::Existing) {
+    if !matches!(shared.runtime, shared_parameters::Runtime::Existing) {
         return Err("creating a snapshot is only possible with --runtime existing.".into());
     }
 

@@ -20,7 +20,6 @@
 use std::time::Duration;
 
 use assert_cmd::cargo::cargo_bin;
-use node_primitives::Hash;
 use regex::Regex;
 use substrate_cli_test_utils as common;
 use tokio::process::Command;
@@ -49,7 +48,7 @@ async fn execute_block_works() {
     common::run_with_timeout(Duration::from_secs(60), async move {
         let ws_url = format!("ws://localhost:{}", port);
 
-        fn execute_block(ws_url: &str, at: Hash) -> tokio::process::Child {
+        fn execute_block(ws_url: &str, at: sp_core::H256) -> tokio::process::Child {
             Command::new(cargo_bin("try-runtime"))
                 .stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())

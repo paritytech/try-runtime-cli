@@ -294,13 +294,17 @@
 //! [`Action::CreateSnapshot`]: try_runtime_core::commands::Action::CreateSnapshot
 //! [`Action::FastForward`]: try_runtime_core::commands::Action::FastForward
 //! [`SharedParams`]: try_runtime_core::shared_parameters::SharedParams
-//! [`SharedParams::runtime`]: try_runtime_core::shared_parameters::SharedParams::runtime
-//! [`SharedParams::overwrite_state_version`]: try_runtime_core::shared_parameters::SharedParams::overwrite_state_version
+//! [`SharedParams::runtime`]: try_runtime_core::common::shared_parameters::SharedParams::runtime
+//! [`SharedParams::overwrite_state_version`]: try_runtime_core::common::shared_parameters::SharedParams::overwrite_state_version
 
 use std::env;
 
 use clap::Parser;
-use node_primitives::Block;
+use sp_runtime::{
+    generic::{Block, Header},
+    traits::BlakeTwo256,
+    OpaqueExtrinsic,
+};
 use try_runtime_core::commands::TryRuntime;
 
 fn init_env() {
@@ -315,7 +319,7 @@ async fn main() {
     init_env();
 
     let cmd = TryRuntime::parse();
-    cmd.run::<Block, sp_io::SubstrateHostFunctions>()
+    cmd.run::<Block<Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sp_io::SubstrateHostFunctions>()
         .await
         .unwrap();
 }

@@ -24,7 +24,11 @@ use std::{
 
 use assert_cmd::cargo::cargo_bin;
 use frame_remote_externalities::{Builder, Mode, OfflineConfig, SnapshotConfig};
-use node_primitives::{Block, Hash};
+use sp_runtime::{
+    generic::{Block, Header},
+    traits::BlakeTwo256,
+    OpaqueExtrinsic,
+};
 use substrate_cli_test_utils as common;
 use tokio::process::Command;
 
@@ -57,7 +61,11 @@ async fn create_snapshot_works() {
     let snap_file_path = temp_dir.path().join("snapshot.snap");
 
     common::run_with_timeout(Duration::from_secs(60), async move {
-        fn create_snapshot(ws_url: &str, snap_file: &PathBuf, at: Hash) -> tokio::process::Child {
+        fn create_snapshot(
+            ws_url: &str,
+            snap_file: &PathBuf,
+            at: sp_core::H256,
+        ) -> tokio::process::Child {
             Command::new(cargo_bin("try-runtime"))
                 .stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())
@@ -82,14 +90,15 @@ async fn create_snapshot_works() {
         assert!(snapshot_is_on_disk, "Snapshot was not written to disk");
 
         // Try and load the snapshot we have created by running `create-snapshot`.
-        let snapshot_loading_result = Builder::<Block>::new()
-            .mode(Mode::Offline(OfflineConfig {
-                state_snapshot: SnapshotConfig {
-                    path: snap_file_path,
-                },
-            }))
-            .build()
-            .await;
+        let snapshot_loading_result =
+            Builder::<Block<Header<u32, BlakeTwo256>, OpaqueExtrinsic>>::new()
+                .mode(Mode::Offline(OfflineConfig {
+                    state_snapshot: SnapshotConfig {
+                        path: snap_file_path,
+                    },
+                }))
+                .build()
+                .await;
 
         assert!(
             snapshot_loading_result.is_ok(),
