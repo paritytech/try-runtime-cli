@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/client/executor/src/executor.rs`."><title>executor.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_executor" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/executor/src/executor.rs`."><title>executor.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_executor" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../sc_executor/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -778,6 +778,37 @@
 <a href="#776" id="776">776</a>
 <a href="#777" id="777">777</a>
 <a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
+<a href="#784" id="784">784</a>
+<a href="#785" id="785">785</a>
+<a href="#786" id="786">786</a>
+<a href="#787" id="787">787</a>
+<a href="#788" id="788">788</a>
+<a href="#789" id="789">789</a>
+<a href="#790" id="790">790</a>
+<a href="#791" id="791">791</a>
+<a href="#792" id="792">792</a>
+<a href="#793" id="793">793</a>
+<a href="#794" id="794">794</a>
+<a href="#795" id="795">795</a>
+<a href="#796" id="796">796</a>
+<a href="#797" id="797">797</a>
+<a href="#798" id="798">798</a>
+<a href="#799" id="799">799</a>
+<a href="#800" id="800">800</a>
+<a href="#801" id="801">801</a>
+<a href="#802" id="802">802</a>
+<a href="#803" id="803">803</a>
+<a href="#804" id="804">804</a>
+<a href="#805" id="805">805</a>
+<a href="#806" id="806">806</a>
+<a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
+<a href="#809" id="809">809</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -863,7 +894,7 @@
 }
 
 <span class="doccomment">/// Builder for creating a [`WasmExecutor`] instance.
-</span><span class="kw">pub struct </span>WasmExecutorBuilder&lt;H&gt; {
+</span><span class="kw">pub struct </span>WasmExecutorBuilder&lt;H = sp_io::SubstrateHostFunctions&gt; {
 	_phantom: PhantomData&lt;H&gt;,
 	method: WasmExecutionMethod,
 	onchain_heap_alloc_strategy: <span class="prelude-ty">Option</span>&lt;HeapAllocStrategy&gt;,
@@ -998,7 +1029,7 @@
 
 <span class="doccomment">/// An abstraction over Wasm code executor. Supports selecting execution backend and
 /// manages runtime cache.
-</span><span class="kw">pub struct </span>WasmExecutor&lt;H&gt; {
+</span><span class="kw">pub struct </span>WasmExecutor&lt;H = sp_io::SubstrateHostFunctions&gt; {
 	<span class="doccomment">/// Method used to execute fallback Wasm code.
 	</span>method: WasmExecutionMethod,
 	<span class="doccomment">/// The heap allocation strategy for onchain Wasm calls.
@@ -1032,10 +1063,13 @@
 	}
 }
 
-<span class="kw">impl</span>&lt;H&gt; WasmExecutor&lt;H&gt;
-<span class="kw">where
-	</span>H: HostFunctions,
-{
+<span class="kw">impl </span>Default <span class="kw">for </span>WasmExecutor&lt;sp_io::SubstrateHostFunctions&gt; {
+	<span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+		WasmExecutorBuilder::new().build()
+	}
+}
+
+<span class="kw">impl</span>&lt;H&gt; WasmExecutor&lt;H&gt; {
 	<span class="doccomment">/// Create new instance.
 	///
 	/// # Parameters
@@ -1092,7 +1126,12 @@
 	</span><span class="kw">pub fn </span>allow_missing_host_functions(<span class="kw-2">&amp;mut </span><span class="self">self</span>, allow_missing_host_functions: bool) {
 		<span class="self">self</span>.allow_missing_host_functions = allow_missing_host_functions
 	}
+}
 
+<span class="kw">impl</span>&lt;H&gt; WasmExecutor&lt;H&gt;
+<span class="kw">where
+	</span>H: HostFunctions,
+{
 	<span class="doccomment">/// Execute the given closure `f` with the latest runtime (based on `runtime_code`).
 	///
 	/// The closure `f` is expected to return `Err(_)` when there happened a `panic!` in native code
@@ -1272,7 +1311,6 @@
 		runtime_code: <span class="kw-2">&amp;</span>RuntimeCode,
 		method: <span class="kw-2">&amp;</span>str,
 		data: <span class="kw-2">&amp;</span>[u8],
-		_use_native: bool,
 		context: CallContext,
 	) -&gt; (<span class="prelude-ty">Result</span>&lt;Vec&lt;u8&gt;&gt;, bool) {
 		<span class="macro">tracing::trace!</span>(
@@ -1299,7 +1337,7 @@
 			runtime_code,
 			ext,
 			heap_alloc_strategy,
-			|<span class="kw">_</span>, <span class="kw-2">mut </span>instance, _onchain_version, <span class="kw-2">mut </span>ext| {
+			|<span class="kw">_</span>, <span class="kw-2">mut </span>instance, _on_chain_version, <span class="kw-2">mut </span>ext| {
 				with_externalities_safe(<span class="kw-2">&amp;mut **</span>ext, <span class="kw">move </span>|| instance.call_export(method, data))
 			},
 		);
@@ -1339,15 +1377,21 @@
 
 <span class="doccomment">/// A generic `CodeExecutor` implementation that uses a delegate to determine wasm code equivalence
 /// and dispatch to native code when possible, falling back on `WasmExecutor` when not.
+</span><span class="attr">#[deprecated(
+	note = <span class="string">"Native execution will be deprecated, please replace with `WasmExecutor`. Will be removed at end of 2024."
+</span>)]
 </span><span class="kw">pub struct </span>NativeElseWasmExecutor&lt;D: NativeExecutionDispatch&gt; {
 	<span class="doccomment">/// Native runtime version info.
 	</span>native_version: NativeVersion,
 	<span class="doccomment">/// Fallback wasm executor.
 	</span>wasm:
 		WasmExecutor&lt;ExtendedHostFunctions&lt;sp_io::SubstrateHostFunctions, D::ExtendHostFunctions&gt;&gt;,
+
+	use_native: bool,
 }
 
-<span class="kw">impl</span>&lt;D: NativeExecutionDispatch&gt; NativeElseWasmExecutor&lt;D&gt; {
+<span class="attr">#[allow(deprecated)]
+</span><span class="kw">impl</span>&lt;D: NativeExecutionDispatch&gt; NativeElseWasmExecutor&lt;D&gt; {
 	<span class="doccomment">///
 	/// Create new instance.
 	///
@@ -1381,7 +1425,7 @@
 			.with_runtime_cache_size(runtime_cache_size)
 			.build();
 
-		NativeElseWasmExecutor { native_version: D::native_version(), wasm }
+		NativeElseWasmExecutor { native_version: D::native_version(), wasm, use_native: <span class="bool-val">true </span>}
 	}
 
 	<span class="doccomment">/// Create a new instance using the given [`WasmExecutor`].
@@ -1390,7 +1434,14 @@
 			ExtendedHostFunctions&lt;sp_io::SubstrateHostFunctions, D::ExtendHostFunctions&gt;,
 		&gt;,
 	) -&gt; <span class="self">Self </span>{
-		<span class="self">Self </span>{ native_version: D::native_version(), wasm: executor }
+		<span class="self">Self </span>{ native_version: D::native_version(), wasm: executor, use_native: <span class="bool-val">true </span>}
+	}
+
+	<span class="doccomment">/// Disable to use native runtime when possible just behave like `WasmExecutor`.
+	///
+	/// Default to enabled.
+	</span><span class="kw">pub fn </span>disable_use_native(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+		<span class="self">self</span>.use_native = <span class="bool-val">false</span>;
 	}
 
 	<span class="doccomment">/// Ignore missing function imports if set true.
@@ -1400,7 +1451,8 @@
 	}
 }
 
-<span class="kw">impl</span>&lt;D: NativeExecutionDispatch&gt; RuntimeVersionOf <span class="kw">for </span>NativeElseWasmExecutor&lt;D&gt; {
+<span class="attr">#[allow(deprecated)]
+</span><span class="kw">impl</span>&lt;D: NativeExecutionDispatch&gt; RuntimeVersionOf <span class="kw">for </span>NativeElseWasmExecutor&lt;D&gt; {
 	<span class="kw">fn </span>runtime_version(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		ext: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Externalities,
@@ -1410,13 +1462,15 @@
 	}
 }
 
-<span class="kw">impl</span>&lt;D: NativeExecutionDispatch&gt; GetNativeVersion <span class="kw">for </span>NativeElseWasmExecutor&lt;D&gt; {
+<span class="attr">#[allow(deprecated)]
+</span><span class="kw">impl</span>&lt;D: NativeExecutionDispatch&gt; GetNativeVersion <span class="kw">for </span>NativeElseWasmExecutor&lt;D&gt; {
 	<span class="kw">fn </span>native_version(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>NativeVersion {
 		<span class="kw-2">&amp;</span><span class="self">self</span>.native_version
 	}
 }
 
-<span class="kw">impl</span>&lt;D: NativeExecutionDispatch + <span class="lifetime">'static</span>&gt; CodeExecutor <span class="kw">for </span>NativeElseWasmExecutor&lt;D&gt; {
+<span class="attr">#[allow(deprecated)]
+</span><span class="kw">impl</span>&lt;D: NativeExecutionDispatch + <span class="lifetime">'static</span>&gt; CodeExecutor <span class="kw">for </span>NativeElseWasmExecutor&lt;D&gt; {
 	<span class="kw">type </span>Error = Error;
 
 	<span class="kw">fn </span>call(
@@ -1425,9 +1479,10 @@
 		runtime_code: <span class="kw-2">&amp;</span>RuntimeCode,
 		method: <span class="kw-2">&amp;</span>str,
 		data: <span class="kw-2">&amp;</span>[u8],
-		use_native: bool,
 		context: CallContext,
 	) -&gt; (<span class="prelude-ty">Result</span>&lt;Vec&lt;u8&gt;&gt;, bool) {
+		<span class="kw">let </span>use_native = <span class="self">self</span>.use_native;
+
 		<span class="macro">tracing::trace!</span>(
 			target: <span class="string">"executor"</span>,
 			function = %method,
@@ -1453,18 +1508,18 @@
 			runtime_code,
 			ext,
 			heap_alloc_strategy,
-			|<span class="kw">_</span>, <span class="kw-2">mut </span>instance, onchain_version, <span class="kw-2">mut </span>ext| {
-				<span class="kw">let </span>onchain_version =
-					onchain_version.ok_or_else(|| Error::ApiError(<span class="string">"Unknown version"</span>.into()))<span class="question-mark">?</span>;
+			|<span class="kw">_</span>, <span class="kw-2">mut </span>instance, on_chain_version, <span class="kw-2">mut </span>ext| {
+				<span class="kw">let </span>on_chain_version =
+					on_chain_version.ok_or_else(|| Error::ApiError(<span class="string">"Unknown version"</span>.into()))<span class="question-mark">?</span>;
 
 				<span class="kw">let </span>can_call_with =
-					onchain_version.can_call_with(<span class="kw-2">&amp;</span><span class="self">self</span>.native_version.runtime_version);
+					on_chain_version.can_call_with(<span class="kw-2">&amp;</span><span class="self">self</span>.native_version.runtime_version);
 
 				<span class="kw">if </span>use_native &amp;&amp; can_call_with {
 					<span class="macro">tracing::trace!</span>(
 						target: <span class="string">"executor"</span>,
 						native = %<span class="self">self</span>.native_version.runtime_version,
-						chain = %onchain_version,
+						chain = %on_chain_version,
 						<span class="string">"Request for native execution succeeded"</span>,
 					);
 
@@ -1476,7 +1531,7 @@
 						<span class="macro">tracing::trace!</span>(
 							target: <span class="string">"executor"</span>,
 							native = %<span class="self">self</span>.native_version.runtime_version,
-							chain = %onchain_version,
+							chain = %on_chain_version,
 							<span class="string">"Request for native execution failed"</span>,
 						);
 					}
@@ -1489,13 +1544,19 @@
 	}
 }
 
-<span class="kw">impl</span>&lt;D: NativeExecutionDispatch&gt; Clone <span class="kw">for </span>NativeElseWasmExecutor&lt;D&gt; {
+<span class="attr">#[allow(deprecated)]
+</span><span class="kw">impl</span>&lt;D: NativeExecutionDispatch&gt; Clone <span class="kw">for </span>NativeElseWasmExecutor&lt;D&gt; {
 	<span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-		NativeElseWasmExecutor { native_version: D::native_version(), wasm: <span class="self">self</span>.wasm.clone() }
+		NativeElseWasmExecutor {
+			native_version: D::native_version(),
+			wasm: <span class="self">self</span>.wasm.clone(),
+			use_native: <span class="self">self</span>.use_native,
+		}
 	}
 }
 
-<span class="kw">impl</span>&lt;D: NativeExecutionDispatch&gt; sp_core::traits::ReadRuntimeVersion <span class="kw">for </span>NativeElseWasmExecutor&lt;D&gt; {
+<span class="attr">#[allow(deprecated)]
+</span><span class="kw">impl</span>&lt;D: NativeExecutionDispatch&gt; sp_core::traits::ReadRuntimeVersion <span class="kw">for </span>NativeElseWasmExecutor&lt;D&gt; {
 	<span class="kw">fn </span>read_runtime_version(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		wasm_code: <span class="kw-2">&amp;</span>[u8],
@@ -1532,6 +1593,7 @@
 	}
 
 	<span class="attr">#[test]
+	#[allow(deprecated)]
 	</span><span class="kw">fn </span>native_executor_registers_custom_interface() {
 		<span class="kw">let </span>executor = NativeElseWasmExecutor::&lt;MyExecutorDispatch&gt;::new_with_wasm_executor(
 			WasmExecutor::builder().build(),

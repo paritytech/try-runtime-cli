@@ -1,4 +1,5 @@
 (function() {var implementors = {
+"no_std_compat":[],
 "scale_info":[],
 "sp_std":[],
 "wasmtime_environ":[]

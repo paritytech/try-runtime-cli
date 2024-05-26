@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["emit","read"],"struct":["OPENPGPKEY"]};
+window.SIDEBAR_ITEMS = {"struct":["OPENPGPKEY"]};

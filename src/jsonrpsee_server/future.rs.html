@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.16.3/src/future.rs`."><title>future.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.22.5/src/future.rs`."><title>future.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../jsonrpsee_server/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -198,26 +198,6 @@
 <a href="#196" id="196">196</a>
 <a href="#197" id="197">197</a>
 <a href="#198" id="198">198</a>
-<a href="#199" id="199">199</a>
-<a href="#200" id="200">200</a>
-<a href="#201" id="201">201</a>
-<a href="#202" id="202">202</a>
-<a href="#203" id="203">203</a>
-<a href="#204" id="204">204</a>
-<a href="#205" id="205">205</a>
-<a href="#206" id="206">206</a>
-<a href="#207" id="207">207</a>
-<a href="#208" id="208">208</a>
-<a href="#209" id="209">209</a>
-<a href="#210" id="210">210</a>
-<a href="#211" id="211">211</a>
-<a href="#212" id="212">212</a>
-<a href="#213" id="213">213</a>
-<a href="#214" id="214">214</a>
-<a href="#215" id="215">215</a>
-<a href="#216" id="216">216</a>
-<a href="#217" id="217">217</a>
-<a href="#218" id="218">218</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any
@@ -246,145 +226,45 @@
 
 </span><span class="doccomment">//! Utilities for handling async code.
 
-</span><span class="kw">use </span>std::future::Future;
-<span class="kw">use </span>std::pin::Pin;
+</span><span class="kw">use </span>std::pin::Pin;
 <span class="kw">use </span>std::sync::Arc;
 <span class="kw">use </span>std::task::{Context, Poll};
 
-<span class="kw">use </span>futures_util::future::FutureExt;
-<span class="kw">use </span>jsonrpsee_core::Error;
+<span class="kw">use </span>futures_util::{Future, Stream, StreamExt};
+<span class="kw">use </span>pin_project::pin_project;
 <span class="kw">use </span>tokio::sync::{watch, OwnedSemaphorePermit, Semaphore, TryAcquireError};
-<span class="kw">use </span>tokio::time::{<span class="self">self</span>, Duration, Interval};
+<span class="kw">use </span>tokio::time::Interval;
+<span class="kw">use </span>tokio_stream::wrappers::BroadcastStream;
 
-<span class="doccomment">/// Polling for server stop monitor interval in milliseconds.
-</span><span class="kw">const </span>STOP_MONITOR_POLLING_INTERVAL: Duration = Duration::from_millis(<span class="number">1000</span>);
-
-<span class="doccomment">/// This is a flexible collection of futures that need to be driven to completion
-/// alongside some other future, such as connection handlers that need to be
-/// handled along with a listener for new connections.
-///
-/// In order to `.await` on these futures and drive them to completion, call
-/// `select_with` providing some other future, the result of which you need.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>FutureDriver&lt;F&gt; {
-	futures: Vec&lt;F&gt;,
-	stop_monitor_heartbeat: Interval,
+<span class="doccomment">/// Create channel to determine whether
+/// the server shall continue to run or not.
+</span><span class="kw">pub fn </span>stop_channel() -&gt; (StopHandle, ServerHandle) {
+	<span class="kw">let </span>(tx, rx) = tokio::sync::watch::channel(());
+	(StopHandle::new(rx), ServerHandle::new(tx))
 }
 
-<span class="kw">impl</span>&lt;F&gt; Default <span class="kw">for </span>FutureDriver&lt;F&gt; {
-	<span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
-		<span class="kw">let </span><span class="kw-2">mut </span>heartbeat = time::interval(STOP_MONITOR_POLLING_INTERVAL);
-
-		heartbeat.set_missed_tick_behavior(time::MissedTickBehavior::Skip);
-
-		FutureDriver { futures: Vec::new(), stop_monitor_heartbeat: heartbeat }
-	}
-}
-
-<span class="kw">impl</span>&lt;F&gt; FutureDriver&lt;F&gt; {
-	<span class="doccomment">/// Add a new future to this driver
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>add(<span class="kw-2">&amp;mut </span><span class="self">self</span>, future: F) {
-		<span class="self">self</span>.futures.push(future);
-	}
-}
-
-<span class="kw">impl</span>&lt;F&gt; FutureDriver&lt;F&gt;
-<span class="kw">where
-	</span>F: Future + Unpin,
-{
-	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>select_with&lt;S: Future&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, selector: S) -&gt; S::Output {
-		<span class="macro">tokio::pin!</span>(selector);
-
-		DriverSelect { selector, driver: <span class="self">self </span>}.<span class="kw">await
-	</span>}
-
-	<span class="kw">fn </span>drive(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context) {
-		<span class="kw">let </span><span class="kw-2">mut </span>i = <span class="number">0</span>;
-
-		<span class="kw">while </span>i &lt; <span class="self">self</span>.futures.len() {
-			<span class="kw">if </span><span class="self">self</span>.futures[i].poll_unpin(cx).is_ready() {
-				<span class="comment">// Using `swap_remove` since we don't care about ordering
-				// but we do care about removing being `O(1)`.
-				//
-				// We don't increment `i` in this branch, since we now
-				// have a shorter length, and potentially a new value at
-				// current index
-				</span><span class="self">self</span>.futures.swap_remove(i);
-			} <span class="kw">else </span>{
-				i += <span class="number">1</span>;
-			}
-		}
-	}
-
-	<span class="kw">fn </span>poll_stop_monitor_heartbeat(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context) {
-		<span class="comment">// We don't care about the ticks of the heartbeat, it's here only
-		// to periodically wake the `Waker` on `cx`.
-		</span><span class="kw">let _ </span>= <span class="self">self</span>.stop_monitor_heartbeat.poll_tick(cx);
-	}
-}
-
-<span class="kw">impl</span>&lt;F&gt; Future <span class="kw">for </span>FutureDriver&lt;F&gt;
-<span class="kw">where
-	</span>F: Future + Unpin,
-{
-	<span class="kw">type </span>Output = ();
-
-	<span class="kw">fn </span>poll(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context) -&gt; Poll&lt;<span class="self">Self</span>::Output&gt; {
-		<span class="kw">let </span>this = Pin::into_inner(<span class="self">self</span>);
-
-		this.drive(cx);
-
-		<span class="kw">if </span>this.futures.is_empty() {
-			Poll::Ready(())
-		} <span class="kw">else </span>{
-			Poll::Pending
-		}
-	}
-}
-
-<span class="doccomment">/// This is a glorified select `Future` that will attempt to drive all
-/// connection futures `F` to completion on each `poll`, while also
-/// handling incoming connections.
-</span><span class="kw">struct </span>DriverSelect&lt;<span class="lifetime">'a</span>, S, F&gt; {
-	selector: S,
-	driver: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>FutureDriver&lt;F&gt;,
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, R, F&gt; Future <span class="kw">for </span>DriverSelect&lt;<span class="lifetime">'a</span>, R, F&gt;
-<span class="kw">where
-	</span>R: Future + Unpin,
-	F: Future + Unpin,
-{
-	<span class="kw">type </span>Output = R::Output;
-
-	<span class="kw">fn </span>poll(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context) -&gt; Poll&lt;<span class="self">Self</span>::Output&gt; {
-		<span class="kw">let </span>this = Pin::into_inner(<span class="self">self</span>);
-
-		this.driver.drive(cx);
-		this.driver.poll_stop_monitor_heartbeat(cx);
-
-		this.selector.poll_unpin(cx)
-	}
-}
-
-<span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>StopHandle(watch::Receiver&lt;()&gt;);
+<span class="doccomment">/// Represent a stop handle which is a wrapper over a `multi-consumer receiver`
+/// and cloning [`StopHandle`] will get a separate instance of the underlying receiver.
+</span><span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>StopHandle(watch::Receiver&lt;()&gt;);
 
 <span class="kw">impl </span>StopHandle {
-	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(rx: watch::Receiver&lt;()&gt;) -&gt; <span class="self">Self </span>{
+	<span class="doccomment">/// Create a new stop handle.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(rx: watch::Receiver&lt;()&gt;) -&gt; <span class="self">Self </span>{
 		<span class="self">Self</span>(rx)
 	}
 
-	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>shutdown_requested(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-		<span class="comment">// if a message has been seen, it means that `stop` has been called.
-		</span><span class="self">self</span>.<span class="number">0</span>.has_changed().unwrap_or(<span class="bool-val">true</span>)
-	}
-
-	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>shutdown(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-		<span class="comment">// Err(_) implies that the `sender` has been dropped.
-		// Ok(_) implies that `stop` has been called.
-		</span><span class="kw">let _ </span>= <span class="self">self</span>.<span class="number">0</span>.changed().<span class="kw">await</span>;
+	<span class="doccomment">/// A future that resolves when server has been stopped
+	/// it consumes the stop handle.
+	</span><span class="kw">pub async fn </span>shutdown(<span class="kw-2">mut </span><span class="self">self</span>) {
+		<span class="kw">let _ </span>= <span class="self">self</span>.<span class="number">0</span>.changed().<span class="kw">await</span>;
 	}
 }
+
+<span class="doccomment">/// Error when the server has already been stopped.
+</span><span class="attr">#[derive(Debug, Copy, Clone, thiserror::Error)]
+#[error(<span class="string">"The server is already stopped"</span>)]
+</span><span class="kw">pub struct </span>AlreadyStoppedError;
 
 <span class="doccomment">/// Server handle.
 ///
@@ -395,13 +275,13 @@
 
 <span class="kw">impl </span>ServerHandle {
 	<span class="doccomment">/// Create a new server handle.
-	</span><span class="kw">pub fn </span>new(tx: watch::Sender&lt;()&gt;) -&gt; <span class="self">Self </span>{
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(tx: watch::Sender&lt;()&gt;) -&gt; <span class="self">Self </span>{
 		<span class="self">Self</span>(Arc::new(tx))
 	}
 
 	<span class="doccomment">/// Tell the server to stop without waiting for the server to stop.
-	</span><span class="kw">pub fn </span>stop(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
-		<span class="self">self</span>.<span class="number">0</span>.send(()).map_err(|<span class="kw">_</span>| Error::AlreadyStopped)
+	</span><span class="kw">pub fn </span>stop(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), AlreadyStoppedError&gt; {
+		<span class="self">self</span>.<span class="number">0</span>.send(()).map_err(|<span class="kw">_</span>| AlreadyStoppedError)
 	}
 
 	<span class="doccomment">/// Wait for the server to stop.
@@ -416,24 +296,104 @@
 }
 
 <span class="doccomment">/// Limits the number of connections.
-</span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>ConnectionGuard(Arc&lt;Semaphore&gt;);
+</span><span class="attr">#[derive(Clone, Debug)]
+</span><span class="kw">pub struct </span>ConnectionGuard {
+	inner: Arc&lt;Semaphore&gt;,
+	max: usize,
+}
 
 <span class="kw">impl </span>ConnectionGuard {
-	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(limit: usize) -&gt; <span class="self">Self </span>{
-		<span class="self">Self</span>(Arc::new(Semaphore::new(limit)))
+	<span class="doccomment">/// Create a new connection guard.
+	</span><span class="kw">pub fn </span>new(limit: usize) -&gt; <span class="self">Self </span>{
+		<span class="self">Self </span>{ inner: Arc::new(Semaphore::new(limit)), max: limit }
 	}
 
-	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>try_acquire(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;OwnedSemaphorePermit&gt; {
-		<span class="kw">match </span><span class="self">self</span>.<span class="number">0</span>.clone().try_acquire_owned() {
+	<span class="doccomment">/// Acquire a connection permit.
+	</span><span class="kw">pub fn </span>try_acquire(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ConnectionPermit&gt; {
+		<span class="kw">match </span><span class="self">self</span>.inner.clone().try_acquire_owned() {
 			<span class="prelude-val">Ok</span>(guard) =&gt; <span class="prelude-val">Some</span>(guard),
 			<span class="prelude-val">Err</span>(TryAcquireError::Closed) =&gt; <span class="macro">unreachable!</span>(<span class="string">"Semaphore::Close is never called and can't be closed; qed"</span>),
 			<span class="prelude-val">Err</span>(TryAcquireError::NoPermits) =&gt; <span class="prelude-val">None</span>,
 		}
 	}
 
-	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>available_connections(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-		<span class="self">self</span>.<span class="number">0</span>.available_permits()
+	<span class="doccomment">/// Get the number of available connection slots.
+	</span><span class="kw">pub fn </span>available_connections(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+		<span class="self">self</span>.inner.available_permits()
 	}
+
+	<span class="doccomment">/// Get the maximum number of connections.
+	</span><span class="kw">pub fn </span>max_connections(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+		<span class="self">self</span>.max
+	}
+}
+
+<span class="doccomment">/// Connection permit.
+</span><span class="kw">pub type </span>ConnectionPermit = OwnedSemaphorePermit;
+
+<span class="attr">#[pin_project]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>IntervalStream(<span class="attr">#[pin] </span><span class="prelude-ty">Option</span>&lt;tokio_stream::wrappers::IntervalStream&gt;);
+
+<span class="kw">impl </span>IntervalStream {
+	<span class="doccomment">/// Creates a stream which never returns any elements.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>pending() -&gt; <span class="self">Self </span>{
+		<span class="self">Self</span>(<span class="prelude-val">None</span>)
+	}
+
+	<span class="doccomment">/// Creates a stream which produces elements with interval of `period`.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(interval: Interval) -&gt; <span class="self">Self </span>{
+		<span class="self">Self</span>(<span class="prelude-val">Some</span>(tokio_stream::wrappers::IntervalStream::new(interval)))
+	}
+}
+
+<span class="kw">impl </span>Stream <span class="kw">for </span>IntervalStream {
+	<span class="kw">type </span>Item = tokio::time::Instant;
+
+	<span class="kw">fn </span>poll_next(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt;&gt; {
+		<span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>stream) = <span class="self">self</span>.project().<span class="number">0</span>.as_pin_mut() {
+			stream.poll_next_unpin(cx)
+		} <span class="kw">else </span>{
+			<span class="comment">// NOTE: this will not be woken up again and it's by design
+			// to be a pending stream that never returns.
+			</span>Poll::Pending
+		}
+	}
+}
+
+<span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>SessionClose(tokio::sync::broadcast::Sender&lt;()&gt;);
+
+<span class="kw">impl </span>SessionClose {
+	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>close(<span class="self">self</span>) {
+		<span class="kw">let _ </span>= <span class="self">self</span>.<span class="number">0</span>.send(());
+	}
+
+	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>closed(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SessionClosedFuture {
+		SessionClosedFuture(BroadcastStream::new(<span class="self">self</span>.<span class="number">0</span>.subscribe()))
+	}
+}
+
+<span class="doccomment">/// A future that resolves when the connection has been closed.
+</span><span class="attr">#[derive(Debug)]
+</span><span class="kw">pub struct </span>SessionClosedFuture(BroadcastStream&lt;()&gt;);
+
+<span class="kw">impl </span>Future <span class="kw">for </span>SessionClosedFuture {
+	<span class="kw">type </span>Output = ();
+
+	<span class="kw">fn </span>poll(<span class="kw-2">mut </span><span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="self">Self</span>::Output&gt; {
+		<span class="kw">match </span><span class="self">self</span>.<span class="number">0</span>.poll_next_unpin(cx) {
+			Poll::Pending =&gt; Poll::Pending,
+			<span class="comment">// Only message is only sent and
+			// ignore can't keep up errors.
+			</span>Poll::Ready(<span class="kw">_</span>) =&gt; Poll::Ready(()),
+		}
+	}
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>session_close() -&gt; (SessionClose, SessionClosedFuture) {
+	<span class="comment">// SessionClosedFuture is closed after one message has been recevied
+	// and max one message is handled then it's closed.
+	</span><span class="kw">let </span>(tx, rx) = tokio::sync::broadcast::channel(<span class="number">1</span>);
+	(SessionClose(tx), SessionClosedFuture(BroadcastStream::new(rx)))
 }
 </code></pre></div></section></main></body></html>

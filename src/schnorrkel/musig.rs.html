@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/schnorrkel-0.9.1/src/musig.rs`."><title>musig.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="schnorrkel" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/schnorrkel-0.11.4/src/musig.rs`."><title>musig.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="schnorrkel" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../schnorrkel/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -825,9 +825,6 @@
 <a href="#823" id="823">823</a>
 <a href="#824" id="824">824</a>
 <a href="#825" id="825">825</a>
-<a href="#826" id="826">826</a>
-<a href="#827" id="827">827</a>
-<a href="#828" id="828">828</a>
 </pre></div><pre class="rust"><code><span class="comment">// -*- mode: rust; -*-
 //
 // This file is part of schnorrkel.
@@ -865,9 +862,8 @@
 
 </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 </span><span class="kw">use </span>alloc::{collections::btree_map::{BTreeMap, Entry}};
-<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-</span><span class="kw">use </span>std::{collections::btree_map::{BTreeMap, Entry}};
 
+<span class="kw">use </span>arrayref::array_ref;
 <span class="kw">use </span>arrayvec::ArrayVec;
 
 <span class="kw">use </span>merlin::Transcript;
@@ -886,7 +882,7 @@
 /// At least two so that our 2-round escape hatch `add_trusted`
 /// provides some protection against the Wagner's k-sum attacks on
 /// 2-round multi-signatures.
-</span><span class="kw">const </span>REWINDS: usize = <span class="number">4</span>;
+</span><span class="kw">const </span>REWINDS: usize = <span class="number">3</span>;
 
 
 <span class="comment">// === Agagregate public keys for multi-signatures === //
@@ -895,8 +891,8 @@
 ///
 /// Incorrect weightings shall occur if the iterator provided does not
 /// run in the same sorted ordering as `BTreeMap::iter`/`keys`/etc.
-/// We avoided a context: &amp;'static [u8] here and in callers becuase they
-/// seem irreevant to the security arguments in the MuSig paper.
+/// We avoided a context: &amp;'static [u8] here and in callers because they
+/// seem irrelevant to the security arguments in the MuSig paper.
 </span><span class="attr">#[inline(always)]
 </span><span class="kw">fn </span>commit_public_keys&lt;<span class="lifetime">'a</span>,I&gt;(keys: I) -&gt; Transcript
 <span class="kw">where </span>I: Iterator&lt;Item=<span class="kw-2">&amp;</span><span class="lifetime">'a </span>PublicKey&gt;
@@ -936,7 +932,9 @@
 <span class="kw">where </span>K: Borrow&lt;PublicKey&gt;+Ord
 {
     <span class="kw">fn </span>weighting(<span class="kw-2">&amp;</span><span class="self">self</span>, choice: <span class="kw-2">&amp;</span>PublicKey) -&gt; <span class="prelude-ty">Option</span>&lt;Scalar&gt; {
-        <span class="kw">if </span>! <span class="self">self</span>.contains_key(choice) {  <span class="kw">return </span><span class="prelude-val">None</span>;  }
+        <span class="kw">if </span>!<span class="self">self</span>.contains_key(choice) {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
+        }
         <span class="kw">let </span>t0 = commit_public_keys( <span class="self">self</span>.keys().map(|pk| pk.borrow()) );
         <span class="prelude-val">Some</span>(compute_weighting(t0, choice))
     }
@@ -989,7 +987,9 @@
 <span class="kw">where </span>K: Borrow&lt;PublicKey&gt;+PartialEq&lt;K&gt;
 {
     <span class="kw">fn </span>weighting(<span class="kw-2">&amp;</span><span class="self">self</span>, choice: <span class="kw-2">&amp;</span>PublicKey) -&gt; <span class="prelude-ty">Option</span>&lt;Scalar&gt; {
-        <span class="kw">if </span><span class="self">self</span>.<span class="number">0</span>.iter().any(|pk| pk.borrow() == choice) {  <span class="kw">return </span><span class="prelude-val">None</span>;  }
+        <span class="kw">if </span><span class="self">self</span>.<span class="number">0</span>.iter().any(|pk| pk.borrow() == choice) {
+            <span class="kw">return </span><span class="prelude-val">None</span>;
+        }
         <span class="kw">let </span>t0 = commit_public_keys( <span class="self">self</span>.<span class="number">0</span>.iter().map(|pk| pk.borrow()) );
         <span class="prelude-val">Some</span>(compute_weighting(t0, choice))
     }
@@ -1059,16 +1059,12 @@
 <span class="comment">// TODO: serde_boilerplate!(Reveal);
 
 </span><span class="kw">impl </span>Clone <span class="kw">for </span>Reveal {
-    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Reveal { Reveal(<span class="self">self</span>.<span class="number">0</span>.clone()) }
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Reveal { Reveal(<span class="self">self</span>.<span class="number">0</span>) }
 }
 <span class="kw">impl </span>PartialEq&lt;Reveal&gt; <span class="kw">for </span>Reveal {
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Reveal) -&gt; bool {
         <span class="self">self</span>.<span class="number">0</span>[..] == other.<span class="number">0</span>[..]
-    }
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>ne(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Reveal) -&gt; bool {
-        <span class="self">self</span>.<span class="number">0</span>[..] != other.<span class="number">0</span>[..]
     }
 }
 <span class="kw">impl </span>Eq <span class="kw">for </span>Reveal { }
@@ -1080,7 +1076,7 @@
 
     <span class="attr">#[allow(non_snake_case)]
     </span><span class="kw">fn </span>iter_points&lt;<span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item=CompressedRistretto&gt; + <span class="lifetime">'a </span>{
-        (<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>).chunks(<span class="number">32</span>).map( |R| CompressedRistretto( <span class="macro">array_ref!</span>[R,<span class="number">0</span>,<span class="number">32</span>].clone() ) )
+        <span class="self">self</span>.<span class="number">0</span>.chunks(<span class="number">32</span>).map( |R| CompressedRistretto( <span class="kw-2">*</span><span class="macro">array_ref!</span>[R,<span class="number">0</span>,<span class="number">32</span>] ) )
     }
 
     <span class="kw">fn </span>to_commitment(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SignatureResult&lt;Commitment&gt; {
@@ -1088,11 +1084,12 @@
         <span class="prelude-val">Ok</span>(Commitment::for_R( <span class="self">self</span>.iter_points() )) 
     }
 
-    <span class="kw">fn </span>into_points(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SignatureResult&lt;RevealedPoints&gt; {
+    <span class="attr">#[allow(clippy::wrong_self_convention)]
+    </span><span class="kw">fn </span>into_points(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SignatureResult&lt;RevealedPoints&gt; {
         <span class="self">self</span>.check_length() <span class="question-mark">?</span>;
         <span class="kw">let </span>a = <span class="self">self</span>.iter_points().map(
             |x| x.decompress().ok_or(SignatureError::PointDecompressionError)
-        ).collect::&lt;SignatureResult&lt;ArrayVec&lt;[RistrettoPoint; REWINDS]&gt;&gt;&gt;() <span class="question-mark">?</span>;
+        ).collect::&lt;SignatureResult&lt;ArrayVec&lt;RistrettoPoint,REWINDS&gt;&gt;&gt;() <span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>( RevealedPoints( a.into_inner().unwrap() ) )
     }
 }
@@ -1242,7 +1239,7 @@
         <span class="kw">move </span>|pk| {
             <span class="kw">let </span><span class="kw-2">mut </span>t1 = t0.clone();
             t1.commit_point(<span class="string">b"pk-choice"</span>, pk.as_compressed() );
-            <span class="kw">let </span><span class="kw-2">mut </span>a = ArrayVec::&lt;[Scalar; REWINDS]&gt;::new();
+            <span class="kw">let </span><span class="kw-2">mut </span>a = ArrayVec::&lt;Scalar, REWINDS&gt;::new();
             <span class="kw">while </span>!a.is_full() {
                 a.push( t1.challenge_scalar(<span class="string">b"R"</span>) );
             }
@@ -1307,7 +1304,7 @@
 {
     <span class="doccomment">/// Initialize a multi-signature aka cosignature protocol run.
     ///
-    /// We encurage borrowing the `Keypair` to minimize copies of
+    /// We encourage borrowing the `Keypair` to minimize copies of
     /// the private key, so we provide the `Keypair::musig` method
     /// for the `K = &amp;'k Keypair` case.  You could use `Rc` or `Arc`
     /// with this `MuSig::new` method, or even pass in an owned copy.
@@ -1315,15 +1312,15 @@
     </span><span class="kw">pub fn </span>new(keypair: K, t: T) -&gt; MuSig&lt;T,CommitStage&lt;K&gt;&gt; {
         <span class="kw">let </span>nonce = <span class="kw-2">&amp;</span>keypair.borrow().secret.nonce;
 
-        <span class="kw">let </span><span class="kw-2">mut </span>r_me = ArrayVec::&lt;[Scalar; REWINDS]&gt;::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>r_me = ArrayVec::&lt;Scalar, REWINDS&gt;::new();
         <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..REWINDS {
             r_me.push( t.witness_scalar(<span class="string">b"MuSigWitness"</span>,<span class="kw-2">&amp;</span>[nonce,<span class="kw-2">&amp;</span>i.to_le_bytes()]) );
         }
         <span class="kw">let </span>r_me = r_me.into_inner().unwrap();
         <span class="comment">// context, message, nonce, but not &amp;self.public.compressed
 
-        </span><span class="kw">let </span>B = <span class="kw-2">&amp;</span>constants::RISTRETTO_BASEPOINT_TABLE;
-        <span class="kw">let </span>R_me_points: ArrayVec&lt;[RistrettoPoint; REWINDS]&gt; = r_me.iter()
+        </span><span class="kw">let </span>B = constants::RISTRETTO_BASEPOINT_TABLE;
+        <span class="kw">let </span>R_me_points: ArrayVec&lt;RistrettoPoint, REWINDS&gt; = r_me.iter()
             .map(|r_me_i| r_me_i * B).collect();
         <span class="kw">let </span>R_me_points = RevealedPoints(R_me_points.into_inner().unwrap());
         <span class="kw">let </span>R_me = R_me_points.to_reveal();
@@ -1340,13 +1337,13 @@
         <span class="self">self</span>.stage.R_me.to_commitment().unwrap()
     }
 
-    <span class="doccomment">/// Add a new cosigner's public key and associated `R` bypassing our commitmewnt phase.
+    <span class="doccomment">/// Add a new cosigner's public key and associated `R` bypassing our commitment phase.
     </span><span class="kw">pub fn </span>add_their_commitment(<span class="kw-2">&amp;mut </span><span class="self">self</span>, them: PublicKey, theirs: Commitment)
      -&gt; SignatureResult&lt;()&gt;
     {
         <span class="kw">let </span>theirs = CoR::Commit(theirs);
         <span class="kw">match </span><span class="self">self</span>.Rs.entry(them) {
-            Entry::Vacant(v) =&gt; { v.insert(theirs); () },
+            Entry::Vacant(v) =&gt; { v.insert(theirs); },
             Entry::Occupied(o) =&gt;
                 <span class="kw">if </span>o.get() != <span class="kw-2">&amp;</span>theirs {
                     <span class="kw">let </span>musig_stage = MultiSignatureStage::Commitment;
@@ -1397,7 +1394,7 @@
     }
 
     <span class="doccomment">/// Add a new cosigner's public key and associated `R` bypassing our
-    /// commitmewnt phase.
+    /// commitment phase.
     ///
     /// We implemented defenses that reduce the risks posed by this
     /// method, but anyone who wishes provable security should heed
@@ -1415,7 +1412,7 @@
     /// (b) stateful, and (c) infrequently used, via some constrained
     /// channel like manually scanning QR code.  Almost all hardware
     /// wallets designs fail (b), but non-hardware wallets fail (a),
-    /// with the middle ground being only something like Pairty Signer.
+    /// with the middle ground being only something like Parity Signer.
     /// Also, any public keys controlled by an organization likely
     /// fail (c) too, making this only useful for individuals.
     </span><span class="kw">pub fn </span>add_trusted(<span class="kw-2">&amp;mut </span><span class="self">self</span>, them: PublicKey, theirs: Reveal)
@@ -1424,7 +1421,7 @@
         <span class="kw">let </span>reveal = theirs.into_points() <span class="question-mark">?</span>;
         <span class="kw">let </span>theirs = CoR::Reveal(reveal);
         <span class="kw">match </span><span class="self">self</span>.Rs.entry(them) {
-            Entry::Vacant(v) =&gt; { v.insert(theirs); () },
+            Entry::Vacant(v) =&gt; { v.insert(theirs); },
             Entry::Occupied(o) =&gt;
                 <span class="kw">if </span>o.get() != <span class="kw-2">&amp;</span>theirs {
                     <span class="kw">let </span>musig_stage = MultiSignatureStage::Reveal;
@@ -1439,7 +1436,7 @@
     </span><span class="kw">pub fn </span>cosign_stage(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; MuSig&lt;T,CosignStage&gt; {
         <span class="self">self</span>.t.proto_name(<span class="string">b"Schnorr-sig"</span>);
 
-        <span class="kw">let </span>pk = <span class="self">self</span>.public_key().as_compressed().clone();
+        <span class="kw">let </span>pk = <span class="kw-2">*</span><span class="self">self</span>.public_key().as_compressed();
         <span class="self">self</span>.t.commit_point(<span class="string">b"sign:pk"</span>,<span class="kw-2">&amp;</span>pk);
 
         <span class="kw">let </span>rewinder = <span class="self">self</span>.rewinder();
@@ -1452,17 +1449,17 @@
         <span class="kw">let </span>c = <span class="self">self</span>.t.challenge_scalar(<span class="string">b"sign:c"</span>);  <span class="comment">// context, message, A/public_key, R=rG
 
         </span><span class="kw">let </span><span class="kw-2">mut </span>s_me: Scalar = <span class="self">self</span>.stage.r_me.iter().zip(<span class="kw-2">&amp;</span>rewinds).map(|(y,x)| x<span class="kw-2">*</span>y).sum();
-        s_me += <span class="kw-2">&amp;</span>(<span class="kw-2">&amp;</span>c * <span class="kw-2">&amp;</span>a_me * <span class="kw-2">&amp;</span><span class="self">self</span>.stage.keypair.borrow().secret.key);
+        s_me += c * a_me * <span class="self">self</span>.stage.keypair.borrow().secret.key;
 
-        ::zeroize::Zeroize::zeroize(<span class="kw-2">&amp;mut </span><span class="self">self</span>.stage.r_me);
+        zeroize::Zeroize::zeroize(<span class="kw-2">&amp;mut </span><span class="self">self</span>.stage.r_me);
 
         <span class="kw">let </span>MuSig { t, <span class="kw-2">mut </span>Rs, stage: RevealStage { .. }, } = <span class="self">self</span>;
-        <span class="kw-2">*</span>(Rs.get_mut(<span class="kw-2">&amp;</span><span class="self">self</span>.stage.keypair.borrow().public).expect(<span class="string">"Rs known to contain this public; qed"</span>)) = CoR::Cosigned { s: s_me.clone() };
+        <span class="kw-2">*</span>(Rs.get_mut(<span class="kw-2">&amp;</span><span class="self">self</span>.stage.keypair.borrow().public).expect(<span class="string">"Rs known to contain this public; qed"</span>)) = CoR::Cosigned { s: s_me };
         MuSig { t, Rs, stage: CosignStage { R, s_me }, }
     }
 }
 
-<span class="doccomment">/// Final cosigning stage  colelction
+<span class="doccomment">/// Final cosigning stage collection
 </span><span class="attr">#[allow(non_snake_case)]
 </span><span class="kw">pub struct </span>CosignStage {
     <span class="doccomment">/// Collective `R` value
@@ -1485,7 +1482,7 @@
     </span><span class="kw">pub fn </span>add_their_cosignature(<span class="kw-2">&amp;mut </span><span class="self">self</span>, them: PublicKey, theirs: Cosignature)
      -&gt; SignatureResult&lt;()&gt;
     {
-        <span class="kw">let </span>theirs = Scalar::from_canonical_bytes(theirs.<span class="number">0</span>)
+        <span class="kw">let </span>theirs = <span class="kw">crate</span>::scalar_from_canonical_bytes(theirs.<span class="number">0</span>)
             .ok_or(SignatureError::ScalarFormatError) <span class="question-mark">?</span>;
         <span class="kw">match </span><span class="self">self</span>.Rs.entry(them) {
             Entry::Vacant(<span class="kw">_</span>) =&gt; {
@@ -1552,12 +1549,12 @@
      -&gt; SignatureResult&lt;()&gt;
     {
         <span class="kw">let </span>reveal = their_reveal.into_points() <span class="question-mark">?</span>;
-        <span class="kw">let </span>s = Scalar::from_canonical_bytes(their_cosignature.<span class="number">0</span>)
+        <span class="kw">let </span>s = <span class="kw">crate</span>::scalar_from_canonical_bytes(their_cosignature.<span class="number">0</span>)
             .ok_or(SignatureError::ScalarFormatError) <span class="question-mark">?</span>;
         <span class="kw">let </span>cor = CoR::Collect { reveal, s };
 
         <span class="kw">match </span><span class="self">self</span>.Rs.entry(them) {
-            Entry::Vacant(v) =&gt; { v.insert(cor); () },
+            Entry::Vacant(v) =&gt; { v.insert(cor); },
             Entry::Occupied(o) =&gt;
                 <span class="kw">if </span>o.get() != <span class="kw-2">&amp;</span>cor {
                     <span class="kw">let </span>musig_stage = MultiSignatureStage::Reveal;
@@ -1570,16 +1567,15 @@
     <span class="doccomment">/// Actually computes the collected cosignature.
     </span><span class="attr">#[allow(non_snake_case)]
     </span><span class="kw">pub fn </span>signature(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; Signature {
-        <span class="kw">let </span>pk = <span class="self">self</span>.public_key().as_compressed().clone();
+        <span class="kw">let </span>pk = <span class="kw-2">*</span><span class="self">self</span>.public_key().as_compressed();
         <span class="self">self</span>.t.commit_point(<span class="string">b"sign:pk"</span>,<span class="kw-2">&amp;</span>pk);
 
         <span class="kw">let </span>R = <span class="self">self</span>.compute_R(<span class="self">self</span>.rewinder());
 
-        <span class="kw">let </span>s: Scalar = <span class="self">self</span>.Rs.iter()
-            .map( |(_pk,cor)| <span class="kw">match </span>cor {
+        <span class="kw">let </span>s: Scalar = <span class="self">self</span>.Rs.values().map(|cor| <span class="kw">match </span>cor {
                 CoR::Collect { s, .. } =&gt; s,
                 <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"Reached CollectStage from another stage"</span>),
-            } ).sum();
+            }).sum();
         Signature { s, R, }
     }
 }
@@ -1589,8 +1585,6 @@
 </span><span class="kw">mod </span>tests {
     <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
     </span><span class="kw">use </span>alloc::vec::Vec;
-    <span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-    </span><span class="kw">use </span>std::vec::Vec;
 
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 

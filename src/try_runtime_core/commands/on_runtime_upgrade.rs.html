@@ -370,6 +370,9 @@
 <a href="#368" id="368">368</a>
 <a href="#369" id="369">369</a>
 <a href="#370" id="370">370</a>
+<a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -399,9 +402,11 @@
 <span class="kw">use </span>sp_state_machine::{CompactProof, OverlayedChanges, StorageProof};
 
 <span class="kw">use crate</span>::{
-    build_executor, misc,
-    state::{RuntimeChecks, State},
-    state_machine_call_with_proof, RefTimeInfo, SharedParams, LOG_TARGET,
+    common::{
+        misc_logging,
+        state::{build_executor, state_machine_call_with_proof, RuntimeChecks, State},
+    },
+    RefTimeInfo, SharedParams, LOG_TARGET,
 };
 
 <span class="doccomment">/// Configuration for [`run`].
@@ -478,7 +483,7 @@
     }
 
     <span class="comment">// Run `TryRuntime_on_runtime_upgrade` with the given checks.
-    </span>misc::basti_log(
+    </span>misc_logging::basti_log(
         Level::Info,
         <span class="macro">format!</span>(
             <span class="string">"🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}"</span>,
@@ -486,6 +491,7 @@
         )
         .as_str(),
     );
+
     <span class="comment">// Save the overlayed changes from the first run, so we can use them later for idempotency
     // checks.
     </span><span class="kw">let </span><span class="kw-2">mut </span>overlayed_changes = Default::default();
@@ -507,7 +513,7 @@
     </span><span class="kw">let </span>(proof, ref_time_results) = <span class="kw">match </span>command.checks {
         UpgradeCheckSelect::None =&gt; (proof, ref_time_results),
         <span class="kw">_ </span>=&gt; {
-            misc::basti_log(
+            misc_logging::basti_log(
                 Level::Info,
                 <span class="string">"🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements."</span>,
             );
@@ -532,7 +538,7 @@
             <span class="bool-val">true
         </span>}
         <span class="bool-val">false </span>=&gt; {
-            misc::basti_log(
+            misc_logging::basti_log(
                 Level::Info,
                 <span class="macro">format!</span>(
                     <span class="string">"🔬 Running TryRuntime_on_runtime_upgrade again to check idempotency: {:?}"</span>,
@@ -616,7 +622,7 @@
     };
 
     <span class="kw">if </span>!weight_ok || !idempotency_ok {
-        misc::basti_log(
+        misc_logging::basti_log(
             Level::Error,
             <span class="string">"❌ Issues detected, exiting non-zero. See logs."</span>,
         );

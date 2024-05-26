@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.22.0/src/op/message.rs`."><title>message.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.23.2/src/op/message.rs`."><title>message.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../trust_dns_proto/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -1222,7 +1222,7 @@
 <a href="#1220" id="1220">1220</a>
 <a href="#1221" id="1221">1221</a>
 <a href="#1222" id="1222">1222</a>
-</pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2021 Benjamin Fry &lt;benjaminfry@me.com&gt;
+</pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2023 Benjamin Fry &lt;benjaminfry@me.com&gt;
 //
 // Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0&gt; or the MIT license &lt;LICENSE-MIT or
@@ -1243,7 +1243,7 @@
     xfer::DnsResponse,
 };
 
-<span class="doccomment">/// The basic request and response datastructure, used for all DNS protocols.
+<span class="doccomment">/// The basic request and response data structure, used for all DNS protocols.
 ///
 /// [RFC 1035, DOMAIN NAMES - IMPLEMENTATION AND SPECIFICATION, November 1987](https://tools.ietf.org/html/rfc1035)
 ///
@@ -1563,7 +1563,7 @@
     </span><span class="attr">#[cfg(feature = <span class="string">"dnssec"</span>)]
     #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"dnssec"</span>)))]
     </span><span class="kw">pub fn </span>add_sig0(<span class="kw-2">&amp;mut </span><span class="self">self</span>, record: Record) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="macro">assert_eq!</span>(RecordType::SIG, record.rr_type());
+        <span class="macro">assert_eq!</span>(RecordType::SIG, record.record_type());
         <span class="self">self</span>.signature.push(record);
         <span class="self">self
     </span>}
@@ -1574,7 +1574,7 @@
     </span><span class="attr">#[cfg(feature = <span class="string">"dnssec"</span>)]
     #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"dnssec"</span>)))]
     </span><span class="kw">pub fn </span>add_tsig(<span class="kw-2">&amp;mut </span><span class="self">self</span>, record: Record) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="macro">assert_eq!</span>(RecordType::TSIG, record.rr_type());
+        <span class="macro">assert_eq!</span>(RecordType::TSIG, record.record_type());
         <span class="self">self</span>.signature.push(record);
         <span class="self">self
     </span>}
@@ -1898,7 +1898,7 @@
                 } <span class="comment">// SIG0 must be last
                 </span>records.push(record)
             } <span class="kw">else </span>{
-                <span class="kw">match </span>record.rr_type() {
+                <span class="kw">match </span>record.record_type() {
                     <span class="attr">#[cfg(feature = <span class="string">"dnssec"</span>)]
                     </span>RecordType::SIG =&gt; {
                         saw_sig0 = <span class="bool-val">true</span>;
@@ -1969,7 +1969,7 @@
 
         <span class="comment">// append all records to message
         </span><span class="kw">for </span>fin <span class="kw">in </span>finals {
-            <span class="kw">match </span>fin.rr_type() {
+            <span class="kw">match </span>fin.record_type() {
                 <span class="comment">// SIG0's are special, and come at the very end of the message
                 </span><span class="attr">#[cfg(feature = <span class="string">"dnssec"</span>)]
                 </span>RecordType::SIG =&gt; <span class="self">self</span>.add_sig0(fin),
@@ -2095,7 +2095,7 @@
         current_time: u32,
     ) -&gt; ProtoResult&lt;(Vec&lt;Record&gt;, <span class="prelude-ty">Option</span>&lt;MessageVerifier&gt;)&gt;;
 
-    <span class="doccomment">/// Return whether the message require futher processing before being sent
+    <span class="doccomment">/// Return whether the message requires further processing before being sent
     /// By default, returns true for AXFR and IXFR queries, and Update and Notify messages
     </span><span class="kw">fn </span>should_finalize_message(<span class="kw-2">&amp;</span><span class="self">self</span>, message: <span class="kw-2">&amp;</span>Message) -&gt; bool {
         [OpCode::Update, OpCode::Notify].contains(<span class="kw-2">&amp;</span>message.op_code())
@@ -2288,7 +2288,7 @@
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), fmt::Error&gt; {
         <span class="kw">let </span>write_query = |slice, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;| -&gt; <span class="prelude-ty">Result</span>&lt;(), fmt::Error&gt; {
             <span class="kw">for </span>d <span class="kw">in </span>slice {
-                <span class="macro">writeln!</span>(f, <span class="string">";; {}"</span>, d)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f, <span class="string">";; {d}"</span>)<span class="question-mark">?</span>;
             }
 
             <span class="prelude-val">Ok</span>(())
@@ -2296,7 +2296,7 @@
 
         <span class="kw">let </span>write_slice = |slice, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;| -&gt; <span class="prelude-ty">Result</span>&lt;(), fmt::Error&gt; {
             <span class="kw">for </span>d <span class="kw">in </span>slice {
-                <span class="macro">writeln!</span>(f, <span class="string">"{}"</span>, d)<span class="question-mark">?</span>;
+                <span class="macro">writeln!</span>(f, <span class="string">"{d}"</span>)<span class="question-mark">?</span>;
             }
 
             <span class="prelude-val">Ok</span>(())
@@ -2305,7 +2305,7 @@
         <span class="macro">writeln!</span>(f, <span class="string">"; header {header}"</span>, header = <span class="self">self</span>.header())<span class="question-mark">?</span>;
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(edns) = <span class="self">self</span>.extensions() {
-            <span class="macro">writeln!</span>(f, <span class="string">"; edns {}"</span>, edns)<span class="question-mark">?</span>;
+            <span class="macro">writeln!</span>(f, <span class="string">"; edns {edns}"</span>)<span class="question-mark">?</span>;
         }
 
         <span class="macro">writeln!</span>(f, <span class="string">"; query"</span>)<span class="question-mark">?</span>;
@@ -2403,7 +2403,7 @@
     <span class="kw">let </span>buf: Vec&lt;u8&gt; = <span class="macro">vec!</span>[
     <span class="number">0x10</span>,<span class="number">0x00</span>,<span class="number">0x81</span>,<span class="number">0x80</span>, <span class="comment">// id = 4096, response, op=query, recursion_desired, recursion_available, no_error
     </span><span class="number">0x00</span>,<span class="number">0x01</span>,<span class="number">0x00</span>,<span class="number">0x01</span>, <span class="comment">// 1 query, 1 answer,
-    </span><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>, <span class="comment">// 0 namesservers, 0 additional record
+    </span><span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>, <span class="comment">// 0 nameservers, 0 additional record
 
     </span><span class="number">0x03</span>,<span class="string">b'w'</span>,<span class="string">b'w'</span>,<span class="string">b'w'</span>, <span class="comment">// query --- www.example.com
     </span><span class="number">0x07</span>,<span class="string">b'e'</span>,<span class="string">b'x'</span>,<span class="string">b'a'</span>, <span class="comment">//

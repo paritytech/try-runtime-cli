@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/frame/support/procedural/src/construct_runtime/mod.rs`."><title>mod.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/frame/support/procedural/src/construct_runtime/mod.rs`."><title>mod.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../frame_support_procedural/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -792,6 +792,25 @@
 <a href="#790" id="790">790</a>
 <a href="#791" id="791">791</a>
 <a href="#792" id="792">792</a>
+<a href="#793" id="793">793</a>
+<a href="#794" id="794">794</a>
+<a href="#795" id="795">795</a>
+<a href="#796" id="796">796</a>
+<a href="#797" id="797">797</a>
+<a href="#798" id="798">798</a>
+<a href="#799" id="799">799</a>
+<a href="#800" id="800">800</a>
+<a href="#801" id="801">801</a>
+<a href="#802" id="802">802</a>
+<a href="#803" id="803">803</a>
+<a href="#804" id="804">804</a>
+<a href="#805" id="805">805</a>
+<a href="#806" id="806">806</a>
+<a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
+<a href="#809" id="809">809</a>
+<a href="#810" id="810">810</a>
+<a href="#811" id="811">811</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -815,10 +834,10 @@
 //! order to get all the pallet parts for each pallet.
 //!
 //! Pallets can define their parts:
-//!  - Implicitely: `System: frame_system`
+//!  - Implicitly: `System: frame_system`
 //!  - Explicitly: `System: frame_system::{Pallet, Call}`
 //!
-//! The `construct_runtime` transitions from the implicit definition to the explict one.
+//! The `construct_runtime` transitions from the implicit definition to the explicit one.
 //! From the explicit state, Substrate expands the pallets with additional information
 //! that is to be included in the runtime metadata. This expansion makes visible some extra
 //! parts of the pallets, mainly the `Error` if defined. The expanded state looks like
@@ -849,7 +868,7 @@
 //!  +----------+     +------------------+
 //! ```
 //!
-//! When all pallet parts are implcit, then the `construct_runtime!` macro expands to its final
+//! When all pallet parts are implicit, then the `construct_runtime!` macro expands to its final
 //! state, the `ExplicitExpanded`. Otherwise, all implicit parts are converted to an explicit
 //! expanded part allow the `construct_runtime!` to expand any remaining explicit parts to an
 //! explicit expanded part.
@@ -966,7 +985,7 @@
 //!
 //! This call has no implicit pallet parts, thus it will expand to the runtime construction:
 //! ```ignore
-//! pub struct Runtime { ... }
+//! pub enum Runtime { ... }
 //! pub struct Call { ... }
 //! impl Call ...
 //! pub enum Origin { ... }
@@ -996,14 +1015,14 @@
 //! Similarly to the previous transition, the macro expansion transforms `System:
 //! frame_system::{Pallet, Call}` into  `System: frame_system expanded::{Error} ::{Pallet, Call}`.
 //! The `expanded` section adds extra parts that the Substrate would like to expose for each pallet
-//! by default. This is done to expose the approprite types for metadata construction.
+//! by default. This is done to expose the appropriate types for metadata construction.
 //!
 //! This time, instead of calling `tt_default_parts` we are using the `tt_extra_parts` macro.
 //! This macro returns the ` :: expanded { Error }` list of additional parts we would like to
 //! expose.
 
-</span><span class="kw">mod </span>expand;
-<span class="kw">mod </span>parse;
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>expand;
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>parse;
 
 <span class="kw">use </span><span class="kw">crate</span>::pallet::parse::helper::two128_str;
 <span class="kw">use </span>cfg_expr::Predicate;
@@ -1027,27 +1046,40 @@
 	<span class="kw">let </span>input_copy = input.clone();
 	<span class="kw">let </span>definition = <span class="macro">syn::parse_macro_input!</span>(input <span class="kw">as </span>RuntimeDeclaration);
 
-	<span class="kw">let </span>res = <span class="kw">match </span>definition {
-		RuntimeDeclaration::Implicit(implicit_def) =&gt;
-			check_pallet_number(input_copy.clone().into(), implicit_def.pallets.len()).and_then(
-				|<span class="kw">_</span>| construct_runtime_implicit_to_explicit(input_copy.into(), implicit_def),
-			),
-		RuntimeDeclaration::Explicit(explicit_decl) =&gt; check_pallet_number(
-			input_copy.clone().into(),
-			explicit_decl.pallets.len(),
-		)
-		.and_then(|<span class="kw">_</span>| {
-			construct_runtime_explicit_to_explicit_expanded(input_copy.into(), explicit_decl)
-		}),
-		RuntimeDeclaration::ExplicitExpanded(explicit_decl) =&gt;
-			check_pallet_number(input_copy.into(), explicit_decl.pallets.len())
-				.and_then(|<span class="kw">_</span>| construct_runtime_final_expansion(explicit_decl)),
+	<span class="kw">let </span>(check_pallet_number_res, res) = <span class="kw">match </span>definition {
+		RuntimeDeclaration::Implicit(implicit_def) =&gt; (
+			check_pallet_number(input_copy.clone().into(), implicit_def.pallets.len()),
+			construct_runtime_implicit_to_explicit(input_copy.into(), implicit_def),
+		),
+		RuntimeDeclaration::Explicit(explicit_decl) =&gt; (
+			check_pallet_number(input_copy.clone().into(), explicit_decl.pallets.len()),
+			construct_runtime_explicit_to_explicit_expanded(input_copy.into(), explicit_decl),
+		),
+		RuntimeDeclaration::ExplicitExpanded(explicit_decl) =&gt; (
+			check_pallet_number(input_copy.into(), explicit_decl.pallets.len()),
+			construct_runtime_final_expansion(explicit_decl),
+		),
 	};
 
 	<span class="kw">let </span>res = res.unwrap_or_else(|e| e.to_compile_error());
 
+	<span class="comment">// We want to provide better error messages to the user and thus, handle the error here
+	// separately. If there is an error, we print the error and still generate all of the code to
+	// get in overall less errors for the user.
+	</span><span class="kw">let </span>res = <span class="kw">if let </span><span class="prelude-val">Err</span>(error) = check_pallet_number_res {
+		<span class="kw">let </span>error = error.to_compile_error();
+
+		<span class="macro">quote!</span> {
+			#error
+
+			#res
+		}
+	} <span class="kw">else </span>{
+		res
+	};
+
 	<span class="kw">let </span>res = expander::Expander::new(<span class="string">"construct_runtime"</span>)
-		.dry(std::env::var(<span class="string">"FRAME_EXPAND"</span>).is_err())
+		.dry(std::env::var(<span class="string">"EXPAND_MACROS"</span>).is_err())
 		.verbose(<span class="bool-val">true</span>)
 		.write_to_out_dir(res)
 		.expect(<span class="string">"Does not fail because of IO in OUT_DIR; qed"</span>);
@@ -1136,7 +1168,7 @@
 			syn::Error::new(
 				pallets_token.span.join(),
 				<span class="string">"`System` pallet declaration is missing. \
-			 Please add this line: `System: frame_system::{Pallet, Call, Storage, Config&lt;T&gt;, Event&lt;T&gt;},`"</span>,
+			 Please add this line: `System: frame_system,`"</span>,
 			)
 		})<span class="question-mark">?</span>;
 	<span class="kw">if </span>!system_pallet.cfg_pattern.is_empty() {
@@ -1180,6 +1212,7 @@
 	<span class="kw">let </span>pallet_to_index = decl_pallet_runtime_setup(<span class="kw-2">&amp;</span>name, <span class="kw-2">&amp;</span>pallets, <span class="kw-2">&amp;</span>scrate);
 
 	<span class="kw">let </span>dispatch = expand::expand_outer_dispatch(<span class="kw-2">&amp;</span>name, system_pallet, <span class="kw-2">&amp;</span>pallets, <span class="kw-2">&amp;</span>scrate);
+	<span class="kw">let </span>tasks = expand::expand_outer_task(<span class="kw-2">&amp;</span>name, <span class="kw-2">&amp;</span>pallets, <span class="kw-2">&amp;</span>scrate);
 	<span class="kw">let </span>metadata = expand::expand_runtime_metadata(
 		<span class="kw-2">&amp;</span>name,
 		<span class="kw-2">&amp;</span>pallets,
@@ -1269,6 +1302,8 @@
 
 		#dispatch
 
+		#tasks
+
 		#metadata
 
 		#outer_config
@@ -1293,7 +1328,7 @@
 	<span class="prelude-val">Ok</span>(res)
 }
 
-<span class="kw">fn </span>decl_all_pallets&lt;<span class="lifetime">'a</span>&gt;(
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>decl_all_pallets&lt;<span class="lifetime">'a</span>&gt;(
 	runtime: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Ident,
 	pallet_declarations: <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Pallet&gt;,
 	features: <span class="kw-2">&amp;</span>HashSet&lt;<span class="kw-2">&amp;</span>str&gt;,
@@ -1311,6 +1346,7 @@
 	<span class="kw">for </span>pallet_declaration <span class="kw">in </span>pallet_declarations {
 		<span class="kw">let </span>type_name = <span class="kw-2">&amp;</span>pallet_declaration.name;
 		<span class="kw">let </span>pallet = <span class="kw-2">&amp;</span>pallet_declaration.path;
+		<span class="kw">let </span>docs = <span class="kw-2">&amp;</span>pallet_declaration.docs;
 		<span class="kw">let </span><span class="kw-2">mut </span>generics = <span class="macro">vec!</span>[<span class="macro">quote!</span>(#runtime)];
 		generics.extend(pallet_declaration.instance.iter().map(|name| <span class="macro">quote!</span>(#pallet::#name)));
 		<span class="kw">let </span><span class="kw-2">mut </span>attrs = Vec::new();
@@ -1319,6 +1355,7 @@
 			attrs.extend(TokenStream2::from_str(<span class="kw-2">&amp;</span>feat).expect(<span class="string">"was parsed successfully; qed"</span>));
 		}
 		<span class="kw">let </span>type_decl = <span class="macro">quote!</span>(
+			#( <span class="attr">#[doc = #docs] </span>)*
 			#(#attrs)*
 			<span class="kw">pub type </span>#type_name = #pallet::Pallet &lt;#(#generics),<span class="kw-2">*</span>&gt;;
 		);
@@ -1402,7 +1439,8 @@
 		#( #all_pallets_without_system )*
 	)
 }
-<span class="kw">fn </span>decl_pallet_runtime_setup(
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>decl_pallet_runtime_setup(
 	runtime: <span class="kw-2">&amp;</span>Ident,
 	pallet_declarations: <span class="kw-2">&amp;</span>[Pallet],
 	scrate: <span class="kw-2">&amp;</span>TokenStream2,
@@ -1508,7 +1546,7 @@
 	)
 }
 
-<span class="kw">fn </span>decl_integrity_test(scrate: <span class="kw-2">&amp;</span>TokenStream2) -&gt; TokenStream2 {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>decl_integrity_test(scrate: <span class="kw-2">&amp;</span>TokenStream2) -&gt; TokenStream2 {
 	<span class="macro">quote!</span>(
 		<span class="attr">#[cfg(test)]
 		</span><span class="kw">mod </span>__construct_runtime_integrity_test {
@@ -1523,7 +1561,7 @@
 	)
 }
 
-<span class="kw">fn </span>decl_static_assertions(
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>decl_static_assertions(
 	runtime: <span class="kw-2">&amp;</span>Ident,
 	pallet_decls: <span class="kw-2">&amp;</span>[Pallet],
 	scrate: <span class="kw-2">&amp;</span>TokenStream2,
@@ -1554,7 +1592,7 @@
 	}
 }
 
-<span class="kw">fn </span>check_pallet_number(input: TokenStream2, pallet_num: usize) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>check_pallet_number(input: TokenStream2, pallet_num: usize) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
 	<span class="kw">let </span>max_pallet_num = {
 		<span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">"tuples-96"</span>) {
 			<span class="number">96

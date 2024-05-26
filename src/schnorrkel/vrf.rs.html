@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/schnorrkel-0.9.1/src/vrf.rs`."><title>vrf.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="schnorrkel" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/schnorrkel-0.11.4/src/vrf.rs`."><title>vrf.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="schnorrkel" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../schnorrkel/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -1214,6 +1214,11 @@
 <a href="#1212" id="1212">1212</a>
 <a href="#1213" id="1213">1213</a>
 <a href="#1214" id="1214">1214</a>
+<a href="#1215" id="1215">1215</a>
+<a href="#1216" id="1216">1216</a>
+<a href="#1217" id="1217">1217</a>
+<a href="#1218" id="1218">1218</a>
+<a href="#1219" id="1219">1219</a>
 </pre></div><pre class="rust"><code><span class="comment">// -*- mode: rust; -*-
 //
 // This file is part of schnorrkel.
@@ -1294,20 +1299,20 @@
 
 </span><span class="kw">use </span>core::borrow::Borrow;
 
-<span class="attr">#[cfg(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>))]
+<span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 </span><span class="kw">use </span>core::iter::once;
 
 <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 </span><span class="kw">use </span>alloc::{boxed::Box, vec::Vec};
-<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-</span><span class="kw">use </span>std::{boxed::Box, vec::Vec};
 
 <span class="kw">use </span>curve25519_dalek::constants;
 <span class="kw">use </span>curve25519_dalek::ristretto::{CompressedRistretto, RistrettoPoint};
 <span class="kw">use </span>curve25519_dalek::scalar::Scalar;
-<span class="kw">use </span>curve25519_dalek::traits::{IsIdentity,MultiscalarMul,VartimeMultiscalarMul}; <span class="comment">// Identity
+<span class="kw">use </span>curve25519_dalek::traits::{IsIdentity}; <span class="comment">// Identity
+</span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+</span><span class="kw">use </span>curve25519_dalek::traits::{MultiscalarMul,VartimeMultiscalarMul};
 
-</span><span class="kw">use </span>merlin::Transcript;
+<span class="kw">use </span>merlin::Transcript;
 
 <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::context::SigningTranscript;
@@ -1318,7 +1323,7 @@
 /// 
 /// Greg Maxwell argue that nonce generation should hash all parameters
 /// that challenge generation does in https://moderncrypto.org/mail-archive/curves/2020/001012.html
-/// We support this position in prionciple as a defense in depth against
+/// We support this position in principle as a defense in depth against
 /// attacks that cause missalignment between the public and secret keys.
 ///
 /// We did this for signatures but not for the VRF deployed in Kusama.
@@ -1335,7 +1340,7 @@
 </span><span class="kw">pub const </span>KUSAMA_VRF : bool = <span class="bool-val">true</span>;
 
 <span class="doccomment">/// Length of VRF output.
-</span><span class="kw">pub const </span>VRF_OUTPUT_LENGTH : usize = <span class="number">32</span>;
+</span><span class="kw">pub const </span>VRF_PREOUT_LENGTH : usize = <span class="number">32</span>;
 
 <span class="doccomment">/// Length of the short VRF proof which lacks support for batch verification.
 </span><span class="kw">pub const </span>VRF_PROOF_LENGTH : usize = <span class="number">64</span>;
@@ -1361,19 +1366,18 @@
     <span class="attr">#[inline(always)]
     </span><span class="kw">fn </span>transcript_with_malleability_addressed(<span class="kw-2">mut </span><span class="self">self</span>, publickey: <span class="kw-2">&amp;</span>PublicKey) -&gt; T {
         <span class="self">self</span>.commit_point(<span class="string">b"vrf-nm-pk"</span>, publickey.as_compressed());        
-        <span class="comment">// publickey.make_transcript_nonmalleable(&amp;mut self);
-        </span><span class="self">self
+        <span class="self">self
     </span>}
 }
 
-<span class="doccomment">/// VRF SigningTranscript for malleable VRF ouputs.
+<span class="doccomment">/// VRF SigningTranscript for malleable VRF outputs.
 ///
 /// *Warning*  We caution that malleable VRF outputs are insecure when
 /// used in conjunction with HDKD, as provided in dervie.rs. 
 /// Attackers could translate malleable VRF outputs from one soft subkey 
 /// to another soft subkey, gaining early knowledge of the VRF output.
-/// We think most VRF applicaitons for which HDKH soudns suitable
-/// benefit from using implicit certificates insead of HDKD anyways,
+/// We think most VRF applications for which HDKH sounds suitable
+/// benefit from using implicit certificates instead of HDKD anyways,
 /// which should also be secure in combination with HDKD.
 /// We always use non-malleable VRF inputs in our convenience methods.
 </span><span class="attr">#[derive(Clone)]
@@ -1391,8 +1395,8 @@
 /// used in conjunction with HDKD, as provided in dervie.rs. 
 /// Attackers could translate malleable VRF outputs from one soft subkey 
 /// to another soft subkey, gaining early knowledge of the VRF output.
-/// We think most VRF applicaitons for which HDKH soudns suitable
-/// benefit from using implicit certificates insead of HDKD anyways,
+/// We think most VRF applications for which HDKH sounds suitable
+/// benefit from using implicit certificates instead of HDKD anyways,
 /// which should also be secure in combination with HDKH.
 /// We always use non-malleable VRF inputs in our convenience methods.
 </span><span class="kw">pub fn </span>vrf_malleable_hash&lt;T: SigningTranscript&gt;(<span class="kw-2">mut </span>t: T) -&gt; RistrettoBoth {
@@ -1409,13 +1413,20 @@
     }
 
     <span class="doccomment">/// Pair a non-malleable VRF output with the hash of the given transcript.
-    </span><span class="kw">pub fn </span>vrf_attach_hash&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, output: VRFOutput, t: T) -&gt; SignatureResult&lt;VRFInOut&gt;
+    </span><span class="kw">pub fn </span>vrf_attach_hash&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, output: VRFPreOut, t: T) -&gt; SignatureResult&lt;VRFInOut&gt;
     <span class="kw">where </span>T: VRFSigningTranscript {
         output.attach_input_hash(<span class="self">self</span>,t)
     }
 }
 
-<span class="doccomment">/// VRF output, possibly unverified.
+<span class="doccomment">/// VRF pre-output, possibly unverified.
+</span><span class="attr">#[deprecated(
+    since = <span class="string">"0.9.2"</span>,
+    note = <span class="string">"Please use VRFPreOut instead of VRFOutput"
+</span>)]
+</span><span class="kw">pub type </span>VRFOutput = VRFPreOut;
+
+<span class="doccomment">/// VRF pre-output, possibly unverified.
 ///
 /// Internally, we keep both `RistrettoPoint` and `CompressedRistretto`
 /// forms using `RistrettoBoth`.
@@ -1423,55 +1434,55 @@
 /// We'd actually love to statically distinguish here between inputs
 /// and outputs, as well as whether outputs were verified, but doing
 /// so would disrupt our general purpose DLEQ proof mechanism, so
-/// users must be responcible for this themselves.  We do however
+/// users must be responsible for this themselves.  We do however
 /// consume by value in actual output methods, and do not implement
 /// `Copy`, as a reminder that VRF outputs should only be used once
 /// and should be checked before usage.
 </span><span class="attr">#[derive(Debug, Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
-</span><span class="kw">pub struct </span>VRFOutput(<span class="kw">pub </span>[u8; PUBLIC_KEY_LENGTH]);
+</span><span class="kw">pub struct </span>VRFPreOut(<span class="kw">pub </span>[u8; PUBLIC_KEY_LENGTH]);
 
-<span class="kw">impl </span>VRFOutput {
+<span class="kw">impl </span>VRFPreOut {
     <span class="kw">const </span>DESCRIPTION: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str =
         <span class="string">"A Ristretto Schnorr VRF output represented as a 32-byte Ristretto compressed point"</span>;
 
     <span class="doccomment">/// Convert this VRF output to a byte array.
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>to_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; [u8; VRF_OUTPUT_LENGTH] {
+    </span><span class="kw">pub fn </span>to_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; [u8; VRF_PREOUT_LENGTH] {
         <span class="self">self</span>.<span class="number">0
     </span>}
 
     <span class="doccomment">/// View this secret key as a byte array.
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>as_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8; VRF_OUTPUT_LENGTH] {
+    </span><span class="kw">pub fn </span>as_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8; VRF_PREOUT_LENGTH] {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
     </span>}
 
-    <span class="doccomment">/// Construct a `VRFOutput` from a slice of bytes.
+    <span class="doccomment">/// Construct a `VRFPreOut` from a slice of bytes.
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>from_bytes(bytes: <span class="kw-2">&amp;</span>[u8]) -&gt; SignatureResult&lt;VRFOutput&gt; {
-        <span class="kw">if </span>bytes.len() != VRF_OUTPUT_LENGTH {
+    </span><span class="kw">pub fn </span>from_bytes(bytes: <span class="kw-2">&amp;</span>[u8]) -&gt; SignatureResult&lt;VRFPreOut&gt; {
+        <span class="kw">if </span>bytes.len() != VRF_PREOUT_LENGTH {
             <span class="kw">return </span><span class="prelude-val">Err</span>(SignatureError::BytesLengthError {
-                name: <span class="string">"VRFOutput"</span>,
-                description: VRFOutput::DESCRIPTION,
-                length: VRF_OUTPUT_LENGTH
+                name: <span class="string">"VRFPreOut"</span>,
+                description: VRFPreOut::DESCRIPTION,
+                length: VRF_PREOUT_LENGTH
             });
         }
         <span class="kw">let </span><span class="kw-2">mut </span>bits: [u8; <span class="number">32</span>] = [<span class="number">0u8</span>; <span class="number">32</span>];
         bits.copy_from_slice(<span class="kw-2">&amp;</span>bytes[..<span class="number">32</span>]);
-        <span class="prelude-val">Ok</span>(VRFOutput(bits))
+        <span class="prelude-val">Ok</span>(VRFPreOut(bits))
     }
 
     <span class="doccomment">/// Pair a non-malleable VRF output with the hash of the given transcript.
     </span><span class="kw">pub fn </span>attach_input_hash&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, public: <span class="kw-2">&amp;</span>PublicKey, t: T) -&gt; SignatureResult&lt;VRFInOut&gt;
     <span class="kw">where </span>T: VRFSigningTranscript {
         <span class="kw">let </span>input = public.vrf_hash(t);
-        <span class="kw">let </span>output = RistrettoBoth::from_bytes_ser(<span class="string">"VRFOutput"</span>, VRFOutput::DESCRIPTION, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>) <span class="question-mark">?</span>;
+        <span class="kw">let </span>output = RistrettoBoth::from_bytes_ser(<span class="string">"VRFPreOut"</span>, VRFPreOut::DESCRIPTION, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>) <span class="question-mark">?</span>;
         <span class="kw">if </span>output.as_point().is_identity() { <span class="kw">return </span><span class="prelude-val">Err</span>(SignatureError::PointDecompressionError); }
         <span class="prelude-val">Ok</span>(VRFInOut { input, output })
     }
 }
 
-<span class="macro">serde_boilerplate!</span>(VRFOutput);
+<span class="macro">serde_boilerplate!</span>(VRFPreOut);
 
 <span class="doccomment">/// VRF input and output paired together, possibly unverified.
 ///
@@ -1489,7 +1500,7 @@
     <span class="doccomment">/// Evaluate the VRF-like multiplication on an uncompressed point,
     /// probably not useful in this form.
     </span><span class="kw">pub fn </span>vrf_create_from_point(<span class="kw-2">&amp;</span><span class="self">self</span>, input: RistrettoBoth) -&gt; VRFInOut {
-        <span class="kw">let </span>output = RistrettoBoth::from_point(<span class="kw-2">&amp;</span><span class="self">self</span>.key * input.as_point());
+        <span class="kw">let </span>output = RistrettoBoth::from_point(<span class="self">self</span>.key * input.as_point());
         VRFInOut { input, output }
     }
 
@@ -1499,7 +1510,7 @@
     /// We caution that such protocols could provide signing oracles
     /// and note that `vrf_create_from_point` cannot check for
     /// problematic inputs like `attach_input_hash` does.
-    </span><span class="kw">pub fn </span>vrf_create_from_compressed_point(<span class="kw-2">&amp;</span><span class="self">self</span>, input: <span class="kw-2">&amp;</span>VRFOutput) -&gt; SignatureResult&lt;VRFInOut&gt; {
+    </span><span class="kw">pub fn </span>vrf_create_from_compressed_point(<span class="kw-2">&amp;</span><span class="self">self</span>, input: <span class="kw-2">&amp;</span>VRFPreOut) -&gt; SignatureResult&lt;VRFInOut&gt; {
         <span class="kw">let </span>input = RistrettoBoth::from_compressed(CompressedRistretto(input.<span class="number">0</span>)) <span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(<span class="self">self</span>.vrf_create_from_point(input))
     }
@@ -1519,8 +1530,8 @@
     }
 
     <span class="doccomment">/// VRF output point bytes for serialization.
-    </span><span class="kw">pub fn </span>to_output(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; VRFOutput {
-        VRFOutput(<span class="self">self</span>.output.as_compressed().to_bytes())
+    </span><span class="kw">pub fn </span>to_preout(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; VRFPreOut {
+        VRFPreOut(<span class="self">self</span>.output.as_compressed().to_bytes())
     }
 
     <span class="doccomment">/// Commit VRF input and output to a transcript.
@@ -1544,7 +1555,7 @@
     /// If called with distinct contexts then outputs should be independent.
     ///
     /// We incorporate both the input and output to provide the 2Hash-DH
-    /// construction from Theorem 2 on page 32 in appendex C of
+    /// construction from Theorem 2 on page 32 in appendix C of
     /// ["Ouroboros Praos: An adaptively-secure, semi-synchronous proof-of-stake blockchain"](https://eprint.iacr.org/2017/573.pdf)
     /// by Bernardo David, Peter Gazi, Aggelos Kiayias, and Alexander Russell.
     </span><span class="kw">pub fn </span>make_bytes&lt;B: Default + AsMut&lt;[u8]&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, context: <span class="kw-2">&amp;</span>[u8]) -&gt; B {
@@ -1561,7 +1572,7 @@
     /// If you are not the signer then you must verify the VRF before calling this method.
     ///
     /// We expect most users would prefer the less generic `VRFInOut::make_chacharng` method.
-    </span><span class="kw">pub fn </span>make_rng&lt;R: ::rand_core::SeedableRng&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, context: <span class="kw-2">&amp;</span>[u8]) -&gt; R {
+    </span><span class="kw">pub fn </span>make_rng&lt;R: rand_core::SeedableRng&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, context: <span class="kw-2">&amp;</span>[u8]) -&gt; R {
         R::from_seed(<span class="self">self</span>.make_bytes::&lt;R::Seed&gt;(context))
     }
 
@@ -1573,11 +1584,11 @@
     /// Independent output streams are available via `ChaChaRng::set_stream` too.
     ///
     /// We incorporate both the input and output to provide the 2Hash-DH
-    /// construction from Theorem 2 on page 32 in appendex C of
+    /// construction from Theorem 2 on page 32 in appendix C of
     /// ["Ouroboros Praos: An adaptively-secure, semi-synchronous proof-of-stake blockchain"](https://eprint.iacr.org/2017/573.pdf)
     /// by Bernardo David, Peter Gazi, Aggelos Kiayias, and Alexander Russell.
     </span><span class="attr">#[cfg(feature = <span class="string">"rand_chacha"</span>)]
-    </span><span class="kw">pub fn </span>make_chacharng(<span class="kw-2">&amp;</span><span class="self">self</span>, context: <span class="kw-2">&amp;</span>[u8]) -&gt; ::rand_chacha::ChaChaRng {
+    </span><span class="kw">pub fn </span>make_chacharng(<span class="kw-2">&amp;</span><span class="self">self</span>, context: <span class="kw-2">&amp;</span>[u8]) -&gt; rand_chacha::ChaChaRng {
         <span class="self">self</span>.make_rng::&lt;::rand_chacha::ChaChaRng&gt;(context)
     }
 
@@ -1593,18 +1604,18 @@
     </span><span class="kw">pub fn </span>make_merlin_rng(<span class="kw-2">&amp;</span><span class="self">self</span>, context: <span class="kw-2">&amp;</span>[u8]) -&gt; merlin::TranscriptRng {
         <span class="comment">// Very insecure hack except for our commit_witness_bytes below
         </span><span class="kw">struct </span>ZeroFakeRng;
-        <span class="kw">impl </span>::rand_core::RngCore <span class="kw">for </span>ZeroFakeRng {
+        <span class="kw">impl </span>rand_core::RngCore <span class="kw">for </span>ZeroFakeRng {
             <span class="kw">fn </span>next_u32(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; u32 {  <span class="macro">panic!</span>()  }
             <span class="kw">fn </span>next_u64(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; u64 {  <span class="macro">panic!</span>()  }
             <span class="kw">fn </span>fill_bytes(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dest: <span class="kw-2">&amp;mut </span>[u8]) {
                 <span class="kw">for </span>i <span class="kw">in </span>dest.iter_mut() {  <span class="kw-2">*</span>i = <span class="number">0</span>;  }
             }
-            <span class="kw">fn </span>try_fill_bytes(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dest: <span class="kw-2">&amp;mut </span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;(), ::rand_core::Error&gt; {
+            <span class="kw">fn </span>try_fill_bytes(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dest: <span class="kw-2">&amp;mut </span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;(), rand_core::Error&gt; {
                 <span class="self">self</span>.fill_bytes(dest);
                 <span class="prelude-val">Ok</span>(())
             }
         }
-        <span class="kw">impl </span>::rand_core::CryptoRng <span class="kw">for </span>ZeroFakeRng {}
+        <span class="kw">impl </span>rand_core::CryptoRng <span class="kw">for </span>ZeroFakeRng {}
 
         <span class="kw">let </span><span class="kw-2">mut </span>t = Transcript::new(<span class="string">b"VRFResult"</span>);
         t.append_message(<span class="string">b""</span>,context);
@@ -1641,8 +1652,8 @@
     <span class="kw">where
         </span>B: Borrow&lt;VRFInOut&gt;,
     {
-        <span class="macro">assert!</span>( ps.len() &gt; <span class="number">0</span>);
-        <span class="kw">let </span><span class="kw-2">mut </span>t = ::merlin::Transcript::new(<span class="string">b"MergeVRFs"</span>);
+        <span class="macro">assert!</span>(!ps.is_empty());
+        <span class="kw">let </span><span class="kw-2">mut </span>t = merlin::Transcript::new(<span class="string">b"MergeVRFs"</span>);
         t.commit_point(<span class="string">b"vrf:pk"</span>, <span class="self">self</span>.as_compressed());
         <span class="kw">for </span>p <span class="kw">in </span>ps.iter() {
             p.borrow().commit(<span class="kw-2">&amp;mut </span>t);
@@ -1653,9 +1664,9 @@
             p.borrow().commit(<span class="kw-2">&amp;mut </span>t0);
             challenge_scalar_128(t0)
         });
-        <span class="attr">#[cfg(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>))]
+        <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
         </span><span class="kw">let </span>zs: Vec&lt;Scalar&gt; = zf().collect();
-        <span class="attr">#[cfg(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>))]
+        <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
         </span><span class="kw">let </span>zf = || zs.iter();
 
         <span class="comment">// We need actual fns here because closures cannot easily take
@@ -1663,7 +1674,7 @@
         // closures but giving all closures unique types.
         </span><span class="kw">fn </span>get_input(p: <span class="kw-2">&amp;</span>VRFInOut) -&gt; <span class="kw-2">&amp;</span>RistrettoPoint { p.input.as_point() }
         <span class="kw">fn </span>get_output(p: <span class="kw-2">&amp;</span>VRFInOut) -&gt; <span class="kw-2">&amp;</span>RistrettoPoint { p.output.as_point() }
-        <span class="attr">#[cfg(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>))]
+        <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
         </span><span class="kw">let </span>go = |io: <span class="kw">fn</span>(p: <span class="kw-2">&amp;</span>VRFInOut) -&gt; <span class="kw-2">&amp;</span>RistrettoPoint| {
             <span class="kw">let </span>ps = ps.iter().map( |p| io(p.borrow()) );
             RistrettoBoth::from_point(<span class="kw">if </span>vartime {
@@ -1672,9 +1683,10 @@
                 RistrettoPoint::multiscalar_mul(zf(), ps)
             })
         };
-        <span class="attr">#[cfg(not(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>)))]
+        <span class="attr">#[cfg(not(feature = <span class="string">"alloc"</span>))]
         </span><span class="kw">let </span>go = |io: <span class="kw">fn</span>(p: <span class="kw-2">&amp;</span>VRFInOut) -&gt; <span class="kw-2">&amp;</span>RistrettoPoint| {
-            <span class="kw">use </span>curve25519_dalek::traits::Identity;
+            <span class="kw">let _ </span>= vartime; <span class="comment">// ignore unused variable
+            </span><span class="kw">use </span>curve25519_dalek::traits::Identity;
             <span class="kw">let </span><span class="kw-2">mut </span>acc = RistrettoPoint::identity();
             <span class="kw">for </span>(z,p) <span class="kw">in </span>zf().zip(ps) {
                 acc += z * io(p.borrow());
@@ -1727,8 +1739,8 @@
         c.copy_from_slice(<span class="kw-2">&amp;</span>bytes[..<span class="number">32</span>]);
         s.copy_from_slice(<span class="kw-2">&amp;</span>bytes[<span class="number">32</span>..]);
 
-        <span class="kw">let </span>c = Scalar::from_canonical_bytes(c).ok_or(SignatureError::ScalarFormatError) <span class="question-mark">?</span>;
-        <span class="kw">let </span>s = Scalar::from_canonical_bytes(s).ok_or(SignatureError::ScalarFormatError) <span class="question-mark">?</span>;
+        <span class="kw">let </span>c = <span class="kw">crate</span>::scalar_from_canonical_bytes(c).ok_or(SignatureError::ScalarFormatError) <span class="question-mark">?</span>;
+        <span class="kw">let </span>s = <span class="kw">crate</span>::scalar_from_canonical_bytes(s).ok_or(SignatureError::ScalarFormatError) <span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(VRFProof { c, s })
     }
 }
@@ -1782,7 +1794,7 @@
         Hr.copy_from_slice(<span class="kw-2">&amp;</span>bytes[<span class="number">32</span>..<span class="number">64</span>]);
         s.copy_from_slice(<span class="kw-2">&amp;</span>bytes[<span class="number">64</span>..<span class="number">96</span>]);
 
-        <span class="kw">let </span>s = Scalar::from_canonical_bytes(s).ok_or(SignatureError::ScalarFormatError) <span class="question-mark">?</span>;
+        <span class="kw">let </span>s = <span class="kw">crate</span>::scalar_from_canonical_bytes(s).ok_or(SignatureError::ScalarFormatError) <span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(VRFProofBatchable { R: CompressedRistretto(R), Hr: CompressedRistretto(Hr), s })
     }
 
@@ -1812,8 +1824,8 @@
     ///
     /// TODO: Avoid the error path here by avoiding decompressing,
     /// either locally here, or more likely by decompressing
-    /// `VRFOutput` in deserialization.
-    </span><span class="kw">pub fn </span>shorten_vrf&lt;T&gt;( <span class="kw-2">&amp;</span><span class="self">self</span>, public: <span class="kw-2">&amp;</span>PublicKey, t: T, out: <span class="kw-2">&amp;</span>VRFOutput)
+    /// `VRFPreOut` in deserialization.
+    </span><span class="kw">pub fn </span>shorten_vrf&lt;T&gt;( <span class="kw-2">&amp;</span><span class="self">self</span>, public: <span class="kw-2">&amp;</span>PublicKey, t: T, out: <span class="kw-2">&amp;</span>VRFPreOut)
      -&gt; SignatureResult&lt;VRFProof&gt;
     <span class="kw">where </span>T: VRFSigningTranscript,
     {
@@ -1843,11 +1855,11 @@
         <span class="kw">if </span>!kusama {  t.commit_point(<span class="string">b"vrf:pk"</span>, <span class="self">self</span>.public.as_compressed());  }
 
         <span class="comment">// We compute R after adding pk and all h.
-        </span><span class="kw">let </span><span class="kw-2">mut </span>r = t.witness_scalar(<span class="string">b"proving\00"</span>,<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="self">self</span>.secret.nonce]);
-        <span class="kw">let </span>R = (<span class="kw-2">&amp;</span>r * <span class="kw-2">&amp;</span>constants::RISTRETTO_BASEPOINT_TABLE).compress();
+        </span><span class="kw">let </span><span class="kw-2">mut </span>r = t.witness_scalar(<span class="string">b"proving\x000"</span>,<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="self">self</span>.secret.nonce]);
+        <span class="kw">let </span>R = (<span class="kw-2">&amp;</span>r * constants::RISTRETTO_BASEPOINT_TABLE).compress();
         t.commit_point(<span class="string">b"vrf:R=g^r"</span>, <span class="kw-2">&amp;</span>R);
 
-        <span class="kw">let </span>Hr = (<span class="kw-2">&amp;</span>r * p.input.as_point()).compress();
+        <span class="kw">let </span>Hr = (r * p.input.as_point()).compress();
         t.commit_point(<span class="string">b"vrf:h^r"</span>, <span class="kw-2">&amp;</span>Hr);
 
         <span class="kw">if </span>kusama {  t.commit_point(<span class="string">b"vrf:pk"</span>, <span class="self">self</span>.public.as_compressed());  }
@@ -1855,15 +1867,15 @@
         </span>t.commit_point(<span class="string">b"vrf:h^sk"</span>, p.output.as_compressed());
 
         <span class="kw">let </span>c = t.challenge_scalar(<span class="string">b"prove"</span>); <span class="comment">// context, message, A/public_key, R=rG
-        </span><span class="kw">let </span>s = <span class="kw-2">&amp;</span>r - <span class="kw-2">&amp;</span>(<span class="kw-2">&amp;</span>c * <span class="kw-2">&amp;</span><span class="self">self</span>.secret.key);
+        </span><span class="kw">let </span>s = r - c * <span class="self">self</span>.secret.key;
 
-        ::zeroize::Zeroize::zeroize(<span class="kw-2">&amp;mut </span>r);
+        zeroize::Zeroize::zeroize(<span class="kw-2">&amp;mut </span>r);
 
         (VRFProof { c, s }, VRFProofBatchable { R, Hr, s })
     }
 
     <span class="doccomment">/// Run VRF on one single input transcript, producing the outpus
-    /// and correspodning short proof.
+    /// and corresponding short proof.
     ///
     /// There are schemes like Ouroboros Praos in which nodes evaluate
     /// VRFs repeatedly until they win some contest.  In these case,
@@ -1878,7 +1890,7 @@
     </span>}
 
     <span class="doccomment">/// Run VRF on one single input transcript and an extra message transcript, 
-    /// producing the outpus and correspodning short proof.
+    /// producing the outpus and corresponding short proof.
     </span><span class="kw">pub fn </span>vrf_sign_extra&lt;T,E&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, t: T, extra: E) -&gt; (VRFInOut, VRFProof, VRFProofBatchable)
     <span class="kw">where </span>T: VRFSigningTranscript,
           E: SigningTranscript,
@@ -1890,7 +1902,7 @@
 
 
     <span class="doccomment">/// Run VRF on one single input transcript, producing the outpus
-    /// and correspodning short proof only if the result first passes
+    /// and corresponding short proof only if the result first passes
     /// some check.
     ///
     /// There are schemes like Ouroboros Praos in which nodes evaluate
@@ -1908,7 +1920,7 @@
     }
 
     <span class="doccomment">/// Run VRF on one single input transcript, producing the outpus
-    /// and correspodning short proof only if the result first passes
+    /// and corresponding short proof only if the result first passes
     /// some check, which itself returns an extra message transcript.
     </span><span class="kw">pub fn </span>vrf_sign_extra_after_check&lt;T,E,F&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, t: T, <span class="kw-2">mut </span>check: F)
      -&gt; <span class="prelude-ty">Option</span>&lt;(VRFInOut, VRFProof, VRFProofBatchable)&gt;
@@ -1928,7 +1940,7 @@
     /// We merge the VRF outputs using variable time arithmetic, so
     /// if even the hash of the message being signed is sensitive then
     /// you might reimplement some constant time variant.
-    </span><span class="attr">#[cfg(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>))]
+    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
     </span><span class="kw">pub fn </span>vrfs_sign&lt;T, I&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, ts: I) -&gt; (Box&lt;[VRFInOut]&gt;, VRFProof, VRFProofBatchable)
     <span class="kw">where
         </span>T: VRFSigningTranscript,
@@ -1943,7 +1955,7 @@
     /// We merge the VRF outputs using variable time arithmetic, so
     /// if even the hash of the message being signed is sensitive then
     /// you might reimplement some constant time variant.
-    </span><span class="attr">#[cfg(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>))]
+    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
     </span><span class="kw">pub fn </span>vrfs_sign_extra&lt;T,E,I&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, ts: I, extra: E) -&gt; (Box&lt;[VRFInOut]&gt;, VRFProof, VRFProofBatchable)
     <span class="kw">where
         </span>T: VRFSigningTranscript,
@@ -1996,11 +2008,11 @@
         t.commit_point(<span class="string">b"vrf:R=g^r"</span>, <span class="kw-2">&amp;</span>R);
 
         <span class="comment">// We also recompute h^r aka u using the proof
-        </span><span class="attr">#[cfg(not(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>)))]
+        </span><span class="attr">#[cfg(not(feature = <span class="string">"alloc"</span>))]
         </span><span class="kw">let </span>Hr = (<span class="kw-2">&amp;</span>proof.c * p.output.as_point()) + (<span class="kw-2">&amp;</span>proof.s * p.input.as_point());
 
         <span class="comment">// TODO: Verify if this is actually faster using benchmarks
-        </span><span class="attr">#[cfg(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>))]
+        </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
         </span><span class="kw">let </span>Hr = RistrettoPoint::vartime_multiscalar_mul(
             <span class="kw-2">&amp;</span>[proof.c, proof.s],
             <span class="kw-2">&amp;</span>[<span class="kw-2">*</span>p.output.as_point(), <span class="kw-2">*</span>p.input.as_point()],
@@ -2026,7 +2038,7 @@
     </span><span class="kw">pub fn </span>vrf_verify&lt;T: VRFSigningTranscript&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         t: T,
-        out: <span class="kw-2">&amp;</span>VRFOutput,
+        out: <span class="kw-2">&amp;</span>VRFPreOut,
         proof: <span class="kw-2">&amp;</span>VRFProof,
     ) -&gt; SignatureResult&lt;(VRFInOut, VRFProofBatchable)&gt; {
         <span class="self">self</span>.vrf_verify_extra(t,out,proof,Transcript::new(<span class="string">b"VRF"</span>))
@@ -2036,7 +2048,7 @@
     </span><span class="kw">pub fn </span>vrf_verify_extra&lt;T,E&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         t: T,
-        out: <span class="kw-2">&amp;</span>VRFOutput,
+        out: <span class="kw-2">&amp;</span>VRFPreOut,
         proof: <span class="kw-2">&amp;</span>VRFProof,
         extra: E,
     ) -&gt; SignatureResult&lt;(VRFInOut, VRFProofBatchable)&gt; 
@@ -2049,7 +2061,7 @@
     }
 
     <span class="doccomment">/// Verify a common VRF short proof for several input transcripts and corresponding outputs.
-    </span><span class="attr">#[cfg(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>))]
+    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
     </span><span class="kw">pub fn </span>vrfs_verify&lt;T,I,O&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         transcripts: I,
@@ -2059,13 +2071,13 @@
     <span class="kw">where
         </span>T: VRFSigningTranscript,
         I: IntoIterator&lt;Item = T&gt;,
-        O: Borrow&lt;VRFOutput&gt;,
+        O: Borrow&lt;VRFPreOut&gt;,
     {
         <span class="self">self</span>.vrfs_verify_extra(transcripts,outs,proof,Transcript::new(<span class="string">b"VRF"</span>))
     }
 
     <span class="doccomment">/// Verify a common VRF short proof for several input transcripts and corresponding outputs.
-    </span><span class="attr">#[cfg(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>))]
+    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
     </span><span class="kw">pub fn </span>vrfs_verify_extra&lt;T,E,I,O&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         transcripts: I,
@@ -2077,7 +2089,7 @@
         </span>T: VRFSigningTranscript,
         E: SigningTranscript,
         I: IntoIterator&lt;Item = T&gt;,
-        O: Borrow&lt;VRFOutput&gt;,
+        O: Borrow&lt;VRFPreOut&gt;,
     {
         <span class="kw">let </span><span class="kw-2">mut </span>ts = transcripts.into_iter();
         <span class="kw">let </span>ps = ts.by_ref().zip(outs)
@@ -2107,10 +2119,10 @@
 /// TODO: Assess when the two verification equations should be
 /// combined, presumably by benchmarking both forms.  At smaller batch
 /// sizes then we should clearly benefit form the combined form, but
-/// bany combination doubles the scalar by scalar multiplicications
+/// any combination doubles the scalar by scalar multiplications
 /// and hashing, so large enough batch verifications should favor two
-/// seperate calls.
-</span><span class="attr">#[cfg(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>))]
+/// separate calls.
+</span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 #[allow(non_snake_case)]
 </span><span class="kw">pub fn </span>dleq_verify_batch(
     ps: <span class="kw-2">&amp;</span>[VRFInOut],
@@ -2118,19 +2130,19 @@
     public_keys: <span class="kw-2">&amp;</span>[PublicKey],
     kusama: bool,
 ) -&gt; SignatureResult&lt;()&gt; {
-    <span class="kw">const </span>ASSERT_MESSAGE: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"The number of messages/transcripts / input points, output points, proofs, and public keys must be equal."</span>;
-    <span class="macro">assert!</span>(ps.len() == proofs.len(), ASSERT_MESSAGE);
-    <span class="macro">assert!</span>(proofs.len() == public_keys.len(), ASSERT_MESSAGE);
+    <span class="kw">const </span>ASSERT_MESSAGE: <span class="kw-2">&amp;</span>str = <span class="string">"The number of messages/transcripts / input points, output points, proofs, and public keys must be equal."</span>;
+    <span class="macro">assert!</span>(ps.len() == proofs.len(), <span class="string">"{}"</span>, ASSERT_MESSAGE);
+    <span class="macro">assert!</span>(proofs.len() == public_keys.len(), <span class="string">"{}"</span>, ASSERT_MESSAGE);
 
-    <span class="comment">// Use a random number generator keyed by the publidc keys, the
-    // inout and putput points, and the system randomn number gnerator.
+    <span class="comment">// Use a random number generator keyed by the public keys, the
+    // inout and putput points, and the system random number generator.
     </span><span class="kw">let </span><span class="kw-2">mut </span>csprng = {
         <span class="kw">let </span><span class="kw-2">mut </span>t = Transcript::new(<span class="string">b"VB-RNG"</span>);
         <span class="kw">for </span>(pk,p) <span class="kw">in </span>public_keys.iter().zip(ps) {
             t.commit_point(<span class="string">b""</span>,pk.as_compressed());
             p.commit(<span class="kw-2">&amp;mut </span>t);
         }
-        t.build_rng().finalize(<span class="kw-2">&amp;mut </span>rand_hack())
+        t.build_rng().finalize(<span class="kw-2">&amp;mut </span>getrandom_or_panic())
     };
 
     <span class="comment">// Select a random 128-bit scalar for each signature.
@@ -2181,10 +2193,10 @@
 <span class="doccomment">/// Batch verify VRFs by different signers
 ///
 ///
-</span><span class="attr">#[cfg(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>))]
+</span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 </span><span class="kw">pub fn </span>vrf_verify_batch&lt;T, I&gt;(
     transcripts: I,
-    outs: <span class="kw-2">&amp;</span>[VRFOutput],
+    outs: <span class="kw-2">&amp;</span>[VRFPreOut],
     proofs: <span class="kw-2">&amp;</span>[VRFProofBatchable],
     publickeys: <span class="kw-2">&amp;</span>[PublicKey],
 ) -&gt; SignatureResult&lt;Box&lt;[VRFInOut]&gt;&gt;
@@ -2214,22 +2226,20 @@
 </span><span class="kw">mod </span>tests {
     <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
     </span><span class="kw">use </span>alloc::vec::Vec;
-    <span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-    </span><span class="kw">use </span>std::vec::Vec;
 
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attr">#[test]
+    <span class="attr">#[cfg(feature = <span class="string">"getrandom"</span>)]
+    #[test]
     </span><span class="kw">fn </span>vrf_single() {
-        <span class="comment">// #[cfg(feature = "getrandom")]
-        </span><span class="kw">let </span><span class="kw-2">mut </span>csprng = ::rand_core::OsRng;
+        <span class="kw">let </span><span class="kw-2">mut </span>csprng = rand_core::OsRng;
 
         <span class="kw">let </span>keypair1 = Keypair::generate_with(<span class="kw-2">&amp;mut </span>csprng);
 
         <span class="kw">let </span>ctx = signing_context(<span class="string">b"yo!"</span>);
         <span class="kw">let </span>msg = <span class="string">b"meow"</span>;
         <span class="kw">let </span>(io1, proof1, proof1batchable) = keypair1.vrf_sign(ctx.bytes(msg));
-        <span class="kw">let </span>out1 = <span class="kw-2">&amp;</span>io1.to_output();
+        <span class="kw">let </span>out1 = <span class="kw-2">&amp;</span>io1.to_preout();
         <span class="macro">assert_eq!</span>(
             proof1,
             proof1batchable
@@ -2265,17 +2275,17 @@
         </span>);
     }
 
-    <span class="attr">#[test]
+    <span class="attr">#[cfg(feature = <span class="string">"getrandom"</span>)]
+    #[test]
     </span><span class="kw">fn </span>vrf_malleable() {
-        <span class="comment">// #[cfg(feature = "getrandom")]
-        </span><span class="kw">let </span><span class="kw-2">mut </span>csprng = ::rand_core::OsRng;
+        <span class="kw">let </span><span class="kw-2">mut </span>csprng = rand_core::OsRng;
 
         <span class="kw">let </span>keypair1 = Keypair::generate_with(<span class="kw-2">&amp;mut </span>csprng);
 
         <span class="kw">let </span>ctx = signing_context(<span class="string">b"yo!"</span>);
         <span class="kw">let </span>msg = <span class="string">b"meow"</span>;
         <span class="kw">let </span>(io1, proof1, proof1batchable) = keypair1.vrf_sign(Malleable(ctx.bytes(msg)));
-        <span class="kw">let </span>out1 = <span class="kw-2">&amp;</span>io1.to_output();
+        <span class="kw">let </span>out1 = <span class="kw-2">&amp;</span>io1.to_preout();
         <span class="macro">assert_eq!</span>(
             proof1,
             proof1batchable.shorten_vrf(<span class="kw-2">&amp;</span>keypair1.public, Malleable(ctx.bytes(msg)), <span class="kw-2">&amp;</span>out1).unwrap(),
@@ -2308,7 +2318,7 @@
             <span class="string">"VRF verification with incorrect signer passed!"
         </span>);
         <span class="kw">let </span>(io2, _proof2, _proof2batchable) = keypair2.vrf_sign(Malleable(ctx.bytes(msg)));
-        <span class="kw">let </span>out2 = <span class="kw-2">&amp;</span>io2.to_output();
+        <span class="kw">let </span>out2 = <span class="kw-2">&amp;</span>io2.to_preout();
 
         <span class="comment">// Verified key exchange, aka sequential two party VRF.
         </span><span class="kw">let </span>t0 = Transcript::new(<span class="string">b"VRF"</span>);
@@ -2337,10 +2347,10 @@
             .is_ok());
     }
 
-    <span class="attr">#[cfg(any(feature = <span class="string">"alloc"</span>, feature = <span class="string">"std"</span>))]
+    <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
     #[test]
     </span><span class="kw">fn </span>vrfs_merged_and_batched() {
-        <span class="kw">let </span><span class="kw-2">mut </span>csprng = ::rand_core::OsRng;
+        <span class="kw">let </span><span class="kw-2">mut </span>csprng = rand_core::OsRng;
         <span class="kw">let </span>keypairs: Vec&lt;Keypair&gt; = (<span class="number">0</span>..<span class="number">4</span>)
             .map(|<span class="kw">_</span>| Keypair::generate_with(<span class="kw-2">&amp;mut </span>csprng))
             .collect();
@@ -2358,8 +2368,8 @@
         <span class="kw">for </span>(k, (ios, proof, proof_batchable)) <span class="kw">in </span>keypairs.iter().zip(<span class="kw-2">&amp;</span>ios_n_proofs) {
             <span class="kw">let </span>outs = ios
                 .iter()
-                .map(|io| io.to_output())
-                .collect::&lt;Vec&lt;VRFOutput&gt;&gt;();
+                .map(|io| io.to_preout())
+                .collect::&lt;Vec&lt;VRFPreOut&gt;&gt;();
             <span class="kw">let </span>(ios_too, proof_too) = k
                 .public
                 .vrfs_verify(ts(), <span class="kw-2">&amp;</span>outs, <span class="kw-2">&amp;</span>proof)
@@ -2376,8 +2386,8 @@
         <span class="kw">for </span>(k, (ios, proof, _proof_batchable)) <span class="kw">in </span>keypairs.iter().zip(<span class="kw-2">&amp;</span>ios_n_proofs) {
             <span class="kw">let </span>outs = ios.iter()
                 .rev()
-                .map(|io| io.to_output())
-                .collect::&lt;Vec&lt;VRFOutput&gt;&gt;();
+                .map(|io| io.to_preout())
+                .collect::&lt;Vec&lt;VRFPreOut&gt;&gt;();
             <span class="macro">assert!</span>(
                 k.public.vrfs_verify(ts(), <span class="kw-2">&amp;</span>outs, <span class="kw-2">&amp;</span>proof).is_err(),
                 <span class="string">"Incorrect VRF output verification passed!"
@@ -2385,8 +2395,8 @@
         }
         <span class="kw">for </span>(k, (ios, proof, _proof_batchable)) <span class="kw">in </span>keypairs.iter().rev().zip(<span class="kw-2">&amp;</span>ios_n_proofs) {
             <span class="kw">let </span>outs = ios.iter()
-                .map(|io| io.to_output())
-                .collect::&lt;Vec&lt;VRFOutput&gt;&gt;();
+                .map(|io| io.to_preout())
+                .collect::&lt;Vec&lt;VRFPreOut&gt;&gt;();
             <span class="macro">assert!</span>(
                 k.public.vrfs_verify(ts(), <span class="kw-2">&amp;</span>outs, <span class="kw-2">&amp;</span>proof).is_err(),
                 <span class="string">"VRF output verification by a different signer passed!"

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bstr-1.9.0/src/ext_slice.rs`."><title>ext_slice.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bstr" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bstr-0.2.17/src/ext_slice.rs`."><title>ext_slice.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bstr" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../bstr/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -3655,235 +3655,20 @@
 <a href="#3653" id="3653">3653</a>
 <a href="#3654" id="3654">3654</a>
 <a href="#3655" id="3655">3655</a>
-<a href="#3656" id="3656">3656</a>
-<a href="#3657" id="3657">3657</a>
-<a href="#3658" id="3658">3658</a>
-<a href="#3659" id="3659">3659</a>
-<a href="#3660" id="3660">3660</a>
-<a href="#3661" id="3661">3661</a>
-<a href="#3662" id="3662">3662</a>
-<a href="#3663" id="3663">3663</a>
-<a href="#3664" id="3664">3664</a>
-<a href="#3665" id="3665">3665</a>
-<a href="#3666" id="3666">3666</a>
-<a href="#3667" id="3667">3667</a>
-<a href="#3668" id="3668">3668</a>
-<a href="#3669" id="3669">3669</a>
-<a href="#3670" id="3670">3670</a>
-<a href="#3671" id="3671">3671</a>
-<a href="#3672" id="3672">3672</a>
-<a href="#3673" id="3673">3673</a>
-<a href="#3674" id="3674">3674</a>
-<a href="#3675" id="3675">3675</a>
-<a href="#3676" id="3676">3676</a>
-<a href="#3677" id="3677">3677</a>
-<a href="#3678" id="3678">3678</a>
-<a href="#3679" id="3679">3679</a>
-<a href="#3680" id="3680">3680</a>
-<a href="#3681" id="3681">3681</a>
-<a href="#3682" id="3682">3682</a>
-<a href="#3683" id="3683">3683</a>
-<a href="#3684" id="3684">3684</a>
-<a href="#3685" id="3685">3685</a>
-<a href="#3686" id="3686">3686</a>
-<a href="#3687" id="3687">3687</a>
-<a href="#3688" id="3688">3688</a>
-<a href="#3689" id="3689">3689</a>
-<a href="#3690" id="3690">3690</a>
-<a href="#3691" id="3691">3691</a>
-<a href="#3692" id="3692">3692</a>
-<a href="#3693" id="3693">3693</a>
-<a href="#3694" id="3694">3694</a>
-<a href="#3695" id="3695">3695</a>
-<a href="#3696" id="3696">3696</a>
-<a href="#3697" id="3697">3697</a>
-<a href="#3698" id="3698">3698</a>
-<a href="#3699" id="3699">3699</a>
-<a href="#3700" id="3700">3700</a>
-<a href="#3701" id="3701">3701</a>
-<a href="#3702" id="3702">3702</a>
-<a href="#3703" id="3703">3703</a>
-<a href="#3704" id="3704">3704</a>
-<a href="#3705" id="3705">3705</a>
-<a href="#3706" id="3706">3706</a>
-<a href="#3707" id="3707">3707</a>
-<a href="#3708" id="3708">3708</a>
-<a href="#3709" id="3709">3709</a>
-<a href="#3710" id="3710">3710</a>
-<a href="#3711" id="3711">3711</a>
-<a href="#3712" id="3712">3712</a>
-<a href="#3713" id="3713">3713</a>
-<a href="#3714" id="3714">3714</a>
-<a href="#3715" id="3715">3715</a>
-<a href="#3716" id="3716">3716</a>
-<a href="#3717" id="3717">3717</a>
-<a href="#3718" id="3718">3718</a>
-<a href="#3719" id="3719">3719</a>
-<a href="#3720" id="3720">3720</a>
-<a href="#3721" id="3721">3721</a>
-<a href="#3722" id="3722">3722</a>
-<a href="#3723" id="3723">3723</a>
-<a href="#3724" id="3724">3724</a>
-<a href="#3725" id="3725">3725</a>
-<a href="#3726" id="3726">3726</a>
-<a href="#3727" id="3727">3727</a>
-<a href="#3728" id="3728">3728</a>
-<a href="#3729" id="3729">3729</a>
-<a href="#3730" id="3730">3730</a>
-<a href="#3731" id="3731">3731</a>
-<a href="#3732" id="3732">3732</a>
-<a href="#3733" id="3733">3733</a>
-<a href="#3734" id="3734">3734</a>
-<a href="#3735" id="3735">3735</a>
-<a href="#3736" id="3736">3736</a>
-<a href="#3737" id="3737">3737</a>
-<a href="#3738" id="3738">3738</a>
-<a href="#3739" id="3739">3739</a>
-<a href="#3740" id="3740">3740</a>
-<a href="#3741" id="3741">3741</a>
-<a href="#3742" id="3742">3742</a>
-<a href="#3743" id="3743">3743</a>
-<a href="#3744" id="3744">3744</a>
-<a href="#3745" id="3745">3745</a>
-<a href="#3746" id="3746">3746</a>
-<a href="#3747" id="3747">3747</a>
-<a href="#3748" id="3748">3748</a>
-<a href="#3749" id="3749">3749</a>
-<a href="#3750" id="3750">3750</a>
-<a href="#3751" id="3751">3751</a>
-<a href="#3752" id="3752">3752</a>
-<a href="#3753" id="3753">3753</a>
-<a href="#3754" id="3754">3754</a>
-<a href="#3755" id="3755">3755</a>
-<a href="#3756" id="3756">3756</a>
-<a href="#3757" id="3757">3757</a>
-<a href="#3758" id="3758">3758</a>
-<a href="#3759" id="3759">3759</a>
-<a href="#3760" id="3760">3760</a>
-<a href="#3761" id="3761">3761</a>
-<a href="#3762" id="3762">3762</a>
-<a href="#3763" id="3763">3763</a>
-<a href="#3764" id="3764">3764</a>
-<a href="#3765" id="3765">3765</a>
-<a href="#3766" id="3766">3766</a>
-<a href="#3767" id="3767">3767</a>
-<a href="#3768" id="3768">3768</a>
-<a href="#3769" id="3769">3769</a>
-<a href="#3770" id="3770">3770</a>
-<a href="#3771" id="3771">3771</a>
-<a href="#3772" id="3772">3772</a>
-<a href="#3773" id="3773">3773</a>
-<a href="#3774" id="3774">3774</a>
-<a href="#3775" id="3775">3775</a>
-<a href="#3776" id="3776">3776</a>
-<a href="#3777" id="3777">3777</a>
-<a href="#3778" id="3778">3778</a>
-<a href="#3779" id="3779">3779</a>
-<a href="#3780" id="3780">3780</a>
-<a href="#3781" id="3781">3781</a>
-<a href="#3782" id="3782">3782</a>
-<a href="#3783" id="3783">3783</a>
-<a href="#3784" id="3784">3784</a>
-<a href="#3785" id="3785">3785</a>
-<a href="#3786" id="3786">3786</a>
-<a href="#3787" id="3787">3787</a>
-<a href="#3788" id="3788">3788</a>
-<a href="#3789" id="3789">3789</a>
-<a href="#3790" id="3790">3790</a>
-<a href="#3791" id="3791">3791</a>
-<a href="#3792" id="3792">3792</a>
-<a href="#3793" id="3793">3793</a>
-<a href="#3794" id="3794">3794</a>
-<a href="#3795" id="3795">3795</a>
-<a href="#3796" id="3796">3796</a>
-<a href="#3797" id="3797">3797</a>
-<a href="#3798" id="3798">3798</a>
-<a href="#3799" id="3799">3799</a>
-<a href="#3800" id="3800">3800</a>
-<a href="#3801" id="3801">3801</a>
-<a href="#3802" id="3802">3802</a>
-<a href="#3803" id="3803">3803</a>
-<a href="#3804" id="3804">3804</a>
-<a href="#3805" id="3805">3805</a>
-<a href="#3806" id="3806">3806</a>
-<a href="#3807" id="3807">3807</a>
-<a href="#3808" id="3808">3808</a>
-<a href="#3809" id="3809">3809</a>
-<a href="#3810" id="3810">3810</a>
-<a href="#3811" id="3811">3811</a>
-<a href="#3812" id="3812">3812</a>
-<a href="#3813" id="3813">3813</a>
-<a href="#3814" id="3814">3814</a>
-<a href="#3815" id="3815">3815</a>
-<a href="#3816" id="3816">3816</a>
-<a href="#3817" id="3817">3817</a>
-<a href="#3818" id="3818">3818</a>
-<a href="#3819" id="3819">3819</a>
-<a href="#3820" id="3820">3820</a>
-<a href="#3821" id="3821">3821</a>
-<a href="#3822" id="3822">3822</a>
-<a href="#3823" id="3823">3823</a>
-<a href="#3824" id="3824">3824</a>
-<a href="#3825" id="3825">3825</a>
-<a href="#3826" id="3826">3826</a>
-<a href="#3827" id="3827">3827</a>
-<a href="#3828" id="3828">3828</a>
-<a href="#3829" id="3829">3829</a>
-<a href="#3830" id="3830">3830</a>
-<a href="#3831" id="3831">3831</a>
-<a href="#3832" id="3832">3832</a>
-<a href="#3833" id="3833">3833</a>
-<a href="#3834" id="3834">3834</a>
-<a href="#3835" id="3835">3835</a>
-<a href="#3836" id="3836">3836</a>
-<a href="#3837" id="3837">3837</a>
-<a href="#3838" id="3838">3838</a>
-<a href="#3839" id="3839">3839</a>
-<a href="#3840" id="3840">3840</a>
-<a href="#3841" id="3841">3841</a>
-<a href="#3842" id="3842">3842</a>
-<a href="#3843" id="3843">3843</a>
-<a href="#3844" id="3844">3844</a>
-<a href="#3845" id="3845">3845</a>
-<a href="#3846" id="3846">3846</a>
-<a href="#3847" id="3847">3847</a>
-<a href="#3848" id="3848">3848</a>
-<a href="#3849" id="3849">3849</a>
-<a href="#3850" id="3850">3850</a>
-<a href="#3851" id="3851">3851</a>
-<a href="#3852" id="3852">3852</a>
-<a href="#3853" id="3853">3853</a>
-<a href="#3854" id="3854">3854</a>
-<a href="#3855" id="3855">3855</a>
-<a href="#3856" id="3856">3856</a>
-<a href="#3857" id="3857">3857</a>
-<a href="#3858" id="3858">3858</a>
-<a href="#3859" id="3859">3859</a>
-<a href="#3860" id="3860">3860</a>
-<a href="#3861" id="3861">3861</a>
-<a href="#3862" id="3862">3862</a>
-<a href="#3863" id="3863">3863</a>
-<a href="#3864" id="3864">3864</a>
-<a href="#3865" id="3865">3865</a>
-<a href="#3866" id="3866">3866</a>
-<a href="#3867" id="3867">3867</a>
-<a href="#3868" id="3868">3868</a>
-<a href="#3869" id="3869">3869</a>
-<a href="#3870" id="3870">3870</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>core::{iter, slice, str};
-
-<span class="attr">#[cfg(all(feature = <span class="string">"alloc"</span>, feature = <span class="string">"unicode"</span>))]
-</span><span class="kw">use </span>alloc::vec;
-<span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
-</span><span class="kw">use </span>alloc::{borrow::Cow, string::String, vec::Vec};
-
+</pre></div><pre class="rust"><code><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
+</span><span class="kw">use </span>std::borrow::Cow;
 <span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-</span><span class="kw">use </span>std::{ffi::OsStr, path::Path};
+</span><span class="kw">use </span>std::ffi::OsStr;
+<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
+</span><span class="kw">use </span>std::path::Path;
 
+<span class="kw">use </span>core::{iter, ops, ptr, slice, str};
 <span class="kw">use </span>memchr::{memchr, memmem, memrchr};
 
-<span class="kw">use </span><span class="kw">crate</span>::escape_bytes::EscapeBytes;
-<span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+<span class="kw">use </span><span class="kw">crate</span>::ascii;
+<span class="kw">use </span><span class="kw">crate</span>::bstr::BStr;
+<span class="kw">use </span><span class="kw">crate</span>::byteset;
+<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::ext_vec::ByteVec;
 <span class="attr">#[cfg(feature = <span class="string">"unicode"</span>)]
 </span><span class="kw">use </span><span class="kw">crate</span>::unicode::{
@@ -3891,12 +3676,7 @@
     SentenceIndices, Sentences, WordIndices, Words, WordsWithBreakIndices,
     WordsWithBreaks,
 };
-<span class="kw">use crate</span>::{
-    ascii,
-    bstr::BStr,
-    byteset,
-    utf8::{<span class="self">self</span>, CharIndices, Chars, Utf8Chunks, Utf8Error},
-};
+<span class="kw">use </span><span class="kw">crate</span>::utf8::{<span class="self">self</span>, CharIndices, Chars, Utf8Chunks, Utf8Error};
 
 <span class="doccomment">/// A short-hand constructor for building a `&amp;[u8]`.
 ///
@@ -3960,30 +3740,13 @@
     </span>}
 }
 
-<span class="kw">impl</span>&lt;<span class="kw">const </span>N: usize&gt; ByteSlice <span class="kw">for </span>[u8; N] {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>as_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
-        <span class="self">self
-    </span>}
-
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>as_bytes_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[u8] {
-        <span class="self">self
-    </span>}
-}
-
 <span class="doccomment">/// Ensure that callers cannot implement `ByteSlice` by making an
 /// umplementable trait its super trait.
-</span><span class="kw">mod </span>private {
-    <span class="kw">pub trait </span>Sealed {}
-}
-<span class="kw">impl </span>private::Sealed <span class="kw">for </span>[u8] {}
-<span class="kw">impl</span>&lt;<span class="kw">const </span>N: usize&gt; private::Sealed <span class="kw">for </span>[u8; N] {}
+</span><span class="kw">pub trait </span>Sealed {}
+<span class="kw">impl </span>Sealed <span class="kw">for </span>[u8] {}
 
 <span class="doccomment">/// A trait that extends `&amp;[u8]` with string oriented methods.
-///
-/// This trait is sealed and cannot be implemented outside of `bstr`.
-</span><span class="kw">pub trait </span>ByteSlice: private::Sealed {
+</span><span class="kw">pub trait </span>ByteSlice: Sealed {
     <span class="doccomment">/// A method for accessing the raw bytes of this type. This is always a
     /// no-op and callers shouldn't care about it. This only exists for making
     /// the extension trait work.
@@ -4043,12 +3806,11 @@
 
     <span class="doccomment">/// Create an immutable byte string from an OS string slice.
     ///
-    /// When the underlying bytes of OS strings are accessible, then this
-    /// always succeeds and is zero cost. Otherwise, this returns `None` if the
-    /// given OS string is not valid UTF-8. (For example, when the underlying
-    /// bytes are inaccessible on Windows, file paths are allowed to be a
-    /// sequence of arbitrary 16-bit integers. Not all such sequences can be
-    /// transcoded to valid UTF-8.)
+    /// On Unix, this always succeeds and is zero cost. On non-Unix systems,
+    /// this returns `None` if the given OS string is not valid UTF-8. (For
+    /// example, on Windows, file paths are allowed to be a sequence of
+    /// arbitrary 16-bit integers. Not all such sequences can be transcoded to
+    /// valid UTF-8.)
     ///
     /// # Examples
     ///
@@ -4085,12 +3847,10 @@
 
     <span class="doccomment">/// Create an immutable byte string from a file path.
     ///
-    /// When the underlying bytes of paths are accessible, then this always
-    /// succeeds and is zero cost. Otherwise, this returns `None` if the given
-    /// path is not valid UTF-8. (For example, when the underlying bytes are
-    /// inaccessible on Windows, file paths are allowed to be a sequence of
-    /// arbitrary 16-bit integers. Not all such sequences can be transcoded to
-    /// valid UTF-8.)
+    /// On Unix, this always succeeds and is zero cost. On non-Unix systems,
+    /// this returns `None` if the given path is not valid UTF-8. (For example,
+    /// on Windows, file paths are allowed to be a sequence of arbitrary 16-bit
+    /// integers. Not all such sequences can be transcoded to valid UTF-8.)
     ///
     /// # Examples
     ///
@@ -4127,7 +3887,6 @@
     /// Basic usage:
     ///
     /// ```
-    /// # #[cfg(feature = "alloc")] {
     /// use bstr::{B, ByteSlice, ByteVec};
     ///
     /// # fn example() -&gt; Result&lt;(), bstr::Utf8Error&gt; {
@@ -4139,7 +3898,6 @@
     /// let err = bstring.to_str().unwrap_err();
     /// assert_eq!(8, err.valid_up_to());
     /// # Ok(()) }; example().unwrap()
-    /// # }
     /// ```
     </span><span class="attr">#[inline]
     </span><span class="kw">fn </span>to_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>str, Utf8Error&gt; {
@@ -4200,7 +3958,7 @@
     /// [W3C's Encoding standard](https://www.w3.org/TR/encoding/).
     /// For a more precise description of the maximal subpart strategy, see
     /// the Unicode Standard, Chapter 3, Section 9. See also
-    /// [Public Review Issue #121](https://www.unicode.org/review/pr-121.html).
+    /// [Public Review Issue #121](http://www.unicode.org/review/pr-121.html).
     ///
     /// N.B. Rust's standard library also appears to use the same strategy,
     /// but it does not appear to be an API guarantee.
@@ -4240,7 +3998,7 @@
     /// let bs = B(b"\x61\xF1\x80\x80\xE1\x80\xC2\x62");
     /// assert_eq!("a\u{FFFD}\u{FFFD}\u{FFFD}b", bs.to_str_lossy());
     /// ```
-    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+    </span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
     #[inline]
     </span><span class="kw">fn </span>to_str_lossy(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Cow&lt;<span class="lifetime">'_</span>, str&gt; {
         <span class="kw">match </span>utf8::validate(<span class="self">self</span>.as_bytes()) {
@@ -4297,7 +4055,7 @@
     /// bstring.to_str_lossy_into(&amp;mut dest);
     /// assert_eq!("☃βツ\u{FFFD}", dest);
     /// ```
-    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+    </span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
     #[inline]
     </span><span class="kw">fn </span>to_str_lossy_into(<span class="kw-2">&amp;</span><span class="self">self</span>, dest: <span class="kw-2">&amp;mut </span>String) {
         <span class="kw">let </span><span class="kw-2">mut </span>bytes = <span class="self">self</span>.as_bytes();
@@ -4327,15 +4085,12 @@
 
     <span class="doccomment">/// Create an OS string slice from this byte string.
     ///
-    /// When OS strings can be constructed from arbitrary byte sequences, this
-    /// always succeeds and is zero cost. Otherwise, this returns a UTF-8
-    /// decoding error if this byte string is not valid UTF-8. (For example,
-    /// assuming the representation of `OsStr` is opaque on Windows, file paths
-    /// are allowed to be a sequence of arbitrary 16-bit integers. There is
-    /// no obvious mapping from an arbitrary sequence of 8-bit integers to an
-    /// arbitrary sequence of 16-bit integers. If the representation of `OsStr`
-    /// is even opened up, then this will convert any sequence of bytes to an
-    /// `OsStr` without cost.)
+    /// On Unix, this always succeeds and is zero cost. On non-Unix systems,
+    /// this returns a UTF-8 decoding error if this byte string is not valid
+    /// UTF-8. (For example, on Windows, file paths are allowed to be a
+    /// sequence of arbitrary 16-bit integers. There is no obvious mapping from
+    /// an arbitrary sequence of 8-bit integers to an arbitrary sequence of
+    /// 16-bit integers.)
     ///
     /// # Examples
     ///
@@ -4369,13 +4124,13 @@
 
     <span class="doccomment">/// Lossily create an OS string slice from this byte string.
     ///
-    /// When OS strings can be constructed from arbitrary byte sequences, this
-    /// is zero cost and always returns a slice. Otherwise, this will perform a
-    /// UTF-8 check and lossily convert this byte string into valid UTF-8 using
-    /// the Unicode replacement codepoint.
+    /// On Unix, this always succeeds and is zero cost. On non-Unix systems,
+    /// this will perform a UTF-8 check and lossily convert this byte string
+    /// into valid UTF-8 using the Unicode replacement codepoint.
     ///
-    /// Note that this can prevent the correct roundtripping of file paths when
-    /// the representation of `OsStr` is opaque.
+    /// Note that this can prevent the correct roundtripping of file paths on
+    /// non-Unix systems such as Windows, where file paths are an arbitrary
+    /// sequence of 16-bit integers.
     ///
     /// # Examples
     ///
@@ -4414,15 +4169,12 @@
 
     <span class="doccomment">/// Create a path slice from this byte string.
     ///
-    /// When paths can be constructed from arbitrary byte sequences, this
-    /// always succeeds and is zero cost. Otherwise, this returns a UTF-8
-    /// decoding error if this byte string is not valid UTF-8. (For example,
-    /// assuming the representation of `Path` is opaque on Windows, file paths
-    /// are allowed to be a sequence of arbitrary 16-bit integers. There is
-    /// no obvious mapping from an arbitrary sequence of 8-bit integers to an
-    /// arbitrary sequence of 16-bit integers. If the representation of `Path`
-    /// is even opened up, then this will convert any sequence of bytes to an
-    /// `Path` without cost.)
+    /// On Unix, this always succeeds and is zero cost. On non-Unix systems,
+    /// this returns a UTF-8 decoding error if this byte string is not valid
+    /// UTF-8. (For example, on Windows, file paths are allowed to be a
+    /// sequence of arbitrary 16-bit integers. There is no obvious mapping from
+    /// an arbitrary sequence of 8-bit integers to an arbitrary sequence of
+    /// 16-bit integers.)
     ///
     /// # Examples
     ///
@@ -4442,13 +4194,13 @@
 
     <span class="doccomment">/// Lossily create a path slice from this byte string.
     ///
-    /// When paths can be constructed from arbitrary byte sequences, this is
-    /// zero cost and always returns a slice. Otherwise, this will perform a
-    /// UTF-8 check and lossily convert this byte string into valid UTF-8 using
-    /// the Unicode replacement codepoint.
+    /// On Unix, this always succeeds and is zero cost. On non-Unix systems,
+    /// this will perform a UTF-8 check and lossily convert this byte string
+    /// into valid UTF-8 using the Unicode replacement codepoint.
     ///
-    /// Note that this can prevent the correct roundtripping of file paths when
-    /// the representation of `Path` is opaque.
+    /// Note that this can prevent the correct roundtripping of file paths on
+    /// non-Unix systems such as Windows, where file paths are an arbitrary
+    /// sequence of 16-bit integers.
     ///
     /// # Examples
     ///
@@ -4489,10 +4241,15 @@
     /// assert_eq!(b"foo".repeatn(4), B("foofoofoofoo"));
     /// assert_eq!(b"foo".repeatn(0), B(""));
     /// ```
-    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+    </span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
     #[inline]
     </span><span class="kw">fn </span>repeatn(<span class="kw-2">&amp;</span><span class="self">self</span>, n: usize) -&gt; Vec&lt;u8&gt; {
-        <span class="self">self</span>.as_bytes().repeat(n)
+        <span class="kw">let </span>bs = <span class="self">self</span>.as_bytes();
+        <span class="kw">let </span><span class="kw-2">mut </span>dst = <span class="macro">vec!</span>[<span class="number">0</span>; bs.len() * n];
+        <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..n {
+            dst[i * bs.len()..(i + <span class="number">1</span>) * bs.len()].copy_from_slice(bs);
+        }
+        dst
     }
 
     <span class="doccomment">/// Returns true if and only if this byte string contains the given needle.
@@ -4659,10 +4416,10 @@
     /// assert_eq!(matches, vec![0]);
     /// ```
     </span><span class="attr">#[inline]
-    </span><span class="kw">fn </span>find_iter&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">'h </span><span class="self">self</span>,
-        needle: <span class="kw-2">&amp;</span><span class="lifetime">'n </span>B,
-    ) -&gt; Find&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; {
+    </span><span class="kw">fn </span>find_iter&lt;<span class="lifetime">'a</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
+        <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>,
+        needle: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>B,
+    ) -&gt; Find&lt;<span class="lifetime">'a</span>&gt; {
         Find::new(<span class="self">self</span>.as_bytes(), needle.as_ref())
     }
 
@@ -4704,10 +4461,10 @@
     /// assert_eq!(matches, vec![0]);
     /// ```
     </span><span class="attr">#[inline]
-    </span><span class="kw">fn </span>rfind_iter&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">'h </span><span class="self">self</span>,
-        needle: <span class="kw-2">&amp;</span><span class="lifetime">'n </span>B,
-    ) -&gt; FindReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; {
+    </span><span class="kw">fn </span>rfind_iter&lt;<span class="lifetime">'a</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
+        <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>,
+        needle: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>B,
+    ) -&gt; FindReverse&lt;<span class="lifetime">'a</span>&gt; {
         FindReverse::new(<span class="self">self</span>.as_bytes(), needle.as_ref())
     }
 
@@ -4826,17 +4583,14 @@
     /// assert_eq!(b"foo bar baz".find_byteset(b"zr"), Some(6));
     /// assert_eq!(b"foo baz bar".find_byteset(b"bzr"), Some(4));
     /// assert_eq!(None, b"foo baz bar".find_byteset(b"\t\n"));
-    /// // The empty byteset never matches.
-    /// assert_eq!(None, b"abc".find_byteset(b""));
-    /// assert_eq!(None, b"".find_byteset(b""));
     /// ```
     </span><span class="attr">#[inline]
     </span><span class="kw">fn </span>find_byteset&lt;B: AsRef&lt;[u8]&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, byteset: B) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
         byteset::find(<span class="self">self</span>.as_bytes(), byteset.as_ref())
     }
 
-    <span class="doccomment">/// Returns the index of the first occurrence of a byte that is not a
-    /// member of the provided set.
+    <span class="doccomment">/// Returns the index of the first occurrence of a byte that is not a member
+    /// of the provided set.
     ///
     /// The `byteset` may be any type that can be cheaply converted into a
     /// `&amp;[u8]`. This includes, but is not limited to, `&amp;str` and `&amp;[u8]`, but
@@ -4866,10 +4620,6 @@
     /// assert_eq!(b"foo bar baz".find_not_byteset(b"fo "), Some(4));
     /// assert_eq!(b"\t\tbaz bar".find_not_byteset(b" \t\r\n"), Some(2));
     /// assert_eq!(b"foo\nbaz\tbar".find_not_byteset(b"\t\n"), Some(0));
-    /// // The negation of the empty byteset matches everything.
-    /// assert_eq!(Some(0), b"abc".find_not_byteset(b""));
-    /// // But an empty string never contains anything.
-    /// assert_eq!(None, b"".find_not_byteset(b""));
     /// ```
     </span><span class="attr">#[inline]
     </span><span class="kw">fn </span>find_not_byteset&lt;B: AsRef&lt;[u8]&gt;&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, byteset: B) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt; {
@@ -4950,9 +4700,8 @@
         byteset::rfind_not(<span class="self">self</span>.as_bytes(), byteset.as_ref())
     }
 
-    <span class="doccomment">/// Returns an iterator over the fields in a byte string, separated
-    /// by contiguous whitespace (according to the Unicode property
-    /// `White_Space`).
+    <span class="doccomment">/// Returns an iterator over the fields in a byte string, separated by
+    /// contiguous whitespace.
     ///
     /// # Example
     ///
@@ -4973,8 +4722,7 @@
     ///
     /// assert_eq!(0, B("  \n\t\u{2003}\n  \t").fields().count());
     /// ```
-    </span><span class="attr">#[cfg(feature = <span class="string">"unicode"</span>)]
-    #[inline]
+    </span><span class="attr">#[inline]
     </span><span class="kw">fn </span>fields(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Fields&lt;<span class="lifetime">'_</span>&gt; {
         Fields::new(<span class="self">self</span>.as_bytes())
     }
@@ -5100,10 +4848,10 @@
     /// It does *not* give you `["a", "b", "c"]`. For that behavior, use
     /// [`fields`](#method.fields) instead.
     </span><span class="attr">#[inline]
-    </span><span class="kw">fn </span>split_str&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">'h </span><span class="self">self</span>,
-        splitter: <span class="kw-2">&amp;</span><span class="lifetime">'s </span>B,
-    ) -&gt; Split&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
+    </span><span class="kw">fn </span>split_str&lt;<span class="lifetime">'a</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
+        <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>,
+        splitter: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>B,
+    ) -&gt; Split&lt;<span class="lifetime">'a</span>&gt; {
         Split::new(<span class="self">self</span>.as_bytes(), splitter.as_ref())
     }
 
@@ -5194,99 +4942,11 @@
     ///
     /// It does *not* give you `["a", "b", "c"]`.
     </span><span class="attr">#[inline]
-    </span><span class="kw">fn </span>rsplit_str&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">'h </span><span class="self">self</span>,
-        splitter: <span class="kw-2">&amp;</span><span class="lifetime">'s </span>B,
-    ) -&gt; SplitReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
+    </span><span class="kw">fn </span>rsplit_str&lt;<span class="lifetime">'a</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
+        <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>,
+        splitter: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>B,
+    ) -&gt; SplitReverse&lt;<span class="lifetime">'a</span>&gt; {
         SplitReverse::new(<span class="self">self</span>.as_bytes(), splitter.as_ref())
-    }
-
-    <span class="doccomment">/// Split this byte string at the first occurrence of `splitter`.
-    ///
-    /// If the `splitter` is found in the byte string, returns a tuple
-    /// containing the parts of the string before and after the first occurrence
-    /// of `splitter` respectively. Otherwise, if there are no occurrences of
-    /// `splitter` in the byte string, returns `None`.
-    ///
-    /// The splitter may be any type that can be cheaply converted into a
-    /// `&amp;[u8]`. This includes, but is not limited to, `&amp;str` and `&amp;[u8]`.
-    ///
-    /// If you need to split on the *last* instance of a delimiter instead, see
-    /// the [`ByteSlice::rsplit_once_str`](#method.rsplit_once_str) method .
-    ///
-    /// # Examples
-    ///
-    /// Basic usage:
-    ///
-    /// ```
-    /// use bstr::{B, ByteSlice};
-    ///
-    /// assert_eq!(
-    ///     B("foo,bar").split_once_str(","),
-    ///     Some((B("foo"), B("bar"))),
-    /// );
-    /// assert_eq!(
-    ///     B("foo,bar,baz").split_once_str(","),
-    ///     Some((B("foo"), B("bar,baz"))),
-    /// );
-    /// assert_eq!(B("foo").split_once_str(","), None);
-    /// assert_eq!(B("foo,").split_once_str(b","), Some((B("foo"), B(""))));
-    /// assert_eq!(B(",foo").split_once_str(b","), Some((B(""), B("foo"))));
-    /// ```
-    </span><span class="attr">#[inline]
-    </span><span class="kw">fn </span>split_once_str&lt;<span class="lifetime">'a</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>,
-        splitter: <span class="kw-2">&amp;</span>B,
-    ) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8])&gt; {
-        <span class="kw">let </span>bytes = <span class="self">self</span>.as_bytes();
-        <span class="kw">let </span>splitter = splitter.as_ref();
-        <span class="kw">let </span>start = Finder::new(splitter).find(bytes)<span class="question-mark">?</span>;
-        <span class="kw">let </span>end = start + splitter.len();
-        <span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>bytes[..start], <span class="kw-2">&amp;</span>bytes[end..]))
-    }
-
-    <span class="doccomment">/// Split this byte string at the last occurrence of `splitter`.
-    ///
-    /// If the `splitter` is found in the byte string, returns a tuple
-    /// containing the parts of the string before and after the last occurrence
-    /// of `splitter`, respectively. Otherwise, if there are no occurrences of
-    /// `splitter` in the byte string, returns `None`.
-    ///
-    /// The splitter may be any type that can be cheaply converted into a
-    /// `&amp;[u8]`. This includes, but is not limited to, `&amp;str` and `&amp;[u8]`.
-    ///
-    /// If you need to split on the *first* instance of a delimiter instead, see
-    /// the [`ByteSlice::split_once_str`](#method.split_once_str) method.
-    ///
-    /// # Examples
-    ///
-    /// Basic usage:
-    ///
-    /// ```
-    /// use bstr::{B, ByteSlice};
-    ///
-    /// assert_eq!(
-    ///     B("foo,bar").rsplit_once_str(","),
-    ///     Some((B("foo"), B("bar"))),
-    /// );
-    /// assert_eq!(
-    ///     B("foo,bar,baz").rsplit_once_str(","),
-    ///     Some((B("foo,bar"), B("baz"))),
-    /// );
-    /// assert_eq!(B("foo").rsplit_once_str(","), None);
-    /// assert_eq!(B("foo,").rsplit_once_str(b","), Some((B("foo"), B(""))));
-    /// assert_eq!(B(",foo").rsplit_once_str(b","), Some((B(""), B("foo"))));
-    /// ```
-    </span><span class="attr">#[inline]
-    </span><span class="kw">fn </span>rsplit_once_str&lt;<span class="lifetime">'a</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>,
-        splitter: <span class="kw-2">&amp;</span>B,
-    ) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8])&gt; {
-        <span class="kw">let </span>bytes = <span class="self">self</span>.as_bytes();
-        <span class="kw">let </span>splitter = splitter.as_ref();
-        <span class="kw">let </span>start = FinderReverse::new(splitter).rfind(bytes)<span class="question-mark">?</span>;
-        <span class="kw">let </span>end = start + splitter.len();
-        <span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>bytes[..start], <span class="kw-2">&amp;</span>bytes[end..]))
     }
 
     <span class="doccomment">/// Returns an iterator of at most `limit` substrings of this byte string,
@@ -5325,11 +4985,11 @@
     /// assert!(x.is_empty());
     /// ```
     </span><span class="attr">#[inline]
-    </span><span class="kw">fn </span>splitn_str&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">'h </span><span class="self">self</span>,
+    </span><span class="kw">fn </span>splitn_str&lt;<span class="lifetime">'a</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
+        <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>,
         limit: usize,
-        splitter: <span class="kw-2">&amp;</span><span class="lifetime">'s </span>B,
-    ) -&gt; SplitN&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
+        splitter: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>B,
+    ) -&gt; SplitN&lt;<span class="lifetime">'a</span>&gt; {
         SplitN::new(<span class="self">self</span>.as_bytes(), splitter.as_ref(), limit)
     }
 
@@ -5371,11 +5031,11 @@
     /// assert!(x.is_empty());
     /// ```
     </span><span class="attr">#[inline]
-    </span><span class="kw">fn </span>rsplitn_str&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">'h </span><span class="self">self</span>,
+    </span><span class="kw">fn </span>rsplitn_str&lt;<span class="lifetime">'a</span>, B: <span class="question-mark">?</span>Sized + AsRef&lt;[u8]&gt;&gt;(
+        <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>,
         limit: usize,
-        splitter: <span class="kw-2">&amp;</span><span class="lifetime">'s </span>B,
-    ) -&gt; SplitNReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
+        splitter: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>B,
+    ) -&gt; SplitNReverse&lt;<span class="lifetime">'a</span>&gt; {
         SplitNReverse::new(<span class="self">self</span>.as_bytes(), splitter.as_ref(), limit)
     }
 
@@ -5413,7 +5073,7 @@
     /// let s = b"foo".replace("", "Z");
     /// assert_eq!(s, "ZfZoZoZ".as_bytes());
     /// ```
-    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+    </span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
     #[inline]
     </span><span class="kw">fn </span>replace&lt;N: AsRef&lt;[u8]&gt;, R: AsRef&lt;[u8]&gt;&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -5459,7 +5119,7 @@
     /// let s = b"foo".replacen("", "Z", 2);
     /// assert_eq!(s, "ZfZoo".as_bytes());
     /// ```
-    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+    </span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
     #[inline]
     </span><span class="kw">fn </span>replacen&lt;N: AsRef&lt;[u8]&gt;, R: AsRef&lt;[u8]&gt;&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -5517,7 +5177,7 @@
     /// s.replace_into("", "Z", &amp;mut dest);
     /// assert_eq!(dest, "ZfZoZoZ".as_bytes());
     /// ```
-    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+    </span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
     #[inline]
     </span><span class="kw">fn </span>replace_into&lt;N: AsRef&lt;[u8]&gt;, R: AsRef&lt;[u8]&gt;&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -5581,7 +5241,7 @@
     /// s.replacen_into("", "Z", 2, &amp;mut dest);
     /// assert_eq!(dest, "ZfZoo".as_bytes());
     /// ```
-    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+    </span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
     #[inline]
     </span><span class="kw">fn </span>replacen_into&lt;N: AsRef&lt;[u8]&gt;, R: AsRef&lt;[u8]&gt;&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -5792,12 +5452,11 @@
     /// assert_eq!(vec![(0, 5, "à̖"), (5, 13, "🇺🇸")], graphemes);
     /// ```
     ///
-    /// This example shows what happens when invalid UTF-8 is encountered. Note
+    /// This example shows what happens when invalid UTF-8 is enountered. Note
     /// that the offsets are valid indices into the original string, and do
     /// not necessarily correspond to the length of the `&amp;str` returned!
     ///
     /// ```
-    /// # #[cfg(all(feature = "alloc"))] {
     /// use bstr::{ByteSlice, ByteVec};
     ///
     /// let mut bytes = vec![];
@@ -5811,7 +5470,6 @@
     ///     graphemes,
     ///     vec![(0, 5, "à̖"), (5, 6, "\u{FFFD}"), (6, 14, "🇺🇸")]
     /// );
-    /// # }
     /// ```
     </span><span class="attr">#[cfg(feature = <span class="string">"unicode"</span>)]
     #[inline]
@@ -6276,7 +5934,7 @@
     /// let s = B(b"FOO\xFFBAR\xE2\x98BAZ");
     /// assert_eq!(B(b"foo\xFFbar\xE2\x98baz"), s.to_lowercase().as_bytes());
     /// ```
-    </span><span class="attr">#[cfg(all(feature = <span class="string">"alloc"</span>, feature = <span class="string">"unicode"</span>))]
+    </span><span class="attr">#[cfg(all(feature = <span class="string">"std"</span>, feature = <span class="string">"unicode"</span>))]
     #[inline]
     </span><span class="kw">fn </span>to_lowercase(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;u8&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[];
@@ -6338,7 +5996,7 @@
     /// s.to_lowercase_into(&amp;mut buf);
     /// assert_eq!(B(b"foo\xFFbar\xE2\x98baz"), buf.as_bytes());
     /// ```
-    </span><span class="attr">#[cfg(all(feature = <span class="string">"alloc"</span>, feature = <span class="string">"unicode"</span>))]
+    </span><span class="attr">#[cfg(all(feature = <span class="string">"std"</span>, feature = <span class="string">"unicode"</span>))]
     #[inline]
     </span><span class="kw">fn </span>to_lowercase_into(<span class="kw-2">&amp;</span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;) {
         <span class="comment">// TODO: This is the best we can do given what std exposes I think.
@@ -6393,7 +6051,7 @@
     /// let s = B(b"FOO\xFFBAR\xE2\x98BAZ");
     /// assert_eq!(s.to_ascii_lowercase(), B(b"foo\xFFbar\xE2\x98baz"));
     /// ```
-    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+    </span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
     #[inline]
     </span><span class="kw">fn </span>to_ascii_lowercase(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;u8&gt; {
         <span class="self">self</span>.as_bytes().to_ascii_lowercase()
@@ -6423,13 +6081,11 @@
     /// Invalid UTF-8 remains as is:
     ///
     /// ```
-    /// # #[cfg(feature = "alloc")] {
     /// use bstr::{B, ByteSlice, ByteVec};
     ///
     /// let mut s = &lt;Vec&lt;u8&gt;&gt;::from_slice(b"FOO\xFFBAR\xE2\x98BAZ");
     /// s.make_ascii_lowercase();
     /// assert_eq!(s, B(b"foo\xFFbar\xE2\x98baz"));
-    /// # }
     /// ```
     </span><span class="attr">#[inline]
     </span><span class="kw">fn </span>make_ascii_lowercase(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
@@ -6481,7 +6137,7 @@
     /// let s = B(b"foo\xFFbar\xE2\x98baz");
     /// assert_eq!(s.to_uppercase(), B(b"FOO\xFFBAR\xE2\x98BAZ"));
     /// ```
-    </span><span class="attr">#[cfg(all(feature = <span class="string">"alloc"</span>, feature = <span class="string">"unicode"</span>))]
+    </span><span class="attr">#[cfg(all(feature = <span class="string">"std"</span>, feature = <span class="string">"unicode"</span>))]
     #[inline]
     </span><span class="kw">fn </span>to_uppercase(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;u8&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[];
@@ -6543,7 +6199,7 @@
     /// s.to_uppercase_into(&amp;mut buf);
     /// assert_eq!(buf, B(b"FOO\xFFBAR\xE2\x98BAZ"));
     /// ```
-    </span><span class="attr">#[cfg(all(feature = <span class="string">"alloc"</span>, feature = <span class="string">"unicode"</span>))]
+    </span><span class="attr">#[cfg(all(feature = <span class="string">"std"</span>, feature = <span class="string">"unicode"</span>))]
     #[inline]
     </span><span class="kw">fn </span>to_uppercase_into(<span class="kw-2">&amp;</span><span class="self">self</span>, buf: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;) {
         <span class="comment">// TODO: This is the best we can do given what std exposes I think.
@@ -6595,7 +6251,7 @@
     /// let s = B(b"foo\xFFbar\xE2\x98baz");
     /// assert_eq!(s.to_ascii_uppercase(), B(b"FOO\xFFBAR\xE2\x98BAZ"));
     /// ```
-    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+    </span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
     #[inline]
     </span><span class="kw">fn </span>to_ascii_uppercase(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;u8&gt; {
         <span class="self">self</span>.as_bytes().to_ascii_uppercase()
@@ -6625,58 +6281,15 @@
     /// Invalid UTF-8 remains as is:
     ///
     /// ```
-    /// # #[cfg(feature = "alloc")] {
     /// use bstr::{B, ByteSlice, ByteVec};
     ///
     /// let mut s = &lt;Vec&lt;u8&gt;&gt;::from_slice(b"foo\xFFbar\xE2\x98baz");
     /// s.make_ascii_uppercase();
     /// assert_eq!(s, B(b"FOO\xFFBAR\xE2\x98BAZ"));
-    /// # }
     /// ```
     </span><span class="attr">#[inline]
     </span><span class="kw">fn </span>make_ascii_uppercase(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="self">self</span>.as_bytes_mut().make_ascii_uppercase();
-    }
-
-    <span class="doccomment">/// Escapes this byte string into a sequence of `char` values.
-    ///
-    /// When the sequence of `char` values is concatenated into a string, the
-    /// result is always valid UTF-8. Any unprintable or invalid UTF-8 in this
-    /// byte string are escaped using using `\xNN` notation. Moreover, the
-    /// characters `\0`, `\r`, `\n`, `\t` and `\` are escaped as well.
-    ///
-    /// This is useful when one wants to get a human readable view of the raw
-    /// bytes that is also valid UTF-8.
-    ///
-    /// The iterator returned implements the `Display` trait. So one can do
-    /// `b"foo\xFFbar".escape_bytes().to_string()` to get a `String` with its
-    /// bytes escaped.
-    ///
-    /// The dual of this function is [`ByteVec::unescape_bytes`].
-    ///
-    /// Note that this is similar to, but not equivalent to the `Debug`
-    /// implementation on [`BStr`] and [`BString`]. The `Debug` implementations
-    /// also use the debug representation for all Unicode codepoints. However,
-    /// this escaping routine only escapes individual bytes. All Unicode
-    /// codepoints above `U+007F` are passed through unchanged without any
-    /// escaping.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// # #[cfg(feature = "alloc")] {
-    /// use bstr::{B, ByteSlice};
-    ///
-    /// assert_eq!(r"foo\xFFbar", b"foo\xFFbar".escape_bytes().to_string());
-    /// assert_eq!(r"foo\nbar", b"foo\nbar".escape_bytes().to_string());
-    /// assert_eq!(r"foo\tbar", b"foo\tbar".escape_bytes().to_string());
-    /// assert_eq!(r"foo\\bar", b"foo\\bar".escape_bytes().to_string());
-    /// assert_eq!(r"foo☃bar", B("foo☃bar").escape_bytes().to_string());
-    /// # }
-    /// ```
-    </span><span class="attr">#[inline]
-    </span><span class="kw">fn </span>escape_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; EscapeBytes&lt;<span class="lifetime">'_</span>&gt; {
-        EscapeBytes::new(<span class="self">self</span>.as_bytes())
     }
 
     <span class="doccomment">/// Reverse the bytes in this string, in place.
@@ -6944,6 +6557,72 @@
             <span class="prelude-val">Some</span>(index)
         }
     }
+
+    <span class="doccomment">/// Copies elements from one part of the slice to another part of itself,
+    /// where the parts may be overlapping.
+    ///
+    /// `src` is the range within this byte string to copy from, while `dest`
+    /// is the starting index of the range within this byte string to copy to.
+    /// The length indicated by `src` must be less than or equal to the number
+    /// of bytes from `dest` to the end of the byte string.
+    ///
+    /// # Panics
+    ///
+    /// Panics if either range is out of bounds, or if `src` is too big to fit
+    /// into `dest`, or if the end of `src` is before the start.
+    ///
+    /// # Examples
+    ///
+    /// Copying four bytes within a byte string:
+    ///
+    /// ```
+    /// use bstr::{B, ByteSlice};
+    ///
+    /// let mut buf = *b"Hello, World!";
+    /// let s = &amp;mut buf;
+    /// s.copy_within_str(1..5, 8);
+    /// assert_eq!(s, B("Hello, Wello!"));
+    /// ```
+    </span><span class="attr">#[inline]
+    </span><span class="kw">fn </span>copy_within_str&lt;R&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, src: R, dest: usize)
+    <span class="kw">where
+        </span>R: ops::RangeBounds&lt;usize&gt;,
+    {
+        <span class="comment">// TODO: Deprecate this once slice::copy_within stabilizes.
+        </span><span class="kw">let </span>src_start = <span class="kw">match </span>src.start_bound() {
+            ops::Bound::Included(<span class="kw-2">&amp;</span>n) =&gt; n,
+            ops::Bound::Excluded(<span class="kw-2">&amp;</span>n) =&gt; {
+                n.checked_add(<span class="number">1</span>).expect(<span class="string">"attempted to index slice beyond max"</span>)
+            }
+            ops::Bound::Unbounded =&gt; <span class="number">0</span>,
+        };
+        <span class="kw">let </span>src_end = <span class="kw">match </span>src.end_bound() {
+            ops::Bound::Included(<span class="kw-2">&amp;</span>n) =&gt; {
+                n.checked_add(<span class="number">1</span>).expect(<span class="string">"attempted to index slice beyond max"</span>)
+            }
+            ops::Bound::Excluded(<span class="kw-2">&amp;</span>n) =&gt; n,
+            ops::Bound::Unbounded =&gt; <span class="self">self</span>.as_bytes().len(),
+        };
+        <span class="macro">assert!</span>(src_start &lt;= src_end, <span class="string">"src end is before src start"</span>);
+        <span class="macro">assert!</span>(src_end &lt;= <span class="self">self</span>.as_bytes().len(), <span class="string">"src is out of bounds"</span>);
+        <span class="kw">let </span>count = src_end - src_start;
+        <span class="macro">assert!</span>(
+            dest &lt;= <span class="self">self</span>.as_bytes().len() - count,
+            <span class="string">"dest is out of bounds"</span>,
+        );
+
+        <span class="comment">// SAFETY: This is safe because we use ptr::copy to handle overlapping
+        // copies, and is also safe because we've checked all the bounds above.
+        // Finally, we are only dealing with u8 data, which is Copy, which
+        // means we can copy without worrying about ownership/destructors.
+        </span><span class="kw">unsafe </span>{
+            ptr::copy(
+                <span class="self">self</span>.as_bytes().get_unchecked(src_start),
+                <span class="self">self</span>.as_bytes_mut().get_unchecked_mut(dest),
+                count,
+            );
+        }
+    }
 }
 
 <span class="doccomment">/// A single substring searcher fixed to a particular needle.
@@ -6978,8 +6657,8 @@
     /// If this is already an owned finder, then this is a no-op. Otherwise,
     /// this copies the needle.
     ///
-    /// This is only available when the `alloc` feature is enabled.
-    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+    /// This is only available when the `std` feature is enabled.
+    </span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
     #[inline]
     </span><span class="kw">pub fn </span>into_owned(<span class="self">self</span>) -&gt; Finder&lt;<span class="lifetime">'static</span>&gt; {
         Finder(<span class="self">self</span>.<span class="number">0</span>.into_owned())
@@ -7061,8 +6740,8 @@
     /// If this is already an owned finder, then this is a no-op. Otherwise,
     /// this copies the needle.
     ///
-    /// This is only available when the `alloc` feature is enabled.
-    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
+    /// This is only available when the `std` feature is enabled.
+    </span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
     #[inline]
     </span><span class="kw">pub fn </span>into_owned(<span class="self">self</span>) -&gt; FinderReverse&lt;<span class="lifetime">'static</span>&gt; {
         FinderReverse(<span class="self">self</span>.<span class="number">0</span>.into_owned())
@@ -7116,22 +6795,22 @@
 ///
 /// Matches are reported by the byte offset at which they begin.
 ///
-/// `'h` is the lifetime of the haystack while `'n` is the lifetime of the
-/// needle.
-</span><span class="attr">#[derive(Clone, Debug)]
-</span><span class="kw">pub struct </span>Find&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; {
-    it: memmem::FindIter&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt;,
-    haystack: <span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8],
-    needle: <span class="kw-2">&amp;</span><span class="lifetime">'n </span>[u8],
+/// `'a` is the shorter of two lifetimes: the byte string being searched or the
+/// byte string being looked for.
+</span><span class="attr">#[derive(Debug)]
+</span><span class="kw">pub struct </span>Find&lt;<span class="lifetime">'a</span>&gt; {
+    it: memmem::FindIter&lt;<span class="lifetime">'a</span>, <span class="lifetime">'a</span>&gt;,
+    haystack: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8],
+    needle: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8],
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; Find&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; {
-    <span class="kw">fn </span>new(haystack: <span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8], needle: <span class="kw-2">&amp;</span><span class="lifetime">'n </span>[u8]) -&gt; Find&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Find&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">fn </span>new(haystack: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], needle: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; Find&lt;<span class="lifetime">'a</span>&gt; {
         Find { it: memmem::find_iter(haystack, needle), haystack, needle }
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; Iterator <span class="kw">for </span>Find&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Iterator <span class="kw">for </span>Find&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">type </span>Item = usize;
 
     <span class="attr">#[inline]
@@ -7144,17 +6823,17 @@
 ///
 /// Matches are reported by the byte offset at which they begin.
 ///
-/// `'h` is the lifetime of the haystack while `'n` is the lifetime of the
-/// needle.
-</span><span class="attr">#[derive(Clone, Debug)]
-</span><span class="kw">pub struct </span>FindReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; {
-    it: memmem::FindRevIter&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt;,
-    haystack: <span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8],
-    needle: <span class="kw-2">&amp;</span><span class="lifetime">'n </span>[u8],
+/// `'a` is the shorter of two lifetimes: the byte string being searched or the
+/// byte string being looked for.
+</span><span class="attr">#[derive(Debug)]
+</span><span class="kw">pub struct </span>FindReverse&lt;<span class="lifetime">'a</span>&gt; {
+    it: memmem::FindRevIter&lt;<span class="lifetime">'a</span>, <span class="lifetime">'a</span>&gt;,
+    haystack: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8],
+    needle: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8],
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; FindReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; {
-    <span class="kw">fn </span>new(haystack: <span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8], needle: <span class="kw-2">&amp;</span><span class="lifetime">'n </span>[u8]) -&gt; FindReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; FindReverse&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">fn </span>new(haystack: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], needle: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; FindReverse&lt;<span class="lifetime">'a</span>&gt; {
         FindReverse {
             it: memmem::rfind_iter(haystack, needle),
             haystack,
@@ -7162,16 +6841,16 @@
         }
     }
 
-    <span class="kw">fn </span>haystack(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8] {
+    <span class="kw">fn </span>haystack(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8] {
         <span class="self">self</span>.haystack
     }
 
-    <span class="kw">fn </span>needle(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'n </span>[u8] {
+    <span class="kw">fn </span>needle(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
         <span class="self">self</span>.needle
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; Iterator <span class="kw">for </span>FindReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'n</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Iterator <span class="kw">for </span>FindReverse&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">type </span>Item = usize;
 
     <span class="attr">#[inline]
@@ -7193,7 +6872,7 @@
     /// This has the same lifetime as the original slice,
     /// and so the iterator can continue to be used while this exists.
     </span><span class="attr">#[inline]
-    </span><span class="kw">pub fn </span>as_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8] {
+    </span><span class="kw">pub fn </span>as_slice(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8] {
         <span class="self">self</span>.it.as_slice()
     }
 }
@@ -7230,28 +6909,22 @@
 
 <span class="doccomment">/// An iterator over the fields in a byte string, separated by whitespace.
 ///
-/// Whitespace for this iterator is defined by the Unicode property
-/// `White_Space`.
-///
 /// This iterator splits on contiguous runs of whitespace, such that the fields
 /// in `foo\t\t\n  \nbar` are `foo` and `bar`.
 ///
 /// `'a` is the lifetime of the byte string being split.
-</span><span class="attr">#[cfg(feature = <span class="string">"unicode"</span>)]
-#[derive(Clone, Debug)]
+</span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>Fields&lt;<span class="lifetime">'a</span>&gt; {
     it: FieldsWith&lt;<span class="lifetime">'a</span>, <span class="kw">fn</span>(char) -&gt; bool&gt;,
 }
 
-<span class="attr">#[cfg(feature = <span class="string">"unicode"</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Fields&lt;<span class="lifetime">'a</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Fields&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">fn </span>new(bytes: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; Fields&lt;<span class="lifetime">'a</span>&gt; {
         Fields { it: bytes.fields_with(|ch| ch.is_whitespace()) }
     }
 }
 
-<span class="attr">#[cfg(feature = <span class="string">"unicode"</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Iterator <span class="kw">for </span>Fields&lt;<span class="lifetime">'a</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Iterator <span class="kw">for </span>Fields&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8];
 
     <span class="attr">#[inline]
@@ -7269,7 +6942,7 @@
 ///
 /// `'a` is the lifetime of the byte string being split, while `F` is the type
 /// of the predicate, i.e., `FnMut(char) -&gt; bool`.
-</span><span class="attr">#[derive(Clone, Debug)]
+</span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>FieldsWith&lt;<span class="lifetime">'a</span>, F&gt; {
     f: F,
     bytes: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8],
@@ -7312,11 +6985,10 @@
 
 <span class="doccomment">/// An iterator over substrings in a byte string, split by a separator.
 ///
-/// `'h` is the lifetime of the byte string being split (the haystack), while
-/// `'s` is the lifetime of the byte string doing the splitting.
-</span><span class="attr">#[derive(Clone, Debug)]
-</span><span class="kw">pub struct </span>Split&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
-    finder: Find&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt;,
+/// `'a` is the lifetime of the byte string being split.
+</span><span class="attr">#[derive(Debug)]
+</span><span class="kw">pub struct </span>Split&lt;<span class="lifetime">'a</span>&gt; {
+    finder: Find&lt;<span class="lifetime">'a</span>&gt;,
     <span class="doccomment">/// The end position of the previous match of our splitter. The element
     /// we yield corresponds to the substring starting at `last` up to the
     /// beginning of the next match of the splitter.
@@ -7327,18 +6999,18 @@
     </span>done: bool,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; Split&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
-    <span class="kw">fn </span>new(haystack: <span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8], splitter: <span class="kw-2">&amp;</span><span class="lifetime">'s </span>[u8]) -&gt; Split&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Split&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">fn </span>new(haystack: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], splitter: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; Split&lt;<span class="lifetime">'a</span>&gt; {
         <span class="kw">let </span>finder = haystack.find_iter(splitter);
         Split { finder, last: <span class="number">0</span>, done: <span class="bool-val">false </span>}
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; Iterator <span class="kw">for </span>Split&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
-    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8];
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Iterator <span class="kw">for </span>Split&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8];
 
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8]&gt; {
+    </span><span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]&gt; {
         <span class="kw">let </span>haystack = <span class="self">self</span>.finder.haystack;
         <span class="kw">match </span><span class="self">self</span>.finder.next() {
             <span class="prelude-val">Some</span>(start) =&gt; {
@@ -7368,11 +7040,11 @@
 <span class="doccomment">/// An iterator over substrings in a byte string, split by a separator, in
 /// reverse.
 ///
-/// `'h` is the lifetime of the byte string being split (the haystack), while
-/// `'s` is the lifetime of the byte string doing the splitting.
-</span><span class="attr">#[derive(Clone, Debug)]
-</span><span class="kw">pub struct </span>SplitReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
-    finder: FindReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt;,
+/// `'a` is the lifetime of the byte string being split, while `F` is the type
+/// of the predicate, i.e., `FnMut(char) -&gt; bool`.
+</span><span class="attr">#[derive(Debug)]
+</span><span class="kw">pub struct </span>SplitReverse&lt;<span class="lifetime">'a</span>&gt; {
+    finder: FindReverse&lt;<span class="lifetime">'a</span>&gt;,
     <span class="doccomment">/// The end position of the previous match of our splitter. The element
     /// we yield corresponds to the substring starting at `last` up to the
     /// beginning of the next match of the splitter.
@@ -7383,18 +7055,18 @@
     </span>done: bool,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; SplitReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
-    <span class="kw">fn </span>new(haystack: <span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8], splitter: <span class="kw-2">&amp;</span><span class="lifetime">'s </span>[u8]) -&gt; SplitReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; SplitReverse&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">fn </span>new(haystack: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], splitter: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; SplitReverse&lt;<span class="lifetime">'a</span>&gt; {
         <span class="kw">let </span>finder = haystack.rfind_iter(splitter);
         SplitReverse { finder, last: haystack.len(), done: <span class="bool-val">false </span>}
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; Iterator <span class="kw">for </span>SplitReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
-    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8];
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Iterator <span class="kw">for </span>SplitReverse&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8];
 
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8]&gt; {
+    </span><span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]&gt; {
         <span class="kw">let </span>haystack = <span class="self">self</span>.finder.haystack();
         <span class="kw">match </span><span class="self">self</span>.finder.next() {
             <span class="prelude-val">Some</span>(start) =&gt; {
@@ -7425,31 +7097,31 @@
 <span class="doccomment">/// An iterator over at most `n` substrings in a byte string, split by a
 /// separator.
 ///
-/// `'h` is the lifetime of the byte string being split (the haystack), while
-/// `'s` is the lifetime of the byte string doing the splitting.
-</span><span class="attr">#[derive(Clone, Debug)]
-</span><span class="kw">pub struct </span>SplitN&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
-    split: Split&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt;,
+/// `'a` is the lifetime of the byte string being split, while `F` is the type
+/// of the predicate, i.e., `FnMut(char) -&gt; bool`.
+</span><span class="attr">#[derive(Debug)]
+</span><span class="kw">pub struct </span>SplitN&lt;<span class="lifetime">'a</span>&gt; {
+    split: Split&lt;<span class="lifetime">'a</span>&gt;,
     limit: usize,
     count: usize,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; SplitN&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; SplitN&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">fn </span>new(
-        haystack: <span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8],
-        splitter: <span class="kw-2">&amp;</span><span class="lifetime">'s </span>[u8],
+        haystack: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8],
+        splitter: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8],
         limit: usize,
-    ) -&gt; SplitN&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
+    ) -&gt; SplitN&lt;<span class="lifetime">'a</span>&gt; {
         <span class="kw">let </span>split = haystack.split_str(splitter);
         SplitN { split, limit, count: <span class="number">0 </span>}
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; Iterator <span class="kw">for </span>SplitN&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
-    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8];
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Iterator <span class="kw">for </span>SplitN&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8];
 
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8]&gt; {
+    </span><span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]&gt; {
         <span class="self">self</span>.count += <span class="number">1</span>;
         <span class="kw">if </span><span class="self">self</span>.count &gt; <span class="self">self</span>.limit || <span class="self">self</span>.split.done {
             <span class="prelude-val">None
@@ -7464,31 +7136,31 @@
 <span class="doccomment">/// An iterator over at most `n` substrings in a byte string, split by a
 /// separator, in reverse.
 ///
-/// `'h` is the lifetime of the byte string being split (the haystack), while
-/// `'s` is the lifetime of the byte string doing the splitting.
-</span><span class="attr">#[derive(Clone, Debug)]
-</span><span class="kw">pub struct </span>SplitNReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
-    split: SplitReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt;,
+/// `'a` is the lifetime of the byte string being split, while `F` is the type
+/// of the predicate, i.e., `FnMut(char) -&gt; bool`.
+</span><span class="attr">#[derive(Debug)]
+</span><span class="kw">pub struct </span>SplitNReverse&lt;<span class="lifetime">'a</span>&gt; {
+    split: SplitReverse&lt;<span class="lifetime">'a</span>&gt;,
     limit: usize,
     count: usize,
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; SplitNReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; SplitNReverse&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">fn </span>new(
-        haystack: <span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8],
-        splitter: <span class="kw-2">&amp;</span><span class="lifetime">'s </span>[u8],
+        haystack: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8],
+        splitter: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8],
         limit: usize,
-    ) -&gt; SplitNReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
+    ) -&gt; SplitNReverse&lt;<span class="lifetime">'a</span>&gt; {
         <span class="kw">let </span>split = haystack.rsplit_str(splitter);
         SplitNReverse { split, limit, count: <span class="number">0 </span>}
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; Iterator <span class="kw">for </span>SplitNReverse&lt;<span class="lifetime">'h</span>, <span class="lifetime">'s</span>&gt; {
-    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8];
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Iterator <span class="kw">for </span>SplitNReverse&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8];
 
     <span class="attr">#[inline]
-    </span><span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'h </span>[u8]&gt; {
+    </span><span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]&gt; {
         <span class="self">self</span>.count += <span class="number">1</span>;
         <span class="kw">if </span><span class="self">self</span>.count &gt; <span class="self">self</span>.limit || <span class="self">self</span>.split.done {
             <span class="prelude-val">None
@@ -7506,7 +7178,6 @@
 /// `\n`.
 ///
 /// `'a` is the lifetime of the byte string being iterated over.
-</span><span class="attr">#[derive(Clone, Debug)]
 </span><span class="kw">pub struct </span>Lines&lt;<span class="lifetime">'a</span>&gt; {
     it: LinesWithTerminator&lt;<span class="lifetime">'a</span>&gt;,
 }
@@ -7515,28 +7186,6 @@
     <span class="kw">fn </span>new(bytes: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; Lines&lt;<span class="lifetime">'a</span>&gt; {
         Lines { it: LinesWithTerminator::new(bytes) }
     }
-
-    <span class="doccomment">/// Return a copy of the rest of the underlying bytes without affecting the
-    /// iterator itself.
-    ///
-    /// # Examples
-    ///
-    /// Basic usage:
-    ///
-    /// ```
-    /// use bstr::{B, ByteSlice};
-    ///
-    /// let s = b"\
-    /// foo
-    /// bar\r
-    /// baz";
-    /// let mut lines = s.lines();
-    /// assert_eq!(lines.next(), Some(B("foo")));
-    /// assert_eq!(lines.as_bytes(), B("bar\r\nbaz"));
-    /// ```
-    </span><span class="kw">pub fn </span>as_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8] {
-        <span class="self">self</span>.it.bytes
-    }
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Iterator <span class="kw">for </span>Lines&lt;<span class="lifetime">'a</span>&gt; {
@@ -7544,18 +7193,16 @@
 
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]&gt; {
-        <span class="prelude-val">Some</span>(trim_last_terminator(<span class="self">self</span>.it.next()<span class="question-mark">?</span>))
+        <span class="kw">let </span><span class="kw-2">mut </span>line = <span class="self">self</span>.it.next()<span class="question-mark">?</span>;
+        <span class="kw">if </span>line.last_byte() == <span class="prelude-val">Some</span>(<span class="string">b'\n'</span>) {
+            line = <span class="kw-2">&amp;</span>line[..line.len() - <span class="number">1</span>];
+            <span class="kw">if </span>line.last_byte() == <span class="prelude-val">Some</span>(<span class="string">b'\r'</span>) {
+                line = <span class="kw-2">&amp;</span>line[..line.len() - <span class="number">1</span>];
+            }
+        }
+        <span class="prelude-val">Some</span>(line)
     }
 }
-
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; DoubleEndedIterator <span class="kw">for </span>Lines&lt;<span class="lifetime">'a</span>&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>next_back(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
-        <span class="prelude-val">Some</span>(trim_last_terminator(<span class="self">self</span>.it.next_back()<span class="question-mark">?</span>))
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; iter::FusedIterator <span class="kw">for </span>Lines&lt;<span class="lifetime">'a</span>&gt; {}
 
 <span class="doccomment">/// An iterator over all lines in a byte string, including their terminators.
 ///
@@ -7570,7 +7217,6 @@
 /// the original byte string.
 ///
 /// `'a` is the lifetime of the byte string being iterated over.
-</span><span class="attr">#[derive(Clone, Debug)]
 </span><span class="kw">pub struct </span>LinesWithTerminator&lt;<span class="lifetime">'a</span>&gt; {
     bytes: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8],
 }
@@ -7578,28 +7224,6 @@
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; LinesWithTerminator&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">fn </span>new(bytes: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; LinesWithTerminator&lt;<span class="lifetime">'a</span>&gt; {
         LinesWithTerminator { bytes }
-    }
-
-    <span class="doccomment">/// Return a copy of the rest of the underlying bytes without affecting the
-    /// iterator itself.
-    ///
-    /// # Examples
-    ///
-    /// Basic usage:
-    ///
-    /// ```
-    /// use bstr::{B, ByteSlice};
-    ///
-    /// let s = b"\
-    /// foo
-    /// bar\r
-    /// baz";
-    /// let mut lines = s.lines_with_terminator();
-    /// assert_eq!(lines.next(), Some(B("foo\n")));
-    /// assert_eq!(lines.as_bytes(), B("bar\r\nbaz"));
-    /// ```
-    </span><span class="kw">pub fn </span>as_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8] {
-        <span class="self">self</span>.bytes
     }
 }
 
@@ -7624,43 +7248,10 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; DoubleEndedIterator <span class="kw">for </span>LinesWithTerminator&lt;<span class="lifetime">'a</span>&gt; {
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>next_back(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
-        <span class="kw">let </span>end = <span class="self">self</span>.bytes.len().checked_sub(<span class="number">1</span>)<span class="question-mark">?</span>;
-        <span class="kw">match </span><span class="self">self</span>.bytes[..end].rfind_byte(<span class="string">b'\n'</span>) {
-            <span class="prelude-val">None </span>=&gt; {
-                <span class="kw">let </span>line = <span class="self">self</span>.bytes;
-                <span class="self">self</span>.bytes = <span class="string">b""</span>;
-                <span class="prelude-val">Some</span>(line)
-            }
-            <span class="prelude-val">Some</span>(end) =&gt; {
-                <span class="kw">let </span>line = <span class="kw-2">&amp;</span><span class="self">self</span>.bytes[end + <span class="number">1</span>..];
-                <span class="self">self</span>.bytes = <span class="kw-2">&amp;</span><span class="self">self</span>.bytes[..end + <span class="number">1</span>];
-                <span class="prelude-val">Some</span>(line)
-            }
-        }
-    }
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; iter::FusedIterator <span class="kw">for </span>LinesWithTerminator&lt;<span class="lifetime">'a</span>&gt; {}
-
-<span class="kw">fn </span>trim_last_terminator(<span class="kw-2">mut </span>s: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="kw-2">&amp;</span>[u8] {
-    <span class="kw">if </span>s.last_byte() == <span class="prelude-val">Some</span>(<span class="string">b'\n'</span>) {
-        s = <span class="kw-2">&amp;</span>s[..s.len() - <span class="number">1</span>];
-        <span class="kw">if </span>s.last_byte() == <span class="prelude-val">Some</span>(<span class="string">b'\r'</span>) {
-            s = <span class="kw-2">&amp;</span>s[..s.len() - <span class="number">1</span>];
-        }
-    }
-    s
-}
-
-<span class="attr">#[cfg(all(test, feature = <span class="string">"std"</span>))]
+<span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
-    <span class="kw">use crate</span>::{
-        ext_slice::{ByteSlice, Lines, LinesWithTerminator, B},
-        tests::LOSSY_TESTS,
-    };
+    <span class="kw">use </span><span class="kw">crate</span>::ext_slice::{ByteSlice, B};
+    <span class="kw">use </span><span class="kw">crate</span>::tests::LOSSY_TESTS;
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>to_str_lossy() {
@@ -7688,56 +7279,35 @@
     }
 
     <span class="attr">#[test]
-    </span><span class="kw">fn </span>lines_iteration() {
-        <span class="macro">macro_rules!</span> t {
-            (<span class="macro-nonterminal">$it</span>:expr, <span class="macro-nonterminal">$forward</span>:expr) =&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>res: Vec&lt;<span class="kw-2">&amp;</span>[u8]&gt; = Vec::from(<span class="macro-nonterminal">$forward</span>);
-                <span class="macro">assert_eq!</span>(<span class="macro-nonterminal">$it</span>.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(), res);
-                res.reverse();
-                <span class="macro">assert_eq!</span>(<span class="macro-nonterminal">$it</span>.rev().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(), res);
-            };
-        }
+    #[should_panic]
+    </span><span class="kw">fn </span>copy_within_fail1() {
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="kw-2">*</span><span class="string">b"foobar"</span>;
+        <span class="kw">let </span>s = <span class="kw-2">&amp;mut </span>buf;
+        s.copy_within_str(<span class="number">0</span>..<span class="number">2</span>, <span class="number">5</span>);
+    }
 
-        <span class="macro">t!</span>(Lines::new(<span class="string">b""</span>), []);
-        <span class="macro">t!</span>(LinesWithTerminator::new(<span class="string">b""</span>), []);
+    <span class="attr">#[test]
+    #[should_panic]
+    </span><span class="kw">fn </span>copy_within_fail2() {
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="kw-2">*</span><span class="string">b"foobar"</span>;
+        <span class="kw">let </span>s = <span class="kw-2">&amp;mut </span>buf;
+        s.copy_within_str(<span class="number">3</span>..<span class="number">2</span>, <span class="number">0</span>);
+    }
 
-        <span class="macro">t!</span>(Lines::new(<span class="string">b"\n"</span>), [B(<span class="string">""</span>)]);
-        <span class="macro">t!</span>(Lines::new(<span class="string">b"\r\n"</span>), [B(<span class="string">""</span>)]);
-        <span class="macro">t!</span>(LinesWithTerminator::new(<span class="string">b"\n"</span>), [B(<span class="string">"\n"</span>)]);
+    <span class="attr">#[test]
+    #[should_panic]
+    </span><span class="kw">fn </span>copy_within_fail3() {
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="kw-2">*</span><span class="string">b"foobar"</span>;
+        <span class="kw">let </span>s = <span class="kw-2">&amp;mut </span>buf;
+        s.copy_within_str(<span class="number">5</span>..<span class="number">7</span>, <span class="number">0</span>);
+    }
 
-        <span class="macro">t!</span>(Lines::new(<span class="string">b"a"</span>), [B(<span class="string">"a"</span>)]);
-        <span class="macro">t!</span>(LinesWithTerminator::new(<span class="string">b"a"</span>), [B(<span class="string">"a"</span>)]);
-
-        <span class="macro">t!</span>(Lines::new(<span class="string">b"abc"</span>), [B(<span class="string">"abc"</span>)]);
-        <span class="macro">t!</span>(LinesWithTerminator::new(<span class="string">b"abc"</span>), [B(<span class="string">"abc"</span>)]);
-
-        <span class="macro">t!</span>(Lines::new(<span class="string">b"abc\n"</span>), [B(<span class="string">"abc"</span>)]);
-        <span class="macro">t!</span>(Lines::new(<span class="string">b"abc\r\n"</span>), [B(<span class="string">"abc"</span>)]);
-        <span class="macro">t!</span>(LinesWithTerminator::new(<span class="string">b"abc\n"</span>), [B(<span class="string">"abc\n"</span>)]);
-
-        <span class="macro">t!</span>(Lines::new(<span class="string">b"abc\n\n"</span>), [B(<span class="string">"abc"</span>), B(<span class="string">""</span>)]);
-        <span class="macro">t!</span>(LinesWithTerminator::new(<span class="string">b"abc\n\n"</span>), [B(<span class="string">"abc\n"</span>), B(<span class="string">"\n"</span>)]);
-
-        <span class="macro">t!</span>(Lines::new(<span class="string">b"abc\n\ndef"</span>), [B(<span class="string">"abc"</span>), B(<span class="string">""</span>), B(<span class="string">"def"</span>)]);
-        <span class="macro">t!</span>(
-            LinesWithTerminator::new(<span class="string">b"abc\n\ndef"</span>),
-            [B(<span class="string">"abc\n"</span>), B(<span class="string">"\n"</span>), B(<span class="string">"def"</span>)]
-        );
-
-        <span class="macro">t!</span>(Lines::new(<span class="string">b"abc\n\ndef\n"</span>), [B(<span class="string">"abc"</span>), B(<span class="string">""</span>), B(<span class="string">"def"</span>)]);
-        <span class="macro">t!</span>(
-            LinesWithTerminator::new(<span class="string">b"abc\n\ndef\n"</span>),
-            [B(<span class="string">"abc\n"</span>), B(<span class="string">"\n"</span>), B(<span class="string">"def\n"</span>)]
-        );
-
-        <span class="macro">t!</span>(Lines::new(<span class="string">b"\na\nb\n"</span>), [B(<span class="string">""</span>), B(<span class="string">"a"</span>), B(<span class="string">"b"</span>)]);
-        <span class="macro">t!</span>(
-            LinesWithTerminator::new(<span class="string">b"\na\nb\n"</span>),
-            [B(<span class="string">"\n"</span>), B(<span class="string">"a\n"</span>), B(<span class="string">"b\n"</span>)]
-        );
-
-        <span class="macro">t!</span>(Lines::new(<span class="string">b"\n\n\n"</span>), [B(<span class="string">""</span>), B(<span class="string">""</span>), B(<span class="string">""</span>)]);
-        <span class="macro">t!</span>(LinesWithTerminator::new(<span class="string">b"\n\n\n"</span>), [B(<span class="string">"\n"</span>), B(<span class="string">"\n"</span>), B(<span class="string">"\n"</span>)]);
+    <span class="attr">#[test]
+    #[should_panic]
+    </span><span class="kw">fn </span>copy_within_fail4() {
+        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="kw-2">*</span><span class="string">b"foobar"</span>;
+        <span class="kw">let </span>s = <span class="kw-2">&amp;mut </span>buf;
+        s.copy_within_str(<span class="number">0</span>..<span class="number">1</span>, <span class="number">6</span>);
     }
 }
 </code></pre></div></section></main></body></html>

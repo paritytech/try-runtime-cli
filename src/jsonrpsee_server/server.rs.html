@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.16.3/src/server.rs`."><title>server.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.22.5/src/server.rs`."><title>server.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../jsonrpsee_server/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -864,6 +864,484 @@
 <a href="#862" id="862">862</a>
 <a href="#863" id="863">863</a>
 <a href="#864" id="864">864</a>
+<a href="#865" id="865">865</a>
+<a href="#866" id="866">866</a>
+<a href="#867" id="867">867</a>
+<a href="#868" id="868">868</a>
+<a href="#869" id="869">869</a>
+<a href="#870" id="870">870</a>
+<a href="#871" id="871">871</a>
+<a href="#872" id="872">872</a>
+<a href="#873" id="873">873</a>
+<a href="#874" id="874">874</a>
+<a href="#875" id="875">875</a>
+<a href="#876" id="876">876</a>
+<a href="#877" id="877">877</a>
+<a href="#878" id="878">878</a>
+<a href="#879" id="879">879</a>
+<a href="#880" id="880">880</a>
+<a href="#881" id="881">881</a>
+<a href="#882" id="882">882</a>
+<a href="#883" id="883">883</a>
+<a href="#884" id="884">884</a>
+<a href="#885" id="885">885</a>
+<a href="#886" id="886">886</a>
+<a href="#887" id="887">887</a>
+<a href="#888" id="888">888</a>
+<a href="#889" id="889">889</a>
+<a href="#890" id="890">890</a>
+<a href="#891" id="891">891</a>
+<a href="#892" id="892">892</a>
+<a href="#893" id="893">893</a>
+<a href="#894" id="894">894</a>
+<a href="#895" id="895">895</a>
+<a href="#896" id="896">896</a>
+<a href="#897" id="897">897</a>
+<a href="#898" id="898">898</a>
+<a href="#899" id="899">899</a>
+<a href="#900" id="900">900</a>
+<a href="#901" id="901">901</a>
+<a href="#902" id="902">902</a>
+<a href="#903" id="903">903</a>
+<a href="#904" id="904">904</a>
+<a href="#905" id="905">905</a>
+<a href="#906" id="906">906</a>
+<a href="#907" id="907">907</a>
+<a href="#908" id="908">908</a>
+<a href="#909" id="909">909</a>
+<a href="#910" id="910">910</a>
+<a href="#911" id="911">911</a>
+<a href="#912" id="912">912</a>
+<a href="#913" id="913">913</a>
+<a href="#914" id="914">914</a>
+<a href="#915" id="915">915</a>
+<a href="#916" id="916">916</a>
+<a href="#917" id="917">917</a>
+<a href="#918" id="918">918</a>
+<a href="#919" id="919">919</a>
+<a href="#920" id="920">920</a>
+<a href="#921" id="921">921</a>
+<a href="#922" id="922">922</a>
+<a href="#923" id="923">923</a>
+<a href="#924" id="924">924</a>
+<a href="#925" id="925">925</a>
+<a href="#926" id="926">926</a>
+<a href="#927" id="927">927</a>
+<a href="#928" id="928">928</a>
+<a href="#929" id="929">929</a>
+<a href="#930" id="930">930</a>
+<a href="#931" id="931">931</a>
+<a href="#932" id="932">932</a>
+<a href="#933" id="933">933</a>
+<a href="#934" id="934">934</a>
+<a href="#935" id="935">935</a>
+<a href="#936" id="936">936</a>
+<a href="#937" id="937">937</a>
+<a href="#938" id="938">938</a>
+<a href="#939" id="939">939</a>
+<a href="#940" id="940">940</a>
+<a href="#941" id="941">941</a>
+<a href="#942" id="942">942</a>
+<a href="#943" id="943">943</a>
+<a href="#944" id="944">944</a>
+<a href="#945" id="945">945</a>
+<a href="#946" id="946">946</a>
+<a href="#947" id="947">947</a>
+<a href="#948" id="948">948</a>
+<a href="#949" id="949">949</a>
+<a href="#950" id="950">950</a>
+<a href="#951" id="951">951</a>
+<a href="#952" id="952">952</a>
+<a href="#953" id="953">953</a>
+<a href="#954" id="954">954</a>
+<a href="#955" id="955">955</a>
+<a href="#956" id="956">956</a>
+<a href="#957" id="957">957</a>
+<a href="#958" id="958">958</a>
+<a href="#959" id="959">959</a>
+<a href="#960" id="960">960</a>
+<a href="#961" id="961">961</a>
+<a href="#962" id="962">962</a>
+<a href="#963" id="963">963</a>
+<a href="#964" id="964">964</a>
+<a href="#965" id="965">965</a>
+<a href="#966" id="966">966</a>
+<a href="#967" id="967">967</a>
+<a href="#968" id="968">968</a>
+<a href="#969" id="969">969</a>
+<a href="#970" id="970">970</a>
+<a href="#971" id="971">971</a>
+<a href="#972" id="972">972</a>
+<a href="#973" id="973">973</a>
+<a href="#974" id="974">974</a>
+<a href="#975" id="975">975</a>
+<a href="#976" id="976">976</a>
+<a href="#977" id="977">977</a>
+<a href="#978" id="978">978</a>
+<a href="#979" id="979">979</a>
+<a href="#980" id="980">980</a>
+<a href="#981" id="981">981</a>
+<a href="#982" id="982">982</a>
+<a href="#983" id="983">983</a>
+<a href="#984" id="984">984</a>
+<a href="#985" id="985">985</a>
+<a href="#986" id="986">986</a>
+<a href="#987" id="987">987</a>
+<a href="#988" id="988">988</a>
+<a href="#989" id="989">989</a>
+<a href="#990" id="990">990</a>
+<a href="#991" id="991">991</a>
+<a href="#992" id="992">992</a>
+<a href="#993" id="993">993</a>
+<a href="#994" id="994">994</a>
+<a href="#995" id="995">995</a>
+<a href="#996" id="996">996</a>
+<a href="#997" id="997">997</a>
+<a href="#998" id="998">998</a>
+<a href="#999" id="999">999</a>
+<a href="#1000" id="1000">1000</a>
+<a href="#1001" id="1001">1001</a>
+<a href="#1002" id="1002">1002</a>
+<a href="#1003" id="1003">1003</a>
+<a href="#1004" id="1004">1004</a>
+<a href="#1005" id="1005">1005</a>
+<a href="#1006" id="1006">1006</a>
+<a href="#1007" id="1007">1007</a>
+<a href="#1008" id="1008">1008</a>
+<a href="#1009" id="1009">1009</a>
+<a href="#1010" id="1010">1010</a>
+<a href="#1011" id="1011">1011</a>
+<a href="#1012" id="1012">1012</a>
+<a href="#1013" id="1013">1013</a>
+<a href="#1014" id="1014">1014</a>
+<a href="#1015" id="1015">1015</a>
+<a href="#1016" id="1016">1016</a>
+<a href="#1017" id="1017">1017</a>
+<a href="#1018" id="1018">1018</a>
+<a href="#1019" id="1019">1019</a>
+<a href="#1020" id="1020">1020</a>
+<a href="#1021" id="1021">1021</a>
+<a href="#1022" id="1022">1022</a>
+<a href="#1023" id="1023">1023</a>
+<a href="#1024" id="1024">1024</a>
+<a href="#1025" id="1025">1025</a>
+<a href="#1026" id="1026">1026</a>
+<a href="#1027" id="1027">1027</a>
+<a href="#1028" id="1028">1028</a>
+<a href="#1029" id="1029">1029</a>
+<a href="#1030" id="1030">1030</a>
+<a href="#1031" id="1031">1031</a>
+<a href="#1032" id="1032">1032</a>
+<a href="#1033" id="1033">1033</a>
+<a href="#1034" id="1034">1034</a>
+<a href="#1035" id="1035">1035</a>
+<a href="#1036" id="1036">1036</a>
+<a href="#1037" id="1037">1037</a>
+<a href="#1038" id="1038">1038</a>
+<a href="#1039" id="1039">1039</a>
+<a href="#1040" id="1040">1040</a>
+<a href="#1041" id="1041">1041</a>
+<a href="#1042" id="1042">1042</a>
+<a href="#1043" id="1043">1043</a>
+<a href="#1044" id="1044">1044</a>
+<a href="#1045" id="1045">1045</a>
+<a href="#1046" id="1046">1046</a>
+<a href="#1047" id="1047">1047</a>
+<a href="#1048" id="1048">1048</a>
+<a href="#1049" id="1049">1049</a>
+<a href="#1050" id="1050">1050</a>
+<a href="#1051" id="1051">1051</a>
+<a href="#1052" id="1052">1052</a>
+<a href="#1053" id="1053">1053</a>
+<a href="#1054" id="1054">1054</a>
+<a href="#1055" id="1055">1055</a>
+<a href="#1056" id="1056">1056</a>
+<a href="#1057" id="1057">1057</a>
+<a href="#1058" id="1058">1058</a>
+<a href="#1059" id="1059">1059</a>
+<a href="#1060" id="1060">1060</a>
+<a href="#1061" id="1061">1061</a>
+<a href="#1062" id="1062">1062</a>
+<a href="#1063" id="1063">1063</a>
+<a href="#1064" id="1064">1064</a>
+<a href="#1065" id="1065">1065</a>
+<a href="#1066" id="1066">1066</a>
+<a href="#1067" id="1067">1067</a>
+<a href="#1068" id="1068">1068</a>
+<a href="#1069" id="1069">1069</a>
+<a href="#1070" id="1070">1070</a>
+<a href="#1071" id="1071">1071</a>
+<a href="#1072" id="1072">1072</a>
+<a href="#1073" id="1073">1073</a>
+<a href="#1074" id="1074">1074</a>
+<a href="#1075" id="1075">1075</a>
+<a href="#1076" id="1076">1076</a>
+<a href="#1077" id="1077">1077</a>
+<a href="#1078" id="1078">1078</a>
+<a href="#1079" id="1079">1079</a>
+<a href="#1080" id="1080">1080</a>
+<a href="#1081" id="1081">1081</a>
+<a href="#1082" id="1082">1082</a>
+<a href="#1083" id="1083">1083</a>
+<a href="#1084" id="1084">1084</a>
+<a href="#1085" id="1085">1085</a>
+<a href="#1086" id="1086">1086</a>
+<a href="#1087" id="1087">1087</a>
+<a href="#1088" id="1088">1088</a>
+<a href="#1089" id="1089">1089</a>
+<a href="#1090" id="1090">1090</a>
+<a href="#1091" id="1091">1091</a>
+<a href="#1092" id="1092">1092</a>
+<a href="#1093" id="1093">1093</a>
+<a href="#1094" id="1094">1094</a>
+<a href="#1095" id="1095">1095</a>
+<a href="#1096" id="1096">1096</a>
+<a href="#1097" id="1097">1097</a>
+<a href="#1098" id="1098">1098</a>
+<a href="#1099" id="1099">1099</a>
+<a href="#1100" id="1100">1100</a>
+<a href="#1101" id="1101">1101</a>
+<a href="#1102" id="1102">1102</a>
+<a href="#1103" id="1103">1103</a>
+<a href="#1104" id="1104">1104</a>
+<a href="#1105" id="1105">1105</a>
+<a href="#1106" id="1106">1106</a>
+<a href="#1107" id="1107">1107</a>
+<a href="#1108" id="1108">1108</a>
+<a href="#1109" id="1109">1109</a>
+<a href="#1110" id="1110">1110</a>
+<a href="#1111" id="1111">1111</a>
+<a href="#1112" id="1112">1112</a>
+<a href="#1113" id="1113">1113</a>
+<a href="#1114" id="1114">1114</a>
+<a href="#1115" id="1115">1115</a>
+<a href="#1116" id="1116">1116</a>
+<a href="#1117" id="1117">1117</a>
+<a href="#1118" id="1118">1118</a>
+<a href="#1119" id="1119">1119</a>
+<a href="#1120" id="1120">1120</a>
+<a href="#1121" id="1121">1121</a>
+<a href="#1122" id="1122">1122</a>
+<a href="#1123" id="1123">1123</a>
+<a href="#1124" id="1124">1124</a>
+<a href="#1125" id="1125">1125</a>
+<a href="#1126" id="1126">1126</a>
+<a href="#1127" id="1127">1127</a>
+<a href="#1128" id="1128">1128</a>
+<a href="#1129" id="1129">1129</a>
+<a href="#1130" id="1130">1130</a>
+<a href="#1131" id="1131">1131</a>
+<a href="#1132" id="1132">1132</a>
+<a href="#1133" id="1133">1133</a>
+<a href="#1134" id="1134">1134</a>
+<a href="#1135" id="1135">1135</a>
+<a href="#1136" id="1136">1136</a>
+<a href="#1137" id="1137">1137</a>
+<a href="#1138" id="1138">1138</a>
+<a href="#1139" id="1139">1139</a>
+<a href="#1140" id="1140">1140</a>
+<a href="#1141" id="1141">1141</a>
+<a href="#1142" id="1142">1142</a>
+<a href="#1143" id="1143">1143</a>
+<a href="#1144" id="1144">1144</a>
+<a href="#1145" id="1145">1145</a>
+<a href="#1146" id="1146">1146</a>
+<a href="#1147" id="1147">1147</a>
+<a href="#1148" id="1148">1148</a>
+<a href="#1149" id="1149">1149</a>
+<a href="#1150" id="1150">1150</a>
+<a href="#1151" id="1151">1151</a>
+<a href="#1152" id="1152">1152</a>
+<a href="#1153" id="1153">1153</a>
+<a href="#1154" id="1154">1154</a>
+<a href="#1155" id="1155">1155</a>
+<a href="#1156" id="1156">1156</a>
+<a href="#1157" id="1157">1157</a>
+<a href="#1158" id="1158">1158</a>
+<a href="#1159" id="1159">1159</a>
+<a href="#1160" id="1160">1160</a>
+<a href="#1161" id="1161">1161</a>
+<a href="#1162" id="1162">1162</a>
+<a href="#1163" id="1163">1163</a>
+<a href="#1164" id="1164">1164</a>
+<a href="#1165" id="1165">1165</a>
+<a href="#1166" id="1166">1166</a>
+<a href="#1167" id="1167">1167</a>
+<a href="#1168" id="1168">1168</a>
+<a href="#1169" id="1169">1169</a>
+<a href="#1170" id="1170">1170</a>
+<a href="#1171" id="1171">1171</a>
+<a href="#1172" id="1172">1172</a>
+<a href="#1173" id="1173">1173</a>
+<a href="#1174" id="1174">1174</a>
+<a href="#1175" id="1175">1175</a>
+<a href="#1176" id="1176">1176</a>
+<a href="#1177" id="1177">1177</a>
+<a href="#1178" id="1178">1178</a>
+<a href="#1179" id="1179">1179</a>
+<a href="#1180" id="1180">1180</a>
+<a href="#1181" id="1181">1181</a>
+<a href="#1182" id="1182">1182</a>
+<a href="#1183" id="1183">1183</a>
+<a href="#1184" id="1184">1184</a>
+<a href="#1185" id="1185">1185</a>
+<a href="#1186" id="1186">1186</a>
+<a href="#1187" id="1187">1187</a>
+<a href="#1188" id="1188">1188</a>
+<a href="#1189" id="1189">1189</a>
+<a href="#1190" id="1190">1190</a>
+<a href="#1191" id="1191">1191</a>
+<a href="#1192" id="1192">1192</a>
+<a href="#1193" id="1193">1193</a>
+<a href="#1194" id="1194">1194</a>
+<a href="#1195" id="1195">1195</a>
+<a href="#1196" id="1196">1196</a>
+<a href="#1197" id="1197">1197</a>
+<a href="#1198" id="1198">1198</a>
+<a href="#1199" id="1199">1199</a>
+<a href="#1200" id="1200">1200</a>
+<a href="#1201" id="1201">1201</a>
+<a href="#1202" id="1202">1202</a>
+<a href="#1203" id="1203">1203</a>
+<a href="#1204" id="1204">1204</a>
+<a href="#1205" id="1205">1205</a>
+<a href="#1206" id="1206">1206</a>
+<a href="#1207" id="1207">1207</a>
+<a href="#1208" id="1208">1208</a>
+<a href="#1209" id="1209">1209</a>
+<a href="#1210" id="1210">1210</a>
+<a href="#1211" id="1211">1211</a>
+<a href="#1212" id="1212">1212</a>
+<a href="#1213" id="1213">1213</a>
+<a href="#1214" id="1214">1214</a>
+<a href="#1215" id="1215">1215</a>
+<a href="#1216" id="1216">1216</a>
+<a href="#1217" id="1217">1217</a>
+<a href="#1218" id="1218">1218</a>
+<a href="#1219" id="1219">1219</a>
+<a href="#1220" id="1220">1220</a>
+<a href="#1221" id="1221">1221</a>
+<a href="#1222" id="1222">1222</a>
+<a href="#1223" id="1223">1223</a>
+<a href="#1224" id="1224">1224</a>
+<a href="#1225" id="1225">1225</a>
+<a href="#1226" id="1226">1226</a>
+<a href="#1227" id="1227">1227</a>
+<a href="#1228" id="1228">1228</a>
+<a href="#1229" id="1229">1229</a>
+<a href="#1230" id="1230">1230</a>
+<a href="#1231" id="1231">1231</a>
+<a href="#1232" id="1232">1232</a>
+<a href="#1233" id="1233">1233</a>
+<a href="#1234" id="1234">1234</a>
+<a href="#1235" id="1235">1235</a>
+<a href="#1236" id="1236">1236</a>
+<a href="#1237" id="1237">1237</a>
+<a href="#1238" id="1238">1238</a>
+<a href="#1239" id="1239">1239</a>
+<a href="#1240" id="1240">1240</a>
+<a href="#1241" id="1241">1241</a>
+<a href="#1242" id="1242">1242</a>
+<a href="#1243" id="1243">1243</a>
+<a href="#1244" id="1244">1244</a>
+<a href="#1245" id="1245">1245</a>
+<a href="#1246" id="1246">1246</a>
+<a href="#1247" id="1247">1247</a>
+<a href="#1248" id="1248">1248</a>
+<a href="#1249" id="1249">1249</a>
+<a href="#1250" id="1250">1250</a>
+<a href="#1251" id="1251">1251</a>
+<a href="#1252" id="1252">1252</a>
+<a href="#1253" id="1253">1253</a>
+<a href="#1254" id="1254">1254</a>
+<a href="#1255" id="1255">1255</a>
+<a href="#1256" id="1256">1256</a>
+<a href="#1257" id="1257">1257</a>
+<a href="#1258" id="1258">1258</a>
+<a href="#1259" id="1259">1259</a>
+<a href="#1260" id="1260">1260</a>
+<a href="#1261" id="1261">1261</a>
+<a href="#1262" id="1262">1262</a>
+<a href="#1263" id="1263">1263</a>
+<a href="#1264" id="1264">1264</a>
+<a href="#1265" id="1265">1265</a>
+<a href="#1266" id="1266">1266</a>
+<a href="#1267" id="1267">1267</a>
+<a href="#1268" id="1268">1268</a>
+<a href="#1269" id="1269">1269</a>
+<a href="#1270" id="1270">1270</a>
+<a href="#1271" id="1271">1271</a>
+<a href="#1272" id="1272">1272</a>
+<a href="#1273" id="1273">1273</a>
+<a href="#1274" id="1274">1274</a>
+<a href="#1275" id="1275">1275</a>
+<a href="#1276" id="1276">1276</a>
+<a href="#1277" id="1277">1277</a>
+<a href="#1278" id="1278">1278</a>
+<a href="#1279" id="1279">1279</a>
+<a href="#1280" id="1280">1280</a>
+<a href="#1281" id="1281">1281</a>
+<a href="#1282" id="1282">1282</a>
+<a href="#1283" id="1283">1283</a>
+<a href="#1284" id="1284">1284</a>
+<a href="#1285" id="1285">1285</a>
+<a href="#1286" id="1286">1286</a>
+<a href="#1287" id="1287">1287</a>
+<a href="#1288" id="1288">1288</a>
+<a href="#1289" id="1289">1289</a>
+<a href="#1290" id="1290">1290</a>
+<a href="#1291" id="1291">1291</a>
+<a href="#1292" id="1292">1292</a>
+<a href="#1293" id="1293">1293</a>
+<a href="#1294" id="1294">1294</a>
+<a href="#1295" id="1295">1295</a>
+<a href="#1296" id="1296">1296</a>
+<a href="#1297" id="1297">1297</a>
+<a href="#1298" id="1298">1298</a>
+<a href="#1299" id="1299">1299</a>
+<a href="#1300" id="1300">1300</a>
+<a href="#1301" id="1301">1301</a>
+<a href="#1302" id="1302">1302</a>
+<a href="#1303" id="1303">1303</a>
+<a href="#1304" id="1304">1304</a>
+<a href="#1305" id="1305">1305</a>
+<a href="#1306" id="1306">1306</a>
+<a href="#1307" id="1307">1307</a>
+<a href="#1308" id="1308">1308</a>
+<a href="#1309" id="1309">1309</a>
+<a href="#1310" id="1310">1310</a>
+<a href="#1311" id="1311">1311</a>
+<a href="#1312" id="1312">1312</a>
+<a href="#1313" id="1313">1313</a>
+<a href="#1314" id="1314">1314</a>
+<a href="#1315" id="1315">1315</a>
+<a href="#1316" id="1316">1316</a>
+<a href="#1317" id="1317">1317</a>
+<a href="#1318" id="1318">1318</a>
+<a href="#1319" id="1319">1319</a>
+<a href="#1320" id="1320">1320</a>
+<a href="#1321" id="1321">1321</a>
+<a href="#1322" id="1322">1322</a>
+<a href="#1323" id="1323">1323</a>
+<a href="#1324" id="1324">1324</a>
+<a href="#1325" id="1325">1325</a>
+<a href="#1326" id="1326">1326</a>
+<a href="#1327" id="1327">1327</a>
+<a href="#1328" id="1328">1328</a>
+<a href="#1329" id="1329">1329</a>
+<a href="#1330" id="1330">1330</a>
+<a href="#1331" id="1331">1331</a>
+<a href="#1332" id="1332">1332</a>
+<a href="#1333" id="1333">1333</a>
+<a href="#1334" id="1334">1334</a>
+<a href="#1335" id="1335">1335</a>
+<a href="#1336" id="1336">1336</a>
+<a href="#1337" id="1337">1337</a>
+<a href="#1338" id="1338">1338</a>
+<a href="#1339" id="1339">1339</a>
+<a href="#1340" id="1340">1340</a>
+<a href="#1341" id="1341">1341</a>
+<a href="#1342" id="1342">1342</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any
@@ -894,153 +1372,186 @@
 <span class="kw">use </span>std::future::Future;
 <span class="kw">use </span>std::net::{SocketAddr, TcpListener <span class="kw">as </span>StdTcpListener};
 <span class="kw">use </span>std::pin::Pin;
+<span class="kw">use </span>std::sync::atomic::AtomicU32;
 <span class="kw">use </span>std::sync::Arc;
-<span class="kw">use </span>std::task::{Context, Poll};
+<span class="kw">use </span>std::task::Poll;
 <span class="kw">use </span>std::time::Duration;
 
-<span class="kw">use </span><span class="kw">crate</span>::future::{ConnectionGuard, FutureDriver, ServerHandle, StopHandle};
-<span class="kw">use </span><span class="kw">crate</span>::logger::{Logger, TransportProtocol};
+<span class="kw">use </span><span class="kw">crate</span>::future::{session_close, ConnectionGuard, ServerHandle, SessionClose, SessionClosedFuture, StopHandle};
+<span class="kw">use </span><span class="kw">crate</span>::middleware::rpc::{RpcService, RpcServiceBuilder, RpcServiceCfg, RpcServiceT};
+<span class="kw">use </span><span class="kw">crate</span>::transport::ws::BackgroundTaskParams;
 <span class="kw">use </span><span class="kw">crate</span>::transport::{http, ws};
+<span class="kw">use </span><span class="kw">crate</span>::LOG_TARGET;
 
-<span class="kw">use </span>futures_util::future::{BoxFuture, FutureExt};
+<span class="kw">use </span>futures_util::future::{<span class="self">self</span>, Either, FutureExt};
 <span class="kw">use </span>futures_util::io::{BufReader, BufWriter};
 
 <span class="kw">use </span>hyper::body::HttpBody;
+
 <span class="kw">use </span>jsonrpsee_core::id_providers::RandomIntegerIdProvider;
-
-<span class="kw">use </span>jsonrpsee_core::server::helpers::MethodResponse;
-<span class="kw">use </span>jsonrpsee_core::server::host_filtering::AllowHosts;
-<span class="kw">use </span>jsonrpsee_core::server::resource_limiting::Resources;
-<span class="kw">use </span>jsonrpsee_core::server::rpc_module::Methods;
+<span class="kw">use </span>jsonrpsee_core::server::helpers::prepare_error;
+<span class="kw">use </span>jsonrpsee_core::server::{BatchResponseBuilder, BoundedSubscriptions, MethodResponse, MethodSink, Methods};
 <span class="kw">use </span>jsonrpsee_core::traits::IdProvider;
-<span class="kw">use </span>jsonrpsee_core::{http_helpers, Error, TEN_MB_SIZE_BYTES};
+<span class="kw">use </span>jsonrpsee_core::{JsonRawValue, TEN_MB_SIZE_BYTES};
 
+<span class="kw">use </span>jsonrpsee_types::error::{
+	reject_too_big_batch_request, ErrorCode, BATCHES_NOT_SUPPORTED_CODE, BATCHES_NOT_SUPPORTED_MSG,
+};
+<span class="kw">use </span>jsonrpsee_types::{ErrorObject, Id, InvalidRequest, Notification, Request};
 <span class="kw">use </span>soketto::handshake::http::is_upgrade_request;
 <span class="kw">use </span>tokio::net::{TcpListener, TcpStream, ToSocketAddrs};
-<span class="kw">use </span>tokio::sync::{watch, OwnedSemaphorePermit};
+<span class="kw">use </span>tokio::sync::{mpsc, watch, OwnedSemaphorePermit};
 <span class="kw">use </span>tokio_util::compat::TokioAsyncReadCompatExt;
 <span class="kw">use </span>tower::layer::util::Identity;
 <span class="kw">use </span>tower::{Layer, Service};
 <span class="kw">use </span>tracing::{instrument, Instrument};
 
+<span class="kw">type </span>Notif&lt;<span class="lifetime">'a</span>&gt; = Notification&lt;<span class="lifetime">'a</span>, <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>JsonRawValue&gt;&gt;;
+
 <span class="doccomment">/// Default maximum connections allowed.
 </span><span class="kw">const </span>MAX_CONNECTIONS: u32 = <span class="number">100</span>;
 
 <span class="doccomment">/// JSON RPC server.
-</span><span class="kw">pub struct </span>Server&lt;B = Identity, L = ()&gt; {
+</span><span class="kw">pub struct </span>Server&lt;HttpMiddleware = Identity, RpcMiddleware = Identity&gt; {
 	listener: TcpListener,
-	cfg: Settings,
-	resources: Resources,
-	logger: L,
-	id_provider: Arc&lt;<span class="kw">dyn </span>IdProvider&gt;,
-	service_builder: tower::ServiceBuilder&lt;B&gt;,
+	server_cfg: ServerConfig,
+	rpc_middleware: RpcServiceBuilder&lt;RpcMiddleware&gt;,
+	http_middleware: tower::ServiceBuilder&lt;HttpMiddleware&gt;,
 }
 
-<span class="kw">impl</span>&lt;L&gt; std::fmt::Debug <span class="kw">for </span>Server&lt;L&gt; {
+<span class="kw">impl </span>Server&lt;Identity, Identity&gt; {
+	<span class="doccomment">/// Create a builder for the server.
+	</span><span class="kw">pub fn </span>builder() -&gt; Builder&lt;Identity, Identity&gt; {
+		Builder::new()
+	}
+}
+
+<span class="kw">impl</span>&lt;RpcMiddleware, HttpMiddleware&gt; std::fmt::Debug <span class="kw">for </span>Server&lt;RpcMiddleware, HttpMiddleware&gt; {
 	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
-		f.debug_struct(<span class="string">"Server"</span>)
-			.field(<span class="string">"listener"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.listener)
-			.field(<span class="string">"cfg"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.cfg)
-			.field(<span class="string">"id_provider"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.id_provider)
-			.field(<span class="string">"resources"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.resources)
-			.finish()
+		f.debug_struct(<span class="string">"Server"</span>).field(<span class="string">"listener"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.listener).field(<span class="string">"server_cfg"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.server_cfg).finish()
 	}
 }
 
-<span class="kw">impl</span>&lt;B, L&gt; Server&lt;B, L&gt; {
+<span class="kw">impl</span>&lt;RpcMiddleware, HttpMiddleware&gt; Server&lt;RpcMiddleware, HttpMiddleware&gt; {
 	<span class="doccomment">/// Returns socket address to which the server is bound.
-	</span><span class="kw">pub fn </span>local_addr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;SocketAddr, Error&gt; {
-		<span class="self">self</span>.listener.local_addr().map_err(Into::into)
+	</span><span class="kw">pub fn </span>local_addr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; std::io::Result&lt;SocketAddr&gt; {
+		<span class="self">self</span>.listener.local_addr()
 	}
 }
 
-<span class="kw">impl</span>&lt;B, U, L&gt; Server&lt;B, L&gt;
+<span class="kw">impl</span>&lt;HttpMiddleware, RpcMiddleware, B&gt; Server&lt;HttpMiddleware, RpcMiddleware&gt;
 <span class="kw">where
-	</span>L: Logger,
-	B: Layer&lt;TowerService&lt;L&gt;&gt; + Send + <span class="lifetime">'static</span>,
-	&lt;B <span class="kw">as </span>Layer&lt;TowerService&lt;L&gt;&gt;&gt;::Service: Send
+	</span>RpcMiddleware: tower::Layer&lt;RpcService&gt; + Clone + Send + <span class="lifetime">'static</span>,
+	<span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; &lt;RpcMiddleware <span class="kw">as </span>Layer&lt;RpcService&gt;&gt;::Service: RpcServiceT&lt;<span class="lifetime">'a</span>&gt;,
+	HttpMiddleware: Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt; + Send + <span class="lifetime">'static</span>,
+	&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service: Send
 		+ Service&lt;
 			hyper::Request&lt;hyper::Body&gt;,
-			Response = hyper::Response&lt;U&gt;,
+			Response = hyper::Response&lt;B&gt;,
 			Error = Box&lt;(<span class="kw">dyn </span>StdError + Send + Sync + <span class="lifetime">'static</span>)&gt;,
 		&gt;,
-	&lt;&lt;B <span class="kw">as </span>Layer&lt;TowerService&lt;L&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;hyper::Request&lt;hyper::Body&gt;&gt;&gt;::Future: Send,
-	U: HttpBody + Send + <span class="lifetime">'static</span>,
-	&lt;U <span class="kw">as </span>HttpBody&gt;::Error: Send + Sync + StdError,
-	&lt;U <span class="kw">as </span>HttpBody&gt;::Data: Send,
+	&lt;&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;hyper::Request&lt;hyper::Body&gt;&gt;&gt;::Future:
+		Send,
+	B: HttpBody + Send + <span class="lifetime">'static</span>,
+	&lt;B <span class="kw">as </span>HttpBody&gt;::Error: Send + Sync + StdError,
+	&lt;B <span class="kw">as </span>HttpBody&gt;::Data: Send,
 {
 	<span class="doccomment">/// Start responding to connections requests.
 	///
 	/// This will run on the tokio runtime until the server is stopped or the `ServerHandle` is dropped.
-	</span><span class="kw">pub fn </span>start(<span class="kw-2">mut </span><span class="self">self</span>, methods: <span class="kw">impl </span>Into&lt;Methods&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;ServerHandle, Error&gt; {
-		<span class="kw">let </span>methods = methods.into().initialize_resources(<span class="kw-2">&amp;</span><span class="self">self</span>.resources)<span class="question-mark">?</span>;
+	</span><span class="kw">pub fn </span>start(<span class="kw-2">mut </span><span class="self">self</span>, methods: <span class="kw">impl </span>Into&lt;Methods&gt;) -&gt; ServerHandle {
+		<span class="kw">let </span>methods = methods.into();
 		<span class="kw">let </span>(stop_tx, stop_rx) = watch::channel(());
 
 		<span class="kw">let </span>stop_handle = StopHandle::new(stop_rx);
 
-		<span class="kw">match </span><span class="self">self</span>.cfg.tokio_runtime.take() {
+		<span class="kw">match </span><span class="self">self</span>.server_cfg.tokio_runtime.take() {
 			<span class="prelude-val">Some</span>(rt) =&gt; rt.spawn(<span class="self">self</span>.start_inner(methods, stop_handle)),
 			<span class="prelude-val">None </span>=&gt; tokio::spawn(<span class="self">self</span>.start_inner(methods, stop_handle)),
 		};
 
-		<span class="prelude-val">Ok</span>(ServerHandle::new(stop_tx))
+		ServerHandle::new(stop_tx)
 	}
 
 	<span class="kw">async fn </span>start_inner(<span class="self">self</span>, methods: Methods, stop_handle: StopHandle) {
-		<span class="kw">let </span>max_request_body_size = <span class="self">self</span>.cfg.max_request_body_size;
-		<span class="kw">let </span>max_response_body_size = <span class="self">self</span>.cfg.max_response_body_size;
-		<span class="kw">let </span>max_log_length = <span class="self">self</span>.cfg.max_log_length;
-		<span class="kw">let </span>allow_hosts = <span class="self">self</span>.cfg.allow_hosts;
-		<span class="kw">let </span>resources = <span class="self">self</span>.resources;
-		<span class="kw">let </span>logger = <span class="self">self</span>.logger;
-		<span class="kw">let </span>batch_requests_supported = <span class="self">self</span>.cfg.batch_requests_supported;
-		<span class="kw">let </span>id_provider = <span class="self">self</span>.id_provider;
-		<span class="kw">let </span>max_subscriptions_per_connection = <span class="self">self</span>.cfg.max_subscriptions_per_connection;
-
 		<span class="kw">let </span><span class="kw-2">mut </span>id: u32 = <span class="number">0</span>;
-		<span class="kw">let </span>connection_guard = ConnectionGuard::new(<span class="self">self</span>.cfg.max_connections <span class="kw">as </span>usize);
-		<span class="kw">let </span><span class="kw-2">mut </span>connections = FutureDriver::default();
-		<span class="kw">let </span><span class="kw-2">mut </span>incoming = Monitored::new(Incoming(<span class="self">self</span>.listener), <span class="kw-2">&amp;</span>stop_handle);
+		<span class="kw">let </span>connection_guard = ConnectionGuard::new(<span class="self">self</span>.server_cfg.max_connections <span class="kw">as </span>usize);
+		<span class="kw">let </span>listener = <span class="self">self</span>.listener;
+
+		<span class="kw">let </span>stopped = stop_handle.clone().shutdown();
+		<span class="macro">tokio::pin!</span>(stopped);
+
+		<span class="kw">let </span>(drop_on_completion, <span class="kw-2">mut </span>process_connection_awaiter) = mpsc::channel::&lt;()&gt;(<span class="number">1</span>);
 
 		<span class="kw">loop </span>{
-			<span class="kw">match </span>connections.select_with(<span class="kw-2">&amp;mut </span>incoming).<span class="kw">await </span>{
-				<span class="prelude-val">Ok</span>((socket, remote_addr)) =&gt; {
-					<span class="kw">let </span>data = ProcessConnection {
+			<span class="kw">match </span>try_accept_conn(<span class="kw-2">&amp;</span>listener, stopped).<span class="kw">await </span>{
+				AcceptConnection::Established { socket, remote_addr, stop } =&gt; {
+
+					process_connection(ProcessConnection {
+						http_middleware: <span class="kw-2">&amp;</span><span class="self">self</span>.http_middleware,
+						rpc_middleware: <span class="self">self</span>.rpc_middleware.clone(),
 						remote_addr,
 						methods: methods.clone(),
-						allow_hosts: allow_hosts.clone(),
-						resources: resources.clone(),
-						max_request_body_size,
-						max_response_body_size,
-						max_log_length,
-						batch_requests_supported,
-						id_provider: id_provider.clone(),
-						ping_interval: <span class="self">self</span>.cfg.ping_interval,
 						stop_handle: stop_handle.clone(),
-						max_subscriptions_per_connection,
 						conn_id: id,
-						logger: logger.clone(),
-						max_connections: <span class="self">self</span>.cfg.max_connections,
-						enable_http: <span class="self">self</span>.cfg.enable_http,
-						enable_ws: <span class="self">self</span>.cfg.enable_ws,
-					};
-					process_connection(<span class="kw-2">&amp;</span><span class="self">self</span>.service_builder, <span class="kw-2">&amp;</span>connection_guard, data, socket, <span class="kw-2">&amp;mut </span>connections);
+						server_cfg: <span class="self">self</span>.server_cfg.clone(),
+						conn_guard: <span class="kw-2">&amp;</span>connection_guard,
+						socket,
+						drop_on_completion: drop_on_completion.clone(),
+					});
 					id = id.wrapping_add(<span class="number">1</span>);
+					stopped = stop;
 				}
-				<span class="prelude-val">Err</span>(MonitoredError::Selector(err)) =&gt; {
-					<span class="macro">tracing::error!</span>(<span class="string">"Error while awaiting a new connection: {:?}"</span>, err);
+				AcceptConnection::Err((e, stop)) =&gt; {
+					<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"Error while awaiting a new connection: {:?}"</span>, e);
+					stopped = stop;
 				}
-				<span class="prelude-val">Err</span>(MonitoredError::Shutdown) =&gt; <span class="kw">break</span>,
+				AcceptConnection::Shutdown =&gt; <span class="kw">break</span>,
 			}
 		}
 
-		connections.<span class="kw">await</span>;
+		<span class="comment">// Drop the last Sender
+		</span>drop(drop_on_completion);
+
+		<span class="comment">// Once this channel is closed it is safe to assume that all connections have been gracefully shutdown
+		</span><span class="kw">while </span>process_connection_awaiter.recv().<span class="kw">await</span>.is_some() {
+			<span class="comment">// Generally, messages should not be sent across this channel,
+			// but we'll loop here to wait for `None` just to be on the safe side
+		</span>}
 	}
 }
 
-<span class="doccomment">/// JSON-RPC Websocket server settings.
+<span class="doccomment">/// Static server configuration which is shared per connection.
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">struct </span>Settings {
+</span><span class="kw">pub struct </span>ServerConfig {
+	<span class="doccomment">/// Maximum size in bytes of a request.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) max_request_body_size: u32,
+	<span class="doccomment">/// Maximum size in bytes of a response.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) max_response_body_size: u32,
+	<span class="doccomment">/// Maximum number of incoming connections allowed.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) max_connections: u32,
+	<span class="doccomment">/// Maximum number of subscriptions per connection.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) max_subscriptions_per_connection: u32,
+	<span class="doccomment">/// Whether batch requests are supported by this server or not.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) batch_requests_config: BatchRequestConfig,
+	<span class="doccomment">/// Custom tokio runtime to run the server on.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) tokio_runtime: <span class="prelude-ty">Option</span>&lt;tokio::runtime::Handle&gt;,
+	<span class="doccomment">/// Enable HTTP.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) enable_http: bool,
+	<span class="doccomment">/// Enable WS.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) enable_ws: bool,
+	<span class="doccomment">/// Number of messages that server is allowed to `buffer` until backpressure kicks in.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) message_buffer_capacity: u32,
+	<span class="doccomment">/// Ping settings.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) ping_config: <span class="prelude-ty">Option</span>&lt;PingConfig&gt;,
+	<span class="doccomment">/// ID provider.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) id_provider: Arc&lt;<span class="kw">dyn </span>IdProvider&gt;,
+	<span class="doccomment">/// `TCP_NODELAY` settings.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) tcp_no_delay: bool,
+}
+
+<span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>ServerConfigBuilder {
 	<span class="doccomment">/// Maximum size in bytes of a request.
 	</span>max_request_body_size: u32,
 	<span class="doccomment">/// Maximum size in bytes of a response.
@@ -1049,190 +1560,465 @@
 	</span>max_connections: u32,
 	<span class="doccomment">/// Maximum number of subscriptions per connection.
 	</span>max_subscriptions_per_connection: u32,
-	<span class="doccomment">/// Max length for logging for requests and responses
-	///
-	/// Logs bigger than this limit will be truncated.
-	</span>max_log_length: u32,
-	<span class="doccomment">/// Host filtering.
-	</span>allow_hosts: AllowHosts,
 	<span class="doccomment">/// Whether batch requests are supported by this server or not.
-	</span>batch_requests_supported: bool,
-	<span class="doccomment">/// Custom tokio runtime to run the server on.
-	</span>tokio_runtime: <span class="prelude-ty">Option</span>&lt;tokio::runtime::Handle&gt;,
-	<span class="doccomment">/// The interval at which `Ping` frames are submitted.
-	</span>ping_interval: Duration,
+	</span>batch_requests_config: BatchRequestConfig,
 	<span class="doccomment">/// Enable HTTP.
 	</span>enable_http: bool,
 	<span class="doccomment">/// Enable WS.
 	</span>enable_ws: bool,
+	<span class="doccomment">/// Number of messages that server is allowed to `buffer` until backpressure kicks in.
+	</span>message_buffer_capacity: u32,
+	<span class="doccomment">/// Ping settings.
+	</span>ping_config: <span class="prelude-ty">Option</span>&lt;PingConfig&gt;,
+	<span class="doccomment">/// ID provider.
+	</span>id_provider: Arc&lt;<span class="kw">dyn </span>IdProvider&gt;,
 }
 
-<span class="kw">impl </span>Default <span class="kw">for </span>Settings {
+<span class="doccomment">/// Builder for [`TowerService`].
+</span><span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>TowerServiceBuilder&lt;RpcMiddleware, HttpMiddleware&gt; {
+	<span class="doccomment">/// ServerConfig
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) server_cfg: ServerConfig,
+	<span class="doccomment">/// RPC middleware.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) rpc_middleware: RpcServiceBuilder&lt;RpcMiddleware&gt;,
+	<span class="doccomment">/// HTTP middleware.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) http_middleware: tower::ServiceBuilder&lt;HttpMiddleware&gt;,
+	<span class="doccomment">/// Connection ID.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) conn_id: Arc&lt;AtomicU32&gt;,
+	<span class="doccomment">/// Connection guard.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) conn_guard: ConnectionGuard,
+}
+
+<span class="doccomment">/// Configuration for batch request handling.
+</span><span class="attr">#[derive(Debug, Copy, Clone)]
+</span><span class="kw">pub enum </span>BatchRequestConfig {
+	<span class="doccomment">/// Batch requests are disabled.
+	</span>Disabled,
+	<span class="doccomment">/// Each batch request is limited to `len` and any batch request bigger than `len` will not be processed.
+	</span>Limit(u32),
+	<span class="doccomment">/// The batch request is unlimited.
+	</span>Unlimited,
+}
+
+<span class="doccomment">/// Connection related state that is needed
+/// to execute JSON-RPC calls.
+</span><span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>ConnectionState {
+	<span class="doccomment">/// Stop handle.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) stop_handle: StopHandle,
+	<span class="doccomment">/// Connection ID
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) conn_id: u32,
+	<span class="doccomment">/// Connection guard.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) _conn_permit: Arc&lt;OwnedSemaphorePermit&gt;,
+}
+
+<span class="kw">impl </span>ConnectionState {
+	<span class="doccomment">/// Create a new connection state.
+	</span><span class="kw">pub fn </span>new(stop_handle: StopHandle, conn_id: u32, conn_permit: OwnedSemaphorePermit) -&gt; ConnectionState {
+		<span class="self">Self </span>{ stop_handle, conn_id, _conn_permit: Arc::new(conn_permit) }
+	}
+}
+
+<span class="doccomment">/// Configuration for WebSocket ping/pong mechanism and it may be used to disconnect
+/// an inactive connection.
+///
+/// jsonrpsee doesn't associate the ping/pong frames just that if
+/// a pong frame isn't received within the `inactive_limit` then it's regarded
+/// as missed.
+///
+/// Such that the `inactive_limit` should be configured to longer than a single
+/// WebSocket ping takes or it might be missed and may end up
+/// terminating the connection.
+///
+/// Default: ping_interval: 30 seconds, max failures: 1 and inactive limit: 40 seconds.
+</span><span class="attr">#[derive(Debug, Copy, Clone)]
+</span><span class="kw">pub struct </span>PingConfig {
+	<span class="doccomment">/// Period which the server pings the connected client.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) ping_interval: Duration,
+	<span class="doccomment">/// Max allowed time for a connection to stay idle.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) inactive_limit: Duration,
+	<span class="doccomment">/// Max failures.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) max_failures: usize,
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>PingConfig {
+	<span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+		<span class="self">Self </span>{ ping_interval: Duration::from_secs(<span class="number">30</span>), max_failures: <span class="number">1</span>, inactive_limit: Duration::from_secs(<span class="number">40</span>) }
+	}
+}
+
+<span class="kw">impl </span>PingConfig {
+	<span class="doccomment">/// Create a new PingConfig.
+	</span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+		<span class="self">Self</span>::default()
+	}
+
+	<span class="doccomment">/// Configure the interval when the WebSocket pings are sent out.
+	</span><span class="kw">pub fn </span>ping_interval(<span class="kw-2">mut </span><span class="self">self</span>, ping_interval: Duration) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.ping_interval = ping_interval;
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// Configure how long to wait for the WebSocket pong.
+	/// When this limit is expired it's regarded as the client is unresponsive.
+	///
+	/// You may configure how many times the client is allowed to be "inactive" by
+	/// [`PingConfig::max_failures`].
+	</span><span class="kw">pub fn </span>inactive_limit(<span class="kw-2">mut </span><span class="self">self</span>, inactivity_limit: Duration) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.inactive_limit = inactivity_limit;
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// Configure how many times the remote peer is allowed be
+	/// inactive until the connection is closed.
+	///
+	/// # Panics
+	///
+	/// This method panics if `max` == 0.
+	</span><span class="kw">pub fn </span>max_failures(<span class="kw-2">mut </span><span class="self">self</span>, max: usize) -&gt; <span class="self">Self </span>{
+		<span class="macro">assert!</span>(max &gt; <span class="number">0</span>);
+		<span class="self">self</span>.max_failures = max;
+		<span class="self">self
+	</span>}
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>ServerConfig {
 	<span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
 		<span class="self">Self </span>{
 			max_request_body_size: TEN_MB_SIZE_BYTES,
 			max_response_body_size: TEN_MB_SIZE_BYTES,
-			max_log_length: <span class="number">4096</span>,
-			max_subscriptions_per_connection: <span class="number">1024</span>,
 			max_connections: MAX_CONNECTIONS,
-			batch_requests_supported: <span class="bool-val">true</span>,
-			allow_hosts: AllowHosts::Any,
+			max_subscriptions_per_connection: <span class="number">1024</span>,
+			batch_requests_config: BatchRequestConfig::Unlimited,
 			tokio_runtime: <span class="prelude-val">None</span>,
-			ping_interval: Duration::from_secs(<span class="number">60</span>),
 			enable_http: <span class="bool-val">true</span>,
 			enable_ws: <span class="bool-val">true</span>,
+			message_buffer_capacity: <span class="number">1024</span>,
+			ping_config: <span class="prelude-val">None</span>,
+			id_provider: Arc::new(RandomIntegerIdProvider),
+			tcp_no_delay: <span class="bool-val">true</span>,
 		}
 	}
+}
+
+<span class="kw">impl </span>ServerConfig {
+	<span class="doccomment">/// Create a new builder for the [`ServerConfig`].
+	</span><span class="kw">pub fn </span>builder() -&gt; ServerConfigBuilder {
+		ServerConfigBuilder::default()
+	}
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>ServerConfigBuilder {
+	<span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+		<span class="kw">let </span>this = ServerConfig::default();
+
+		ServerConfigBuilder {
+			max_request_body_size: this.max_request_body_size,
+			max_response_body_size: this.max_response_body_size,
+			max_connections: this.max_connections,
+			max_subscriptions_per_connection: this.max_subscriptions_per_connection,
+			batch_requests_config: this.batch_requests_config,
+			enable_http: this.enable_http,
+			enable_ws: this.enable_ws,
+			message_buffer_capacity: this.message_buffer_capacity,
+			ping_config: this.ping_config,
+			id_provider: this.id_provider,
+		}
+	}
+}
+
+<span class="kw">impl </span>ServerConfigBuilder {
+	<span class="doccomment">/// Create a new [`ServerConfigBuilder`].
+	</span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+		<span class="self">Self</span>::default()
+	}
+
+	<span class="doccomment">/// See [`Builder::max_request_body_size`] for documentation.
+	</span><span class="kw">pub fn </span>max_request_body_size(<span class="kw-2">mut </span><span class="self">self</span>, size: u32) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.max_request_body_size = size;
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// See [`Builder::max_response_body_size`] for documentation.
+	</span><span class="kw">pub fn </span>max_response_body_size(<span class="kw-2">mut </span><span class="self">self</span>, size: u32) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.max_response_body_size = size;
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// See [`Builder::max_connections`] for documentation.
+	</span><span class="kw">pub fn </span>max_connections(<span class="kw-2">mut </span><span class="self">self</span>, max: u32) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.max_connections = max;
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// See [`Builder::set_batch_request_config`] for documentation.
+	</span><span class="kw">pub fn </span>set_batch_request_config(<span class="kw-2">mut </span><span class="self">self</span>, cfg: BatchRequestConfig) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.batch_requests_config = cfg;
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// See [`Builder::max_subscriptions_per_connection`] for documentation.
+	</span><span class="kw">pub fn </span>max_subscriptions_per_connection(<span class="kw-2">mut </span><span class="self">self</span>, max: u32) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.max_subscriptions_per_connection = max;
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// See [`Builder::http_only`] for documentation.
+	</span><span class="kw">pub fn </span>http_only(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.enable_http = <span class="bool-val">true</span>;
+		<span class="self">self</span>.enable_ws = <span class="bool-val">false</span>;
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// See [`Builder::ws_only`] for documentation.
+	</span><span class="kw">pub fn </span>ws_only(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.enable_http = <span class="bool-val">false</span>;
+		<span class="self">self</span>.enable_ws = <span class="bool-val">true</span>;
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// See [`Builder::set_message_buffer_capacity`] for documentation.
+	</span><span class="kw">pub fn </span>set_message_buffer_capacity(<span class="kw-2">mut </span><span class="self">self</span>, c: u32) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.message_buffer_capacity = c;
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// See [`Builder::enable_ws_ping`] for documentation.
+	</span><span class="kw">pub fn </span>enable_ws_ping(<span class="kw-2">mut </span><span class="self">self</span>, config: PingConfig) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.ping_config = <span class="prelude-val">Some</span>(config);
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// See [`Builder::disable_ws_ping`] for documentation.
+	</span><span class="kw">pub fn </span>disable_ws_ping(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.ping_config = <span class="prelude-val">None</span>;
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// See [`Builder::set_id_provider`] for documentation.
+	</span><span class="kw">pub fn </span>set_id_provider&lt;I: IdProvider + <span class="lifetime">'static</span>&gt;(<span class="kw-2">mut </span><span class="self">self</span>, id_provider: I) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.id_provider = Arc::new(id_provider);
+		<span class="self">self
+	</span>}
 }
 
 <span class="doccomment">/// Builder to configure and create a JSON-RPC server
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>Builder&lt;B = Identity, L = ()&gt; {
-	settings: Settings,
-	resources: Resources,
-	logger: L,
-	id_provider: Arc&lt;<span class="kw">dyn </span>IdProvider&gt;,
-	service_builder: tower::ServiceBuilder&lt;B&gt;,
+</span><span class="kw">pub struct </span>Builder&lt;HttpMiddleware, RpcMiddleware&gt; {
+	server_cfg: ServerConfig,
+	rpc_middleware: RpcServiceBuilder&lt;RpcMiddleware&gt;,
+	http_middleware: tower::ServiceBuilder&lt;HttpMiddleware&gt;,
 }
 
-<span class="kw">impl </span>Default <span class="kw">for </span>Builder {
+<span class="kw">impl </span>Default <span class="kw">for </span>Builder&lt;Identity, Identity&gt; {
 	<span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
 		Builder {
-			settings: Settings::default(),
-			resources: Resources::default(),
-			logger: (),
-			id_provider: Arc::new(RandomIntegerIdProvider),
-			service_builder: tower::ServiceBuilder::new(),
+			server_cfg: ServerConfig::default(),
+			rpc_middleware: RpcServiceBuilder::new(),
+			http_middleware: tower::ServiceBuilder::new(),
 		}
 	}
 }
 
-<span class="kw">impl </span>Builder {
+<span class="kw">impl </span>Builder&lt;Identity, Identity&gt; {
 	<span class="doccomment">/// Create a default server builder.
 	</span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
 		<span class="self">Self</span>::default()
 	}
 }
 
-<span class="kw">impl</span>&lt;B, L&gt; Builder&lt;B, L&gt; {
+<span class="kw">impl</span>&lt;RpcMiddleware, HttpMiddleware&gt; TowerServiceBuilder&lt;RpcMiddleware, HttpMiddleware&gt; {
+	<span class="doccomment">/// Build a tower service.
+	</span><span class="kw">pub fn </span>build(
+		<span class="self">self</span>,
+		methods: <span class="kw">impl </span>Into&lt;Methods&gt;,
+		stop_handle: StopHandle,
+	) -&gt; TowerService&lt;RpcMiddleware, HttpMiddleware&gt; {
+		<span class="kw">let </span>conn_id = <span class="self">self</span>.conn_id.fetch_add(<span class="number">1</span>, std::sync::atomic::Ordering::Relaxed);
+
+		<span class="kw">let </span>rpc_middleware = TowerServiceNoHttp {
+			rpc_middleware: <span class="self">self</span>.rpc_middleware,
+			inner: ServiceData {
+				methods: methods.into(),
+				stop_handle,
+				conn_id,
+				conn_guard: <span class="self">self</span>.conn_guard,
+				server_cfg: <span class="self">self</span>.server_cfg,
+			},
+			on_session_close: <span class="prelude-val">None</span>,
+		};
+
+		TowerService { rpc_middleware, http_middleware: <span class="self">self</span>.http_middleware }
+	}
+
+	<span class="doccomment">/// Configure the connection id.
+	///
+	/// This is incremented every time `build` is called.
+	</span><span class="kw">pub fn </span>connection_id(<span class="kw-2">mut </span><span class="self">self</span>, id: u32) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.conn_id = Arc::new(AtomicU32::new(id));
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// Configure the max allowed connections on the server.
+	</span><span class="kw">pub fn </span>max_connections(<span class="kw-2">mut </span><span class="self">self</span>, limit: u32) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.conn_guard = ConnectionGuard::new(limit <span class="kw">as </span>usize);
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// Configure rpc middleware.
+	</span><span class="kw">pub fn </span>set_rpc_middleware&lt;T&gt;(<span class="self">self</span>, rpc_middleware: RpcServiceBuilder&lt;T&gt;) -&gt; TowerServiceBuilder&lt;T, HttpMiddleware&gt; {
+		TowerServiceBuilder {
+			server_cfg: <span class="self">self</span>.server_cfg,
+			rpc_middleware,
+			http_middleware: <span class="self">self</span>.http_middleware,
+			conn_id: <span class="self">self</span>.conn_id,
+			conn_guard: <span class="self">self</span>.conn_guard,
+		}
+	}
+
+	<span class="doccomment">/// Configure http middleware.
+	</span><span class="kw">pub fn </span>set_http_middleware&lt;T&gt;(
+		<span class="self">self</span>,
+		http_middleware: tower::ServiceBuilder&lt;T&gt;,
+	) -&gt; TowerServiceBuilder&lt;RpcMiddleware, T&gt; {
+		TowerServiceBuilder {
+			server_cfg: <span class="self">self</span>.server_cfg,
+			rpc_middleware: <span class="self">self</span>.rpc_middleware,
+			http_middleware,
+			conn_id: <span class="self">self</span>.conn_id,
+			conn_guard: <span class="self">self</span>.conn_guard,
+		}
+	}
+}
+
+<span class="kw">impl</span>&lt;HttpMiddleware, RpcMiddleware&gt; Builder&lt;HttpMiddleware, RpcMiddleware&gt; {
 	<span class="doccomment">/// Set the maximum size of a request body in bytes. Default is 10 MiB.
 	</span><span class="kw">pub fn </span>max_request_body_size(<span class="kw-2">mut </span><span class="self">self</span>, size: u32) -&gt; <span class="self">Self </span>{
-		<span class="self">self</span>.settings.max_request_body_size = size;
+		<span class="self">self</span>.server_cfg.max_request_body_size = size;
 		<span class="self">self
 	</span>}
 
 	<span class="doccomment">/// Set the maximum size of a response body in bytes. Default is 10 MiB.
 	</span><span class="kw">pub fn </span>max_response_body_size(<span class="kw-2">mut </span><span class="self">self</span>, size: u32) -&gt; <span class="self">Self </span>{
-		<span class="self">self</span>.settings.max_response_body_size = size;
+		<span class="self">self</span>.server_cfg.max_response_body_size = size;
 		<span class="self">self
 	</span>}
 
 	<span class="doccomment">/// Set the maximum number of connections allowed. Default is 100.
 	</span><span class="kw">pub fn </span>max_connections(<span class="kw-2">mut </span><span class="self">self</span>, max: u32) -&gt; <span class="self">Self </span>{
-		<span class="self">self</span>.settings.max_connections = max;
+		<span class="self">self</span>.server_cfg.max_connections = max;
 		<span class="self">self
 	</span>}
 
-	<span class="doccomment">/// Enables or disables support of [batch requests](https://www.jsonrpc.org/specification#batch).
-	/// By default, support is enabled.
-	</span><span class="kw">pub fn </span>batch_requests_supported(<span class="kw-2">mut </span><span class="self">self</span>, supported: bool) -&gt; <span class="self">Self </span>{
-		<span class="self">self</span>.settings.batch_requests_supported = supported;
+	<span class="doccomment">/// Configure how [batch requests](https://www.jsonrpc.org/specification#batch) shall be handled
+	/// by the server.
+	///
+	/// Default: batch requests are allowed and can be arbitrary big but the maximum payload size is limited.
+	</span><span class="kw">pub fn </span>set_batch_request_config(<span class="kw-2">mut </span><span class="self">self</span>, cfg: BatchRequestConfig) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.server_cfg.batch_requests_config = cfg;
 		<span class="self">self
 	</span>}
 
 	<span class="doccomment">/// Set the maximum number of connections allowed. Default is 1024.
 	</span><span class="kw">pub fn </span>max_subscriptions_per_connection(<span class="kw-2">mut </span><span class="self">self</span>, max: u32) -&gt; <span class="self">Self </span>{
-		<span class="self">self</span>.settings.max_subscriptions_per_connection = max;
+		<span class="self">self</span>.server_cfg.max_subscriptions_per_connection = max;
 		<span class="self">self
 	</span>}
 
-	<span class="doccomment">/// Register a new resource kind. Errors if `label` is already registered, or if the number of
-	/// registered resources on this server instance would exceed 8.
+	<span class="doccomment">/// Enable middleware that is invoked on every JSON-RPC call.
 	///
-	/// See the module documentation for [`resurce_limiting`](../jsonrpsee_utils/server/resource_limiting/index.html#resource-limiting)
-	/// for details.
-	</span><span class="kw">pub fn </span>register_resource(<span class="kw-2">mut </span><span class="self">self</span>, label: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, capacity: u16, default: u16) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, Error&gt; {
-		<span class="self">self</span>.resources.register(label, capacity, default)<span class="question-mark">?</span>;
-		<span class="prelude-val">Ok</span>(<span class="self">self</span>)
-	}
-
-	<span class="doccomment">/// Add a logger to the builder [`Logger`](../jsonrpsee_core/logger/trait.Logger.html).
+	/// The middleware itself is very similar to the `tower middleware` but
+	/// it has a different service trait which takes &amp;self instead &amp;mut self
+	/// which means that you can't use built-in middleware from tower.
 	///
+	/// Another consequence of `&amp;self` is that you must wrap any of the middleware state in
+	/// a type which is Send and provides interior mutability such `Arc&lt;Mutex&gt;`.
+	///
+	/// The builder itself exposes a similar API as the [`tower::ServiceBuilder`]
+	/// where it is possible to compose layers to the middleware.
+	///
+	/// To add a middleware [`crate::middleware::rpc::RpcServiceBuilder`] exposes a few different layer APIs that
+	/// is wrapped on top of the [`tower::ServiceBuilder`].
+	///
+	/// When the server is started these layers are wrapped in the [`crate::middleware::rpc::RpcService`] and
+	/// that's why the service APIs is not exposed.
 	/// ```
-	/// use std::{time::Instant, net::SocketAddr};
 	///
-	/// use jsonrpsee_server::logger::{Logger, HttpRequest, MethodKind, Params, TransportProtocol};
-	/// use jsonrpsee_server::ServerBuilder;
+	/// use std::{time::Instant, net::SocketAddr, sync::Arc};
+	/// use std::sync::atomic::{Ordering, AtomicUsize};
+	///
+	/// use jsonrpsee_server::middleware::rpc::{RpcServiceT, RpcService, RpcServiceBuilder};
+	/// use jsonrpsee_server::{ServerBuilder, MethodResponse};
+	/// use jsonrpsee_core::async_trait;
+	/// use jsonrpsee_types::Request;
+	/// use futures_util::future::BoxFuture;
 	///
 	/// #[derive(Clone)]
-	/// struct MyLogger;
-	///
-	/// impl Logger for MyLogger {
-	///     type Instant = Instant;
-	///
-	///     fn on_connect(&amp;self, remote_addr: SocketAddr, request: &amp;HttpRequest, transport: TransportProtocol) {
-	///          println!("[MyLogger::on_call] remote_addr: {:?}, headers: {:?}, transport: {}", remote_addr, request, transport);
-	///     }
-	///
-	///     fn on_request(&amp;self, transport: TransportProtocol) -&gt; Self::Instant {
-	///          Instant::now()
-	///     }
-	///
-	///     fn on_call(&amp;self, method_name: &amp;str, params: Params, kind: MethodKind, transport: TransportProtocol) {
-	///          println!("[MyLogger::on_call] method: '{}' params: {:?}, kind: {:?}, transport: {}", method_name, params, kind, transport);
-	///     }
-	///
-	///     fn on_result(&amp;self, method_name: &amp;str, success: bool, started_at: Self::Instant, transport: TransportProtocol) {
-	///          println!("[MyLogger::on_result] '{}', worked? {}, time elapsed {:?}, transport: {}", method_name, success, started_at.elapsed(), transport);
-	///     }
-	///
-	///     fn on_response(&amp;self, result: &amp;str, started_at: Self::Instant, transport: TransportProtocol) {
-	///          println!("[MyLogger::on_response] result: {}, time elapsed {:?}, transport: {}", result, started_at.elapsed(), transport);
-	///     }
-	///
-	///     fn on_disconnect(&amp;self, remote_addr: SocketAddr, transport: TransportProtocol) {
-	///          println!("[MyLogger::on_disconnect] remote_addr: {:?}, transport: {}", remote_addr, transport);
-	///     }
+	/// struct MyMiddleware&lt;S&gt; {
+	///     service: S,
+	///     count: Arc&lt;AtomicUsize&gt;,
 	/// }
 	///
-	/// let builder = ServerBuilder::new().set_logger(MyLogger);
+	/// impl&lt;'a, S&gt; RpcServiceT&lt;'a&gt; for MyMiddleware&lt;S&gt;
+	/// where S: RpcServiceT&lt;'a&gt; + Send + Sync + Clone + 'static,
+	/// {
+	///    type Future = BoxFuture&lt;'a, MethodResponse&gt;;
+	///
+	///    fn call(&amp;self, req: Request&lt;'a&gt;) -&gt; Self::Future {
+	///         tracing::info!("MyMiddleware processed call {}", req.method);
+	///         let count = self.count.clone();
+	///         let service = self.service.clone();
+	///
+	///         Box::pin(async move {
+	///             let rp = service.call(req).await;
+	///             // Modify the state.
+	///             count.fetch_add(1, Ordering::Relaxed);
+	///             rp
+	///         })
+	///    }
+	/// }
+	///
+	/// // Create a state per connection
+	/// // NOTE: The service type can be omitted once `start` is called on the server.
+	/// let m = RpcServiceBuilder::new().layer_fn(move |service: ()| MyMiddleware { service, count: Arc::new(AtomicUsize::new(0)) });
+	/// let builder = ServerBuilder::default().set_rpc_middleware(m);
 	/// ```
-	</span><span class="kw">pub fn </span>set_logger&lt;T: Logger&gt;(<span class="self">self</span>, logger: T) -&gt; Builder&lt;B, T&gt; {
-		Builder {
-			settings: <span class="self">self</span>.settings,
-			resources: <span class="self">self</span>.resources,
-			logger,
-			id_provider: <span class="self">self</span>.id_provider,
-			service_builder: <span class="self">self</span>.service_builder,
-		}
+	</span><span class="kw">pub fn </span>set_rpc_middleware&lt;T&gt;(<span class="self">self</span>, rpc_middleware: RpcServiceBuilder&lt;T&gt;) -&gt; Builder&lt;HttpMiddleware, T&gt; {
+		Builder { server_cfg: <span class="self">self</span>.server_cfg, rpc_middleware, http_middleware: <span class="self">self</span>.http_middleware }
 	}
 
 	<span class="doccomment">/// Configure a custom [`tokio::runtime::Handle`] to run the server on.
 	///
 	/// Default: [`tokio::spawn`]
 	</span><span class="kw">pub fn </span>custom_tokio_runtime(<span class="kw-2">mut </span><span class="self">self</span>, rt: tokio::runtime::Handle) -&gt; <span class="self">Self </span>{
-		<span class="self">self</span>.settings.tokio_runtime = <span class="prelude-val">Some</span>(rt);
+		<span class="self">self</span>.server_cfg.tokio_runtime = <span class="prelude-val">Some</span>(rt);
 		<span class="self">self
 	</span>}
 
-	<span class="doccomment">/// Configure the interval at which pings are submitted.
+	<span class="doccomment">/// Enable WebSocket ping/pong on the server.
 	///
-	/// This option is used to keep the connection alive, and is just submitting `Ping` frames,
-	/// without making any assumptions about when a `Pong` frame should be received.
-	///
-	/// Default: 60 seconds.
+	/// Default: pings are disabled.
 	///
 	/// # Examples
 	///
 	/// ```rust
-	/// use std::time::Duration;
-	/// use jsonrpsee_server::ServerBuilder;
+	/// use std::{time::Duration, num::NonZeroUsize};
+	/// use jsonrpsee_server::{ServerBuilder, PingConfig};
 	///
-	/// // Set the ping interval to 10 seconds.
-	/// let builder = ServerBuilder::default().ping_interval(Duration::from_secs(10));
+	/// // Set the ping interval to 10 seconds but terminates the connection if a client is inactive for more than 2 minutes
+	/// let ping_cfg = PingConfig::new().ping_interval(Duration::from_secs(10)).inactive_limit(Duration::from_secs(60 * 2));
+	/// let builder = ServerBuilder::default().enable_ws_ping(ping_cfg);
 	/// ```
-	</span><span class="kw">pub fn </span>ping_interval(<span class="kw-2">mut </span><span class="self">self</span>, interval: Duration) -&gt; <span class="self">Self </span>{
-		<span class="self">self</span>.settings.ping_interval = interval;
+	</span><span class="kw">pub fn </span>enable_ws_ping(<span class="kw-2">mut </span><span class="self">self</span>, config: PingConfig) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.server_cfg.ping_config = <span class="prelude-val">Some</span>(config);
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// Disable WebSocket ping/pong on the server.
+	///
+	/// Default: pings are disabled.
+	</span><span class="kw">pub fn </span>disable_ws_ping(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.server_cfg.ping_config = <span class="prelude-val">None</span>;
 		<span class="self">self
 	</span>}
 
@@ -1257,13 +2043,7 @@
 	/// ```
 	///
 	</span><span class="kw">pub fn </span>set_id_provider&lt;I: IdProvider + <span class="lifetime">'static</span>&gt;(<span class="kw-2">mut </span><span class="self">self</span>, id_provider: I) -&gt; <span class="self">Self </span>{
-		<span class="self">self</span>.id_provider = Arc::new(id_provider);
-		<span class="self">self
-	</span>}
-
-	<span class="doccomment">/// Sets host filtering.
-	</span><span class="kw">pub fn </span>set_host_filtering(<span class="kw-2">mut </span><span class="self">self</span>, allow: AllowHosts) -&gt; <span class="self">Self </span>{
-		<span class="self">self</span>.settings.allow_hosts = allow;
+		<span class="self">self</span>.server_cfg.id_provider = Arc::new(id_provider);
 		<span class="self">self
 	</span>}
 
@@ -1283,28 +2063,30 @@
 	///     let builder = tower::ServiceBuilder::new().timeout(Duration::from_secs(2));
 	///
 	///     let server = jsonrpsee_server::ServerBuilder::new()
-	///         .set_middleware(builder)
+	///         .set_http_middleware(builder)
 	///         .build("127.0.0.1:0".parse::&lt;SocketAddr&gt;().unwrap())
 	///         .await
 	///         .unwrap();
 	/// }
 	/// ```
-	</span><span class="kw">pub fn </span>set_middleware&lt;T&gt;(<span class="self">self</span>, service_builder: tower::ServiceBuilder&lt;T&gt;) -&gt; Builder&lt;T, L&gt; {
-		Builder {
-			settings: <span class="self">self</span>.settings,
-			resources: <span class="self">self</span>.resources,
-			logger: <span class="self">self</span>.logger,
-			id_provider: <span class="self">self</span>.id_provider,
-			service_builder,
-		}
+	</span><span class="kw">pub fn </span>set_http_middleware&lt;T&gt;(<span class="self">self</span>, http_middleware: tower::ServiceBuilder&lt;T&gt;) -&gt; Builder&lt;T, RpcMiddleware&gt; {
+		Builder { server_cfg: <span class="self">self</span>.server_cfg, http_middleware, rpc_middleware: <span class="self">self</span>.rpc_middleware }
 	}
+
+	<span class="doccomment">/// Configure `TCP_NODELAY` on the socket to the supplied value `nodelay`.
+	///
+	/// Default is `true`.
+	</span><span class="kw">pub fn </span>set_tcp_no_delay(<span class="kw-2">mut </span><span class="self">self</span>, no_delay: bool) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.server_cfg.tcp_no_delay = no_delay;
+		<span class="self">self
+	</span>}
 
 	<span class="doccomment">/// Configure the server to only serve JSON-RPC HTTP requests.
 	///
 	/// Default: both http and ws are enabled.
 	</span><span class="kw">pub fn </span>http_only(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-		<span class="self">self</span>.settings.enable_http = <span class="bool-val">true</span>;
-		<span class="self">self</span>.settings.enable_ws = <span class="bool-val">false</span>;
+		<span class="self">self</span>.server_cfg.enable_http = <span class="bool-val">true</span>;
+		<span class="self">self</span>.server_cfg.enable_ws = <span class="bool-val">false</span>;
 		<span class="self">self
 	</span>}
 
@@ -1314,10 +2096,105 @@
 	///
 	/// Default: both http and ws are enabled.
 	</span><span class="kw">pub fn </span>ws_only(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-		<span class="self">self</span>.settings.enable_http = <span class="bool-val">false</span>;
-		<span class="self">self</span>.settings.enable_ws = <span class="bool-val">true</span>;
+		<span class="self">self</span>.server_cfg.enable_http = <span class="bool-val">false</span>;
+		<span class="self">self</span>.server_cfg.enable_ws = <span class="bool-val">true</span>;
 		<span class="self">self
 	</span>}
+
+	<span class="doccomment">/// The server enforces backpressure which means that
+	/// `n` messages can be buffered and if the client
+	/// can't keep with up the server.
+	///
+	/// This `capacity` is applied per connection and
+	/// applies globally on the connection which implies
+	/// all JSON-RPC messages.
+	///
+	/// For example if a subscription produces plenty of new items
+	/// and the client can't keep up then no new messages are handled.
+	///
+	/// If this limit is exceeded then the server will "back-off"
+	/// and only accept new messages once the client reads pending messages.
+	///
+	/// # Panics
+	///
+	/// Panics if the buffer capacity is 0.
+	///
+	</span><span class="kw">pub fn </span>set_message_buffer_capacity(<span class="kw-2">mut </span><span class="self">self</span>, c: u32) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.server_cfg.message_buffer_capacity = c;
+		<span class="self">self
+	</span>}
+
+	<span class="doccomment">/// Convert the server builder to a [`TowerServiceBuilder`].
+	///
+	/// This can be used to utilize the [`TowerService`] from jsonrpsee.
+	///
+	/// # Examples
+	///
+	/// ```no_run
+	/// use hyper::service::{make_service_fn, service_fn};
+	/// use hyper::server::conn::AddrStream;
+	/// use jsonrpsee_server::{Methods, ServerHandle, ws, stop_channel};
+	/// use tower::Service;
+	/// use std::{error::Error as StdError, net::SocketAddr};
+	///
+	/// fn run_server() -&gt; ServerHandle {
+	///     let addr = SocketAddr::from(([127, 0, 0, 1], 0));
+	///     let (stop_handle, server_handle) = stop_channel();
+	///     let svc_builder = jsonrpsee_server::Server::builder().max_connections(33).to_service_builder();
+	///     let methods = Methods::new();
+	///     let stop_handle2 = stop_handle.clone();
+	///
+	///     let make_service = make_service_fn(move |_conn: &amp;AddrStream| {
+	///         // You may use `conn` or the actual HTTP request to get connection related details.
+	///         let stop_handle = stop_handle2.clone();
+	///         let svc_builder = svc_builder.clone();
+	///         let methods = methods.clone();
+	///
+	///         async move {
+	///             Ok::&lt;_, Box&lt;dyn StdError + Send + Sync&gt;&gt;(service_fn(move |req| {
+	///                 let stop_handle = stop_handle.clone();
+	///                 let svc_builder = svc_builder.clone();
+	///                 let methods = methods.clone();
+	///                 let mut svc = svc_builder.build(methods, stop_handle);
+	///
+	///                 // It's not possible to know whether the websocket upgrade handshake failed or not here.
+	///                 let is_websocket = ws::is_upgrade_request(&amp;req);
+	///
+	///                 if is_websocket {
+	///                     println!("websocket")
+	///                 } else {
+	///                     println!("http")
+	///                 }
+	///
+	///                 /// Call the jsonrpsee service which
+	///                 /// may upgrade it to a WebSocket connection
+	///                 /// or treat it as "ordinary HTTP request".
+	///                 svc.call(req)
+	///             }))
+	///         }
+	///     });
+	///
+	///     let server = hyper::Server::bind(&amp;addr).serve(make_service);
+	///
+	///     tokio::spawn(async move {
+	///         let graceful = server.with_graceful_shutdown(async move { stop_handle.shutdown().await });
+	///         graceful.await.unwrap()
+	///     });
+	///
+	///     server_handle
+	/// }
+	/// ```
+	</span><span class="kw">pub fn </span>to_service_builder(<span class="self">self</span>) -&gt; TowerServiceBuilder&lt;RpcMiddleware, HttpMiddleware&gt; {
+		<span class="kw">let </span>max_conns = <span class="self">self</span>.server_cfg.max_connections <span class="kw">as </span>usize;
+
+		TowerServiceBuilder {
+			server_cfg: <span class="self">self</span>.server_cfg,
+			rpc_middleware: <span class="self">self</span>.rpc_middleware,
+			http_middleware: <span class="self">self</span>.http_middleware,
+			conn_id: Arc::new(AtomicU32::new(<span class="number">0</span>)),
+			conn_guard: ConnectionGuard::new(max_conns),
+		}
+	}
 
 	<span class="doccomment">/// Finalize the configuration of the server. Consumes the [`Builder`].
 	///
@@ -1335,16 +2212,14 @@
 	/// }
 	/// ```
 	///
-	</span><span class="kw">pub async fn </span>build(<span class="self">self</span>, addrs: <span class="kw">impl </span>ToSocketAddrs) -&gt; <span class="prelude-ty">Result</span>&lt;Server&lt;B, L&gt;, Error&gt; {
+	</span><span class="kw">pub async fn </span>build(<span class="self">self</span>, addrs: <span class="kw">impl </span>ToSocketAddrs) -&gt; std::io::Result&lt;Server&lt;HttpMiddleware, RpcMiddleware&gt;&gt; {
 		<span class="kw">let </span>listener = TcpListener::bind(addrs).<span class="kw">await</span><span class="question-mark">?</span>;
 
 		<span class="prelude-val">Ok</span>(Server {
 			listener,
-			cfg: <span class="self">self</span>.settings,
-			resources: <span class="self">self</span>.resources,
-			logger: <span class="self">self</span>.logger,
-			id_provider: <span class="self">self</span>.id_provider,
-			service_builder: <span class="self">self</span>.service_builder,
+			server_cfg: <span class="self">self</span>.server_cfg,
+			rpc_middleware: <span class="self">self</span>.rpc_middleware,
+			http_middleware: <span class="self">self</span>.http_middleware,
 		})
 	}
 
@@ -1352,7 +2227,7 @@
 	///
 	///
 	/// ```rust
-	/// use jsonrpsee_server::ServerBuilder;
+	/// use jsonrpsee_server::Server;
 	/// use socket2::{Domain, Socket, Type};
 	/// use std::time::Duration;
 	///
@@ -1368,151 +2243,208 @@
 	///
 	///   socket.listen(4096).unwrap();
 	///
-	///   let server = ServerBuilder::new().build_from_tcp(socket).unwrap();
+	///   let server = Server::builder().build_from_tcp(socket).unwrap();
 	/// }
 	/// ```
-	</span><span class="kw">pub fn </span>build_from_tcp(<span class="self">self</span>, listener: <span class="kw">impl </span>Into&lt;StdTcpListener&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;Server&lt;B, L&gt;, Error&gt; {
+	</span><span class="kw">pub fn </span>build_from_tcp(
+		<span class="self">self</span>,
+		listener: <span class="kw">impl </span>Into&lt;StdTcpListener&gt;,
+	) -&gt; std::io::Result&lt;Server&lt;HttpMiddleware, RpcMiddleware&gt;&gt; {
 		<span class="kw">let </span>listener = TcpListener::from_std(listener.into())<span class="question-mark">?</span>;
 
 		<span class="prelude-val">Ok</span>(Server {
 			listener,
-			cfg: <span class="self">self</span>.settings,
-			resources: <span class="self">self</span>.resources,
-			logger: <span class="self">self</span>.logger,
-			id_provider: <span class="self">self</span>.id_provider,
-			service_builder: <span class="self">self</span>.service_builder,
+			server_cfg: <span class="self">self</span>.server_cfg,
+			rpc_middleware: <span class="self">self</span>.rpc_middleware,
+			http_middleware: <span class="self">self</span>.http_middleware,
 		})
-	}
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>MethodResult {
-	JustLogger(MethodResponse),
-	SendAndLogger(MethodResponse),
-}
-
-<span class="kw">impl </span>MethodResult {
-	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>as_inner(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>MethodResponse {
-		<span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self </span>{
-			<span class="self">Self</span>::JustLogger(r) =&gt; r,
-			<span class="self">Self</span>::SendAndLogger(r) =&gt; r,
-		}
-	}
-
-	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>into_inner(<span class="self">self</span>) -&gt; MethodResponse {
-		<span class="kw">match </span><span class="self">self </span>{
-			<span class="self">Self</span>::JustLogger(r) =&gt; r,
-			<span class="self">Self</span>::SendAndLogger(r) =&gt; r,
-		}
 	}
 }
 
 <span class="doccomment">/// Data required by the server to handle requests.
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>ServiceData&lt;L: Logger&gt; {
-	<span class="doccomment">/// Remote server address.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) remote_addr: SocketAddr,
+</span><span class="kw">struct </span>ServiceData {
 	<span class="doccomment">/// Registered server methods.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) methods: Methods,
-	<span class="doccomment">/// Access control.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) allow_hosts: AllowHosts,
-	<span class="doccomment">/// Tracker for currently used resources on the server.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) resources: Resources,
-	<span class="doccomment">/// Max request body size.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) max_request_body_size: u32,
-	<span class="doccomment">/// Max response body size.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) max_response_body_size: u32,
-	<span class="doccomment">/// Max length for logging for request and response
-	///
-	/// Logs bigger than this limit will be truncated.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) max_log_length: u32,
-	<span class="doccomment">/// Whether batch requests are supported by this server or not.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) batch_requests_supported: bool,
-	<span class="doccomment">/// Subscription ID provider.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) id_provider: Arc&lt;<span class="kw">dyn </span>IdProvider&gt;,
-	<span class="doccomment">/// Ping interval
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) ping_interval: Duration,
+	</span>methods: Methods,
 	<span class="doccomment">/// Stop handle.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) stop_handle: StopHandle,
-	<span class="doccomment">/// Max subscriptions per connection.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) max_subscriptions_per_connection: u32,
+	</span>stop_handle: StopHandle,
 	<span class="doccomment">/// Connection ID
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) conn_id: u32,
-	<span class="doccomment">/// Logger.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) logger: L,
-	<span class="doccomment">/// Handle to hold a `connection permit`.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) conn: Arc&lt;OwnedSemaphorePermit&gt;,
-	<span class="doccomment">/// Enable HTTP.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) enable_http: bool,
-	<span class="doccomment">/// Enable WS.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) enable_ws: bool,
+	</span>conn_id: u32,
+	<span class="doccomment">/// Connection guard.
+	</span>conn_guard: ConnectionGuard,
+	<span class="doccomment">/// ServerConfig
+	</span>server_cfg: ServerConfig,
 }
 
-<span class="doccomment">/// JsonRPSee service compatible with `tower`.
+<span class="doccomment">/// jsonrpsee tower service
+///
+/// This will enable both `http_middleware` and `rpc_middleware`
+/// that may be enabled by [`Builder`] or [`TowerServiceBuilder`].
+</span><span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>TowerService&lt;RpcMiddleware, HttpMiddleware&gt; {
+	rpc_middleware: TowerServiceNoHttp&lt;RpcMiddleware&gt;,
+	http_middleware: tower::ServiceBuilder&lt;HttpMiddleware&gt;,
+}
+
+<span class="kw">impl</span>&lt;RpcMiddleware, HttpMiddleware&gt; TowerService&lt;RpcMiddleware, HttpMiddleware&gt; {
+	<span class="doccomment">/// A future that returns when the connection has been closed.
+	///
+	/// This method must be called before every [`TowerService::call`]
+	/// because the `SessionClosedFuture` may already been consumed or
+	/// not used.
+	</span><span class="kw">pub fn </span>on_session_closed(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; SessionClosedFuture {
+		<span class="kw">if let </span><span class="prelude-val">Some</span>(n) = <span class="self">self</span>.rpc_middleware.on_session_close.as_mut() {
+			<span class="comment">// If it's called more then once another listener is created.
+			</span>n.closed()
+		} <span class="kw">else </span>{
+			<span class="kw">let </span>(session_close, fut) = session_close();
+			<span class="self">self</span>.rpc_middleware.on_session_close = <span class="prelude-val">Some</span>(session_close);
+			fut
+		}
+	}
+}
+
+<span class="kw">impl</span>&lt;RpcMiddleware, HttpMiddleware&gt; hyper::service::Service&lt;hyper::Request&lt;hyper::Body&gt;&gt;
+	<span class="kw">for </span>TowerService&lt;RpcMiddleware, HttpMiddleware&gt;
+<span class="kw">where
+	</span>RpcMiddleware: <span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; tower::Layer&lt;RpcService&gt; + Clone,
+	&lt;RpcMiddleware <span class="kw">as </span>Layer&lt;RpcService&gt;&gt;::Service: Send + Sync + <span class="lifetime">'static</span>,
+	<span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; &lt;RpcMiddleware <span class="kw">as </span>Layer&lt;RpcService&gt;&gt;::Service: RpcServiceT&lt;<span class="lifetime">'a</span>&gt;,
+	HttpMiddleware: Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt; + Send + <span class="lifetime">'static</span>,
+	&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service: Send
+		+ Service&lt;
+			hyper::Request&lt;hyper::Body&gt;,
+			Response = hyper::Response&lt;hyper::Body&gt;,
+			Error = Box&lt;(<span class="kw">dyn </span>StdError + Send + Sync + <span class="lifetime">'static</span>)&gt;,
+		&gt;,
+	&lt;&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;hyper::Request&lt;hyper::Body&gt;&gt;&gt;::Future:
+		Send + <span class="lifetime">'static</span>,
+{
+	<span class="kw">type </span>Response = hyper::Response&lt;hyper::Body&gt;;
+	<span class="kw">type </span>Error = Box&lt;<span class="kw">dyn </span>StdError + Send + Sync + <span class="lifetime">'static</span>&gt;;
+	<span class="kw">type </span>Future = Pin&lt;Box&lt;<span class="kw">dyn </span>Future&lt;Output = <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Response, <span class="self">Self</span>::Error&gt;&gt; + Send&gt;&gt;;
+
+	<span class="doccomment">/// Opens door for back pressure implementation.
+	</span><span class="kw">fn </span>poll_ready(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>std::task::Context) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;(), <span class="self">Self</span>::Error&gt;&gt; {
+		Poll::Ready(<span class="prelude-val">Ok</span>(()))
+	}
+
+	<span class="kw">fn </span>call(<span class="kw-2">&amp;mut </span><span class="self">self</span>, request: hyper::Request&lt;hyper::Body&gt;) -&gt; <span class="self">Self</span>::Future {
+		Box::pin(<span class="self">self</span>.http_middleware.service(<span class="self">self</span>.rpc_middleware.clone()).call(request))
+	}
+}
+
+<span class="doccomment">/// jsonrpsee tower service without HTTP specific middleware.
 ///
 /// # Note
 /// This is similar to [`hyper::service::service_fn`].
 </span><span class="attr">#[derive(Debug, Clone)]
-</span><span class="kw">pub struct </span>TowerService&lt;L: Logger&gt; {
-	inner: ServiceData&lt;L&gt;,
+</span><span class="kw">pub struct </span>TowerServiceNoHttp&lt;L&gt; {
+	inner: ServiceData,
+	rpc_middleware: RpcServiceBuilder&lt;L&gt;,
+	on_session_close: <span class="prelude-ty">Option</span>&lt;SessionClose&gt;,
 }
 
-<span class="kw">impl</span>&lt;L: Logger&gt; hyper::service::Service&lt;hyper::Request&lt;hyper::Body&gt;&gt; <span class="kw">for </span>TowerService&lt;L&gt; {
+<span class="kw">impl</span>&lt;RpcMiddleware&gt; hyper::service::Service&lt;hyper::Request&lt;hyper::Body&gt;&gt; <span class="kw">for </span>TowerServiceNoHttp&lt;RpcMiddleware&gt;
+<span class="kw">where
+	</span>RpcMiddleware: <span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; tower::Layer&lt;RpcService&gt;,
+	&lt;RpcMiddleware <span class="kw">as </span>Layer&lt;RpcService&gt;&gt;::Service: Send + Sync + <span class="lifetime">'static</span>,
+	<span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; &lt;RpcMiddleware <span class="kw">as </span>Layer&lt;RpcService&gt;&gt;::Service: RpcServiceT&lt;<span class="lifetime">'a</span>&gt;,
+{
 	<span class="kw">type </span>Response = hyper::Response&lt;hyper::Body&gt;;
 
-	<span class="comment">// The following associated type is required by the `impl&lt;B, U, L: Logger&gt; Server&lt;B, L&gt;` bounds.
+	<span class="comment">// The following associated type is required by the `impl&lt;B, U, M: JsonRpcMiddleware&gt; Server&lt;B, L&gt;` bounds.
 	// It satisfies the server's bounds when the `tower::ServiceBuilder&lt;B&gt;` is not set (ie `B: Identity`).
 	</span><span class="kw">type </span>Error = Box&lt;<span class="kw">dyn </span>StdError + Send + Sync + <span class="lifetime">'static</span>&gt;;
 
 	<span class="kw">type </span>Future = Pin&lt;Box&lt;<span class="kw">dyn </span>Future&lt;Output = <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Response, <span class="self">Self</span>::Error&gt;&gt; + Send&gt;&gt;;
 
 	<span class="doccomment">/// Opens door for back pressure implementation.
-	</span><span class="kw">fn </span>poll_ready(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;(), <span class="self">Self</span>::Error&gt;&gt; {
+	</span><span class="kw">fn </span>poll_ready(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>std::task::Context) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;(), <span class="self">Self</span>::Error&gt;&gt; {
 		Poll::Ready(<span class="prelude-val">Ok</span>(()))
 	}
 
 	<span class="kw">fn </span>call(<span class="kw-2">&amp;mut </span><span class="self">self</span>, request: hyper::Request&lt;hyper::Body&gt;) -&gt; <span class="self">Self</span>::Future {
-		<span class="macro">tracing::trace!</span>(<span class="string">"{:?}"</span>, request);
+		<span class="kw">let </span>conn_guard = <span class="kw-2">&amp;</span><span class="self">self</span>.inner.conn_guard;
+		<span class="kw">let </span>stop_handle = <span class="self">self</span>.inner.stop_handle.clone();
+		<span class="kw">let </span>conn_id = <span class="self">self</span>.inner.conn_id;
+		<span class="kw">let </span>on_session_close = <span class="self">self</span>.on_session_close.take();
 
-		<span class="kw">let </span>host = <span class="kw">match </span>http_helpers::read_header_value(request.headers(), hyper::header::HOST) {
-			<span class="prelude-val">Some</span>(host) =&gt; host,
-			<span class="prelude-val">None </span><span class="kw">if </span>request.version() == hyper::Version::HTTP_2 =&gt; <span class="kw">match </span>request.uri().host() {
-				<span class="prelude-val">Some</span>(host) =&gt; host,
-				<span class="prelude-val">None </span>=&gt; <span class="kw">return async move </span>{ <span class="prelude-val">Ok</span>(http::response::malformed()) }.boxed(),
-			},
-			<span class="prelude-val">None </span>=&gt; <span class="kw">return async move </span>{ <span class="prelude-val">Ok</span>(http::response::malformed()) }.boxed(),
+		<span class="macro">tracing::trace!</span>(target: LOG_TARGET, <span class="string">"{:?}"</span>, request);
+
+		<span class="kw">let </span><span class="prelude-val">Some</span>(conn_permit) = conn_guard.try_acquire() <span class="kw">else </span>{
+			<span class="kw">return async move </span>{ <span class="prelude-val">Ok</span>(http::response::too_many_requests()) }.boxed();
 		};
 
-		<span class="kw">if let </span><span class="prelude-val">Err</span>(e) = <span class="self">self</span>.inner.allow_hosts.verify(host) {
-			<span class="macro">tracing::warn!</span>(<span class="string">"Denied request: {}"</span>, e);
-			<span class="kw">return async </span>{ <span class="prelude-val">Ok</span>(http::response::host_not_allowed()) }.boxed();
-		}
+		<span class="kw">let </span>conn = ConnectionState::new(stop_handle.clone(), conn_id, conn_permit);
+
+		<span class="kw">let </span>max_conns = conn_guard.max_connections();
+		<span class="kw">let </span>curr_conns = max_conns - conn_guard.available_connections();
+		<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"Accepting new connection {}/{}"</span>, curr_conns, max_conns);
 
 		<span class="kw">let </span>is_upgrade_request = is_upgrade_request(<span class="kw-2">&amp;</span>request);
 
-		<span class="kw">if </span><span class="self">self</span>.inner.enable_ws &amp;&amp; is_upgrade_request {
+		<span class="kw">if </span><span class="self">self</span>.inner.server_cfg.enable_ws &amp;&amp; is_upgrade_request {
+			<span class="kw">let </span>this = <span class="self">self</span>.inner.clone();
+
 			<span class="kw">let </span><span class="kw-2">mut </span>server = soketto::handshake::http::Server::new();
 
 			<span class="kw">let </span>response = <span class="kw">match </span>server.receive_request(<span class="kw-2">&amp;</span>request) {
 				<span class="prelude-val">Ok</span>(response) =&gt; {
-					<span class="self">self</span>.inner.logger.on_connect(<span class="self">self</span>.inner.remote_addr, <span class="kw-2">&amp;</span>request, TransportProtocol::WebSocket);
-					<span class="kw">let </span>data = <span class="self">self</span>.inner.clone();
+					<span class="kw">let </span>(tx, rx) = mpsc::channel::&lt;String&gt;(this.server_cfg.message_buffer_capacity <span class="kw">as </span>usize);
+					<span class="kw">let </span>sink = MethodSink::new(tx);
+
+					<span class="comment">// On each method call the `pending_calls` is cloned
+					// then when all pending_calls are dropped
+					// a graceful shutdown can occur.
+					</span><span class="kw">let </span>(pending_calls, pending_calls_completed) = mpsc::channel::&lt;()&gt;(<span class="number">1</span>);
+
+					<span class="kw">let </span>cfg = RpcServiceCfg::CallsAndSubscriptions {
+						bounded_subscriptions: BoundedSubscriptions::new(
+							this.server_cfg.max_subscriptions_per_connection,
+						),
+						id_provider: this.server_cfg.id_provider.clone(),
+						sink: sink.clone(),
+						_pending_calls: pending_calls,
+					};
+
+					<span class="kw">let </span>rpc_service = RpcService::new(
+						this.methods.clone(),
+						this.server_cfg.max_response_body_size <span class="kw">as </span>usize,
+						this.conn_id <span class="kw">as </span>usize,
+						cfg,
+					);
+
+					<span class="kw">let </span>rpc_service = <span class="self">self</span>.rpc_middleware.service(rpc_service);
 
 					tokio::spawn(
 						<span class="kw">async move </span>{
 							<span class="kw">let </span>upgraded = <span class="kw">match </span>hyper::upgrade::on(request).<span class="kw">await </span>{
 								<span class="prelude-val">Ok</span>(u) =&gt; u,
 								<span class="prelude-val">Err</span>(e) =&gt; {
-									<span class="macro">tracing::warn!</span>(<span class="string">"Could not upgrade connection: {}"</span>, e);
+									<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"Could not upgrade connection: {}"</span>, e);
 									<span class="kw">return</span>;
 								}
 							};
 
 							<span class="kw">let </span>stream = BufReader::new(BufWriter::new(upgraded.compat()));
 							<span class="kw">let </span><span class="kw-2">mut </span>ws_builder = server.into_builder(stream);
-							ws_builder.set_max_message_size(data.max_request_body_size <span class="kw">as </span>usize);
+							ws_builder.set_max_message_size(this.server_cfg.max_request_body_size <span class="kw">as </span>usize);
 							<span class="kw">let </span>(sender, receiver) = ws_builder.finish();
 
-							<span class="kw">let _ </span>= ws::background_task::&lt;L&gt;(sender, receiver, data).<span class="kw">await</span>;
+							<span class="kw">let </span>params = BackgroundTaskParams {
+								server_cfg: this.server_cfg,
+								conn,
+								ws_sender: sender,
+								ws_receiver: receiver,
+								rpc_service,
+								sink,
+								rx,
+								pending_calls_completed,
+								on_session_close,
+							};
+
+							ws::background_task(params).<span class="kw">await</span>;
 						}
 						.in_current_span(),
 					);
@@ -1520,211 +2452,235 @@
 					response.map(|()| hyper::Body::empty())
 				}
 				<span class="prelude-val">Err</span>(e) =&gt; {
-					<span class="macro">tracing::error!</span>(<span class="string">"Could not upgrade connection: {}"</span>, e);
-					hyper::Response::new(hyper::Body::from(<span class="macro">format!</span>(<span class="string">"Could not upgrade connection: {}"</span>, e)))
+					<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"Could not upgrade connection: {}"</span>, e);
+					hyper::Response::new(hyper::Body::from(<span class="macro">format!</span>(<span class="string">"Could not upgrade connection: {e}"</span>)))
 				}
 			};
 
 			<span class="kw">async </span>{ <span class="prelude-val">Ok</span>(response) }.boxed()
-		} <span class="kw">else if </span><span class="self">self</span>.inner.enable_http &amp;&amp; !is_upgrade_request {
-			<span class="comment">// The request wasn't an upgrade request; let's treat it as a standard HTTP request:
-			</span><span class="kw">let </span>data = http::HandleRequest {
-				methods: <span class="self">self</span>.inner.methods.clone(),
-				resources: <span class="self">self</span>.inner.resources.clone(),
-				max_request_body_size: <span class="self">self</span>.inner.max_request_body_size,
-				max_response_body_size: <span class="self">self</span>.inner.max_response_body_size,
-				max_log_length: <span class="self">self</span>.inner.max_log_length,
-				batch_requests_supported: <span class="self">self</span>.inner.batch_requests_supported,
-				logger: <span class="self">self</span>.inner.logger.clone(),
-				conn: <span class="self">self</span>.inner.conn.clone(),
-				remote_addr: <span class="self">self</span>.inner.remote_addr,
-			};
+		} <span class="kw">else if </span><span class="self">self</span>.inner.server_cfg.enable_http &amp;&amp; !is_upgrade_request {
+			<span class="kw">let </span>this = <span class="kw-2">&amp;</span><span class="self">self</span>.inner;
+			<span class="kw">let </span>max_response_size = this.server_cfg.max_response_body_size;
+			<span class="kw">let </span>max_request_size = this.server_cfg.max_request_body_size;
+			<span class="kw">let </span>methods = this.methods.clone();
+			<span class="kw">let </span>batch_config = this.server_cfg.batch_requests_config;
 
-			<span class="self">self</span>.inner.logger.on_connect(<span class="self">self</span>.inner.remote_addr, <span class="kw-2">&amp;</span>request, TransportProtocol::Http);
+			<span class="kw">let </span>rpc_service = <span class="self">self</span>.rpc_middleware.service(RpcService::new(
+				methods,
+				max_response_size <span class="kw">as </span>usize,
+				this.conn_id <span class="kw">as </span>usize,
+				RpcServiceCfg::OnlyCalls,
+			));
 
-			Box::pin(http::handle_request(request, data).map(<span class="prelude-val">Ok</span>))
+			Box::pin(
+				http::call_with_service(request, batch_config, max_request_size, rpc_service, max_response_size)
+					.map(<span class="prelude-val">Ok</span>),
+			)
 		} <span class="kw">else </span>{
 			Box::pin(<span class="kw">async </span>{ http::response::denied() }.map(<span class="prelude-val">Ok</span>))
 		}
 	}
 }
 
-<span class="doccomment">/// This is a glorified select listening for new messages, while also checking the `stop_receiver` signal.
-</span><span class="kw">struct </span>Monitored&lt;<span class="lifetime">'a</span>, F&gt; {
-	future: F,
-	stop_monitor: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>StopHandle,
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, F&gt; Monitored&lt;<span class="lifetime">'a</span>, F&gt; {
-	<span class="kw">fn </span>new(future: F, stop_monitor: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>StopHandle) -&gt; <span class="self">Self </span>{
-		Monitored { future, stop_monitor }
-	}
-}
-
-<span class="kw">enum </span>MonitoredError&lt;E&gt; {
-	Shutdown,
-	Selector(E),
-}
-
-<span class="kw">struct </span>Incoming(TcpListener);
-
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Future <span class="kw">for </span>Monitored&lt;<span class="lifetime">'a</span>, Incoming&gt; {
-	<span class="kw">type </span>Output = <span class="prelude-ty">Result</span>&lt;(TcpStream, SocketAddr), MonitoredError&lt;std::io::Error&gt;&gt;;
-
-	<span class="kw">fn </span>poll(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context) -&gt; Poll&lt;<span class="self">Self</span>::Output&gt; {
-		<span class="kw">let </span>this = Pin::into_inner(<span class="self">self</span>);
-
-		<span class="kw">if </span>this.stop_monitor.shutdown_requested() {
-			<span class="kw">return </span>Poll::Ready(<span class="prelude-val">Err</span>(MonitoredError::Shutdown));
-		}
-
-		this.future.<span class="number">0</span>.poll_accept(cx).map_err(MonitoredError::Selector)
-	}
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, <span class="lifetime">'f</span>, F, T, E&gt; Future <span class="kw">for </span>Monitored&lt;<span class="lifetime">'a</span>, Pin&lt;<span class="kw-2">&amp;</span><span class="lifetime">'f </span><span class="kw-2">mut </span>F&gt;&gt;
-<span class="kw">where
-	</span>F: Future&lt;Output = <span class="prelude-ty">Result</span>&lt;T, E&gt;&gt;,
-{
-	<span class="kw">type </span>Output = <span class="prelude-ty">Result</span>&lt;T, MonitoredError&lt;E&gt;&gt;;
-
-	<span class="kw">fn </span>poll(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context) -&gt; Poll&lt;<span class="self">Self</span>::Output&gt; {
-		<span class="kw">let </span>this = Pin::into_inner(<span class="self">self</span>);
-
-		<span class="kw">if </span>this.stop_monitor.shutdown_requested() {
-			<span class="kw">return </span>Poll::Ready(<span class="prelude-val">Err</span>(MonitoredError::Shutdown));
-		}
-
-		this.future.poll_unpin(cx).map_err(MonitoredError::Selector)
-	}
-}
-
-<span class="kw">struct </span>ProcessConnection&lt;L&gt; {
-	<span class="doccomment">/// Remote server address.
-	</span>remote_addr: SocketAddr,
-	<span class="doccomment">/// Registered server methods.
-	</span>methods: Methods,
-	<span class="doccomment">/// Access control.
-	</span>allow_hosts: AllowHosts,
-	<span class="doccomment">/// Tracker for currently used resources on the server.
-	</span>resources: Resources,
-	<span class="doccomment">/// Max request body size.
-	</span>max_request_body_size: u32,
-	<span class="doccomment">/// Max response body size.
-	</span>max_response_body_size: u32,
-	<span class="doccomment">/// Max length for logging for request and response
-	///
-	/// Logs bigger than this limit will be truncated.
-	</span>max_log_length: u32,
-	<span class="doccomment">/// Whether batch requests are supported by this server or not.
-	</span>batch_requests_supported: bool,
-	<span class="doccomment">/// Subscription ID provider.
-	</span>id_provider: Arc&lt;<span class="kw">dyn </span>IdProvider&gt;,
-	<span class="doccomment">/// Ping interval
-	</span>ping_interval: Duration,
-	<span class="doccomment">/// Stop handle.
-	</span>stop_handle: StopHandle,
-	<span class="doccomment">/// Max subscriptions per connection.
-	</span>max_subscriptions_per_connection: u32,
-	<span class="doccomment">/// Max connections,
-	</span>max_connections: u32,
-	<span class="doccomment">/// Connection ID
-	</span>conn_id: u32,
-	<span class="doccomment">/// Logger.
-	</span>logger: L,
-	<span class="doccomment">/// Allow JSON-RPC HTTP requests.
-	</span>enable_http: bool,
-	<span class="doccomment">/// Allow JSON-RPC WS request and WS upgrade requests.
-	</span>enable_ws: bool,
-}
-
-<span class="attr">#[instrument(name = <span class="string">"connection"</span>, skip_all, fields(remote_addr = %cfg.remote_addr, conn_id = %cfg.conn_id), level = <span class="string">"INFO"</span>)]
-</span><span class="kw">fn </span>process_connection&lt;<span class="lifetime">'a</span>, L: Logger, B, U&gt;(
-	service_builder: <span class="kw-2">&amp;</span>tower::ServiceBuilder&lt;B&gt;,
-	connection_guard: <span class="kw-2">&amp;</span>ConnectionGuard,
-	cfg: ProcessConnection&lt;L&gt;,
+<span class="kw">struct </span>ProcessConnection&lt;<span class="lifetime">'a</span>, HttpMiddleware, RpcMiddleware&gt; {
+	http_middleware: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>tower::ServiceBuilder&lt;HttpMiddleware&gt;,
+	rpc_middleware: RpcServiceBuilder&lt;RpcMiddleware&gt;,
+	conn_guard: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>ConnectionGuard,
+	conn_id: u32,
+	server_cfg: ServerConfig,
+	stop_handle: StopHandle,
 	socket: TcpStream,
-	connections: <span class="kw-2">&amp;mut </span>FutureDriver&lt;BoxFuture&lt;<span class="lifetime">'a</span>, ()&gt;&gt;,
+	drop_on_completion: mpsc::Sender&lt;()&gt;,
+	remote_addr: SocketAddr,
+	methods: Methods,
+}
+
+<span class="attr">#[instrument(name = <span class="string">"connection"</span>, skip_all, fields(remote_addr = %params.remote_addr, conn_id = %params.conn_id), level = <span class="string">"INFO"</span>)]
+</span><span class="kw">fn </span>process_connection&lt;<span class="lifetime">'a</span>, RpcMiddleware, HttpMiddleware, U&gt;(
+	params: ProcessConnection&lt;HttpMiddleware, RpcMiddleware&gt;
+
 ) <span class="kw">where
-	</span>B: Layer&lt;TowerService&lt;L&gt;&gt; + Send + <span class="lifetime">'static</span>,
-	&lt;B <span class="kw">as </span>Layer&lt;TowerService&lt;L&gt;&gt;&gt;::Service: Send
-		+ Service&lt;
+	</span>RpcMiddleware: <span class="lifetime">'static</span>,
+	HttpMiddleware: Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt; + Send + <span class="lifetime">'static</span>,
+	&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service: Send
+		+ <span class="lifetime">'static
+		</span>+ Service&lt;
 			hyper::Request&lt;hyper::Body&gt;,
 			Response = hyper::Response&lt;U&gt;,
 			Error = Box&lt;(<span class="kw">dyn </span>StdError + Send + Sync + <span class="lifetime">'static</span>)&gt;,
 		&gt;,
-	&lt;&lt;B <span class="kw">as </span>Layer&lt;TowerService&lt;L&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;hyper::Request&lt;hyper::Body&gt;&gt;&gt;::Future: Send,
+	&lt;&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;hyper::Request&lt;hyper::Body&gt;&gt;&gt;::Future:
+		Send + <span class="lifetime">'static</span>,
 	U: HttpBody + Send + <span class="lifetime">'static</span>,
 	&lt;U <span class="kw">as </span>HttpBody&gt;::Error: Send + Sync + StdError,
 	&lt;U <span class="kw">as </span>HttpBody&gt;::Data: Send,
 {
-	<span class="kw">if let </span><span class="prelude-val">Err</span>(e) = socket.set_nodelay(<span class="bool-val">true</span>) {
-		<span class="macro">tracing::warn!</span>(<span class="string">"Could not set NODELAY on socket: {:?}"</span>, e);
+	<span class="kw">let </span>ProcessConnection {
+		http_middleware,
+		rpc_middleware,
+		conn_guard,
+		conn_id,
+		server_cfg,
+		socket,
+		stop_handle,
+		drop_on_completion,
+		methods,
+		..
+	} = params;
+
+	<span class="kw">if let </span><span class="prelude-val">Err</span>(e) = socket.set_nodelay(server_cfg.tcp_no_delay) {
+		<span class="macro">tracing::warn!</span>(target: LOG_TARGET, <span class="string">"Could not set NODELAY on socket: {:?}"</span>, e);
 		<span class="kw">return</span>;
 	}
 
-	<span class="kw">let </span>conn = <span class="kw">match </span>connection_guard.try_acquire() {
-		<span class="prelude-val">Some</span>(conn) =&gt; conn,
-		<span class="prelude-val">None </span>=&gt; {
-			<span class="macro">tracing::warn!</span>(<span class="string">"Too many connections. Please try again later."</span>);
-			connections.add(http::reject_connection(socket).in_current_span().boxed());
-			<span class="kw">return</span>;
-		}
-	};
-
-	<span class="kw">let </span>max_conns = cfg.max_connections <span class="kw">as </span>usize;
-	<span class="kw">let </span>curr_conns = max_conns - connection_guard.available_connections();
-	<span class="macro">tracing::info!</span>(<span class="string">"Accepting new connection {}/{}"</span>, curr_conns, max_conns);
-
-	<span class="kw">let </span>tower_service = TowerService {
+	<span class="kw">let </span>tower_service = TowerServiceNoHttp {
 		inner: ServiceData {
-			remote_addr: cfg.remote_addr,
-			methods: cfg.methods,
-			allow_hosts: cfg.allow_hosts,
-			resources: cfg.resources,
-			max_request_body_size: cfg.max_request_body_size,
-			max_response_body_size: cfg.max_response_body_size,
-			max_log_length: cfg.max_log_length,
-			batch_requests_supported: cfg.batch_requests_supported,
-			id_provider: cfg.id_provider,
-			ping_interval: cfg.ping_interval,
-			stop_handle: cfg.stop_handle.clone(),
-			max_subscriptions_per_connection: cfg.max_subscriptions_per_connection,
-			conn_id: cfg.conn_id,
-			logger: cfg.logger,
-			conn: Arc::new(conn),
-			enable_http: cfg.enable_http,
-			enable_ws: cfg.enable_ws,
+			server_cfg,
+			methods,
+			stop_handle: stop_handle.clone(),
+			conn_id,
+			conn_guard: conn_guard.clone(),
 		},
+		rpc_middleware,
+		on_session_close: <span class="prelude-val">None</span>,
 	};
 
-	<span class="kw">let </span>service = service_builder.service(tower_service);
+	<span class="kw">let </span>service = http_middleware.service(tower_service);
 
-	connections.add(Box::pin(try_accept_connection(socket, service, cfg.stop_handle).in_current_span()));
+	tokio::spawn(<span class="kw">async </span>{
+		to_http_service(socket, service, stop_handle).in_current_span().<span class="kw">await</span>;
+		drop(drop_on_completion)
+	});
 }
 
 <span class="comment">// Attempts to create a HTTP connection from a socket.
-</span><span class="kw">async fn </span>try_accept_connection&lt;S, Bd&gt;(socket: TcpStream, service: S, <span class="kw-2">mut </span>stop_handle: StopHandle)
+</span><span class="kw">async fn </span>to_http_service&lt;S, B&gt;(socket: TcpStream, service: S, stop_handle: StopHandle)
 <span class="kw">where
-	</span>S: Service&lt;hyper::Request&lt;hyper::Body&gt;, Response = hyper::Response&lt;Bd&gt;&gt; + Send + <span class="lifetime">'static</span>,
+	</span>S: Service&lt;hyper::Request&lt;hyper::Body&gt;, Response = hyper::Response&lt;B&gt;&gt; + Send + <span class="lifetime">'static</span>,
 	S::Error: Into&lt;Box&lt;<span class="kw">dyn </span>std::error::Error + Send + Sync&gt;&gt;,
 	S::Future: Send,
-	Bd: HttpBody + Send + <span class="lifetime">'static</span>,
-	&lt;Bd <span class="kw">as </span>HttpBody&gt;::Error: Send + Sync + StdError,
-	&lt;Bd <span class="kw">as </span>HttpBody&gt;::Data: Send,
+	B: HttpBody + Send + <span class="lifetime">'static</span>,
+	&lt;B <span class="kw">as </span>HttpBody&gt;::Error: Send + Sync + StdError,
+	&lt;B <span class="kw">as </span>HttpBody&gt;::Data: Send,
 {
 	<span class="kw">let </span>conn = hyper::server::conn::Http::new().serve_connection(socket, service).with_upgrades();
+	<span class="kw">let </span>stopped = stop_handle.shutdown();
 
-	<span class="macro">tokio::pin!</span>(conn);
+	<span class="macro">tokio::pin!</span>(stopped);
 
-	<span class="macro">tokio::select!</span> {
-		res = <span class="kw-2">&amp;mut </span>conn =&gt; {
-			<span class="kw">if let </span><span class="prelude-val">Err</span>(e) = res {
-				<span class="macro">tracing::warn!</span>(<span class="string">"HTTP serve connection failed {:?}"</span>, e);
-			}
+	<span class="kw">let </span>res = <span class="kw">match </span>future::select(conn, stopped).<span class="kw">await </span>{
+		Either::Left((conn, <span class="kw">_</span>)) =&gt; conn,
+		Either::Right((<span class="kw">_</span>, <span class="kw-2">mut </span>conn)) =&gt; {
+			<span class="comment">// NOTE: the connection should continue to be polled until shutdown can finish.
+			// Thus, both lines below are needed and not a nit.
+			</span>Pin::new(<span class="kw-2">&amp;mut </span>conn).graceful_shutdown();
+			conn.<span class="kw">await
+		</span>}
+	};
+
+	<span class="kw">if let </span><span class="prelude-val">Err</span>(e) = res {
+		<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"HTTP serve connection failed {:?}"</span>, e);
+	}
+}
+
+<span class="kw">enum </span>AcceptConnection&lt;S&gt; {
+	Shutdown,
+	Established { socket: TcpStream, remote_addr: SocketAddr, stop: S },
+	<span class="prelude-val">Err</span>((std::io::Error, S)),
+}
+
+<span class="kw">async fn </span>try_accept_conn&lt;S&gt;(listener: <span class="kw-2">&amp;</span>TcpListener, stopped: S) -&gt; AcceptConnection&lt;S&gt;
+<span class="kw">where
+	</span>S: Future + Unpin,
+{
+	<span class="kw">let </span>accept = listener.accept();
+	<span class="macro">tokio::pin!</span>(accept);
+
+	<span class="kw">match </span>futures_util::future::select(accept, stopped).<span class="kw">await </span>{
+		Either::Left((res, stop)) =&gt; <span class="kw">match </span>res {
+			<span class="prelude-val">Ok</span>((socket, remote_addr)) =&gt; AcceptConnection::Established { socket, remote_addr, stop },
+			<span class="prelude-val">Err</span>(e) =&gt; AcceptConnection::Err((e, stop)),
+		},
+		Either::Right(<span class="kw">_</span>) =&gt; AcceptConnection::Shutdown,
+	}
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>handle_rpc_call&lt;S&gt;(
+	body: <span class="kw-2">&amp;</span>[u8],
+	is_single: bool,
+	batch_config: BatchRequestConfig,
+	max_response_size: u32,
+	rpc_service: <span class="kw-2">&amp;</span>S,
+) -&gt; <span class="prelude-ty">Option</span>&lt;MethodResponse&gt;
+<span class="kw">where
+	for</span>&lt;<span class="lifetime">'a</span>&gt; S: RpcServiceT&lt;<span class="lifetime">'a</span>&gt; + Send,
+{
+	<span class="comment">// Single request or notification
+	</span><span class="kw">if </span>is_single {
+		<span class="kw">if let </span><span class="prelude-val">Ok</span>(req) = serde_json::from_slice(body) {
+			<span class="prelude-val">Some</span>(rpc_service.call(req).<span class="kw">await</span>)
+		} <span class="kw">else if let </span><span class="prelude-val">Ok</span>(_notif) = serde_json::from_slice::&lt;Notif&gt;(body) {
+			<span class="prelude-val">None
+		</span>} <span class="kw">else </span>{
+			<span class="kw">let </span>(id, code) = prepare_error(body);
+			<span class="prelude-val">Some</span>(MethodResponse::error(id, ErrorObject::from(code)))
 		}
-		<span class="kw">_ </span>= stop_handle.shutdown() =&gt; {
-			conn.graceful_shutdown();
+	}
+	<span class="comment">// Batch of requests.
+	</span><span class="kw">else </span>{
+		<span class="kw">let </span>max_len = <span class="kw">match </span>batch_config {
+			BatchRequestConfig::Disabled =&gt; {
+				<span class="kw">let </span>rp = MethodResponse::error(
+					Id::Null,
+					ErrorObject::borrowed(BATCHES_NOT_SUPPORTED_CODE, BATCHES_NOT_SUPPORTED_MSG, <span class="prelude-val">None</span>),
+				);
+				<span class="kw">return </span><span class="prelude-val">Some</span>(rp);
+			}
+			BatchRequestConfig::Limit(limit) =&gt; limit <span class="kw">as </span>usize,
+			BatchRequestConfig::Unlimited =&gt; usize::MAX,
+		};
+
+		<span class="kw">if let </span><span class="prelude-val">Ok</span>(batch) = serde_json::from_slice::&lt;Vec&lt;<span class="kw-2">&amp;</span>JsonRawValue&gt;&gt;(body) {
+			<span class="kw">if </span>batch.len() &gt; max_len {
+				<span class="kw">return </span><span class="prelude-val">Some</span>(MethodResponse::error(Id::Null, reject_too_big_batch_request(max_len)));
+			}
+
+			<span class="kw">let </span><span class="kw-2">mut </span>got_notif = <span class="bool-val">false</span>;
+			<span class="kw">let </span><span class="kw-2">mut </span>batch_response = BatchResponseBuilder::new_with_limit(max_response_size <span class="kw">as </span>usize);
+
+			<span class="kw">for </span>call <span class="kw">in </span>batch {
+				<span class="kw">if let </span><span class="prelude-val">Ok</span>(req) = serde_json::from_str::&lt;Request&gt;(call.get()) {
+					<span class="kw">let </span>rp = rpc_service.call(req).<span class="kw">await</span>;
+
+					<span class="kw">if let </span><span class="prelude-val">Err</span>(too_large) = batch_response.append(<span class="kw-2">&amp;</span>rp) {
+						<span class="kw">return </span><span class="prelude-val">Some</span>(too_large);
+					}
+				} <span class="kw">else if let </span><span class="prelude-val">Ok</span>(_notif) = serde_json::from_str::&lt;Notif&gt;(call.get()) {
+					<span class="comment">// notifications should not be answered.
+					</span>got_notif = <span class="bool-val">true</span>;
+				} <span class="kw">else </span>{
+					<span class="comment">// valid JSON but could be not parsable as `InvalidRequest`
+					</span><span class="kw">let </span>id = <span class="kw">match </span>serde_json::from_str::&lt;InvalidRequest&gt;(call.get()) {
+						<span class="prelude-val">Ok</span>(err) =&gt; err.id,
+						<span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; Id::Null,
+					};
+
+					<span class="kw">if let </span><span class="prelude-val">Err</span>(too_large) =
+						batch_response.append(<span class="kw-2">&amp;</span>MethodResponse::error(id, ErrorObject::from(ErrorCode::InvalidRequest)))
+					{
+						<span class="kw">return </span><span class="prelude-val">Some</span>(too_large);
+					}
+				}
+			}
+
+			<span class="kw">if </span>got_notif &amp;&amp; batch_response.is_empty() {
+				<span class="prelude-val">None
+			</span>} <span class="kw">else </span>{
+				<span class="kw">let </span>batch_rp = batch_response.finish();
+				<span class="prelude-val">Some</span>(MethodResponse::from_batch(batch_rp))
+			}
+		} <span class="kw">else </span>{
+			<span class="prelude-val">Some</span>(MethodResponse::error(Id::Null, ErrorObject::from(ErrorCode::ParseError)))
 		}
 	}
 }

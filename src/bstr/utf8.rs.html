@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bstr-1.9.0/src/utf8.rs`."><title>utf8.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bstr" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bstr-0.2.17/src/utf8.rs`."><title>utf8.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bstr" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../bstr/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -1369,12 +1369,17 @@
 <a href="#1367" id="1367">1367</a>
 <a href="#1368" id="1368">1368</a>
 <a href="#1369" id="1369">1369</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>core::{char, cmp, fmt, str};
-
+<a href="#1370" id="1370">1370</a>
+</pre></div><pre class="rust"><code><span class="kw">use </span>core::char;
+<span class="kw">use </span>core::cmp;
+<span class="kw">use </span>core::fmt;
+<span class="kw">use </span>core::str;
 <span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
 </span><span class="kw">use </span>std::error;
 
-<span class="kw">use crate</span>::{ascii, bstr::BStr, ext_slice::ByteSlice};
+<span class="kw">use </span><span class="kw">crate</span>::ascii;
+<span class="kw">use </span><span class="kw">crate</span>::bstr::BStr;
+<span class="kw">use </span><span class="kw">crate</span>::ext_slice::ByteSlice;
 
 <span class="comment">// The UTF-8 decoder provided here is based on the one presented here:
 // https://bjoern.hoehrmann.de/utf-8/decoder/dfa/
@@ -1442,7 +1447,7 @@
 ///
 /// When invalid UTF-8 byte sequences are found, they are substituted with the
 /// Unicode replacement codepoint (`U+FFFD`) using the
-/// ["maximal subpart" strategy](https://www.unicode.org/review/pr-121.html).
+/// ["maximal subpart" strategy](http://www.unicode.org/review/pr-121.html).
 ///
 /// This iterator is created by the
 /// [`chars`](trait.ByteSlice.html#method.chars) method provided by the
@@ -1513,7 +1518,7 @@
 ///
 /// When invalid UTF-8 byte sequences are found, they are substituted with the
 /// Unicode replacement codepoint (`U+FFFD`) using the
-/// ["maximal subpart" strategy](https://www.unicode.org/review/pr-121.html).
+/// ["maximal subpart" strategy](http://www.unicode.org/review/pr-121.html).
 ///
 /// Note that this is slightly different from the `CharIndices` iterator
 /// provided by the standard library. Aside from working on possibly invalid
@@ -1535,7 +1540,7 @@
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; CharIndices&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(bs: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; CharIndices&lt;<span class="lifetime">'a</span>&gt; {
-        CharIndices { bs, forward_index: <span class="number">0</span>, reverse_index: bs.len() }
+        CharIndices { bs: bs, forward_index: <span class="number">0</span>, reverse_index: bs.len() }
     }
 
     <span class="doccomment">/// View the underlying data as a subslice of the original data.
@@ -1759,7 +1764,7 @@
 /// assert_eq!(err.error_len(), Some(3));
 ///
 /// // In contrast to the above which contains a single invalid prefix,
-/// // consider the case of multiple individual bytes that are never valid
+/// // consider the case of multiple individal bytes that are never valid
 /// // prefixes. Note how the value of error_len changes!
 /// let s = b"foobar\xFF\xFFquux";
 /// let err = s.to_str().unwrap_err();
@@ -1773,7 +1778,7 @@
 /// assert_eq!(err.valid_up_to(), 6);
 /// assert_eq!(err.error_len(), Some(1));
 /// ```
-</span><span class="attr">#[derive(Clone, Debug, Eq, PartialEq)]
+</span><span class="attr">#[derive(Debug, Eq, PartialEq)]
 </span><span class="kw">pub struct </span>Utf8Error {
     valid_up_to: usize,
     error_len: <span class="prelude-ty">Option</span>&lt;usize&gt;,
@@ -2221,15 +2226,13 @@
     </span>(b &amp; <span class="number">0b1100_0000</span>) != <span class="number">0b1000_0000
 </span>}
 
-<span class="attr">#[cfg(all(test, feature = <span class="string">"std"</span>))]
+<span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
     <span class="kw">use </span>std::char;
 
-    <span class="kw">use crate</span>::{
-        ext_slice::{ByteSlice, B},
-        tests::LOSSY_TESTS,
-        utf8::{<span class="self">self</span>, Utf8Error},
-    };
+    <span class="kw">use </span><span class="kw">crate</span>::ext_slice::{ByteSlice, B};
+    <span class="kw">use </span><span class="kw">crate</span>::tests::LOSSY_TESTS;
+    <span class="kw">use </span><span class="kw">crate</span>::utf8::{<span class="self">self</span>, Utf8Error};
 
     <span class="kw">fn </span>utf8e(valid_up_to: usize) -&gt; Utf8Error {
         Utf8Error { valid_up_to, error_len: <span class="prelude-val">None </span>}
@@ -2240,7 +2243,6 @@
     }
 
     <span class="attr">#[test]
-    #[cfg(not(miri))]
     </span><span class="kw">fn </span>validate_all_codepoints() {
         <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..(<span class="number">0x10FFFF </span>+ <span class="number">1</span>) {
             <span class="kw">let </span>cp = <span class="kw">match </span>char::from_u32(i) {

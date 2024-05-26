@@ -89,6 +89,8 @@
 <a href="#87" id="87">87</a>
 <a href="#88" id="88">88</a>
 <a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
+<a href="#91" id="91">91</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -113,8 +115,10 @@
 <span class="kw">use </span>substrate_rpc_client::{ws_client, StateApi};
 
 <span class="kw">use crate</span>::{
-    build_executor,
-    state::{LiveState, RuntimeChecks, State},
+    common::{
+        shared_parameters,
+        state::{build_executor, LiveState, RuntimeChecks, State},
+    },
     SharedParams, LOG_TARGET,
 };
 
@@ -144,7 +148,7 @@
     HostFns: HostFunctions,
 {
     <span class="kw">let </span>snapshot_path = command.snapshot_path;
-    <span class="kw">if </span>!<span class="macro">matches!</span>(shared.runtime, <span class="kw">crate</span>::shared_parameters::Runtime::Existing) {
+    <span class="kw">if </span>!<span class="macro">matches!</span>(shared.runtime, shared_parameters::Runtime::Existing) {
         <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"creating a snapshot is only possible with --runtime existing."</span>.into());
     }
 

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["ECQVCertPublic","ECQVCertSecret"]};
+window.SIDEBAR_ITEMS = {"struct":["AdaptorCertPublic","AdaptorCertSecret"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["a","aaaa","caa","csync","hinfo","mx","name","naptr","null","openpgpkey","opt","soa","srv","sshfp","svcb","tlsa","txt"]};
+window.SIDEBAR_ITEMS = {"mod":["a","aaaa","caa","csync","hinfo","https","mx","name","naptr","null","openpgpkey","opt","soa","srv","sshfp","svcb","tlsa","txt"]};

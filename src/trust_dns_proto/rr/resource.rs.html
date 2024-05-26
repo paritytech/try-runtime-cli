@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.22.0/src/rr/resource.rs`."><title>resource.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.23.2/src/rr/resource.rs`."><title>resource.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../trust_dns_proto/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -776,40 +776,187 @@
 <a href="#774" id="774">774</a>
 <a href="#775" id="775">775</a>
 <a href="#776" id="776">776</a>
-</pre></div><pre class="rust"><code><span class="comment">/*
- * Copyright (C) 2015 Benjamin Fry &lt;benjaminfry@me.com&gt;
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+<a href="#777" id="777">777</a>
+<a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
+<a href="#784" id="784">784</a>
+<a href="#785" id="785">785</a>
+<a href="#786" id="786">786</a>
+<a href="#787" id="787">787</a>
+<a href="#788" id="788">788</a>
+<a href="#789" id="789">789</a>
+<a href="#790" id="790">790</a>
+<a href="#791" id="791">791</a>
+<a href="#792" id="792">792</a>
+<a href="#793" id="793">793</a>
+<a href="#794" id="794">794</a>
+<a href="#795" id="795">795</a>
+<a href="#796" id="796">796</a>
+<a href="#797" id="797">797</a>
+<a href="#798" id="798">798</a>
+<a href="#799" id="799">799</a>
+<a href="#800" id="800">800</a>
+<a href="#801" id="801">801</a>
+<a href="#802" id="802">802</a>
+<a href="#803" id="803">803</a>
+<a href="#804" id="804">804</a>
+<a href="#805" id="805">805</a>
+<a href="#806" id="806">806</a>
+<a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
+<a href="#809" id="809">809</a>
+<a href="#810" id="810">810</a>
+<a href="#811" id="811">811</a>
+<a href="#812" id="812">812</a>
+<a href="#813" id="813">813</a>
+<a href="#814" id="814">814</a>
+<a href="#815" id="815">815</a>
+<a href="#816" id="816">816</a>
+<a href="#817" id="817">817</a>
+<a href="#818" id="818">818</a>
+<a href="#819" id="819">819</a>
+<a href="#820" id="820">820</a>
+<a href="#821" id="821">821</a>
+<a href="#822" id="822">822</a>
+<a href="#823" id="823">823</a>
+<a href="#824" id="824">824</a>
+<a href="#825" id="825">825</a>
+<a href="#826" id="826">826</a>
+<a href="#827" id="827">827</a>
+<a href="#828" id="828">828</a>
+<a href="#829" id="829">829</a>
+<a href="#830" id="830">830</a>
+<a href="#831" id="831">831</a>
+<a href="#832" id="832">832</a>
+<a href="#833" id="833">833</a>
+<a href="#834" id="834">834</a>
+<a href="#835" id="835">835</a>
+<a href="#836" id="836">836</a>
+<a href="#837" id="837">837</a>
+<a href="#838" id="838">838</a>
+<a href="#839" id="839">839</a>
+<a href="#840" id="840">840</a>
+<a href="#841" id="841">841</a>
+<a href="#842" id="842">842</a>
+<a href="#843" id="843">843</a>
+<a href="#844" id="844">844</a>
+<a href="#845" id="845">845</a>
+<a href="#846" id="846">846</a>
+<a href="#847" id="847">847</a>
+<a href="#848" id="848">848</a>
+<a href="#849" id="849">849</a>
+<a href="#850" id="850">850</a>
+<a href="#851" id="851">851</a>
+<a href="#852" id="852">852</a>
+<a href="#853" id="853">853</a>
+<a href="#854" id="854">854</a>
+<a href="#855" id="855">855</a>
+<a href="#856" id="856">856</a>
+<a href="#857" id="857">857</a>
+<a href="#858" id="858">858</a>
+<a href="#859" id="859">859</a>
+<a href="#860" id="860">860</a>
+<a href="#861" id="861">861</a>
+<a href="#862" id="862">862</a>
+<a href="#863" id="863">863</a>
+<a href="#864" id="864">864</a>
+<a href="#865" id="865">865</a>
+<a href="#866" id="866">866</a>
+<a href="#867" id="867">867</a>
+<a href="#868" id="868">868</a>
+<a href="#869" id="869">869</a>
+<a href="#870" id="870">870</a>
+<a href="#871" id="871">871</a>
+<a href="#872" id="872">872</a>
+<a href="#873" id="873">873</a>
+<a href="#874" id="874">874</a>
+<a href="#875" id="875">875</a>
+<a href="#876" id="876">876</a>
+<a href="#877" id="877">877</a>
+<a href="#878" id="878">878</a>
+<a href="#879" id="879">879</a>
+<a href="#880" id="880">880</a>
+<a href="#881" id="881">881</a>
+<a href="#882" id="882">882</a>
+<a href="#883" id="883">883</a>
+<a href="#884" id="884">884</a>
+<a href="#885" id="885">885</a>
+<a href="#886" id="886">886</a>
+<a href="#887" id="887">887</a>
+<a href="#888" id="888">888</a>
+<a href="#889" id="889">889</a>
+<a href="#890" id="890">890</a>
+<a href="#891" id="891">891</a>
+<a href="#892" id="892">892</a>
+<a href="#893" id="893">893</a>
+<a href="#894" id="894">894</a>
+<a href="#895" id="895">895</a>
+<a href="#896" id="896">896</a>
+<a href="#897" id="897">897</a>
+<a href="#898" id="898">898</a>
+<a href="#899" id="899">899</a>
+<a href="#900" id="900">900</a>
+<a href="#901" id="901">901</a>
+<a href="#902" id="902">902</a>
+<a href="#903" id="903">903</a>
+<a href="#904" id="904">904</a>
+<a href="#905" id="905">905</a>
+<a href="#906" id="906">906</a>
+<a href="#907" id="907">907</a>
+<a href="#908" id="908">908</a>
+<a href="#909" id="909">909</a>
+<a href="#910" id="910">910</a>
+<a href="#911" id="911">911</a>
+<a href="#912" id="912">912</a>
+<a href="#913" id="913">913</a>
+<a href="#914" id="914">914</a>
+<a href="#915" id="915">915</a>
+<a href="#916" id="916">916</a>
+<a href="#917" id="917">917</a>
+<a href="#918" id="918">918</a>
+<a href="#919" id="919">919</a>
+<a href="#920" id="920">920</a>
+<a href="#921" id="921">921</a>
+<a href="#922" id="922">922</a>
+<a href="#923" id="923">923</a>
+<a href="#924" id="924">924</a>
+<a href="#925" id="925">925</a>
+<a href="#926" id="926">926</a>
+<a href="#927" id="927">927</a>
+<a href="#928" id="928">928</a>
+<a href="#929" id="929">929</a>
+<a href="#930" id="930">930</a>
+<a href="#931" id="931">931</a>
+<a href="#932" id="932">932</a>
+<a href="#933" id="933">933</a>
+<a href="#934" id="934">934</a>
+<a href="#935" id="935">935</a>
+</pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2023 Benjamin Fry &lt;benjaminfry@me.com&gt;
+//
+// Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
+// http://apache.org/licenses/LICENSE-2.0&gt; or the MIT license &lt;LICENSE-MIT or
+// http://opensource.org/licenses/MIT&gt;, at your option. This file may not be
+// copied, modified, or distributed except according to those terms.
 
 </span><span class="doccomment">//! resource record implementation
 
-</span><span class="kw">use </span>std::cmp::Ordering;
-<span class="kw">use </span>std::fmt;
+</span><span class="kw">use </span>std::{cmp::Ordering, convert::TryFrom, fmt};
 
 <span class="attr">#[cfg(feature = <span class="string">"serde-config"</span>)]
 </span><span class="kw">use </span>serde::{Deserialize, Serialize};
 
-<span class="kw">use </span><span class="kw">crate</span>::error::<span class="kw-2">*</span>;
-<span class="kw">use </span><span class="kw">crate</span>::rr::dns_class::DNSClass;
-<span class="kw">use </span><span class="kw">crate</span>::rr::rdata::NULL;
+<span class="kw">use crate</span>::{
+    error::{ProtoError, ProtoErrorKind, ProtoResult},
+    rr::{dns_class::DNSClass, Name, RData, RecordData, RecordSet, RecordType},
+    serialize::binary::{BinDecodable, BinDecoder, BinEncodable, BinEncoder, Restrict},
+};
+
 <span class="attr">#[allow(deprecated)]
 </span><span class="kw">use </span><span class="kw">crate</span>::rr::IntoRecordSet;
-<span class="kw">use </span><span class="kw">crate</span>::rr::Name;
-<span class="kw">use </span><span class="kw">crate</span>::rr::RData;
-<span class="kw">use </span><span class="kw">crate</span>::rr::RecordSet;
-<span class="kw">use </span><span class="kw">crate</span>::rr::RecordType;
-<span class="kw">use </span><span class="kw">crate</span>::serialize::binary::<span class="kw-2">*</span>;
 
 <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
 </span><span class="doccomment">/// From [RFC 6762](https://tools.ietf.org/html/rfc6762#section-10.2)
@@ -821,9 +968,10 @@
 /// significant fifteen bits of this field.
 /// ```
 </span><span class="kw">const </span>MDNS_ENABLE_CACHE_FLUSH: u16 = <span class="number">1 </span>&lt;&lt; <span class="number">15</span>;
-
-<span class="kw">const </span>NULL_RDATA: <span class="kw-2">&amp;</span>RData = <span class="kw-2">&amp;</span>RData::NULL(NULL::new());
 <span class="doccomment">/// Resource records are storage value in DNS, into which all key/value pair data is stored.
+///
+/// # Generic type
+/// * `R` - the RecordData type this resource record represents, if unknown at runtime use the `RData` abstract enum type
 ///
 /// [RFC 1035](https://tools.ietf.org/html/rfc1035), DOMAIN NAMES - IMPLEMENTATION AND SPECIFICATION, November 1987
 ///
@@ -858,17 +1006,18 @@
 /// ```
 </span><span class="attr">#[cfg_attr(feature = <span class="string">"serde-config"</span>, derive(Deserialize, Serialize))]
 #[derive(Eq, Debug, Clone)]
-</span><span class="kw">pub struct </span>Record {
+</span><span class="comment">// TODO: make Record carry a lifetime for more efficient storage options in the future
+</span><span class="kw">pub struct </span>Record&lt;R: RecordData = RData&gt; {
     name_labels: Name,
     rr_type: RecordType,
     dns_class: DNSClass,
     ttl: u32,
-    rdata: <span class="prelude-ty">Option</span>&lt;RData&gt;,
+    rdata: <span class="prelude-ty">Option</span>&lt;R&gt;,
     <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
     </span>mdns_cache_flush: bool,
 }
 
-<span class="kw">impl </span>Default <span class="kw">for </span>Record {
+<span class="kw">impl</span>&lt;R: RecordData&gt; Default <span class="kw">for </span>Record&lt;R&gt; {
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             <span class="comment">// TODO: these really should all be Optionals, I was lazy.
@@ -883,7 +1032,7 @@
     }
 }
 
-<span class="kw">impl </span>Record {
+<span class="kw">impl</span>&lt;R: RecordData&gt; Record&lt;R&gt; {
     <span class="doccomment">/// Creates a default record, use the setters to build a more useful object.
     ///
     /// There are no optional elements in this object, defaults are an empty name, type A, class IN,
@@ -918,15 +1067,84 @@
     /// * `name` - name of the resource records
     /// * `ttl` - time-to-live is the amount of time this record should be cached before refreshing
     /// * `rdata` - record data to associate with the Record
-    </span><span class="kw">pub fn </span>from_rdata(name: Name, ttl: u32, rdata: RData) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>from_rdata(name: Name, ttl: u32, rdata: R) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             name_labels: name,
-            rr_type: rdata.to_record_type(),
+            rr_type: rdata.record_type(),
             dns_class: DNSClass::IN,
             ttl,
             rdata: <span class="prelude-val">Some</span>(rdata),
             <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
             </span>mdns_cache_flush: <span class="bool-val">false</span>,
+        }
+    }
+
+    <span class="doccomment">/// Attempts to convert the generic `RData` based Record into this one with the interior `R`
+    </span><span class="attr">#[allow(clippy::result_large_err)]
+    </span><span class="kw">pub fn </span>try_from(record: Record&lt;RData&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, Record&lt;RData&gt;&gt; {
+        <span class="kw">let </span>Record {
+            name_labels,
+            rr_type,
+            dns_class,
+            ttl,
+            rdata,
+            <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
+            </span>mdns_cache_flush,
+        } = record;
+
+        <span class="kw">match </span>rdata.map(R::try_from_rdata) {
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+                name_labels,
+                rr_type,
+                dns_class,
+                ttl,
+                rdata: <span class="prelude-val">None</span>,
+                <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
+                </span>mdns_cache_flush,
+            }),
+            <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(rdata)) =&gt; <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+                name_labels,
+                rr_type,
+                dns_class,
+                ttl,
+                rdata: <span class="prelude-val">Some</span>(rdata),
+                <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
+                </span>mdns_cache_flush,
+            }),
+            <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(rdata)) =&gt; <span class="prelude-val">Err</span>(Record {
+                name_labels,
+                rr_type,
+                dns_class,
+                ttl,
+                rdata: <span class="prelude-val">Some</span>(rdata),
+                <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
+                </span>mdns_cache_flush,
+            }),
+        }
+    }
+
+    <span class="doccomment">/// Converts this Record into a generic version of RData
+    </span><span class="kw">pub fn </span>into_record_of_rdata(<span class="self">self</span>) -&gt; Record&lt;RData&gt; {
+        <span class="kw">let </span><span class="self">Self </span>{
+            name_labels,
+            rr_type,
+            dns_class,
+            ttl,
+            rdata,
+            <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
+            </span>mdns_cache_flush,
+        } = <span class="self">self</span>;
+
+        <span class="kw">let </span>rdata: <span class="prelude-ty">Option</span>&lt;RData&gt; = rdata.map(RecordData::into_rdata);
+
+        Record {
+            name_labels,
+            rr_type,
+            dns_class,
+            ttl,
+            rdata,
+            <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
+            </span>mdns_cache_flush,
         }
     }
 
@@ -987,26 +1205,19 @@
     ///                 For example, the if the TYPE is A and the CLASS is IN,
     ///                 the RDATA field is a 4 octet ARPA Internet address.
     /// ```
-    </span><span class="attr">#[deprecated(note = <span class="string">"use `Record::set_data` instead"</span>)]
-    </span><span class="kw">pub fn </span>set_rdata(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rdata: RData) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
-        <span class="self">self</span>.rdata = <span class="prelude-val">Some</span>(rdata);
-        <span class="self">self
-    </span>}
-
-    <span class="doccomment">/// ```text
-    /// RDATA           a variable length string of octets that describes the
-    ///                 resource.  The format of this information varies
-    ///                 according to the TYPE and CLASS of the resource record.
-    ///                 For example, the if the TYPE is A and the CLASS is IN,
-    ///                 the RDATA field is a 4 octet ARPA Internet address.
-    /// ```
-    </span><span class="attr">#[allow(deprecated)]
-    </span><span class="kw">pub fn </span>set_data(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rdata: <span class="prelude-ty">Option</span>&lt;RData&gt;) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+    </span><span class="attr">#[track_caller]
+    </span><span class="kw">pub fn </span>set_data(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rdata: <span class="prelude-ty">Option</span>&lt;R&gt;) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="macro">debug_assert!</span>(
-            !(<span class="macro">matches!</span>(<span class="kw-2">&amp;</span>rdata, <span class="prelude-val">Some</span>(RData::ZERO))
-                &amp;&amp; <span class="macro">matches!</span>(<span class="kw-2">&amp;</span>rdata, <span class="prelude-val">Some</span>(RData::NULL(null)) <span class="kw">if </span>null.anything().is_empty())),
-            <span class="string">"pass None rather than ZERO or NULL"
-        </span>);
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(rdata) = <span class="kw-2">&amp;</span>rdata {
+                rdata.record_type() == <span class="self">self</span>.record_type() || rdata.record_type() == RecordType::NULL
+            } <span class="kw">else </span>{
+                <span class="bool-val">true
+            </span>},
+            <span class="string">"record types do not match, {} &lt;&gt; {:?}"</span>,
+            <span class="self">self</span>.record_type(),
+            rdata.map(|r| r.record_type())
+        );
+
         <span class="self">self</span>.rdata = rdata;
         <span class="self">self
     </span>}
@@ -1021,73 +1232,67 @@
     </span>}
 
     <span class="doccomment">/// Returns the name of the record
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Name {
         <span class="kw-2">&amp;</span><span class="self">self</span>.name_labels
     }
 
-    <span class="doccomment">/// Returns the type of the RData in the record
-    </span><span class="comment">// #[deprecated(note = "use `Record::record_type`")]
-    </span><span class="kw">pub fn </span>rr_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RecordType {
-        <span class="self">self</span>.rr_type
-    }
-
     <span class="doccomment">/// Returns the type of the RecordData in the record
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>record_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RecordType {
         <span class="self">self</span>.rr_type
     }
 
     <span class="doccomment">/// Returns the DNSClass of the Record, generally IN fro internet
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>dns_class(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; DNSClass {
         <span class="self">self</span>.dns_class
     }
 
     <span class="doccomment">/// Returns the time-to-live of the record, for caching purposes
+    </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>ttl(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
         <span class="self">self</span>.ttl
     }
 
     <span class="doccomment">/// Returns the Record Data, i.e. the record information
-    </span><span class="attr">#[deprecated(note = <span class="string">"use `Record::data` instead"</span>)]
-    </span><span class="kw">pub fn </span>rdata(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>RData {
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>rdata) = <span class="kw-2">&amp;</span><span class="self">self</span>.rdata {
-            rdata
-        } <span class="kw">else </span>{
-            NULL_RDATA
-        }
+    </span><span class="attr">#[inline]
+    </span><span class="kw">pub fn </span>data(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>R&gt; {
+        <span class="self">self</span>.rdata.as_ref()
     }
 
-    <span class="doccomment">/// Returns the Record Data, i.e. the record information
-    </span><span class="kw">pub fn </span>data(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>RData&gt; {
-        <span class="self">self</span>.rdata.as_ref()
+    <span class="doccomment">/// Returns a mutable reference to the Record Data
+    </span><span class="attr">#[inline]
+    </span><span class="kw">pub fn </span>data_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>R&gt; {
+        <span class="self">self</span>.rdata.as_mut()
+    }
+
+    <span class="doccomment">/// Returns the RData consuming the Record
+    </span><span class="attr">#[inline]
+    </span><span class="kw">pub fn </span>into_data(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;R&gt; {
+        <span class="self">self</span>.rdata
+    }
+
+    <span class="doccomment">/// Consumes `Record` and returns its components
+    </span><span class="attr">#[inline]
+    </span><span class="kw">pub fn </span>into_parts(<span class="self">self</span>) -&gt; RecordParts {
+        <span class="kw">let </span>this = <span class="self">self</span>.into_record_of_rdata();
+        this.into()
     }
 
     <span class="doccomment">/// Returns if the mDNS cache-flush bit is set or not
     /// See [RFC 6762](https://tools.ietf.org/html/rfc6762#section-10.2)
     </span><span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
     #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"mdns"</span>)))]
+    #[inline]
     </span><span class="kw">pub fn </span>mdns_cache_flush(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="self">self</span>.mdns_cache_flush
-    }
-
-    <span class="doccomment">/// Returns a mutable reference to the Record Data
-    </span><span class="kw">pub fn </span>data_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>RData&gt; {
-        <span class="self">self</span>.rdata.as_mut()
-    }
-
-    <span class="doccomment">/// Returns the RData consuming the Record
-    </span><span class="kw">pub fn </span>into_data(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;RData&gt; {
-        <span class="self">self</span>.rdata
-    }
-
-    <span class="doccomment">/// Consumes `Record` and returns its components
-    </span><span class="kw">pub fn </span>into_parts(<span class="self">self</span>) -&gt; RecordParts {
-        <span class="self">self</span>.into()
     }
 }
 
 <span class="doccomment">/// Consumes `Record` giving public access to fields of `Record` so they can
 /// be destructured and taken by value
-</span><span class="kw">pub struct </span>RecordParts {
+</span><span class="kw">pub struct </span>RecordParts&lt;R: RecordData = RData&gt; {
     <span class="doccomment">/// label names
     </span><span class="kw">pub </span>name_labels: Name,
     <span class="doccomment">/// record type
@@ -1097,15 +1302,15 @@
     <span class="doccomment">/// time to live
     </span><span class="kw">pub </span>ttl: u32,
     <span class="doccomment">/// rdata
-    </span><span class="kw">pub </span>rdata: <span class="prelude-ty">Option</span>&lt;RData&gt;,
+    </span><span class="kw">pub </span>rdata: <span class="prelude-ty">Option</span>&lt;R&gt;,
     <span class="doccomment">/// mDNS cache flush
     </span><span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
     #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"mdns"</span>)))]
     </span><span class="kw">pub </span>mdns_cache_flush: bool,
 }
 
-<span class="kw">impl </span>From&lt;Record&gt; <span class="kw">for </span>RecordParts {
-    <span class="kw">fn </span>from(record: Record) -&gt; <span class="self">Self </span>{
+<span class="kw">impl</span>&lt;R: RecordData&gt; From&lt;Record&lt;R&gt;&gt; <span class="kw">for </span>RecordParts&lt;R&gt; {
+    <span class="kw">fn </span>from(record: Record&lt;R&gt;) -&gt; <span class="self">Self </span>{
         <span class="macro">cfg_if::cfg_if!</span> {
             <span class="kw">if </span><span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)] </span>{
                 <span class="kw">let </span>Record {
@@ -1146,7 +1351,7 @@
     }
 }
 
-<span class="kw">impl </span>BinEncodable <span class="kw">for </span>Record {
+<span class="kw">impl</span>&lt;R: RecordData&gt; BinEncodable <span class="kw">for </span>Record&lt;R&gt; {
     <span class="kw">fn </span>emit(<span class="kw-2">&amp;</span><span class="self">self</span>, encoder: <span class="kw-2">&amp;mut </span>BinEncoder&lt;<span class="lifetime">'_</span>&gt;) -&gt; ProtoResult&lt;()&gt; {
         <span class="self">self</span>.name_labels.emit(encoder)<span class="question-mark">?</span>;
         <span class="self">self</span>.rr_type.emit(encoder)<span class="question-mark">?</span>;
@@ -1185,7 +1390,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'r</span>&gt; BinDecodable&lt;<span class="lifetime">'r</span>&gt; <span class="kw">for </span>Record {
+<span class="kw">impl</span>&lt;<span class="lifetime">'r</span>&gt; BinDecodable&lt;<span class="lifetime">'r</span>&gt; <span class="kw">for </span>Record&lt;RData&gt; {
     <span class="doccomment">/// parse a resource record line example:
     ///  WARNING: the record_bytes is 100% consumed and destroyed in this parsing process
     </span><span class="kw">fn </span>read(decoder: <span class="kw-2">&amp;mut </span>BinDecoder&lt;<span class="lifetime">'r</span>&gt;) -&gt; ProtoResult&lt;<span class="self">Self</span>&gt; {
@@ -1266,6 +1471,17 @@
             </span><span class="prelude-val">Some</span>(RData::read(decoder, record_type, Restrict::new(rd_length))<span class="question-mark">?</span>)
         };
 
+        <span class="macro">debug_assert!</span>(
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(rdata) = <span class="kw-2">&amp;</span>rdata {
+                rdata.record_type() == record_type
+            } <span class="kw">else </span>{
+                <span class="bool-val">true
+            </span>},
+            <span class="string">"record types do not match, {} &lt;&gt; {:?}"</span>,
+            record_type,
+            rdata.map(|r| r.record_type())
+        );
+
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             name_labels,
             rr_type: record_type,
@@ -1320,7 +1536,7 @@
 ///         The data field is defined differently for each type and class
 ///         of data.  Popular RR data formats are described later.
 /// ```
-</span><span class="kw">impl </span>fmt::Display <span class="kw">for </span>Record {
+</span><span class="kw">impl</span>&lt;R: RecordData&gt; fmt::Display <span class="kw">for </span>Record&lt;R&gt; {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), fmt::Error&gt; {
         <span class="macro">write!</span>(
             f,
@@ -1332,14 +1548,14 @@
         )<span class="question-mark">?</span>;
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(rdata) = <span class="kw-2">&amp;</span><span class="self">self</span>.rdata {
-            <span class="macro">write!</span>(f, <span class="string">" {rdata}"</span>, rdata = rdata)<span class="question-mark">?</span>;
+            <span class="macro">write!</span>(f, <span class="string">" {rdata}"</span>)<span class="question-mark">?</span>;
         }
 
         <span class="prelude-val">Ok</span>(())
     }
 }
 
-<span class="kw">impl </span>PartialEq <span class="kw">for </span>Record {
+<span class="kw">impl</span>&lt;R: RecordData&gt; PartialEq <span class="kw">for </span>Record&lt;R&gt; {
     <span class="doccomment">/// Equality or records, as defined by
     ///  [RFC 2136](https://tools.ietf.org/html/rfc2136), DNS Update, April 1997
     ///
@@ -1363,7 +1579,7 @@
 <span class="doccomment">/// returns the value of the compare if the items are greater or lesser, but continues on equal
 </span><span class="macro">macro_rules!</span> compare_or_equal {
     (<span class="macro-nonterminal">$x</span>:ident, <span class="macro-nonterminal">$y</span>:ident, <span class="macro-nonterminal">$z</span>:ident) =&gt; {
-        <span class="kw">match </span><span class="macro-nonterminal">$x</span>.<span class="macro-nonterminal">$z</span>.cmp(<span class="kw-2">&amp;</span><span class="macro-nonterminal">$y</span>.<span class="macro-nonterminal">$z</span>) {
+        <span class="kw">match </span>(<span class="macro-nonterminal">$x</span>).<span class="macro-nonterminal">$z</span>.cmp(<span class="kw-2">&amp;</span>(<span class="macro-nonterminal">$y</span>).<span class="macro-nonterminal">$z</span>) {
             o @ Ordering::Less | o @ Ordering::Greater =&gt; <span class="kw">return </span>o,
             Ordering::Equal =&gt; (),
         }
@@ -1450,16 +1666,118 @@
     }
 }
 
+<span class="doccomment">/// A Record where the RecordData type is already known
+</span><span class="kw">pub struct </span>RecordRef&lt;<span class="lifetime">'a</span>, R: RecordData&gt; {
+    name_labels: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Name,
+    rr_type: RecordType,
+    dns_class: DNSClass,
+    ttl: u32,
+    rdata: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>R&gt;,
+    <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
+    </span>mdns_cache_flush: bool,
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, R: RecordData&gt; RecordRef&lt;<span class="lifetime">'a</span>, R&gt; {
+    <span class="doccomment">/// Allocates space for a Record with the same fields
+    </span><span class="kw">pub fn </span>to_owned(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Record&lt;R&gt; {
+        Record {
+            name_labels: <span class="self">self</span>.name_labels.to_owned(),
+            rr_type: <span class="self">self</span>.rr_type,
+            dns_class: <span class="self">self</span>.dns_class,
+            ttl: <span class="self">self</span>.ttl,
+            rdata: <span class="self">self</span>.rdata.cloned(),
+            <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
+            </span>mdns_cache_flush: <span class="self">self</span>.mdns_cache_flush,
+        }
+    }
+
+    <span class="doccomment">/// Returns the name of the record
+    </span><span class="attr">#[inline]
+    </span><span class="kw">pub fn </span>name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Name {
+        <span class="self">self</span>.name_labels
+    }
+
+    <span class="doccomment">/// Returns the type of the RecordData in the record
+    </span><span class="attr">#[inline]
+    </span><span class="kw">pub fn </span>record_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RecordType {
+        <span class="self">self</span>.rr_type
+    }
+
+    <span class="doccomment">/// Returns the DNSClass of the Record, generally IN fro internet
+    </span><span class="attr">#[inline]
+    </span><span class="kw">pub fn </span>dns_class(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; DNSClass {
+        <span class="self">self</span>.dns_class
+    }
+
+    <span class="doccomment">/// Returns the time-to-live of the record, for caching purposes
+    </span><span class="attr">#[inline]
+    </span><span class="kw">pub fn </span>ttl(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+        <span class="self">self</span>.ttl
+    }
+
+    <span class="doccomment">/// Returns the Record Data, i.e. the record information
+    </span><span class="attr">#[inline]
+    </span><span class="kw">pub fn </span>data(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>R&gt; {
+        <span class="self">self</span>.rdata
+    }
+
+    <span class="doccomment">/// Returns if the mDNS cache-flush bit is set or not
+    /// See [RFC 6762](https://tools.ietf.org/html/rfc6762#section-10.2)
+    </span><span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
+    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"mdns"</span>)))]
+    #[inline]
+    </span><span class="kw">pub fn </span>mdns_cache_flush(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+        <span class="self">self</span>.mdns_cache_flush
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, R: RecordData&gt; TryFrom&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Record&gt; <span class="kw">for </span>RecordRef&lt;<span class="lifetime">'a</span>, R&gt; {
+    <span class="kw">type </span>Error = <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Record;
+
+    <span class="kw">fn </span>try_from(record: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Record) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        <span class="kw">let </span>Record {
+            name_labels,
+            rr_type,
+            dns_class,
+            ttl,
+            rdata,
+            <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
+            </span>mdns_cache_flush,
+        } = record;
+
+        <span class="kw">match </span>rdata.as_ref().and_then(R::try_borrow) {
+            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+                name_labels,
+                rr_type: <span class="kw-2">*</span>rr_type,
+                dns_class: <span class="kw-2">*</span>dns_class,
+                ttl: <span class="kw-2">*</span>ttl,
+                rdata: <span class="prelude-val">None</span>,
+                <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
+                </span>mdns_cache_flush: <span class="kw-2">*</span>mdns_cache_flush,
+            }),
+            <span class="prelude-val">Some</span>(rdata) =&gt; <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+                name_labels,
+                rr_type: <span class="kw-2">*</span>rr_type,
+                dns_class: <span class="kw-2">*</span>dns_class,
+                ttl: <span class="kw-2">*</span>ttl,
+                rdata: <span class="prelude-val">Some</span>(rdata),
+                <span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
+                </span>mdns_cache_flush: <span class="kw-2">*</span>mdns_cache_flush,
+            }),
+        }
+    }
+}
+
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
     <span class="attr">#![allow(clippy::dbg_macro, clippy::print_stdout)]
 
     </span><span class="kw">use </span>std::cmp::Ordering;
-    <span class="kw">use </span>std::net::Ipv4Addr;
     <span class="kw">use </span>std::str::FromStr;
 
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span><span class="kw">crate</span>::rr::dns_class::DNSClass;
+    <span class="kw">use </span><span class="kw">crate</span>::rr::rdata::A;
     <span class="kw">use </span><span class="kw">crate</span>::rr::record_data::RData;
     <span class="kw">use </span><span class="kw">crate</span>::rr::record_type::RecordType;
     <span class="kw">use </span><span class="kw">crate</span>::rr::Name;
@@ -1475,7 +1793,7 @@
             .set_rr_type(RecordType::A)
             .set_dns_class(DNSClass::IN)
             .set_ttl(<span class="number">5</span>)
-            .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">192</span>, <span class="number">168</span>, <span class="number">0</span>, <span class="number">1</span>))));
+            .set_data(<span class="prelude-val">Some</span>(RData::A(A::new(<span class="number">192</span>, <span class="number">168</span>, <span class="number">0</span>, <span class="number">1</span>))));
 
         <span class="kw">let </span><span class="kw-2">mut </span>vec_bytes: Vec&lt;u8&gt; = Vec::with_capacity(<span class="number">512</span>);
         {
@@ -1498,7 +1816,7 @@
             .set_rr_type(RecordType::A)
             .set_dns_class(DNSClass::IN)
             .set_ttl(<span class="number">5</span>)
-            .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">192</span>, <span class="number">168</span>, <span class="number">0</span>, <span class="number">1</span>))));
+            .set_data(<span class="prelude-val">Some</span>(RData::A(A::new(<span class="number">192</span>, <span class="number">168</span>, <span class="number">0</span>, <span class="number">1</span>))));
 
         <span class="kw">let </span><span class="kw-2">mut </span>greater_name = record.clone();
         greater_name.set_name(Name::from_str(<span class="string">"zzz.example.com"</span>).unwrap());
@@ -1510,7 +1828,7 @@
         greater_class.set_dns_class(DNSClass::NONE);
 
         <span class="kw">let </span><span class="kw-2">mut </span>greater_rdata = record.clone();
-        greater_rdata.set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">192</span>, <span class="number">168</span>, <span class="number">0</span>, <span class="number">255</span>))));
+        greater_rdata.set_data(<span class="prelude-val">Some</span>(RData::A(A::new(<span class="number">192</span>, <span class="number">168</span>, <span class="number">0</span>, <span class="number">255</span>))));
 
         <span class="kw">let </span>compares = <span class="macro">vec!</span>[
             (<span class="kw-2">&amp;</span>record, <span class="kw-2">&amp;</span>greater_name),
@@ -1521,7 +1839,7 @@
 
         <span class="macro">assert_eq!</span>(record.clone(), record.clone());
         <span class="kw">for </span>(r, g) <span class="kw">in </span>compares {
-            <span class="macro">println!</span>(<span class="string">"r, g: {:?}, {:?}"</span>, r, g);
+            <span class="macro">println!</span>(<span class="string">"r, g: {r:?}, {g:?}"</span>);
             <span class="macro">assert_eq!</span>(r.cmp(g), Ordering::Less);
         }
     }
@@ -1532,7 +1850,7 @@
         <span class="kw">const </span>RR_CLASS_OFFSET: usize = <span class="number">1 </span><span class="comment">/* empty name */ </span>+
             std::mem::size_of::&lt;u16&gt;() <span class="comment">/* rr_type */</span>;
 
-        <span class="kw">let </span><span class="kw-2">mut </span>record = Record::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>record = Record::&lt;RData&gt;::new();
         record.set_mdns_cache_flush(<span class="bool-val">true</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>vec_bytes: Vec&lt;u8&gt; = Vec::with_capacity(<span class="number">512</span>);
@@ -1546,7 +1864,7 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>decoder = BinDecoder::new(<span class="kw-2">&amp;</span>vec_bytes);
 
-        <span class="kw">let </span>got = Record::read(<span class="kw-2">&amp;mut </span>decoder).unwrap();
+        <span class="kw">let </span>got = Record::&lt;RData&gt;::read(<span class="kw-2">&amp;mut </span>decoder).unwrap();
 
         <span class="macro">assert_eq!</span>(got.dns_class(), DNSClass::IN);
         <span class="macro">assert!</span>(got.mdns_cache_flush());

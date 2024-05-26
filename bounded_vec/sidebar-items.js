@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["BoundedVecOutOfBounds"],"struct":["BoundedVec"],"trait":["OptBoundedVecToVec"],"type":["NonEmptyVec"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["EdnsCode","EdnsOption"],"fn":["emit","read"],"struct":["OPT"]};
+window.SIDEBAR_ITEMS = {"enum":["EdnsCode","EdnsOption"],"struct":["ClientSubnet","OPT"]};

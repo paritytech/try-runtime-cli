@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/schnorrkel-0.9.1/src/sign.rs`."><title>sign.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="schnorrkel" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/schnorrkel-0.11.4/src/sign.rs`."><title>sign.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="schnorrkel" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../schnorrkel/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -499,14 +499,22 @@
 <a href="#497" id="497">497</a>
 <a href="#498" id="498">498</a>
 <a href="#499" id="499">499</a>
+<a href="#500" id="500">500</a>
+<a href="#501" id="501">501</a>
+<a href="#502" id="502">502</a>
+<a href="#503" id="503">503</a>
+<a href="#504" id="504">504</a>
+<a href="#505" id="505">505</a>
 </pre></div><pre class="rust"><code><span class="comment">// -*- mode: rust; -*-
 //
 // This file is part of schnorrkel.
+// Copyright (c) 2017-2019 isis lovecruft
 // Copyright (c) 2019 Web 3 Foundation
 // See LICENSE for licensing information.
 //
 // Authors:
-// - jeffrey Burdges &lt;jeff@web3.foundation&gt;
+// - isis agora lovecruft &lt;isis@patternsinthevoid.net&gt;
+// - Jeffrey Burdges &lt;jeff@web3.foundation&gt;
 
 </span><span class="doccomment">//! ### Schnorr signature creation and verification, including batch verification.
 
@@ -541,7 +549,7 @@
     ///
     /// This digest is then interpreted as a `Scalar` and reduced into an
     /// element in ℤ/lℤ.  The scalar is then multiplied by the distinguished
-    /// basepoint to produce `R`, and `RistrettoPoint`.
+    /// basepoint to produce `R`, a `RistrettoPoint`.
     </span><span class="kw">pub </span>(<span class="kw">crate</span>) R: CompressedRistretto,
 
     <span class="doccomment">/// `s` is a `Scalar`, formed by using an hash function with 512-bits output
@@ -557,12 +565,12 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>Signature {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>::core::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; ::core::fmt::Result {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>core::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; core::fmt::Result {
         <span class="macro">write!</span>(f, <span class="string">"Signature( R: {:?}, s: {:?} )"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.R, <span class="kw-2">&amp;</span><span class="self">self</span>.s)
     }
 }
 
-<span class="kw">fn </span>check_scalar(bytes: [u8; <span class="number">32</span>]) -&gt; SignatureResult&lt;Scalar&gt; {
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>check_scalar(bytes: [u8; <span class="number">32</span>]) -&gt; SignatureResult&lt;Scalar&gt; {
     <span class="comment">// Since this is only used in signature deserialisation (i.e. upon
     // verification), we can do a "succeed fast" trick by checking that the most
     // significant 4 bits are unset.  If they are unset, we can succeed fast
@@ -571,17 +579,18 @@
     // as the order of the basepoint is roughly a 2^(252.5) bit number.
     //
     // This succeed-fast trick should succeed for roughly half of all scalars.
-    </span><span class="kw">if </span>bytes[<span class="number">31</span>] &amp; <span class="number">240 </span>== <span class="number">0 </span>{
-        <span class="kw">return </span><span class="prelude-val">Ok</span>(Scalar::from_bits(bytes))
+    </span><span class="kw">if </span>bytes[<span class="number">31</span>] &amp; <span class="number">0b11110000 </span>== <span class="number">0 </span>{
+        <span class="attr">#[allow(deprecated)] </span><span class="comment">// Scalar's always reduced here, so this is OK.
+        </span><span class="kw">return </span><span class="prelude-val">Ok</span>(Scalar::from_bits(bytes))
     }
 
-    Scalar::from_canonical_bytes(bytes).ok_or(SignatureError::ScalarFormatError)
+    <span class="kw">crate</span>::scalar_from_canonical_bytes(bytes).ok_or(SignatureError::ScalarFormatError)
 }
 
 <span class="kw">impl </span>Signature {
     <span class="kw">const </span>DESCRIPTION : <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"A 64 byte Ristretto Schnorr signature"</span>;
     <span class="comment">/*
-    const DESCRIPTION_LONG : &amp;'static str = 
+    const DESCRIPTION_LONG : &amp;'static str =
         "A 64 byte Ristretto Schnorr signature, similar to an ed25519 \
          signature as specified in RFC8032, except the Ristretto point \
          compression is used for the curve point in the first 32 bytes";
@@ -601,15 +610,15 @@
     ///
     /// We distinguish schnorrkell signatures from ed25519 signatures
     /// by setting the high bit of byte 31.  We return an error if
-    /// this marker remains unset because otherwise schnorrkel 
+    /// this marker remains unset because otherwise schnorrkel
     /// signatures would be indistinguishable from ed25519 signatures.
     /// We cannot always distinguish between schnorrkel and ed25519
-    /// public keys either, so without this market bit we could not
+    /// public keys either, so without this marker bit we could not
     /// do batch verification in systems that support precisely
-    /// ed25519 and schnorrkel.  
+    /// ed25519 and schnorrkel.
     ///
     /// We cannot distinguish amongst different `SigningTranscript`
-    /// types using these markey bits, but protocol should not need
+    /// types using these marker bits, but protocol should not need
     /// two different transcript types.
     </span><span class="attr">#[inline]
     </span><span class="kw">pub fn </span>from_bytes(bytes: <span class="kw-2">&amp;</span>[u8]) -&gt; SignatureResult&lt;Signature&gt; {
@@ -633,9 +642,10 @@
         <span class="prelude-val">Ok</span>(Signature{ R: CompressedRistretto(lower), s: check_scalar(upper) <span class="question-mark">? </span>})
     }
 
-    <span class="doccomment">/// Depricated construction of a `Signature` from a slice of bytes
+    <span class="doccomment">/// Deprecated construction of a `Signature` from a slice of bytes
     /// without checking the bit distinguishing from ed25519.  Deprecated.
-    </span><span class="attr">#[inline]
+    </span><span class="attr">#[cfg(feature = <span class="string">"preaudit_deprecated"</span>)]
+    #[inline]
     </span><span class="kw">pub fn </span>from_bytes_not_distinguished_from_ed25519(bytes: <span class="kw-2">&amp;</span>[u8]) -&gt; SignatureResult&lt;Signature&gt; {
         <span class="kw">if </span>bytes.len() != SIGNATURE_LENGTH {
             <span class="kw">return </span><span class="prelude-val">Err</span>(SignatureError::BytesLengthError {
@@ -661,7 +671,7 @@
     ///
     /// Requires a `SigningTranscript`, normally created from a
     /// `SigningContext` and a message, as well as the public key
-    /// correspodning to `self`.  Returns a Schnorr signature.
+    /// corresponding to `self`.  Returns a Schnorr signature.
     ///
     /// We employ a randomized nonce here, but also incorporate the
     /// transcript like in a derandomized scheme, but only after first
@@ -669,20 +679,20 @@
     /// should be no attacks even if both the random number generator
     /// fails and the function gets called with the wrong public key.
     </span><span class="attr">#[allow(non_snake_case)]
-    </span><span class="kw">pub fn </span>sign&lt;T: SigningTranscript&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>t: T, public_key: <span class="kw-2">&amp;</span>PublicKey) -&gt; Signature 
+    </span><span class="kw">pub fn </span>sign&lt;T: SigningTranscript&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>t: T, public_key: <span class="kw-2">&amp;</span>PublicKey) -&gt; Signature
     {
         t.proto_name(<span class="string">b"Schnorr-sig"</span>);
         t.commit_point(<span class="string">b"sign:pk"</span>,public_key.as_compressed());
 
         <span class="kw">let </span><span class="kw-2">mut </span>r = t.witness_scalar(<span class="string">b"signing"</span>,<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="self">self</span>.nonce]);  <span class="comment">// context, message, A/public_key
-        </span><span class="kw">let </span>R = (<span class="kw-2">&amp;</span>r * <span class="kw-2">&amp;</span>constants::RISTRETTO_BASEPOINT_TABLE).compress();
+        </span><span class="kw">let </span>R = (<span class="kw-2">&amp;</span>r * constants::RISTRETTO_BASEPOINT_TABLE).compress();
 
         t.commit_point(<span class="string">b"sign:R"</span>,<span class="kw-2">&amp;</span>R);
 
         <span class="kw">let </span>k: Scalar = t.challenge_scalar(<span class="string">b"sign:c"</span>);  <span class="comment">// context, message, A/public_key, R=rG
-        </span><span class="kw">let </span>s: Scalar = <span class="kw-2">&amp;</span>(<span class="kw-2">&amp;</span>k * <span class="kw-2">&amp;</span><span class="self">self</span>.key) + <span class="kw-2">&amp;</span>r;
+        </span><span class="kw">let </span>s: Scalar = k * <span class="self">self</span>.key + r;
 
-        ::zeroize::Zeroize::zeroize(<span class="kw-2">&amp;mut </span>r);
+        zeroize::Zeroize::zeroize(<span class="kw-2">&amp;mut </span>r);
 
         Signature{ R, s }
     }
@@ -788,7 +798,7 @@
     /// # Examples
     ///
     /// Internally, we manage signature transcripts using a 128 bit secure
-    /// STROBE construction based on Keccak, which itself is extremly fast
+    /// STROBE construction based on Keccak, which itself is extremely fast
     /// and secure.  You might however influence performance or security
     /// by prehashing your message, like
     ///
@@ -796,7 +806,7 @@
     /// use schnorrkel::{Signature,Keypair};
     /// use rand::prelude::*; // ThreadRng,thread_rng
     /// use sha3::Shake128;
-    /// use sha3::digest::{Input};
+    /// use sha3::digest::{Update};
     ///
     /// # #[cfg(all(feature = "std"))]
     /// # fn main() {
@@ -813,7 +823,7 @@
     /// ```
     ///
     /// We require a "context" string for all signatures, which should
-    /// be chosen judiciously for your project.  It should represent the 
+    /// be chosen judiciously for your project.  It should represent the
     /// role the signature plays in your application.  If you use the
     /// context in two purposes, and the same key, then a signature for
     /// one purpose can be substituted for the other.
@@ -821,14 +831,14 @@
     /// ```
     /// # use schnorrkel::{Keypair,Signature,signing_context};
     /// # use rand::prelude::*; // ThreadRng,thread_rng
-    /// # use sha3::digest::Input;
+    /// # use sha3::digest::Update;
     /// #
     /// # #[cfg(all(feature = "std"))]
     /// # fn main() {
     /// # let mut csprng: ThreadRng = thread_rng();
     /// # let keypair: Keypair = Keypair::generate_with(&amp;mut csprng);
     /// # let message: &amp;[u8] = b"All I want is to pet all of the dogs.";
-    /// # let prehashed = ::sha3::Shake256::default().chain(message);
+    /// # let prehashed = sha3::Shake256::default().chain(message);
     /// #
     /// let ctx = signing_context(b"My Signing Context");
     ///
@@ -864,6 +874,8 @@
     /// use rand::prelude::*; // ThreadRng,thread_rng
     ///
     /// # fn main() {
+    /// # #[cfg(feature = "getrandom")]
+    /// # {
     /// let mut csprng: ThreadRng = thread_rng();
     /// let keypair: Keypair = Keypair::generate_with(&amp;mut csprng);
     /// let message: &amp;[u8] = b"All I want is to pet all of the dogs.";
@@ -873,6 +885,7 @@
     /// let sig: Signature = keypair.sign(ctx.bytes(message));
     ///
     /// assert!( keypair.public.verify(ctx.bytes(message), &amp;sig).is_ok() );
+    /// # }
     /// # }
     /// ```
     </span><span class="kw">pub fn </span>verify&lt;T: SigningTranscript&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, t: T, signature: <span class="kw-2">&amp;</span>Signature) -&gt; SignatureResult&lt;()&gt;
@@ -914,24 +927,24 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>test {
     <span class="kw">use </span>sha3::Shake128;
-    <span class="kw">use </span>curve25519_dalek::digest::{Input};
+    <span class="kw">use </span>curve25519_dalek::digest::{Update};
 
     <span class="kw">use </span><span class="kw">super</span>::<span class="kw">super</span>::<span class="kw-2">*</span>;
 
 
-    <span class="attr">#[test]
+    <span class="attr">#[cfg(feature = <span class="string">"getrandom"</span>)]
+    #[test]
     </span><span class="kw">fn </span>sign_verify_bytes() {
         <span class="kw">let </span>good_sig: Signature;
         <span class="kw">let </span>bad_sig:  Signature;
 
         <span class="kw">let </span>ctx = signing_context(<span class="string">b"good"</span>);
-        
+
         <span class="kw">let </span>good: <span class="kw-2">&amp;</span>[u8] = <span class="string">"test message"</span>.as_bytes();
         <span class="kw">let </span>bad:  <span class="kw-2">&amp;</span>[u8] = <span class="string">"wrong message"</span>.as_bytes();
 
-        <span class="comment">// #[cfg(feature = "getrandom")]
-        </span><span class="kw">let </span><span class="kw-2">mut </span>csprng = ::rand_core::OsRng;
-        
+        <span class="kw">let </span><span class="kw-2">mut </span>csprng = rand_core::OsRng;
+
         <span class="kw">let </span>keypair = Keypair::generate_with(<span class="kw-2">&amp;mut </span>csprng);
         good_sig = keypair.sign(ctx.bytes(<span class="kw-2">&amp;</span>good));
         bad_sig  = keypair.sign(ctx.bytes(<span class="kw-2">&amp;</span>bad));
@@ -949,7 +962,8 @@
                 <span class="string">"Verification of a signature on a different message passed!"</span>);
     }
 
-    <span class="attr">#[test]
+    <span class="attr">#[cfg(feature = <span class="string">"getrandom"</span>)]
+    #[test]
     </span><span class="kw">fn </span>sign_verify_xof() {
         <span class="kw">let </span>good_sig: Signature;
         <span class="kw">let </span>bad_sig:  Signature;
@@ -963,8 +977,7 @@
         <span class="kw">let </span>prehashed_bad: Shake128 = Shake128::default().chain(bad);
         <span class="comment">// You may verify that `Shake128: Copy` is possible, making these clones below correct.
 
-        // #[cfg(feature = "getrandom")]
-        </span><span class="kw">let </span><span class="kw-2">mut </span>csprng = ::rand_core::OsRng;
+        </span><span class="kw">let </span><span class="kw-2">mut </span>csprng = rand_core::OsRng;
 
         <span class="kw">let </span>keypair = Keypair::generate_with(<span class="kw-2">&amp;mut </span>csprng);
         good_sig = keypair.sign(ctx.xof(prehashed_good.clone()));
@@ -997,5 +1010,4 @@
         <span class="macro">assert!</span>( public.verify_simple_preaudit_deprecated(SIGNING_CTX,message,<span class="kw-2">&amp;</span>signature[..]).is_ok() );
     }
 }
-
 </code></pre></div></section></main></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/primitives/application-crypto/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_application_crypto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/primitives/application-crypto/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_application_crypto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../sp_application_crypto/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -586,6 +586,39 @@
 <a href="#584" id="584">584</a>
 <a href="#585" id="585">585</a>
 <a href="#586" id="586">586</a>
+<a href="#587" id="587">587</a>
+<a href="#588" id="588">588</a>
+<a href="#589" id="589">589</a>
+<a href="#590" id="590">590</a>
+<a href="#591" id="591">591</a>
+<a href="#592" id="592">592</a>
+<a href="#593" id="593">593</a>
+<a href="#594" id="594">594</a>
+<a href="#595" id="595">595</a>
+<a href="#596" id="596">596</a>
+<a href="#597" id="597">597</a>
+<a href="#598" id="598">598</a>
+<a href="#599" id="599">599</a>
+<a href="#600" id="600">600</a>
+<a href="#601" id="601">601</a>
+<a href="#602" id="602">602</a>
+<a href="#603" id="603">603</a>
+<a href="#604" id="604">604</a>
+<a href="#605" id="605">605</a>
+<a href="#606" id="606">606</a>
+<a href="#607" id="607">607</a>
+<a href="#608" id="608">608</a>
+<a href="#609" id="609">609</a>
+<a href="#610" id="610">610</a>
+<a href="#611" id="611">611</a>
+<a href="#612" id="612">612</a>
+<a href="#613" id="613">613</a>
+<a href="#614" id="614">614</a>
+<a href="#615" id="615">615</a>
+<a href="#616" id="616">616</a>
+<a href="#617" id="617">617</a>
+<a href="#618" id="618">618</a>
+<a href="#619" id="619">619</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -608,16 +641,13 @@
 </span><span class="attr">#![warn(missing_docs)]
 #![cfg_attr(not(feature = <span class="string">"std"</span>), no_std)]
 
-</span><span class="kw">pub use </span>sp_core::crypto::{key_types, CryptoTypeId, KeyTypeId};
+</span><span class="kw">pub use </span>sp_core::crypto::{key_types, CryptoTypeId, DeriveJunction, KeyTypeId, Ss58Codec};
 <span class="attr">#[doc(hidden)]
-#[cfg(feature = <span class="string">"full_crypto"</span>)]
 </span><span class="kw">pub use </span>sp_core::crypto::{DeriveError, Pair, SecretStringError};
-<span class="attr">#[cfg(any(feature = <span class="string">"full_crypto"</span>, feature = <span class="string">"serde"</span>))]
-</span><span class="kw">pub use </span>sp_core::crypto::{DeriveJunction, Ss58Codec};
 <span class="attr">#[doc(hidden)]
 </span><span class="kw">pub use </span>sp_core::{
 	<span class="self">self</span>,
-	crypto::{ByteArray, CryptoType, Derive, IsWrappedBy, Public, UncheckedFrom, Wraps},
+	crypto::{ByteArray, CryptoType, Derive, IsWrappedBy, Public, Signature, UncheckedFrom, Wraps},
 	RuntimeDebug,
 };
 
@@ -673,7 +703,7 @@
 			<span class="macro-nonterminal">$module::CRYPTO_ID
 		</span>);
 		<span class="macro-nonterminal">$</span><span class="macro">crate::app_crypto_signature_common!</span>(<span class="macro-nonterminal">$module::Signature</span>, <span class="macro-nonterminal">$key_type</span>);
-		<span class="macro-nonterminal">$</span><span class="macro">crate::app_crypto_pair!</span>(<span class="macro-nonterminal">$module::Pair</span>, <span class="macro-nonterminal">$key_type</span>, <span class="macro-nonterminal">$module::CRYPTO_ID</span>);
+		<span class="macro-nonterminal">$</span><span class="macro">crate::app_crypto_pair_common!</span>(<span class="macro-nonterminal">$module::Pair</span>, <span class="macro-nonterminal">$key_type</span>, <span class="macro-nonterminal">$module::CRYPTO_ID</span>);
 	};
 }
 
@@ -704,13 +734,15 @@
 			<span class="macro-nonterminal">$module::CRYPTO_ID
 		</span>);
 		<span class="macro-nonterminal">$</span><span class="macro">crate::app_crypto_signature_common!</span>(<span class="macro-nonterminal">$module::Signature</span>, <span class="macro-nonterminal">$key_type</span>);
+		<span class="macro-nonterminal">$</span><span class="macro">crate::app_crypto_pair_common!</span>(<span class="macro-nonterminal">$module::Pair</span>, <span class="macro-nonterminal">$key_type</span>, <span class="macro-nonterminal">$module::CRYPTO_ID</span>);
 	};
 }
 
 <span class="doccomment">/// Declares `Pair` type which is functionally equivalent to `$pair`, but is
 /// new application-specific type whose identifier is `$key_type`.
+/// It is a common part shared between full_crypto and non full_crypto environments.
 </span><span class="attr">#[macro_export]
-</span><span class="macro">macro_rules!</span> app_crypto_pair {
+</span><span class="macro">macro_rules!</span> app_crypto_pair_common {
 	(<span class="macro-nonterminal">$pair</span>:ty, <span class="macro-nonterminal">$key_type</span>:expr, <span class="macro-nonterminal">$crypto_type</span>:expr) =&gt; {
 		<span class="macro-nonterminal">$</span><span class="macro">crate::wrap!</span> {
 			<span class="doccomment">/// A generic `AppPublic` wrapper type over $pair crypto; this has no specific App.
@@ -728,7 +760,14 @@
 			<span class="kw">type </span>Signature = Signature;
 
 			<span class="macro-nonterminal">$</span><span class="macro">crate::app_crypto_pair_functions_if_std!</span>(<span class="macro-nonterminal">$pair</span>);
+			<span class="macro-nonterminal">$</span><span class="macro">crate::app_crypto_pair_functions_if_full_crypto!</span>(<span class="macro-nonterminal">$pair</span>);
 
+			<span class="kw">fn </span>from_phrase(
+				phrase: <span class="kw-2">&amp;</span>str,
+				password: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
+			) -&gt; <span class="prelude-ty">Result</span>&lt;(<span class="self">Self</span>, <span class="self">Self</span>::Seed), <span class="macro-nonterminal">$crate::SecretStringError</span>&gt; {
+				&lt;<span class="macro-nonterminal">$pair</span>&gt;::from_phrase(phrase, password).map(|r| (<span class="self">Self</span>(r.<span class="number">0</span>), r.<span class="number">1</span>))
+			}
 			<span class="kw">fn </span>derive&lt;Iter: Iterator&lt;Item = <span class="macro-nonterminal">$crate::DeriveJunction</span>&gt;&gt;(
 				<span class="kw-2">&amp;</span><span class="self">self</span>,
 				path: Iter,
@@ -741,9 +780,6 @@
 			}
 			<span class="kw">fn </span>from_seed_slice(seed: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="macro-nonterminal">$crate::SecretStringError</span>&gt; {
 				&lt;<span class="macro-nonterminal">$pair</span>&gt;::from_seed_slice(seed).map(<span class="self">Self</span>)
-			}
-			<span class="kw">fn </span>sign(<span class="kw-2">&amp;</span><span class="self">self</span>, msg: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="self">Self</span>::Signature {
-				Signature(<span class="self">self</span>.<span class="number">0</span>.sign(msg))
 			}
 			<span class="kw">fn </span>verify&lt;M: AsRef&lt;[u8]&gt;&gt;(
 				sig: <span class="kw-2">&amp;</span><span class="self">Self</span>::Signature,
@@ -791,13 +827,6 @@
 			<span class="kw">let </span>r = &lt;<span class="macro-nonterminal">$pair</span>&gt;::generate_with_phrase(password);
 			(<span class="self">Self</span>(r.<span class="number">0</span>), r.<span class="number">1</span>, r.<span class="number">2</span>)
 		}
-
-		<span class="kw">fn </span>from_phrase(
-			phrase: <span class="kw-2">&amp;</span>str,
-			password: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-		) -&gt; <span class="prelude-ty">Result</span>&lt;(<span class="self">Self</span>, <span class="self">Self</span>::Seed), <span class="macro-nonterminal">$crate::SecretStringError</span>&gt; {
-			&lt;<span class="macro-nonterminal">$pair</span>&gt;::from_phrase(phrase, password).map(|r| (<span class="self">Self</span>(r.<span class="number">0</span>), r.<span class="number">1</span>))
-		}
 	};
 }
 
@@ -805,6 +834,25 @@
 #[cfg(not(feature = <span class="string">"std"</span>))]
 #[macro_export]
 </span><span class="macro">macro_rules!</span> app_crypto_pair_functions_if_std {
+	(<span class="macro-nonterminal">$pair</span>:ty) =&gt; {};
+}
+
+<span class="doccomment">/// Implements functions for the `Pair` trait when `feature = "full_crypto"` is enabled.
+</span><span class="attr">#[doc(hidden)]
+#[cfg(feature = <span class="string">"full_crypto"</span>)]
+#[macro_export]
+</span><span class="macro">macro_rules!</span> app_crypto_pair_functions_if_full_crypto {
+	(<span class="macro-nonterminal">$pair</span>:ty) =&gt; {
+		<span class="kw">fn </span>sign(<span class="kw-2">&amp;</span><span class="self">self</span>, msg: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="self">Self</span>::Signature {
+			Signature(<span class="self">self</span>.<span class="number">0</span>.sign(msg))
+		}
+	};
+}
+
+<span class="attr">#[doc(hidden)]
+#[cfg(not(feature = <span class="string">"full_crypto"</span>))]
+#[macro_export]
+</span><span class="macro">macro_rules!</span> app_crypto_pair_functions_if_full_crypto {
 	(<span class="macro-nonterminal">$pair</span>:ty) =&gt; {};
 }
 
@@ -855,7 +903,7 @@
 		<span class="macro-nonterminal">$</span><span class="macro">crate::wrap!</span> {
 			<span class="doccomment">/// A generic `AppPublic` wrapper type over $public crypto; this has no specific App.
 			</span><span class="attr">#[<span class="macro-nonterminal">derive</span>(
-				Clone, Eq, PartialEq, Ord, PartialOrd,
+				Clone, Eq, Hash, PartialEq, Ord, PartialOrd,
 				<span class="macro-nonterminal">$crate::codec::Encode</span>,
 				<span class="macro-nonterminal">$crate::codec::Decode</span>,
 				<span class="macro-nonterminal">$crate::RuntimeDebug</span>,
@@ -865,10 +913,13 @@
 			</span><span class="kw">pub struct </span>Public(<span class="macro-nonterminal">$public</span>);
 		}
 
-		<span class="kw">impl </span><span class="macro-nonterminal">$crate::CryptoType </span><span class="kw">for </span>Public {}
+		<span class="kw">impl </span><span class="macro-nonterminal">$crate::CryptoType </span><span class="kw">for </span>Public {
+			<span class="kw">type </span>Pair = Pair;
+		}
 
 		<span class="kw">impl </span><span class="macro-nonterminal">$crate::AppCrypto </span><span class="kw">for </span>Public {
 			<span class="kw">type </span>Public = Public;
+			<span class="kw">type </span>Pair = Pair;
 			<span class="kw">type </span>Signature = Signature;
 			<span class="kw">const </span>ID: <span class="macro-nonterminal">$crate::KeyTypeId </span>= <span class="macro-nonterminal">$key_type</span>;
 			<span class="kw">const </span>CRYPTO_ID: <span class="macro-nonterminal">$crate::CryptoTypeId </span>= <span class="macro-nonterminal">$crypto_type</span>;
@@ -1040,10 +1091,13 @@
 			</span><span class="kw">pub struct </span>Signature(<span class="macro-nonterminal">$sig</span>);
 		}
 
-		<span class="kw">impl </span><span class="macro-nonterminal">$crate::CryptoType </span><span class="kw">for </span>Signature {}
+		<span class="kw">impl </span><span class="macro-nonterminal">$crate::CryptoType </span><span class="kw">for </span>Signature {
+			<span class="kw">type </span>Pair = Pair;
+		}
 
 		<span class="kw">impl </span><span class="macro-nonterminal">$crate::AppCrypto </span><span class="kw">for </span>Signature {
 			<span class="kw">type </span>Public = Public;
+			<span class="kw">type </span>Pair = Pair;
 			<span class="kw">type </span>Signature = Signature;
 			<span class="kw">const </span>ID: <span class="macro-nonterminal">$crate::KeyTypeId </span>= <span class="macro-nonterminal">$key_type</span>;
 			<span class="kw">const </span>CRYPTO_ID: <span class="macro-nonterminal">$crate::CryptoTypeId </span>= <span class="macro-nonterminal">$crypto_type</span>;
@@ -1072,6 +1126,12 @@
 			}
 		}
 
+		<span class="kw">impl </span>AsMut&lt;[u8]&gt; <span class="kw">for </span>Signature {
+			<span class="kw">fn </span>as_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[u8] {
+				<span class="self">self</span>.<span class="number">0</span>.as_mut()
+			}
+		}
+
 		<span class="kw">impl </span><span class="macro-nonterminal">$crate::AppSignature </span><span class="kw">for </span>Signature {
 			<span class="kw">type </span>Generic = <span class="macro-nonterminal">$sig</span>;
 		}
@@ -1090,6 +1150,12 @@
 			<span class="kw">fn </span>try_from(data: <span class="macro-nonterminal">$crate::Vec</span>&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
 				<span class="self">Self</span>::try_from(<span class="kw-2">&amp;</span>data[..])
 			}
+		}
+
+		<span class="kw">impl </span><span class="macro-nonterminal">$crate::Signature </span><span class="kw">for </span>Signature {}
+
+		<span class="kw">impl </span><span class="macro-nonterminal">$crate::ByteArray </span><span class="kw">for </span>Signature {
+			<span class="kw">const </span>LEN: usize = &lt;<span class="macro-nonterminal">$sig</span>&gt;::LEN;
 		}
 
 		<span class="kw">impl </span>Signature {

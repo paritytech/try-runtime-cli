@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/frame/support/src/traits/tokens/fungible/imbalance.rs`."><title>imbalance.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/frame/support/src/traits/tokens/fungible/imbalance.rs`."><title>imbalance.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../../frame_support/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -167,6 +167,35 @@
 <a href="#165" id="165">165</a>
 <a href="#166" id="166">166</a>
 <a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -186,11 +215,14 @@
 
 </span><span class="doccomment">//! The imbalance type and its associates, which handles keeps everything adding up properly with
 //! unbalanced operations.
+//!
+//! See the [`crate::traits::fungible`] doc for more information about fungible traits.
 
 </span><span class="kw">use super</span>::{<span class="kw">super</span>::Imbalance <span class="kw">as </span>ImbalanceT, Balanced, <span class="kw-2">*</span>};
 <span class="kw">use </span><span class="kw">crate</span>::traits::{
+	fungibles,
 	misc::{SameOrOther, TryDrop},
-	tokens::Balance,
+	tokens::{AssetId, Balance},
 };
 <span class="kw">use </span>frame_support_procedural::{EqNoBound, PartialEqNoBound, RuntimeDebugNoBound};
 <span class="kw">use </span>sp_runtime::traits::Zero;
@@ -256,6 +288,11 @@
 	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(amount: B) -&gt; <span class="self">Self </span>{
 		<span class="self">Self </span>{ amount, _phantom: PhantomData }
 	}
+
+	<span class="doccomment">/// Forget the imbalance without invoking the on-drop handler.
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>forget(imbalance: <span class="self">Self</span>) {
+		sp_std::mem::forget(imbalance);
+	}
 }
 
 <span class="kw">impl</span>&lt;B: Balance, OnDrop: HandleImbalanceDrop&lt;B&gt;, OppositeOnDrop: HandleImbalanceDrop&lt;B&gt;&gt;
@@ -316,6 +353,27 @@
 	<span class="kw">fn </span>peek(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; B {
 		<span class="self">self</span>.amount
 	}
+}
+
+<span class="doccomment">/// Converts a `fungibles` `imbalance` instance to an instance of a `fungible` imbalance type.
+///
+/// This function facilitates imbalance conversions within the implementations of
+/// [`frame_support::traits::fungibles::UnionOf`], [`frame_support::traits::fungible::UnionOf`], and
+/// [`frame_support::traits::fungible::ItemOf`] adapters. It is intended only for internal use
+/// within the current crate.
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>from_fungibles&lt;
+	A: AssetId,
+	B: Balance,
+	OnDropIn: fungibles::HandleImbalanceDrop&lt;A, B&gt;,
+	OppositeIn: fungibles::HandleImbalanceDrop&lt;A, B&gt;,
+	OnDropOut: HandleImbalanceDrop&lt;B&gt;,
+	OppositeOut: HandleImbalanceDrop&lt;B&gt;,
+&gt;(
+	imbalance: fungibles::Imbalance&lt;A, B, OnDropIn, OppositeIn&gt;,
+) -&gt; Imbalance&lt;B, OnDropOut, OppositeOut&gt; {
+	<span class="kw">let </span>new = Imbalance::new(imbalance.peek());
+	fungibles::Imbalance::forget(imbalance);
+	new
 }
 
 <span class="doccomment">/// Imbalance implying that the total_issuance value is less than the sum of all account balances.

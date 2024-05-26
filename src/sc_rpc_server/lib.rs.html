@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/client/rpc-servers/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_rpc_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/rpc-servers/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_rpc_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../sc_rpc_server/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -184,6 +184,77 @@
 <a href="#182" id="182">182</a>
 <a href="#183" id="183">183</a>
 <a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a>
+<a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
+<a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -207,28 +278,41 @@
 </span><span class="attr">#![warn(missing_docs)]
 
 </span><span class="kw">pub mod </span>middleware;
+<span class="kw">pub mod </span>utils;
 
-<span class="kw">use </span>http::header::HeaderValue;
+<span class="kw">use </span>std::{
+	convert::Infallible, error::Error <span class="kw">as </span>StdError, net::SocketAddr, num::NonZeroU32, time::Duration,
+};
+
+<span class="kw">use </span>hyper::{
+	server::conn::AddrStream,
+	service::{make_service_fn, service_fn},
+};
 <span class="kw">use </span>jsonrpsee::{
 	server::{
-		middleware::proxy_get_request::ProxyGetRequestLayer, AllowHosts, ServerBuilder,
-		ServerHandle,
+		middleware::http::ProxyGetRequestLayer, stop_channel, ws, PingConfig, StopHandle,
+		TowerServiceBuilder,
 	},
-	RpcModule,
+	Methods, RpcModule,
 };
-<span class="kw">use </span>std::{error::Error <span class="kw">as </span>StdError, net::SocketAddr};
-<span class="kw">use </span>tower_http::cors::{AllowOrigin, CorsLayer};
+<span class="kw">use </span>tokio::net::TcpListener;
+<span class="kw">use </span>tower::Service;
+<span class="kw">use </span>utils::{build_rpc_api, format_cors, get_proxy_ip, host_filtering, try_into_cors};
 
-<span class="kw">pub use </span><span class="kw">crate</span>::middleware::RpcMetrics;
-<span class="kw">pub use </span>jsonrpsee::core::{
-	id_providers::{RandomIntegerIdProvider, RandomStringIdProvider},
-	traits::IdProvider,
+<span class="kw">pub use </span>ip_network::IpNetwork;
+<span class="kw">pub use </span>jsonrpsee::{
+	core::{
+		id_providers::{RandomIntegerIdProvider, RandomStringIdProvider},
+		traits::IdProvider,
+	},
+	server::{middleware::rpc::RpcServiceBuilder, BatchRequestConfig},
 };
+<span class="kw">pub use </span>middleware::{Metrics, MiddlewareLayer, RpcMetrics};
 
 <span class="kw">const </span>MEGABYTE: u32 = <span class="number">1024 </span>* <span class="number">1024</span>;
 
 <span class="doccomment">/// Type alias for the JSON-RPC server.
-</span><span class="kw">pub type </span>Server = ServerHandle;
+</span><span class="kw">pub type </span>Server = jsonrpsee::server::ServerHandle;
 
 <span class="doccomment">/// RPC server configuration.
 </span><span class="attr">#[derive(Debug)]
@@ -247,47 +331,83 @@
 	</span><span class="kw">pub </span>max_payload_out_mb: u32,
 	<span class="doccomment">/// Metrics.
 	</span><span class="kw">pub </span>metrics: <span class="prelude-ty">Option</span>&lt;RpcMetrics&gt;,
+	<span class="doccomment">/// Message buffer size
+	</span><span class="kw">pub </span>message_buffer_capacity: u32,
 	<span class="doccomment">/// RPC API.
 	</span><span class="kw">pub </span>rpc_api: RpcModule&lt;M&gt;,
 	<span class="doccomment">/// Subscription ID provider.
 	</span><span class="kw">pub </span>id_provider: <span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">dyn </span>IdProvider&gt;&gt;,
 	<span class="doccomment">/// Tokio runtime handle.
 	</span><span class="kw">pub </span>tokio_handle: tokio::runtime::Handle,
+	<span class="doccomment">/// Batch request config.
+	</span><span class="kw">pub </span>batch_config: BatchRequestConfig,
+	<span class="doccomment">/// Rate limit calls per minute.
+	</span><span class="kw">pub </span>rate_limit: <span class="prelude-ty">Option</span>&lt;NonZeroU32&gt;,
+	<span class="doccomment">/// Disable rate limit for certain ips.
+	</span><span class="kw">pub </span>rate_limit_whitelisted_ips: Vec&lt;IpNetwork&gt;,
+	<span class="doccomment">/// Trust proxy headers for rate limiting.
+	</span><span class="kw">pub </span>rate_limit_trust_proxy_headers: bool,
+}
+
+<span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">struct </span>PerConnection&lt;RpcMiddleware, HttpMiddleware&gt; {
+	methods: Methods,
+	stop_handle: StopHandle,
+	metrics: <span class="prelude-ty">Option</span>&lt;RpcMetrics&gt;,
+	tokio_handle: tokio::runtime::Handle,
+	service_builder: TowerServiceBuilder&lt;RpcMiddleware, HttpMiddleware&gt;,
 }
 
 <span class="doccomment">/// Start RPC server listening on given address.
-</span><span class="kw">pub async fn </span>start_server&lt;M: Send + Sync + <span class="lifetime">'static</span>&gt;(
+</span><span class="kw">pub async fn </span>start_server&lt;M&gt;(
 	config: Config&lt;<span class="lifetime">'_</span>, M&gt;,
-) -&gt; <span class="prelude-ty">Result</span>&lt;ServerHandle, Box&lt;<span class="kw">dyn </span>StdError + Send + Sync&gt;&gt; {
+) -&gt; <span class="prelude-ty">Result</span>&lt;Server, Box&lt;<span class="kw">dyn </span>StdError + Send + Sync&gt;&gt;
+<span class="kw">where
+	</span>M: Send + Sync,
+{
 	<span class="kw">let </span>Config {
 		addrs,
+		batch_config,
 		cors,
 		max_payload_in_mb,
 		max_payload_out_mb,
 		max_connections,
 		max_subs_per_conn,
 		metrics,
+		message_buffer_capacity,
 		id_provider,
 		tokio_handle,
 		rpc_api,
+		rate_limit,
+		rate_limit_whitelisted_ips,
+		rate_limit_trust_proxy_headers,
 	} = config;
 
-	<span class="kw">let </span>host_filter = hosts_filtering(cors.is_some(), <span class="kw-2">&amp;</span>addrs);
+	<span class="kw">let </span>std_listener = TcpListener::bind(addrs.as_slice()).<span class="kw">await</span><span class="question-mark">?</span>.into_std()<span class="question-mark">?</span>;
+	<span class="kw">let </span>local_addr = std_listener.local_addr().ok();
+	<span class="kw">let </span>host_filter = host_filtering(cors.is_some(), local_addr);
 
-	<span class="kw">let </span>middleware = tower::ServiceBuilder::new()
+	<span class="kw">let </span>http_middleware = tower::ServiceBuilder::new()
+		.option_layer(host_filter)
 		<span class="comment">// Proxy `GET /health` requests to internal `system_health` method.
 		</span>.layer(ProxyGetRequestLayer::new(<span class="string">"/health"</span>, <span class="string">"system_health"</span>)<span class="question-mark">?</span>)
 		.layer(try_into_cors(cors)<span class="question-mark">?</span>);
 
-	<span class="kw">let </span><span class="kw-2">mut </span>builder = ServerBuilder::new()
+	<span class="kw">let </span><span class="kw-2">mut </span>builder = jsonrpsee::server::Server::builder()
 		.max_request_body_size(max_payload_in_mb.saturating_mul(MEGABYTE))
 		.max_response_body_size(max_payload_out_mb.saturating_mul(MEGABYTE))
 		.max_connections(max_connections)
 		.max_subscriptions_per_connection(max_subs_per_conn)
-		.ping_interval(std::time::Duration::from_secs(<span class="number">30</span>))
-		.set_host_filtering(host_filter)
-		.set_middleware(middleware)
-		.custom_tokio_runtime(tokio_handle);
+		.enable_ws_ping(
+			PingConfig::new()
+				.ping_interval(Duration::from_secs(<span class="number">30</span>))
+				.inactive_limit(Duration::from_secs(<span class="number">60</span>))
+				.max_failures(<span class="number">3</span>),
+		)
+		.set_http_middleware(http_middleware)
+		.set_message_buffer_capacity(message_buffer_capacity)
+		.set_batch_request_config(batch_config)
+		.custom_tokio_runtime(tokio_handle.clone());
 
 	<span class="kw">if let </span><span class="prelude-val">Some</span>(provider) = id_provider {
 		builder = builder.set_id_provider(provider);
@@ -295,77 +415,99 @@
 		builder = builder.set_id_provider(RandomStringIdProvider::new(<span class="number">16</span>));
 	};
 
-	<span class="kw">let </span>rpc_api = build_rpc_api(rpc_api);
-	<span class="kw">let </span>(handle, addr) = <span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = metrics {
-		<span class="kw">let </span>server = builder.set_logger(metrics).build(<span class="kw-2">&amp;</span>addrs[..]).<span class="kw">await</span><span class="question-mark">?</span>;
-		<span class="kw">let </span>addr = server.local_addr();
-		(server.start(rpc_api)<span class="question-mark">?</span>, addr)
-	} <span class="kw">else </span>{
-		<span class="kw">let </span>server = builder.build(<span class="kw-2">&amp;</span>addrs[..]).<span class="kw">await</span><span class="question-mark">?</span>;
-		<span class="kw">let </span>addr = server.local_addr();
-		(server.start(rpc_api)<span class="question-mark">?</span>, addr)
+	<span class="kw">let </span>(stop_handle, server_handle) = stop_channel();
+	<span class="kw">let </span>cfg = PerConnection {
+		methods: build_rpc_api(rpc_api).into(),
+		service_builder: builder.to_service_builder(),
+		metrics,
+		tokio_handle,
+		stop_handle: stop_handle.clone(),
 	};
+
+	<span class="kw">let </span>make_service = make_service_fn(<span class="kw">move </span>|addr: <span class="kw-2">&amp;</span>AddrStream| {
+		<span class="kw">let </span>cfg = cfg.clone();
+		<span class="kw">let </span>rate_limit_whitelisted_ips = rate_limit_whitelisted_ips.clone();
+		<span class="kw">let </span>ip = addr.remote_addr().ip();
+
+		<span class="kw">async move </span>{
+			<span class="kw">let </span>cfg = cfg.clone();
+			<span class="kw">let </span>rate_limit_whitelisted_ips = rate_limit_whitelisted_ips.clone();
+
+			<span class="prelude-val">Ok</span>::&lt;<span class="kw">_</span>, Infallible&gt;(service_fn(<span class="kw">move </span>|req| {
+				<span class="kw">let </span>proxy_ip =
+					<span class="kw">if </span>rate_limit_trust_proxy_headers { get_proxy_ip(<span class="kw-2">&amp;</span>req) } <span class="kw">else </span>{ <span class="prelude-val">None </span>};
+
+				<span class="kw">let </span>rate_limit_cfg = <span class="kw">if </span>rate_limit_whitelisted_ips
+					.iter()
+					.any(|ips| ips.contains(proxy_ip.unwrap_or(ip)))
+				{
+					<span class="macro">log::debug!</span>(target: <span class="string">"rpc"</span>, <span class="string">"ip={ip}, proxy_ip={:?} is trusted, disabling rate-limit"</span>, proxy_ip);
+					<span class="prelude-val">None
+				</span>} <span class="kw">else </span>{
+					<span class="kw">if </span>!rate_limit_whitelisted_ips.is_empty() {
+						<span class="macro">log::debug!</span>(target: <span class="string">"rpc"</span>, <span class="string">"ip={ip}, proxy_ip={:?} is not trusted, rate-limit enabled"</span>, proxy_ip);
+					}
+					rate_limit
+				};
+
+				<span class="kw">let </span>PerConnection { service_builder, metrics, tokio_handle, stop_handle, methods } =
+					cfg.clone();
+
+				<span class="kw">let </span>is_websocket = ws::is_upgrade_request(<span class="kw-2">&amp;</span>req);
+				<span class="kw">let </span>transport_label = <span class="kw">if </span>is_websocket { <span class="string">"ws" </span>} <span class="kw">else </span>{ <span class="string">"http" </span>};
+
+				<span class="kw">let </span>middleware_layer = <span class="kw">match </span>(metrics, rate_limit_cfg) {
+					(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; <span class="prelude-val">None</span>,
+					(<span class="prelude-val">Some</span>(metrics), <span class="prelude-val">None</span>) =&gt; <span class="prelude-val">Some</span>(
+						MiddlewareLayer::new().with_metrics(Metrics::new(metrics, transport_label)),
+					),
+					(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(rate_limit)) =&gt;
+						<span class="prelude-val">Some</span>(MiddlewareLayer::new().with_rate_limit_per_minute(rate_limit)),
+					(<span class="prelude-val">Some</span>(metrics), <span class="prelude-val">Some</span>(rate_limit)) =&gt; <span class="prelude-val">Some</span>(
+						MiddlewareLayer::new()
+							.with_metrics(Metrics::new(metrics, transport_label))
+							.with_rate_limit_per_minute(rate_limit),
+					),
+				};
+
+				<span class="kw">let </span>rpc_middleware =
+					RpcServiceBuilder::new().option_layer(middleware_layer.clone());
+
+				<span class="kw">let </span><span class="kw-2">mut </span>svc =
+					service_builder.set_rpc_middleware(rpc_middleware).build(methods, stop_handle);
+
+				<span class="kw">async move </span>{
+					<span class="kw">if </span>is_websocket {
+						<span class="kw">let </span>on_disconnect = svc.on_session_closed();
+
+						<span class="comment">// Spawn a task to handle when the connection is closed.
+						</span>tokio_handle.spawn(<span class="kw">async move </span>{
+							<span class="kw">let </span>now = std::time::Instant::now();
+							middleware_layer.as_ref().map(|m| m.ws_connect());
+							on_disconnect.<span class="kw">await</span>;
+							middleware_layer.as_ref().map(|m| m.ws_disconnect(now));
+						});
+					}
+
+					svc.call(req).<span class="kw">await
+				</span>}
+			}))
+		}
+	});
+
+	<span class="kw">let </span>server = hyper::Server::from_tcp(std_listener)<span class="question-mark">?</span>.serve(make_service);
+
+	tokio::spawn(<span class="kw">async move </span>{
+		<span class="kw">let </span>graceful = server.with_graceful_shutdown(<span class="kw">async move </span>{ stop_handle.shutdown().<span class="kw">await </span>});
+		<span class="kw">let _ </span>= graceful.<span class="kw">await</span>;
+	});
 
 	<span class="macro">log::info!</span>(
 		<span class="string">"Running JSON-RPC server: addr={}, allowed origins={}"</span>,
-		addr.map_or_else(|<span class="kw">_</span>| <span class="string">"unknown"</span>.to_string(), |a| a.to_string()),
+		local_addr.map_or_else(|| <span class="string">"unknown"</span>.to_string(), |a| a.to_string()),
 		format_cors(cors)
 	);
 
-	<span class="prelude-val">Ok</span>(handle)
-}
-
-<span class="kw">fn </span>hosts_filtering(enabled: bool, addrs: <span class="kw-2">&amp;</span>[SocketAddr]) -&gt; AllowHosts {
-	<span class="kw">if </span>enabled {
-		<span class="comment">// NOTE The listening addresses are whitelisted by default.
-		</span><span class="kw">let </span><span class="kw-2">mut </span>hosts = Vec::with_capacity(addrs.len() * <span class="number">2</span>);
-		<span class="kw">for </span>addr <span class="kw">in </span>addrs {
-			hosts.push(<span class="macro">format!</span>(<span class="string">"localhost:{}"</span>, addr.port()).into());
-			hosts.push(<span class="macro">format!</span>(<span class="string">"127.0.0.1:{}"</span>, addr.port()).into());
-		}
-		AllowHosts::Only(hosts)
-	} <span class="kw">else </span>{
-		AllowHosts::Any
-	}
-}
-
-<span class="kw">fn </span>build_rpc_api&lt;M: Send + Sync + <span class="lifetime">'static</span>&gt;(<span class="kw-2">mut </span>rpc_api: RpcModule&lt;M&gt;) -&gt; RpcModule&lt;M&gt; {
-	<span class="kw">let </span><span class="kw-2">mut </span>available_methods = rpc_api.method_names().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
-	<span class="comment">// The "rpc_methods" is defined below and we want it to be part of the reported methods.
-	</span>available_methods.push(<span class="string">"rpc_methods"</span>);
-	available_methods.sort();
-
-	rpc_api
-		.register_method(<span class="string">"rpc_methods"</span>, <span class="kw">move </span>|<span class="kw">_</span>, <span class="kw">_</span>| {
-			<span class="prelude-val">Ok</span>(<span class="macro">serde_json::json!</span>({
-				<span class="string">"methods"</span>: available_methods,
-			}))
-		})
-		.expect(<span class="string">"infallible all other methods have their own address space; qed"</span>);
-
-	rpc_api
-}
-
-<span class="kw">fn </span>try_into_cors(
-	maybe_cors: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Vec&lt;String&gt;&gt;,
-) -&gt; <span class="prelude-ty">Result</span>&lt;CorsLayer, Box&lt;<span class="kw">dyn </span>StdError + Send + Sync&gt;&gt; {
-	<span class="kw">if let </span><span class="prelude-val">Some</span>(cors) = maybe_cors {
-		<span class="kw">let </span><span class="kw-2">mut </span>list = Vec::new();
-		<span class="kw">for </span>origin <span class="kw">in </span>cors {
-			list.push(HeaderValue::from_str(origin)<span class="question-mark">?</span>);
-		}
-		<span class="prelude-val">Ok</span>(CorsLayer::new().allow_origin(AllowOrigin::list(list)))
-	} <span class="kw">else </span>{
-		<span class="comment">// allow all cors
-		</span><span class="prelude-val">Ok</span>(CorsLayer::permissive())
-	}
-}
-
-<span class="kw">fn </span>format_cors(maybe_cors: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Vec&lt;String&gt;&gt;) -&gt; String {
-	<span class="kw">if let </span><span class="prelude-val">Some</span>(cors) = maybe_cors {
-		<span class="macro">format!</span>(<span class="string">"{:?}"</span>, cors)
-	} <span class="kw">else </span>{
-		<span class="macro">format!</span>(<span class="string">"{:?}"</span>, [<span class="string">"*"</span>])
-	}
+	<span class="prelude-val">Ok</span>(server_handle)
 }
 </code></pre></div></section></main></body></html>

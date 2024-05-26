@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/client/service/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_service" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/service/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_service" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../sc_service/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -563,6 +563,18 @@
 <a href="#561" id="561">561</a>
 <a href="#562" id="562">562</a>
 <a href="#563" id="563">563</a>
+<a href="#564" id="564">564</a>
+<a href="#565" id="565">565</a>
+<a href="#566" id="566">566</a>
+<a href="#567" id="567">567</a>
+<a href="#568" id="568">568</a>
+<a href="#569" id="569">569</a>
+<a href="#570" id="570">570</a>
+<a href="#571" id="571">571</a>
+<a href="#572" id="572">572</a>
+<a href="#573" id="573">573</a>
+<a href="#574" id="574">574</a>
+<a href="#575" id="575">575</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -602,14 +614,16 @@
 <span class="kw">use </span>std::{collections::HashMap, net::SocketAddr};
 
 <span class="kw">use </span>codec::{Decode, Encode};
-<span class="kw">use </span>futures::{channel::mpsc, pin_mut, FutureExt, StreamExt};
-<span class="kw">use </span>jsonrpsee::{core::Error <span class="kw">as </span>JsonRpseeError, RpcModule};
+<span class="kw">use </span>futures::{pin_mut, FutureExt, StreamExt};
+<span class="kw">use </span>jsonrpsee::RpcModule;
 <span class="kw">use </span>log::{debug, error, warn};
 <span class="kw">use </span>sc_client_api::{blockchain::HeaderBackend, BlockBackend, BlockchainEvents, ProofProvider};
 <span class="kw">use </span>sc_network::{
-	config::MultiaddrWithPeerId, NetworkBlock, NetworkPeers, NetworkStateInfo, PeerId,
+	config::MultiaddrWithPeerId, service::traits::NetworkService, NetworkBackend, NetworkBlock,
+	NetworkPeers, NetworkStateInfo,
 };
 <span class="kw">use </span>sc_network_sync::SyncingService;
+<span class="kw">use </span>sc_network_types::PeerId;
 <span class="kw">use </span>sc_utils::mpsc::TracingUnboundedReceiver;
 <span class="kw">use </span>sp_blockchain::HeaderMetadata;
 <span class="kw">use </span>sp_consensus::SyncOracle;
@@ -617,14 +631,17 @@
 
 <span class="kw">pub use </span><span class="self">self</span>::{
 	builder::{
-		build_network, new_client, new_db_backend, new_full_client, new_full_parts,
-		new_full_parts_with_genesis_builder, new_native_or_wasm_executor, new_wasm_executor,
-		spawn_tasks, BuildNetworkParams, KeystoreContainer, NetworkStarter, SpawnTasksParams,
-		TFullBackend, TFullCallExecutor, TFullClient,
+		build_network, gen_rpc_module, init_telemetry, new_client, new_db_backend, new_full_client,
+		new_full_parts, new_full_parts_record_import, new_full_parts_with_genesis_builder,
+		new_wasm_executor, propagate_transaction_notifications, spawn_tasks, BuildNetworkParams,
+		KeystoreContainer, NetworkStarter, SpawnTasksParams, TFullBackend, TFullCallExecutor,
+		TFullClient,
 	},
 	client::{ClientConfig, LocalCallExecutor},
 	error::Error,
 };
+<span class="attr">#[allow(deprecated)]
+</span><span class="kw">pub use </span>builder::new_native_or_wasm_executor;
 
 <span class="kw">pub use </span>sc_chain_spec::{
 	construct_genesis_block, resolve_state_version_from_wasm, BuildGenesisBlock,
@@ -641,7 +658,7 @@
 
 <span class="kw">pub use </span>sc_consensus::ImportQueue;
 <span class="kw">pub use </span>sc_executor::NativeExecutionDispatch;
-<span class="kw">pub use </span>sc_network_sync::warp::WarpSyncParams;
+<span class="kw">pub use </span>sc_network_sync::WarpSyncParams;
 <span class="attr">#[doc(hidden)]
 </span><span class="kw">pub use </span>sc_network_transactions::config::{TransactionImport, TransactionImportFuture};
 <span class="kw">pub use </span>sc_rpc::{
@@ -673,12 +690,15 @@
 	</span><span class="kw">pub async fn </span>rpc_query(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		json_query: <span class="kw-2">&amp;</span>str,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;(String, mpsc::UnboundedReceiver&lt;String&gt;), JsonRpseeError&gt; {
-		<span class="self">self</span>.<span class="number">0
-			</span>.raw_json_request(json_query)
-			.<span class="kw">await
-			</span>.map(|(method_res, recv)| (method_res.result, recv))
-	}
+	) -&gt; <span class="prelude-ty">Result</span>&lt;(String, tokio::sync::mpsc::Receiver&lt;String&gt;), serde_json::Error&gt; {
+		<span class="comment">// Because `tokio::sync::mpsc::channel` is used under the hood
+		// it will panic if it's set to usize::MAX.
+		//
+		// This limit is used to prevent panics and is large enough.
+		</span><span class="kw">const </span>TOKIO_MPSC_MAX_SIZE: usize = tokio::sync::Semaphore::MAX_PERMITS;
+
+		<span class="self">self</span>.<span class="number">0</span>.raw_json_request(json_query, TOKIO_MPSC_MAX_SIZE).<span class="kw">await
+	</span>}
 
 	<span class="doccomment">/// Provides access to the underlying `RpcModule`
 	</span><span class="kw">pub fn </span>handle(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Arc&lt;RpcModule&lt;()&gt;&gt; {
@@ -718,8 +738,9 @@
 		+ Sync
 		+ <span class="lifetime">'static</span>,
 	H: sc_network_common::ExHashT,
+	N: NetworkBackend&lt;B, &lt;B <span class="kw">as </span>BlockT&gt;::Hash&gt;,
 &gt;(
-	network: sc_network::NetworkWorker&lt;B, H&gt;,
+	network: N,
 	client: Arc&lt;C&gt;,
 	sync_service: Arc&lt;SyncingService&lt;B&gt;&gt;,
 	announce_imported_blocks: bool,
@@ -786,7 +807,7 @@
 	H: sc_network_common::ExHashT,
 &gt;(
 	role: Role,
-	network_service: Arc&lt;sc_network::NetworkService&lt;B, H&gt;&gt;,
+	network_service: Arc&lt;<span class="kw">dyn </span>NetworkService&gt;,
 	sync_service: Arc&lt;SyncingService&lt;B&gt;&gt;,
 	client: Arc&lt;C&gt;,
 	<span class="kw-2">mut </span>rpc_rx: TracingUnboundedReceiver&lt;sc_rpc::system::Request&lt;B&gt;&gt;,
@@ -871,14 +892,12 @@
 				};
 			},
 			sc_rpc::system::Request::NetworkReservedPeers(sender) =&gt; {
-				<span class="kw">let </span>reserved_peers = network_service.reserved_peers().<span class="kw">await</span>;
-				<span class="kw">if let </span><span class="prelude-val">Ok</span>(reserved_peers) = reserved_peers {
-					<span class="kw">let </span>reserved_peers =
-						reserved_peers.iter().map(|peer_id| peer_id.to_base58()).collect();
-					<span class="kw">let _ </span>= sender.send(reserved_peers);
-				} <span class="kw">else </span>{
-					<span class="kw">break
-				</span>}
+				<span class="kw">let </span><span class="prelude-val">Ok</span>(reserved_peers) = network_service.reserved_peers().<span class="kw">await else </span>{
+					<span class="kw">break</span>;
+				};
+
+				<span class="kw">let _ </span>=
+					sender.send(reserved_peers.iter().map(|peer_id| peer_id.to_base58()).collect());
 			},
 			sc_rpc::system::Request::NodeRoles(sender) =&gt; {
 				<span class="kw">use </span>sc_rpc::system::NodeRole;
@@ -926,7 +945,7 @@
 }
 
 <span class="doccomment">/// Starts RPC servers.
-</span><span class="kw">fn </span>start_rpc_servers&lt;R&gt;(
+</span><span class="kw">pub fn </span>start_rpc_servers&lt;R&gt;(
 	config: <span class="kw-2">&amp;</span>Configuration,
 	gen_rpc_module: R,
 	rpc_id_provider: <span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">dyn </span>RpcSubscriptionIdProvider&gt;&gt;,
@@ -954,15 +973,20 @@
 
 	<span class="kw">let </span>server_config = sc_rpc_server::Config {
 		addrs: [addr, backup_addr],
+		batch_config: config.rpc_batch_config,
 		max_connections: config.rpc_max_connections,
 		max_payload_in_mb: config.rpc_max_request_size,
 		max_payload_out_mb: config.rpc_max_response_size,
 		max_subs_per_conn: config.rpc_max_subs_per_conn,
+		message_buffer_capacity: config.rpc_message_buffer_capacity,
 		rpc_api: gen_rpc_module(deny_unsafe(addr, <span class="kw-2">&amp;</span>config.rpc_methods))<span class="question-mark">?</span>,
 		metrics,
 		id_provider: rpc_id_provider,
 		cors: config.rpc_cors.as_ref(),
 		tokio_handle: config.tokio_handle.clone(),
+		rate_limit: config.rpc_rate_limit,
+		rate_limit_whitelisted_ips: config.rpc_rate_limit_whitelisted_ips.clone(),
+		rate_limit_trust_proxy_headers: config.rpc_rate_limit_trust_proxy_headers,
 	};
 
 	<span class="comment">// TODO: https://github.com/paritytech/substrate/issues/13773

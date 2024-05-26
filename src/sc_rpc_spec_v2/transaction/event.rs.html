@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/client/rpc-spec-v2/src/transaction/event.rs`."><title>event.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_rpc_spec_v2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/rpc-spec-v2/src/transaction/event.rs`."><title>event.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_rpc_spec_v2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../sc_rpc_spec_v2/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -290,51 +290,6 @@
 <a href="#288" id="288">288</a>
 <a href="#289" id="289">289</a>
 <a href="#290" id="290">290</a>
-<a href="#291" id="291">291</a>
-<a href="#292" id="292">292</a>
-<a href="#293" id="293">293</a>
-<a href="#294" id="294">294</a>
-<a href="#295" id="295">295</a>
-<a href="#296" id="296">296</a>
-<a href="#297" id="297">297</a>
-<a href="#298" id="298">298</a>
-<a href="#299" id="299">299</a>
-<a href="#300" id="300">300</a>
-<a href="#301" id="301">301</a>
-<a href="#302" id="302">302</a>
-<a href="#303" id="303">303</a>
-<a href="#304" id="304">304</a>
-<a href="#305" id="305">305</a>
-<a href="#306" id="306">306</a>
-<a href="#307" id="307">307</a>
-<a href="#308" id="308">308</a>
-<a href="#309" id="309">309</a>
-<a href="#310" id="310">310</a>
-<a href="#311" id="311">311</a>
-<a href="#312" id="312">312</a>
-<a href="#313" id="313">313</a>
-<a href="#314" id="314">314</a>
-<a href="#315" id="315">315</a>
-<a href="#316" id="316">316</a>
-<a href="#317" id="317">317</a>
-<a href="#318" id="318">318</a>
-<a href="#319" id="319">319</a>
-<a href="#320" id="320">320</a>
-<a href="#321" id="321">321</a>
-<a href="#322" id="322">322</a>
-<a href="#323" id="323">323</a>
-<a href="#324" id="324">324</a>
-<a href="#325" id="325">325</a>
-<a href="#326" id="326">326</a>
-<a href="#327" id="327">327</a>
-<a href="#328" id="328">328</a>
-<a href="#329" id="329">329</a>
-<a href="#330" id="330">330</a>
-<a href="#331" id="331">331</a>
-<a href="#332" id="332">332</a>
-<a href="#333" id="333">333</a>
-<a href="#334" id="334">334</a>
-<a href="#335" id="335">335</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -356,23 +311,6 @@
 </span><span class="doccomment">//! The transaction's event returned as json compatible object.
 
 </span><span class="kw">use </span>serde::{Deserialize, Serialize};
-
-<span class="doccomment">/// The transaction was broadcasted to a number of peers.
-///
-/// # Note
-///
-/// The RPC does not guarantee that the peers have received the
-/// transaction.
-///
-/// When the number of peers is zero, the event guarantees that
-/// shutting down the local node will lead to the transaction
-/// not being included in the chain.
-</span><span class="attr">#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = <span class="string">"camelCase"</span>)]
-</span><span class="kw">pub struct </span>TransactionBroadcasted {
-	<span class="doccomment">/// The number of peers the transaction was broadcasted to.
-	</span><span class="kw">pub </span>num_peers: usize,
-}
 
 <span class="doccomment">/// The transaction was included in a block of the chain.
 </span><span class="attr">#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -396,9 +334,6 @@
 </span><span class="attr">#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = <span class="string">"camelCase"</span>)]
 </span><span class="kw">pub struct </span>TransactionDropped {
-	<span class="doccomment">/// True if the transaction was broadcasted to other peers and
-	/// may still be included in the block.
-	</span><span class="kw">pub </span>broadcasted: bool,
 	<span class="doccomment">/// Reason of the event.
 	</span><span class="kw">pub </span>error: String,
 }
@@ -407,20 +342,17 @@
 ///
 /// The status events can be grouped based on their kinds as:
 ///
-/// 1. Runtime validated the transaction:
+/// 1. Runtime validated the transaction and it entered the pool:
 /// 		- `Validated`
 ///
-/// 2. Inside the `Ready` queue:
-/// 		- `Broadcast`
-///
-/// 3. Leaving the pool:
+/// 2. Leaving the pool:
 /// 		- `BestChainBlockIncluded`
 /// 		- `Invalid`
 ///
-/// 4. Block finalized:
+/// 3. Block finalized:
 /// 		- `Finalized`
 ///
-/// 5. At any time:
+/// 4. At any time:
 /// 		- `Dropped`
 /// 		- `Error`
 ///
@@ -438,8 +370,6 @@
 </span><span class="kw">pub enum </span>TransactionEvent&lt;Hash&gt; {
 	<span class="doccomment">/// The transaction was validated by the runtime.
 	</span>Validated,
-	<span class="doccomment">/// The transaction was broadcasted to a number of peers.
-	</span>Broadcasted(TransactionBroadcasted),
 	<span class="doccomment">/// The transaction was included in a best block of the chain.
 	///
 	/// # Note
@@ -496,7 +426,6 @@
 #[serde(tag = <span class="string">"event"</span>)]
 </span><span class="kw">enum </span>TransactionEventNonBlockIR {
 	Validated,
-	Broadcasted(TransactionBroadcasted),
 	Error(TransactionError),
 	Invalid(TransactionError),
 	Dropped(TransactionDropped),
@@ -523,8 +452,6 @@
 		<span class="kw">match </span>value {
 			TransactionEvent::Validated =&gt;
 				TransactionEventIR::NonBlock(TransactionEventNonBlockIR::Validated),
-			TransactionEvent::Broadcasted(event) =&gt;
-				TransactionEventIR::NonBlock(TransactionEventNonBlockIR::Broadcasted(event)),
 			TransactionEvent::BestChainBlockIncluded(event) =&gt;
 				TransactionEventIR::Block(TransactionEventBlockIR::BestChainBlockIncluded(event)),
 			TransactionEvent::Finalized(event) =&gt;
@@ -544,8 +471,6 @@
 		<span class="kw">match </span>value {
 			TransactionEventIR::NonBlock(status) =&gt; <span class="kw">match </span>status {
 				TransactionEventNonBlockIR::Validated =&gt; TransactionEvent::Validated,
-				TransactionEventNonBlockIR::Broadcasted(event) =&gt;
-					TransactionEvent::Broadcasted(event),
 				TransactionEventNonBlockIR::Error(event) =&gt; TransactionEvent::Error(event),
 				TransactionEventNonBlockIR::Invalid(event) =&gt; TransactionEvent::Invalid(event),
 				TransactionEventNonBlockIR::Dropped(event) =&gt; TransactionEvent::Dropped(event),
@@ -570,19 +495,6 @@
 		<span class="kw">let </span>ser = serde_json::to_string(<span class="kw-2">&amp;</span>event).unwrap();
 
 		<span class="kw">let </span>exp = <span class="string">r#"{"event":"validated"}"#</span>;
-		<span class="macro">assert_eq!</span>(ser, exp);
-
-		<span class="kw">let </span>event_dec: TransactionEvent&lt;()&gt; = serde_json::from_str(exp).unwrap();
-		<span class="macro">assert_eq!</span>(event_dec, event);
-	}
-
-	<span class="attr">#[test]
-	</span><span class="kw">fn </span>broadcasted_event() {
-		<span class="kw">let </span>event: TransactionEvent&lt;()&gt; =
-			TransactionEvent::Broadcasted(TransactionBroadcasted { num_peers: <span class="number">2 </span>});
-		<span class="kw">let </span>ser = serde_json::to_string(<span class="kw-2">&amp;</span>event).unwrap();
-
-		<span class="kw">let </span>exp = <span class="string">r#"{"event":"broadcasted","numPeers":2}"#</span>;
 		<span class="macro">assert_eq!</span>(ser, exp);
 
 		<span class="kw">let </span>event_dec: TransactionEvent&lt;()&gt; = serde_json::from_str(exp).unwrap();
@@ -657,13 +569,11 @@
 
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>dropped_event() {
-		<span class="kw">let </span>event: TransactionEvent&lt;()&gt; = TransactionEvent::Dropped(TransactionDropped {
-			broadcasted: <span class="bool-val">true</span>,
-			error: <span class="string">"abc"</span>.to_string(),
-		});
+		<span class="kw">let </span>event: TransactionEvent&lt;()&gt; =
+			TransactionEvent::Dropped(TransactionDropped { error: <span class="string">"abc"</span>.to_string() });
 		<span class="kw">let </span>ser = serde_json::to_string(<span class="kw-2">&amp;</span>event).unwrap();
 
-		<span class="kw">let </span>exp = <span class="string">r#"{"event":"dropped","broadcasted":true,"error":"abc"}"#</span>;
+		<span class="kw">let </span>exp = <span class="string">r#"{"event":"dropped","error":"abc"}"#</span>;
 		<span class="macro">assert_eq!</span>(ser, exp);
 
 		<span class="kw">let </span>event_dec: TransactionEvent&lt;()&gt; = serde_json::from_str(exp).unwrap();

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitcoin_hashes-0.11.0/src/sha256t.rs`."><title>sha256t.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bitcoin_hashes" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitcoin_hashes-0.13.0/src/sha256t.rs`."><title>sha256t.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bitcoin_hashes" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../bitcoin_hashes/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -208,121 +208,19 @@
 <a href="#206" id="206">206</a>
 <a href="#207" id="207">207</a>
 <a href="#208" id="208">208</a>
-<a href="#209" id="209">209</a>
-<a href="#210" id="210">210</a>
-<a href="#211" id="211">211</a>
-<a href="#212" id="212">212</a>
-<a href="#213" id="213">213</a>
-<a href="#214" id="214">214</a>
-<a href="#215" id="215">215</a>
-<a href="#216" id="216">216</a>
-<a href="#217" id="217">217</a>
-<a href="#218" id="218">218</a>
-<a href="#219" id="219">219</a>
-<a href="#220" id="220">220</a>
-<a href="#221" id="221">221</a>
-<a href="#222" id="222">222</a>
-<a href="#223" id="223">223</a>
-<a href="#224" id="224">224</a>
-<a href="#225" id="225">225</a>
-<a href="#226" id="226">226</a>
-<a href="#227" id="227">227</a>
-<a href="#228" id="228">228</a>
-<a href="#229" id="229">229</a>
-<a href="#230" id="230">230</a>
-<a href="#231" id="231">231</a>
-<a href="#232" id="232">232</a>
-<a href="#233" id="233">233</a>
-<a href="#234" id="234">234</a>
-<a href="#235" id="235">235</a>
-<a href="#236" id="236">236</a>
-<a href="#237" id="237">237</a>
-<a href="#238" id="238">238</a>
-<a href="#239" id="239">239</a>
-<a href="#240" id="240">240</a>
-<a href="#241" id="241">241</a>
-<a href="#242" id="242">242</a>
-<a href="#243" id="243">243</a>
-<a href="#244" id="244">244</a>
-<a href="#245" id="245">245</a>
-<a href="#246" id="246">246</a>
-<a href="#247" id="247">247</a>
-<a href="#248" id="248">248</a>
-<a href="#249" id="249">249</a>
-<a href="#250" id="250">250</a>
-<a href="#251" id="251">251</a>
-<a href="#252" id="252">252</a>
-<a href="#253" id="253">253</a>
-<a href="#254" id="254">254</a>
-<a href="#255" id="255">255</a>
-<a href="#256" id="256">256</a>
-<a href="#257" id="257">257</a>
-<a href="#258" id="258">258</a>
-<a href="#259" id="259">259</a>
-<a href="#260" id="260">260</a>
-<a href="#261" id="261">261</a>
-<a href="#262" id="262">262</a>
-<a href="#263" id="263">263</a>
-<a href="#264" id="264">264</a>
-<a href="#265" id="265">265</a>
-<a href="#266" id="266">266</a>
-<a href="#267" id="267">267</a>
-<a href="#268" id="268">268</a>
-<a href="#269" id="269">269</a>
-<a href="#270" id="270">270</a>
-<a href="#271" id="271">271</a>
-<a href="#272" id="272">272</a>
-<a href="#273" id="273">273</a>
-<a href="#274" id="274">274</a>
-<a href="#275" id="275">275</a>
-<a href="#276" id="276">276</a>
-<a href="#277" id="277">277</a>
-<a href="#278" id="278">278</a>
-<a href="#279" id="279">279</a>
-<a href="#280" id="280">280</a>
-<a href="#281" id="281">281</a>
-<a href="#282" id="282">282</a>
-<a href="#283" id="283">283</a>
-<a href="#284" id="284">284</a>
-<a href="#285" id="285">285</a>
-<a href="#286" id="286">286</a>
-<a href="#287" id="287">287</a>
-<a href="#288" id="288">288</a>
-<a href="#289" id="289">289</a>
-<a href="#290" id="290">290</a>
-<a href="#291" id="291">291</a>
-<a href="#292" id="292">292</a>
-<a href="#293" id="293">293</a>
-<a href="#294" id="294">294</a>
-<a href="#295" id="295">295</a>
-<a href="#296" id="296">296</a>
-<a href="#297" id="297">297</a>
-<a href="#298" id="298">298</a>
-</pre></div><pre class="rust"><code><span class="comment">// Bitcoin Hashes Library
-// Written in 2019 by
-//   The rust-bitcoin developers.
-//
-// To the extent possible under law, the author(s) have dedicated all
-// copyright and related and neighboring rights to this software to
-// the public domain worldwide. This software is distributed without
-// any warranty.
-//
-// You should have received a copy of the CC0 Public Domain Dedication
-// along with this software.
-// If not, see &lt;http://creativecommons.org/publicdomain/zero/1.0/&gt;.
-//
+</pre></div><pre class="rust"><code><span class="comment">// SPDX-License-Identifier: CC0-1.0
 
 </span><span class="doccomment">//! SHA256t implementation (tagged SHA256).
 //!
 
-</span><span class="kw">use </span>core::{cmp, str};
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)] </span><span class="kw">use </span>core::fmt;
-<span class="kw">use </span>core::marker::PhantomData;
+</span><span class="kw">use </span>core::marker::PhantomData;
 <span class="kw">use </span>core::ops::Index;
 <span class="kw">use </span>core::slice::SliceIndex;
+<span class="kw">use </span>core::{cmp, str};
 
-<span class="kw">use crate</span>::{Error, hex, sha256};
-<span class="attr">#[cfg(feature=<span class="string">"serde"</span>)] </span><span class="kw">use </span><span class="kw">crate</span>::Hash <span class="kw">as _</span>;
+<span class="kw">use crate</span>::{sha256, FromSliceError};
+
+<span class="kw">type </span>HashEngine = sha256::HashEngine;
 
 <span class="doccomment">/// Trait representing a tag that can be used as a context for SHA256t hashes.
 </span><span class="kw">pub trait </span>Tag {
@@ -331,31 +229,34 @@
 }
 
 <span class="doccomment">/// Output of the SHA256t hash function.
-</span><span class="attr">#[cfg_attr(feature = <span class="string">"schemars"</span>, derive(schemars::JsonSchema))]
-#[repr(transparent)]
-</span><span class="kw">pub struct </span>Hash&lt;T: Tag&gt;(
-    <span class="attr">#[cfg_attr(feature = <span class="string">"schemars"</span>, schemars(schema_with = <span class="string">"crate::util::json_hex_string::len_32"</span>))]
-    </span>[u8; <span class="number">32</span>],
-    <span class="attr">#[cfg_attr(feature = <span class="string">"schemars"</span>, schemars(skip))]
-    </span>PhantomData&lt;T&gt;
-);
+</span><span class="attr">#[repr(transparent)]
+</span><span class="kw">pub struct </span>Hash&lt;T: Tag&gt;([u8; <span class="number">32</span>], PhantomData&lt;T&gt;);
+
+<span class="attr">#[cfg(feature = <span class="string">"schemars"</span>)]
+</span><span class="kw">impl</span>&lt;T: Tag&gt; schemars::JsonSchema <span class="kw">for </span>Hash&lt;T&gt; {
+    <span class="kw">fn </span>schema_name() -&gt; String { <span class="string">"Hash"</span>.to_owned() }
+
+    <span class="kw">fn </span>json_schema(gen: <span class="kw-2">&amp;mut </span>schemars::gen::SchemaGenerator) -&gt; schemars::schema::Schema {
+        <span class="kw">crate</span>::util::json_hex_string::len_32(gen)
+    }
+}
+
+<span class="kw">impl</span>&lt;T: Tag&gt; Hash&lt;T&gt; {
+    <span class="kw">fn </span>internal_new(arr: [u8; <span class="number">32</span>]) -&gt; <span class="self">Self </span>{ Hash(arr, Default::default()) }
+
+    <span class="kw">fn </span>internal_engine() -&gt; HashEngine { T::engine() }
+}
 
 <span class="kw">impl</span>&lt;T: Tag&gt; Copy <span class="kw">for </span>Hash&lt;T&gt; {}
 <span class="kw">impl</span>&lt;T: Tag&gt; Clone <span class="kw">for </span>Hash&lt;T&gt; {
-    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        Hash(<span class="self">self</span>.<span class="number">0</span>, <span class="self">self</span>.<span class="number">1</span>)
-    }
+    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{ Hash(<span class="self">self</span>.<span class="number">0</span>, <span class="self">self</span>.<span class="number">1</span>) }
 }
 <span class="kw">impl</span>&lt;T: Tag&gt; PartialEq <span class="kw">for </span>Hash&lt;T&gt; {
-    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Hash&lt;T&gt;) -&gt; bool {
-        <span class="self">self</span>.<span class="number">0 </span>== other.<span class="number">0
-    </span>}
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Hash&lt;T&gt;) -&gt; bool { <span class="self">self</span>.<span class="number">0 </span>== other.<span class="number">0 </span>}
 }
 <span class="kw">impl</span>&lt;T: Tag&gt; Eq <span class="kw">for </span>Hash&lt;T&gt; {}
 <span class="kw">impl</span>&lt;T: Tag&gt; Default <span class="kw">for </span>Hash&lt;T&gt; {
-    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
-        Hash([<span class="number">0</span>; <span class="number">32</span>], PhantomData)
-    }
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{ Hash([<span class="number">0</span>; <span class="number">32</span>], PhantomData) }
 }
 <span class="kw">impl</span>&lt;T: Tag&gt; PartialOrd <span class="kw">for </span>Hash&lt;T&gt; {
     <span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Hash&lt;T&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;cmp::Ordering&gt; {
@@ -363,206 +264,118 @@
     }
 }
 <span class="kw">impl</span>&lt;T: Tag&gt; Ord <span class="kw">for </span>Hash&lt;T&gt; {
-    <span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Hash&lt;T&gt;) -&gt; cmp::Ordering {
-        cmp::Ord::cmp(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span>other.<span class="number">0</span>)
-    }
+    <span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>Hash&lt;T&gt;) -&gt; cmp::Ordering { cmp::Ord::cmp(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>, <span class="kw-2">&amp;</span>other.<span class="number">0</span>) }
 }
 <span class="kw">impl</span>&lt;T: Tag&gt; core::hash::Hash <span class="kw">for </span>Hash&lt;T&gt; {
-    <span class="kw">fn </span>hash&lt;H: core::hash::Hasher&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, h: <span class="kw-2">&amp;mut </span>H) {
-        <span class="self">self</span>.<span class="number">0</span>.hash(h)
-    }
+    <span class="kw">fn </span>hash&lt;H: core::hash::Hasher&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, h: <span class="kw-2">&amp;mut </span>H) { <span class="self">self</span>.<span class="number">0</span>.hash(h) }
 }
 
-<span class="kw">impl</span>&lt;T: Tag&gt; str::FromStr <span class="kw">for </span>Hash&lt;T&gt; {
-    <span class="kw">type </span><span class="prelude-val">Err </span>= hex::Error;
-    <span class="kw">fn </span>from_str(s: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Err&gt; {
-        hex::FromHex::from_hex(s)
-    }
-}
+<span class="macro">crate::internal_macros::hash_trait_impls!</span>(<span class="number">256</span>, <span class="bool-val">true</span>, T: Tag);
 
-<span class="macro">hex_fmt_impl!</span>(Debug, Hash, T:Tag);
-<span class="macro">hex_fmt_impl!</span>(Display, Hash, T:Tag);
-<span class="macro">hex_fmt_impl!</span>(LowerHex, Hash, T:Tag);
-<span class="macro">borrow_slice_impl!</span>(Hash, T:Tag);
+<span class="kw">fn </span>from_engine&lt;T: Tag&gt;(e: sha256::HashEngine) -&gt; Hash&lt;T&gt; {
+    <span class="kw">use </span><span class="kw">crate</span>::Hash <span class="kw">as _</span>;
 
-<span class="kw">impl</span>&lt;I: SliceIndex&lt;[u8]&gt;, T: Tag&gt; Index&lt;I&gt; <span class="kw">for </span>Hash&lt;T&gt; {
-    <span class="kw">type </span>Output = I::Output;
-
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>index(<span class="kw-2">&amp;</span><span class="self">self</span>, index: I) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Output {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[index]
-    }
-}
-
-<span class="kw">impl</span>&lt;T: Tag&gt; <span class="kw">crate</span>::Hash <span class="kw">for </span>Hash&lt;T&gt; {
-    <span class="kw">type </span>Engine = sha256::HashEngine;
-    <span class="kw">type </span>Inner = [u8; <span class="number">32</span>];
-
-    <span class="kw">fn </span>engine() -&gt; sha256::HashEngine {
-        T::engine()
-    }
-
-    <span class="kw">fn </span>from_engine(e: sha256::HashEngine) -&gt; Hash&lt;T&gt; {
-        Hash::from_inner(sha256::Hash::from_engine(e).into_inner())
-    }
-
-    <span class="kw">const </span>LEN: usize = <span class="number">32</span>;
-
-    <span class="kw">fn </span>from_slice(sl: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Hash&lt;T&gt;, Error&gt; {
-        <span class="kw">if </span>sl.len() != <span class="number">32 </span>{
-            <span class="prelude-val">Err</span>(Error::InvalidLength(<span class="self">Self</span>::LEN, sl.len()))
-        } <span class="kw">else </span>{
-            <span class="kw">let </span><span class="kw-2">mut </span>ret = [<span class="number">0</span>; <span class="number">32</span>];
-            ret.copy_from_slice(sl);
-            <span class="prelude-val">Ok</span>(Hash::from_inner(ret))
-        }
-    }
-
-    <span class="comment">// NOTE! If this is changed, please make sure the serde serialization is still correct.
-    </span><span class="kw">const </span>DISPLAY_BACKWARD: bool = <span class="bool-val">true</span>;
-
-    <span class="kw">fn </span>into_inner(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Inner {
-        <span class="self">self</span>.<span class="number">0
-    </span>}
-
-    <span class="kw">fn </span>as_inner(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Inner {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
-    </span>}
-
-    <span class="kw">fn </span>from_inner(inner: <span class="self">Self</span>::Inner) -&gt; <span class="self">Self </span>{
-        Hash(inner, PhantomData)
-    }
-
-    <span class="kw">fn </span>all_zeros() -&gt; <span class="self">Self </span>{
-        Hash([<span class="number">0x00</span>; <span class="number">32</span>], PhantomData)
-    }
+    Hash::from_byte_array(sha256::Hash::from_engine(e).to_byte_array())
 }
 
 <span class="doccomment">/// Macro used to define a newtype tagged hash.
-/// It creates two public types:
-/// - a sha256t::Tag struct,
-/// - a sha256t::Hash type alias.
+///
+/// This macro creates two types:
+///
+/// * a tag struct
+/// * a hash wrapper
+///
+/// The syntax is:
+///
+/// ```
+/// # use bitcoin_hashes::sha256t_hash_newtype;
+/// sha256t_hash_newtype! {
+///     /// Optional documentation details here.
+///     /// Summary is always generated.
+///     pub struct FooTag = hash_str("foo");
+///
+///     /// A foo hash.
+///     // Direction works just like in case of hash_newtype! macro.
+///     #[hash_newtype(forward)]
+///     pub struct FooHash(_);
+/// }
+/// ```
+///
+/// The structs must be defined in this order - tag first, then hash type. `hash_str` marker
+/// says the midstate should be generated by hashing the supplied string in a way described in
+/// BIP-341. Alternatively, you can supply `hash_bytes` to hash raw bytes. If you have the midstate
+/// already pre-computed and prefer **compiler** performance to readability you may use
+/// `raw(MIDSTATE_BYTES, HASHED_BYTES_LENGHT)` instead.
+///
+/// Both visibility modifiers and attributes are optional and passed to inner structs (excluding
+/// `#[hash_newtype(...)]`). The attributes suffer same compiler performance limitations as in
+/// [`hash_newtype`] macro.
+///
+/// The macro accepts multiple inputs so you can define multiple hash newtypes in one macro call.
+/// Just make sure to enter the structs in order `Tag0`, `Hash0`, `Tag1`, `Hash1`...
+///
+/// [`hash_newtype`]: crate::hash_newtype
 </span><span class="attr">#[macro_export]
 </span><span class="macro">macro_rules!</span> sha256t_hash_newtype {
-    (<span class="macro-nonterminal">$newtype</span>:ident, <span class="macro-nonterminal">$tag</span>:ident, <span class="macro-nonterminal">$midstate</span>:ident, <span class="macro-nonterminal">$midstate_len</span>:expr, <span class="macro-nonterminal">$docs</span>:meta, <span class="macro-nonterminal">$reverse</span>: expr) =&gt; {
-        <span class="macro">sha256t_hash_newtype!</span>(<span class="macro-nonterminal">$newtype</span>, <span class="macro-nonterminal">$tag</span>, <span class="macro-nonterminal">$midstate</span>, <span class="macro-nonterminal">$midstate_len</span>, <span class="macro-nonterminal">$docs</span>, <span class="macro-nonterminal">$reverse</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$newtype</span>));
-    };
-
-    (<span class="macro-nonterminal">$newtype</span>:ident, <span class="macro-nonterminal">$tag</span>:ident, <span class="macro-nonterminal">$midstate</span>:ident, <span class="macro-nonterminal">$midstate_len</span>:expr, <span class="macro-nonterminal">$docs</span>:meta, <span class="macro-nonterminal">$reverse</span>: expr, <span class="macro-nonterminal">$sname</span>:expr) =&gt; {
-        <span class="attr">#[doc = <span class="string">"The tag used for ["</span>]
-        #[doc = <span class="macro-nonterminal">$sname</span>]
-        #[doc = <span class="string">"]"</span>]
-        #[derive(Copy, Clone, PartialEq, Eq, Default, PartialOrd, Ord, Hash)]
-        </span><span class="kw">pub struct </span><span class="macro-nonterminal">$tag</span>;
+    ($($(<span class="attr">#[$(<span class="macro-nonterminal">$tag_attr</span>:tt)<span class="kw-2">*</span>]</span>)* <span class="macro-nonterminal">$tag_vis</span>:vis <span class="kw">struct </span><span class="macro-nonterminal">$tag</span>:ident = <span class="macro-nonterminal">$constructor</span>:tt($(<span class="macro-nonterminal">$tag_value</span>:tt)+); $(<span class="attr">#[$(<span class="macro-nonterminal">$hash_attr</span>:tt)<span class="kw-2">*</span>]</span>)* <span class="macro-nonterminal">$hash_vis</span>:vis <span class="kw">struct </span><span class="macro-nonterminal">$hash_name</span>:ident($(<span class="attr">#[$(<span class="macro-nonterminal">$field_attr</span>:tt)<span class="kw-2">*</span>]</span>)* <span class="kw">_</span>);)+) =&gt; {
+        $(
+        <span class="macro-nonterminal">$</span><span class="macro">crate::sha256t_hash_newtype_tag!</span>(<span class="macro-nonterminal">$tag_vis</span>, <span class="macro-nonterminal">$tag</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$hash_name</span>), $(<span class="attr">#[$(<span class="macro-nonterminal">$tag_attr</span>)<span class="kw-2">*</span>]</span>)<span class="kw-2">*</span>);
 
         <span class="kw">impl </span><span class="macro-nonterminal">$crate::sha256t::Tag </span><span class="kw">for </span><span class="macro-nonterminal">$tag </span>{
-            <span class="kw">fn </span>engine() -&gt; <span class="macro-nonterminal">$crate::sha256::HashEngine </span>{
-                <span class="kw">let </span>midstate = <span class="macro-nonterminal">$crate::sha256::Midstate::from_inner</span>(<span class="macro-nonterminal">$midstate</span>);
-                <span class="macro-nonterminal">$crate::sha256::HashEngine::from_midstate</span>(midstate, <span class="macro-nonterminal">$midstate_len</span>)
+            <span class="attr">#[inline]
+            </span><span class="kw">fn </span>engine() -&gt; <span class="macro-nonterminal">$crate::sha256::HashEngine </span>{
+                <span class="kw">const </span>MIDSTATE: (<span class="macro-nonterminal">$crate::sha256::Midstate</span>, usize) = <span class="macro-nonterminal">$</span><span class="macro">crate::sha256t_hash_newtype_tag_constructor!</span>(<span class="macro-nonterminal">$constructor</span>, $(<span class="macro-nonterminal">$tag_value</span>)+);
+                <span class="attr">#[allow(unused)]
+                </span><span class="kw">const </span>_LENGTH_CHECK: () = [(); <span class="number">1</span>][MIDSTATE.<span class="number">1 </span>% <span class="number">64</span>];
+                <span class="macro-nonterminal">$crate::sha256::HashEngine::from_midstate</span>(MIDSTATE.<span class="number">0</span>, MIDSTATE.<span class="number">1</span>)
             }
         }
 
-        <span class="macro-nonterminal">$</span><span class="macro">crate::hash_newtype!</span>(<span class="macro-nonterminal">$newtype</span>, <span class="macro-nonterminal">$crate::sha256t::Hash</span>&lt;<span class="macro-nonterminal">$tag</span>&gt;, <span class="number">32</span>, <span class="macro-nonterminal">$docs</span>, <span class="macro-nonterminal">$reverse</span>);
+        <span class="macro-nonterminal">$</span><span class="macro">crate::hash_newtype!</span> {
+            $(<span class="attr">#[$(<span class="macro-nonterminal">$hash_attr</span>)<span class="kw-2">*</span>]</span>)*
+            <span class="macro-nonterminal">$hash_vis </span><span class="kw">struct </span><span class="macro-nonterminal">$hash_name</span>($(<span class="attr">#[$(<span class="macro-nonterminal">$field_attr</span>)<span class="kw-2">*</span>]</span>)* <span class="macro-nonterminal">$crate::sha256t::Hash</span>&lt;<span class="macro-nonterminal">$tag</span>&gt;);
+        }
+        )+
+    }
+}
+
+<span class="comment">// Workaround macros being unavailable in attributes.
+</span><span class="attr">#[doc(hidden)]
+#[macro_export]
+</span><span class="macro">macro_rules!</span> sha256t_hash_newtype_tag {
+    (<span class="macro-nonterminal">$vis</span>:vis, <span class="macro-nonterminal">$tag</span>:ident, <span class="macro-nonterminal">$name</span>:expr, $(<span class="attr">#[$(<span class="macro-nonterminal">$attr</span>:meta)<span class="kw-2">*</span>]</span>)<span class="kw-2">*</span>) =&gt; {
+        <span class="attr">#[doc = <span class="string">"The tag used for [`"</span>]
+        #[doc = <span class="macro-nonterminal">$name</span>]
+        #[doc = <span class="string">"`]\n\n"</span>]
+        </span>$(<span class="attr">#[$(<span class="macro-nonterminal">$attr</span>)<span class="kw-2">*</span>]</span>)*
+        <span class="attr">#[derive(Copy, Clone, PartialEq, Eq, Default, PartialOrd, Ord, Hash)]
+        </span><span class="macro-nonterminal">$vis </span><span class="kw">struct </span><span class="macro-nonterminal">$tag</span>;
     };
 }
 
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">impl</span>&lt;T: Tag&gt; serde::Serialize <span class="kw">for </span>Hash&lt;T&gt; {
-    <span class="kw">fn </span>serialize&lt;S: serde::Serializer&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, s: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt; {
-        <span class="kw">if </span>s.is_human_readable() {
-            s.collect_str(<span class="self">self</span>)
-        } <span class="kw">else </span>{
-            s.serialize_bytes(<span class="kw-2">&amp;</span><span class="self">self</span>[..])
-        }
-    }
-}
-
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">struct </span>HexVisitor&lt;T: Tag&gt;(PhantomData&lt;T&gt;);
-
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">impl</span>&lt;T: Tag&gt; Default <span class="kw">for </span>HexVisitor&lt;T&gt; {
-    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{ HexVisitor(PhantomData) }
-}
-
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">'de</span>, T: Tag&gt; serde::de::Visitor&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>HexVisitor&lt;T&gt; {
-    <span class="kw">type </span>Value = Hash&lt;T&gt;;
-
-    <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-        formatter.write_str(<span class="string">"an ASCII hex string"</span>)
-    }
-
-    <span class="kw">fn </span>visit_bytes&lt;E&gt;(<span class="self">self</span>, v: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
-    <span class="kw">where
-        </span>E: serde::de::Error,
-    {
-        <span class="kw">use </span>core::str::FromStr;
-        <span class="kw">if let </span><span class="prelude-val">Ok</span>(hex) = str::from_utf8(v) {
-            Hash::&lt;T&gt;::from_str(hex).map_err(E::custom)
-        } <span class="kw">else </span>{
-            <span class="kw">return </span><span class="prelude-val">Err</span>(E::invalid_value(::serde::de::Unexpected::Bytes(v), <span class="kw-2">&amp;</span><span class="self">self</span>));
-        }
-    }
-
-    <span class="kw">fn </span>visit_str&lt;E&gt;(<span class="self">self</span>, v: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
-    <span class="kw">where
-        </span>E: serde::de::Error,
-    {
-        <span class="kw">use </span>core::str::FromStr;
-        Hash::&lt;T&gt;::from_str(v).map_err(E::custom)
-    }
-}
-
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">struct </span>BytesVisitor&lt;T: Tag&gt;(PhantomData&lt;T&gt;);
-
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">impl</span>&lt;T: Tag&gt; Default <span class="kw">for </span>BytesVisitor&lt;T&gt; {
-    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{ BytesVisitor(PhantomData) }
-}
-
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">'de</span>, T: Tag&gt; serde::de::Visitor&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>BytesVisitor&lt;T&gt; {
-    <span class="kw">type </span>Value = Hash&lt;T&gt;;
-
-    <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-        formatter.write_str(<span class="string">"a bytestring"</span>)
-    }
-
-    <span class="kw">fn </span>visit_bytes&lt;E&gt;(<span class="self">self</span>, v: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
-    <span class="kw">where
-        </span>E: serde::de::Error,
-    {
-        Hash::&lt;T&gt;::from_slice(v).map_err(|<span class="kw">_</span>| {
-            <span class="comment">// from_slice only errors on incorrect length
-            </span>E::invalid_length(v.len(), <span class="kw-2">&amp;</span><span class="string">"32"</span>)
-        })
-    }
-}
-
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">'de</span>, T: Tag&gt; serde::Deserialize&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>Hash&lt;T&gt; {
-    <span class="kw">fn </span>deserialize&lt;D: serde::Deserializer&lt;<span class="lifetime">'de</span>&gt;&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;Hash&lt;T&gt;, D::Error&gt; {
-        <span class="kw">if </span>d.is_human_readable() {
-            d.deserialize_str(HexVisitor::&lt;T&gt;::default())
-        } <span class="kw">else </span>{
-            d.deserialize_bytes(BytesVisitor::&lt;T&gt;::default())
-        }
-    }
+<span class="attr">#[doc(hidden)]
+#[macro_export]
+</span><span class="macro">macro_rules!</span> sha256t_hash_newtype_tag_constructor {
+    (hash_str, <span class="macro-nonterminal">$value</span>:expr) =&gt; {
+        (<span class="macro-nonterminal">$crate::sha256::Midstate::hash_tag</span>(<span class="macro-nonterminal">$value</span>.as_bytes()), <span class="number">64</span>)
+    };
+    (hash_bytes, <span class="macro-nonterminal">$value</span>:expr) =&gt; {
+        (<span class="macro-nonterminal">$crate::sha256::Midstate::hash_tag</span>(<span class="macro-nonterminal">$value</span>), <span class="number">64</span>)
+    };
+    (raw, <span class="macro-nonterminal">$bytes</span>:expr, <span class="macro-nonterminal">$len</span>:expr) =&gt; {
+        (<span class="macro-nonterminal">$crate::sha256::Midstate::from_byte_array</span>(<span class="macro-nonterminal">$bytes</span>), <span class="macro-nonterminal">$len</span>)
+    };
 }
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
-    <span class="kw">use crate</span>::{sha256, sha256t};
-    <span class="attr">#[cfg(any(feature = <span class="string">"std"</span>, feature = <span class="string">"alloc"</span>))]
-    </span><span class="kw">use </span><span class="kw">crate</span>::hex::ToHex;
-    <span class="attr">#[cfg(any(feature = <span class="string">"std"</span>, feature = <span class="string">"alloc"</span>))]
+    <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
     </span><span class="kw">use </span><span class="kw">crate</span>::Hash;
+    <span class="kw">use crate</span>::{sha256, sha256t};
 
     <span class="kw">const </span>TEST_MIDSTATE: [u8; <span class="number">32</span>] = [
-       <span class="number">156</span>, <span class="number">224</span>, <span class="number">228</span>, <span class="number">230</span>, <span class="number">124</span>, <span class="number">17</span>, <span class="number">108</span>, <span class="number">57</span>, <span class="number">56</span>, <span class="number">179</span>, <span class="number">202</span>, <span class="number">242</span>, <span class="number">195</span>, <span class="number">15</span>, <span class="number">80</span>, <span class="number">137</span>, <span class="number">211</span>, <span class="number">243</span>,
-       <span class="number">147</span>, <span class="number">108</span>, <span class="number">71</span>, <span class="number">99</span>, <span class="number">110</span>, <span class="number">96</span>, <span class="number">125</span>, <span class="number">179</span>, <span class="number">62</span>, <span class="number">234</span>, <span class="number">221</span>, <span class="number">198</span>, <span class="number">240</span>, <span class="number">201</span>,
+        <span class="number">156</span>, <span class="number">224</span>, <span class="number">228</span>, <span class="number">230</span>, <span class="number">124</span>, <span class="number">17</span>, <span class="number">108</span>, <span class="number">57</span>, <span class="number">56</span>, <span class="number">179</span>, <span class="number">202</span>, <span class="number">242</span>, <span class="number">195</span>, <span class="number">15</span>, <span class="number">80</span>, <span class="number">137</span>, <span class="number">211</span>, <span class="number">243</span>, <span class="number">147</span>,
+        <span class="number">108</span>, <span class="number">71</span>, <span class="number">99</span>, <span class="number">110</span>, <span class="number">96</span>, <span class="number">125</span>, <span class="number">179</span>, <span class="number">62</span>, <span class="number">234</span>, <span class="number">221</span>, <span class="number">198</span>, <span class="number">240</span>, <span class="number">201</span>,
     ];
 
     <span class="attr">#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Default, Hash)]
@@ -572,26 +385,33 @@
     <span class="kw">impl </span>sha256t::Tag <span class="kw">for </span>TestHashTag {
         <span class="kw">fn </span>engine() -&gt; sha256::HashEngine {
             <span class="comment">// The TapRoot TapLeaf midstate.
-            </span><span class="kw">let </span>midstate = sha256::Midstate::from_inner(TEST_MIDSTATE);
+            </span><span class="kw">let </span>midstate = sha256::Midstate::from_byte_array(TEST_MIDSTATE);
             sha256::HashEngine::from_midstate(midstate, <span class="number">64</span>)
         }
     }
 
     <span class="doccomment">/// A hash tagged with `$name`.
-    </span><span class="attr">#[cfg(any(feature = <span class="string">"std"</span>, feature = <span class="string">"alloc"</span>))]
+    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
     </span><span class="kw">pub type </span>TestHash = sha256t::Hash&lt;TestHashTag&gt;;
 
-    <span class="macro">sha256t_hash_newtype!</span>(NewTypeHash, NewTypeTag, TEST_MIDSTATE, <span class="number">64</span>, doc=<span class="string">"test hash"</span>, <span class="bool-val">true</span>);
+    <span class="macro">sha256t_hash_newtype!</span> {
+        <span class="doccomment">/// Test detailed explanation.
+        </span><span class="kw">struct </span>NewTypeTag = raw(TEST_MIDSTATE, <span class="number">64</span>);
+
+        <span class="doccomment">/// A test hash.
+        </span><span class="attr">#[hash_newtype(backward)]
+        </span><span class="kw">struct </span>NewTypeHash(<span class="kw">_</span>);
+    }
 
     <span class="attr">#[test]
-    #[cfg(any(feature = <span class="string">"std"</span>, feature = <span class="string">"alloc"</span>))]
+    #[cfg(feature = <span class="string">"alloc"</span>)]
     </span><span class="kw">fn </span>test_sha256t() {
         <span class="macro">assert_eq!</span>(
-            TestHash::hash(<span class="kw-2">&amp;</span>[<span class="number">0</span>]).to_hex(),
+            TestHash::hash(<span class="kw-2">&amp;</span>[<span class="number">0</span>]).to_string(),
             <span class="string">"29589d5122ec666ab5b4695070b6debc63881a4f85d88d93ddc90078038213ed"
         </span>);
         <span class="macro">assert_eq!</span>(
-            NewTypeHash::hash(<span class="kw-2">&amp;</span>[<span class="number">0</span>]).to_hex(),
+            NewTypeHash::hash(<span class="kw-2">&amp;</span>[<span class="number">0</span>]).to_string(),
             <span class="string">"29589d5122ec666ab5b4695070b6debc63881a4f85d88d93ddc90078038213ed"
         </span>);
     }

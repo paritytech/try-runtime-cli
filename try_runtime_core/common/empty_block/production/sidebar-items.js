@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["mine_block","produce_next_block"]};

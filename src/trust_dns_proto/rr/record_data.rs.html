@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.22.0/src/rr/record_data.rs`."><title>record_data.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.23.2/src/rr/record_data.rs`."><title>record_data.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../trust_dns_proto/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -1285,9 +1285,7 @@
 <a href="#1283" id="1283">1283</a>
 <a href="#1284" id="1284">1284</a>
 <a href="#1285" id="1285">1285</a>
-<a href="#1286" id="1286">1286</a>
-<a href="#1287" id="1287">1287</a>
-</pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2021 Benjamin Fry &lt;benjaminfry@me.com&gt;
+</pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2023 Benjamin Fry &lt;benjaminfry@me.com&gt;
 //
 // Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0&gt; or the MIT license &lt;LICENSE-MIT or
@@ -1297,11 +1295,9 @@
 </span><span class="doccomment">//! record data enum variants
 </span><span class="attr">#![allow(deprecated, clippy::use_self)] </span><span class="comment">// allows us to deprecate RData types
 
-</span><span class="kw">use </span>std::cmp::Ordering;
-<span class="attr">#[cfg(test)]
+</span><span class="attr">#[cfg(test)]
 </span><span class="kw">use </span>std::convert::From;
-<span class="kw">use </span>std::fmt;
-<span class="kw">use </span>std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+<span class="kw">use </span>std::{cmp::Ordering, fmt, net::IpAddr};
 
 <span class="attr">#[cfg(feature = <span class="string">"serde-config"</span>)]
 </span><span class="kw">use </span>serde::{Deserialize, Serialize};
@@ -1309,19 +1305,25 @@
 <span class="kw">use </span>enum_as_inner::EnumAsInner;
 <span class="kw">use </span>tracing::{trace, warn};
 
-<span class="kw">use </span><span class="kw">super</span>::domain::Name;
-<span class="kw">use </span><span class="kw">super</span>::rdata;
-<span class="kw">use </span><span class="kw">super</span>::rdata::{
-    CAA, CSYNC, HINFO, MX, NAPTR, NULL, OPENPGPKEY, OPT, SOA, SRV, SSHFP, SVCB, TLSA, TXT,
+<span class="kw">use crate</span>::{
+    error::{ProtoError, ProtoErrorKind, ProtoResult},
+    rr::{
+        rdata::{
+            A, AAAA, ANAME, CAA, CNAME, CSYNC, HINFO, HTTPS, MX, NAPTR, NS, NULL, OPENPGPKEY, OPT,
+            PTR, SOA, SRV, SSHFP, SVCB, TLSA, TXT,
+        },
+        record_type::RecordType,
+        RecordData, RecordDataDecodable,
+    },
+    serialize::binary::{BinDecodable, BinDecoder, BinEncodable, BinEncoder, Restrict},
 };
-<span class="kw">use </span><span class="kw">super</span>::record_type::RecordType;
-<span class="kw">use </span><span class="kw">crate</span>::error::<span class="kw-2">*</span>;
-<span class="kw">use </span><span class="kw">crate</span>::serialize::binary::<span class="kw-2">*</span>;
 
 <span class="attr">#[cfg(feature = <span class="string">"dnssec"</span>)]
 </span><span class="kw">use </span><span class="kw">super</span>::dnssec::rdata::DNSSECRData;
 
-<span class="doccomment">/// Record data enum variants
+<span class="doccomment">/// Record data enum variants for all valid DNS data types.
+///
+/// This is used to represent the generic Record as it is read off the wire. Allows for a Record to be abstractly referenced without knowing it's internal until runtime.
 ///
 /// [RFC 1035](https://tools.ietf.org/html/rfc1035), DOMAIN NAMES - IMPLEMENTATION AND SPECIFICATION, November 1987
 ///
@@ -1367,7 +1369,7 @@
     /// decimal numbers separated by dots without any embedded spaces (e.g.,
     /// "10.2.0.52" or "192.0.5.6").
     /// ```
-    </span>A(Ipv4Addr),
+    </span>A(A),
 
     <span class="doccomment">/// ```text
     /// -- RFC 1886 -- IPv6 DNS Extensions              December 1995
@@ -1377,7 +1379,7 @@
     ///    A 128 bit IPv6 address is encoded in the data portion of an AAAA
     ///    resource record in network byte order (high-order byte first).
     /// ```
-    </span>AAAA(Ipv6Addr),
+    </span>AAAA(AAAA),
 
     <span class="doccomment">/// ```text
     /// 2.  The ANAME resource record
@@ -1392,7 +1394,7 @@
     ///
     ///       owner ttl class ANAME target
     /// ```
-    </span>ANAME(Name),
+    </span>ANAME(ANAME),
 
     <span class="doccomment">/// ```text
     /// -- RFC 6844          Certification Authority Authorization     January 2013
@@ -1455,7 +1457,7 @@
     /// choose to restart the query at the canonical name in certain cases.  See
     /// the description of name server logic in [RFC-1034] for details.
     /// ```
-    </span>CNAME(Name),
+    </span>CNAME(CNAME),
 
     <span class="doccomment">/// ```text
     /// 2.1.  The CSYNC Resource Record Format
@@ -1523,7 +1525,7 @@
     ///
     ///    Name TTL IN HTTPS SvcPriority TargetName SvcParams
     /// ```
-    </span>HTTPS(SVCB),
+    </span>HTTPS(HTTPS),
 
     <span class="doccomment">/// ```text
     /// 3.3.9. MX RDATA format
@@ -1702,7 +1704,7 @@
     /// hosts which are name servers for either Internet (IN) or Hesiod (HS)
     /// class information are normally queried using IN class protocols.
     /// ```
-    </span>NS(Name),
+    </span>NS(NS),
 
     <span class="doccomment">/// [RFC 7929](https://tools.ietf.org/html/rfc7929#section-2.1)
     ///
@@ -1763,7 +1765,7 @@
     /// similar to that performed by CNAME, which identifies aliases.  See the
     /// description of the IN-ADDR.ARPA domain for an example.
     /// ```
-    </span>PTR(Name),
+    </span>PTR(PTR),
 
     <span class="doccomment">/// ```text
     /// 3.3.13. SOA RDATA format
@@ -1993,49 +1995,89 @@
         buf
     }
 
-    <span class="doccomment">/// Read the RData from the given Decoder
+    <span class="doccomment">/// Converts this to a Recordtype
+    </span><span class="kw">pub fn </span>record_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RecordType {
+        <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
+            <span class="self">Self</span>::A(..) =&gt; RecordType::A,
+            <span class="self">Self</span>::AAAA(..) =&gt; RecordType::AAAA,
+            <span class="self">Self</span>::ANAME(..) =&gt; RecordType::ANAME,
+            <span class="self">Self</span>::CAA(..) =&gt; RecordType::CAA,
+            <span class="self">Self</span>::CNAME(..) =&gt; RecordType::CNAME,
+            <span class="self">Self</span>::CSYNC(..) =&gt; RecordType::CSYNC,
+            <span class="self">Self</span>::HINFO(..) =&gt; RecordType::HINFO,
+            <span class="self">Self</span>::HTTPS(..) =&gt; RecordType::HTTPS,
+            <span class="self">Self</span>::MX(..) =&gt; RecordType::MX,
+            <span class="self">Self</span>::NAPTR(..) =&gt; RecordType::NAPTR,
+            <span class="self">Self</span>::NS(..) =&gt; RecordType::NS,
+            <span class="self">Self</span>::NULL(..) =&gt; RecordType::NULL,
+            <span class="self">Self</span>::OPENPGPKEY(..) =&gt; RecordType::OPENPGPKEY,
+            <span class="self">Self</span>::OPT(..) =&gt; RecordType::OPT,
+            <span class="self">Self</span>::PTR(..) =&gt; RecordType::PTR,
+            <span class="self">Self</span>::SOA(..) =&gt; RecordType::SOA,
+            <span class="self">Self</span>::SRV(..) =&gt; RecordType::SRV,
+            <span class="self">Self</span>::SSHFP(..) =&gt; RecordType::SSHFP,
+            <span class="self">Self</span>::SVCB(..) =&gt; RecordType::SVCB,
+            <span class="self">Self</span>::TLSA(..) =&gt; RecordType::TLSA,
+            <span class="self">Self</span>::TXT(..) =&gt; RecordType::TXT,
+            <span class="attr">#[cfg(feature = <span class="string">"dnssec"</span>)]
+            </span><span class="self">Self</span>::DNSSEC(<span class="kw-2">ref </span>rdata) =&gt; DNSSECRData::to_record_type(rdata),
+            <span class="self">Self</span>::Unknown { code, .. } =&gt; RecordType::Unknown(code),
+            <span class="self">Self</span>::ZERO =&gt; RecordType::ZERO,
+        }
+    }
+
+    <span class="doccomment">/// If this is an A or AAAA record type, then an IpAddr will be returned
+    </span><span class="kw">pub fn </span>ip_addr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;IpAddr&gt; {
+        <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
+            <span class="self">Self</span>::A(a) =&gt; <span class="prelude-val">Some</span>(IpAddr::from(a.<span class="number">0</span>)),
+            <span class="self">Self</span>::AAAA(aaaa) =&gt; <span class="prelude-val">Some</span>(IpAddr::from(aaaa.<span class="number">0</span>)),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
+        }
+    }
+
+    <span class="doccomment">/// Read data from the decoder
     </span><span class="kw">pub fn </span>read(
         decoder: <span class="kw-2">&amp;mut </span>BinDecoder&lt;<span class="lifetime">'_</span>&gt;,
         record_type: RecordType,
-        rdata_length: Restrict&lt;u16&gt;,
+        length: Restrict&lt;u16&gt;,
     ) -&gt; ProtoResult&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>start_idx = decoder.index();
 
         <span class="kw">let </span>result = <span class="kw">match </span>record_type {
             RecordType::A =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading A"</span>);
-                rdata::a::read(decoder).map(<span class="self">Self</span>::A)
+                A::read(decoder).map(<span class="self">Self</span>::A)
             }
             RecordType::AAAA =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading AAAA"</span>);
-                rdata::aaaa::read(decoder).map(<span class="self">Self</span>::AAAA)
+                AAAA::read(decoder).map(<span class="self">Self</span>::AAAA)
             }
             RecordType::ANAME =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading ANAME"</span>);
-                rdata::name::read(decoder).map(<span class="self">Self</span>::ANAME)
+                ANAME::read(decoder).map(<span class="self">Self</span>::ANAME)
             }
             rt @ RecordType::ANY | rt @ RecordType::AXFR | rt @ RecordType::IXFR =&gt; {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(ProtoErrorKind::UnknownRecordTypeValue(rt.into()).into());
             }
             RecordType::CAA =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading CAA"</span>);
-                rdata::caa::read(decoder, rdata_length).map(<span class="self">Self</span>::CAA)
+                CAA::read_data(decoder, length).map(<span class="self">Self</span>::CAA)
             }
             RecordType::CNAME =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading CNAME"</span>);
-                rdata::name::read(decoder).map(<span class="self">Self</span>::CNAME)
+                CNAME::read(decoder).map(<span class="self">Self</span>::CNAME)
             }
             RecordType::CSYNC =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading CSYNC"</span>);
-                rdata::csync::read(decoder, rdata_length).map(<span class="self">Self</span>::CSYNC)
+                CSYNC::read_data(decoder, length).map(<span class="self">Self</span>::CSYNC)
             }
             RecordType::HINFO =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading HINFO"</span>);
-                rdata::hinfo::read(decoder).map(<span class="self">Self</span>::HINFO)
+                HINFO::read_data(decoder, length).map(<span class="self">Self</span>::HINFO)
             }
             RecordType::HTTPS =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading HTTPS"</span>);
-                rdata::svcb::read(decoder, rdata_length).map(<span class="self">Self</span>::HTTPS)
+                HTTPS::read_data(decoder, length).map(<span class="self">Self</span>::HTTPS)
             }
             RecordType::ZERO =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading EMPTY"</span>);
@@ -2046,63 +2088,61 @@
             }
             RecordType::MX =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading MX"</span>);
-                rdata::mx::read(decoder).map(<span class="self">Self</span>::MX)
+                MX::read_data(decoder, length).map(<span class="self">Self</span>::MX)
             }
             RecordType::NAPTR =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading NAPTR"</span>);
-                rdata::naptr::read(decoder).map(<span class="self">Self</span>::NAPTR)
+                NAPTR::read_data(decoder, length).map(<span class="self">Self</span>::NAPTR)
             }
             RecordType::NULL =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading NULL"</span>);
-                rdata::null::read(decoder, rdata_length).map(<span class="self">Self</span>::NULL)
+                NULL::read_data(decoder, length).map(<span class="self">Self</span>::NULL)
             }
             RecordType::NS =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading NS"</span>);
-                rdata::name::read(decoder).map(<span class="self">Self</span>::NS)
+                NS::read(decoder).map(<span class="self">Self</span>::NS)
             }
             RecordType::OPENPGPKEY =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading OPENPGPKEY"</span>);
-                rdata::openpgpkey::read(decoder, rdata_length).map(<span class="self">Self</span>::OPENPGPKEY)
+                OPENPGPKEY::read_data(decoder, length).map(<span class="self">Self</span>::OPENPGPKEY)
             }
             RecordType::OPT =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading OPT"</span>);
-                rdata::opt::read(decoder, rdata_length).map(<span class="self">Self</span>::OPT)
+                OPT::read_data(decoder, length).map(<span class="self">Self</span>::OPT)
             }
             RecordType::PTR =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading PTR"</span>);
-                rdata::name::read(decoder).map(<span class="self">Self</span>::PTR)
+                PTR::read(decoder).map(<span class="self">Self</span>::PTR)
             }
             RecordType::SOA =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading SOA"</span>);
-                rdata::soa::read(decoder).map(<span class="self">Self</span>::SOA)
+                SOA::read_data(decoder, length).map(<span class="self">Self</span>::SOA)
             }
             RecordType::SRV =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading SRV"</span>);
-                rdata::srv::read(decoder).map(<span class="self">Self</span>::SRV)
+                SRV::read_data(decoder, length).map(<span class="self">Self</span>::SRV)
             }
             RecordType::SSHFP =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading SSHFP"</span>);
-                rdata::sshfp::read(decoder, rdata_length).map(<span class="self">Self</span>::SSHFP)
+                SSHFP::read_data(decoder, length).map(<span class="self">Self</span>::SSHFP)
             }
             RecordType::SVCB =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading SVCB"</span>);
-                rdata::svcb::read(decoder, rdata_length).map(<span class="self">Self</span>::SVCB)
+                SVCB::read_data(decoder, length).map(<span class="self">Self</span>::SVCB)
             }
             RecordType::TLSA =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading TLSA"</span>);
-                rdata::tlsa::read(decoder, rdata_length).map(<span class="self">Self</span>::TLSA)
+                TLSA::read_data(decoder, length).map(<span class="self">Self</span>::TLSA)
             }
             RecordType::TXT =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading TXT"</span>);
-                rdata::txt::read(decoder, rdata_length).map(<span class="self">Self</span>::TXT)
+                TXT::read_data(decoder, length).map(<span class="self">Self</span>::TXT)
             }
             <span class="attr">#[cfg(feature = <span class="string">"dnssec"</span>)]
-            </span>r <span class="kw">if </span>r.is_dnssec() =&gt; {
-                DNSSECRData::read(decoder, record_type, rdata_length).map(<span class="self">Self</span>::DNSSEC)
-            }
+            </span>r <span class="kw">if </span>r.is_dnssec() =&gt; DNSSECRData::read(decoder, record_type, length).map(<span class="self">Self</span>::DNSSEC),
             record_type =&gt; {
                 <span class="macro">trace!</span>(<span class="string">"reading Unknown record: {}"</span>, record_type);
-                rdata::null::read(decoder, rdata_length).map(|rdata| <span class="self">Self</span>::Unknown {
+                NULL::read_data(decoder, length).map(|rdata| <span class="self">Self</span>::Unknown {
                     code: record_type.into(),
                     rdata,
                 })
@@ -2111,7 +2151,7 @@
 
         <span class="comment">// we should have read rdata_length, but we did not
         </span><span class="kw">let </span>read = decoder.index() - start_idx;
-        rdata_length
+        length
             .map(|u| u <span class="kw">as </span>usize)
             .verify_unwrap(|rdata_length| read == <span class="kw-2">*</span>rdata_length)
             .map_err(|rdata_length| {
@@ -2123,7 +2163,9 @@
 
         result
     }
+}
 
+<span class="kw">impl </span>BinEncodable <span class="kw">for </span>RData {
     <span class="doccomment">/// [RFC 4034](https://tools.ietf.org/html/rfc4034#section-6), DNSSEC Resource Records, March 2005
     ///
     /// ```text
@@ -2191,104 +2233,61 @@
     ///   DNAME, and A6.
     ///   ...
     /// ```
-    </span><span class="kw">pub fn </span>emit(<span class="kw-2">&amp;</span><span class="self">self</span>, encoder: <span class="kw-2">&amp;mut </span>BinEncoder&lt;<span class="lifetime">'_</span>&gt;) -&gt; ProtoResult&lt;()&gt; {
+    </span><span class="kw">fn </span>emit(<span class="kw-2">&amp;</span><span class="self">self</span>, encoder: <span class="kw-2">&amp;mut </span>BinEncoder&lt;<span class="lifetime">'_</span>&gt;) -&gt; ProtoResult&lt;()&gt; {
         <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
-            <span class="self">Self</span>::A(address) =&gt; rdata::a::emit(encoder, address),
-            <span class="self">Self</span>::AAAA(<span class="kw-2">ref </span>address) =&gt; rdata::aaaa::emit(encoder, address),
-            <span class="self">Self</span>::ANAME(<span class="kw-2">ref </span>name) =&gt; {
-                encoder.with_canonical_names(|encoder| rdata::name::emit(encoder, name))
-            }
-            <span class="self">Self</span>::CAA(<span class="kw-2">ref </span>caa) =&gt; {
-                encoder.with_canonical_names(|encoder| rdata::caa::emit(encoder, caa))
-            }
-            <span class="comment">// to_lowercase for rfc4034 and rfc6840
-            </span><span class="self">Self</span>::CNAME(<span class="kw-2">ref </span>name) | RData::NS(<span class="kw-2">ref </span>name) | RData::PTR(<span class="kw-2">ref </span>name) =&gt; {
-                rdata::name::emit(encoder, name)
-            }
-            <span class="self">Self</span>::CSYNC(<span class="kw-2">ref </span>csync) =&gt; rdata::csync::emit(encoder, csync),
-            <span class="self">Self</span>::HINFO(<span class="kw-2">ref </span>hinfo) =&gt; rdata::hinfo::emit(encoder, hinfo),
-            <span class="self">Self</span>::HTTPS(<span class="kw-2">ref </span>svcb) =&gt; rdata::svcb::emit(encoder, svcb),
+            <span class="self">Self</span>::A(<span class="kw-2">ref </span>address) =&gt; address.emit(encoder),
+            <span class="self">Self</span>::AAAA(<span class="kw-2">ref </span>address) =&gt; address.emit(encoder),
+            <span class="self">Self</span>::ANAME(<span class="kw-2">ref </span>name) =&gt; encoder.with_canonical_names(|encoder| name.emit(encoder)),
+            <span class="self">Self</span>::CAA(<span class="kw-2">ref </span>caa) =&gt; encoder.with_canonical_names(|encoder| caa.emit(encoder)),
+            <span class="self">Self</span>::CNAME(<span class="kw-2">ref </span>cname) =&gt; cname.emit(encoder),
+            <span class="self">Self</span>::NS(<span class="kw-2">ref </span>ns) =&gt; ns.emit(encoder),
+            <span class="self">Self</span>::PTR(<span class="kw-2">ref </span>ptr) =&gt; ptr.emit(encoder),
+            <span class="self">Self</span>::CSYNC(<span class="kw-2">ref </span>csync) =&gt; csync.emit(encoder),
+            <span class="self">Self</span>::HINFO(<span class="kw-2">ref </span>hinfo) =&gt; hinfo.emit(encoder),
+            <span class="self">Self</span>::HTTPS(<span class="kw-2">ref </span>https) =&gt; https.emit(encoder),
             <span class="self">Self</span>::ZERO =&gt; <span class="prelude-val">Ok</span>(()),
-            <span class="comment">// to_lowercase for rfc4034 and rfc6840
-            </span><span class="self">Self</span>::MX(<span class="kw-2">ref </span>mx) =&gt; rdata::mx::emit(encoder, mx),
-            <span class="self">Self</span>::NAPTR(<span class="kw-2">ref </span>naptr) =&gt; {
-                encoder.with_canonical_names(|encoder| rdata::naptr::emit(encoder, naptr))
-            }
-            <span class="self">Self</span>::NULL(<span class="kw-2">ref </span>null) =&gt; rdata::null::emit(encoder, null),
+            <span class="self">Self</span>::MX(<span class="kw-2">ref </span>mx) =&gt; mx.emit(encoder),
+            <span class="self">Self</span>::NAPTR(<span class="kw-2">ref </span>naptr) =&gt; encoder.with_canonical_names(|encoder| naptr.emit(encoder)),
+            <span class="self">Self</span>::NULL(<span class="kw-2">ref </span>null) =&gt; null.emit(encoder),
             <span class="self">Self</span>::OPENPGPKEY(<span class="kw-2">ref </span>openpgpkey) =&gt; {
-                encoder.with_canonical_names(|encoder| rdata::openpgpkey::emit(encoder, openpgpkey))
+                encoder.with_canonical_names(|encoder| openpgpkey.emit(encoder))
             }
-            <span class="self">Self</span>::OPT(<span class="kw-2">ref </span>opt) =&gt; rdata::opt::emit(encoder, opt),
-            <span class="comment">// to_lowercase for rfc4034 and rfc6840
-            </span><span class="self">Self</span>::SOA(<span class="kw-2">ref </span>soa) =&gt; rdata::soa::emit(encoder, soa),
-            <span class="comment">// to_lowercase for rfc4034 and rfc6840
-            </span><span class="self">Self</span>::SRV(<span class="kw-2">ref </span>srv) =&gt; {
-                encoder.with_canonical_names(|encoder| rdata::srv::emit(encoder, srv))
-            }
-            <span class="self">Self</span>::SSHFP(<span class="kw-2">ref </span>sshfp) =&gt; {
-                encoder.with_canonical_names(|encoder| rdata::sshfp::emit(encoder, sshfp))
-            }
-            <span class="self">Self</span>::SVCB(<span class="kw-2">ref </span>svcb) =&gt; rdata::svcb::emit(encoder, svcb),
-            <span class="self">Self</span>::TLSA(<span class="kw-2">ref </span>tlsa) =&gt; {
-                encoder.with_canonical_names(|encoder| rdata::tlsa::emit(encoder, tlsa))
-            }
-            <span class="self">Self</span>::TXT(<span class="kw-2">ref </span>txt) =&gt; rdata::txt::emit(encoder, txt),
+            <span class="self">Self</span>::OPT(<span class="kw-2">ref </span>opt) =&gt; opt.emit(encoder),
+            <span class="self">Self</span>::SOA(<span class="kw-2">ref </span>soa) =&gt; soa.emit(encoder),
+            <span class="self">Self</span>::SRV(<span class="kw-2">ref </span>srv) =&gt; encoder.with_canonical_names(|encoder| srv.emit(encoder)),
+            <span class="self">Self</span>::SSHFP(<span class="kw-2">ref </span>sshfp) =&gt; encoder.with_canonical_names(|encoder| sshfp.emit(encoder)),
+            <span class="self">Self</span>::SVCB(<span class="kw-2">ref </span>svcb) =&gt; svcb.emit(encoder),
+            <span class="self">Self</span>::TLSA(<span class="kw-2">ref </span>tlsa) =&gt; encoder.with_canonical_names(|encoder| tlsa.emit(encoder)),
+            <span class="self">Self</span>::TXT(<span class="kw-2">ref </span>txt) =&gt; txt.emit(encoder),
             <span class="attr">#[cfg(feature = <span class="string">"dnssec"</span>)]
             </span><span class="self">Self</span>::DNSSEC(<span class="kw-2">ref </span>rdata) =&gt; encoder.with_canonical_names(|encoder| rdata.emit(encoder)),
-            <span class="self">Self</span>::Unknown { <span class="kw-2">ref </span>rdata, .. } =&gt; rdata::null::emit(encoder, rdata),
+            <span class="self">Self</span>::Unknown { <span class="kw-2">ref </span>rdata, .. } =&gt; rdata.emit(encoder),
         }
     }
+}
 
-    <span class="doccomment">/// Converts this to a Recordtype
-    </span><span class="kw">pub fn </span>to_record_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RecordType {
-        <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
-            <span class="self">Self</span>::A(..) =&gt; RecordType::A,
-            <span class="self">Self</span>::AAAA(..) =&gt; RecordType::AAAA,
-            <span class="self">Self</span>::ANAME(..) =&gt; RecordType::ANAME,
-            <span class="self">Self</span>::CAA(..) =&gt; RecordType::CAA,
-            <span class="self">Self</span>::CNAME(..) =&gt; RecordType::CNAME,
-            <span class="self">Self</span>::CSYNC(..) =&gt; RecordType::CSYNC,
-            <span class="self">Self</span>::HINFO(..) =&gt; RecordType::HINFO,
-            <span class="self">Self</span>::HTTPS(..) =&gt; RecordType::HTTPS,
-            <span class="self">Self</span>::MX(..) =&gt; RecordType::MX,
-            <span class="self">Self</span>::NAPTR(..) =&gt; RecordType::NAPTR,
-            <span class="self">Self</span>::NS(..) =&gt; RecordType::NS,
-            <span class="self">Self</span>::NULL(..) =&gt; RecordType::NULL,
-            <span class="self">Self</span>::OPENPGPKEY(..) =&gt; RecordType::OPENPGPKEY,
-            <span class="self">Self</span>::OPT(..) =&gt; RecordType::OPT,
-            <span class="self">Self</span>::PTR(..) =&gt; RecordType::PTR,
-            <span class="self">Self</span>::SOA(..) =&gt; RecordType::SOA,
-            <span class="self">Self</span>::SRV(..) =&gt; RecordType::SRV,
-            <span class="self">Self</span>::SSHFP(..) =&gt; RecordType::SSHFP,
-            <span class="self">Self</span>::SVCB(..) =&gt; RecordType::SVCB,
-            <span class="self">Self</span>::TLSA(..) =&gt; RecordType::TLSA,
-            <span class="self">Self</span>::TXT(..) =&gt; RecordType::TXT,
-            <span class="attr">#[cfg(feature = <span class="string">"dnssec"</span>)]
-            </span><span class="self">Self</span>::DNSSEC(<span class="kw-2">ref </span>rdata) =&gt; DNSSECRData::to_record_type(rdata),
-            <span class="self">Self</span>::Unknown { code, .. } =&gt; RecordType::Unknown(code),
-            <span class="self">Self</span>::ZERO =&gt; RecordType::ZERO,
-        }
+<span class="kw">impl </span>RecordData <span class="kw">for </span>RData {
+    <span class="kw">fn </span>try_from_rdata(data: RData) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, RData&gt; {
+        <span class="prelude-val">Ok</span>(data)
     }
 
-    <span class="doccomment">/// If this is an A or AAAA record type, then an IpAddr will be returned
-    </span><span class="kw">pub fn </span>to_ip_addr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;IpAddr&gt; {
-        <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
-            <span class="self">Self</span>::A(a) =&gt; <span class="prelude-val">Some</span>(IpAddr::from(a)),
-            <span class="self">Self</span>::AAAA(aaaa) =&gt; <span class="prelude-val">Some</span>(IpAddr::from(aaaa)),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
-        }
+    <span class="kw">fn </span>try_borrow(data: <span class="kw-2">&amp;</span>RData) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="self">Self</span>&gt; {
+        <span class="prelude-val">Some</span>(data)
     }
 
-    <span class="doccomment">/// Returns true if
-    </span><span class="kw">pub fn </span>is_soa(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="macro">matches!</span>(<span class="self">self</span>, RData::SOA(..))
+    <span class="kw">fn </span>record_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RecordType {
+        <span class="self">self</span>.record_type()
     }
+
+    <span class="kw">fn </span>into_rdata(<span class="self">self</span>) -&gt; RData {
+        <span class="self">self
+    </span>}
 }
 
 <span class="kw">impl </span>fmt::Display <span class="kw">for </span>RData {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), fmt::Error&gt; {
-        <span class="kw">fn </span>w&lt;D: fmt::Display&gt;(f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;, d: D) -&gt; <span class="prelude-ty">Result</span>&lt;(), fmt::Error&gt; {
-            <span class="macro">write!</span>(f, <span class="string">"{rdata}"</span>, rdata = d)
+        <span class="kw">fn </span>w&lt;D: fmt::Display&gt;(f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;, rdata: D) -&gt; <span class="prelude-ty">Result</span>&lt;(), fmt::Error&gt; {
+            <span class="macro">write!</span>(f, <span class="string">"{rdata}"</span>)
         }
 
         <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
@@ -2297,10 +2296,12 @@
             <span class="self">Self</span>::ANAME(<span class="kw-2">ref </span>name) =&gt; w(f, name),
             <span class="self">Self</span>::CAA(<span class="kw-2">ref </span>caa) =&gt; w(f, caa),
             <span class="comment">// to_lowercase for rfc4034 and rfc6840
-            </span><span class="self">Self</span>::CNAME(<span class="kw-2">ref </span>name) | RData::NS(<span class="kw-2">ref </span>name) | RData::PTR(<span class="kw-2">ref </span>name) =&gt; w(f, name),
+            </span><span class="self">Self</span>::CNAME(<span class="kw-2">ref </span>cname) =&gt; w(f, cname),
+            <span class="self">Self</span>::NS(<span class="kw-2">ref </span>ns) =&gt; w(f, ns),
+            <span class="self">Self</span>::PTR(<span class="kw-2">ref </span>ptr) =&gt; w(f, ptr),
             <span class="self">Self</span>::CSYNC(<span class="kw-2">ref </span>csync) =&gt; w(f, csync),
             <span class="self">Self</span>::HINFO(<span class="kw-2">ref </span>hinfo) =&gt; w(f, hinfo),
-            <span class="self">Self</span>::HTTPS(<span class="kw-2">ref </span>svcb) =&gt; w(f, svcb),
+            <span class="self">Self</span>::HTTPS(<span class="kw-2">ref </span>https) =&gt; w(f, https),
             <span class="self">Self</span>::ZERO =&gt; <span class="prelude-val">Ok</span>(()),
             <span class="comment">// to_lowercase for rfc4034 and rfc6840
             </span><span class="self">Self</span>::MX(<span class="kw-2">ref </span>mx) =&gt; w(f, mx),
@@ -2360,9 +2361,7 @@
 </span><span class="kw">mod </span>tests {
     <span class="attr">#![allow(clippy::dbg_macro, clippy::print_stdout)]
 
-    </span><span class="kw">use </span>std::net::Ipv4Addr;
-    <span class="kw">use </span>std::net::Ipv6Addr;
-    <span class="kw">use </span>std::str::FromStr;
+    </span><span class="kw">use </span>std::str::FromStr;
 
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span><span class="kw">crate</span>::rr::domain::Name;
@@ -2375,7 +2374,7 @@
     <span class="kw">fn </span>get_data() -&gt; Vec&lt;(RData, Vec&lt;u8&gt;)&gt; {
         <span class="macro">vec!</span>[
             (
-                RData::CNAME(Name::from_str(<span class="string">"www.example.com"</span>).unwrap()),
+                RData::CNAME(CNAME(Name::from_str(<span class="string">"www.example.com"</span>).unwrap())),
                 <span class="macro">vec!</span>[
                     <span class="number">3</span>, <span class="string">b'w'</span>, <span class="string">b'w'</span>, <span class="string">b'w'</span>, <span class="number">7</span>, <span class="string">b'e'</span>, <span class="string">b'x'</span>, <span class="string">b'a'</span>, <span class="string">b'm'</span>, <span class="string">b'p'</span>, <span class="string">b'l'</span>, <span class="string">b'e'</span>, <span class="number">3</span>, <span class="string">b'c'</span>,
                     <span class="string">b'o'</span>, <span class="string">b'm'</span>, <span class="number">0</span>,
@@ -2386,14 +2385,14 @@
                 <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="string">b'n'</span>, <span class="number">0</span>],
             ),
             (
-                RData::NS(Name::from_str(<span class="string">"www.example.com"</span>).unwrap()),
+                RData::NS(NS(Name::from_str(<span class="string">"www.example.com"</span>).unwrap())),
                 <span class="macro">vec!</span>[
                     <span class="number">3</span>, <span class="string">b'w'</span>, <span class="string">b'w'</span>, <span class="string">b'w'</span>, <span class="number">7</span>, <span class="string">b'e'</span>, <span class="string">b'x'</span>, <span class="string">b'a'</span>, <span class="string">b'm'</span>, <span class="string">b'p'</span>, <span class="string">b'l'</span>, <span class="string">b'e'</span>, <span class="number">3</span>, <span class="string">b'c'</span>,
                     <span class="string">b'o'</span>, <span class="string">b'm'</span>, <span class="number">0</span>,
                 ],
             ),
             (
-                RData::PTR(Name::from_str(<span class="string">"www.example.com"</span>).unwrap()),
+                RData::PTR(PTR(Name::from_str(<span class="string">"www.example.com"</span>).unwrap())),
                 <span class="macro">vec!</span>[
                     <span class="number">3</span>, <span class="string">b'w'</span>, <span class="string">b'w'</span>, <span class="string">b'w'</span>, <span class="number">7</span>, <span class="string">b'e'</span>, <span class="string">b'x'</span>, <span class="string">b'a'</span>, <span class="string">b'm'</span>, <span class="string">b'p'</span>, <span class="string">b'l'</span>, <span class="string">b'e'</span>, <span class="number">3</span>, <span class="string">b'c'</span>,
                     <span class="string">b'o'</span>, <span class="string">b'm'</span>, <span class="number">0</span>,
@@ -2427,12 +2426,9 @@
                     <span class="number">6</span>, <span class="string">b'a'</span>, <span class="string">b'b'</span>, <span class="string">b'c'</span>, <span class="string">b'd'</span>, <span class="string">b'e'</span>, <span class="string">b'f'</span>, <span class="number">3</span>, <span class="string">b'g'</span>, <span class="string">b'h'</span>, <span class="string">b'i'</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="string">b'j'</span>,
                 ],
             ),
+            (RData::A(A::from_str(<span class="string">"0.0.0.0"</span>).unwrap()), <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]),
             (
-                RData::A(Ipv4Addr::from_str(<span class="string">"0.0.0.0"</span>).unwrap()),
-                <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],
-            ),
-            (
-                RData::AAAA(Ipv6Addr::from_str(<span class="string">"::"</span>).unwrap()),
+                RData::AAAA(AAAA::from_str(<span class="string">"::"</span>).unwrap()),
                 <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],
             ),
             (
@@ -2458,8 +2454,8 @@
     </span><span class="attr">#[test]
     </span><span class="kw">fn </span>test_order() {
         <span class="kw">let </span>ordered: Vec&lt;RData&gt; = <span class="macro">vec!</span>[
-            RData::A(Ipv4Addr::from_str(<span class="string">"0.0.0.0"</span>).unwrap()),
-            RData::AAAA(Ipv6Addr::from_str(<span class="string">"::"</span>).unwrap()),
+            RData::A(A::from_str(<span class="string">"0.0.0.0"</span>).unwrap()),
+            RData::AAAA(AAAA::from_str(<span class="string">"::"</span>).unwrap()),
             RData::SRV(SRV::new(
                 <span class="number">1</span>,
                 <span class="number">2</span>,
@@ -2467,9 +2463,9 @@
                 Name::from_str(<span class="string">"www.example.com"</span>).unwrap(),
             )),
             RData::MX(MX::new(<span class="number">256</span>, Name::from_str(<span class="string">"n"</span>).unwrap())),
-            RData::CNAME(Name::from_str(<span class="string">"www.example.com"</span>).unwrap()),
-            RData::PTR(Name::from_str(<span class="string">"www.example.com"</span>).unwrap()),
-            RData::NS(Name::from_str(<span class="string">"www.example.com"</span>).unwrap()),
+            RData::CNAME(CNAME(Name::from_str(<span class="string">"www.example.com"</span>).unwrap())),
+            RData::PTR(PTR(Name::from_str(<span class="string">"www.example.com"</span>).unwrap())),
+            RData::NS(NS(Name::from_str(<span class="string">"www.example.com"</span>).unwrap())),
             RData::SOA(SOA::new(
                 Name::from_str(<span class="string">"www.example.com"</span>).unwrap(),
                 Name::from_str(<span class="string">"xxx.example.com"</span>).unwrap(),
@@ -2487,10 +2483,10 @@
             ])),
         ];
         <span class="kw">let </span><span class="kw-2">mut </span>unordered = <span class="macro">vec!</span>[
-            RData::CNAME(Name::from_str(<span class="string">"www.example.com"</span>).unwrap()),
+            RData::CNAME(CNAME(Name::from_str(<span class="string">"www.example.com"</span>).unwrap())),
             RData::MX(MX::new(<span class="number">256</span>, Name::from_str(<span class="string">"n"</span>).unwrap())),
-            RData::PTR(Name::from_str(<span class="string">"www.example.com"</span>).unwrap()),
-            RData::NS(Name::from_str(<span class="string">"www.example.com"</span>).unwrap()),
+            RData::PTR(PTR(Name::from_str(<span class="string">"www.example.com"</span>).unwrap())),
+            RData::NS(NS(Name::from_str(<span class="string">"www.example.com"</span>).unwrap())),
             RData::SOA(SOA::new(
                 Name::from_str(<span class="string">"www.example.com"</span>).unwrap(),
                 Name::from_str(<span class="string">"xxx.example.com"</span>).unwrap(),
@@ -2506,8 +2502,8 @@
                 <span class="string">""</span>.to_string(),
                 <span class="string">"j"</span>.to_string(),
             ])),
-            RData::A(Ipv4Addr::from_str(<span class="string">"0.0.0.0"</span>).unwrap()),
-            RData::AAAA(Ipv6Addr::from_str(<span class="string">"::"</span>).unwrap()),
+            RData::A(A::from_str(<span class="string">"0.0.0.0"</span>).unwrap()),
+            RData::AAAA(AAAA::from_str(<span class="string">"::"</span>).unwrap()),
             RData::SRV(SRV::new(
                 <span class="number">1</span>,
                 <span class="number">2</span>,
@@ -2523,7 +2519,7 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_read() {
         <span class="kw">for </span>(test_pass, (expect, binary)) <span class="kw">in </span>get_data().into_iter().enumerate() {
-            <span class="macro">println!</span>(<span class="string">"test {}: {:?}"</span>, test_pass, binary);
+            <span class="macro">println!</span>(<span class="string">"test {test_pass}: {binary:?}"</span>);
             <span class="kw">let </span>length = binary.len() <span class="kw">as </span>u16; <span class="comment">// pre exclusive borrow
             </span><span class="kw">let </span><span class="kw-2">mut </span>decoder = BinDecoder::new(<span class="kw-2">&amp;</span>binary);
 

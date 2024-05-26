@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitcoin_hashes-0.11.0/src/sha1.rs`."><title>sha1.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bitcoin_hashes" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bitcoin_hashes-0.13.0/src/sha1.rs`."><title>sha1.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bitcoin_hashes" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../bitcoin_hashes/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -257,97 +257,43 @@
 <a href="#255" id="255">255</a>
 <a href="#256" id="256">256</a>
 <a href="#257" id="257">257</a>
-<a href="#258" id="258">258</a>
-<a href="#259" id="259">259</a>
-<a href="#260" id="260">260</a>
-<a href="#261" id="261">261</a>
-<a href="#262" id="262">262</a>
-<a href="#263" id="263">263</a>
-<a href="#264" id="264">264</a>
-<a href="#265" id="265">265</a>
-<a href="#266" id="266">266</a>
-<a href="#267" id="267">267</a>
-<a href="#268" id="268">268</a>
-<a href="#269" id="269">269</a>
-<a href="#270" id="270">270</a>
-<a href="#271" id="271">271</a>
-<a href="#272" id="272">272</a>
-<a href="#273" id="273">273</a>
-<a href="#274" id="274">274</a>
-<a href="#275" id="275">275</a>
-<a href="#276" id="276">276</a>
-<a href="#277" id="277">277</a>
-<a href="#278" id="278">278</a>
-<a href="#279" id="279">279</a>
-<a href="#280" id="280">280</a>
-<a href="#281" id="281">281</a>
-<a href="#282" id="282">282</a>
-<a href="#283" id="283">283</a>
-<a href="#284" id="284">284</a>
-<a href="#285" id="285">285</a>
-<a href="#286" id="286">286</a>
-<a href="#287" id="287">287</a>
-<a href="#288" id="288">288</a>
-<a href="#289" id="289">289</a>
-<a href="#290" id="290">290</a>
-<a href="#291" id="291">291</a>
-<a href="#292" id="292">292</a>
-<a href="#293" id="293">293</a>
-<a href="#294" id="294">294</a>
-<a href="#295" id="295">295</a>
-<a href="#296" id="296">296</a>
-<a href="#297" id="297">297</a>
-<a href="#298" id="298">298</a>
-<a href="#299" id="299">299</a>
-<a href="#300" id="300">300</a>
-<a href="#301" id="301">301</a>
-<a href="#302" id="302">302</a>
-<a href="#303" id="303">303</a>
-<a href="#304" id="304">304</a>
-<a href="#305" id="305">305</a>
-<a href="#306" id="306">306</a>
-<a href="#307" id="307">307</a>
-<a href="#308" id="308">308</a>
-<a href="#309" id="309">309</a>
-<a href="#310" id="310">310</a>
-<a href="#311" id="311">311</a>
-<a href="#312" id="312">312</a>
-<a href="#313" id="313">313</a>
-<a href="#314" id="314">314</a>
-<a href="#315" id="315">315</a>
-<a href="#316" id="316">316</a>
-<a href="#317" id="317">317</a>
-<a href="#318" id="318">318</a>
-<a href="#319" id="319">319</a>
-<a href="#320" id="320">320</a>
-<a href="#321" id="321">321</a>
-<a href="#322" id="322">322</a>
-<a href="#323" id="323">323</a>
-<a href="#324" id="324">324</a>
-<a href="#325" id="325">325</a>
-<a href="#326" id="326">326</a>
-</pre></div><pre class="rust"><code><span class="comment">// Bitcoin Hashes Library
-// Written in 2018 by
-//   Andrew Poelstra &lt;apoelstra@wpsoftware.net&gt;
-//
-// To the extent possible under law, the author(s) have dedicated all
-// copyright and related and neighboring rights to this software to
-// the public domain worldwide. This software is distributed without
-// any warranty.
-//
-// You should have received a copy of the CC0 Public Domain Dedication
-// along with this software.
-// If not, see &lt;http://creativecommons.org/publicdomain/zero/1.0/&gt;.
-//
+</pre></div><pre class="rust"><code><span class="comment">// SPDX-License-Identifier: CC0-1.0
 
 </span><span class="doccomment">//! SHA1 implementation.
 //!
 
-</span><span class="kw">use </span>core::{cmp, str};
+</span><span class="kw">use </span>core::convert::TryInto;
 <span class="kw">use </span>core::ops::Index;
 <span class="kw">use </span>core::slice::SliceIndex;
+<span class="kw">use </span>core::{cmp, str};
 
-<span class="kw">use crate</span>::{Error, HashEngine <span class="kw">as _</span>, hex, util};
+<span class="kw">use crate</span>::{FromSliceError, HashEngine <span class="kw">as _</span>};
+
+<span class="macro">crate::internal_macros::hash_type!</span> {
+    <span class="number">160</span>,
+    <span class="bool-val">false</span>,
+    <span class="string">"Output of the SHA1 hash function."</span>,
+    <span class="string">"crate::util::json_hex_string::len_20"
+</span>}
+
+<span class="kw">fn </span>from_engine(<span class="kw-2">mut </span>e: HashEngine) -&gt; Hash {
+    <span class="comment">// pad buffer with a single 1-bit then all 0s, until there are exactly 8 bytes remaining
+    </span><span class="kw">let </span>data_len = e.length <span class="kw">as </span>u64;
+
+    <span class="kw">let </span>zeroes = [<span class="number">0</span>; BLOCK_SIZE - <span class="number">8</span>];
+    e.input(<span class="kw-2">&amp;</span>[<span class="number">0x80</span>]);
+    <span class="kw">if </span>e.length % BLOCK_SIZE &gt; zeroes.len() {
+        e.input(<span class="kw-2">&amp;</span>zeroes);
+    }
+    <span class="kw">let </span>pad_length = zeroes.len() - (e.length % BLOCK_SIZE);
+    e.input(<span class="kw-2">&amp;</span>zeroes[..pad_length]);
+    <span class="macro">debug_assert_eq!</span>(e.length % BLOCK_SIZE, zeroes.len());
+
+    e.input(<span class="kw-2">&amp;</span>(<span class="number">8 </span>* data_len).to_be_bytes());
+    <span class="macro">debug_assert_eq!</span>(e.length % BLOCK_SIZE, <span class="number">0</span>);
+
+    Hash(e.midstate())
+}
 
 <span class="kw">const </span>BLOCK_SIZE: usize = <span class="number">64</span>;
 
@@ -372,16 +318,16 @@
 <span class="kw">impl </span><span class="kw">crate</span>::HashEngine <span class="kw">for </span>HashEngine {
     <span class="kw">type </span>MidState = [u8; <span class="number">20</span>];
 
-    <span class="attr">#[cfg(not(fuzzing))]
+    <span class="attr">#[cfg(not(hashes_fuzz))]
     </span><span class="kw">fn </span>midstate(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; [u8; <span class="number">20</span>] {
         <span class="kw">let </span><span class="kw-2">mut </span>ret = [<span class="number">0</span>; <span class="number">20</span>];
-        <span class="kw">for </span>(val, ret_bytes) <span class="kw">in </span><span class="self">self</span>.h.iter().zip(ret.chunks_mut(<span class="number">4</span>)) {
-            ret_bytes.copy_from_slice(<span class="kw-2">&amp;</span>util::u32_to_array_be(<span class="kw-2">*</span>val));
+        <span class="kw">for </span>(val, ret_bytes) <span class="kw">in </span><span class="self">self</span>.h.iter().zip(ret.chunks_exact_mut(<span class="number">4</span>)) {
+            ret_bytes.copy_from_slice(<span class="kw-2">&amp;</span>val.to_be_bytes())
         }
         ret
     }
 
-    <span class="attr">#[cfg(fuzzing)]
+    <span class="attr">#[cfg(hashes_fuzz)]
     </span><span class="kw">fn </span>midstate(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; [u8; <span class="number">20</span>] {
         <span class="kw">let </span><span class="kw-2">mut </span>ret = [<span class="number">0</span>; <span class="number">20</span>];
         ret.copy_from_slice(<span class="kw-2">&amp;</span><span class="self">self</span>.buffer[..<span class="number">20</span>]);
@@ -390,94 +336,9 @@
 
     <span class="kw">const </span>BLOCK_SIZE: usize = <span class="number">64</span>;
 
-    <span class="kw">fn </span>n_bytes_hashed(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="self">self</span>.length
-    }
+    <span class="kw">fn </span>n_bytes_hashed(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.length }
 
     <span class="macro">engine_input_impl!</span>();
-}
-
-<span class="doccomment">/// Output of the SHA1 hash function.
-</span><span class="attr">#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-#[cfg_attr(feature = <span class="string">"schemars"</span>, derive(schemars::JsonSchema))]
-#[repr(transparent)]
-</span><span class="kw">pub struct </span>Hash(
-    <span class="attr">#[cfg_attr(feature = <span class="string">"schemars"</span>, schemars(schema_with = <span class="string">"util::json_hex_string::len_20"</span>))]
-    </span>[u8; <span class="number">20</span>]
-);
-
-<span class="macro">hex_fmt_impl!</span>(Debug, Hash);
-<span class="macro">hex_fmt_impl!</span>(Display, Hash);
-<span class="macro">hex_fmt_impl!</span>(LowerHex, Hash);
-<span class="macro">serde_impl!</span>(Hash, <span class="number">20</span>);
-<span class="macro">borrow_slice_impl!</span>(Hash);
-
-<span class="kw">impl</span>&lt;I: SliceIndex&lt;[u8]&gt;&gt; Index&lt;I&gt; <span class="kw">for </span>Hash {
-    <span class="kw">type </span>Output = I::Output;
-
-    <span class="attr">#[inline]
-    </span><span class="kw">fn </span>index(<span class="kw-2">&amp;</span><span class="self">self</span>, index: I) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Output {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[index]
-    }
-}
-
-<span class="kw">impl </span>str::FromStr <span class="kw">for </span>Hash {
-    <span class="kw">type </span><span class="prelude-val">Err </span>= hex::Error;
-    <span class="kw">fn </span>from_str(s: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Err&gt; {
-        hex::FromHex::from_hex(s)
-    }
-}
-
-<span class="kw">impl </span><span class="kw">crate</span>::Hash <span class="kw">for </span>Hash {
-    <span class="kw">type </span>Engine = HashEngine;
-    <span class="kw">type </span>Inner = [u8; <span class="number">20</span>];
-
-    <span class="kw">fn </span>from_engine(<span class="kw-2">mut </span>e: HashEngine) -&gt; Hash {
-        <span class="comment">// pad buffer with a single 1-bit then all 0s, until there are exactly 8 bytes remaining
-        </span><span class="kw">let </span>data_len = e.length <span class="kw">as </span>u64;
-
-        <span class="kw">let </span>zeroes = [<span class="number">0</span>; BLOCK_SIZE - <span class="number">8</span>];
-        e.input(<span class="kw-2">&amp;</span>[<span class="number">0x80</span>]);
-        <span class="kw">if </span>e.length % BLOCK_SIZE &gt; zeroes.len() {
-            e.input(<span class="kw-2">&amp;</span>zeroes);
-        }
-        <span class="kw">let </span>pad_length = zeroes.len() - (e.length % BLOCK_SIZE);
-        e.input(<span class="kw-2">&amp;</span>zeroes[..pad_length]);
-        <span class="macro">debug_assert_eq!</span>(e.length % BLOCK_SIZE, zeroes.len());
-
-        e.input(<span class="kw-2">&amp;</span>util::u64_to_array_be(<span class="number">8 </span>* data_len));
-        <span class="macro">debug_assert_eq!</span>(e.length % BLOCK_SIZE, <span class="number">0</span>);
-
-        Hash(e.midstate())
-    }
-
-    <span class="kw">const </span>LEN: usize = <span class="number">20</span>;
-
-    <span class="kw">fn </span>from_slice(sl: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;Hash, Error&gt; {
-        <span class="kw">if </span>sl.len() != <span class="number">20 </span>{
-            <span class="prelude-val">Err</span>(Error::InvalidLength(<span class="self">Self</span>::LEN, sl.len()))
-        } <span class="kw">else </span>{
-            <span class="kw">let </span><span class="kw-2">mut </span>ret = [<span class="number">0</span>; <span class="number">20</span>];
-            ret.copy_from_slice(sl);
-            <span class="prelude-val">Ok</span>(Hash(ret))
-        }
-    }
-
-    <span class="kw">fn </span>into_inner(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Inner {
-        <span class="self">self</span>.<span class="number">0
-    </span>}
-
-    <span class="kw">fn </span>as_inner(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Inner {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
-    </span>}
-
-    <span class="kw">fn </span>from_inner(inner: <span class="self">Self</span>::Inner) -&gt; <span class="self">Self </span>{
-        Hash(inner)
-    }
-
-    <span class="kw">fn </span>all_zeros() -&gt; <span class="self">Self </span>{
-        Hash([<span class="number">0x00</span>; <span class="number">20</span>])
-    }
 }
 
 <span class="kw">impl </span>HashEngine {
@@ -486,11 +347,11 @@
         <span class="macro">debug_assert_eq!</span>(<span class="self">self</span>.buffer.len(), BLOCK_SIZE);
 
         <span class="kw">let </span><span class="kw-2">mut </span>w = [<span class="number">0u32</span>; <span class="number">80</span>];
-        <span class="kw">for </span>(w_val, buff_bytes) <span class="kw">in </span>w.iter_mut().zip(<span class="self">self</span>.buffer.chunks(<span class="number">4</span>)) {
-            <span class="kw-2">*</span>w_val = util::slice_to_u32_be(buff_bytes);
+        <span class="kw">for </span>(w_val, buff_bytes) <span class="kw">in </span>w.iter_mut().zip(<span class="self">self</span>.buffer.chunks_exact(<span class="number">4</span>)) {
+            <span class="kw-2">*</span>w_val = u32::from_be_bytes(buff_bytes.try_into().expect(<span class="string">"4 bytes slice"</span>))
         }
         <span class="kw">for </span>i <span class="kw">in </span><span class="number">16</span>..<span class="number">80 </span>{
-            w[i] =(w[i - <span class="number">3</span>] ^ w[i - <span class="number">8</span>] ^ w[i - <span class="number">14</span>] ^ w[i - <span class="number">16</span>]).rotate_left(<span class="number">1</span>);
+            w[i] = (w[i - <span class="number">3</span>] ^ w[i - <span class="number">8</span>] ^ w[i - <span class="number">14</span>] ^ w[i - <span class="number">16</span>]).rotate_left(<span class="number">1</span>);
         }
 
         <span class="kw">let </span><span class="kw-2">mut </span>a = <span class="self">self</span>.h[<span class="number">0</span>];
@@ -501,14 +362,15 @@
 
         <span class="kw">for </span>(i, <span class="kw-2">&amp;</span>wi) <span class="kw">in </span>w.iter().enumerate() {
             <span class="kw">let </span>(f, k) = <span class="kw">match </span>i {
-                 <span class="number">0</span>...<span class="number">19 </span>=&gt; ((b &amp; c) | (!b &amp; d), <span class="number">0x5a827999</span>),
+                <span class="number">0</span>...<span class="number">19 </span>=&gt; ((b &amp; c) | (!b &amp; d), <span class="number">0x5a827999</span>),
                 <span class="number">20</span>...<span class="number">39 </span>=&gt; (b ^ c ^ d, <span class="number">0x6ed9eba1</span>),
                 <span class="number">40</span>...<span class="number">59 </span>=&gt; ((b &amp; c) | (b &amp; d) | (c &amp; d), <span class="number">0x8f1bbcdc</span>),
                 <span class="number">60</span>...<span class="number">79 </span>=&gt; (b ^ c ^ d, <span class="number">0xca62c1d6</span>),
-                <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>()
+                <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
             };
 
-            <span class="kw">let </span>new_a = a.rotate_left(<span class="number">5</span>).wrapping_add(f).wrapping_add(e).wrapping_add(k).wrapping_add(wi);
+            <span class="kw">let </span>new_a =
+                a.rotate_left(<span class="number">5</span>).wrapping_add(f).wrapping_add(e).wrapping_add(k).wrapping_add(wi);
             e = d;
             d = c;
             c = b.rotate_left(<span class="number">30</span>);
@@ -527,10 +389,9 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
     <span class="attr">#[test]
-    #[cfg(any(feature = <span class="string">"std"</span>, feature = <span class="string">"alloc"</span>))]
+    #[cfg(feature = <span class="string">"alloc"</span>)]
     </span><span class="kw">fn </span>test() {
         <span class="kw">use crate</span>::{sha1, Hash, HashEngine};
-        <span class="kw">use </span><span class="kw">crate</span>::hex::{FromHex, ToHex};
 
         <span class="attr">#[derive(Clone)]
         </span><span class="kw">struct </span>Test {
@@ -539,8 +400,8 @@
             output_str: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
         }
 
-
-        <span class="kw">let </span>tests = <span class="macro">vec!</span>[
+        <span class="attr">#[rustfmt::skip]
+        </span><span class="kw">let </span>tests = <span class="macro">vec!</span>[
             <span class="comment">// Examples from wikipedia
             </span>Test {
                 input: <span class="string">""</span>,
@@ -579,10 +440,10 @@
 
         <span class="kw">for </span>test <span class="kw">in </span>tests {
             <span class="comment">// Hash through high-level API, check hex encoding/decoding
-            </span><span class="kw">let </span>hash = sha1::Hash::hash(<span class="kw-2">&amp;</span>test.input.as_bytes());
-            <span class="macro">assert_eq!</span>(hash, sha1::Hash::from_hex(test.output_str).expect(<span class="string">"parse hex"</span>));
+            </span><span class="kw">let </span>hash = sha1::Hash::hash(test.input.as_bytes());
+            <span class="macro">assert_eq!</span>(hash, test.output_str.parse::&lt;sha1::Hash&gt;().expect(<span class="string">"parse hex"</span>));
             <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>hash[..], <span class="kw-2">&amp;</span>test.output[..]);
-            <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>hash.to_hex(), <span class="kw-2">&amp;</span>test.output_str);
+            <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>hash.to_string(), <span class="kw-2">&amp;</span>test.output_str);
 
             <span class="comment">// Hash through engine, checking that we can input byte by byte
             </span><span class="kw">let </span><span class="kw-2">mut </span>engine = sha1::Hash::engine();
@@ -591,17 +452,19 @@
             }
             <span class="kw">let </span>manual_hash = sha1::Hash::from_engine(engine);
             <span class="macro">assert_eq!</span>(hash, manual_hash);
-            <span class="macro">assert_eq!</span>(hash.into_inner()[..].as_ref(), test.output.as_slice());
+            <span class="macro">assert_eq!</span>(hash.as_byte_array(), test.output.as_slice());
         }
     }
 
     <span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
     #[test]
     </span><span class="kw">fn </span>sha1_serde() {
-        <span class="kw">use </span>serde_test::{Configure, Token, assert_tokens};
+        <span class="kw">use </span>serde_test::{assert_tokens, Configure, Token};
+
         <span class="kw">use crate</span>::{sha1, Hash};
 
-        <span class="kw">static </span>HASH_BYTES: [u8; <span class="number">20</span>] = [
+        <span class="attr">#[rustfmt::skip]
+        </span><span class="kw">static </span>HASH_BYTES: [u8; <span class="number">20</span>] = [
             <span class="number">0x13</span>, <span class="number">0x20</span>, <span class="number">0x72</span>, <span class="number">0xdf</span>,
             <span class="number">0x69</span>, <span class="number">0x09</span>, <span class="number">0x33</span>, <span class="number">0x83</span>,
             <span class="number">0x5e</span>, <span class="number">0xb8</span>, <span class="number">0xb6</span>, <span class="number">0xad</span>,
@@ -615,17 +478,17 @@
     }
 }
 
-<span class="attr">#[cfg(all(test, feature = <span class="string">"unstable"</span>))]
+<span class="attr">#[cfg(bench)]
 </span><span class="kw">mod </span>benches {
     <span class="kw">use </span>test::Bencher;
 
-    <span class="kw">use crate</span>::{Hash, HashEngine, sha1};
+    <span class="kw">use crate</span>::{sha1, Hash, HashEngine};
 
     <span class="attr">#[bench]
     </span><span class="kw">pub fn </span>sha1_10(bh: <span class="kw-2">&amp;mut </span>Bencher) {
         <span class="kw">let </span><span class="kw-2">mut </span>engine = sha1::Hash::engine();
         <span class="kw">let </span>bytes = [<span class="number">1u8</span>; <span class="number">10</span>];
-        bh.iter( || {
+        bh.iter(|| {
             engine.input(<span class="kw-2">&amp;</span>bytes);
         });
         bh.bytes = bytes.len() <span class="kw">as </span>u64;
@@ -635,7 +498,7 @@
     </span><span class="kw">pub fn </span>sha1_1k(bh: <span class="kw-2">&amp;mut </span>Bencher) {
         <span class="kw">let </span><span class="kw-2">mut </span>engine = sha1::Hash::engine();
         <span class="kw">let </span>bytes = [<span class="number">1u8</span>; <span class="number">1024</span>];
-        bh.iter( || {
+        bh.iter(|| {
             engine.input(<span class="kw-2">&amp;</span>bytes);
         });
         bh.bytes = bytes.len() <span class="kw">as </span>u64;
@@ -645,11 +508,10 @@
     </span><span class="kw">pub fn </span>sha1_64k(bh: <span class="kw-2">&amp;mut </span>Bencher) {
         <span class="kw">let </span><span class="kw-2">mut </span>engine = sha1::Hash::engine();
         <span class="kw">let </span>bytes = [<span class="number">1u8</span>; <span class="number">65536</span>];
-        bh.iter( || {
+        bh.iter(|| {
             engine.input(<span class="kw-2">&amp;</span>bytes);
         });
         bh.bytes = bytes.len() <span class="kw">as </span>u64;
     }
-
 }
 </code></pre></div></section></main></body></html>

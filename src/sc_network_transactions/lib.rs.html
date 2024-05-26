@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/client/network/transactions/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network_transactions" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/network/transactions/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network_transactions" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../sc_network_transactions/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -501,6 +501,34 @@
 <a href="#499" id="499">499</a>
 <a href="#500" id="500">500</a>
 <a href="#501" id="501">501</a>
+<a href="#502" id="502">502</a>
+<a href="#503" id="503">503</a>
+<a href="#504" id="504">504</a>
+<a href="#505" id="505">505</a>
+<a href="#506" id="506">506</a>
+<a href="#507" id="507">507</a>
+<a href="#508" id="508">508</a>
+<a href="#509" id="509">509</a>
+<a href="#510" id="510">510</a>
+<a href="#511" id="511">511</a>
+<a href="#512" id="512">512</a>
+<a href="#513" id="513">513</a>
+<a href="#514" id="514">514</a>
+<a href="#515" id="515">515</a>
+<a href="#516" id="516">516</a>
+<a href="#517" id="517">517</a>
+<a href="#518" id="518">518</a>
+<a href="#519" id="519">519</a>
+<a href="#520" id="520">520</a>
+<a href="#521" id="521">521</a>
+<a href="#522" id="522">522</a>
+<a href="#523" id="523">523</a>
+<a href="#524" id="524">524</a>
+<a href="#525" id="525">525</a>
+<a href="#526" id="526">526</a>
+<a href="#527" id="527">527</a>
+<a href="#528" id="528">528</a>
+<a href="#529" id="529">529</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -533,20 +561,24 @@
 
 <span class="kw">use </span>codec::{Decode, Encode};
 <span class="kw">use </span>futures::{prelude::<span class="kw-2">*</span>, stream::FuturesUnordered};
-<span class="kw">use </span>libp2p::{multiaddr, PeerId};
 <span class="kw">use </span>log::{debug, trace, warn};
 
 <span class="kw">use </span>prometheus_endpoint::{register, Counter, PrometheusError, Registry, U64};
 <span class="kw">use </span>sc_network::{
-	config::{NonDefaultSetConfig, NonReservedPeerMode, ProtocolId, SetConfig},
-	error,
-	service::traits::{NotificationEvent, NotificationService, ValidationResult},
+	config::{NonReservedPeerMode, ProtocolId, SetConfig},
+	error, multiaddr,
+	peer_store::PeerStoreProvider,
+	service::{
+		traits::{NotificationEvent, NotificationService, ValidationResult},
+		NotificationMetrics,
+	},
 	types::ProtocolName,
 	utils::{interval, LruHashSet},
-	NetworkEventStream, NetworkNotification, NetworkPeers,
+	NetworkBackend, NetworkEventStream, NetworkPeers,
 };
 <span class="kw">use </span>sc_network_common::{role::ObservedRole, ExHashT};
 <span class="kw">use </span>sc_network_sync::{SyncEvent, SyncEventStream};
+<span class="kw">use </span>sc_network_types::PeerId;
 <span class="kw">use </span>sc_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
 <span class="kw">use </span>sp_runtime::traits::Block <span class="kw">as </span>BlockT;
 
@@ -563,6 +595,9 @@
 
 <span class="doccomment">/// A set of transactions.
 </span><span class="kw">pub type </span>Transactions&lt;E&gt; = Vec&lt;E&gt;;
+
+<span class="doccomment">/// Logging target for the file.
+</span><span class="kw">const </span>LOG_TARGET: <span class="kw-2">&amp;</span>str = <span class="string">"sync"</span>;
 
 <span class="kw">mod </span>rep {
 	<span class="kw">use </span>sc_network::ReputationChange <span class="kw">as </span>Rep;
@@ -627,11 +662,17 @@
 
 <span class="kw">impl </span>TransactionsHandlerPrototype {
 	<span class="doccomment">/// Create a new instance.
-	</span><span class="kw">pub fn </span>new&lt;Hash: AsRef&lt;[u8]&gt;&gt;(
+	</span><span class="kw">pub fn </span>new&lt;
+		Hash: AsRef&lt;[u8]&gt;,
+		Block: BlockT,
+		Net: NetworkBackend&lt;Block, &lt;Block <span class="kw">as </span>BlockT&gt;::Hash&gt;,
+	&gt;(
 		protocol_id: ProtocolId,
 		genesis_hash: Hash,
 		fork_id: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-	) -&gt; (<span class="self">Self</span>, NonDefaultSetConfig) {
+		metrics: NotificationMetrics,
+		peer_store_handle: Arc&lt;<span class="kw">dyn </span>PeerStoreProvider&gt;,
+	) -&gt; (<span class="self">Self</span>, Net::NotificationProtocolConfig) {
 		<span class="kw">let </span>genesis_hash = genesis_hash.as_ref();
 		<span class="kw">let </span>protocol_name: ProtocolName = <span class="kw">if let </span><span class="prelude-val">Some</span>(fork_id) = fork_id {
 			<span class="macro">format!</span>(<span class="string">"/{}/{}/transactions/1"</span>, array_bytes::bytes2hex(<span class="string">""</span>, genesis_hash), fork_id)
@@ -639,7 +680,7 @@
 			<span class="macro">format!</span>(<span class="string">"/{}/transactions/1"</span>, array_bytes::bytes2hex(<span class="string">""</span>, genesis_hash))
 		}
 		.into();
-		<span class="kw">let </span>(config, notification_service) = NonDefaultSetConfig::new(
+		<span class="kw">let </span>(config, notification_service) = Net::notification_config(
 			protocol_name.clone(),
 			<span class="macro">vec!</span>[<span class="macro">format!</span>(<span class="string">"/{}/transactions/1"</span>, protocol_id.as_ref()).into()],
 			MAX_TRANSACTIONS_SIZE,
@@ -650,6 +691,8 @@
 				reserved_nodes: Vec::new(),
 				non_reserved_mode: NonReservedPeerMode::Deny,
 			},
+			metrics,
+			peer_store_handle,
 		);
 
 		(<span class="self">Self </span>{ protocol_name, notification_service }, config)
@@ -663,7 +706,7 @@
 	</span><span class="kw">pub fn </span>build&lt;
 		B: BlockT + <span class="lifetime">'static</span>,
 		H: ExHashT,
-		N: NetworkPeers + NetworkEventStream + NetworkNotification,
+		N: NetworkPeers + NetworkEventStream,
 		S: SyncEventStream + sp_consensus::SyncOracle,
 	&gt;(
 		<span class="self">self</span>,
@@ -734,7 +777,7 @@
 </span><span class="kw">pub struct </span>TransactionsHandler&lt;
 	B: BlockT + <span class="lifetime">'static</span>,
 	H: ExHashT,
-	N: NetworkPeers + NetworkEventStream + NetworkNotification,
+	N: NetworkPeers + NetworkEventStream,
 	S: SyncEventStream + sp_consensus::SyncOracle,
 &gt; {
 	protocol_name: ProtocolName,
@@ -775,7 +818,7 @@
 <span class="kw">where
 	</span>B: BlockT + <span class="lifetime">'static</span>,
 	H: ExHashT,
-	N: NetworkPeers + NetworkEventStream + NetworkNotification,
+	N: NetworkPeers + NetworkEventStream,
 	S: SyncEventStream + sp_consensus::SyncOracle,
 {
 	<span class="doccomment">/// Turns the [`TransactionsHandler`] into a future that should run forever and not be
@@ -872,7 +915,7 @@
 					iter::once(addr).collect(),
 				);
 				<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = result {
-					<span class="macro">log::error!</span>(target: <span class="string">"sync"</span>, <span class="string">"Add reserved peer failed: {}"</span>, err);
+					<span class="macro">log::error!</span>(target: LOG_TARGET, <span class="string">"Add reserved peer failed: {}"</span>, err);
 				}
 			},
 			SyncEvent::PeerDisconnected(remote) =&gt; {
@@ -881,7 +924,7 @@
 					iter::once(remote).collect(),
 				);
 				<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = result {
-					<span class="macro">log::error!</span>(target: <span class="string">"sync"</span>, <span class="string">"Remove reserved peer failed: {}"</span>, err);
+					<span class="macro">log::error!</span>(target: LOG_TARGET, <span class="string">"Remove reserved peer failed: {}"</span>, err);
 				}
 			},
 		}
@@ -891,16 +934,16 @@
 	</span><span class="kw">fn </span>on_transactions(<span class="kw-2">&amp;mut </span><span class="self">self</span>, who: PeerId, transactions: Transactions&lt;B::Extrinsic&gt;) {
 		<span class="comment">// Accept transactions only when node is not major syncing
 		</span><span class="kw">if </span><span class="self">self</span>.sync.is_major_syncing() {
-			<span class="macro">trace!</span>(target: <span class="string">"sync"</span>, <span class="string">"{} Ignoring transactions while major syncing"</span>, who);
+			<span class="macro">trace!</span>(target: LOG_TARGET, <span class="string">"{} Ignoring transactions while major syncing"</span>, who);
 			<span class="kw">return
 		</span>}
 
-		<span class="macro">trace!</span>(target: <span class="string">"sync"</span>, <span class="string">"Received {} transactions from {}"</span>, transactions.len(), who);
+		<span class="macro">trace!</span>(target: LOG_TARGET, <span class="string">"Received {} transactions from {}"</span>, transactions.len(), who);
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>peer) = <span class="self">self</span>.peers.get_mut(<span class="kw-2">&amp;</span>who) {
 			<span class="kw">for </span>t <span class="kw">in </span>transactions {
 				<span class="kw">if </span><span class="self">self</span>.pending_transactions.len() &gt; MAX_PENDING_TRANSACTIONS {
 					<span class="macro">debug!</span>(
-						target: <span class="string">"sync"</span>,
+						target: LOG_TARGET,
 						<span class="string">"Ignoring any further transactions that exceed `MAX_PENDING_TRANSACTIONS`({}) limit"</span>,
 						MAX_PENDING_TRANSACTIONS,
 					);
@@ -945,7 +988,7 @@
 			<span class="kw">return
 		</span>}
 
-		<span class="macro">debug!</span>(target: <span class="string">"sync"</span>, <span class="string">"Propagating transaction [{:?}]"</span>, hash);
+		<span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">"Propagating transaction [{:?}]"</span>, hash);
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(transaction) = <span class="self">self</span>.transaction_pool.transaction(hash) {
 			<span class="kw">let </span>propagated_to = <span class="self">self</span>.do_propagate_transactions(<span class="kw-2">&amp;</span>[(hash.clone(), transaction)]);
 			<span class="self">self</span>.transaction_pool.on_broadcasted(propagated_to);
@@ -978,7 +1021,20 @@
 					propagated_to.entry(hash).or_default().push(who.to_base58());
 				}
 				<span class="macro">trace!</span>(target: <span class="string">"sync"</span>, <span class="string">"Sending {} transactions to {}"</span>, to_send.len(), who);
-				<span class="kw">let _ </span>= <span class="self">self</span>.notification_service.send_sync_notification(who, to_send.encode());
+				<span class="comment">// Historically, the format of a notification of the transactions protocol
+				// consisted in a (SCALE-encoded) `Vec&lt;Transaction&gt;`.
+				// After RFC 56, the format was modified in a backwards-compatible way to be
+				// a (SCALE-encoded) tuple `(Compact(1), Transaction)`, which is the same encoding
+				// as a `Vec` of length one. This is no coincidence, as the change was
+				// intentionally done in a backwards-compatible way.
+				// In other words, the `Vec` that is sent below **must** always have only a single
+				// element in it.
+				// See &lt;https://github.com/polkadot-fellows/RFCs/blob/main/text/0056-one-transaction-per-notification.md&gt;
+				</span><span class="kw">for </span>to_send <span class="kw">in </span>to_send {
+					<span class="kw">let _ </span>= <span class="self">self
+						</span>.notification_service
+						.send_sync_notification(who, <span class="macro">vec!</span>[to_send].encode());
+				}
 			}
 		}
 
@@ -996,7 +1052,7 @@
 			<span class="kw">return
 		</span>}
 
-		<span class="macro">debug!</span>(target: <span class="string">"sync"</span>, <span class="string">"Propagating transactions"</span>);
+		<span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">"Propagating transactions"</span>);
 		<span class="kw">let </span>transactions = <span class="self">self</span>.transaction_pool.transactions();
 		<span class="kw">let </span>propagated_to = <span class="self">self</span>.do_propagate_transactions(<span class="kw-2">&amp;</span>transactions);
 		<span class="self">self</span>.transaction_pool.on_broadcasted(propagated_to);

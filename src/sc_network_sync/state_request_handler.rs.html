@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/client/network/sync/src/state_request_handler.rs`."><title>state_request_handler.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network_sync" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/network/sync/src/state_request_handler.rs`."><title>state_request_handler.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network_sync" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../sc_network_sync/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -286,6 +286,14 @@
 <a href="#284" id="284">284</a>
 <a href="#285" id="285">285</a>
 <a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Substrate.
 
@@ -305,19 +313,23 @@
 </span><span class="doccomment">//! Helper for handling (i.e. answering) state requests from a remote peer via the
 //! `crate::request_responses::RequestResponsesBehaviour`.
 
-</span><span class="kw">use </span><span class="kw">crate</span>::schema::v1::{KeyValueStateEntry, StateEntry, StateRequest, StateResponse};
+</span><span class="kw">use crate</span>::{
+	schema::v1::{KeyValueStateEntry, StateEntry, StateRequest, StateResponse},
+	LOG_TARGET,
+};
 
 <span class="kw">use </span>codec::{Decode, Encode};
 <span class="kw">use </span>futures::{channel::oneshot, stream::StreamExt};
-<span class="kw">use </span>libp2p::PeerId;
 <span class="kw">use </span>log::{debug, trace};
 <span class="kw">use </span>prost::Message;
+<span class="kw">use </span>sc_network_types::PeerId;
 <span class="kw">use </span>schnellru::{ByLength, LruMap};
 
 <span class="kw">use </span>sc_client_api::{BlockBackend, ProofProvider};
 <span class="kw">use </span>sc_network::{
 	config::ProtocolId,
-	request_responses::{IncomingRequest, OutgoingResponse, ProtocolConfig},
+	request_responses::{IncomingRequest, OutgoingResponse},
+	NetworkBackend,
 };
 <span class="kw">use </span>sp_runtime::traits::Block <span class="kw">as </span>BlockT;
 
@@ -327,7 +339,6 @@
 	time::Duration,
 };
 
-<span class="kw">const </span>LOG_TARGET: <span class="kw-2">&amp;</span>str = <span class="string">"sync"</span>;
 <span class="kw">const </span>MAX_RESPONSE_BYTES: usize = <span class="number">2 </span>* <span class="number">1024 </span>* <span class="number">1024</span>; <span class="comment">// Actual reponse may be bigger.
 </span><span class="kw">const </span>MAX_NUMBER_OF_SAME_REQUESTS_PER_PEER: usize = <span class="number">2</span>;
 
@@ -338,21 +349,26 @@
 	</span><span class="kw">pub const </span>SAME_REQUEST: Rep = Rep::new(i32::MIN, <span class="string">"Same state request multiple times"</span>);
 }
 
-<span class="doccomment">/// Generates a [`ProtocolConfig`] for the state request protocol, refusing incoming requests.
-</span><span class="kw">pub fn </span>generate_protocol_config&lt;Hash: AsRef&lt;[u8]&gt;&gt;(
+<span class="doccomment">/// Generates a `RequestResponseProtocolConfig` for the state request protocol, refusing incoming
+/// requests.
+</span><span class="kw">pub fn </span>generate_protocol_config&lt;
+	Hash: AsRef&lt;[u8]&gt;,
+	B: BlockT,
+	N: NetworkBackend&lt;B, &lt;B <span class="kw">as </span>BlockT&gt;::Hash&gt;,
+&gt;(
 	protocol_id: <span class="kw-2">&amp;</span>ProtocolId,
 	genesis_hash: Hash,
 	fork_id: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
-) -&gt; ProtocolConfig {
-	ProtocolConfig {
-		name: generate_protocol_name(genesis_hash, fork_id).into(),
-		fallback_names: std::iter::once(generate_legacy_protocol_name(protocol_id).into())
-			.collect(),
-		max_request_size: <span class="number">1024 </span>* <span class="number">1024</span>,
-		max_response_size: <span class="number">16 </span>* <span class="number">1024 </span>* <span class="number">1024</span>,
-		request_timeout: Duration::from_secs(<span class="number">40</span>),
-		inbound_queue: <span class="prelude-val">None</span>,
-	}
+	inbound_queue: async_channel::Sender&lt;IncomingRequest&gt;,
+) -&gt; N::RequestResponseProtocolConfig {
+	N::request_response_config(
+		generate_protocol_name(genesis_hash, fork_id).into(),
+		std::iter::once(generate_legacy_protocol_name(protocol_id).into()).collect(),
+		<span class="number">1024 </span>* <span class="number">1024</span>,
+		<span class="number">16 </span>* <span class="number">1024 </span>* <span class="number">1024</span>,
+		Duration::from_secs(<span class="number">40</span>),
+		<span class="prelude-val">Some</span>(inbound_queue),
+	)
 }
 
 <span class="doccomment">/// Generate the state protocol name from the genesis hash and fork id.
@@ -411,18 +427,18 @@
 	Client: BlockBackend&lt;B&gt; + ProofProvider&lt;B&gt; + Send + Sync + <span class="lifetime">'static</span>,
 {
 	<span class="doccomment">/// Create a new [`StateRequestHandler`].
-	</span><span class="kw">pub fn </span>new(
+	</span><span class="kw">pub fn </span>new&lt;N: NetworkBackend&lt;B, &lt;B <span class="kw">as </span>BlockT&gt;::Hash&gt;&gt;(
 		protocol_id: <span class="kw-2">&amp;</span>ProtocolId,
 		fork_id: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>str&gt;,
 		client: Arc&lt;Client&gt;,
 		num_peer_hint: usize,
-	) -&gt; (<span class="self">Self</span>, ProtocolConfig) {
+	) -&gt; (<span class="self">Self</span>, N::RequestResponseProtocolConfig) {
 		<span class="comment">// Reserve enough request slots for one request per peer when we are at the maximum
 		// number of peers.
 		</span><span class="kw">let </span>capacity = std::cmp::max(num_peer_hint, <span class="number">1</span>);
 		<span class="kw">let </span>(tx, request_receiver) = async_channel::bounded(capacity);
 
-		<span class="kw">let </span><span class="kw-2">mut </span>protocol_config = generate_protocol_config(
+		<span class="kw">let </span>protocol_config = generate_protocol_config::&lt;<span class="kw">_</span>, B, N&gt;(
 			protocol_id,
 			client
 				.block_hash(<span class="number">0u32</span>.into())
@@ -430,8 +446,8 @@
 				.flatten()
 				.expect(<span class="string">"Genesis block exists; qed"</span>),
 			fork_id,
+			tx,
 		);
-		protocol_config.inbound_queue = <span class="prelude-val">Some</span>(tx);
 
 		<span class="kw">let </span>capacity = ByLength::new(num_peer_hint.max(<span class="number">1</span>) <span class="kw">as </span>u32 * <span class="number">2</span>);
 		<span class="kw">let </span>seen_requests = LruMap::new(capacity);

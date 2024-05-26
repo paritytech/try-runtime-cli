@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/client/network/src/protocol/notifications/service/mod.rs`."><title>mod.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/network/src/protocol/notifications/service/mod.rs`."><title>mod.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../../sc_network/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -634,6 +634,30 @@
 <a href="#632" id="632">632</a>
 <a href="#633" id="633">633</a>
 <a href="#634" id="634">634</a>
+<a href="#635" id="635">635</a>
+<a href="#636" id="636">636</a>
+<a href="#637" id="637">637</a>
+<a href="#638" id="638">638</a>
+<a href="#639" id="639">639</a>
+<a href="#640" id="640">640</a>
+<a href="#641" id="641">641</a>
+<a href="#642" id="642">642</a>
+<a href="#643" id="643">643</a>
+<a href="#644" id="644">644</a>
+<a href="#645" id="645">645</a>
+<a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a>
+<a href="#651" id="651">651</a>
+<a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
+<a href="#656" id="656">656</a>
+<a href="#657" id="657">657</a>
+<a href="#658" id="658">658</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -657,17 +681,20 @@
 </span><span class="kw">use crate</span>::{
 	error,
 	protocol::notifications::handler::NotificationsSink,
-	service::traits::{
-		Direction, MessageSink, NotificationEvent, NotificationService, ValidationResult,
+	service::{
+		metrics::NotificationMetrics,
+		traits::{
+			Direction, MessageSink, NotificationEvent, NotificationService, ValidationResult,
+		},
 	},
 	types::ProtocolName,
+	PeerId,
 };
 
 <span class="kw">use </span>futures::{
 	stream::{FuturesUnordered, Stream},
 	StreamExt,
 };
-<span class="kw">use </span>libp2p::PeerId;
 <span class="kw">use </span>parking_lot::Mutex;
 <span class="kw">use </span>tokio::sync::{mpsc, oneshot};
 <span class="kw">use </span>tokio_stream::wrappers::ReceiverStream;
@@ -690,7 +717,7 @@
 <span class="doccomment">/// Type representing subscribers of a notification protocol.
 </span><span class="kw">type </span>Subscribers = Arc&lt;Mutex&lt;Vec&lt;TracingUnboundedSender&lt;InnerNotificationEvent&gt;&gt;&gt;&gt;;
 
-<span class="doccomment">/// Type represending a distributable message sink.
+<span class="doccomment">/// Type representing a distributable message sink.
 /// Detached message sink must carry the protocol name for registering metrics.
 ///
 /// See documentation for [`PeerContext`] for more details.
@@ -702,7 +729,7 @@
 	</span><span class="kw">fn </span>send_sync_notification(<span class="kw-2">&amp;</span><span class="self">self</span>, notification: Vec&lt;u8&gt;) {
 		<span class="kw">let </span>sink = <span class="self">self</span>.lock();
 
-		metrics::register_notification_sent(<span class="kw-2">&amp;</span>sink.<span class="number">0</span>.metrics(), <span class="kw-2">&amp;</span>sink.<span class="number">1</span>, notification.len());
+		metrics::register_notification_sent(sink.<span class="number">0</span>.metrics(), <span class="kw-2">&amp;</span>sink.<span class="number">1</span>, notification.len());
 		sink.<span class="number">0</span>.send_sync_notification(notification);
 	}
 
@@ -723,7 +750,7 @@
 			</span>.map_err(|<span class="kw">_</span>| error::Error::ConnectionClosed)<span class="question-mark">?</span>;
 
 		permit.send(notification).map_err(|<span class="kw">_</span>| error::Error::ChannelClosed).map(|res| {
-			metrics::register_notification_sent(<span class="kw-2">&amp;</span>sink.<span class="number">0</span>.metrics(), <span class="kw-2">&amp;</span>sink.<span class="number">1</span>, notification_len);
+			metrics::register_notification_sent(sink.<span class="number">0</span>.metrics(), <span class="kw-2">&amp;</span>sink.<span class="number">1</span>, notification_len);
 			res
 		})
 	}
@@ -811,11 +838,11 @@
 /// and an additional, distributable `NotificationsSink` which the protocol may acquire
 /// if it wishes to send notifications through `NotificationsSink` directly.
 ///
-/// The distributable `NoticationsSink` is wrapped in an `Arc&lt;Mutex&lt;&gt;&gt;` to allow
+/// The distributable `NotificationsSink` is wrapped in an `Arc&lt;Mutex&lt;&gt;&gt;` to allow
 /// `NotificationsService` to swap the underlying sink in case it's replaced.
 </span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">struct </span>PeerContext {
-	<span class="doccomment">/// Sink for sending notificaitons.
+	<span class="doccomment">/// Sink for sending notifications.
 	</span>sink: NotificationsSink,
 
 	<span class="doccomment">/// Distributable notification sink.
@@ -856,20 +883,20 @@
 <span class="attr">#[async_trait::async_trait]
 </span><span class="kw">impl </span>NotificationService <span class="kw">for </span>NotificationHandle {
 	<span class="doccomment">/// Instruct `Notifications` to open a new substream for `peer`.
-	</span><span class="kw">async fn </span>open_substream(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _peer: PeerId) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
+	</span><span class="kw">async fn </span>open_substream(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _peer: sc_network_types::PeerId) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
 		<span class="macro">todo!</span>(<span class="string">"support for opening substreams not implemented yet"</span>);
 	}
 
 	<span class="doccomment">/// Instruct `Notifications` to close substream for `peer`.
-	</span><span class="kw">async fn </span>close_substream(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _peer: PeerId) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
+	</span><span class="kw">async fn </span>close_substream(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _peer: sc_network_types::PeerId) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
 		<span class="macro">todo!</span>(<span class="string">"support for closing substreams not implemented yet, call `NetworkService::disconnect_peer()` instead"</span>);
 	}
 
 	<span class="doccomment">/// Send synchronous `notification` to `peer`.
-	</span><span class="kw">fn </span>send_sync_notification(<span class="kw-2">&amp;</span><span class="self">self</span>, peer: <span class="kw-2">&amp;</span>PeerId, notification: Vec&lt;u8&gt;) {
-		<span class="kw">if let </span><span class="prelude-val">Some</span>(info) = <span class="self">self</span>.peers.get(<span class="kw-2">&amp;</span>peer) {
+	</span><span class="kw">fn </span>send_sync_notification(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer: <span class="kw-2">&amp;</span>sc_network_types::PeerId, notification: Vec&lt;u8&gt;) {
+		<span class="kw">if let </span><span class="prelude-val">Some</span>(info) = <span class="self">self</span>.peers.get(<span class="kw-2">&amp;</span>((<span class="kw-2">*</span>peer).into())) {
 			metrics::register_notification_sent(
-				<span class="kw-2">&amp;</span>info.sink.metrics(),
+				info.sink.metrics(),
 				<span class="kw-2">&amp;</span><span class="self">self</span>.protocol,
 				notification.len(),
 			);
@@ -880,12 +907,16 @@
 
 	<span class="doccomment">/// Send asynchronous `notification` to `peer`, allowing sender to exercise backpressure.
 	</span><span class="kw">async fn </span>send_async_notification(
-		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		peer: <span class="kw-2">&amp;</span>PeerId,
+		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+		peer: <span class="kw-2">&amp;</span>sc_network_types::PeerId,
 		notification: Vec&lt;u8&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(), error::Error&gt; {
 		<span class="kw">let </span>notification_len = notification.len();
-		<span class="kw">let </span>sink = <span class="kw-2">&amp;</span><span class="self">self</span>.peers.get(<span class="kw-2">&amp;</span>peer).ok_or_else(|| error::Error::PeerDoesntExist(<span class="kw-2">*</span>peer))<span class="question-mark">?</span>.sink;
+		<span class="kw">let </span>sink = <span class="kw-2">&amp;</span><span class="self">self
+			</span>.peers
+			.get(<span class="kw-2">&amp;</span>peer.into())
+			.ok_or_else(|| error::Error::PeerDoesntExist((<span class="kw-2">*</span>peer).into()))<span class="question-mark">?
+			</span>.sink;
 
 		sink.reserve_notification()
 			.<span class="kw">await
@@ -894,7 +925,7 @@
 			.map_err(|<span class="kw">_</span>| error::Error::ChannelClosed)
 			.map(|res| {
 				metrics::register_notification_sent(
-					<span class="kw-2">&amp;</span>sink.metrics(),
+					sink.metrics(),
 					<span class="kw-2">&amp;</span><span class="self">self</span>.protocol,
 					notification_len,
 				);
@@ -924,7 +955,7 @@
 			<span class="kw">match </span><span class="self">self</span>.rx.next().<span class="kw">await</span><span class="question-mark">? </span>{
 				InnerNotificationEvent::ValidateInboundSubstream { peer, handshake, result_tx } =&gt;
 					<span class="kw">return </span><span class="prelude-val">Some</span>(NotificationEvent::ValidateInboundSubstream {
-						peer,
+						peer: peer.into(),
 						handshake,
 						result_tx,
 					}),
@@ -943,7 +974,7 @@
 						},
 					);
 					<span class="kw">return </span><span class="prelude-val">Some</span>(NotificationEvent::NotificationStreamOpened {
-						peer,
+						peer: peer.into(),
 						handshake,
 						direction,
 						negotiated_fallback,
@@ -951,10 +982,13 @@
 				},
 				InnerNotificationEvent::NotificationStreamClosed { peer } =&gt; {
 					<span class="self">self</span>.peers.remove(<span class="kw-2">&amp;</span>peer);
-					<span class="kw">return </span><span class="prelude-val">Some</span>(NotificationEvent::NotificationStreamClosed { peer })
+					<span class="kw">return </span><span class="prelude-val">Some</span>(NotificationEvent::NotificationStreamClosed { peer: peer.into() })
 				},
 				InnerNotificationEvent::NotificationReceived { peer, notification } =&gt;
-					<span class="kw">return </span><span class="prelude-val">Some</span>(NotificationEvent::NotificationReceived { peer, notification }),
+					<span class="kw">return </span><span class="prelude-val">Some</span>(NotificationEvent::NotificationReceived {
+						peer: peer.into(),
+						notification,
+					}),
 				InnerNotificationEvent::NotificationSinkReplaced { peer, sink } =&gt; {
 					<span class="kw">match </span><span class="self">self</span>.peers.get_mut(<span class="kw-2">&amp;</span>peer) {
 						<span class="prelude-val">None </span>=&gt; <span class="macro">log::error!</span>(
@@ -974,7 +1008,8 @@
 	<span class="comment">// Clone [`NotificationService`]
 	</span><span class="kw">fn </span>clone(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Box&lt;<span class="kw">dyn </span>NotificationService&gt;, ()&gt; {
 		<span class="kw">let </span><span class="kw-2">mut </span>subscribers = <span class="self">self</span>.subscribers.lock();
-		<span class="kw">let </span>(event_tx, event_rx) = tracing_unbounded(<span class="string">"mpsc-notification-to-protocol"</span>, <span class="number">100_000</span>);
+
+		<span class="kw">let </span>(event_tx, event_rx) = tracing_unbounded(<span class="self">self</span>.rx.name(), <span class="number">100_000</span>);
 		subscribers.push(event_tx);
 
 		<span class="prelude-val">Ok</span>(Box::new(NotificationHandle {
@@ -992,8 +1027,8 @@
 	}
 
 	<span class="doccomment">/// Get message sink of the peer.
-	</span><span class="kw">fn </span>message_sink(<span class="kw-2">&amp;</span><span class="self">self</span>, peer: <span class="kw-2">&amp;</span>PeerId) -&gt; <span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">dyn </span>MessageSink&gt;&gt; {
-		<span class="kw">match </span><span class="self">self</span>.peers.get(peer) {
+	</span><span class="kw">fn </span>message_sink(<span class="kw-2">&amp;</span><span class="self">self</span>, peer: <span class="kw-2">&amp;</span>sc_network_types::PeerId) -&gt; <span class="prelude-ty">Option</span>&lt;Box&lt;<span class="kw">dyn </span>MessageSink&gt;&gt; {
+		<span class="kw">match </span><span class="self">self</span>.peers.get(<span class="kw-2">&amp;</span>peer.into()) {
 			<span class="prelude-val">Some</span>(context) =&gt; <span class="prelude-val">Some</span>(Box::new(context.shared_sink.clone())),
 			<span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
 		}
@@ -1052,7 +1087,7 @@
 	</span>delegate_to_peerset: bool,
 
 	<span class="doccomment">/// Prometheus metrics.
-	</span>metrics: <span class="prelude-ty">Option</span>&lt;metrics::Metrics&gt;,
+	</span>metrics: <span class="prelude-ty">Option</span>&lt;NotificationMetrics&gt;,
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>ValidationCallResult {
@@ -1067,8 +1102,8 @@
 	}
 
 	<span class="doccomment">/// Set metrics.
-	</span><span class="kw">pub fn </span>set_metrics(<span class="kw-2">&amp;mut </span><span class="self">self</span>, metrics: <span class="prelude-ty">Option</span>&lt;metrics::Metrics&gt;) {
-		<span class="self">self</span>.metrics = metrics;
+	</span><span class="kw">pub fn </span>set_metrics(<span class="kw-2">&amp;mut </span><span class="self">self</span>, metrics: NotificationMetrics) {
+		<span class="self">self</span>.metrics = <span class="prelude-val">Some</span>(metrics);
 	}
 
 	<span class="doccomment">/// Delegate validation to `Peerset`.
@@ -1260,12 +1295,25 @@
 	protocol: ProtocolName,
 ) -&gt; (ProtocolHandlePair, Box&lt;<span class="kw">dyn </span>NotificationService&gt;) {
 	<span class="kw">let </span>(cmd_tx, cmd_rx) = mpsc::channel(COMMAND_QUEUE_SIZE);
-	<span class="kw">let </span>(event_tx, event_rx) = tracing_unbounded(<span class="string">"mpsc-notification-to-protocol"</span>, <span class="number">100_000</span>);
+
+	<span class="kw">let </span>(event_tx, event_rx) =
+		tracing_unbounded(metric_label_for_protocol(<span class="kw-2">&amp;</span>protocol).leak(), <span class="number">100_000</span>);
 	<span class="kw">let </span>subscribers = Arc::new(Mutex::new(<span class="macro">vec!</span>[event_tx]));
 
 	(
 		ProtocolHandlePair::new(protocol.clone(), subscribers.clone(), cmd_rx),
 		Box::new(NotificationHandle::new(protocol.clone(), cmd_tx, event_rx, subscribers)),
 	)
+}
+
+<span class="comment">// Decorates the mpsc-notification-to-protocol metric with the name of the protocol,
+// to be able to distiguish between different protocols in dashboards.
+</span><span class="kw">fn </span>metric_label_for_protocol(protocol: <span class="kw-2">&amp;</span>ProtocolName) -&gt; String {
+	<span class="kw">let </span>protocol_name = protocol.to_string();
+	<span class="kw">let </span>keys = protocol_name.split(<span class="string">"/"</span>).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+	keys.iter()
+		.rev()
+		.take(<span class="number">2</span>) <span class="comment">// Last two tokens give the protocol name and version
+		</span>.fold(<span class="string">"mpsc-notification-to-protocol"</span>.into(), |acc, val| <span class="macro">format!</span>(<span class="string">"{}-{}"</span>, acc, val))
 }
 </code></pre></div></section></main></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/client/rpc-spec-v2/src/chain_head/chain_head_follow.rs`."><title>chain_head_follow.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_rpc_spec_v2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/rpc-spec-v2/src/chain_head/chain_head_follow.rs`."><title>chain_head_follow.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_rpc_spec_v2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../sc_rpc_spec_v2/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -618,6 +618,102 @@
 <a href="#616" id="616">616</a>
 <a href="#617" id="617">617</a>
 <a href="#618" id="618">618</a>
+<a href="#619" id="619">619</a>
+<a href="#620" id="620">620</a>
+<a href="#621" id="621">621</a>
+<a href="#622" id="622">622</a>
+<a href="#623" id="623">623</a>
+<a href="#624" id="624">624</a>
+<a href="#625" id="625">625</a>
+<a href="#626" id="626">626</a>
+<a href="#627" id="627">627</a>
+<a href="#628" id="628">628</a>
+<a href="#629" id="629">629</a>
+<a href="#630" id="630">630</a>
+<a href="#631" id="631">631</a>
+<a href="#632" id="632">632</a>
+<a href="#633" id="633">633</a>
+<a href="#634" id="634">634</a>
+<a href="#635" id="635">635</a>
+<a href="#636" id="636">636</a>
+<a href="#637" id="637">637</a>
+<a href="#638" id="638">638</a>
+<a href="#639" id="639">639</a>
+<a href="#640" id="640">640</a>
+<a href="#641" id="641">641</a>
+<a href="#642" id="642">642</a>
+<a href="#643" id="643">643</a>
+<a href="#644" id="644">644</a>
+<a href="#645" id="645">645</a>
+<a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a>
+<a href="#651" id="651">651</a>
+<a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
+<a href="#656" id="656">656</a>
+<a href="#657" id="657">657</a>
+<a href="#658" id="658">658</a>
+<a href="#659" id="659">659</a>
+<a href="#660" id="660">660</a>
+<a href="#661" id="661">661</a>
+<a href="#662" id="662">662</a>
+<a href="#663" id="663">663</a>
+<a href="#664" id="664">664</a>
+<a href="#665" id="665">665</a>
+<a href="#666" id="666">666</a>
+<a href="#667" id="667">667</a>
+<a href="#668" id="668">668</a>
+<a href="#669" id="669">669</a>
+<a href="#670" id="670">670</a>
+<a href="#671" id="671">671</a>
+<a href="#672" id="672">672</a>
+<a href="#673" id="673">673</a>
+<a href="#674" id="674">674</a>
+<a href="#675" id="675">675</a>
+<a href="#676" id="676">676</a>
+<a href="#677" id="677">677</a>
+<a href="#678" id="678">678</a>
+<a href="#679" id="679">679</a>
+<a href="#680" id="680">680</a>
+<a href="#681" id="681">681</a>
+<a href="#682" id="682">682</a>
+<a href="#683" id="683">683</a>
+<a href="#684" id="684">684</a>
+<a href="#685" id="685">685</a>
+<a href="#686" id="686">686</a>
+<a href="#687" id="687">687</a>
+<a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
+<a href="#691" id="691">691</a>
+<a href="#692" id="692">692</a>
+<a href="#693" id="693">693</a>
+<a href="#694" id="694">694</a>
+<a href="#695" id="695">695</a>
+<a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
+<a href="#705" id="705">705</a>
+<a href="#706" id="706">706</a>
+<a href="#707" id="707">707</a>
+<a href="#708" id="708">708</a>
+<a href="#709" id="709">709</a>
+<a href="#710" id="710">710</a>
+<a href="#711" id="711">711</a>
+<a href="#712" id="712">712</a>
+<a href="#713" id="713">713</a>
+<a href="#714" id="714">714</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -639,12 +735,12 @@
 </span><span class="doccomment">//! Implementation of the `chainHead_follow` method.
 
 </span><span class="kw">use </span><span class="kw">crate</span>::chain_head::{
-	chain_head::LOG_TARGET,
+	chain_head::{LOG_TARGET, MAX_PINNED_BLOCKS},
 	event::{
 		BestBlockChanged, Finalized, FollowEvent, Initialized, NewBlock, RuntimeEvent,
 		RuntimeVersionEvent,
 	},
-	subscription::{InsertedSubscriptionData, SubscriptionManagement, SubscriptionManagementError},
+	subscription::{SubscriptionManagement, SubscriptionManagementError},
 };
 <span class="kw">use </span>futures::{
 	channel::oneshot,
@@ -656,12 +752,25 @@
 <span class="kw">use </span>sc_client_api::{
 	Backend, BlockBackend, BlockImportNotification, BlockchainEvents, FinalityNotification,
 };
+<span class="kw">use </span>sc_rpc::utils::to_sub_message;
+<span class="kw">use </span>schnellru::{ByLength, LruMap};
 <span class="kw">use </span>sp_api::CallApiAt;
 <span class="kw">use </span>sp_blockchain::{
 	Backend <span class="kw">as </span>BlockChainBackend, Error <span class="kw">as </span>BlockChainError, HeaderBackend, HeaderMetadata, Info,
 };
-<span class="kw">use </span>sp_runtime::traits::{Block <span class="kw">as </span>BlockT, Header <span class="kw">as </span>HeaderT, NumberFor};
-<span class="kw">use </span>std::{collections::HashSet, sync::Arc};
+<span class="kw">use </span>sp_runtime::{
+	traits::{Block <span class="kw">as </span>BlockT, Header <span class="kw">as </span>HeaderT, NumberFor},
+	SaturatedConversion, Saturating,
+};
+<span class="kw">use </span>std::{
+	collections::{HashSet, VecDeque},
+	sync::Arc,
+};
+<span class="doccomment">/// The maximum number of finalized blocks provided by the
+/// `Initialized` event.
+</span><span class="kw">const </span>MAX_FINALIZED_BLOCKS: usize = <span class="number">16</span>;
+
+<span class="kw">use </span><span class="kw">super</span>::subscription::InsertedSubscriptionData;
 
 <span class="doccomment">/// Generates the events of the `chainHead_follow` method.
 </span><span class="kw">pub struct </span>ChainHeadFollower&lt;BE: Backend&lt;Block&gt;, Block: BlockT, Client&gt; {
@@ -670,13 +779,18 @@
 	<span class="doccomment">/// Backend of the chain.
 	</span>backend: Arc&lt;BE&gt;,
 	<span class="doccomment">/// Subscriptions handle.
-	</span>sub_handle: Arc&lt;SubscriptionManagement&lt;Block, BE&gt;&gt;,
+	</span>sub_handle: SubscriptionManagement&lt;Block, BE&gt;,
 	<span class="doccomment">/// Subscription was started with the runtime updates flag.
 	</span>with_runtime: bool,
 	<span class="doccomment">/// Subscription ID.
 	</span>sub_id: String,
 	<span class="doccomment">/// The best reported block by this subscription.
-	</span>best_block_cache: <span class="prelude-ty">Option</span>&lt;Block::Hash&gt;,
+	</span>current_best_block: <span class="prelude-ty">Option</span>&lt;Block::Hash&gt;,
+	<span class="doccomment">/// LRU cache of pruned blocks.
+	</span>pruned_blocks: LruMap&lt;Block::Hash, ()&gt;,
+	<span class="doccomment">/// Stop all subscriptions if the distance between the leaves and the current finalized
+	/// block is larger than this value.
+	</span>max_lagging_distance: usize,
 }
 
 <span class="kw">impl</span>&lt;BE: Backend&lt;Block&gt;, Block: BlockT, Client&gt; ChainHeadFollower&lt;BE, Block, Client&gt; {
@@ -684,11 +798,23 @@
 	</span><span class="kw">pub fn </span>new(
 		client: Arc&lt;Client&gt;,
 		backend: Arc&lt;BE&gt;,
-		sub_handle: Arc&lt;SubscriptionManagement&lt;Block, BE&gt;&gt;,
+		sub_handle: SubscriptionManagement&lt;Block, BE&gt;,
 		with_runtime: bool,
 		sub_id: String,
+		max_lagging_distance: usize,
 	) -&gt; <span class="self">Self </span>{
-		<span class="self">Self </span>{ client, backend, sub_handle, with_runtime, sub_id, best_block_cache: <span class="prelude-val">None </span>}
+		<span class="self">Self </span>{
+			client,
+			backend,
+			sub_handle,
+			with_runtime,
+			sub_id,
+			current_best_block: <span class="prelude-val">None</span>,
+			pruned_blocks: LruMap::new(ByLength::new(
+				MAX_PINNED_BLOCKS.try_into().unwrap_or(u32::MAX),
+			)),
+			max_lagging_distance,
+		}
 	}
 }
 
@@ -712,6 +838,8 @@
 	///
 	/// It is a tuple of (block hash, parent hash).
 	</span>finalized_block_descendants: Vec&lt;(Block::Hash, Block::Hash)&gt;,
+	<span class="doccomment">/// Hashes of the last finalized blocks
+	</span>finalized_block_hashes: VecDeque&lt;Block::Hash&gt;,
 	<span class="doccomment">/// Blocks that should not be reported as pruned by the `Finalized` event.
 	///
 	/// Substrate database will perform the pruning of height N at
@@ -794,17 +922,54 @@
 		</span>}
 	}
 
+	<span class="doccomment">/// Check the distance between the provided blocks does not exceed a
+	/// a reasonable range.
+	///
+	/// When the blocks are too far apart (potentially millions of blocks):
+	///  - Tree route is expensive to calculate.
+	///  - The RPC layer will not be able to generate the `NewBlock` events for all blocks.
+	///
+	/// This edge-case can happen for parachains where the relay chain syncs slower to
+	/// the head of the chain than the parachain node that is synced already.
+	</span><span class="kw">fn </span>distace_within_reason(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		block: Block::Hash,
+		finalized: Block::Hash,
+	) -&gt; <span class="prelude-ty">Result</span>&lt;(), SubscriptionManagementError&gt; {
+		<span class="kw">let </span><span class="prelude-val">Some</span>(block_num) = <span class="self">self</span>.client.number(block)<span class="question-mark">? </span><span class="kw">else </span>{
+			<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::BlockHashAbsent)
+		};
+		<span class="kw">let </span><span class="prelude-val">Some</span>(finalized_num) = <span class="self">self</span>.client.number(finalized)<span class="question-mark">? </span><span class="kw">else </span>{
+			<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::BlockHashAbsent)
+		};
+
+		<span class="kw">let </span>distance: usize = block_num.saturating_sub(finalized_num).saturated_into();
+		<span class="kw">if </span>distance &gt; <span class="self">self</span>.max_lagging_distance {
+			<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::BlockDistanceTooLarge);
+		}
+
+		<span class="prelude-val">Ok</span>(())
+	}
+
 	<span class="doccomment">/// Get the in-memory blocks of the client, starting from the provided finalized hash.
+	///
+	/// The reported blocks are pinned by this function.
 	</span><span class="kw">fn </span>get_init_blocks_with_forks(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		startup_point: <span class="kw-2">&amp;</span>StartupPoint&lt;Block&gt;,
+		finalized: Block::Hash,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;InitialBlocks&lt;Block&gt;, SubscriptionManagementError&gt; {
 		<span class="kw">let </span>blockchain = <span class="self">self</span>.backend.blockchain();
 		<span class="kw">let </span>leaves = blockchain.leaves()<span class="question-mark">?</span>;
-		<span class="kw">let </span>finalized = startup_point.finalized_hash;
 		<span class="kw">let </span><span class="kw-2">mut </span>pruned_forks = HashSet::new();
 		<span class="kw">let </span><span class="kw-2">mut </span>finalized_block_descendants = Vec::new();
 		<span class="kw">let </span><span class="kw-2">mut </span>unique_descendants = HashSet::new();
+
+		<span class="comment">// Ensure all leaves are within a reasonable distance from the finalized block,
+		// before traversing the tree.
+		</span><span class="kw">for </span>leaf <span class="kw">in </span><span class="kw-2">&amp;</span>leaves {
+			<span class="self">self</span>.distace_within_reason(<span class="kw-2">*</span>leaf, finalized)<span class="question-mark">?</span>;
+		}
+
 		<span class="kw">for </span>leaf <span class="kw">in </span>leaves {
 			<span class="kw">let </span>tree_route = sp_blockchain::tree_route(blockchain, finalized, leaf)<span class="question-mark">?</span>;
 
@@ -815,40 +980,71 @@
 				<span class="comment">// Ensure a `NewBlock` event is generated for all children of the
 				// finalized block. Describe the tree route as (child_node, parent_node)
 				// Note: the order of elements matters here.
-				</span><span class="kw">let </span>parents = std::iter::once(finalized).chain(blocks.clone());
+				</span><span class="kw">let </span><span class="kw-2">mut </span>parent = finalized;
+				<span class="kw">for </span>child <span class="kw">in </span>blocks {
+					<span class="kw">let </span>pair = (child, parent);
 
-				<span class="kw">for </span>pair <span class="kw">in </span>blocks.zip(parents) {
 					<span class="kw">if </span>unique_descendants.insert(pair) {
+						<span class="comment">// The finalized block is pinned below.
+						</span><span class="self">self</span>.sub_handle.pin_block(<span class="kw-2">&amp;</span><span class="self">self</span>.sub_id, child)<span class="question-mark">?</span>;
 						finalized_block_descendants.push(pair);
 					}
+
+					parent = child;
 				}
 			}
 		}
 
-		<span class="prelude-val">Ok</span>(InitialBlocks { finalized_block_descendants, pruned_forks })
+		<span class="kw">let </span><span class="kw-2">mut </span>current_block = finalized;
+		<span class="comment">// The header of the finalized block must not be pruned.
+		</span><span class="kw">let </span><span class="prelude-val">Some</span>(header) = blockchain.header(current_block)<span class="question-mark">? </span><span class="kw">else </span>{
+			<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::BlockHeaderAbsent);
+		};
+
+		<span class="comment">// Report at most `MAX_FINALIZED_BLOCKS`. Note: The node might not have that many blocks.
+		</span><span class="kw">let </span><span class="kw-2">mut </span>finalized_block_hashes = VecDeque::with_capacity(MAX_FINALIZED_BLOCKS);
+
+		<span class="comment">// Pin the finalized block.
+		</span><span class="self">self</span>.sub_handle.pin_block(<span class="kw-2">&amp;</span><span class="self">self</span>.sub_id, current_block)<span class="question-mark">?</span>;
+		finalized_block_hashes.push_front(current_block);
+		current_block = <span class="kw-2">*</span>header.parent_hash();
+
+		<span class="kw">for _ in </span><span class="number">0</span>..MAX_FINALIZED_BLOCKS - <span class="number">1 </span>{
+			<span class="kw">let </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(header)) = blockchain.header(current_block) <span class="kw">else </span>{ <span class="kw">break </span>};
+			<span class="comment">// Block cannot be reported if pinning fails.
+			</span><span class="kw">if </span><span class="self">self</span>.sub_handle.pin_block(<span class="kw-2">&amp;</span><span class="self">self</span>.sub_id, current_block).is_err() {
+				<span class="kw">break
+			</span>};
+
+			finalized_block_hashes.push_front(current_block);
+			current_block = <span class="kw-2">*</span>header.parent_hash();
+		}
+
+		<span class="prelude-val">Ok</span>(InitialBlocks { finalized_block_descendants, finalized_block_hashes, pruned_forks })
 	}
 
 	<span class="doccomment">/// Generate the initial events reported by the RPC `follow` method.
 	///
-	/// Returns the initial events that should be reported directly, together with pruned
-	/// block hashes that should be ignored by the `Finalized` event.
+	/// Returns the initial events that should be reported directly.
 	</span><span class="kw">fn </span>generate_init_events(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		startup_point: <span class="kw-2">&amp;</span>StartupPoint&lt;Block&gt;,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;(Vec&lt;FollowEvent&lt;Block::Hash&gt;&gt;, HashSet&lt;Block::Hash&gt;), SubscriptionManagementError&gt;
-	{
-		<span class="kw">let </span>init = <span class="self">self</span>.get_init_blocks_with_forks(startup_point)<span class="question-mark">?</span>;
-
-		<span class="kw">let </span>initial_blocks = init.finalized_block_descendants;
+	) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;FollowEvent&lt;Block::Hash&gt;&gt;, SubscriptionManagementError&gt; {
+		<span class="kw">let </span>init = <span class="self">self</span>.get_init_blocks_with_forks(startup_point.finalized_hash)<span class="question-mark">?</span>;
 
 		<span class="comment">// The initialized event is the first one sent.
-		</span><span class="kw">let </span>finalized_block_hash = startup_point.finalized_hash;
-		<span class="self">self</span>.sub_handle.pin_block(<span class="kw-2">&amp;</span><span class="self">self</span>.sub_id, finalized_block_hash)<span class="question-mark">?</span>;
+		</span><span class="kw">let </span>initial_blocks = init.finalized_block_descendants;
+		<span class="kw">let </span>finalized_block_hashes = init.finalized_block_hashes;
+		<span class="comment">// These are the pruned blocks that we should not report again.
+		</span><span class="kw">for </span>pruned <span class="kw">in </span>init.pruned_forks {
+			<span class="self">self</span>.pruned_blocks.insert(pruned, ());
+		}
 
+		<span class="kw">let </span>finalized_block_hash = startup_point.finalized_hash;
 		<span class="kw">let </span>finalized_block_runtime = <span class="self">self</span>.generate_runtime_event(finalized_block_hash, <span class="prelude-val">None</span>);
 
 		<span class="kw">let </span>initialized_event = FollowEvent::Initialized(Initialized {
-			finalized_block_hash,
+			finalized_block_hashes: finalized_block_hashes.into(),
 			finalized_block_runtime,
 			with_runtime: <span class="self">self</span>.with_runtime,
 		});
@@ -857,8 +1053,6 @@
 
 		finalized_block_descendants.push(initialized_event);
 		<span class="kw">for </span>(child, parent) <span class="kw">in </span>initial_blocks.into_iter() {
-			<span class="self">self</span>.sub_handle.pin_block(<span class="kw-2">&amp;</span><span class="self">self</span>.sub_id, child)<span class="question-mark">?</span>;
-
 			<span class="kw">let </span>new_runtime = <span class="self">self</span>.generate_runtime_event(child, <span class="prelude-val">Some</span>(parent));
 
 			<span class="kw">let </span>event = FollowEvent::NewBlock(NewBlock {
@@ -875,11 +1069,11 @@
 		</span><span class="kw">let </span>best_block_hash = startup_point.best_hash;
 		<span class="kw">if </span>best_block_hash != finalized_block_hash {
 			<span class="kw">let </span>best_block = FollowEvent::BestBlockChanged(BestBlockChanged { best_block_hash });
-			<span class="self">self</span>.best_block_cache = <span class="prelude-val">Some</span>(best_block_hash);
+			<span class="self">self</span>.current_best_block = <span class="prelude-val">Some</span>(best_block_hash);
 			finalized_block_descendants.push(best_block);
 		};
 
-		<span class="prelude-val">Ok</span>((finalized_block_descendants, init.pruned_forks))
+		<span class="prelude-val">Ok</span>(finalized_block_descendants)
 	}
 
 	<span class="doccomment">/// Generate the "NewBlock" event and potentially the "BestBlockChanged" event for the
@@ -907,19 +1101,19 @@
 		</span><span class="kw">let </span>best_block_event =
 			FollowEvent::BestBlockChanged(BestBlockChanged { best_block_hash: block_hash });
 
-		<span class="kw">match </span><span class="self">self</span>.best_block_cache {
+		<span class="kw">match </span><span class="self">self</span>.current_best_block {
 			<span class="prelude-val">Some</span>(block_cache) =&gt; {
 				<span class="comment">// The RPC layer has not reported this block as best before.
 				// Note: This handles the race with the finalized branch.
 				</span><span class="kw">if </span>block_cache != block_hash {
-					<span class="self">self</span>.best_block_cache = <span class="prelude-val">Some</span>(block_hash);
+					<span class="self">self</span>.current_best_block = <span class="prelude-val">Some</span>(block_hash);
 					<span class="macro">vec!</span>[new_block, best_block_event]
 				} <span class="kw">else </span>{
 					<span class="macro">vec!</span>[new_block]
 				}
 			},
 			<span class="prelude-val">None </span>=&gt; {
-				<span class="self">self</span>.best_block_cache = <span class="prelude-val">Some</span>(block_hash);
+				<span class="self">self</span>.current_best_block = <span class="prelude-val">Some</span>(block_hash);
 				<span class="macro">vec!</span>[new_block, best_block_event]
 			},
 		}
@@ -988,7 +1182,7 @@
 				// When the node falls out of sync and then syncs up to the tip of the chain, it can
 				// happen that we skip notifications. Then it is better to terminate the connection
 				// instead of trying to send notifications for all missed blocks.
-				</span><span class="kw">if let </span><span class="prelude-val">Some</span>(best_block_hash) = <span class="self">self</span>.best_block_cache {
+				</span><span class="kw">if let </span><span class="prelude-val">Some</span>(best_block_hash) = <span class="self">self</span>.current_best_block {
 					<span class="kw">let </span>ancestor = sp_blockchain::lowest_common_ancestor(
 						<span class="kw-2">&amp;*</span><span class="self">self</span>.client,
 						<span class="kw-2">*</span>hash,
@@ -1011,13 +1205,10 @@
 	}
 
 	<span class="doccomment">/// Get all pruned block hashes from the provided stale heads.
-	///
-	/// The result does not include hashes from `to_ignore`.
 	</span><span class="kw">fn </span>get_pruned_hashes(
-		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		stale_heads: <span class="kw-2">&amp;</span>[Block::Hash],
 		last_finalized: Block::Hash,
-		to_ignore: <span class="kw-2">&amp;mut </span>HashSet&lt;Block::Hash&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Block::Hash&gt;, SubscriptionManagementError&gt; {
 		<span class="kw">let </span>blockchain = <span class="self">self</span>.backend.blockchain();
 		<span class="kw">let </span><span class="kw-2">mut </span>pruned = Vec::new();
@@ -1027,11 +1218,13 @@
 
 			<span class="comment">// Collect only blocks that are not part of the canonical chain.
 			</span>pruned.extend(tree_route.enacted().iter().filter_map(|block| {
-				<span class="kw">if </span>!to_ignore.remove(<span class="kw-2">&amp;</span>block.hash) {
-					<span class="prelude-val">Some</span>(block.hash)
-				} <span class="kw">else </span>{
-					<span class="prelude-val">None
+				<span class="kw">if </span><span class="self">self</span>.pruned_blocks.get(<span class="kw-2">&amp;</span>block.hash).is_some() {
+					<span class="comment">// The block was already reported as pruned.
+					</span><span class="kw">return </span><span class="prelude-val">None
 				</span>}
+
+				<span class="self">self</span>.pruned_blocks.insert(block.hash, ());
+				<span class="prelude-val">Some</span>(block.hash)
 			}))
 		}
 
@@ -1045,7 +1238,6 @@
 	</span><span class="kw">fn </span>handle_finalized_blocks(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		notification: FinalityNotification&lt;Block&gt;,
-		to_ignore: <span class="kw-2">&amp;mut </span>HashSet&lt;Block::Hash&gt;,
 		startup_point: <span class="kw-2">&amp;</span>StartupPoint&lt;Block&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;FollowEvent&lt;Block::Hash&gt;&gt;, SubscriptionManagementError&gt; {
 		<span class="kw">let </span>last_finalized = notification.hash;
@@ -1066,25 +1258,32 @@
 		<span class="comment">// Report all pruned blocks from the notification that are not
 		// part of the fork we need to ignore.
 		</span><span class="kw">let </span>pruned_block_hashes =
-			<span class="self">self</span>.get_pruned_hashes(<span class="kw-2">&amp;</span>notification.stale_heads, last_finalized, to_ignore)<span class="question-mark">?</span>;
+			<span class="self">self</span>.get_pruned_hashes(<span class="kw-2">&amp;</span>notification.stale_heads, last_finalized)<span class="question-mark">?</span>;
 
 		<span class="kw">let </span>finalized_event = FollowEvent::Finalized(Finalized {
 			finalized_block_hashes,
 			pruned_block_hashes: pruned_block_hashes.clone(),
 		});
 
-		<span class="kw">match </span><span class="self">self</span>.best_block_cache {
-			<span class="prelude-val">Some</span>(block_cache) =&gt; {
-				<span class="comment">// If the best block wasn't pruned, we are done here.
-				</span><span class="kw">if </span>!pruned_block_hashes.iter().any(|hash| <span class="kw-2">*</span>hash == block_cache) {
-					events.push(finalized_event);
-					<span class="kw">return </span><span class="prelude-val">Ok</span>(events)
-				}
+		<span class="kw">if let </span><span class="prelude-val">Some</span>(current_best_block) = <span class="self">self</span>.current_best_block {
+			<span class="comment">// The best reported block is in the pruned list. Report a new best block.
+			</span><span class="kw">let </span>is_in_pruned_list =
+				pruned_block_hashes.iter().any(|hash| <span class="kw-2">*</span>hash == current_best_block);
+			<span class="comment">// The block is not the last finalized block.
+			//
+			// It can be either:
+			//  - a descendant of the last finalized block
+			//  - a block on a fork that will be pruned in the future.
+			//
+			// In those cases, we emit a new best block.
+			</span><span class="kw">let </span>is_not_last_finalized = current_best_block != last_finalized;
 
-				<span class="comment">// The best block is reported as pruned. Therefore, we need to signal a new
-				// best block event before submitting the finalized event.
+			<span class="kw">if </span>is_in_pruned_list || is_not_last_finalized {
+				<span class="comment">// We need to generate a best block event.
 				</span><span class="kw">let </span>best_block_hash = <span class="self">self</span>.client.info().best_hash;
-				<span class="kw">if </span>best_block_hash == block_cache {
+
+				<span class="comment">// Defensive check against state missmatch.
+				</span><span class="kw">if </span>best_block_hash == current_best_block {
 					<span class="comment">// The client doest not have any new information about the best block.
 					// The information from `.info()` is updated from the DB as the last
 					// step of the finalization and it should be up to date.
@@ -1094,23 +1293,18 @@
 						<span class="string">"[follow][id={:?}] Client does not contain different best block"</span>,
 						<span class="self">self</span>.sub_id,
 					);
-					events.push(finalized_event);
-					<span class="prelude-val">Ok</span>(events)
 				} <span class="kw">else </span>{
 					<span class="comment">// The RPC needs to also submit a new best block changed before the
 					// finalized event.
-					</span><span class="self">self</span>.best_block_cache = <span class="prelude-val">Some</span>(best_block_hash);
-					<span class="kw">let </span>best_block_event =
-						FollowEvent::BestBlockChanged(BestBlockChanged { best_block_hash });
-					events.extend([best_block_event, finalized_event]);
-					<span class="prelude-val">Ok</span>(events)
+					</span><span class="self">self</span>.current_best_block = <span class="prelude-val">Some</span>(best_block_hash);
+					events
+						.push(FollowEvent::BestBlockChanged(BestBlockChanged { best_block_hash }));
 				}
-			},
-			<span class="prelude-val">None </span>=&gt; {
-				events.push(finalized_event);
-				<span class="prelude-val">Ok</span>(events)
-			},
+			}
 		}
+
+		events.push(finalized_event);
+		<span class="prelude-val">Ok</span>(events)
 	}
 
 	<span class="doccomment">/// Submit the events from the provided stream to the RPC client
@@ -1119,14 +1313,19 @@
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		startup_point: <span class="kw-2">&amp;</span>StartupPoint&lt;Block&gt;,
 		<span class="kw-2">mut </span>stream: EventStream,
-		<span class="kw-2">mut </span>to_ignore: HashSet&lt;Block::Hash&gt;,
-		<span class="kw-2">mut </span>sink: SubscriptionSink,
+		sink: SubscriptionSink,
 		rx_stop: oneshot::Receiver&lt;()&gt;,
-	) <span class="kw">where
+	) -&gt; <span class="prelude-ty">Result</span>&lt;(), SubscriptionManagementError&gt;
+	<span class="kw">where
 		</span>EventStream: Stream&lt;Item = NotificationType&lt;Block&gt;&gt; + Unpin,
 	{
 		<span class="kw">let </span><span class="kw-2">mut </span>stream_item = stream.next();
-		<span class="kw">let </span><span class="kw-2">mut </span>stop_event = rx_stop;
+
+		<span class="comment">// The stop event can be triggered by the chainHead logic when the pinned
+		// block guarantee cannot be hold. Or when the client is disconnected.
+		</span><span class="kw">let </span>connection_closed = sink.closed();
+		<span class="macro">tokio::pin!</span>(connection_closed);
+		<span class="kw">let </span><span class="kw-2">mut </span>stop_event = futures_util::future::select(rx_stop, connection_closed);
 
 		<span class="kw">while let </span>Either::Left((<span class="prelude-val">Some</span>(event), next_stop_event)) =
 			futures_util::future::select(stream_item, stop_event).<span class="kw">await
@@ -1136,7 +1335,7 @@
 				NotificationType::NewBlock(notification) =&gt;
 					<span class="self">self</span>.handle_import_blocks(notification, <span class="kw-2">&amp;</span>startup_point),
 				NotificationType::Finalized(notification) =&gt;
-					<span class="self">self</span>.handle_finalized_blocks(notification, <span class="kw-2">&amp;mut </span>to_ignore, <span class="kw-2">&amp;</span>startup_point),
+					<span class="self">self</span>.handle_finalized_blocks(notification, <span class="kw-2">&amp;</span>startup_point),
 				NotificationType::MethodResponse(notification) =&gt; <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[notification]),
 			};
 
@@ -1149,54 +1348,47 @@
 						<span class="self">self</span>.sub_id,
 						err
 					);
-					<span class="kw">let _ </span>= sink.send(<span class="kw-2">&amp;</span>FollowEvent::&lt;String&gt;::Stop);
-					<span class="kw">return
-				</span>},
+					<span class="kw">let </span>msg = to_sub_message(<span class="kw-2">&amp;</span>sink, <span class="kw-2">&amp;</span>FollowEvent::&lt;String&gt;::Stop);
+					<span class="kw">let _ </span>= sink.send(msg).<span class="kw">await</span>;
+					<span class="kw">return </span><span class="prelude-val">Err</span>(err)
+				},
 			};
 
 			<span class="kw">for </span>event <span class="kw">in </span>events {
-				<span class="kw">let </span>result = sink.send(<span class="kw-2">&amp;</span>event);
-
-				<span class="comment">// Migration note: the new version of jsonrpsee returns Result&lt;(), DisconnectError&gt;
-				// The logic from `Err(err)` should be moved when building the new
-				// `SubscriptionMessage`.
-
-				// For now, jsonrpsee returns:
-				// Ok(true): message sent
-				// Ok(false): client disconnected or subscription closed
-				// Err(err): serder serialization error of the event
-				</span><span class="kw">if let </span><span class="prelude-val">Err</span>(err) = result {
+				<span class="kw">let </span>msg = to_sub_message(<span class="kw-2">&amp;</span>sink, <span class="kw-2">&amp;</span>event);
+				<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = sink.send(msg).<span class="kw">await </span>{
 					<span class="comment">// Failed to submit event.
 					</span><span class="macro">debug!</span>(
 						target: LOG_TARGET,
 						<span class="string">"[follow][id={:?}] Failed to send event {:?}"</span>, <span class="self">self</span>.sub_id, err
 					);
 
-					<span class="kw">let _ </span>= sink.send(<span class="kw-2">&amp;</span>FollowEvent::&lt;String&gt;::Stop);
-					<span class="kw">return
-				</span>}
-
-				<span class="kw">if let </span><span class="prelude-val">Ok</span>(<span class="bool-val">false</span>) = result {
-					<span class="comment">// Client disconnected or subscription was closed.
-					</span><span class="kw">return
-				</span>}
+					<span class="kw">let </span>msg = to_sub_message(<span class="kw-2">&amp;</span>sink, <span class="kw-2">&amp;</span>FollowEvent::&lt;String&gt;::Stop);
+					<span class="kw">let _ </span>= sink.send(msg).<span class="kw">await</span>;
+					<span class="comment">// No need to propagate this error further, the client disconnected.
+					</span><span class="kw">return </span><span class="prelude-val">Ok</span>(())
+				}
 			}
 
 			stream_item = stream.next();
 			stop_event = next_stop_event;
 		}
 
-		<span class="comment">// If we got here either the substrate streams have closed
-		// or the `Stop` receiver was triggered.
-		</span><span class="kw">let _ </span>= sink.send(<span class="kw-2">&amp;</span>FollowEvent::&lt;String&gt;::Stop);
+		<span class="comment">// If we got here either:
+		// - the substrate streams have closed
+		// - the `Stop` receiver was triggered internally (cannot hold the pinned block guarantee)
+		// - the client disconnected.
+		</span><span class="kw">let </span>msg = to_sub_message(<span class="kw-2">&amp;</span>sink, <span class="kw-2">&amp;</span>FollowEvent::&lt;String&gt;::Stop);
+		<span class="kw">let _ </span>= sink.send(msg).<span class="kw">await</span>;
+		<span class="prelude-val">Ok</span>(())
 	}
 
 	<span class="doccomment">/// Generate the block events for the `chainHead_follow` method.
 	</span><span class="kw">pub async fn </span>generate_events(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
-		<span class="kw-2">mut </span>sink: SubscriptionSink,
+		sink: SubscriptionSink,
 		sub_data: InsertedSubscriptionData&lt;Block&gt;,
-	) {
+	) -&gt; <span class="prelude-ty">Result</span>&lt;(), SubscriptionManagementError&gt; {
 		<span class="comment">// Register for the new block and finalized notifications.
 		</span><span class="kw">let </span>stream_import = <span class="self">self
 			</span>.client
@@ -1213,7 +1405,7 @@
 			.map(|response| NotificationType::MethodResponse(response));
 
 		<span class="kw">let </span>startup_point = StartupPoint::from(<span class="self">self</span>.client.info());
-		<span class="kw">let </span>(initial_events, pruned_forks) = <span class="kw">match </span><span class="self">self</span>.generate_init_events(<span class="kw-2">&amp;</span>startup_point) {
+		<span class="kw">let </span>initial_events = <span class="kw">match </span><span class="self">self</span>.generate_init_events(<span class="kw-2">&amp;</span>startup_point) {
 			<span class="prelude-val">Ok</span>(blocks) =&gt; blocks,
 			<span class="prelude-val">Err</span>(err) =&gt; {
 				<span class="macro">debug!</span>(
@@ -1222,9 +1414,10 @@
 					<span class="self">self</span>.sub_id,
 					err
 				);
-				<span class="kw">let _ </span>= sink.send(<span class="kw-2">&amp;</span>FollowEvent::&lt;Block::Hash&gt;::Stop);
-				<span class="kw">return
-			</span>},
+				<span class="kw">let </span>msg = to_sub_message(<span class="kw-2">&amp;</span>sink, <span class="kw-2">&amp;</span>FollowEvent::&lt;String&gt;::Stop);
+				<span class="kw">let _ </span>= sink.send(msg).<span class="kw">await</span>;
+				<span class="kw">return </span><span class="prelude-val">Err</span>(err)
+			},
 		};
 
 		<span class="kw">let </span>initial = NotificationType::InitialEvents(initial_events);
@@ -1232,8 +1425,7 @@
 		<span class="kw">let </span>merged = tokio_stream::StreamExt::merge(merged, stream_responses);
 		<span class="kw">let </span>stream = stream::once(futures::future::ready(initial)).chain(merged);
 
-		<span class="self">self</span>.submit_events(<span class="kw-2">&amp;</span>startup_point, stream.boxed(), pruned_forks, sink, sub_data.rx_stop)
-			.<span class="kw">await</span>;
-	}
+		<span class="self">self</span>.submit_events(<span class="kw-2">&amp;</span>startup_point, stream.boxed(), sink, sub_data.rx_stop).<span class="kw">await
+	</span>}
 }
 </code></pre></div></section></main></body></html>

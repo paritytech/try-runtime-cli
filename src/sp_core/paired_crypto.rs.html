@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/primitives/core/src/paired_crypto.rs`."><title>paired_crypto.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/primitives/core/src/paired_crypto.rs`."><title>paired_crypto.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../sp_core/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -531,211 +531,6 @@
 <a href="#529" id="529">529</a>
 <a href="#530" id="530">530</a>
 <a href="#531" id="531">531</a>
-<a href="#532" id="532">532</a>
-<a href="#533" id="533">533</a>
-<a href="#534" id="534">534</a>
-<a href="#535" id="535">535</a>
-<a href="#536" id="536">536</a>
-<a href="#537" id="537">537</a>
-<a href="#538" id="538">538</a>
-<a href="#539" id="539">539</a>
-<a href="#540" id="540">540</a>
-<a href="#541" id="541">541</a>
-<a href="#542" id="542">542</a>
-<a href="#543" id="543">543</a>
-<a href="#544" id="544">544</a>
-<a href="#545" id="545">545</a>
-<a href="#546" id="546">546</a>
-<a href="#547" id="547">547</a>
-<a href="#548" id="548">548</a>
-<a href="#549" id="549">549</a>
-<a href="#550" id="550">550</a>
-<a href="#551" id="551">551</a>
-<a href="#552" id="552">552</a>
-<a href="#553" id="553">553</a>
-<a href="#554" id="554">554</a>
-<a href="#555" id="555">555</a>
-<a href="#556" id="556">556</a>
-<a href="#557" id="557">557</a>
-<a href="#558" id="558">558</a>
-<a href="#559" id="559">559</a>
-<a href="#560" id="560">560</a>
-<a href="#561" id="561">561</a>
-<a href="#562" id="562">562</a>
-<a href="#563" id="563">563</a>
-<a href="#564" id="564">564</a>
-<a href="#565" id="565">565</a>
-<a href="#566" id="566">566</a>
-<a href="#567" id="567">567</a>
-<a href="#568" id="568">568</a>
-<a href="#569" id="569">569</a>
-<a href="#570" id="570">570</a>
-<a href="#571" id="571">571</a>
-<a href="#572" id="572">572</a>
-<a href="#573" id="573">573</a>
-<a href="#574" id="574">574</a>
-<a href="#575" id="575">575</a>
-<a href="#576" id="576">576</a>
-<a href="#577" id="577">577</a>
-<a href="#578" id="578">578</a>
-<a href="#579" id="579">579</a>
-<a href="#580" id="580">580</a>
-<a href="#581" id="581">581</a>
-<a href="#582" id="582">582</a>
-<a href="#583" id="583">583</a>
-<a href="#584" id="584">584</a>
-<a href="#585" id="585">585</a>
-<a href="#586" id="586">586</a>
-<a href="#587" id="587">587</a>
-<a href="#588" id="588">588</a>
-<a href="#589" id="589">589</a>
-<a href="#590" id="590">590</a>
-<a href="#591" id="591">591</a>
-<a href="#592" id="592">592</a>
-<a href="#593" id="593">593</a>
-<a href="#594" id="594">594</a>
-<a href="#595" id="595">595</a>
-<a href="#596" id="596">596</a>
-<a href="#597" id="597">597</a>
-<a href="#598" id="598">598</a>
-<a href="#599" id="599">599</a>
-<a href="#600" id="600">600</a>
-<a href="#601" id="601">601</a>
-<a href="#602" id="602">602</a>
-<a href="#603" id="603">603</a>
-<a href="#604" id="604">604</a>
-<a href="#605" id="605">605</a>
-<a href="#606" id="606">606</a>
-<a href="#607" id="607">607</a>
-<a href="#608" id="608">608</a>
-<a href="#609" id="609">609</a>
-<a href="#610" id="610">610</a>
-<a href="#611" id="611">611</a>
-<a href="#612" id="612">612</a>
-<a href="#613" id="613">613</a>
-<a href="#614" id="614">614</a>
-<a href="#615" id="615">615</a>
-<a href="#616" id="616">616</a>
-<a href="#617" id="617">617</a>
-<a href="#618" id="618">618</a>
-<a href="#619" id="619">619</a>
-<a href="#620" id="620">620</a>
-<a href="#621" id="621">621</a>
-<a href="#622" id="622">622</a>
-<a href="#623" id="623">623</a>
-<a href="#624" id="624">624</a>
-<a href="#625" id="625">625</a>
-<a href="#626" id="626">626</a>
-<a href="#627" id="627">627</a>
-<a href="#628" id="628">628</a>
-<a href="#629" id="629">629</a>
-<a href="#630" id="630">630</a>
-<a href="#631" id="631">631</a>
-<a href="#632" id="632">632</a>
-<a href="#633" id="633">633</a>
-<a href="#634" id="634">634</a>
-<a href="#635" id="635">635</a>
-<a href="#636" id="636">636</a>
-<a href="#637" id="637">637</a>
-<a href="#638" id="638">638</a>
-<a href="#639" id="639">639</a>
-<a href="#640" id="640">640</a>
-<a href="#641" id="641">641</a>
-<a href="#642" id="642">642</a>
-<a href="#643" id="643">643</a>
-<a href="#644" id="644">644</a>
-<a href="#645" id="645">645</a>
-<a href="#646" id="646">646</a>
-<a href="#647" id="647">647</a>
-<a href="#648" id="648">648</a>
-<a href="#649" id="649">649</a>
-<a href="#650" id="650">650</a>
-<a href="#651" id="651">651</a>
-<a href="#652" id="652">652</a>
-<a href="#653" id="653">653</a>
-<a href="#654" id="654">654</a>
-<a href="#655" id="655">655</a>
-<a href="#656" id="656">656</a>
-<a href="#657" id="657">657</a>
-<a href="#658" id="658">658</a>
-<a href="#659" id="659">659</a>
-<a href="#660" id="660">660</a>
-<a href="#661" id="661">661</a>
-<a href="#662" id="662">662</a>
-<a href="#663" id="663">663</a>
-<a href="#664" id="664">664</a>
-<a href="#665" id="665">665</a>
-<a href="#666" id="666">666</a>
-<a href="#667" id="667">667</a>
-<a href="#668" id="668">668</a>
-<a href="#669" id="669">669</a>
-<a href="#670" id="670">670</a>
-<a href="#671" id="671">671</a>
-<a href="#672" id="672">672</a>
-<a href="#673" id="673">673</a>
-<a href="#674" id="674">674</a>
-<a href="#675" id="675">675</a>
-<a href="#676" id="676">676</a>
-<a href="#677" id="677">677</a>
-<a href="#678" id="678">678</a>
-<a href="#679" id="679">679</a>
-<a href="#680" id="680">680</a>
-<a href="#681" id="681">681</a>
-<a href="#682" id="682">682</a>
-<a href="#683" id="683">683</a>
-<a href="#684" id="684">684</a>
-<a href="#685" id="685">685</a>
-<a href="#686" id="686">686</a>
-<a href="#687" id="687">687</a>
-<a href="#688" id="688">688</a>
-<a href="#689" id="689">689</a>
-<a href="#690" id="690">690</a>
-<a href="#691" id="691">691</a>
-<a href="#692" id="692">692</a>
-<a href="#693" id="693">693</a>
-<a href="#694" id="694">694</a>
-<a href="#695" id="695">695</a>
-<a href="#696" id="696">696</a>
-<a href="#697" id="697">697</a>
-<a href="#698" id="698">698</a>
-<a href="#699" id="699">699</a>
-<a href="#700" id="700">700</a>
-<a href="#701" id="701">701</a>
-<a href="#702" id="702">702</a>
-<a href="#703" id="703">703</a>
-<a href="#704" id="704">704</a>
-<a href="#705" id="705">705</a>
-<a href="#706" id="706">706</a>
-<a href="#707" id="707">707</a>
-<a href="#708" id="708">708</a>
-<a href="#709" id="709">709</a>
-<a href="#710" id="710">710</a>
-<a href="#711" id="711">711</a>
-<a href="#712" id="712">712</a>
-<a href="#713" id="713">713</a>
-<a href="#714" id="714">714</a>
-<a href="#715" id="715">715</a>
-<a href="#716" id="716">716</a>
-<a href="#717" id="717">717</a>
-<a href="#718" id="718">718</a>
-<a href="#719" id="719">719</a>
-<a href="#720" id="720">720</a>
-<a href="#721" id="721">721</a>
-<a href="#722" id="722">722</a>
-<a href="#723" id="723">723</a>
-<a href="#724" id="724">724</a>
-<a href="#725" id="725">725</a>
-<a href="#726" id="726">726</a>
-<a href="#727" id="727">727</a>
-<a href="#728" id="728">728</a>
-<a href="#729" id="729">729</a>
-<a href="#730" id="730">730</a>
-<a href="#731" id="731">731</a>
-<a href="#732" id="732">732</a>
-<a href="#733" id="733">733</a>
-<a href="#734" id="734">734</a>
-<a href="#735" id="735">735</a>
-<a href="#736" id="736">736</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -755,34 +550,23 @@
 
 </span><span class="doccomment">//! API for using a pair of crypto schemes together.
 
-</span><span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">use </span><span class="kw">crate</span>::crypto::Ss58Codec;
-<span class="kw">use </span><span class="kw">crate</span>::crypto::{ByteArray, CryptoType, Derive, Public <span class="kw">as </span>PublicT, UncheckedFrom};
-<span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
-</span><span class="kw">use </span><span class="kw">crate</span>::crypto::{DeriveError, DeriveJunction, Pair <span class="kw">as </span>PairT, SecretStringError};
+</span><span class="kw">use </span>core::marker::PhantomData;
 
-<span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
-</span><span class="kw">use </span>sp_std::vec::Vec;
+<span class="kw">use </span><span class="kw">crate</span>::crypto::{
+	ByteArray, CryptoType, DeriveError, DeriveJunction, Pair <span class="kw">as </span>PairT, Public <span class="kw">as </span>PublicT,
+	PublicBytes, SecretStringError, Signature <span class="kw">as </span>SignatureT, SignatureBytes, UncheckedFrom,
+};
 
-<span class="kw">use </span>codec::{Decode, Encode, MaxEncodedLen};
-<span class="kw">use </span>scale_info::TypeInfo;
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">use </span>serde::{de, Deserialize, Deserializer, Serialize, Serializer};
-<span class="attr">#[cfg(all(not(feature = <span class="string">"std"</span>), feature = <span class="string">"serde"</span>))]
-</span><span class="kw">use </span>sp_std::alloc::{format, string::String};
-
-<span class="kw">use </span>sp_runtime_interface::pass_by::{<span class="self">self</span>, PassBy, PassByInner};
-<span class="kw">use </span>sp_std::convert::TryFrom;
+<span class="kw">use </span>sp_std::vec::Vec;
 
 <span class="doccomment">/// ECDSA and BLS12-377 paired crypto scheme
 </span><span class="attr">#[cfg(feature = <span class="string">"bls-experimental"</span>)]
 </span><span class="kw">pub mod </span>ecdsa_bls377 {
+	<span class="kw">use crate</span>::{bls377, crypto::CryptoTypeId, ecdsa};
 	<span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
-	</span><span class="kw">use </span><span class="kw">crate</span>::Hasher;
-	<span class="kw">use crate</span>::{
-		bls377,
-		crypto::{CryptoTypeId, Pair <span class="kw">as </span>PairT, UncheckedFrom},
-		ecdsa,
+	</span><span class="kw">use crate</span>::{
+		crypto::{Pair <span class="kw">as </span>PairT, UncheckedFrom},
+		Hasher,
 	};
 
 	<span class="doccomment">/// An identifier used to match public keys against BLS12-377 keys
@@ -793,32 +577,36 @@
 	<span class="kw">const </span>SIGNATURE_LEN: usize =
 		ecdsa::SIGNATURE_SERIALIZED_SIZE + bls377::SIGNATURE_SERIALIZED_SIZE;
 
+	<span class="attr">#[doc(hidden)]
+	</span><span class="kw">pub struct </span>EcdsaBls377Tag(ecdsa::EcdsaTag, bls377::Bls377Tag);
+
+	<span class="kw">impl </span><span class="kw">super</span>::PairedCryptoSubTagBound <span class="kw">for </span>EcdsaBls377Tag {}
+
 	<span class="doccomment">/// (ECDSA,BLS12-377) key-pair pair.
-	</span><span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
-	</span><span class="kw">pub type </span>Pair = <span class="kw">super</span>::Pair&lt;ecdsa::Pair, bls377::Pair, PUBLIC_KEY_LEN, SIGNATURE_LEN&gt;;
+	</span><span class="kw">pub type </span>Pair =
+		<span class="kw">super</span>::Pair&lt;ecdsa::Pair, bls377::Pair, PUBLIC_KEY_LEN, SIGNATURE_LEN, EcdsaBls377Tag&gt;;
+
 	<span class="doccomment">/// (ECDSA,BLS12-377) public key pair.
-	</span><span class="kw">pub type </span>Public = <span class="kw">super</span>::Public&lt;PUBLIC_KEY_LEN&gt;;
+	</span><span class="kw">pub type </span>Public = <span class="kw">super</span>::Public&lt;PUBLIC_KEY_LEN, EcdsaBls377Tag&gt;;
+
 	<span class="doccomment">/// (ECDSA,BLS12-377) signature pair.
-	</span><span class="kw">pub type </span>Signature = <span class="kw">super</span>::Signature&lt;SIGNATURE_LEN&gt;;
+	</span><span class="kw">pub type </span>Signature = <span class="kw">super</span>::Signature&lt;SIGNATURE_LEN, EcdsaBls377Tag&gt;;
 
 	<span class="kw">impl </span><span class="kw">super</span>::CryptoType <span class="kw">for </span>Public {
-		<span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
-		</span><span class="kw">type </span>Pair = Pair;
+		<span class="kw">type </span>Pair = Pair;
 	}
 
 	<span class="kw">impl </span><span class="kw">super</span>::CryptoType <span class="kw">for </span>Signature {
-		<span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
-		</span><span class="kw">type </span>Pair = Pair;
+		<span class="kw">type </span>Pair = Pair;
 	}
 
-	<span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
-	</span><span class="kw">impl </span><span class="kw">super</span>::CryptoType <span class="kw">for </span>Pair {
+	<span class="kw">impl </span><span class="kw">super</span>::CryptoType <span class="kw">for </span>Pair {
 		<span class="kw">type </span>Pair = Pair;
 	}
 
 	<span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
 	</span><span class="kw">impl </span>Pair {
-		<span class="doccomment">/// Hashes the `message` with the specified [`Hasher`] before signing sith the ECDSA secret
+		<span class="doccomment">/// Hashes the `message` with the specified [`Hasher`] before signing with the ECDSA secret
 		/// component.
 		///
 		/// The hasher does not affect the BLS12-377 component. This generates BLS12-377 Signature
@@ -853,7 +641,7 @@
 			<span class="kw">let </span><span class="prelude-val">Ok</span>(left_pub) = public.<span class="number">0</span>[..ecdsa::PUBLIC_KEY_SERIALIZED_SIZE].try_into() <span class="kw">else </span>{
 				<span class="kw">return </span><span class="bool-val">false
 			</span>};
-			<span class="kw">let </span><span class="prelude-val">Ok</span>(left_sig) = sig.<span class="number">0</span>[<span class="number">0</span>..ecdsa::SIGNATURE_SERIALIZED_SIZE].try_into() <span class="kw">else </span>{
+			<span class="kw">let </span><span class="prelude-val">Ok</span>(left_sig) = sig.<span class="number">0</span>[..ecdsa::SIGNATURE_SERIALIZED_SIZE].try_into() <span class="kw">else </span>{
 				<span class="kw">return </span><span class="bool-val">false
 			</span>};
 			<span class="kw">if </span>!ecdsa::Pair::verify_prehashed(<span class="kw-2">&amp;</span>left_sig, <span class="kw-2">&amp;</span>msg_hash, <span class="kw-2">&amp;</span>left_pub) {
@@ -866,7 +654,7 @@
 			<span class="kw">let </span><span class="prelude-val">Ok</span>(right_sig) = sig.<span class="number">0</span>[ecdsa::SIGNATURE_SERIALIZED_SIZE..].try_into() <span class="kw">else </span>{
 				<span class="kw">return </span><span class="bool-val">false
 			</span>};
-			bls377::Pair::verify(<span class="kw-2">&amp;</span>right_sig, message.as_ref(), <span class="kw-2">&amp;</span>right_pub)
+			bls377::Pair::verify(<span class="kw-2">&amp;</span>right_sig, message, <span class="kw-2">&amp;</span>right_pub)
 		}
 	}
 }
@@ -874,7 +662,6 @@
 <span class="doccomment">/// Secure seed length.
 ///
 /// Currently only supporting sub-schemes whose seed is a 32-bytes array.
-</span><span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
 </span><span class="kw">const </span>SECURE_SEED_LEN: usize = <span class="number">32</span>;
 
 <span class="doccomment">/// A secret seed.
@@ -882,303 +669,83 @@
 /// It's not called a "secret key" because ring doesn't expose the secret keys
 /// of the key pair (yeah, dumb); as such we're forced to remember the seed manually if we
 /// will need it later (such as for HDKD).
-</span><span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
 </span><span class="kw">type </span>Seed = [u8; SECURE_SEED_LEN];
 
+<span class="attr">#[doc(hidden)]
+</span><span class="kw">pub trait </span>PairedCryptoSubTagBound {}
+<span class="attr">#[doc(hidden)]
+</span><span class="kw">pub struct </span>PairedCryptoTag;
+
 <span class="doccomment">/// A public key.
-</span><span class="attr">#[derive(Clone, Encode, Decode, MaxEncodedLen, TypeInfo, PartialEq, Eq, PartialOrd, Ord)]
-</span><span class="kw">pub struct </span>Public&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt;([u8; LEFT_PLUS_RIGHT_LEN]);
+</span><span class="kw">pub type </span>Public&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize, SubTag&gt; =
+	PublicBytes&lt;LEFT_PLUS_RIGHT_LEN, (PairedCryptoTag, SubTag)&gt;;
 
-<span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
-</span><span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; sp_std::hash::Hash <span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">fn </span>hash&lt;H: sp_std::hash::Hasher&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, state: <span class="kw-2">&amp;mut </span>H) {
-		<span class="self">self</span>.<span class="number">0</span>.hash(state);
-	}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; ByteArray <span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">const </span>LEN: usize = LEFT_PLUS_RIGHT_LEN;
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; TryFrom&lt;<span class="kw-2">&amp;</span>[u8]&gt; <span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">type </span>Error = ();
-
-	<span class="kw">fn </span>try_from(data: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
-		<span class="kw">if </span>data.len() != LEFT_PLUS_RIGHT_LEN {
-			<span class="kw">return </span><span class="prelude-val">Err</span>(())
-		}
-		<span class="kw">let </span><span class="kw-2">mut </span>inner = [<span class="number">0u8</span>; LEFT_PLUS_RIGHT_LEN];
-		inner.copy_from_slice(data);
-		<span class="prelude-val">Ok</span>(Public(inner))
-	}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; AsRef&lt;[u8; LEFT_PLUS_RIGHT_LEN]&gt;
-	<span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt;
-{
-	<span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8; LEFT_PLUS_RIGHT_LEN] {
-		<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
-	</span>}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; AsRef&lt;[u8]&gt; <span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
-		<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[..]
-	}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; AsMut&lt;[u8]&gt; <span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">fn </span>as_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[u8] {
-		<span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0</span>[..]
-	}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; PassByInner <span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">type </span>Inner = [u8; LEFT_PLUS_RIGHT_LEN];
-
-	<span class="kw">fn </span>into_inner(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Inner {
-		<span class="self">self</span>.<span class="number">0
-	</span>}
-
-	<span class="kw">fn </span>inner(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span>::Inner {
-		<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
-	</span>}
-
-	<span class="kw">fn </span>from_inner(inner: <span class="self">Self</span>::Inner) -&gt; <span class="self">Self </span>{
-		<span class="self">Self</span>(inner)
-	}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; PassBy <span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">type </span>PassBy = pass_by::Inner&lt;<span class="self">Self</span>, [u8; LEFT_PLUS_RIGHT_LEN]&gt;;
-}
-
-<span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
-</span><span class="kw">impl</span>&lt;
+<span class="kw">impl</span>&lt;
 		LeftPair: PairT,
 		RightPair: PairT,
 		<span class="kw">const </span>LEFT_PLUS_RIGHT_PUBLIC_LEN: usize,
 		<span class="kw">const </span>SIGNATURE_LEN: usize,
-	&gt; From&lt;Pair&lt;LeftPair, RightPair, LEFT_PLUS_RIGHT_PUBLIC_LEN, SIGNATURE_LEN&gt;&gt;
-	<span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_PUBLIC_LEN&gt;
+		SubTag: PairedCryptoSubTagBound,
+	&gt; From&lt;Pair&lt;LeftPair, RightPair, LEFT_PLUS_RIGHT_PUBLIC_LEN, SIGNATURE_LEN, SubTag&gt;&gt;
+	<span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_PUBLIC_LEN, SubTag&gt;
 <span class="kw">where
-	</span>Pair&lt;LeftPair, RightPair, LEFT_PLUS_RIGHT_PUBLIC_LEN, SIGNATURE_LEN&gt;:
-		PairT&lt;Public = Public&lt;LEFT_PLUS_RIGHT_PUBLIC_LEN&gt;&gt;,
+	</span>Pair&lt;LeftPair, RightPair, LEFT_PLUS_RIGHT_PUBLIC_LEN, SIGNATURE_LEN, SubTag&gt;:
+		PairT&lt;Public = Public&lt;LEFT_PLUS_RIGHT_PUBLIC_LEN, SubTag&gt;&gt;,
 {
-	<span class="kw">fn </span>from(x: Pair&lt;LeftPair, RightPair, LEFT_PLUS_RIGHT_PUBLIC_LEN, SIGNATURE_LEN&gt;) -&gt; <span class="self">Self </span>{
+	<span class="kw">fn </span>from(
+		x: Pair&lt;LeftPair, RightPair, LEFT_PLUS_RIGHT_PUBLIC_LEN, SIGNATURE_LEN, SubTag&gt;,
+	) -&gt; <span class="self">Self </span>{
 		x.public()
 	}
 }
 
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; UncheckedFrom&lt;[u8; LEFT_PLUS_RIGHT_LEN]&gt;
-	<span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt;
-{
-	<span class="kw">fn </span>unchecked_from(data: [u8; LEFT_PLUS_RIGHT_LEN]) -&gt; <span class="self">Self </span>{
-		Public(data)
-	}
-}
-
-<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-</span><span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; std::fmt::Display <span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt;
-<span class="kw">where
-	</span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt;: CryptoType,
-{
-	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter) -&gt; std::fmt::Result {
-		<span class="macro">write!</span>(f, <span class="string">"{}"</span>, <span class="self">self</span>.to_ss58check())
-	}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; sp_std::fmt::Debug <span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt;
-<span class="kw">where
-	</span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt;: CryptoType,
-	[u8; LEFT_PLUS_RIGHT_LEN]: <span class="kw">crate</span>::hexdisplay::AsBytesRef,
-{
-	<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-	</span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>sp_std::fmt::Formatter) -&gt; sp_std::fmt::Result {
-		<span class="kw">let </span>s = <span class="self">self</span>.to_ss58check();
-		<span class="macro">write!</span>(f, <span class="string">"{} ({}...)"</span>, <span class="kw">crate</span>::hexdisplay::HexDisplay::from(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>), <span class="kw-2">&amp;</span>s[<span class="number">0</span>..<span class="number">8</span>])
-	}
-
-	<span class="attr">#[cfg(not(feature = <span class="string">"std"</span>))]
-	</span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>sp_std::fmt::Formatter) -&gt; sp_std::fmt::Result {
-		<span class="prelude-val">Ok</span>(())
-	}
-}
-
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; Serialize <span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt;
-<span class="kw">where
-	</span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt;: CryptoType,
-{
-	<span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
-	<span class="kw">where
-		</span>S: Serializer,
-	{
-		serializer.serialize_str(<span class="kw-2">&amp;</span><span class="self">self</span>.to_ss58check())
-	}
-}
-
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">'de</span>, <span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; Deserialize&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt;
-<span class="kw">where
-	</span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt;: CryptoType,
-{
-	<span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
-	<span class="kw">where
-		</span>D: Deserializer&lt;<span class="lifetime">'de</span>&gt;,
-	{
-		Public::from_ss58check(<span class="kw-2">&amp;</span>String::deserialize(deserializer)<span class="question-mark">?</span>)
-			.map_err(|e| de::Error::custom(<span class="macro">format!</span>(<span class="string">"{:?}"</span>, e)))
-	}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; PublicT <span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt; <span class="kw">where
-	</span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt;: CryptoType
-{
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; Derive <span class="kw">for </span>Public&lt;LEFT_PLUS_RIGHT_LEN&gt; {}
-
-<span class="doccomment">/// Trait characterizing a signature which could be used as individual component of an
-/// `paired_crypto:Signature` pair.
-</span><span class="kw">pub trait </span>SignatureBound: ByteArray {}
-
-<span class="kw">impl</span>&lt;T: ByteArray&gt; SignatureBound <span class="kw">for </span>T {}
-
 <span class="doccomment">/// A pair of signatures of different types
-</span><span class="attr">#[derive(Clone, Encode, Decode, MaxEncodedLen, TypeInfo, PartialEq, Eq)]
-</span><span class="kw">pub struct </span>Signature&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt;([u8; LEFT_PLUS_RIGHT_LEN]);
-
-<span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
-</span><span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; sp_std::hash::Hash <span class="kw">for </span>Signature&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">fn </span>hash&lt;H: sp_std::hash::Hasher&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, state: <span class="kw-2">&amp;mut </span>H) {
-		<span class="self">self</span>.<span class="number">0</span>.hash(state);
-	}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; ByteArray <span class="kw">for </span>Signature&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">const </span>LEN: usize = LEFT_PLUS_RIGHT_LEN;
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; TryFrom&lt;<span class="kw-2">&amp;</span>[u8]&gt; <span class="kw">for </span>Signature&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">type </span>Error = ();
-
-	<span class="kw">fn </span>try_from(data: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
-		<span class="kw">if </span>data.len() != LEFT_PLUS_RIGHT_LEN {
-			<span class="kw">return </span><span class="prelude-val">Err</span>(())
-		}
-		<span class="kw">let </span><span class="kw-2">mut </span>inner = [<span class="number">0u8</span>; LEFT_PLUS_RIGHT_LEN];
-		inner.copy_from_slice(data);
-		<span class="prelude-val">Ok</span>(Signature(inner))
-	}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; AsMut&lt;[u8]&gt; <span class="kw">for </span>Signature&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">fn </span>as_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>[u8] {
-		<span class="kw-2">&amp;mut </span><span class="self">self</span>.<span class="number">0</span>[..]
-	}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; AsRef&lt;[u8; LEFT_PLUS_RIGHT_LEN]&gt;
-	<span class="kw">for </span>Signature&lt;LEFT_PLUS_RIGHT_LEN&gt;
-{
-	<span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8; LEFT_PLUS_RIGHT_LEN] {
-		<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0
-	</span>}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; AsRef&lt;[u8]&gt; <span class="kw">for </span>Signature&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
-		<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>[..]
-	}
-}
-
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; Serialize <span class="kw">for </span>Signature&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">fn </span>serialize&lt;S&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
-	<span class="kw">where
-		</span>S: Serializer,
-	{
-		serializer.serialize_str(<span class="kw-2">&amp;</span>array_bytes::bytes2hex(<span class="string">""</span>, <span class="self">self</span>))
-	}
-}
-
-<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">'de</span>, <span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; Deserialize&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>Signature&lt;LEFT_PLUS_RIGHT_LEN&gt; {
-	<span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
-	<span class="kw">where
-		</span>D: Deserializer&lt;<span class="lifetime">'de</span>&gt;,
-	{
-		<span class="kw">let </span>bytes = array_bytes::hex2bytes(<span class="kw-2">&amp;</span>String::deserialize(deserializer)<span class="question-mark">?</span>)
-			.map_err(|e| de::Error::custom(<span class="macro">format!</span>(<span class="string">"{:?}"</span>, e)))<span class="question-mark">?</span>;
-		Signature::&lt;LEFT_PLUS_RIGHT_LEN&gt;::try_from(bytes.as_ref()).map_err(|e| {
-			de::Error::custom(<span class="macro">format!</span>(<span class="string">"Error converting deserialized data into signature: {:?}"</span>, e))
-		})
-	}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; From&lt;Signature&lt;LEFT_PLUS_RIGHT_LEN&gt;&gt;
-	<span class="kw">for </span>[u8; LEFT_PLUS_RIGHT_LEN]
-{
-	<span class="kw">fn </span>from(signature: Signature&lt;LEFT_PLUS_RIGHT_LEN&gt;) -&gt; [u8; LEFT_PLUS_RIGHT_LEN] {
-		signature.<span class="number">0
-	</span>}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; sp_std::fmt::Debug <span class="kw">for </span>Signature&lt;LEFT_PLUS_RIGHT_LEN&gt;
-<span class="kw">where
-	</span>[u8; LEFT_PLUS_RIGHT_LEN]: <span class="kw">crate</span>::hexdisplay::AsBytesRef,
-{
-	<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-	</span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>sp_std::fmt::Formatter) -&gt; sp_std::fmt::Result {
-		<span class="macro">write!</span>(f, <span class="string">"{}"</span>, <span class="kw">crate</span>::hexdisplay::HexDisplay::from(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>))
-	}
-
-	<span class="attr">#[cfg(not(feature = <span class="string">"std"</span>))]
-	</span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>sp_std::fmt::Formatter) -&gt; sp_std::fmt::Result {
-		<span class="prelude-val">Ok</span>(())
-	}
-}
-
-<span class="kw">impl</span>&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize&gt; UncheckedFrom&lt;[u8; LEFT_PLUS_RIGHT_LEN]&gt;
-	<span class="kw">for </span>Signature&lt;LEFT_PLUS_RIGHT_LEN&gt;
-{
-	<span class="kw">fn </span>unchecked_from(data: [u8; LEFT_PLUS_RIGHT_LEN]) -&gt; <span class="self">Self </span>{
-		Signature(data)
-	}
-}
+</span><span class="kw">pub type </span>Signature&lt;<span class="kw">const </span>LEFT_PLUS_RIGHT_LEN: usize, SubTag&gt; =
+	SignatureBytes&lt;LEFT_PLUS_RIGHT_LEN, (PairedCryptoTag, SubTag)&gt;;
 
 <span class="doccomment">/// A key pair.
-</span><span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
-#[derive(Clone)]
 </span><span class="kw">pub struct </span>Pair&lt;
 	LeftPair: PairT,
 	RightPair: PairT,
 	<span class="kw">const </span>PUBLIC_KEY_LEN: usize,
 	<span class="kw">const </span>SIGNATURE_LEN: usize,
+	SubTag,
 &gt; {
 	left: LeftPair,
 	right: RightPair,
+	_phantom: PhantomData&lt;<span class="kw">fn</span>() -&gt; SubTag&gt;,
 }
 
-<span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
-</span><span class="kw">impl</span>&lt;
+<span class="kw">impl</span>&lt;
+		LeftPair: PairT + Clone,
+		RightPair: PairT + Clone,
+		<span class="kw">const </span>PUBLIC_KEY_LEN: usize,
+		<span class="kw">const </span>SIGNATURE_LEN: usize,
+		SubTag,
+	&gt; Clone <span class="kw">for </span>Pair&lt;LeftPair, RightPair, PUBLIC_KEY_LEN, SIGNATURE_LEN, SubTag&gt;
+{
+	<span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+		<span class="self">Self </span>{ left: <span class="self">self</span>.left.clone(), right: <span class="self">self</span>.right.clone(), _phantom: PhantomData }
+	}
+}
+
+<span class="kw">impl</span>&lt;
 		LeftPair: PairT,
 		RightPair: PairT,
 		<span class="kw">const </span>PUBLIC_KEY_LEN: usize,
 		<span class="kw">const </span>SIGNATURE_LEN: usize,
-	&gt; PairT <span class="kw">for </span>Pair&lt;LeftPair, RightPair, PUBLIC_KEY_LEN, SIGNATURE_LEN&gt;
+		SubTag: PairedCryptoSubTagBound,
+	&gt; PairT <span class="kw">for </span>Pair&lt;LeftPair, RightPair, PUBLIC_KEY_LEN, SIGNATURE_LEN, SubTag&gt;
 <span class="kw">where
-	</span>Pair&lt;LeftPair, RightPair, PUBLIC_KEY_LEN, SIGNATURE_LEN&gt;: CryptoType,
-	LeftPair::Signature: SignatureBound,
-	RightPair::Signature: SignatureBound,
-	Public&lt;PUBLIC_KEY_LEN&gt;: CryptoType,
+	</span>Pair&lt;LeftPair, RightPair, PUBLIC_KEY_LEN, SIGNATURE_LEN, SubTag&gt;: CryptoType,
+	Public&lt;PUBLIC_KEY_LEN, SubTag&gt;: PublicT,
+	Signature&lt;SIGNATURE_LEN, SubTag&gt;: SignatureT,
 	LeftPair::Seed: From&lt;Seed&gt; + Into&lt;Seed&gt;,
 	RightPair::Seed: From&lt;Seed&gt; + Into&lt;Seed&gt;,
 {
 	<span class="kw">type </span>Seed = Seed;
-	<span class="kw">type </span>Public = Public&lt;PUBLIC_KEY_LEN&gt;;
-	<span class="kw">type </span>Signature = Signature&lt;SIGNATURE_LEN&gt;;
+	<span class="kw">type </span>Public = Public&lt;PUBLIC_KEY_LEN, SubTag&gt;;
+	<span class="kw">type </span>Signature = Signature&lt;SIGNATURE_LEN, SubTag&gt;;
 
 	<span class="kw">fn </span>from_seed_slice(seed_slice: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, SecretStringError&gt; {
 		<span class="kw">if </span>seed_slice.len() != SECURE_SEED_LEN {
@@ -1186,7 +753,7 @@
 		}
 		<span class="kw">let </span>left = LeftPair::from_seed_slice(<span class="kw-2">&amp;</span>seed_slice)<span class="question-mark">?</span>;
 		<span class="kw">let </span>right = RightPair::from_seed_slice(<span class="kw-2">&amp;</span>seed_slice)<span class="question-mark">?</span>;
-		<span class="prelude-val">Ok</span>(Pair { left, right })
+		<span class="prelude-val">Ok</span>(Pair { left, right, _phantom: PhantomData })
 	}
 
 	<span class="doccomment">/// Derive a child key from a series of given junctions.
@@ -1198,17 +765,18 @@
 		path: Iter,
 		seed: <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Seed&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(<span class="self">Self</span>, <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Seed&gt;), DeriveError&gt; {
-		<span class="kw">let </span>path: Vec&lt;<span class="kw">_</span>&gt; = path.collect();
+		<span class="kw">let </span>left_path: Vec&lt;<span class="kw">_</span>&gt; = path.collect();
+		<span class="kw">let </span>right_path: Vec&lt;<span class="kw">_</span>&gt; = left_path.clone();
 
-		<span class="kw">let </span>left = <span class="self">self</span>.left.derive(path.iter().cloned(), seed.map(|s| s.into()))<span class="question-mark">?</span>;
-		<span class="kw">let </span>right = <span class="self">self</span>.right.derive(path.into_iter(), seed.map(|s| s.into()))<span class="question-mark">?</span>;
+		<span class="kw">let </span>left = <span class="self">self</span>.left.derive(left_path.into_iter(), seed.map(|s| s.into()))<span class="question-mark">?</span>;
+		<span class="kw">let </span>right = <span class="self">self</span>.right.derive(right_path.into_iter(), seed.map(|s| s.into()))<span class="question-mark">?</span>;
 
 		<span class="kw">let </span>seed = <span class="kw">match </span>(left.<span class="number">1</span>, right.<span class="number">1</span>) {
 			(<span class="prelude-val">Some</span>(l), <span class="prelude-val">Some</span>(r)) <span class="kw">if </span>l.as_ref() == r.as_ref() =&gt; <span class="prelude-val">Some</span>(l.into()),
 			<span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
 		};
 
-		<span class="prelude-val">Ok</span>((<span class="self">Self </span>{ left: left.<span class="number">0</span>, right: right.<span class="number">0 </span>}, seed))
+		<span class="prelude-val">Ok</span>((<span class="self">Self </span>{ left: left.<span class="number">0</span>, right: right.<span class="number">0</span>, _phantom: PhantomData }, seed))
 	}
 
 	<span class="kw">fn </span>public(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>::Public {
@@ -1220,23 +788,26 @@
 		<span class="self">Self</span>::Public::unchecked_from(raw)
 	}
 
-	<span class="kw">fn </span>sign(<span class="kw-2">&amp;</span><span class="self">self</span>, message: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="self">Self</span>::Signature {
+	<span class="attr">#[cfg(feature = <span class="string">"full_crypto"</span>)]
+	</span><span class="kw">fn </span>sign(<span class="kw-2">&amp;</span><span class="self">self</span>, message: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="self">Self</span>::Signature {
 		<span class="kw">let </span><span class="kw-2">mut </span>raw: [u8; SIGNATURE_LEN] = [<span class="number">0u8</span>; SIGNATURE_LEN];
 		raw[..LeftPair::Signature::LEN].copy_from_slice(<span class="self">self</span>.left.sign(message).as_ref());
 		raw[LeftPair::Signature::LEN..].copy_from_slice(<span class="self">self</span>.right.sign(message).as_ref());
 		<span class="self">Self</span>::Signature::unchecked_from(raw)
 	}
 
-	<span class="kw">fn </span>verify&lt;M: AsRef&lt;[u8]&gt;&gt;(sig: <span class="kw-2">&amp;</span><span class="self">Self</span>::Signature, message: M, public: <span class="kw-2">&amp;</span><span class="self">Self</span>::Public) -&gt; bool {
+	<span class="kw">fn </span>verify&lt;Msg: AsRef&lt;[u8]&gt;&gt;(
+		sig: <span class="kw-2">&amp;</span><span class="self">Self</span>::Signature,
+		message: Msg,
+		public: <span class="kw-2">&amp;</span><span class="self">Self</span>::Public,
+	) -&gt; bool {
 		<span class="kw">let </span><span class="prelude-val">Ok</span>(left_pub) = public.<span class="number">0</span>[..LeftPair::Public::LEN].try_into() <span class="kw">else </span>{ <span class="kw">return </span><span class="bool-val">false </span>};
 		<span class="kw">let </span><span class="prelude-val">Ok</span>(left_sig) = sig.<span class="number">0</span>[<span class="number">0</span>..LeftPair::Signature::LEN].try_into() <span class="kw">else </span>{ <span class="kw">return </span><span class="bool-val">false </span>};
 		<span class="kw">if </span>!LeftPair::verify(<span class="kw-2">&amp;</span>left_sig, message.as_ref(), <span class="kw-2">&amp;</span>left_pub) {
 			<span class="kw">return </span><span class="bool-val">false
 		</span>}
 
-		<span class="kw">let </span><span class="prelude-val">Ok</span>(right_pub) = public.<span class="number">0</span>[LeftPair::Public::LEN..PUBLIC_KEY_LEN].try_into() <span class="kw">else </span>{
-			<span class="kw">return </span><span class="bool-val">false
-		</span>};
+		<span class="kw">let </span><span class="prelude-val">Ok</span>(right_pub) = public.<span class="number">0</span>[LeftPair::Public::LEN..].try_into() <span class="kw">else </span>{ <span class="kw">return </span><span class="bool-val">false </span>};
 		<span class="kw">let </span><span class="prelude-val">Ok</span>(right_sig) = sig.<span class="number">0</span>[LeftPair::Signature::LEN..].try_into() <span class="kw">else </span>{ <span class="kw">return </span><span class="bool-val">false </span>};
 		RightPair::verify(<span class="kw-2">&amp;</span>right_sig, message.as_ref(), <span class="kw-2">&amp;</span>right_pub)
 	}
@@ -1251,12 +822,13 @@
 
 <span class="comment">// Test set exercising the (ECDSA,BLS12-377) implementation
 </span><span class="attr">#[cfg(all(test, feature = <span class="string">"bls-experimental"</span>))]
-</span><span class="kw">mod </span>test {
+</span><span class="kw">mod </span>tests {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
-	<span class="kw">use crate</span>::{crypto::DEV_PHRASE, KeccakHasher};
+	<span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
+	</span><span class="kw">use </span><span class="kw">crate</span>::crypto::Ss58Codec;
+	<span class="kw">use crate</span>::{bls377, crypto::DEV_PHRASE, ecdsa, KeccakHasher};
+	<span class="kw">use </span>codec::{Decode, Encode};
 	<span class="kw">use </span>ecdsa_bls377::{Pair, Signature};
-
-	<span class="kw">use crate</span>::{bls377, ecdsa};
 
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>test_length_of_paired_ecdsa_and_bls377_public_key_and_signature_is_correct() {
@@ -1281,12 +853,29 @@
 	}
 
 	<span class="attr">#[test]
+	</span><span class="kw">fn </span>generate_with_phrase_should_be_recoverable_with_from_string() {
+		<span class="kw">let </span>(pair, phrase, seed) = Pair::generate_with_phrase(<span class="prelude-val">None</span>);
+		<span class="kw">let </span>repair_seed = Pair::from_seed_slice(seed.as_ref()).expect(<span class="string">"seed slice is valid"</span>);
+		<span class="macro">assert_eq!</span>(pair.public(), repair_seed.public());
+		<span class="macro">assert_eq!</span>(pair.to_raw_vec(), repair_seed.to_raw_vec());
+
+		<span class="kw">let </span>(repair_phrase, reseed) =
+			Pair::from_phrase(phrase.as_ref(), <span class="prelude-val">None</span>).expect(<span class="string">"seed slice is valid"</span>);
+		<span class="macro">assert_eq!</span>(seed, reseed);
+		<span class="macro">assert_eq!</span>(pair.public(), repair_phrase.public());
+		<span class="macro">assert_eq!</span>(pair.to_raw_vec(), repair_seed.to_raw_vec());
+		<span class="kw">let </span>repair_string = Pair::from_string(phrase.as_str(), <span class="prelude-val">None</span>).expect(<span class="string">"seed slice is valid"</span>);
+		<span class="macro">assert_eq!</span>(pair.public(), repair_string.public());
+		<span class="macro">assert_eq!</span>(pair.to_raw_vec(), repair_seed.to_raw_vec());
+	}
+
+	<span class="attr">#[test]
 	</span><span class="kw">fn </span>seed_and_derive_should_work() {
 		<span class="kw">let </span>seed_for_right_and_left: [u8; SECURE_SEED_LEN] = array_bytes::hex2array_unchecked(
 			<span class="string">"9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60"</span>,
 		);
 		<span class="kw">let </span>pair = Pair::from_seed(<span class="kw-2">&amp;</span>seed_for_right_and_left);
-		<span class="comment">// we are using hash to field so this is not going to work
+		<span class="comment">// we are using hash-to-field so this is not going to work
 		// assert_eq!(pair.seed(), seed);
 		</span><span class="kw">let </span>path = <span class="macro">vec!</span>[DeriveJunction::Hard([<span class="number">0u8</span>; <span class="number">32</span>])];
 		<span class="kw">let </span>derived = pair.derive(path.into_iter(), <span class="prelude-val">None</span>).ok().unwrap().<span class="number">0</span>;
@@ -1337,13 +926,13 @@
 		<span class="macro">assert_eq!</span>(
 				public,
 				Public::unchecked_from(
-					array_bytes::hex2array_unchecked(<span class="string">"028db55b05db86c0b1786ca49f095d76344c9e6056b2f02701a7e7f3c20aabfd916dc6be608fab3c6bd894a606be86db346cc170db85c733853a371f3db54ae1b12052c0888d472760c81b537572a26f00db865e5963aef8634f9917571c51b538b564b2a9ceda938c8b930969ee3b832448e08e33a79e9ddd28af419a3ce45300f5dbc768b067781f44f3fe05a19e6b07b1c4196151ec3f8ea37e4f89a8963030d2101e931276bb9ebe1f20102239d780"
+					array_bytes::hex2array_unchecked(<span class="string">"028db55b05db86c0b1786ca49f095d76344c9e6056b2f02701a7e7f3c20aabfd917a84ca8ce4c37c93c95ecee6a3c0c9a7b9c225093cf2f12dc4f69cbfb847ef9424a18f5755d5a742247d386ff2aabb806bcf160eff31293ea9616976628f77266c8a8cc1d8753be04197bd6cdd8c5c87a148f782c4c1568d599b48833fd539001e580cff64bbc71850605433fcd051f3afc3b74819786f815ffb5272030a8d03e5df61e6183f8fd8ea85f26defa83400"
 	 </span>),
 	    		),
 	    	);
 		<span class="kw">let </span>message = <span class="string">b""</span>;
 		<span class="kw">let </span>signature =
-	array_bytes::hex2array_unchecked(<span class="string">"3dde91174bd9359027be59a428b8146513df80a2a3c7eda2194f64de04a69ab97b753169e94db6ffd50921a2668a48b94ca11e3d32c1ff19cfe88890aa7e8f3c00bbb395bbdee1a35930912034f5fde3b36df2835a0536c865501b0675776a1d5931a3bea2e66eff73b2546c6af2061a8019223e4ebbbed661b2538e0f5823f2c708eb89c406beca8fcb53a5c13dbc7c0c42e4cf2be2942bba96ea29297915a06bd2b1b979c0e2ac8fd4ec684a6b5d110c"
+	array_bytes::hex2array_unchecked(<span class="string">"3dde91174bd9359027be59a428b8146513df80a2a3c7eda2194f64de04a69ab97b753169e94db6ffd50921a2668a48b94ca11e3d32c1ff19cfe88890aa7e8f3c00d1e3013161991e142d8751017d4996209c2ff8a9ee160f373733eda3b4b785ba6edce9f45f87104bbe07aa6aa6eb2780aa705efb2c13d3b317d6409d159d23bdc7cdd5c2a832d1551cf49d811d49c901495e527dbd532e3a462335ce2686009104aba7bc11c5b22be78f3198d2727a0b"
 	</span>);
 		<span class="kw">let </span>signature = Signature::unchecked_from(signature);
 		<span class="macro">assert!</span>(pair.sign(<span class="kw-2">&amp;</span>message[..]) == signature);
@@ -1402,6 +991,7 @@
 		<span class="kw">let </span>(pair2, <span class="kw">_</span>) = Pair::from_phrase(<span class="kw-2">&amp;</span>phrase, <span class="prelude-val">None</span>).unwrap();
 
 		<span class="macro">assert_ne!</span>(pair1.public(), pair2.public());
+		<span class="macro">assert_ne!</span>(pair1.to_raw_vec(), pair2.to_raw_vec());
 	}
 
 	<span class="attr">#[test]

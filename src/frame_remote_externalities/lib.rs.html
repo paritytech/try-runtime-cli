@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/utils/frame/remote-externalities/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="frame_remote_externalities" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/utils/frame/remote-externalities/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="frame_remote_externalities" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../frame_remote_externalities/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -1562,6 +1562,38 @@
 <a href="#1560" id="1560">1560</a>
 <a href="#1561" id="1561">1561</a>
 <a href="#1562" id="1562">1562</a>
+<a href="#1563" id="1563">1563</a>
+<a href="#1564" id="1564">1564</a>
+<a href="#1565" id="1565">1565</a>
+<a href="#1566" id="1566">1566</a>
+<a href="#1567" id="1567">1567</a>
+<a href="#1568" id="1568">1568</a>
+<a href="#1569" id="1569">1569</a>
+<a href="#1570" id="1570">1570</a>
+<a href="#1571" id="1571">1571</a>
+<a href="#1572" id="1572">1572</a>
+<a href="#1573" id="1573">1573</a>
+<a href="#1574" id="1574">1574</a>
+<a href="#1575" id="1575">1575</a>
+<a href="#1576" id="1576">1576</a>
+<a href="#1577" id="1577">1577</a>
+<a href="#1578" id="1578">1578</a>
+<a href="#1579" id="1579">1579</a>
+<a href="#1580" id="1580">1580</a>
+<a href="#1581" id="1581">1581</a>
+<a href="#1582" id="1582">1582</a>
+<a href="#1583" id="1583">1583</a>
+<a href="#1584" id="1584">1584</a>
+<a href="#1585" id="1585">1585</a>
+<a href="#1586" id="1586">1586</a>
+<a href="#1587" id="1587">1587</a>
+<a href="#1588" id="1588">1588</a>
+<a href="#1589" id="1589">1589</a>
+<a href="#1590" id="1590">1590</a>
+<a href="#1591" id="1591">1591</a>
+<a href="#1592" id="1592">1592</a>
+<a href="#1593" id="1593">1593</a>
+<a href="#1594" id="1594">1594</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1593,7 +1625,6 @@
 <span class="kw">use </span>log::<span class="kw-2">*</span>;
 <span class="kw">use </span>serde::de::DeserializeOwned;
 <span class="kw">use </span>sp_core::{
-	hashing::twox_128,
 	hexdisplay::HexDisplay,
 	storage::{
 		well_known_keys::{is_default_child_storage_key, DEFAULT_CHILD_STORAGE_KEY_PREFIX},
@@ -1623,33 +1654,35 @@
 <span class="kw">type </span>SnapshotVersion = Compact&lt;u16&gt;;
 
 <span class="kw">const </span>LOG_TARGET: <span class="kw-2">&amp;</span>str = <span class="string">"remote-ext"</span>;
-<span class="kw">const </span>DEFAULT_HTTP_ENDPOINT: <span class="kw-2">&amp;</span>str = <span class="string">"https://rpc.polkadot.io:443"</span>;
-<span class="kw">const </span>SNAPSHOT_VERSION: SnapshotVersion = Compact(<span class="number">3</span>);
+<span class="kw">const </span>DEFAULT_HTTP_ENDPOINT: <span class="kw-2">&amp;</span>str = <span class="string">"https://polkadot-try-runtime-node.parity-chains.parity.io:443"</span>;
+<span class="kw">const </span>SNAPSHOT_VERSION: SnapshotVersion = Compact(<span class="number">4</span>);
 
 <span class="doccomment">/// The snapshot that we store on disk.
 </span><span class="attr">#[derive(Decode, Encode)]
 </span><span class="kw">struct </span>Snapshot&lt;B: BlockT&gt; {
 	snapshot_version: SnapshotVersion,
 	state_version: StateVersion,
-	block_hash: B::Hash,
 	<span class="comment">// &lt;Vec&lt;Key, (Value, MemoryDbRefCount)&gt;&gt;
 	</span>raw_storage: Vec&lt;(Vec&lt;u8&gt;, (Vec&lt;u8&gt;, i32))&gt;,
-	storage_root: B::Hash,
+	<span class="comment">// The storage root of the state. This may vary from the storage root in the header, if not the
+	// entire state was fetched.
+	</span>storage_root: B::Hash,
+	header: B::Header,
 }
 
 <span class="kw">impl</span>&lt;B: BlockT&gt; Snapshot&lt;B&gt; {
 	<span class="kw">pub fn </span>new(
 		state_version: StateVersion,
-		block_hash: B::Hash,
 		raw_storage: Vec&lt;(Vec&lt;u8&gt;, (Vec&lt;u8&gt;, i32))&gt;,
 		storage_root: B::Hash,
+		header: B::Header,
 	) -&gt; <span class="self">Self </span>{
 		<span class="self">Self </span>{
 			snapshot_version: SNAPSHOT_VERSION,
 			state_version,
-			block_hash,
 			raw_storage,
 			storage_root,
+			header,
 		}
 	}
 
@@ -1673,8 +1706,8 @@
 </span><span class="kw">pub struct </span>RemoteExternalities&lt;B: BlockT&gt; {
 	<span class="doccomment">/// The inner externalities.
 	</span><span class="kw">pub </span>inner_ext: TestExternalities&lt;HashingFor&lt;B&gt;&gt;,
-	<span class="doccomment">/// The block hash it which we created this externality env.
-	</span><span class="kw">pub </span>block_hash: B::Hash,
+	<span class="doccomment">/// The block header which we created this externality env.
+	</span><span class="kw">pub </span>header: B::Header,
 }
 
 <span class="kw">impl</span>&lt;B: BlockT&gt; Deref <span class="kw">for </span>RemoteExternalities&lt;B&gt; {
@@ -1692,16 +1725,16 @@
 
 <span class="doccomment">/// The execution mode.
 </span><span class="attr">#[derive(Clone)]
-</span><span class="kw">pub enum </span>Mode&lt;B: BlockT&gt; {
+</span><span class="kw">pub enum </span>Mode&lt;H&gt; {
 	<span class="doccomment">/// Online. Potentially writes to a snapshot file.
-	</span>Online(OnlineConfig&lt;B&gt;),
+	</span>Online(OnlineConfig&lt;H&gt;),
 	<span class="doccomment">/// Offline. Uses a state snapshot file and needs not any client config.
 	</span>Offline(OfflineConfig),
 	<span class="doccomment">/// Prefer using a snapshot file if it exists, else use a remote server.
-	</span>OfflineOrElseOnline(OfflineConfig, OnlineConfig&lt;B&gt;),
+	</span>OfflineOrElseOnline(OfflineConfig, OnlineConfig&lt;H&gt;),
 }
 
-<span class="kw">impl</span>&lt;B: BlockT&gt; Default <span class="kw">for </span>Mode&lt;B&gt; {
+<span class="kw">impl</span>&lt;H&gt; Default <span class="kw">for </span>Mode&lt;H&gt; {
 	<span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
 		Mode::Online(OnlineConfig::default())
 	}
@@ -1754,7 +1787,8 @@
 				uri.clone()
 			};
 			<span class="kw">let </span>http_client = HttpClientBuilder::default()
-				.max_request_body_size(u32::MAX)
+				.max_request_size(u32::MAX)
+				.max_response_size(u32::MAX)
 				.request_timeout(std::time::Duration::from_secs(<span class="number">60 </span>* <span class="number">5</span>))
 				.build(uri)
 				.map_err(|e| {
@@ -1785,10 +1819,10 @@
 ///
 /// A state snapshot config may be present and will be written to in that case.
 </span><span class="attr">#[derive(Clone)]
-</span><span class="kw">pub struct </span>OnlineConfig&lt;B: BlockT&gt; {
+</span><span class="kw">pub struct </span>OnlineConfig&lt;H&gt; {
 	<span class="doccomment">/// The block hash at which to get the runtime state. Will be latest finalized head if not
 	/// provided.
-	</span><span class="kw">pub </span>at: <span class="prelude-ty">Option</span>&lt;B::Hash&gt;,
+	</span><span class="kw">pub </span>at: <span class="prelude-ty">Option</span>&lt;H&gt;,
 	<span class="doccomment">/// An optional state snapshot file to WRITE to, not for reading. Not written if set to `None`.
 	</span><span class="kw">pub </span>state_snapshot: <span class="prelude-ty">Option</span>&lt;SnapshotConfig&gt;,
 	<span class="doccomment">/// The pallets to scrape. These values are hashed and added to `hashed_prefix`.
@@ -1804,7 +1838,7 @@
 	</span><span class="kw">pub </span>hashed_keys: Vec&lt;Vec&lt;u8&gt;&gt;,
 }
 
-<span class="kw">impl</span>&lt;B: BlockT&gt; OnlineConfig&lt;B&gt; {
+<span class="kw">impl</span>&lt;H: Clone&gt; OnlineConfig&lt;H&gt; {
 	<span class="doccomment">/// Return rpc (http) client reference.
 	</span><span class="kw">fn </span>rpc_client(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>HttpClient {
 		<span class="self">self</span>.transport
@@ -1812,12 +1846,12 @@
 			.expect(<span class="string">"http client must have been initialized by now; qed."</span>)
 	}
 
-	<span class="kw">fn </span>at_expected(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; B::Hash {
-		<span class="self">self</span>.at.expect(<span class="string">"block at must be initialized; qed"</span>)
+	<span class="kw">fn </span>at_expected(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; H {
+		<span class="self">self</span>.at.clone().expect(<span class="string">"block at must be initialized; qed"</span>)
 	}
 }
 
-<span class="kw">impl</span>&lt;B: BlockT&gt; Default <span class="kw">for </span>OnlineConfig&lt;B&gt; {
+<span class="kw">impl</span>&lt;H&gt; Default <span class="kw">for </span>OnlineConfig&lt;H&gt; {
 	<span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
 		<span class="self">Self </span>{
 			transport: Transport::from(DEFAULT_HTTP_ENDPOINT.to_owned()),
@@ -1831,7 +1865,7 @@
 	}
 }
 
-<span class="kw">impl</span>&lt;B: BlockT&gt; From&lt;String&gt; <span class="kw">for </span>OnlineConfig&lt;B&gt; {
+<span class="kw">impl</span>&lt;H&gt; From&lt;String&gt; <span class="kw">for </span>OnlineConfig&lt;H&gt; {
 	<span class="kw">fn </span>from(t: String) -&gt; <span class="self">Self </span>{
 		<span class="self">Self </span>{ transport: t.into(), ..Default::default() }
 	}
@@ -1871,7 +1905,7 @@
 	<span class="doccomment">/// The keys that will be excluded from the final externality. The *hashed* key must be given.
 	</span>hashed_blacklist: Vec&lt;Vec&lt;u8&gt;&gt;,
 	<span class="doccomment">/// Connectivity mode, online or offline.
-	</span>mode: Mode&lt;B&gt;,
+	</span>mode: Mode&lt;B::Hash&gt;,
 	<span class="doccomment">/// If provided, overwrite the state version with this. Otherwise, the state_version of the
 	/// remote node is used. All cache files also store their state version.
 	///
@@ -1892,7 +1926,7 @@
 
 <span class="comment">// Mode methods
 </span><span class="kw">impl</span>&lt;B: BlockT&gt; Builder&lt;B&gt; {
-	<span class="kw">fn </span>as_online(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>OnlineConfig&lt;B&gt; {
+	<span class="kw">fn </span>as_online(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>OnlineConfig&lt;B::Hash&gt; {
 		<span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.mode {
 			Mode::Online(config) =&gt; config,
 			Mode::OfflineOrElseOnline(<span class="kw">_</span>, config) =&gt; config,
@@ -1900,7 +1934,7 @@
 		}
 	}
 
-	<span class="kw">fn </span>as_online_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>OnlineConfig&lt;B&gt; {
+	<span class="kw">fn </span>as_online_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>OnlineConfig&lt;B::Hash&gt; {
 		<span class="kw">match </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.mode {
 			Mode::Online(config) =&gt; config,
 			Mode::OfflineOrElseOnline(<span class="kw">_</span>, config) =&gt; config,
@@ -2326,7 +2360,7 @@
 		<span class="kw">let </span><span class="kw-2">mut </span>sp = Spinner::with_timer(Spinners::Dots, <span class="string">"Inserting keys into DB..."</span>.into());
 		<span class="kw">let </span>start = Instant::now();
 		pending_ext.batch_insert(key_values.clone().into_iter().filter_map(|(k, v)| {
-			<span class="comment">// Don't insert the child keys here, they need to be inserted seperately with all their
+			<span class="comment">// Don't insert the child keys here, they need to be inserted separately with all their
 			// data in the load_child_remote function.
 			</span><span class="kw">match </span>is_default_child_storage_key(<span class="kw-2">&amp;</span>k.<span class="number">0</span>) {
 				<span class="bool-val">true </span>=&gt; <span class="prelude-val">None</span>,
@@ -2394,19 +2428,22 @@
 		child_prefix: StorageKey,
 		at: B::Hash,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;StorageKey&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt; {
-		<span class="comment">// This is deprecated and will generate a warning which causes the CI to fail.
-		</span><span class="attr">#[allow(warnings)]
-		</span><span class="kw">let </span>child_keys = substrate_rpc_client::ChildStateApi::storage_keys(
-			client,
-			PrefixedStorageKey::new(prefixed_top_key.as_ref().to_vec()),
-			child_prefix,
-			<span class="prelude-val">Some</span>(at),
-		)
-		.<span class="kw">await
-		</span>.map_err(|e| {
-			<span class="macro">error!</span>(target: LOG_TARGET, <span class="string">"Error = {:?}"</span>, e);
-			<span class="string">"rpc child_get_keys failed."
-		</span>})<span class="question-mark">?</span>;
+		<span class="kw">let </span>retry_strategy =
+			FixedInterval::new(<span class="self">Self</span>::KEYS_PAGE_RETRY_INTERVAL).take(<span class="self">Self</span>::MAX_RETRIES);
+		<span class="kw">let </span>get_child_keys_closure = || {
+			<span class="attr">#[allow(deprecated)]
+			</span>substrate_rpc_client::ChildStateApi::storage_keys(
+				client,
+				PrefixedStorageKey::new(prefixed_top_key.as_ref().to_vec()),
+				child_prefix.clone(),
+				<span class="prelude-val">Some</span>(at),
+			)
+		};
+		<span class="kw">let </span>child_keys =
+			Retry::spawn(retry_strategy, get_child_keys_closure).<span class="kw">await</span>.map_err(|e| {
+				<span class="macro">error!</span>(target: LOG_TARGET, <span class="string">"Error = {:?}"</span>, e);
+				<span class="string">"rpc child_get_keys failed."
+			</span>})<span class="question-mark">?</span>;
 
 		<span class="macro">debug!</span>(
 			target: LOG_TARGET,
@@ -2420,7 +2457,7 @@
 	}
 }
 
-<span class="kw">impl</span>&lt;B: BlockT + DeserializeOwned&gt; Builder&lt;B&gt;
+<span class="kw">impl</span>&lt;B: BlockT&gt; Builder&lt;B&gt;
 <span class="kw">where
 	</span>B::Hash: DeserializeOwned,
 	B::Header: DeserializeOwned,
@@ -2563,10 +2600,11 @@
 
 		<span class="comment">// Then, a few transformation that we want to perform in the online config:
 		</span><span class="kw">let </span>online_config = <span class="self">self</span>.as_online_mut();
-		online_config
-			.pallets
-			.iter()
-			.for_each(|p| online_config.hashed_prefixes.push(twox_128(p.as_bytes()).to_vec()));
+		online_config.pallets.iter().for_each(|p| {
+			online_config
+				.hashed_prefixes
+				.push(sp_crypto_hashing::twox_128(p.as_bytes()).to_vec())
+		});
 
 		<span class="kw">if </span>online_config.child_trie {
 			online_config.hashed_prefixes.push(DEFAULT_CHILD_STORAGE_KEY_PREFIX.to_vec());
@@ -2588,6 +2626,21 @@
 		}
 
 		<span class="prelude-val">Ok</span>(())
+	}
+
+	<span class="kw">async fn </span>load_header(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;B::Header, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt; {
+		<span class="kw">let </span>retry_strategy =
+			FixedInterval::new(<span class="self">Self</span>::KEYS_PAGE_RETRY_INTERVAL).take(<span class="self">Self</span>::MAX_RETRIES);
+		<span class="kw">let </span>get_header_closure = || {
+			ChainApi::&lt;(), <span class="kw">_</span>, B::Header, ()&gt;::header(
+				<span class="self">self</span>.as_online().rpc_client(),
+				<span class="prelude-val">Some</span>(<span class="self">self</span>.as_online().at_expected()),
+			)
+		};
+		Retry::spawn(retry_strategy, get_header_closure)
+			.<span class="kw">await
+			</span>.map_err(|<span class="kw">_</span>| <span class="string">"Failed to fetch header for block from network"</span>)<span class="question-mark">?
+			</span>.ok_or(<span class="string">"Network returned None block header"</span>)
 	}
 
 	<span class="doccomment">/// Load the data from a remote server. The main code path is calling into `load_top_remote` and
@@ -2620,11 +2673,9 @@
 			<span class="kw">let </span>(raw_storage, storage_root) = pending_ext.into_raw_snapshot();
 			<span class="kw">let </span>snapshot = Snapshot::&lt;B&gt;::new(
 				state_version,
-				<span class="self">self</span>.as_online()
-					.at
-					.expect(<span class="string">"set to `Some` in `init_remote_client`; must be called before; qed"</span>),
 				raw_storage.clone(),
 				storage_root,
+				<span class="self">self</span>.load_header().<span class="kw">await</span><span class="question-mark">?</span>,
 			);
 			<span class="kw">let </span>encoded = snapshot.encode();
 			<span class="macro">log::info!</span>(
@@ -2648,9 +2699,8 @@
 
 	<span class="kw">async fn </span>do_load_remote(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;RemoteExternalities&lt;B&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt; {
 		<span class="self">self</span>.init_remote_client().<span class="kw">await</span><span class="question-mark">?</span>;
-		<span class="kw">let </span>block_hash = <span class="self">self</span>.as_online().at_expected();
 		<span class="kw">let </span>inner_ext = <span class="self">self</span>.load_remote_and_maybe_save().<span class="kw">await</span><span class="question-mark">?</span>;
-		<span class="prelude-val">Ok</span>(RemoteExternalities { block_hash, inner_ext })
+		<span class="prelude-val">Ok</span>(RemoteExternalities { header: <span class="self">self</span>.load_header().<span class="kw">await</span><span class="question-mark">?</span>, inner_ext })
 	}
 
 	<span class="kw">fn </span>do_load_offline(
@@ -2660,7 +2710,7 @@
 		<span class="kw">let </span><span class="kw-2">mut </span>sp = Spinner::with_timer(Spinners::Dots, <span class="string">"Loading snapshot..."</span>.into());
 		<span class="kw">let </span>start = Instant::now();
 		<span class="macro">info!</span>(target: LOG_TARGET, <span class="string">"Loading snapshot from {:?}"</span>, <span class="kw-2">&amp;</span>config.state_snapshot.path);
-		<span class="kw">let </span>Snapshot { snapshot_version: <span class="kw">_</span>, block_hash, state_version, raw_storage, storage_root } =
+		<span class="kw">let </span>Snapshot { snapshot_version: <span class="kw">_</span>, header, state_version, raw_storage, storage_root } =
 			Snapshot::&lt;B&gt;::load(<span class="kw-2">&amp;</span>config.state_snapshot.path)<span class="question-mark">?</span>;
 
 		<span class="kw">let </span>inner_ext = TestExternalities::from_raw_snapshot(
@@ -2670,7 +2720,7 @@
 		);
 		sp.stop_with_message(<span class="macro">format!</span>(<span class="string">"✅ Loaded snapshot ({:.2}s)"</span>, start.elapsed().as_secs_f32()));
 
-		<span class="prelude-val">Ok</span>(RemoteExternalities { inner_ext, block_hash })
+		<span class="prelude-val">Ok</span>(RemoteExternalities { inner_ext, header })
 	}
 
 	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>pre_build(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;RemoteExternalities&lt;B&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt; {
@@ -2712,7 +2762,7 @@
 }
 
 <span class="comment">// Public methods
-</span><span class="kw">impl</span>&lt;B: BlockT + DeserializeOwned&gt; Builder&lt;B&gt;
+</span><span class="kw">impl</span>&lt;B: BlockT&gt; Builder&lt;B&gt;
 <span class="kw">where
 	</span>B::Hash: DeserializeOwned,
 	B::Header: DeserializeOwned,
@@ -2738,7 +2788,7 @@
 	</span>}
 
 	<span class="doccomment">/// Configure a state snapshot to be used.
-	</span><span class="kw">pub fn </span>mode(<span class="kw-2">mut </span><span class="self">self</span>, mode: Mode&lt;B&gt;) -&gt; <span class="self">Self </span>{
+	</span><span class="kw">pub fn </span>mode(<span class="kw-2">mut </span><span class="self">self</span>, mode: Mode&lt;B::Hash&gt;) -&gt; <span class="self">Self </span>{
 		<span class="self">self</span>.mode = mode;
 		<span class="self">self
 	</span>}
@@ -2784,7 +2834,7 @@
 		init_logger();
 		Builder::&lt;Block&gt;::new()
 			.mode(Mode::Offline(OfflineConfig {
-				state_snapshot: SnapshotConfig::new(<span class="string">"test_data/proxy_test"</span>),
+				state_snapshot: SnapshotConfig::new(<span class="string">"test_data/test.snap"</span>),
 			}))
 			.build()
 			.<span class="kw">await
@@ -2799,7 +2849,7 @@
 		<span class="comment">// get the first key from the snapshot file.
 		</span><span class="kw">let </span>some_key = Builder::&lt;Block&gt;::new()
 			.mode(Mode::Offline(OfflineConfig {
-				state_snapshot: SnapshotConfig::new(<span class="string">"test_data/proxy_test"</span>),
+				state_snapshot: SnapshotConfig::new(<span class="string">"test_data/test.snap"</span>),
 			}))
 			.build()
 			.<span class="kw">await
@@ -2813,7 +2863,7 @@
 
 		Builder::&lt;Block&gt;::new()
 			.mode(Mode::Offline(OfflineConfig {
-				state_snapshot: SnapshotConfig::new(<span class="string">"test_data/proxy_test"</span>),
+				state_snapshot: SnapshotConfig::new(<span class="string">"test_data/test.snap"</span>),
 			}))
 			.blacklist_hashed_key(<span class="kw-2">&amp;</span>some_key)
 			.build()
@@ -2826,7 +2876,11 @@
 <span class="attr">#[cfg(all(test, feature = <span class="string">"remote-test"</span>))]
 </span><span class="kw">mod </span>remote_tests {
 	<span class="kw">use </span><span class="kw">super</span>::test_prelude::<span class="kw-2">*</span>;
-	<span class="kw">use </span>std::os::unix::fs::MetadataExt;
+	<span class="kw">use </span>std::{env, os::unix::fs::MetadataExt};
+
+	<span class="kw">fn </span>endpoint() -&gt; String {
+		env::var(<span class="string">"TEST_WS"</span>).unwrap_or_else(|<span class="kw">_</span>| DEFAULT_HTTP_ENDPOINT.to_string())
+	}
 
 	<span class="attr">#[tokio::test]
 	</span><span class="kw">async fn </span>state_version_is_kept_and_can_be_altered() {
@@ -2836,6 +2890,7 @@
 		<span class="comment">// first, build a snapshot.
 		</span><span class="kw">let </span>ext = Builder::&lt;Block&gt;::new()
 			.mode(Mode::Online(OnlineConfig {
+				transport: endpoint().clone().into(),
 				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
 				child_trie: <span class="bool-val">false</span>,
 				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
@@ -2877,6 +2932,7 @@
 		<span class="comment">// first, build a snapshot.
 		</span><span class="kw">let </span>ext = Builder::&lt;Block&gt;::new()
 			.mode(Mode::Online(OnlineConfig {
+				transport: endpoint().clone().into(),
 				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
 				child_trie: <span class="bool-val">false</span>,
 				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
@@ -2893,7 +2949,7 @@
 			.<span class="kw">await
 			</span>.unwrap();
 
-		<span class="macro">assert_eq!</span>(ext.block_hash, cached_ext.block_hash);
+		<span class="macro">assert_eq!</span>(ext.header.hash(), cached_ext.header.hash());
 	}
 
 	<span class="attr">#[tokio::test]
@@ -2904,6 +2960,7 @@
 		<span class="comment">// create an ext with children keys
 		</span><span class="kw">let </span>child_ext = Builder::&lt;Block&gt;::new()
 			.mode(Mode::Online(OnlineConfig {
+				transport: endpoint().clone().into(),
 				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
 				child_trie: <span class="bool-val">true</span>,
 				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
@@ -2916,6 +2973,7 @@
 		<span class="comment">// create an ext without children keys
 		</span><span class="kw">let </span>ext = Builder::&lt;Block&gt;::new()
 			.mode(Mode::Online(OnlineConfig {
+				transport: endpoint().clone().into(),
 				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
 				child_trie: <span class="bool-val">false</span>,
 				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
@@ -2941,6 +2999,7 @@
 			.mode(Mode::OfflineOrElseOnline(
 				OfflineConfig { state_snapshot: SnapshotConfig::new(CACHE) },
 				OnlineConfig {
+					transport: endpoint().clone().into(),
 					pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
 					child_trie: <span class="bool-val">false</span>,
 					state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
@@ -2982,6 +3041,7 @@
 		init_logger();
 		Builder::&lt;Block&gt;::new()
 			.mode(Mode::Online(OnlineConfig {
+				transport: endpoint().clone().into(),
 				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
 				child_trie: <span class="bool-val">false</span>,
 				..Default::default()
@@ -2997,6 +3057,7 @@
 		init_logger();
 		Builder::&lt;Block&gt;::new()
 			.mode(Mode::Online(OnlineConfig {
+				transport: endpoint().clone().into(),
 				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned(), <span class="string">"Multisig"</span>.to_owned()],
 				child_trie: <span class="bool-val">false</span>,
 				..Default::default()
@@ -3014,6 +3075,7 @@
 
 		Builder::&lt;Block&gt;::new()
 			.mode(Mode::Online(OnlineConfig {
+				transport: endpoint().clone().into(),
 				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
 				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
 				child_trie: <span class="bool-val">false</span>,
@@ -3043,6 +3105,7 @@
 		init_logger();
 		Builder::&lt;Block&gt;::new()
 			.mode(Mode::Online(OnlineConfig {
+				transport: endpoint().clone().into(),
 				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
 				pallets: <span class="macro">vec!</span>[<span class="string">"Crowdloan"</span>.to_owned()],
 				child_trie: <span class="bool-val">true</span>,
@@ -3074,7 +3137,7 @@
 		init_logger();
 		Builder::&lt;Block&gt;::new()
 			.mode(Mode::Online(OnlineConfig {
-				transport: <span class="macro">std::option_env!</span>(<span class="string">"TEST_WS"</span>).unwrap().to_owned().into(),
+				transport: endpoint().clone().into(),
 				pallets: <span class="macro">vec!</span>[<span class="string">"Staking"</span>.to_owned()],
 				child_trie: <span class="bool-val">false</span>,
 				..Default::default()
@@ -3093,7 +3156,7 @@
 		init_logger();
 		Builder::&lt;Block&gt;::new()
 			.mode(Mode::Online(OnlineConfig {
-				transport: <span class="macro">std::option_env!</span>(<span class="string">"TEST_WS"</span>).unwrap().to_owned().into(),
+				transport: endpoint().clone().into(),
 				..Default::default()
 			}))
 			.build()
@@ -3106,9 +3169,10 @@
 	</span><span class="kw">async fn </span>can_fetch_in_parallel() {
 		init_logger();
 
-		<span class="kw">let </span>uri = String::from(<span class="string">"wss://kusama-bridge-hub-rpc.polkadot.io:443"</span>);
-		<span class="kw">let </span><span class="kw-2">mut </span>builder = Builder::&lt;Block&gt;::new()
-			.mode(Mode::Online(OnlineConfig { transport: uri.into(), ..Default::default() }));
+		<span class="kw">let </span><span class="kw-2">mut </span>builder = Builder::&lt;Block&gt;::new().mode(Mode::Online(OnlineConfig {
+			transport: endpoint().clone().into(),
+			..Default::default()
+		}));
 		builder.init_remote_client().<span class="kw">await</span>.unwrap();
 
 		<span class="kw">let </span>at = builder.as_online().at.unwrap();

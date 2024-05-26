@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Algorithm","FingerprintType"],"fn":["emit","read"],"struct":["HEX","SSHFP"]};
+window.SIDEBAR_ITEMS = {"enum":["Algorithm","FingerprintType"],"static":["HEX"],"struct":["SSHFP"]};

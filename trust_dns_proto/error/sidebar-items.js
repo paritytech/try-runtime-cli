@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["ProtoErrorKind"],"mod":["not_openssl","not_ring"],"struct":["ProtoError"],"trait":["FromProtoError"],"type":["ProtoResult"]};
+window.SIDEBAR_ITEMS = {"enum":["DnsSecErrorKind","ProtoErrorKind"],"struct":["DnsSecError","ProtoError"],"trait":["FromProtoError"],"type":["DnsSecResult","ProtoResult"]};

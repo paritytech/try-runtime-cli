@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["active","active_mib","allocated","allocated_mib","mapped","mapped_mib","metadata","metadata_mib","resident","resident_mib","retained","retained_mib"]};

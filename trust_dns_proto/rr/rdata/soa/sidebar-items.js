@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["emit","read"],"struct":["SOA"]};
+window.SIDEBAR_ITEMS = {"struct":["SOA"]};

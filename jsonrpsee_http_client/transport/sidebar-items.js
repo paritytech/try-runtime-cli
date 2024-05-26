@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Error"],"struct":["HttpTransportClient"]};
+window.SIDEBAR_ITEMS = {"enum":["Error","HttpBackend"],"struct":["HttpTransportClient","HttpTransportClientBuilder"]};

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/frame/support/src/storage/mod.rs`."><title>mod.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/frame/support/src/storage/mod.rs`."><title>mod.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../frame_support/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -2146,6 +2146,7 @@
 <a href="#2144" id="2144">2144</a>
 <a href="#2145" id="2145">2145</a>
 <a href="#2146" id="2146">2146</a>
+<a href="#2147" id="2147">2147</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2307,7 +2308,7 @@
 	///
 	/// # Warning
 	///
-	/// `None` does not mean that `get()` does not return a value. The default value is completly
+	/// `None` does not mean that `get()` does not return a value. The default value is completely
 	/// ignored by this function.
 	</span><span class="kw">fn </span>decode_len() -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt;
 	<span class="kw">where
@@ -2511,7 +2512,7 @@
 	///
 	/// # Warning
 	///
-	/// `None` does not mean that `get()` does not return a value. The default value is completly
+	/// `None` does not mean that `get()` does not return a value. The default value is completely
 	/// ignored by this function.
 	</span><span class="kw">fn </span>decode_len&lt;KeyArg: EncodeLike&lt;K&gt;&gt;(key: KeyArg) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt;
 	<span class="kw">where
@@ -2529,7 +2530,8 @@
 	///
 	/// # Warning
 	///
-	///  - `None` does not mean that `get()` does not return a value. The default value is completly
+	///  - `None` does not mean that `get()` does not return a value. The default value is
+	///    completely
 	/// ignored by this function.
 	///
 	/// - The value returned is the non-deduplicated length of the underlying Vector in storage.This
@@ -2558,7 +2560,7 @@
 </span><span class="kw">pub trait </span>IterableStorageMap&lt;K: FullEncode, V: FullCodec&gt;: StorageMap&lt;K, V&gt; {
 	<span class="doccomment">/// The type that iterates over all `(key, value)`.
 	</span><span class="kw">type </span>Iterator: Iterator&lt;Item = (K, V)&gt;;
-	<span class="doccomment">/// The type that itereates over all `key`s.
+	<span class="doccomment">/// The type that iterates over all `key`s.
 	</span><span class="kw">type </span>KeyIterator: Iterator&lt;Item = K&gt;;
 
 	<span class="doccomment">/// Enumerate all elements in the map in lexicographical order of the encoded key. If you
@@ -2925,7 +2927,7 @@
 	///
 	/// # Warning
 	///
-	/// `None` does not mean that `get()` does not return a value. The default value is completly
+	/// `None` does not mean that `get()` does not return a value. The default value is completely
 	/// ignored by this function.
 	</span><span class="kw">fn </span>decode_len&lt;KArg1, KArg2&gt;(key1: KArg1, key2: KArg2) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt;
 	<span class="kw">where
@@ -2946,7 +2948,7 @@
 	///
 	/// # Warning
 	///
-	/// `None` does not mean that `get()` does not return a value. The default value is completly
+	/// `None` does not mean that `get()` does not return a value. The default value is completely
 	/// ignored by this function.
 	</span><span class="kw">fn </span>decode_non_dedup_len&lt;KArg1, KArg2&gt;(key1: KArg1, key2: KArg2) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt;
 	<span class="kw">where
@@ -3128,7 +3130,7 @@
 	///
 	/// # Warning
 	///
-	/// `None` does not mean that `get()` does not return a value. The default value is completly
+	/// `None` does not mean that `get()` does not return a value. The default value is completely
 	/// ignored by this function.
 	</span><span class="kw">fn </span>decode_len&lt;KArg: EncodeLikeTuple&lt;K::KArg&gt; + TupleToEncodedIter&gt;(key: KArg) -&gt; <span class="prelude-ty">Option</span>&lt;usize&gt;
 	<span class="kw">where
@@ -3636,8 +3638,8 @@
 	}
 }
 
-<span class="doccomment">/// It is expected that the length is at the beginning of the encoded objectand that the length is a
-/// `Compact&lt;u32&gt;`.
+<span class="doccomment">/// It is expected that the length is at the beginning of the encoded object and that the length is
+/// a `Compact&lt;u32&gt;`.
 ///
 /// # Note
 /// The length returned by this trait is not deduplicated, i.e. it is the length of the underlying
@@ -3731,7 +3733,7 @@
 	<span class="kw">fn </span>bound() -&gt; usize;
 }
 
-<span class="doccomment">/// Storage value that is capable of [`StorageTryAppend`](crate::storage::StorageTryAppend).
+<span class="doccomment">/// Storage value that is capable of [`StorageTryAppend`].
 </span><span class="kw">pub trait </span>TryAppendValue&lt;T: StorageTryAppend&lt;I&gt;, I: Encode&gt; {
 	<span class="doccomment">/// Try and append the `item` into the storage item.
 	///
@@ -3760,7 +3762,7 @@
 	}
 }
 
-<span class="doccomment">/// Storage map that is capable of [`StorageTryAppend`](crate::storage::StorageTryAppend).
+<span class="doccomment">/// Storage map that is capable of [`StorageTryAppend`].
 </span><span class="kw">pub trait </span>TryAppendMap&lt;K: Encode, T: StorageTryAppend&lt;I&gt;, I: Encode&gt; {
 	<span class="doccomment">/// Try and append the `item` into the storage map at the given `key`.
 	///
@@ -3794,7 +3796,7 @@
 	}
 }
 
-<span class="doccomment">/// Storage double map that is capable of [`StorageTryAppend`](crate::storage::StorageTryAppend).
+<span class="doccomment">/// Storage double map that is capable of [`StorageTryAppend`].
 </span><span class="kw">pub trait </span>TryAppendDoubleMap&lt;K1: Encode, K2: Encode, T: StorageTryAppend&lt;I&gt;, I: Encode&gt; {
 	<span class="doccomment">/// Try and append the `item` into the storage double map at the given `key`.
 	///
@@ -3860,7 +3862,7 @@
 	<span class="kw">use </span>bounded_vec::BoundedVec;
 	<span class="kw">use </span>frame_support::traits::ConstU32;
 	<span class="kw">use </span>generator::StorageValue <span class="kw">as _</span>;
-	<span class="kw">use </span>sp_core::hashing::twox_128;
+	<span class="kw">use </span>sp_crypto_hashing::twox_128;
 	<span class="kw">use </span>sp_io::TestExternalities;
 	<span class="kw">use </span>weak_bounded_vec::WeakBoundedVec;
 
@@ -3938,7 +3940,7 @@
 		});
 	}
 
-	<span class="comment">// This test ensures that the Digest encoding does not change without being noticied.
+	<span class="comment">// This test ensures that the Digest encoding does not change without being noticed.
 	</span><span class="attr">#[test]
 	</span><span class="kw">fn </span>digest_storage_append_works_as_expected() {
 		TestExternalities::default().execute_with(|| {

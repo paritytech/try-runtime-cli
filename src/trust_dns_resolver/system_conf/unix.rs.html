@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-resolver-0.22.0/src/system_conf/unix.rs`."><title>unix.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_resolver" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-resolver-0.23.2/src/system_conf/unix.rs`."><title>unix.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_resolver" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../trust_dns_resolver/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -199,6 +199,34 @@
 <a href="#197" id="197">197</a>
 <a href="#198" id="198">198</a>
 <a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2017 Benjamin Fry &lt;benjaminfry@me.com&gt;
 //
 // Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
@@ -242,7 +270,7 @@
     <span class="kw">let </span>parsed_conf = resolv_conf::Config::parse(<span class="kw-2">&amp;</span>data).map_err(|e| {
         io::Error::new(
             io::ErrorKind::Other,
-            <span class="macro">format!</span>(<span class="string">"Error parsing resolv.conf: {:?}"</span>, e),
+            <span class="macro">format!</span>(<span class="string">"Error parsing resolv.conf: {e}"</span>),
         )
     })<span class="question-mark">?</span>;
     into_resolver_config(parsed_conf)
@@ -269,7 +297,7 @@
             socket_addr: SocketAddr::new(ip.into(), DEFAULT_PORT),
             protocol: Protocol::Udp,
             tls_dns_name: <span class="prelude-val">None</span>,
-            trust_nx_responses: <span class="bool-val">false</span>,
+            trust_negative_responses: <span class="bool-val">false</span>,
             <span class="attr">#[cfg(feature = <span class="string">"dns-over-rustls"</span>)]
             </span>tls_config: <span class="prelude-val">None</span>,
             bind_addr: <span class="prelude-val">None</span>,
@@ -278,7 +306,7 @@
             socket_addr: SocketAddr::new(ip.into(), DEFAULT_PORT),
             protocol: Protocol::Tcp,
             tls_dns_name: <span class="prelude-val">None</span>,
-            trust_nx_responses: <span class="bool-val">false</span>,
+            trust_negative_responses: <span class="bool-val">false</span>,
             <span class="attr">#[cfg(feature = <span class="string">"dns-over-rustls"</span>)]
             </span>tls_config: <span class="prelude-val">None</span>,
             bind_addr: <span class="prelude-val">None</span>,
@@ -291,10 +319,15 @@
     <span class="comment">// search
     </span><span class="kw">let </span><span class="kw-2">mut </span>search = <span class="macro">vec!</span>[];
     <span class="kw">for </span>search_domain <span class="kw">in </span>parsed_config.get_last_search_or_domain() {
-        search.push(Name::from_str_relaxed(<span class="kw-2">&amp;</span>search_domain).map_err(|e| {
+        <span class="comment">// Ignore invalid search domains
+        </span><span class="kw">if </span>search_domain == <span class="string">"--" </span>{
+            <span class="kw">continue</span>;
+        }
+
+        search.push(Name::from_str_relaxed(search_domain).map_err(|e| {
             io::Error::new(
                 io::ErrorKind::Other,
-                <span class="macro">format!</span>(<span class="string">"Error parsing resolv.conf: {:?}"</span>, e),
+                <span class="macro">format!</span>(<span class="string">"Error parsing resolv.conf: {e}"</span>),
             )
         })<span class="question-mark">?</span>);
     }
@@ -330,7 +363,7 @@
                 socket_addr: addr,
                 protocol: Protocol::Udp,
                 tls_dns_name: <span class="prelude-val">None</span>,
-                trust_nx_responses: <span class="bool-val">false</span>,
+                trust_negative_responses: <span class="bool-val">false</span>,
                 <span class="attr">#[cfg(feature = <span class="string">"dns-over-rustls"</span>)]
                 </span>tls_config: <span class="prelude-val">None</span>,
                 bind_addr: <span class="prelude-val">None</span>,
@@ -339,7 +372,7 @@
                 socket_addr: addr,
                 protocol: Protocol::Tcp,
                 tls_dns_name: <span class="prelude-val">None</span>,
-                trust_nx_responses: <span class="bool-val">false</span>,
+                trust_negative_responses: <span class="bool-val">false</span>,
                 <span class="attr">#[cfg(feature = <span class="string">"dns-over-rustls"</span>)]
                 </span>tls_config: <span class="prelude-val">None</span>,
                 bind_addr: <span class="prelude-val">None</span>,
@@ -349,7 +382,7 @@
 
     <span class="kw">fn </span>tests_dir() -&gt; String {
         <span class="kw">let </span>server_path = env::var(<span class="string">"TDNS_WORKSPACE_ROOT"</span>).unwrap_or_else(|<span class="kw">_</span>| <span class="string">"../.."</span>.to_owned());
-        <span class="macro">format!</span>(<span class="string">"{}/crates/resolver/tests"</span>, server_path)
+        <span class="macro">format!</span>(<span class="string">"{server_path}/crates/resolver/tests"</span>)
     }
 
     <span class="attr">#[test]
@@ -371,6 +404,29 @@
         cfg.add_search(Name::from_str(<span class="string">"localnet."</span>).unwrap());
         <span class="macro">assert_eq!</span>(cfg.search(), parsed.<span class="number">0</span>.search());
         <span class="macro">assert_eq!</span>(ResolverOpts::default(), parsed.<span class="number">1</span>);
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_skips_invalid_search() {
+        <span class="kw">let </span>parsed =
+            parse_resolv_conf(<span class="string">"\n\nnameserver 127.0.0.53\noptions edns0 trust-ad\nsearch -- lan\n"</span>)
+                .expect(<span class="string">"failed"</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>cfg = empty_config();
+
+        {
+            <span class="kw">let </span>nameservers = nameserver_config(<span class="string">"127.0.0.53"</span>);
+            cfg.add_name_server(nameservers[<span class="number">0</span>].clone());
+            cfg.add_name_server(nameservers[<span class="number">1</span>].clone());
+            <span class="macro">assert_eq!</span>(cfg.name_servers(), parsed.<span class="number">0</span>.name_servers());
+            <span class="macro">assert_eq!</span>(ResolverOpts::default(), parsed.<span class="number">1</span>);
+        }
+
+        <span class="comment">// This is the important part, that the invalid `--` is skipped during parsing
+        </span>{
+            cfg.add_search(Name::from_str(<span class="string">"lan"</span>).unwrap());
+            <span class="macro">assert_eq!</span>(cfg.search(), parsed.<span class="number">0</span>.search());
+            <span class="macro">assert_eq!</span>(ResolverOpts::default(), parsed.<span class="number">1</span>);
+        }
     }
 
     <span class="attr">#[test]

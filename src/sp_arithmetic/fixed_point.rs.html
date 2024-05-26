@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/primitives/arithmetic/src/fixed_point.rs`."><title>fixed_point.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_arithmetic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/primitives/arithmetic/src/fixed_point.rs`."><title>fixed_point.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_arithmetic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../sp_arithmetic/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -2216,6 +2216,32 @@
 <a href="#2214" id="2214">2214</a>
 <a href="#2215" id="2215">2215</a>
 <a href="#2216" id="2216">2216</a>
+<a href="#2217" id="2217">2217</a>
+<a href="#2218" id="2218">2218</a>
+<a href="#2219" id="2219">2219</a>
+<a href="#2220" id="2220">2220</a>
+<a href="#2221" id="2221">2221</a>
+<a href="#2222" id="2222">2222</a>
+<a href="#2223" id="2223">2223</a>
+<a href="#2224" id="2224">2224</a>
+<a href="#2225" id="2225">2225</a>
+<a href="#2226" id="2226">2226</a>
+<a href="#2227" id="2227">2227</a>
+<a href="#2228" id="2228">2228</a>
+<a href="#2229" id="2229">2229</a>
+<a href="#2230" id="2230">2230</a>
+<a href="#2231" id="2231">2231</a>
+<a href="#2232" id="2232">2232</a>
+<a href="#2233" id="2233">2233</a>
+<a href="#2234" id="2234">2234</a>
+<a href="#2235" id="2235">2235</a>
+<a href="#2236" id="2236">2236</a>
+<a href="#2237" id="2237">2237</a>
+<a href="#2238" id="2238">2238</a>
+<a href="#2239" id="2239">2239</a>
+<a href="#2240" id="2240">2240</a>
+<a href="#2241" id="2241">2241</a>
+<a href="#2242" id="2242">2242</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2234,6 +2260,33 @@
 // limitations under the License.
 
 </span><span class="doccomment">//! Decimal Fixed Point implementations for Substrate runtime.
+//! Similar to types that implement [`PerThing`](crate::per_things), these are also
+//! fixed-point types, however, they are able to represent larger fractions:
+</span><span class="attr">#![doc = <span class="macro">docify::embed!</span>(<span class="string">"./src/lib.rs"</span>, fixed_u64)]
+</span><span class="doccomment">//!
+//! ### Fixed Point Types in Practice
+//!
+//! If one needs to exceed the value of one (1), then
+//! [`FixedU64`](FixedU64) (and its signed and `u128` counterparts) can be utilized.
+//! Take for example this very rudimentary pricing mechanism, where we wish to calculate the demand
+//! / supply to get a price for some on-chain compute:
+</span><span class="attr">#![doc = <span class="macro">docify::embed!</span>(
+	<span class="string">"./src/lib.rs"</span>,
+	fixed_u64_block_computation_example
+)]
+</span><span class="doccomment">//!
+//! For a much more comprehensive example, be sure to look at the source for broker (the "coretime")
+//! pallet.
+//!
+//! #### Fixed Point Types in Practice
+//!
+//! Just as with [`PerThing`](PerThing), you can also perform regular mathematical
+//! expressions:
+</span><span class="attr">#![doc = <span class="macro">docify::embed!</span>(
+	<span class="string">"./src/lib.rs"</span>,
+	fixed_u64_operation_example
+)]
+</span><span class="doccomment">//!
 
 </span><span class="kw">use crate</span>::{
 	helpers_128bit::{multiply_by_rational_with_rounding, sqrt},
@@ -2244,17 +2297,16 @@
 	PerThing, Perbill, Rounding, SignedRounding,
 };
 <span class="kw">use </span>codec::{CompactAs, Decode, Encode};
-<span class="kw">use </span>sp_std::{
+<span class="kw">use </span>core::{
 	fmt::Debug,
 	ops::{<span class="self">self</span>, Add, Div, Mul, Sub},
-	prelude::<span class="kw-2">*</span>,
 };
 
 <span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
 </span><span class="kw">use </span>serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 
 <span class="attr">#[cfg(all(not(feature = <span class="string">"std"</span>), feature = <span class="string">"serde"</span>))]
-</span><span class="kw">use </span>sp_std::alloc::string::{String, ToString};
+</span><span class="kw">use </span>alloc::string::{String, ToString};
 
 <span class="doccomment">/// Integer types that can be used to interact with `FixedPointNumber` implementations.
 </span><span class="kw">pub trait </span>FixedPointOperand:
@@ -2760,7 +2812,7 @@
 				<span class="kw">let </span>v = <span class="self">self</span>.<span class="number">0 </span><span class="kw">as </span>u128;
 
 				<span class="comment">// Want x' = sqrt(x) where x = n/D and x' = n'/D (D is fixed)
-				// Our prefered way is:
+				// Our preferred way is:
 				//   sqrt(n/D) = sqrt(nD / D^2) = sqrt(nD)/sqrt(D^2) = sqrt(nD)/D
 				//   ergo n' = sqrt(nD)
 				// but this requires nD to fit into our type.
@@ -3117,9 +3169,9 @@
 			}
 		}
 
-		<span class="kw">impl </span>sp_std::fmt::Debug <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
+		<span class="kw">impl </span>::core::fmt::Debug <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
 			<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-			</span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>sp_std::fmt::Formatter) -&gt; sp_std::fmt::Result {
+			</span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>::core::fmt::Formatter) -&gt; ::core::fmt::Result {
 				<span class="kw">let </span>integral = {
 					<span class="kw">let </span>int = <span class="self">self</span>.<span class="number">0 </span>/ <span class="self">Self</span>::accuracy();
 					<span class="kw">let </span>signum_for_zero = <span class="kw">if </span>int == <span class="number">0 </span>&amp;&amp; <span class="self">self</span>.is_negative() { <span class="string">"-" </span>} <span class="kw">else </span>{ <span class="string">"" </span>};
@@ -3135,7 +3187,7 @@
 			}
 
 			<span class="attr">#[cfg(not(feature = <span class="string">"std"</span>))]
-			</span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>sp_std::fmt::Formatter) -&gt; sp_std::fmt::Result {
+			</span><span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>::core::fmt::Formatter) -&gt; ::core::fmt::Result {
 				<span class="prelude-val">Ok</span>(())
 			}
 		}
@@ -3151,13 +3203,13 @@
 			}
 		}
 
-		<span class="kw">impl </span>sp_std::fmt::Display <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
-			<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>sp_std::fmt::Formatter) -&gt; sp_std::fmt::Result {
+		<span class="kw">impl </span>::core::fmt::Display <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
+			<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>::core::fmt::Formatter) -&gt; ::core::fmt::Result {
 				<span class="macro">write!</span>(f, <span class="string">"{}"</span>, <span class="self">self</span>.<span class="number">0</span>)
 			}
 		}
 
-		<span class="kw">impl </span>sp_std::str::FromStr <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
+		<span class="kw">impl </span>::core::str::FromStr <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
 			<span class="kw">type </span><span class="prelude-val">Err </span>= <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str;
 
 			<span class="kw">fn </span>from_str(s: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Err&gt; {
@@ -3187,7 +3239,7 @@
 			<span class="kw">where
 				</span>D: Deserializer&lt;<span class="lifetime">'de</span>&gt;,
 			{
-				<span class="kw">use </span>sp_std::str::FromStr;
+				<span class="kw">use </span>::core::str::FromStr;
 				<span class="kw">let </span>s = String::deserialize(deserializer)<span class="question-mark">?</span>;
 				<span class="macro-nonterminal">$name::from_str</span>(<span class="kw-2">&amp;</span>s).map_err(de::Error::custom)
 			}

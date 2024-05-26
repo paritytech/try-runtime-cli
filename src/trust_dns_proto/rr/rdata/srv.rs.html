@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.22.0/src/rr/rdata/srv.rs`."><title>srv.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.23.2/src/rr/rdata/srv.rs`."><title>srv.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../trust_dns_proto/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -288,21 +288,34 @@
 <a href="#286" id="286">286</a>
 <a href="#287" id="287">287</a>
 <a href="#288" id="288">288</a>
-</pre></div><pre class="rust"><code><span class="comment">/*
- * Copyright (C) 2015 Benjamin Fry &lt;benjaminfry@me.com&gt;
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+</pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2023 Benjamin Fry &lt;benjaminfry@me.com&gt;
+//
+// Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
+// http://apache.org/licenses/LICENSE-2.0&gt; or the MIT license &lt;LICENSE-MIT or
+// http://opensource.org/licenses/MIT&gt;, at your option. This file may not be
+// copied, modified, or distributed except according to those terms.
 
 </span><span class="doccomment">//! service records for identify port mapping for specific services on a host
 </span><span class="kw">use </span>std::fmt;
@@ -310,9 +323,11 @@
 <span class="attr">#[cfg(feature = <span class="string">"serde-config"</span>)]
 </span><span class="kw">use </span>serde::{Deserialize, Serialize};
 
-<span class="kw">use </span><span class="kw">crate</span>::error::<span class="kw-2">*</span>;
-<span class="kw">use </span><span class="kw">crate</span>::rr::domain::Name;
-<span class="kw">use </span><span class="kw">crate</span>::serialize::binary::<span class="kw-2">*</span>;
+<span class="kw">use crate</span>::{
+    error::ProtoResult,
+    rr::{domain::Name, RData, RecordData, RecordType},
+    serialize::binary::{BinDecodable, BinDecoder, BinEncodable, BinEncoder},
+};
 
 <span class="doccomment">/// [RFC 2782, DNS SRV RR, February 2000](https://tools.ietf.org/html/rfc2782)
 ///
@@ -487,44 +502,73 @@
     }
 }
 
-<span class="doccomment">/// Read the RData from the given Decoder
-</span><span class="kw">pub fn </span>read(decoder: <span class="kw-2">&amp;mut </span>BinDecoder&lt;<span class="lifetime">'_</span>&gt;) -&gt; ProtoResult&lt;SRV&gt; {
-    <span class="comment">// SRV { priority: u16, weight: u16, port: u16, target: Name, },
-    </span><span class="prelude-val">Ok</span>(SRV::new(
-        decoder.read_u16()<span class="question-mark">?</span>.unverified(<span class="comment">/*any u16 is valid*/</span>),
-        decoder.read_u16()<span class="question-mark">?</span>.unverified(<span class="comment">/*any u16 is valid*/</span>),
-        decoder.read_u16()<span class="question-mark">?</span>.unverified(<span class="comment">/*any u16 is valid*/</span>),
-        Name::read(decoder)<span class="question-mark">?</span>,
-    ))
+<span class="kw">impl </span>BinEncodable <span class="kw">for </span>SRV {
+    <span class="doccomment">/// [RFC 4034](https://tools.ietf.org/html/rfc4034#section-6), DNSSEC Resource Records, March 2005
+    ///
+    /// This is accurate for all currently known name records.
+    ///
+    /// ```text
+    /// 6.2.  Canonical RR Form
+    ///
+    ///    For the purposes of DNS security, the canonical form of an RR is the
+    ///    wire format of the RR where:
+    ///
+    ///    ...
+    ///
+    ///    3.  if the type of the RR is NS, MD, MF, CNAME, SOA, MB, MG, MR, PTR,
+    ///        HINFO, MINFO, MX, HINFO, RP, AFSDB, RT, SIG, PX, NXT, NAPTR, KX,
+    ///        SRV, DNAME, A6, RRSIG, or (rfc6840 removes NSEC), all uppercase
+    ///        US-ASCII letters in the DNS names contained within the RDATA are replaced
+    ///        by the corresponding lowercase US-ASCII letters;
+    /// ```
+    </span><span class="kw">fn </span>emit(<span class="kw-2">&amp;</span><span class="self">self</span>, encoder: <span class="kw-2">&amp;mut </span>BinEncoder&lt;<span class="lifetime">'_</span>&gt;) -&gt; ProtoResult&lt;()&gt; {
+        <span class="kw">let </span>is_canonical_names = encoder.is_canonical_names();
+
+        encoder.emit_u16(<span class="self">self</span>.priority())<span class="question-mark">?</span>;
+        encoder.emit_u16(<span class="self">self</span>.weight())<span class="question-mark">?</span>;
+        encoder.emit_u16(<span class="self">self</span>.port())<span class="question-mark">?</span>;
+
+        <span class="comment">// to_lowercase for rfc4034 and rfc6840
+        </span><span class="self">self</span>.target()
+            .emit_with_lowercase(encoder, is_canonical_names)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(())
+    }
 }
 
-<span class="doccomment">/// [RFC 4034](https://tools.ietf.org/html/rfc4034#section-6), DNSSEC Resource Records, March 2005
-///
-/// This is accurate for all currently known name records.
-///
-/// ```text
-/// 6.2.  Canonical RR Form
-///
-///    For the purposes of DNS security, the canonical form of an RR is the
-///    wire format of the RR where:
-///
-///    ...
-///
-///    3.  if the type of the RR is NS, MD, MF, CNAME, SOA, MB, MG, MR, PTR,
-///        HINFO, MINFO, MX, HINFO, RP, AFSDB, RT, SIG, PX, NXT, NAPTR, KX,
-///        SRV, DNAME, A6, RRSIG, or (rfc6840 removes NSEC), all uppercase
-///        US-ASCII letters in the DNS names contained within the RDATA are replaced
-///        by the corresponding lowercase US-ASCII letters;
-/// ```
-</span><span class="kw">pub fn </span>emit(encoder: <span class="kw-2">&amp;mut </span>BinEncoder&lt;<span class="lifetime">'_</span>&gt;, srv: <span class="kw-2">&amp;</span>SRV) -&gt; ProtoResult&lt;()&gt; {
-    <span class="kw">let </span>is_canonical_names = encoder.is_canonical_names();
+<span class="kw">impl</span>&lt;<span class="lifetime">'r</span>&gt; BinDecodable&lt;<span class="lifetime">'r</span>&gt; <span class="kw">for </span>SRV {
+    <span class="kw">fn </span>read(decoder: <span class="kw-2">&amp;mut </span>BinDecoder&lt;<span class="lifetime">'r</span>&gt;) -&gt; ProtoResult&lt;<span class="self">Self</span>&gt; {
+        <span class="comment">// SRV { priority: u16, weight: u16, port: u16, target: Name, },
+        </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>::new(
+            decoder.read_u16()<span class="question-mark">?</span>.unverified(<span class="comment">/*any u16 is valid*/</span>),
+            decoder.read_u16()<span class="question-mark">?</span>.unverified(<span class="comment">/*any u16 is valid*/</span>),
+            decoder.read_u16()<span class="question-mark">?</span>.unverified(<span class="comment">/*any u16 is valid*/</span>),
+            Name::read(decoder)<span class="question-mark">?</span>,
+        ))
+    }
+}
 
-    encoder.emit_u16(srv.priority())<span class="question-mark">?</span>;
-    encoder.emit_u16(srv.weight())<span class="question-mark">?</span>;
-    encoder.emit_u16(srv.port())<span class="question-mark">?</span>;
-    srv.target()
-        .emit_with_lowercase(encoder, is_canonical_names)<span class="question-mark">?</span>;
-    <span class="prelude-val">Ok</span>(())
+<span class="kw">impl </span>RecordData <span class="kw">for </span>SRV {
+    <span class="kw">fn </span>try_from_rdata(data: RData) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, RData&gt; {
+        <span class="kw">match </span>data {
+            RData::SRV(data) =&gt; <span class="prelude-val">Ok</span>(data),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(data),
+        }
+    }
+
+    <span class="kw">fn </span>try_borrow(data: <span class="kw-2">&amp;</span>RData) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="self">Self</span>&gt; {
+        <span class="kw">match </span>data {
+            RData::SRV(data) =&gt; <span class="prelude-val">Some</span>(data),
+            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
+        }
+    }
+
+    <span class="kw">fn </span>record_type(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RecordType {
+        RecordType::SRV
+    }
+
+    <span class="kw">fn </span>into_rdata(<span class="self">self</span>) -&gt; RData {
+        RData::SRV(<span class="self">self</span>)
+    }
 }
 
 <span class="doccomment">/// [RFC 2782, DNS SRV RR, February 2000](https://tools.ietf.org/html/rfc2782)
@@ -565,14 +609,14 @@
 
         <span class="kw">let </span><span class="kw-2">mut </span>bytes = Vec::new();
         <span class="kw">let </span><span class="kw-2">mut </span>encoder: BinEncoder&lt;<span class="lifetime">'_</span>&gt; = BinEncoder::new(<span class="kw-2">&amp;mut </span>bytes);
-        <span class="macro">assert!</span>(emit(<span class="kw-2">&amp;mut </span>encoder, <span class="kw-2">&amp;</span>rdata).is_ok());
+        <span class="macro">assert!</span>(rdata.emit(<span class="kw-2">&amp;mut </span>encoder).is_ok());
         <span class="kw">let </span>bytes = encoder.into_bytes();
 
-        <span class="macro">println!</span>(<span class="string">"bytes: {:?}"</span>, bytes);
+        <span class="macro">println!</span>(<span class="string">"bytes: {bytes:?}"</span>);
 
         <span class="kw">let </span><span class="kw-2">mut </span>decoder: BinDecoder&lt;<span class="lifetime">'_</span>&gt; = BinDecoder::new(bytes);
 
-        <span class="kw">let </span>read_rdata = read(<span class="kw-2">&amp;mut </span>decoder).expect(<span class="string">"Decoding error"</span>);
+        <span class="kw">let </span>read_rdata = SRV::read(<span class="kw-2">&amp;mut </span>decoder).expect(<span class="string">"Decoding error"</span>);
         <span class="macro">assert_eq!</span>(rdata, read_rdata);
     }
 }

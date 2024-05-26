@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["emit","read","verify_flags"],"struct":["NAPTR"]};
+window.SIDEBAR_ITEMS = {"fn":["verify_flags"],"struct":["NAPTR"]};

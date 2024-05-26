@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/primitives/storage/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_storage" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/primitives/storage/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_storage" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../sp_storage/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -476,12 +476,6 @@
 <a href="#474" id="474">474</a>
 <a href="#475" id="475">475</a>
 <a href="#476" id="476">476</a>
-<a href="#477" id="477">477</a>
-<a href="#478" id="478">478</a>
-<a href="#479" id="479">479</a>
-<a href="#480" id="480">480</a>
-<a href="#481" id="481">481</a>
-<a href="#482" id="482">482</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -503,18 +497,19 @@
 
 </span><span class="attr">#![cfg_attr(not(feature = <span class="string">"std"</span>), no_std)]
 
-</span><span class="kw">use </span>core::fmt::Display;
+</span><span class="kw">extern crate </span>alloc;
 
 <span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
 </span><span class="kw">use </span>serde::{Deserialize, Serialize};
 <span class="kw">use </span>sp_debug_derive::RuntimeDebug;
 
+<span class="kw">use </span>alloc::vec::Vec;
 <span class="kw">use </span>codec::{Decode, Encode};
-<span class="kw">use </span>ref_cast::RefCast;
-<span class="kw">use </span>sp_std::{
+<span class="kw">use </span>core::{
+	fmt::Display,
 	ops::{Deref, DerefMut},
-	vec::Vec,
 };
+<span class="kw">use </span>ref_cast::RefCast;
 
 <span class="doccomment">/// Storage key.
 </span><span class="attr">#[derive(PartialEq, Eq, RuntimeDebug)]
@@ -533,9 +528,7 @@
 }
 
 <span class="doccomment">/// Storage key with read/write tracking information.
-</span><span class="attr">#[derive(
-	PartialEq, Eq, Ord, PartialOrd, sp_std::hash::Hash, RuntimeDebug, Clone, Encode, Decode,
-)]
+</span><span class="attr">#[derive(PartialEq, Eq, Ord, PartialOrd, core::hash::Hash, RuntimeDebug, Clone, Encode, Decode)]
 </span><span class="kw">pub struct </span>TrackedStorageKey {
 	<span class="kw">pub </span>key: Vec&lt;u8&gt;,
 	<span class="kw">pub </span>reads: u32,
@@ -662,7 +655,7 @@
 
 <span class="doccomment">/// Storage change set
 </span><span class="attr">#[derive(RuntimeDebug)]
-#[cfg_attr(feature = <span class="string">"serde"</span>, derive(Serialize, Deserialize, PartialEq, Eq))]
+#[cfg_attr(feature = <span class="string">"serde"</span>, derive(Serialize, Deserialize, PartialEq, Eq, Clone))]
 #[cfg_attr(feature = <span class="string">"serde"</span>, serde(rename_all = <span class="string">"camelCase"</span>))]
 </span><span class="kw">pub struct </span>StorageChangeSet&lt;Hash&gt; {
 	<span class="doccomment">/// Block hash
@@ -898,12 +891,13 @@
 ///
 /// V0 and V1 uses a same trie implementation, but V1 will write external value node in the trie for
 /// value with size at least `TRIE_VALUE_NODE_THRESHOLD`.
-</span><span class="attr">#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+</span><span class="attr">#[derive(Debug, Default, Clone, Copy, Eq, PartialEq)]
 #[cfg_attr(feature = <span class="string">"std"</span>, derive(Encode, Decode))]
 </span><span class="kw">pub enum </span>StateVersion {
 	<span class="doccomment">/// Old state version, no value nodes.
 	</span>V0 = <span class="number">0</span>,
 	<span class="doccomment">/// New state version can use value nodes.
+	</span><span class="attr">#[default]
 	</span>V1 = <span class="number">1</span>,
 }
 
@@ -916,12 +910,6 @@
 	}
 }
 
-<span class="kw">impl </span>Default <span class="kw">for </span>StateVersion {
-	<span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
-		StateVersion::V1
-	}
-}
-
 <span class="kw">impl </span>From&lt;StateVersion&gt; <span class="kw">for </span>u8 {
 	<span class="kw">fn </span>from(version: StateVersion) -&gt; u8 {
 		version <span class="kw">as </span>u8
@@ -930,7 +918,7 @@
 
 <span class="kw">impl </span>TryFrom&lt;u8&gt; <span class="kw">for </span>StateVersion {
 	<span class="kw">type </span>Error = ();
-	<span class="kw">fn </span>try_from(val: u8) -&gt; sp_std::result::Result&lt;StateVersion, ()&gt; {
+	<span class="kw">fn </span>try_from(val: u8) -&gt; core::result::Result&lt;StateVersion, ()&gt; {
 		<span class="kw">match </span>val {
 			<span class="number">0 </span>=&gt; <span class="prelude-val">Ok</span>(StateVersion::V0),
 			<span class="number">1 </span>=&gt; <span class="prelude-val">Ok</span>(StateVersion::V1),
@@ -942,7 +930,7 @@
 <span class="kw">impl </span>StateVersion {
 	<span class="doccomment">/// If defined, values in state of size bigger or equal
 	/// to this threshold will use a separate trie node.
-	/// Otherwhise, value will be inlined in branch or leaf
+	/// Otherwise, value will be inlined in branch or leaf
 	/// node.
 	</span><span class="kw">pub fn </span>state_value_threshold(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u32&gt; {
 		<span class="kw">match </span><span class="self">self </span>{

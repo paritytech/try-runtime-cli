@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/client/db/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_client_db" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/db/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_client_db" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../sc_client_db/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -4420,11 +4420,6 @@
 <a href="#4418" id="4418">4418</a>
 <a href="#4419" id="4419">4419</a>
 <a href="#4420" id="4420">4420</a>
-<a href="#4421" id="4421">4421</a>
-<a href="#4422" id="4422">4422</a>
-<a href="#4423" id="4423">4423</a>
-<a href="#4424" id="4424">4424</a>
-<a href="#4425" id="4425">4425</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -4495,8 +4490,8 @@
 <span class="kw">use </span>sc_state_db::{IsPruned, LastCanonicalized, StateDb};
 <span class="kw">use </span>sp_arithmetic::traits::Saturating;
 <span class="kw">use </span>sp_blockchain::{
-	Backend <span class="kw">as _</span>, CachedHeaderMetadata, Error <span class="kw">as </span>ClientError, HeaderBackend, HeaderMetadata,
-	HeaderMetadataCache, <span class="prelude-ty">Result </span><span class="kw">as </span>ClientResult,
+	Backend <span class="kw">as _</span>, CachedHeaderMetadata, DisplacedLeavesAfterFinalization, Error <span class="kw">as </span>ClientError,
+	HeaderBackend, HeaderMetadata, HeaderMetadataCache, <span class="prelude-ty">Result </span><span class="kw">as </span>ClientResult,
 };
 <span class="kw">use </span>sp_core::{
 	offchain::OffchainOverlayedChange,
@@ -4528,14 +4523,11 @@
 <span class="kw">const </span>CACHE_HEADERS: usize = <span class="number">8</span>;
 
 <span class="doccomment">/// DB-backed patricia trie state, transaction type is an overlay of changes to commit.
-</span><span class="kw">pub type </span>DbState&lt;B&gt; =
-	sp_state_machine::TrieBackend&lt;Arc&lt;<span class="kw">dyn </span>sp_state_machine::Storage&lt;HashingFor&lt;B&gt;&gt;&gt;, HashingFor&lt;B&gt;&gt;;
+</span><span class="kw">pub type </span>DbState&lt;H&gt; = sp_state_machine::TrieBackend&lt;Arc&lt;<span class="kw">dyn </span>sp_state_machine::Storage&lt;H&gt;&gt;, H&gt;;
 
 <span class="doccomment">/// Builder for [`DbState`].
-</span><span class="kw">pub type </span>DbStateBuilder&lt;B&gt; = sp_state_machine::TrieBackendBuilder&lt;
-	Arc&lt;<span class="kw">dyn </span>sp_state_machine::Storage&lt;HashingFor&lt;B&gt;&gt;&gt;,
-	HashingFor&lt;B&gt;,
-&gt;;
+</span><span class="kw">pub type </span>DbStateBuilder&lt;Hasher&gt; =
+	sp_state_machine::TrieBackendBuilder&lt;Arc&lt;<span class="kw">dyn </span>sp_state_machine::Storage&lt;Hasher&gt;&gt;, Hasher&gt;;
 
 <span class="doccomment">/// Length of a [`DbHash`].
 </span><span class="kw">const </span>DB_HASH_LEN: usize = <span class="number">32</span>;
@@ -4562,13 +4554,17 @@
 /// It makes sure that the hash we are using stays pinned in storage
 /// until this structure is dropped.
 </span><span class="kw">pub struct </span>RefTrackingState&lt;Block: BlockT&gt; {
-	state: DbState&lt;Block&gt;,
+	state: DbState&lt;HashingFor&lt;Block&gt;&gt;,
 	storage: Arc&lt;StorageDb&lt;Block&gt;&gt;,
 	parent_hash: <span class="prelude-ty">Option</span>&lt;Block::Hash&gt;,
 }
 
 <span class="kw">impl</span>&lt;B: BlockT&gt; RefTrackingState&lt;B&gt; {
-	<span class="kw">fn </span>new(state: DbState&lt;B&gt;, storage: Arc&lt;StorageDb&lt;B&gt;&gt;, parent_hash: <span class="prelude-ty">Option</span>&lt;B::Hash&gt;) -&gt; <span class="self">Self </span>{
+	<span class="kw">fn </span>new(
+		state: DbState&lt;HashingFor&lt;B&gt;&gt;,
+		storage: Arc&lt;StorageDb&lt;B&gt;&gt;,
+		parent_hash: <span class="prelude-ty">Option</span>&lt;B::Hash&gt;,
+	) -&gt; <span class="self">Self </span>{
 		RefTrackingState { state, parent_hash, storage }
 	}
 }
@@ -4589,12 +4585,12 @@
 
 <span class="doccomment">/// A raw iterator over the `RefTrackingState`.
 </span><span class="kw">pub struct </span>RawIter&lt;B: BlockT&gt; {
-	inner: &lt;DbState&lt;B&gt; <span class="kw">as </span>StateBackend&lt;HashingFor&lt;B&gt;&gt;&gt;::RawIter,
+	inner: &lt;DbState&lt;HashingFor&lt;B&gt;&gt; <span class="kw">as </span>StateBackend&lt;HashingFor&lt;B&gt;&gt;&gt;::RawIter,
 }
 
 <span class="kw">impl</span>&lt;B: BlockT&gt; StorageIterator&lt;HashingFor&lt;B&gt;&gt; <span class="kw">for </span>RawIter&lt;B&gt; {
 	<span class="kw">type </span>Backend = RefTrackingState&lt;B&gt;;
-	<span class="kw">type </span>Error = &lt;DbState&lt;B&gt; <span class="kw">as </span>StateBackend&lt;HashingFor&lt;B&gt;&gt;&gt;::Error;
+	<span class="kw">type </span>Error = &lt;DbState&lt;HashingFor&lt;B&gt;&gt; <span class="kw">as </span>StateBackend&lt;HashingFor&lt;B&gt;&gt;&gt;::Error;
 
 	<span class="kw">fn </span>next_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, backend: <span class="kw-2">&amp;</span><span class="self">Self</span>::Backend) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Result</span>&lt;StorageKey, <span class="self">Self</span>::Error&gt;&gt; {
 		<span class="self">self</span>.inner.next_key(<span class="kw-2">&amp;</span>backend.state)
@@ -4613,8 +4609,9 @@
 }
 
 <span class="kw">impl</span>&lt;B: BlockT&gt; StateBackend&lt;HashingFor&lt;B&gt;&gt; <span class="kw">for </span>RefTrackingState&lt;B&gt; {
-	<span class="kw">type </span>Error = &lt;DbState&lt;B&gt; <span class="kw">as </span>StateBackend&lt;HashingFor&lt;B&gt;&gt;&gt;::Error;
-	<span class="kw">type </span>TrieBackendStorage = &lt;DbState&lt;B&gt; <span class="kw">as </span>StateBackend&lt;HashingFor&lt;B&gt;&gt;&gt;::TrieBackendStorage;
+	<span class="kw">type </span>Error = &lt;DbState&lt;HashingFor&lt;B&gt;&gt; <span class="kw">as </span>StateBackend&lt;HashingFor&lt;B&gt;&gt;&gt;::Error;
+	<span class="kw">type </span>TrieBackendStorage =
+		&lt;DbState&lt;HashingFor&lt;B&gt;&gt; <span class="kw">as </span>StateBackend&lt;HashingFor&lt;B&gt;&gt;&gt;::TrieBackendStorage;
 	<span class="kw">type </span>RawIter = RawIter&lt;B&gt;;
 
 	<span class="kw">fn </span>storage(<span class="kw-2">&amp;</span><span class="self">self</span>, key: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;Vec&lt;u8&gt;&gt;, <span class="self">Self</span>::Error&gt; {
@@ -4711,7 +4708,8 @@
 }
 
 <span class="kw">impl</span>&lt;B: BlockT&gt; AsTrieBackend&lt;HashingFor&lt;B&gt;&gt; <span class="kw">for </span>RefTrackingState&lt;B&gt; {
-	<span class="kw">type </span>TrieBackendStorage = &lt;DbState&lt;B&gt; <span class="kw">as </span>StateBackend&lt;HashingFor&lt;B&gt;&gt;&gt;::TrieBackendStorage;
+	<span class="kw">type </span>TrieBackendStorage =
+		&lt;DbState&lt;HashingFor&lt;B&gt;&gt; <span class="kw">as </span>StateBackend&lt;HashingFor&lt;B&gt;&gt;&gt;::TrieBackendStorage;
 
 	<span class="kw">fn </span>as_trie_backend(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -4745,6 +4743,16 @@
 	</span>KeepFinalized,
 	<span class="doccomment">/// Keep N recent finalized blocks.
 	</span><span class="prelude-val">Some</span>(u32),
+}
+
+<span class="kw">impl </span>BlocksPruning {
+	<span class="doccomment">/// True if this is an archive pruning mode (either KeepAll or KeepFinalized).
+	</span><span class="kw">pub fn </span>is_archive(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+		<span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
+			BlocksPruning::KeepAll | BlocksPruning::KeepFinalized =&gt; <span class="bool-val">true</span>,
+			BlocksPruning::Some(<span class="kw">_</span>) =&gt; <span class="bool-val">false</span>,
+		}
+	}
 }
 
 <span class="doccomment">/// Where to find the database..
@@ -5159,19 +5167,6 @@
 
 	<span class="kw">fn </span>leaves(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ClientResult&lt;Vec&lt;Block::Hash&gt;&gt; {
 		<span class="prelude-val">Ok</span>(<span class="self">self</span>.leaves.read().hashes())
-	}
-
-	<span class="kw">fn </span>displaced_leaves_after_finalizing(
-		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		block_number: NumberFor&lt;Block&gt;,
-	) -&gt; ClientResult&lt;Vec&lt;Block::Hash&gt;&gt; {
-		<span class="prelude-val">Ok</span>(<span class="self">self
-			</span>.leaves
-			.read()
-			.displaced_by_finalize_height(block_number)
-			.leaves()
-			.cloned()
-			.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;())
 	}
 
 	<span class="kw">fn </span>children(<span class="kw-2">&amp;</span><span class="self">self</span>, parent_hash: Block::Hash) -&gt; ClientResult&lt;Vec&lt;Block::Hash&gt;&gt; {
@@ -6227,14 +6222,13 @@
 			apply_state_commit(transaction, commit);
 		}
 
-		<span class="kw">let </span>new_displaced = <span class="self">self</span>.blockchain.leaves.write().finalize_height(f_num);
-		<span class="self">self</span>.prune_blocks(
-			transaction,
-			f_num,
-			f_hash,
-			<span class="kw-2">&amp;</span>new_displaced,
-			current_transaction_justifications,
-		)<span class="question-mark">?</span>;
+		<span class="kw">let </span>new_displaced = <span class="self">self</span>.blockchain.displaced_leaves_after_finalizing(f_hash, f_num)<span class="question-mark">?</span>;
+		<span class="kw">let </span>finalization_outcome =
+			FinalizationOutcome::new(new_displaced.displaced_leaves.clone().into_iter());
+
+		<span class="self">self</span>.blockchain.leaves.write().remove_displaced_leaves(<span class="kw-2">&amp;</span>finalization_outcome);
+
+		<span class="self">self</span>.prune_blocks(transaction, f_num, <span class="kw-2">&amp;</span>new_displaced, current_transaction_justifications)<span class="question-mark">?</span>;
 
 		<span class="prelude-val">Ok</span>(())
 	}
@@ -6243,8 +6237,7 @@
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		transaction: <span class="kw-2">&amp;mut </span>Transaction&lt;DbHash&gt;,
 		finalized_number: NumberFor&lt;Block&gt;,
-		finalized_hash: Block::Hash,
-		displaced: <span class="kw-2">&amp;</span>FinalizationOutcome&lt;Block::Hash, NumberFor&lt;Block&gt;&gt;,
+		displaced: <span class="kw-2">&amp;</span>DisplacedLeavesAfterFinalization&lt;Block&gt;,
 		current_transaction_justifications: <span class="kw-2">&amp;mut </span>HashMap&lt;Block::Hash, Justification&gt;,
 	) -&gt; ClientResult&lt;()&gt; {
 		<span class="kw">match </span><span class="self">self</span>.blocks_pruning {
@@ -6272,10 +6265,10 @@
 
 					<span class="self">self</span>.prune_block(transaction, BlockId::&lt;Block&gt;::number(number))<span class="question-mark">?</span>;
 				}
-				<span class="self">self</span>.prune_displaced_branches(transaction, finalized_hash, displaced)<span class="question-mark">?</span>;
+				<span class="self">self</span>.prune_displaced_branches(transaction, displaced)<span class="question-mark">?</span>;
 			},
 			BlocksPruning::KeepFinalized =&gt; {
-				<span class="self">self</span>.prune_displaced_branches(transaction, finalized_hash, displaced)<span class="question-mark">?</span>;
+				<span class="self">self</span>.prune_displaced_branches(transaction, displaced)<span class="question-mark">?</span>;
 			},
 		}
 		<span class="prelude-val">Ok</span>(())
@@ -6284,21 +6277,13 @@
 	<span class="kw">fn </span>prune_displaced_branches(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		transaction: <span class="kw-2">&amp;mut </span>Transaction&lt;DbHash&gt;,
-		finalized: Block::Hash,
-		displaced: <span class="kw-2">&amp;</span>FinalizationOutcome&lt;Block::Hash, NumberFor&lt;Block&gt;&gt;,
+		displaced: <span class="kw-2">&amp;</span>DisplacedLeavesAfterFinalization&lt;Block&gt;,
 	) -&gt; ClientResult&lt;()&gt; {
 		<span class="comment">// Discard all blocks from displaced branches
-		</span><span class="kw">for </span>h <span class="kw">in </span>displaced.leaves() {
-			<span class="kw">match </span>sp_blockchain::tree_route(<span class="kw-2">&amp;</span><span class="self">self</span>.blockchain, <span class="kw-2">*</span>h, finalized) {
-				<span class="prelude-val">Ok</span>(tree_route) =&gt;
-					<span class="kw">for </span>r <span class="kw">in </span>tree_route.retracted() {
-						<span class="self">self</span>.blockchain.insert_persisted_body_if_pinned(r.hash)<span class="question-mark">?</span>;
-						<span class="self">self</span>.prune_block(transaction, BlockId::&lt;Block&gt;::hash(r.hash))<span class="question-mark">?</span>;
-					},
-				<span class="prelude-val">Err</span>(sp_blockchain::Error::UnknownBlock(<span class="kw">_</span>)) =&gt; {
-					<span class="comment">// Sometimes routes can't be calculated. E.g. after warp sync.
-				</span>},
-				<span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e)<span class="question-mark">?</span>,
+		</span><span class="kw">for </span>(<span class="kw">_</span>, tree_route) <span class="kw">in </span>displaced.tree_routes.iter() {
+			<span class="kw">for </span>r <span class="kw">in </span>tree_route.retracted() {
+				<span class="self">self</span>.blockchain.insert_persisted_body_if_pinned(r.hash)<span class="question-mark">?</span>;
+				<span class="self">self</span>.prune_block(transaction, BlockId::&lt;Block&gt;::hash(r.hash))<span class="question-mark">?</span>;
 			}
 		}
 		<span class="prelude-val">Ok</span>(())
@@ -6353,7 +6338,7 @@
 
 	<span class="kw">fn </span>empty_state(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RecordStatsState&lt;RefTrackingState&lt;Block&gt;, Block&gt; {
 		<span class="kw">let </span>root = EmptyStorage::&lt;Block&gt;::new().<span class="number">0</span>; <span class="comment">// Empty trie
-		</span><span class="kw">let </span>db_state = DbStateBuilder::&lt;Block&gt;::new(<span class="self">self</span>.storage.clone(), root)
+		</span><span class="kw">let </span>db_state = DbStateBuilder::&lt;HashingFor&lt;Block&gt;&gt;::new(<span class="self">self</span>.storage.clone(), root)
 			.with_optional_cache(<span class="self">self</span>.shared_trie_cache.as_ref().map(|c| c.local_cache()))
 			.build();
 		<span class="kw">let </span>state = RefTrackingState::new(db_state, <span class="self">self</span>.storage.clone(), <span class="prelude-val">None</span>);
@@ -6845,9 +6830,12 @@
 		<span class="kw">if </span>hash == <span class="self">self</span>.blockchain.meta.read().genesis_hash {
 			<span class="kw">if let </span><span class="prelude-val">Some</span>(genesis_state) = <span class="kw-2">&amp;*</span><span class="self">self</span>.genesis_state.read() {
 				<span class="kw">let </span>root = genesis_state.root;
-				<span class="kw">let </span>db_state = DbStateBuilder::&lt;Block&gt;::new(genesis_state.clone(), root)
-					.with_optional_cache(<span class="self">self</span>.shared_trie_cache.as_ref().map(|c| c.local_cache()))
-					.build();
+				<span class="kw">let </span>db_state =
+					DbStateBuilder::&lt;HashingFor&lt;Block&gt;&gt;::new(genesis_state.clone(), root)
+						.with_optional_cache(
+							<span class="self">self</span>.shared_trie_cache.as_ref().map(|c| c.local_cache()),
+						)
+						.build();
 
 				<span class="kw">let </span>state = RefTrackingState::new(db_state, <span class="self">self</span>.storage.clone(), <span class="prelude-val">None</span>);
 				<span class="kw">return </span><span class="prelude-val">Ok</span>(RecordStatsState::new(state, <span class="prelude-val">None</span>, <span class="self">self</span>.state_usage.clone()))
@@ -6866,11 +6854,12 @@
 					<span class="self">self</span>.storage.state_db.pin(<span class="kw-2">&amp;</span>hash, hdr.number.saturated_into::&lt;u64&gt;(), hint)
 				{
 					<span class="kw">let </span>root = hdr.state_root;
-					<span class="kw">let </span>db_state = DbStateBuilder::&lt;Block&gt;::new(<span class="self">self</span>.storage.clone(), root)
-						.with_optional_cache(
-							<span class="self">self</span>.shared_trie_cache.as_ref().map(|c| c.local_cache()),
-						)
-						.build();
+					<span class="kw">let </span>db_state =
+						DbStateBuilder::&lt;HashingFor&lt;Block&gt;&gt;::new(<span class="self">self</span>.storage.clone(), root)
+							.with_optional_cache(
+								<span class="self">self</span>.shared_trie_cache.as_ref().map(|c| c.local_cache()),
+							)
+							.build();
 					<span class="kw">let </span>state = RefTrackingState::new(db_state, <span class="self">self</span>.storage.clone(), <span class="prelude-val">Some</span>(hash));
 					<span class="prelude-val">Ok</span>(RecordStatsState::new(state, <span class="prelude-val">Some</span>(hash), <span class="self">self</span>.state_usage.clone()))
 				} <span class="kw">else </span>{
@@ -6941,7 +6930,7 @@
 			<span class="self">self</span>.storage.state_db.pin(<span class="kw-2">&amp;</span>hash, number.saturated_into::&lt;u64&gt;(), hint).map_err(
 				|<span class="kw">_</span>| {
 					sp_blockchain::Error::UnknownBlock(<span class="macro">format!</span>(
-						<span class="string">"State already discarded for `{:?}`"</span>,
+						<span class="string">"Unable to pin: state already discarded for `{:?}`"</span>,
 						hash
 					))
 				},
@@ -7600,7 +7589,10 @@
 
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>test_leaves_pruned_on_finality() {
-		<span class="kw">let </span>backend: Backend&lt;Block&gt; = Backend::new_test(<span class="number">10</span>, <span class="number">10</span>);
+		<span class="comment">//   / 1b - 2b - 3b
+		// 0 - 1a - 2a
+		//   \ 1c
+		</span><span class="kw">let </span>backend: Backend&lt;Block&gt; = Backend::new_test(<span class="number">10</span>, <span class="number">10</span>);
 		<span class="kw">let </span>block0 = insert_header(<span class="kw-2">&amp;</span>backend, <span class="number">0</span>, Default::default(), <span class="prelude-val">None</span>, Default::default());
 
 		<span class="kw">let </span>block1_a = insert_header(<span class="kw-2">&amp;</span>backend, <span class="number">1</span>, block0, <span class="prelude-val">None</span>, Default::default());
@@ -7611,18 +7603,16 @@
 
 		<span class="kw">let </span>block2_a = insert_header(<span class="kw-2">&amp;</span>backend, <span class="number">2</span>, block1_a, <span class="prelude-val">None</span>, Default::default());
 		<span class="kw">let </span>block2_b = insert_header(<span class="kw-2">&amp;</span>backend, <span class="number">2</span>, block1_b, <span class="prelude-val">None</span>, Default::default());
-		<span class="kw">let </span>block2_c = insert_header(<span class="kw-2">&amp;</span>backend, <span class="number">2</span>, block1_b, <span class="prelude-val">None</span>, [<span class="number">1</span>; <span class="number">32</span>].into());
 
-		<span class="macro">assert_eq!</span>(
-			backend.blockchain().leaves().unwrap(),
-			<span class="macro">vec!</span>[block2_a, block2_b, block2_c, block1_c]
-		);
+		<span class="kw">let </span>block3_b = insert_header(<span class="kw-2">&amp;</span>backend, <span class="number">3</span>, block2_b, <span class="prelude-val">None</span>, [<span class="number">3</span>; <span class="number">32</span>].into());
+
+		<span class="macro">assert_eq!</span>(backend.blockchain().leaves().unwrap(), <span class="macro">vec!</span>[block3_b, block2_a, block1_c]);
 
 		backend.finalize_block(block1_a, <span class="prelude-val">None</span>).unwrap();
 		backend.finalize_block(block2_a, <span class="prelude-val">None</span>).unwrap();
 
-		<span class="comment">// leaves at same height stay. Leaves at lower heights pruned.
-		</span><span class="macro">assert_eq!</span>(backend.blockchain().leaves().unwrap(), <span class="macro">vec!</span>[block2_a, block2_b, block2_c]);
+		<span class="comment">// All leaves are pruned that are known to not belong to canonical branch
+		</span><span class="macro">assert_eq!</span>(backend.blockchain().leaves().unwrap(), <span class="macro">vec!</span>[block2_a]);
 	}
 
 	<span class="attr">#[test]

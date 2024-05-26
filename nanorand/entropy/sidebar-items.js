@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["backup_entropy","rdseed"],"mod":["linux"]};

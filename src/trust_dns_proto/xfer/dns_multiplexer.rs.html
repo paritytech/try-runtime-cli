@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.22.0/src/xfer/dns_multiplexer.rs`."><title>dns_multiplexer.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.23.2/src/xfer/dns_multiplexer.rs`."><title>dns_multiplexer.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../trust_dns_proto/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -714,7 +714,15 @@
 <a href="#712" id="712">712</a>
 <a href="#713" id="713">713</a>
 <a href="#714" id="714">714</a>
-</pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2018 Benjamin Fry &lt;benjaminfry@me.com&gt;
+<a href="#715" id="715">715</a>
+<a href="#716" id="716">716</a>
+<a href="#717" id="717">717</a>
+<a href="#718" id="718">718</a>
+<a href="#719" id="719">719</a>
+<a href="#720" id="720">720</a>
+<a href="#721" id="721">721</a>
+<a href="#722" id="722">722</a>
+</pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2023 Benjamin Fry &lt;benjaminfry@me.com&gt;
 //
 // Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0&gt; or the MIT license &lt;LICENSE-MIT or
@@ -723,31 +731,39 @@
 
 </span><span class="doccomment">//! `DnsMultiplexer` and associated types implement the state machines for sending DNS messages while using the underlying streams.
 
-</span><span class="kw">use </span>std::borrow::Borrow;
-<span class="kw">use </span>std::collections::hash_map::Entry;
-<span class="kw">use </span>std::collections::HashMap;
-<span class="kw">use </span>std::fmt::{<span class="self">self</span>, Display};
-<span class="kw">use </span>std::marker::Unpin;
-<span class="kw">use </span>std::pin::Pin;
-<span class="kw">use </span>std::sync::Arc;
-<span class="kw">use </span>std::task::{Context, Poll};
-<span class="kw">use </span>std::time::{Duration, SystemTime, UNIX_EPOCH};
+</span><span class="kw">use </span>std::{
+    borrow::Borrow,
+    collections::{hash_map::Entry, HashMap},
+    fmt::{<span class="self">self</span>, Display},
+    marker::Unpin,
+    pin::Pin,
+    sync::Arc,
+    task::{Context, Poll},
+    time::{Duration, SystemTime, UNIX_EPOCH},
+};
 
 <span class="kw">use </span>futures_channel::mpsc;
-<span class="kw">use </span>futures_util::stream::{Stream, StreamExt};
-<span class="kw">use </span>futures_util::{future::Future, ready, FutureExt};
-<span class="kw">use </span>rand;
-<span class="kw">use </span>rand::distributions::{Distribution, Standard};
-<span class="kw">use </span>tracing::{debug, warn};
-
-<span class="kw">use </span><span class="kw">crate</span>::error::<span class="kw-2">*</span>;
-<span class="kw">use </span><span class="kw">crate</span>::op::{MessageFinalizer, MessageVerifier};
-<span class="kw">use </span><span class="kw">crate</span>::xfer::{
-    ignore_send, BufDnsStreamHandle, DnsClientStream, DnsRequest, DnsRequestSender, DnsResponse,
-    DnsResponseStream, SerialMessage, CHANNEL_BUFFER_SIZE,
+<span class="kw">use </span>futures_util::{
+    future::Future,
+    ready,
+    stream::{Stream, StreamExt},
+    FutureExt,
 };
-<span class="kw">use </span><span class="kw">crate</span>::DnsStreamHandle;
-<span class="kw">use </span><span class="kw">crate</span>::Time;
+<span class="kw">use </span>rand::{
+    <span class="self">self</span>,
+    distributions::{Distribution, Standard},
+};
+<span class="kw">use </span>tracing::debug;
+
+<span class="kw">use crate</span>::{
+    error::{ProtoError, ProtoErrorKind},
+    op::{MessageFinalizer, MessageVerifier},
+    xfer::{
+        ignore_send, BufDnsStreamHandle, DnsClientStream, DnsRequest, DnsRequestSender,
+        DnsResponse, DnsResponseStream, SerialMessage, CHANNEL_BUFFER_SIZE,
+    },
+    DnsStreamHandle, Time,
+};
 
 <span class="kw">const </span>QOS_MAX_RECEIVE_MSGS: usize = <span class="number">100</span>; <span class="comment">// max number of messages to receive from the UDP socket
 
@@ -914,11 +930,7 @@
 
     <span class="doccomment">/// Closes all outstanding completes with a closed stream error
     </span><span class="kw">fn </span>stream_closed_close_all(<span class="kw-2">&amp;mut </span><span class="self">self</span>, error: ProtoError) {
-        <span class="kw">if </span>!<span class="self">self</span>.active_requests.is_empty() {
-            <span class="macro">warn!</span>(<span class="string">"stream {} error: {}"</span>, <span class="self">self</span>.stream, error);
-        } <span class="kw">else </span>{
-            <span class="macro">debug!</span>(<span class="string">"stream {} error: {}"</span>, <span class="self">self</span>.stream, error);
-        }
+        <span class="macro">debug!</span>(error = error.as_dyn(), stream = %<span class="self">self</span>.stream);
 
         <span class="kw">for </span>(<span class="kw">_</span>, active_request) <span class="kw">in </span><span class="self">self</span>.active_requests.drain() {
             <span class="comment">// complete the request, it's failed...
@@ -1030,7 +1042,7 @@
 
         <span class="kw">match </span>request.to_vec() {
             <span class="prelude-val">Ok</span>(buffer) =&gt; {
-                <span class="macro">debug!</span>(<span class="string">"sending message id: {}"</span>, active_request.request_id());
+                <span class="macro">debug!</span>(id = %active_request.request_id(), <span class="string">"sending message"</span>);
                 <span class="kw">let </span>serial_message = SerialMessage::new(buffer, <span class="self">self</span>.stream.name_server_addr());
 
                 <span class="macro">debug!</span>(
@@ -1051,10 +1063,10 @@
             }
             <span class="prelude-val">Err</span>(e) =&gt; {
                 <span class="macro">debug!</span>(
-                    <span class="string">"error message id: {} error: {}"</span>,
-                    active_request.request_id(),
-                    e
-                );
+                    id = %active_request.request_id(),
+                    error = e.as_dyn(),
+                    <span class="string">"error message"
+                </span>);
                 <span class="comment">// complete with the error, don't add to the map of active requests
                 </span><span class="kw">return </span>e.into();
             }
@@ -1110,15 +1122,15 @@
                                             .try_send(verifier(buffer.bytes())),
                                     );
                                 } <span class="kw">else </span>{
-                                    ignore_send(
-                                        active_request.completion.try_send(<span class="prelude-val">Ok</span>(message.into())),
-                                    );
+                                    ignore_send(active_request.completion.try_send(<span class="prelude-val">Ok</span>(
+                                        DnsResponse::new(message, buffer.into_parts().<span class="number">0</span>),
+                                    )));
                                 }
                             }
                             Entry::Vacant(..) =&gt; <span class="macro">debug!</span>(<span class="string">"unexpected request_id: {}"</span>, message.id()),
                         },
                         <span class="comment">// TODO: return src address for diagnostics
-                        </span><span class="prelude-val">Err</span>(e) =&gt; <span class="macro">debug!</span>(<span class="string">"error decoding message: {}"</span>, e),
+                        </span><span class="prelude-val">Err</span>(error) =&gt; <span class="macro">debug!</span>(error = error.as_dyn(), <span class="string">"error decoding message"</span>),
                     }
                 }
                 Poll::Ready(err) =&gt; {
@@ -1265,7 +1277,7 @@
                 .set_ttl(<span class="number">86400</span>)
                 .set_rr_type(RecordType::A)
                 .set_dns_class(DNSClass::IN)
-                .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">34</span>))))
+                .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">34</span>).into())))
                 .clone(),
         );
         (
@@ -1315,34 +1327,38 @@
                 .set_ttl(<span class="number">86400</span>)
                 .set_rr_type(RecordType::NS)
                 .set_dns_class(DNSClass::IN)
-                .set_data(<span class="prelude-val">Some</span>(RData::NS(
-                    Name::parse(<span class="string">"a.iana-servers.net."</span>, <span class="prelude-val">None</span>).unwrap(),
-                )))
+                .set_data(<span class="prelude-val">Some</span>(RData::NS(NS(Name::parse(
+                    <span class="string">"a.iana-servers.net."</span>,
+                    <span class="prelude-val">None</span>,
+                )
+                .unwrap()))))
                 .clone(),
             Record::new()
                 .set_name(origin.clone())
                 .set_ttl(<span class="number">86400</span>)
                 .set_rr_type(RecordType::NS)
                 .set_dns_class(DNSClass::IN)
-                .set_data(<span class="prelude-val">Some</span>(RData::NS(
-                    Name::parse(<span class="string">"b.iana-servers.net."</span>, <span class="prelude-val">None</span>).unwrap(),
-                )))
+                .set_data(<span class="prelude-val">Some</span>(RData::NS(NS(Name::parse(
+                    <span class="string">"b.iana-servers.net."</span>,
+                    <span class="prelude-val">None</span>,
+                )
+                .unwrap()))))
                 .clone(),
             Record::new()
                 .set_name(origin.clone())
                 .set_ttl(<span class="number">86400</span>)
                 .set_rr_type(RecordType::A)
                 .set_dns_class(DNSClass::IN)
-                .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">34</span>))))
+                .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">34</span>).into())))
                 .clone(),
             Record::new()
                 .set_name(origin)
                 .set_ttl(<span class="number">86400</span>)
                 .set_rr_type(RecordType::AAAA)
                 .set_dns_class(DNSClass::IN)
-                .set_data(<span class="prelude-val">Some</span>(RData::AAAA(Ipv6Addr::new(
-                    <span class="number">0x2606</span>, <span class="number">0x2800</span>, <span class="number">0x220</span>, <span class="number">0x1</span>, <span class="number">0x248</span>, <span class="number">0x1893</span>, <span class="number">0x25c8</span>, <span class="number">0x1946</span>,
-                ))))
+                .set_data(<span class="prelude-val">Some</span>(RData::AAAA(
+                    Ipv6Addr::new(<span class="number">0x2606</span>, <span class="number">0x2800</span>, <span class="number">0x220</span>, <span class="number">0x1</span>, <span class="number">0x248</span>, <span class="number">0x1893</span>, <span class="number">0x25c8</span>, <span class="number">0x1946</span>).into(),
+                )))
                 .clone(),
             soa,
         ]

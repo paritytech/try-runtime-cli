@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["MaybeHttpsStream"],"mod":["acceptor","builderstates"],"struct":["HttpsConnector","HttpsConnectorBuilder"],"trait":["ConfigBuilderExt"]};
+window.SIDEBAR_ITEMS = {"enum":["MaybeHttpsStream"],"mod":["builderstates"],"struct":["HttpsConnector","HttpsConnectorBuilder"],"trait":["ConfigBuilderExt"]};

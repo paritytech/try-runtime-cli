@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/primitives/arithmetic/src/per_things.rs`."><title>per_things.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_arithmetic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/primitives/arithmetic/src/per_things.rs`."><title>per_things.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_arithmetic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../sp_arithmetic/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -1872,6 +1872,41 @@
 <a href="#1870" id="1870">1870</a>
 <a href="#1871" id="1871">1871</a>
 <a href="#1872" id="1872">1872</a>
+<a href="#1873" id="1873">1873</a>
+<a href="#1874" id="1874">1874</a>
+<a href="#1875" id="1875">1875</a>
+<a href="#1876" id="1876">1876</a>
+<a href="#1877" id="1877">1877</a>
+<a href="#1878" id="1878">1878</a>
+<a href="#1879" id="1879">1879</a>
+<a href="#1880" id="1880">1880</a>
+<a href="#1881" id="1881">1881</a>
+<a href="#1882" id="1882">1882</a>
+<a href="#1883" id="1883">1883</a>
+<a href="#1884" id="1884">1884</a>
+<a href="#1885" id="1885">1885</a>
+<a href="#1886" id="1886">1886</a>
+<a href="#1887" id="1887">1887</a>
+<a href="#1888" id="1888">1888</a>
+<a href="#1889" id="1889">1889</a>
+<a href="#1890" id="1890">1890</a>
+<a href="#1891" id="1891">1891</a>
+<a href="#1892" id="1892">1892</a>
+<a href="#1893" id="1893">1893</a>
+<a href="#1894" id="1894">1894</a>
+<a href="#1895" id="1895">1895</a>
+<a href="#1896" id="1896">1896</a>
+<a href="#1897" id="1897">1897</a>
+<a href="#1898" id="1898">1898</a>
+<a href="#1899" id="1899">1899</a>
+<a href="#1900" id="1900">1900</a>
+<a href="#1901" id="1901">1901</a>
+<a href="#1902" id="1902">1902</a>
+<a href="#1903" id="1903">1903</a>
+<a href="#1904" id="1904">1904</a>
+<a href="#1905" id="1905">1905</a>
+<a href="#1906" id="1906">1906</a>
+<a href="#1907" id="1907">1907</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1889,7 +1924,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-</span><span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
+</span><span class="doccomment">//! Types that implement [`PerThing`](PerThing) can be used as a floating-point alternative for
+//! numbers that operate within the realm of `[0, 1]`. The primary types may you encounter in
+//! Substrate would be the following:
+//! - [`Percent`](Percent) - parts of one hundred.
+//! - [`Permill`](Permill) - parts of a million.
+//! - [`Perbill`](Perbill) - parts of a billion.
+//!
+//! In use, you may see them being used as follows:
+//!
+//! &gt; **[`Perbill`](Perbill), parts of a billion**
+</span><span class="attr">#![doc = <span class="macro">docify::embed!</span>(<span class="string">"./src/lib.rs"</span>, perbill_example)]
+</span><span class="doccomment">//! &gt; **[`Percent`](Percent), parts of a hundred**
+</span><span class="attr">#![doc = <span class="macro">docify::embed!</span>(<span class="string">"./src/lib.rs"</span>, percent_example)]
+</span><span class="doccomment">//!
+//! Note that `Percent` is represented as a _rounded down_, fixed point
+//! number (see the example above). Unlike primitive types, types that implement
+//! [`PerThing`](PerThing) will also not overflow, and are therefore safe to use.
+//! They adopt the same behavior that a saturated calculation would provide, meaning that if one is
+//! to go over "100%", it wouldn't overflow, but simply stop at the upper or lower bound.
+//!
+//! For use cases which require precision beyond the range of `[0, 1]`, there are fixed-point types
+//! which can be used.
+//!
+//! Each of these can be used to construct and represent ratios within our runtime.
+//! You will find types like [`Perbill`](Perbill) being used often in pallet
+//! development.  `pallet_referenda` is a good example of a pallet which makes good use of fixed
+//! point arithmetic, as it relies on representing various curves and thresholds relating to
+//! governance.
+//!
+//! #### Fixed Point Arithmetic with [`PerThing`](PerThing)
+//!
+//! As stated, one can also perform mathematics using these types directly. For example, finding the
+//! percentage of a particular item:
+
+</span><span class="attr">#![doc = <span class="macro">docify::embed!</span>(<span class="string">"./src/lib.rs"</span>, percent_mult)]
+
+#[cfg(feature = <span class="string">"serde"</span>)]
 </span><span class="kw">use </span>serde::{Deserialize, Serialize};
 
 <span class="kw">use </span><span class="kw">crate</span>::traits::{
@@ -1897,12 +1968,11 @@
 	Saturating, UniqueSaturatedInto, Unsigned, Zero,
 };
 <span class="kw">use </span>codec::{CompactAs, Encode};
-<span class="kw">use </span>num_traits::{Pow, SaturatingAdd, SaturatingSub};
-<span class="kw">use </span>sp_std::{
+<span class="kw">use </span>core::{
 	fmt, ops,
 	ops::{Add, Sub},
-	prelude::<span class="kw-2">*</span>,
 };
+<span class="kw">use </span>num_traits::{Pow, SaturatingAdd, SaturatingSub};
 
 <span class="doccomment">/// Get the inner type of a `PerThing`.
 </span><span class="kw">pub type </span>InnerOf&lt;P&gt; = &lt;P <span class="kw">as </span>PerThing&gt;::Inner;
@@ -2288,7 +2358,7 @@
 }
 
 <span class="doccomment">/// The rounding method to use for unsigned quantities.
-</span><span class="attr">#[derive(Copy, Clone, sp_std::fmt::Debug)]
+</span><span class="attr">#[derive(Copy, Clone, core::fmt::Debug)]
 </span><span class="kw">pub enum </span>Rounding {
 	<span class="comment">// Towards infinity.
 	</span>Up,
@@ -2301,7 +2371,7 @@
 }
 
 <span class="doccomment">/// The rounding method to use.
-</span><span class="attr">#[derive(Copy, Clone, sp_std::fmt::Debug)]
+</span><span class="attr">#[derive(Copy, Clone, core::fmt::Debug)]
 </span><span class="kw">pub enum </span>SignedRounding {
 	<span class="comment">// Towards positive infinity.
 	</span>High,
@@ -2454,8 +2524,8 @@
 		}
 
 		<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-		</span><span class="kw">impl </span>sp_std::fmt::Debug <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
-			<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>std::fmt::Formatter) -&gt; std::fmt::Result {
+		</span><span class="kw">impl </span>core::fmt::Debug <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
+			<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
 				<span class="kw">if </span><span class="macro-nonterminal">$max </span>== &lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt;<span class="macro-nonterminal">::max_value</span>() {
 					<span class="comment">// Not a power of ten: show as N/D and approx %
 					</span><span class="kw">let </span>pc = (<span class="self">self</span>.<span class="number">0 </span><span class="kw">as </span>f64) / (<span class="self">self</span>.<span class="number">0 </span><span class="kw">as </span>f64) * <span class="number">100f64</span>;
@@ -2480,8 +2550,8 @@
 		}
 
 		<span class="attr">#[cfg(not(feature = <span class="string">"std"</span>))]
-		</span><span class="kw">impl </span>sp_std::fmt::Debug <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
-			<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>sp_std::fmt::Formatter) -&gt; sp_std::fmt::Result {
+		</span><span class="kw">impl </span>core::fmt::Debug <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
+			<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
 				<span class="kw">if </span><span class="macro-nonterminal">$max </span>== &lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt;<span class="macro-nonterminal">::max_value</span>() {
 					<span class="comment">// Not a power of ten: show as N/D and approx %
 					</span><span class="macro">write!</span>(fmt, <span class="string">"{}/{}"</span>, <span class="self">self</span>.<span class="number">0</span>, <span class="macro-nonterminal">$max</span>)

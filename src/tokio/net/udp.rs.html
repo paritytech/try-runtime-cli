@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tokio-1.35.1/src/net/udp.rs`."><title>udp.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="tokio" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tokio-1.37.0/src/net/udp.rs`."><title>udp.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="tokio" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../tokio/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -2046,6 +2046,9 @@
 <a href="#2044" id="2044">2044</a>
 <a href="#2045" id="2045">2045</a>
 <a href="#2046" id="2046">2046</a>
+<a href="#2047" id="2047">2047</a>
+<a href="#2048" id="2048">2048</a>
+<a href="#2049" id="2049">2049</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::io::{Interest, PollEvented, ReadBuf, Ready};
 <span class="kw">use </span><span class="kw">crate</span>::net::{to_socket_addrs, ToSocketAddrs};
 
@@ -2228,7 +2231,7 @@
     /// This function is intended to be used to wrap a UDP socket from the
     /// standard library in the Tokio equivalent.
     ///
-    /// This can be used in conjunction with socket2's `Socket` interface to
+    /// This can be used in conjunction with `socket2`'s `Socket` interface to
     /// configure a socket before it's handed off, such as setting options like
     /// `reuse_address` or binding to multiple addresses.
     ///
@@ -2361,7 +2364,7 @@
     }
 
     <span class="doccomment">/// Connects the UDP socket setting the default destination for send() and
-    /// limiting packets that are read via recv from the address specified in
+    /// limiting packets that are read via `recv` from the address specified in
     /// `addr`.
     ///
     /// # Example
@@ -2406,7 +2409,7 @@
     <span class="doccomment">/// Waits for any of the requested ready states.
     ///
     /// This function is usually paired with `try_recv()` or `try_send()`. It
-    /// can be used to concurrently recv / send to the same socket on a single
+    /// can be used to concurrently `recv` / `send` to the same socket on a single
     /// task without splitting the socket.
     ///
     /// The function may complete without the socket being ready. This is a
@@ -2834,7 +2837,7 @@
     /// The [`connect`] method will connect this socket to a remote address. This method
     /// resolves to an error if the socket is not connected.
     ///
-    /// Note that on multiple calls to a `poll_*` method in the recv direction, only the
+    /// Note that on multiple calls to a `poll_*` method in the `recv` direction, only the
     /// `Waker` from the `Context` passed to the most recent call will be scheduled to
     /// receive a wakeup.
     ///
@@ -2852,7 +2855,8 @@
     ///
     /// [`connect`]: method@Self::connect
     </span><span class="kw">pub fn </span>poll_recv(<span class="kw-2">&amp;</span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;, buf: <span class="kw-2">&amp;mut </span>ReadBuf&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;io::Result&lt;()&gt;&gt; {
-        <span class="kw">let </span>n = <span class="macro">ready!</span>(<span class="self">self</span>.io.registration().poll_read_io(cx, || {
+        <span class="attr">#[allow(clippy::blocks_in_conditions)]
+        </span><span class="kw">let </span>n = <span class="macro">ready!</span>(<span class="self">self</span>.io.registration().poll_read_io(cx, || {
             <span class="comment">// Safety: will not read the maybe uninitialized bytes.
             </span><span class="kw">let </span>b = <span class="kw">unsafe </span>{
                 <span class="kw-2">&amp;mut *</span>(buf.unfilled_mut() <span class="kw">as </span><span class="kw-2">*mut </span>[std::mem::MaybeUninit&lt;u8&gt;] <span class="kw">as </span><span class="kw-2">*mut </span>[u8])
@@ -2873,7 +2877,7 @@
     /// address to which it is connected. On success, returns the number of
     /// bytes read.
     ///
-    /// This method must be called with valid byte array buf of sufficient size
+    /// This method must be called with valid byte array `buf` of sufficient size
     /// to hold the message bytes. If a message is too long to fit in the
     /// supplied buffer, excess bytes may be discarded.
     ///
@@ -2929,7 +2933,7 @@
         <span class="doccomment">/// Tries to receive data from the stream into the provided buffer, advancing the
         /// buffer's internal cursor, returning how many bytes were read.
         ///
-        /// This method must be called with valid byte array buf of sufficient size
+        /// This method must be called with valid byte array `buf` of sufficient size
         /// to hold the message bytes. If a message is too long to fit in the
         /// supplied buffer, excess bytes may be discarded.
         ///
@@ -2997,7 +3001,7 @@
         /// to which it is connected, advancing the buffer's internal cursor,
         /// returning how many bytes were read.
         ///
-        /// This method must be called with valid byte array buf of sufficient size
+        /// This method must be called with valid byte array `buf` of sufficient size
         /// to hold the message bytes. If a message is too long to fit in the
         /// supplied buffer, excess bytes may be discarded.
         ///
@@ -3044,7 +3048,7 @@
         <span class="doccomment">/// Tries to receive a single datagram message on the socket. On success,
         /// returns the number of bytes read and the origin.
         ///
-        /// This method must be called with valid byte array buf of sufficient size
+        /// This method must be called with valid byte array `buf` of sufficient size
         /// to hold the message bytes. If a message is too long to fit in the
         /// supplied buffer, excess bytes may be discarded.
         ///
@@ -3119,7 +3123,7 @@
         <span class="doccomment">/// Receives a single datagram message on the socket, advancing the
         /// buffer's internal cursor, returning how many bytes were read and the origin.
         ///
-        /// This method must be called with valid byte array buf of sufficient size
+        /// This method must be called with valid byte array `buf` of sufficient size
         /// to hold the message bytes. If a message is too long to fit in the
         /// supplied buffer, excess bytes may be discarded.
         ///
@@ -3359,7 +3363,7 @@
 
     <span class="doccomment">/// Attempts to receive a single datagram on the socket.
     ///
-    /// Note that on multiple calls to a `poll_*` method in the recv direction, only the
+    /// Note that on multiple calls to a `poll_*` method in the `recv` direction, only the
     /// `Waker` from the `Context` passed to the most recent call will be scheduled to
     /// receive a wakeup.
     ///
@@ -3388,7 +3392,8 @@
         cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;,
         buf: <span class="kw-2">&amp;mut </span>ReadBuf&lt;<span class="lifetime">'_</span>&gt;,
     ) -&gt; Poll&lt;io::Result&lt;SocketAddr&gt;&gt; {
-        <span class="kw">let </span>(n, addr) = <span class="macro">ready!</span>(<span class="self">self</span>.io.registration().poll_read_io(cx, || {
+        <span class="attr">#[allow(clippy::blocks_in_conditions)]
+        </span><span class="kw">let </span>(n, addr) = <span class="macro">ready!</span>(<span class="self">self</span>.io.registration().poll_read_io(cx, || {
             <span class="comment">// Safety: will not read the maybe uninitialized bytes.
             </span><span class="kw">let </span>b = <span class="kw">unsafe </span>{
                 <span class="kw-2">&amp;mut *</span>(buf.unfilled_mut() <span class="kw">as </span><span class="kw-2">*mut </span>[std::mem::MaybeUninit&lt;u8&gt;] <span class="kw">as </span><span class="kw-2">*mut </span>[u8])
@@ -3408,7 +3413,7 @@
     <span class="doccomment">/// Tries to receive a single datagram message on the socket. On success,
     /// returns the number of bytes read and the origin.
     ///
-    /// This method must be called with valid byte array buf of sufficient size
+    /// This method must be called with valid byte array `buf` of sufficient size
     /// to hold the message bytes. If a message is too long to fit in the
     /// supplied buffer, excess bytes may be discarded.
     ///
@@ -3555,7 +3560,7 @@
     ///
     /// On Windows, if the data is larger than the buffer specified, the buffer
     /// is filled with the first part of the data, and `peek_from` returns the error
-    /// WSAEMSGSIZE(10040). The excess data is lost.
+    /// `WSAEMSGSIZE(10040)`. The excess data is lost.
     /// Make sure to always use a sufficiently large buffer to hold the
     /// maximum UDP packet size, which can be up to 65536 bytes in size.
     ///
@@ -3603,13 +3608,13 @@
     ///
     /// # Notes
     ///
-    /// Note that on multiple calls to a `poll_*` method in the recv direction, only the
+    /// Note that on multiple calls to a `poll_*` method in the `recv` direction, only the
     /// `Waker` from the `Context` passed to the most recent call will be scheduled to
     /// receive a wakeup
     ///
     /// On Windows, if the data is larger than the buffer specified, the buffer
     /// is filled with the first part of the data, and peek returns the error
-    /// WSAEMSGSIZE(10040). The excess data is lost.
+    /// `WSAEMSGSIZE(10040)`. The excess data is lost.
     /// Make sure to always use a sufficiently large buffer to hold the
     /// maximum UDP packet size, which can be up to 65536 bytes in size.
     ///
@@ -3643,7 +3648,8 @@
         cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;,
         buf: <span class="kw-2">&amp;mut </span>ReadBuf&lt;<span class="lifetime">'_</span>&gt;,
     ) -&gt; Poll&lt;io::Result&lt;SocketAddr&gt;&gt; {
-        <span class="kw">let </span>(n, addr) = <span class="macro">ready!</span>(<span class="self">self</span>.io.registration().poll_read_io(cx, || {
+        <span class="attr">#[allow(clippy::blocks_in_conditions)]
+        </span><span class="kw">let </span>(n, addr) = <span class="macro">ready!</span>(<span class="self">self</span>.io.registration().poll_read_io(cx, || {
             <span class="comment">// Safety: will not read the maybe uninitialized bytes.
             </span><span class="kw">let </span>b = <span class="kw">unsafe </span>{
                 <span class="kw-2">&amp;mut *</span>(buf.unfilled_mut() <span class="kw">as </span><span class="kw-2">*mut </span>[std::mem::MaybeUninit&lt;u8&gt;] <span class="kw">as </span><span class="kw-2">*mut </span>[u8])
@@ -3671,7 +3677,7 @@
     ///
     /// On Windows, if the data is larger than the buffer specified, the buffer
     /// is filled with the first part of the data, and peek returns the error
-    /// WSAEMSGSIZE(10040). The excess data is lost.
+    /// `WSAEMSGSIZE(10040)`. The excess data is lost.
     /// Make sure to always use a sufficiently large buffer to hold the
     /// maximum UDP packet size, which can be up to 65536 bytes in size.
     ///
@@ -3722,7 +3728,7 @@
     ///
     /// # Notes
     ///
-    /// Note that on multiple calls to a `poll_*` method in the recv direction, only the
+    /// Note that on multiple calls to a `poll_*` method in the `recv` direction, only the
     /// `Waker` from the `Context` passed to the most recent call will be scheduled to
     /// receive a wakeup.
     ///

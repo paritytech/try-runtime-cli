@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/client/tracing/src/logging/event_format.rs`."><title>event_format.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_tracing" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/tracing/src/logging/event_format.rs`."><title>event_format.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_tracing" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../sc_tracing/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -318,49 +318,6 @@
 <a href="#316" id="316">316</a>
 <a href="#317" id="317">317</a>
 <a href="#318" id="318">318</a>
-<a href="#319" id="319">319</a>
-<a href="#320" id="320">320</a>
-<a href="#321" id="321">321</a>
-<a href="#322" id="322">322</a>
-<a href="#323" id="323">323</a>
-<a href="#324" id="324">324</a>
-<a href="#325" id="325">325</a>
-<a href="#326" id="326">326</a>
-<a href="#327" id="327">327</a>
-<a href="#328" id="328">328</a>
-<a href="#329" id="329">329</a>
-<a href="#330" id="330">330</a>
-<a href="#331" id="331">331</a>
-<a href="#332" id="332">332</a>
-<a href="#333" id="333">333</a>
-<a href="#334" id="334">334</a>
-<a href="#335" id="335">335</a>
-<a href="#336" id="336">336</a>
-<a href="#337" id="337">337</a>
-<a href="#338" id="338">338</a>
-<a href="#339" id="339">339</a>
-<a href="#340" id="340">340</a>
-<a href="#341" id="341">341</a>
-<a href="#342" id="342">342</a>
-<a href="#343" id="343">343</a>
-<a href="#344" id="344">344</a>
-<a href="#345" id="345">345</a>
-<a href="#346" id="346">346</a>
-<a href="#347" id="347">347</a>
-<a href="#348" id="348">348</a>
-<a href="#349" id="349">349</a>
-<a href="#350" id="350">350</a>
-<a href="#351" id="351">351</a>
-<a href="#352" id="352">352</a>
-<a href="#353" id="353">353</a>
-<a href="#354" id="354">354</a>
-<a href="#355" id="355">355</a>
-<a href="#356" id="356">356</a>
-<a href="#357" id="357">357</a>
-<a href="#358" id="358">358</a>
-<a href="#359" id="359">359</a>
-<a href="#360" id="360">360</a>
-<a href="#361" id="361">361</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -386,10 +343,8 @@
 <span class="kw">use </span>tracing::{Event, Level, Subscriber};
 <span class="kw">use </span>tracing_log::NormalizeEvent;
 <span class="kw">use </span>tracing_subscriber::{
-	field::RecordFields,
-	fmt::{time::FormatTime, FmtContext, FormatEvent, FormatFields},
-	layer::Context,
-	registry::{LookupSpan, SpanRef},
+	fmt::{format, time::FormatTime, FmtContext, FormatEvent, FormatFields},
+	registry::LookupSpan,
 };
 
 <span class="doccomment">/// A pre-configured event formatter.
@@ -415,23 +370,23 @@
 	<span class="comment">// NOTE: the following code took inspiration from tracing-subscriber
 	//
 	//       https://github.com/tokio-rs/tracing/blob/2f59b32/tracing-subscriber/src/fmt/format/mod.rs#L449
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>format_event_custom&lt;<span class="lifetime">'b</span>, S, N&gt;(
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>format_event_custom&lt;<span class="lifetime">'b</span>, <span class="lifetime">'w</span>, S, N&gt;(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		ctx: CustomFmtContext&lt;<span class="lifetime">'b</span>, S, N&gt;,
-		writer: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>fmt::Write,
+		ctx: <span class="kw-2">&amp;</span>FmtContext&lt;<span class="lifetime">'b</span>, S, N&gt;,
+		writer: format::Writer&lt;<span class="lifetime">'w</span>&gt;,
 		event: <span class="kw-2">&amp;</span>Event,
 	) -&gt; fmt::Result
 	<span class="kw">where
 		</span>S: Subscriber + <span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; LookupSpan&lt;<span class="lifetime">'a</span>&gt;,
 		N: <span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; FormatFields&lt;<span class="lifetime">'a</span>&gt; + <span class="lifetime">'static</span>,
 	{
-		<span class="kw">let </span>writer = <span class="kw-2">&amp;mut </span>ControlCodeSanitizer::new(!<span class="self">self</span>.enable_color, writer);
+		<span class="kw">let </span><span class="kw-2">mut </span>writer = <span class="kw-2">&amp;mut </span>ControlCodeSanitizer::new(!<span class="self">self</span>.enable_color, writer);
 		<span class="kw">let </span>normalized_meta = event.normalized_metadata();
 		<span class="kw">let </span>meta = normalized_meta.as_ref().unwrap_or_else(|| event.metadata());
-		time::write(<span class="kw-2">&amp;</span><span class="self">self</span>.timer, writer, <span class="self">self</span>.enable_color)<span class="question-mark">?</span>;
+		time::write(<span class="kw-2">&amp;</span><span class="self">self</span>.timer, <span class="kw-2">&amp;mut </span>format::Writer::new(<span class="kw-2">&amp;mut </span>writer), <span class="self">self</span>.enable_color)<span class="question-mark">?</span>;
 
 		<span class="kw">if </span><span class="self">self</span>.display_level {
-			<span class="kw">let </span>fmt_level = { FmtLevel::new(meta.level(), <span class="self">self</span>.enable_color) };
+			<span class="kw">let </span>fmt_level = FmtLevel::new(meta.level(), <span class="self">self</span>.enable_color);
 			<span class="macro">write!</span>(writer, <span class="string">"{} "</span>, fmt_level)<span class="question-mark">?</span>;
 		}
 
@@ -471,7 +426,7 @@
 			writer.sanitize = <span class="bool-val">true</span>;
 		}
 
-		ctx.format_fields(writer, event)<span class="question-mark">?</span>;
+		ctx.format_fields(format::Writer::new(writer), event)<span class="question-mark">?</span>;
 		<span class="macro">writeln!</span>(writer)<span class="question-mark">?</span>;
 
 		writer.flush()
@@ -490,7 +445,7 @@
 	<span class="kw">fn </span>format_event(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		ctx: <span class="kw-2">&amp;</span>FmtContext&lt;S, N&gt;,
-		writer: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>fmt::Write,
+		<span class="kw-2">mut </span>writer: format::Writer&lt;<span class="lifetime">'_</span>&gt;,
 		event: <span class="kw-2">&amp;</span>Event,
 	) -&gt; fmt::Result {
 		<span class="kw">if </span><span class="self">self</span>.dup_to_stdout &amp;&amp;
@@ -499,12 +454,13 @@
 				event.metadata().level() == <span class="kw-2">&amp;</span>Level::ERROR)
 		{
 			<span class="kw">let </span><span class="kw-2">mut </span>out = String::new();
-			<span class="self">self</span>.format_event_custom(CustomFmtContext::FmtContext(ctx), <span class="kw-2">&amp;mut </span>out, event)<span class="question-mark">?</span>;
+			<span class="kw">let </span>buf_writer = format::Writer::new(<span class="kw-2">&amp;mut </span>out);
+			<span class="self">self</span>.format_event_custom(ctx, buf_writer, event)<span class="question-mark">?</span>;
 			writer.write_str(<span class="kw-2">&amp;</span>out)<span class="question-mark">?</span>;
 			<span class="macro">print!</span>(<span class="string">"{}"</span>, out);
 			<span class="prelude-val">Ok</span>(())
 		} <span class="kw">else </span>{
-			<span class="self">self</span>.format_event_custom(CustomFmtContext::FmtContext(ctx), writer, event)
+			<span class="self">self</span>.format_event_custom(ctx, writer, event)
 		}
 	}
 }
@@ -600,9 +556,13 @@
 </span><span class="kw">mod </span>time {
 	<span class="kw">use </span>ansi_term::Style;
 	<span class="kw">use </span>std::fmt;
-	<span class="kw">use </span>tracing_subscriber::fmt::time::FormatTime;
+	<span class="kw">use </span>tracing_subscriber::fmt::{format, time::FormatTime};
 
-	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>write&lt;T&gt;(timer: T, writer: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>fmt::Write, with_ansi: bool) -&gt; fmt::Result
+	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>write&lt;T&gt;(
+		timer: T,
+		writer: <span class="kw-2">&amp;mut </span>format::Writer&lt;<span class="lifetime">'_</span>&gt;,
+		with_ansi: bool,
+	) -&gt; fmt::Result
 	<span class="kw">where
 		</span>T: FormatTime,
 	{
@@ -619,52 +579,6 @@
 	}
 }
 
-<span class="comment">// NOTE: `FmtContext`'s fields are private. This enum allows us to make a `format_event` function
-//       that works with `FmtContext` or `Context` with `FormatFields`
-</span><span class="attr">#[allow(dead_code)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>CustomFmtContext&lt;<span class="lifetime">'a</span>, S, N&gt; {
-	FmtContext(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>FmtContext&lt;<span class="lifetime">'a</span>, S, N&gt;),
-	ContextWithFormatFields(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>Context&lt;<span class="lifetime">'a</span>, S&gt;, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>N),
-}
-
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, S, N&gt; FormatFields&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span>CustomFmtContext&lt;<span class="lifetime">'a</span>, S, N&gt;
-<span class="kw">where
-	</span>S: Subscriber + <span class="kw">for</span>&lt;<span class="lifetime">'lookup</span>&gt; LookupSpan&lt;<span class="lifetime">'lookup</span>&gt;,
-	N: <span class="kw">for</span>&lt;<span class="lifetime">'writer</span>&gt; FormatFields&lt;<span class="lifetime">'writer</span>&gt; + <span class="lifetime">'static</span>,
-{
-	<span class="kw">fn </span>format_fields&lt;R: RecordFields&gt;(
-		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		writer: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span><span class="kw">dyn </span>fmt::Write,
-		fields: R,
-	) -&gt; fmt::Result {
-		<span class="kw">match </span><span class="self">self </span>{
-			CustomFmtContext::FmtContext(fmt_ctx) =&gt; fmt_ctx.format_fields(writer, fields),
-			CustomFmtContext::ContextWithFormatFields(_ctx, fmt_fields) =&gt;
-				fmt_fields.format_fields(writer, fields),
-		}
-	}
-}
-
-<span class="comment">// NOTE: the following code has been duplicated from tracing-subscriber
-//
-//       https://github.com/tokio-rs/tracing/blob/2f59b32/tracing-subscriber/src/fmt/fmt_layer.rs#L788
-</span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, S, N&gt; CustomFmtContext&lt;<span class="lifetime">'a</span>, S, N&gt;
-<span class="kw">where
-	</span>S: Subscriber + <span class="kw">for</span>&lt;<span class="lifetime">'lookup</span>&gt; LookupSpan&lt;<span class="lifetime">'lookup</span>&gt;,
-	N: <span class="kw">for</span>&lt;<span class="lifetime">'writer</span>&gt; FormatFields&lt;<span class="lifetime">'writer</span>&gt; + <span class="lifetime">'static</span>,
-{
-	<span class="attr">#[inline]
-	</span><span class="kw">pub fn </span>lookup_current(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;SpanRef&lt;<span class="lifetime">'_</span>, S&gt;&gt;
-	<span class="kw">where
-		</span>S: <span class="kw">for</span>&lt;<span class="lifetime">'lookup</span>&gt; LookupSpan&lt;<span class="lifetime">'lookup</span>&gt;,
-	{
-		<span class="kw">match </span><span class="self">self </span>{
-			CustomFmtContext::FmtContext(fmt_ctx) =&gt; fmt_ctx.lookup_current(),
-			CustomFmtContext::ContextWithFormatFields(ctx, <span class="kw">_</span>) =&gt; ctx.lookup_current(),
-		}
-	}
-}
-
 <span class="doccomment">/// A writer which (optionally) strips out terminal control codes from the logs.
 ///
 /// This is used by [`EventFormat`] to sanitize the log messages.
@@ -675,7 +589,7 @@
 </span><span class="kw">struct </span>ControlCodeSanitizer&lt;<span class="lifetime">'a</span>&gt; {
 	sanitize: bool,
 	buffer: String,
-	inner_writer: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span><span class="kw">dyn </span>fmt::Write,
+	inner_writer: format::Writer&lt;<span class="lifetime">'a</span>&gt;,
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; fmt::Write <span class="kw">for </span>ControlCodeSanitizer&lt;<span class="lifetime">'a</span>&gt; {
@@ -705,7 +619,7 @@
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; ControlCodeSanitizer&lt;<span class="lifetime">'a</span>&gt; {
 	<span class="doccomment">/// Creates a new instance.
-	</span><span class="kw">fn </span>new(sanitize: bool, inner_writer: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span><span class="kw">dyn </span>fmt::Write) -&gt; <span class="self">Self </span>{
+	</span><span class="kw">fn </span>new(sanitize: bool, inner_writer: format::Writer&lt;<span class="lifetime">'a</span>&gt;) -&gt; <span class="self">Self </span>{
 		<span class="self">Self </span>{ sanitize, inner_writer, buffer: String::new() }
 	}
 

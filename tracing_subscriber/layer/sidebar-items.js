@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["Context","Identity","Layered","Scope"],"trait":["Filter","Layer","SubscriberExt"]};
+window.SIDEBAR_ITEMS = {"struct":["Context","Identity","Layered"],"trait":["Filter","Layer","SubscriberExt"]};

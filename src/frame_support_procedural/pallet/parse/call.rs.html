@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/frame/support/procedural/src/pallet/parse/call.rs`."><title>call.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/frame/support/procedural/src/pallet/parse/call.rs`."><title>call.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../frame_support_procedural/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -450,6 +450,23 @@
 <a href="#448" id="448">448</a>
 <a href="#449" id="449">449</a>
 <a href="#450" id="450">450</a>
+<a href="#451" id="451">451</a>
+<a href="#452" id="452">452</a>
+<a href="#453" id="453">453</a>
+<a href="#454" id="454">454</a>
+<a href="#455" id="455">455</a>
+<a href="#456" id="456">456</a>
+<a href="#457" id="457">457</a>
+<a href="#458" id="458">458</a>
+<a href="#459" id="459">459</a>
+<a href="#460" id="460">460</a>
+<a href="#461" id="461">461</a>
+<a href="#462" id="462">462</a>
+<a href="#463" id="463">463</a>
+<a href="#464" id="464">464</a>
+<a href="#465" id="465">465</a>
+<a href="#466" id="466">466</a>
+<a href="#467" id="467">467</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -478,6 +495,7 @@
 </span><span class="kw">mod </span>keyword {
 	<span class="macro">syn::custom_keyword!</span>(Call);
 	<span class="macro">syn::custom_keyword!</span>(OriginFor);
+	<span class="macro">syn::custom_keyword!</span>(RuntimeOrigin);
 	<span class="macro">syn::custom_keyword!</span>(weight);
 	<span class="macro">syn::custom_keyword!</span>(call_index);
 	<span class="macro">syn::custom_keyword!</span>(compact);
@@ -536,6 +554,8 @@
 	</span><span class="kw">pub </span>docs: Vec&lt;syn::Expr&gt;,
 	<span class="doccomment">/// Attributes annotated at the top of the dispatchable function.
 	</span><span class="kw">pub </span>attrs: Vec&lt;syn::Attribute&gt;,
+	<span class="doccomment">/// The `cfg` attributes.
+	</span><span class="kw">pub </span>cfg_attrs: Vec&lt;syn::Attribute&gt;,
 	<span class="doccomment">/// The optional `feeless_if` attribute on the `pallet::call`.
 	</span><span class="kw">pub </span>feeless_check: <span class="prelude-ty">Option</span>&lt;syn::ExprClosure&gt;,
 }
@@ -610,10 +630,10 @@
 	}
 }
 
-<span class="doccomment">/// Check the syntax is `OriginFor&lt;T&gt;` or `&amp;OriginFor&lt;T&gt;`.
+<span class="doccomment">/// Check the syntax is `OriginFor&lt;T&gt;`, `&amp;OriginFor&lt;T&gt;` or `T::RuntimeOrigin`.
 </span><span class="kw">pub fn </span>check_dispatchable_first_arg_type(ty: <span class="kw-2">&amp;</span>syn::Type, is_ref: bool) -&gt; syn::Result&lt;()&gt; {
-	<span class="kw">pub struct </span>CheckDispatchableFirstArg(bool);
-	<span class="kw">impl </span>syn::parse::Parse <span class="kw">for </span>CheckDispatchableFirstArg {
+	<span class="kw">pub struct </span>CheckOriginFor(bool);
+	<span class="kw">impl </span>syn::parse::Parse <span class="kw">for </span>CheckOriginFor {
 		<span class="kw">fn </span>parse(input: syn::parse::ParseStream) -&gt; syn::Result&lt;<span class="self">Self</span>&gt; {
 			<span class="kw">let </span>is_ref = input.parse::&lt;<span class="macro">syn::Token!</span>[<span class="kw-2">&amp;</span>]&gt;().is_ok();
 			input.parse::&lt;keyword::OriginFor&gt;()<span class="question-mark">?</span>;
@@ -625,14 +645,27 @@
 		}
 	}
 
-	<span class="kw">let </span>result = syn::parse2::&lt;CheckDispatchableFirstArg&gt;(ty.to_token_stream());
-	<span class="kw">return match </span>result {
-		<span class="prelude-val">Ok</span>(CheckDispatchableFirstArg(has_ref)) <span class="kw">if </span>is_ref == has_ref =&gt; <span class="prelude-val">Ok</span>(()),
-		<span class="kw">_ </span>=&gt; {
+	<span class="kw">pub struct </span>CheckRuntimeOrigin;
+	<span class="kw">impl </span>syn::parse::Parse <span class="kw">for </span>CheckRuntimeOrigin {
+		<span class="kw">fn </span>parse(input: syn::parse::ParseStream) -&gt; syn::Result&lt;<span class="self">Self</span>&gt; {
+			input.parse::&lt;keyword::T&gt;()<span class="question-mark">?</span>;
+			input.parse::&lt;<span class="macro">syn::Token!</span>[::]&gt;()<span class="question-mark">?</span>;
+			input.parse::&lt;keyword::RuntimeOrigin&gt;()<span class="question-mark">?</span>;
+
+			<span class="prelude-val">Ok</span>(<span class="self">Self</span>)
+		}
+	}
+
+	<span class="kw">let </span>result_origin_for = syn::parse2::&lt;CheckOriginFor&gt;(ty.to_token_stream());
+	<span class="kw">let </span>result_runtime_origin = syn::parse2::&lt;CheckRuntimeOrigin&gt;(ty.to_token_stream());
+	<span class="kw">return match </span>(result_origin_for, result_runtime_origin) {
+		(<span class="prelude-val">Ok</span>(CheckOriginFor(has_ref)), <span class="kw">_</span>) <span class="kw">if </span>is_ref == has_ref =&gt; <span class="prelude-val">Ok</span>(()),
+		(<span class="kw">_</span>, <span class="prelude-val">Ok</span>(<span class="kw">_</span>)) =&gt; <span class="prelude-val">Ok</span>(()),
+		(<span class="kw">_</span>, <span class="kw">_</span>) =&gt; {
 			<span class="kw">let </span>msg = <span class="kw">if </span>is_ref {
 				<span class="string">"Invalid type: expected `&amp;OriginFor&lt;T&gt;`"
 			</span>} <span class="kw">else </span>{
-				<span class="string">"Invalid type: expected `OriginFor&lt;T&gt;`"
+				<span class="string">"Invalid type: expected `OriginFor&lt;T&gt;` or `T::RuntimeOrigin`"
 			</span>};
 			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty.span(), msg))
 		},
@@ -704,6 +737,7 @@
 					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg))
 				}
 
+				<span class="kw">let </span>cfg_attrs: Vec&lt;syn::Attribute&gt; = helper::get_item_cfg_attrs(<span class="kw-2">&amp;</span>method.attrs);
 				<span class="kw">let </span><span class="kw-2">mut </span>call_idx_attrs = <span class="macro">vec!</span>[];
 				<span class="kw">let </span><span class="kw-2">mut </span>weight_attrs = <span class="macro">vec!</span>[];
 				<span class="kw">let </span><span class="kw-2">mut </span>feeless_attrs = <span class="macro">vec!</span>[];
@@ -724,8 +758,7 @@
 				<span class="kw">if </span>weight_attrs.is_empty() &amp;&amp; dev_mode {
 					<span class="comment">// inject a default O(1) weight when dev mode is enabled and no weight has
 					// been specified on the call
-					</span><span class="kw">let </span>empty_weight: syn::Expr = syn::parse(<span class="macro">quote::quote!</span>(<span class="number">0</span>).into())
-						.expect(<span class="string">"we are parsing a quoted string; qed"</span>);
+					</span><span class="kw">let </span>empty_weight: syn::Expr = <span class="macro">syn::parse_quote!</span>(<span class="number">0</span>);
 					weight_attrs.push(FunctionAttr::Weight(empty_weight));
 				}
 
@@ -734,8 +767,8 @@
 					<span class="number">0 </span><span class="kw">if </span>dev_mode =&gt; CallWeightDef::DevModeDefault,
 					<span class="number">0 </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(
 						method.sig.span(),
-						<span class="string">"A pallet::call requires either a concrete `#[pallet::weight($expr)]` or an 
-						inherited weight from the `#[pallet:call(weight($type))]` attribute, but 
+						<span class="string">"A pallet::call requires either a concrete `#[pallet::weight($expr)]` or an
+						inherited weight from the `#[pallet:call(weight($type))]` attribute, but
 						none were given."</span>,
 					)),
 					<span class="number">1 </span>=&gt; <span class="kw">match </span>weight_attrs.pop().unwrap() {
@@ -881,6 +914,7 @@
 					args,
 					docs,
 					attrs: method.attrs.clone(),
+					cfg_attrs,
 					feeless_check,
 				});
 			} <span class="kw">else </span>{

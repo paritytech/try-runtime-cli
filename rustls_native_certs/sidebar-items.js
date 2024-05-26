@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["load_native_certs"],"struct":["Certificate"]};
+window.SIDEBAR_ITEMS = {"fn":["load_native_certs"]};

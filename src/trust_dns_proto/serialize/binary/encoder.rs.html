@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.22.0/src/serialize/binary/encoder.rs`."><title>encoder.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.23.2/src/serialize/binary/encoder.rs`."><title>encoder.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../trust_dns_proto/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -661,44 +661,34 @@
 <a href="#659" id="659">659</a>
 <a href="#660" id="660">660</a>
 <a href="#661" id="661">661</a>
-<a href="#662" id="662">662</a>
-<a href="#663" id="663">663</a>
-<a href="#664" id="664">664</a>
-<a href="#665" id="665">665</a>
-</pre></div><pre class="rust"><code><span class="comment">/*
- * Copyright (C) 2015 Benjamin Fry &lt;benjaminfry@me.com&gt;
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+</pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2023 Benjamin Fry &lt;benjaminfry@me.com&gt;
+//
+// Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
+// http://apache.org/licenses/LICENSE-2.0&gt; or the MIT license &lt;LICENSE-MIT or
+// http://opensource.org/licenses/MIT&gt;, at your option. This file may not be
+// copied, modified, or distributed except according to those terms.
+
 </span><span class="kw">use </span>std::marker::PhantomData;
 
-<span class="kw">use </span><span class="kw">crate</span>::error::{ProtoErrorKind, ProtoResult};
+<span class="kw">use crate</span>::{
+    error::{ProtoErrorKind, ProtoResult},
+    op::Header,
+};
 
 <span class="kw">use </span><span class="kw">super</span>::BinEncodable;
-<span class="kw">use </span><span class="kw">crate</span>::op::Header;
 
 <span class="comment">// this is private to make sure there is no accidental access to the inner buffer.
 </span><span class="kw">mod </span>private {
     <span class="kw">use </span><span class="kw">crate</span>::error::{ProtoErrorKind, ProtoResult};
 
     <span class="doccomment">/// A wrapper for a buffer that guarantees writes never exceed a defined set of bytes
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>MaximalBuf&lt;<span class="lifetime">'a</span>&gt; {
+    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>MaximalBuf&lt;<span class="lifetime">'a</span>&gt; {
         max_size: usize,
         buffer: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>Vec&lt;u8&gt;,
     }
 
     <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; MaximalBuf&lt;<span class="lifetime">'a</span>&gt; {
-        <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(max_size: u16, buffer: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>Vec&lt;u8&gt;) -&gt; <span class="self">Self </span>{
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>new(max_size: u16, buffer: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>Vec&lt;u8&gt;) -&gt; <span class="self">Self </span>{
             MaximalBuf {
                 max_size: max_size <span class="kw">as </span>usize,
                 buffer,
@@ -706,47 +696,57 @@
         }
 
         <span class="doccomment">/// Sets the maximum size to enforce
-        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>set_max_size(<span class="kw-2">&amp;mut </span><span class="self">self</span>, max: u16) {
+        </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>set_max_size(<span class="kw-2">&amp;mut </span><span class="self">self</span>, max: u16) {
             <span class="self">self</span>.max_size = max <span class="kw">as </span>usize;
         }
 
-        <span class="doccomment">/// returns an error if the maximum buffer size would be exceeded with the addition number of elements
-        ///
-        /// and reserves the additional space in the buffer
-        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>enforced_write&lt;F&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, additional: usize, writer: F) -&gt; ProtoResult&lt;()&gt;
-        <span class="kw">where
-            </span>F: FnOnce(<span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;),
-        {
-            <span class="kw">let </span>expected_len = <span class="self">self</span>.buffer.len() + additional;
-
-            <span class="kw">if </span>expected_len &gt; <span class="self">self</span>.max_size {
-                <span class="prelude-val">Err</span>(ProtoErrorKind::MaxBufferSizeExceeded(<span class="self">self</span>.max_size).into())
-            } <span class="kw">else </span>{
-                <span class="self">self</span>.buffer.reserve(additional);
-                writer(<span class="self">self</span>.buffer);
-
-                <span class="macro">debug_assert_eq!</span>(<span class="self">self</span>.buffer.len(), expected_len);
-                <span class="prelude-val">Ok</span>(())
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>write(<span class="kw-2">&amp;mut </span><span class="self">self</span>, offset: usize, data: <span class="kw-2">&amp;</span>[u8]) -&gt; ProtoResult&lt;()&gt; {
+            <span class="macro">debug_assert!</span>(offset &lt;= <span class="self">self</span>.buffer.len());
+            <span class="kw">if </span>offset + data.len() &gt; <span class="self">self</span>.max_size {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(ProtoErrorKind::MaxBufferSizeExceeded(<span class="self">self</span>.max_size).into());
             }
+
+            <span class="kw">if </span>offset == <span class="self">self</span>.buffer.len() {
+                <span class="self">self</span>.buffer.extend(data);
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(());
+            }
+
+            <span class="kw">let </span>end = offset + data.len();
+            <span class="kw">if </span>end &gt; <span class="self">self</span>.buffer.len() {
+                <span class="self">self</span>.buffer.resize(end, <span class="number">0</span>);
+            }
+
+            <span class="self">self</span>.buffer[offset..end].copy_from_slice(data);
+            <span class="prelude-val">Ok</span>(())
+        }
+
+        <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>reserve(<span class="kw-2">&amp;mut </span><span class="self">self</span>, offset: usize, len: usize) -&gt; ProtoResult&lt;()&gt; {
+            <span class="kw">let </span>end = offset + len;
+            <span class="kw">if </span>end &gt; <span class="self">self</span>.max_size {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(ProtoErrorKind::MaxBufferSizeExceeded(<span class="self">self</span>.max_size).into());
+            }
+
+            <span class="self">self</span>.buffer.resize(end, <span class="number">0</span>);
+            <span class="prelude-val">Ok</span>(())
         }
 
         <span class="doccomment">/// truncates are always safe
-        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>truncate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, len: usize) {
+        </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>truncate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, len: usize) {
             <span class="self">self</span>.buffer.truncate(len)
         }
 
         <span class="doccomment">/// returns the length of the underlying buffer
-        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+        </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
             <span class="self">self</span>.buffer.len()
         }
 
         <span class="doccomment">/// Immutable reads are always safe
-        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>buffer(<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8] {
+        </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>buffer(<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8] {
             <span class="self">self</span>.buffer <span class="kw">as </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]
         }
 
         <span class="doccomment">/// Returns a reference to the internal buffer
-        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>into_bytes(<span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Vec&lt;u8&gt; {
+        </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>into_bytes(<span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Vec&lt;u8&gt; {
             <span class="self">self</span>.buffer
         }
     }
@@ -795,7 +795,7 @@
         BinEncoder {
             offset: offset <span class="kw">as </span>usize,
             <span class="comment">// TODO: add max_size to signature
-            </span>buffer: private::MaximalBuf::new(u16::max_value(), buf),
+            </span>buffer: private::MaximalBuf::new(u16::MAX, buf),
             name_pointers: Vec::new(),
             mode,
             canonical_names: <span class="bool-val">false</span>,
@@ -903,8 +903,8 @@
     /// The location is the current position in the buffer
     ///  implicitly, it is expected that the name will be written to the stream after the current index.
     </span><span class="kw">pub fn </span>store_label_pointer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, start: usize, end: usize) {
-        <span class="macro">assert!</span>(start &lt;= (u16::max_value() <span class="kw">as </span>usize));
-        <span class="macro">assert!</span>(end &lt;= (u16::max_value() <span class="kw">as </span>usize));
+        <span class="macro">assert!</span>(start &lt;= (u16::MAX <span class="kw">as </span>usize));
+        <span class="macro">assert!</span>(end &lt;= (u16::MAX <span class="kw">as </span>usize));
         <span class="macro">assert!</span>(start &lt;= end);
         <span class="kw">if </span><span class="self">self</span>.offset &lt; <span class="number">0x3FFF_usize </span>{
             <span class="self">self</span>.name_pointers
@@ -918,7 +918,7 @@
 
         <span class="kw">for </span>(match_start, matcher) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.name_pointers {
             <span class="kw">if </span>matcher.as_slice() == search {
-                <span class="macro">assert!</span>(match_start &lt;= <span class="kw-2">&amp;</span>(u16::max_value() <span class="kw">as </span>usize));
+                <span class="macro">assert!</span>(match_start &lt;= <span class="kw-2">&amp;</span>(u16::MAX <span class="kw">as </span>usize));
                 <span class="kw">return </span><span class="prelude-val">Some</span>(<span class="kw-2">*</span>match_start <span class="kw">as </span>u16);
             }
         }
@@ -928,16 +928,7 @@
 
     <span class="doccomment">/// Emit one byte into the buffer
     </span><span class="kw">pub fn </span>emit(<span class="kw-2">&amp;mut </span><span class="self">self</span>, b: u8) -&gt; ProtoResult&lt;()&gt; {
-        <span class="kw">if </span><span class="self">self</span>.offset &lt; <span class="self">self</span>.buffer.len() {
-            <span class="kw">let </span>offset = <span class="self">self</span>.offset;
-            <span class="self">self</span>.buffer.enforced_write(<span class="number">0</span>, |buffer| {
-                <span class="kw-2">*</span>buffer
-                    .get_mut(offset)
-                    .expect(<span class="string">"could not get index at offset"</span>) = b
-            })<span class="question-mark">?</span>;
-        } <span class="kw">else </span>{
-            <span class="self">self</span>.buffer.enforced_write(<span class="number">1</span>, |buffer| buffer.push(b))<span class="question-mark">?</span>;
-        }
+        <span class="self">self</span>.buffer.write(<span class="self">self</span>.offset, <span class="kw-2">&amp;</span>[b])<span class="question-mark">?</span>;
         <span class="self">self</span>.offset += <span class="number">1</span>;
         <span class="prelude-val">Ok</span>(())
     }
@@ -964,9 +955,18 @@
             .into());
         }
 
+        <span class="self">self</span>.emit_character_data_unrestricted(char_data)
+    }
+
+    <span class="doccomment">/// Emit character data of unrestricted length
+    ///
+    /// Although character strings are typically restricted to being no longer than 255 characters,
+    /// some modern standards allow longer strings to be encoded.
+    </span><span class="kw">pub fn </span>emit_character_data_unrestricted&lt;S: AsRef&lt;[u8]&gt;&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, data: S) -&gt; ProtoResult&lt;()&gt; {
         <span class="comment">// first the length is written
-        </span><span class="self">self</span>.emit(char_bytes.len() <span class="kw">as </span>u8)<span class="question-mark">?</span>;
-        <span class="self">self</span>.write_slice(char_bytes)
+        </span><span class="kw">let </span>data = data.as_ref();
+        <span class="self">self</span>.emit(data.len() <span class="kw">as </span>u8)<span class="question-mark">?</span>;
+        <span class="self">self</span>.write_slice(data)
     }
 
     <span class="doccomment">/// Emit one byte into the buffer
@@ -990,26 +990,8 @@
     }
 
     <span class="kw">fn </span>write_slice(<span class="kw-2">&amp;mut </span><span class="self">self</span>, data: <span class="kw-2">&amp;</span>[u8]) -&gt; ProtoResult&lt;()&gt; {
-        <span class="comment">// replacement case, the necessary space should have been reserved already...
-        </span><span class="kw">if </span><span class="self">self</span>.offset &lt; <span class="self">self</span>.buffer.len() {
-            <span class="kw">let </span>offset = <span class="self">self</span>.offset;
-
-            <span class="self">self</span>.buffer.enforced_write(<span class="number">0</span>, |buffer| {
-                <span class="kw">let </span><span class="kw-2">mut </span>offset = offset;
-                <span class="kw">for </span>b <span class="kw">in </span>data {
-                    <span class="kw-2">*</span>buffer
-                        .get_mut(offset)
-                        .expect(<span class="string">"could not get index at offset for slice"</span>) = <span class="kw-2">*</span>b;
-                    offset += <span class="number">1</span>;
-                }
-            })<span class="question-mark">?</span>;
-        } <span class="kw">else </span>{
-            <span class="self">self</span>.buffer
-                .enforced_write(data.len(), |buffer| buffer.extend_from_slice(data))<span class="question-mark">?</span>;
-        }
-
+        <span class="self">self</span>.buffer.write(<span class="self">self</span>.offset, data)<span class="question-mark">?</span>;
         <span class="self">self</span>.offset += data.len();
-
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -1066,8 +1048,7 @@
         <span class="kw">let </span>len = T::size_of();
 
         <span class="comment">// resize the buffer
-        </span><span class="self">self</span>.buffer
-            .enforced_write(len, |buffer| buffer.resize(index + len, <span class="number">0</span>))<span class="question-mark">?</span>;
+        </span><span class="self">self</span>.buffer.reserve(<span class="self">self</span>.offset, len)<span class="question-mark">?</span>;
 
         <span class="comment">// update the offset
         </span><span class="self">self</span>.offset += len;
@@ -1178,7 +1159,11 @@
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use crate</span>::{
         op::{Message, Query},
-        rr::{rdata::SRV, RData, Record, RecordType},
+        rr::{
+            rdata::{CNAME, SRV},
+            RData, Record, RecordType,
+        },
+        serialize::binary::BinDecodable,
     };
     <span class="kw">use crate</span>::{rr::Name, serialize::binary::BinDecoder};
 
@@ -1320,7 +1305,7 @@
         </span>.add_answer(Record::from_rdata(
             Name::from_str(<span class="string">"www.compressme.com"</span>).unwrap(),
             <span class="number">0</span>,
-            RData::CNAME(Name::from_str(<span class="string">"www.foo.com"</span>).unwrap()),
+            RData::CNAME(CNAME(Name::from_str(<span class="string">"www.foo.com"</span>).unwrap())),
         ));
 
         <span class="kw">let </span>bytes = msg.to_vec().unwrap();
@@ -1328,6 +1313,13 @@
         </span><span class="macro">assert_eq!</span>(bytes.len(), <span class="number">130</span>);
         <span class="comment">// check re-serializing
         </span><span class="macro">assert!</span>(Message::from_vec(<span class="kw-2">&amp;</span>bytes).is_ok());
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_fuzzed() {
+        <span class="kw">const </span>MESSAGE: <span class="kw-2">&amp;</span>[u8] = <span class="macro">include_bytes!</span>(<span class="string">"../../../tests/test-data/fuzz-long.rdata"</span>);
+        <span class="kw">let </span>msg = Message::from_bytes(MESSAGE).unwrap();
+        msg.to_bytes().unwrap();
     }
 }
 </code></pre></div></section></main></body></html>

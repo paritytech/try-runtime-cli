@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bounded-collections-0.1.9/src/bounded_vec.rs`."><title>bounded_vec.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bounded_collections" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bounded-collections-0.2.0/src/bounded_vec.rs`."><title>bounded_vec.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bounded_collections" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../bounded_collections/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -1312,6 +1312,64 @@
 <a href="#1310" id="1310">1310</a>
 <a href="#1311" id="1311">1311</a>
 <a href="#1312" id="1312">1312</a>
+<a href="#1313" id="1313">1313</a>
+<a href="#1314" id="1314">1314</a>
+<a href="#1315" id="1315">1315</a>
+<a href="#1316" id="1316">1316</a>
+<a href="#1317" id="1317">1317</a>
+<a href="#1318" id="1318">1318</a>
+<a href="#1319" id="1319">1319</a>
+<a href="#1320" id="1320">1320</a>
+<a href="#1321" id="1321">1321</a>
+<a href="#1322" id="1322">1322</a>
+<a href="#1323" id="1323">1323</a>
+<a href="#1324" id="1324">1324</a>
+<a href="#1325" id="1325">1325</a>
+<a href="#1326" id="1326">1326</a>
+<a href="#1327" id="1327">1327</a>
+<a href="#1328" id="1328">1328</a>
+<a href="#1329" id="1329">1329</a>
+<a href="#1330" id="1330">1330</a>
+<a href="#1331" id="1331">1331</a>
+<a href="#1332" id="1332">1332</a>
+<a href="#1333" id="1333">1333</a>
+<a href="#1334" id="1334">1334</a>
+<a href="#1335" id="1335">1335</a>
+<a href="#1336" id="1336">1336</a>
+<a href="#1337" id="1337">1337</a>
+<a href="#1338" id="1338">1338</a>
+<a href="#1339" id="1339">1339</a>
+<a href="#1340" id="1340">1340</a>
+<a href="#1341" id="1341">1341</a>
+<a href="#1342" id="1342">1342</a>
+<a href="#1343" id="1343">1343</a>
+<a href="#1344" id="1344">1344</a>
+<a href="#1345" id="1345">1345</a>
+<a href="#1346" id="1346">1346</a>
+<a href="#1347" id="1347">1347</a>
+<a href="#1348" id="1348">1348</a>
+<a href="#1349" id="1349">1349</a>
+<a href="#1350" id="1350">1350</a>
+<a href="#1351" id="1351">1351</a>
+<a href="#1352" id="1352">1352</a>
+<a href="#1353" id="1353">1353</a>
+<a href="#1354" id="1354">1354</a>
+<a href="#1355" id="1355">1355</a>
+<a href="#1356" id="1356">1356</a>
+<a href="#1357" id="1357">1357</a>
+<a href="#1358" id="1358">1358</a>
+<a href="#1359" id="1359">1359</a>
+<a href="#1360" id="1360">1360</a>
+<a href="#1361" id="1361">1361</a>
+<a href="#1362" id="1362">1362</a>
+<a href="#1363" id="1363">1363</a>
+<a href="#1364" id="1364">1364</a>
+<a href="#1365" id="1365">1365</a>
+<a href="#1366" id="1366">1366</a>
+<a href="#1367" id="1367">1367</a>
+<a href="#1368" id="1368">1368</a>
+<a href="#1369" id="1369">1369</a>
+<a href="#1370" id="1370">1370</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) 2017-2023 Parity Technologies (UK) Ltd.
@@ -1951,6 +2009,26 @@
 		} <span class="kw">else </span>{
 			<span class="prelude-val">Err</span>(element)
 		}
+	}
+
+	<span class="doccomment">/// Exactly the same semantics as [`Vec::rotate_left`], but returns an `Err` (and is a noop) if `mid` is larger then the current length.
+	</span><span class="kw">pub fn </span>try_rotate_left(<span class="kw-2">&amp;mut </span><span class="self">self</span>, mid: usize) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
+		<span class="kw">if </span>mid &gt; <span class="self">self</span>.len() {
+			<span class="kw">return </span><span class="prelude-val">Err</span>(())
+		}
+
+		<span class="self">self</span>.<span class="number">0</span>.rotate_left(mid);
+		<span class="prelude-val">Ok</span>(())
+	}
+
+	<span class="doccomment">/// Exactly the same semantics as [`Vec::rotate_right`], but returns an `Err` (and is a noop) if `mid` is larger then the current length.
+	</span><span class="kw">pub fn </span>try_rotate_right(<span class="kw-2">&amp;mut </span><span class="self">self</span>, mid: usize) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
+		<span class="kw">if </span>mid &gt; <span class="self">self</span>.len() {
+			<span class="kw">return </span><span class="prelude-val">Err</span>(())
+		}
+
+		<span class="self">self</span>.<span class="number">0</span>.rotate_right(mid);
+		<span class="prelude-val">Ok</span>(())
 	}
 }
 
@@ -2609,6 +2687,44 @@
 
 		<span class="macro">assert_eq!</span>(bound, <span class="kw-2">&amp;</span>unbound[..]);
 		<span class="macro">assert!</span>(bound == <span class="kw-2">&amp;</span>unbound[..]);
+	}
+
+	<span class="attr">#[test]
+	</span><span class="kw">fn </span>bounded_vec_try_rotate_left_works() {
+		<span class="kw">let </span>o = BoundedVec::&lt;u32, ConstU32&lt;<span class="number">3</span>&gt;&gt;::truncate_from(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
+		<span class="kw">let </span><span class="kw-2">mut </span>bound = o.clone();
+
+		bound.try_rotate_left(<span class="number">0</span>).unwrap();
+		<span class="macro">assert_eq!</span>(bound, o);
+		bound.try_rotate_left(<span class="number">3</span>).unwrap();
+		<span class="macro">assert_eq!</span>(bound, o);
+
+		bound.try_rotate_left(<span class="number">4</span>).unwrap_err();
+		<span class="macro">assert_eq!</span>(bound, o);
+
+		bound.try_rotate_left(<span class="number">1</span>).unwrap();
+		<span class="macro">assert_eq!</span>(bound, <span class="macro">vec!</span>[<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>]);
+		bound.try_rotate_left(<span class="number">2</span>).unwrap();
+		<span class="macro">assert_eq!</span>(bound, o);
+	}
+
+	<span class="attr">#[test]
+	</span><span class="kw">fn </span>bounded_vec_try_rotate_right_works() {
+		<span class="kw">let </span>o = BoundedVec::&lt;u32, ConstU32&lt;<span class="number">3</span>&gt;&gt;::truncate_from(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);
+		<span class="kw">let </span><span class="kw-2">mut </span>bound = o.clone();
+
+		bound.try_rotate_right(<span class="number">0</span>).unwrap();
+		<span class="macro">assert_eq!</span>(bound, o);
+		bound.try_rotate_right(<span class="number">3</span>).unwrap();
+		<span class="macro">assert_eq!</span>(bound, o);
+
+		bound.try_rotate_right(<span class="number">4</span>).unwrap_err();
+		<span class="macro">assert_eq!</span>(bound, o);
+
+		bound.try_rotate_right(<span class="number">1</span>).unwrap();
+		<span class="macro">assert_eq!</span>(bound, <span class="macro">vec!</span>[<span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>]);
+		bound.try_rotate_right(<span class="number">2</span>).unwrap();
+		<span class="macro">assert_eq!</span>(bound, o);
 	}
 
 	<span class="comment">// Just a test that structs containing `BoundedVec` and `BoundedSlice` can derive `Hash`. (This was broken when

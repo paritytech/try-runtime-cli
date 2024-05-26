@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bstr-1.9.0/src/byteset/scalar.rs`."><title>scalar.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="bstr" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/bstr-0.2.17/src/byteset/scalar.rs`."><title>scalar.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="bstr" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../bstr/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -295,23 +295,18 @@
 <a href="#293" id="293">293</a>
 <a href="#294" id="294">294</a>
 <a href="#295" id="295">295</a>
-<a href="#296" id="296">296</a>
-<a href="#297" id="297">297</a>
-<a href="#298" id="298">298</a>
-<a href="#299" id="299">299</a>
-<a href="#300" id="300">300</a>
-<a href="#301" id="301">301</a>
-<a href="#302" id="302">302</a>
-<a href="#303" id="303">303</a>
-<a href="#304" id="304">304</a>
-<a href="#305" id="305">305</a>
 </pre></div><pre class="rust"><code><span class="comment">// This is adapted from `fallback.rs` from rust-memchr. It's modified to return
-// the 'inverse' query of memchr, e.g. finding the first byte not in the
-// provided set. This is simple for the 1-byte case.
+// the 'inverse' query of memchr, e.g. finding the first byte not in the provided
+// set. This is simple for the 1-byte case.
 
-</span><span class="kw">use </span>core::{cmp, usize};
+</span><span class="kw">use </span>core::cmp;
+<span class="kw">use </span>core::usize;
 
-<span class="kw">const </span>USIZE_BYTES: usize = core::mem::size_of::&lt;usize&gt;();
+<span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
+</span><span class="kw">const </span>USIZE_BYTES: usize = <span class="number">4</span>;
+
+<span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
+</span><span class="kw">const </span>USIZE_BYTES: usize = <span class="number">8</span>;
 
 <span class="comment">// The number of bytes to loop at in one iteration of memchr/memrchr.
 </span><span class="kw">const </span>LOOP_SIZE: usize = <span class="number">2 </span>* USIZE_BYTES;
@@ -331,11 +326,10 @@
     <span class="kw">let </span>loop_size = cmp::min(LOOP_SIZE, haystack.len());
     <span class="kw">let </span>align = USIZE_BYTES - <span class="number">1</span>;
     <span class="kw">let </span>start_ptr = haystack.as_ptr();
+    <span class="kw">let </span>end_ptr = haystack[haystack.len()..].as_ptr();
+    <span class="kw">let </span><span class="kw-2">mut </span>ptr = start_ptr;
 
     <span class="kw">unsafe </span>{
-        <span class="kw">let </span>end_ptr = haystack.as_ptr().add(haystack.len());
-        <span class="kw">let </span><span class="kw-2">mut </span>ptr = start_ptr;
-
         <span class="kw">if </span>haystack.len() &lt; USIZE_BYTES {
             <span class="kw">return </span>forward_search(start_ptr, end_ptr, ptr, confirm);
         }
@@ -371,11 +365,10 @@
     <span class="kw">let </span>loop_size = cmp::min(LOOP_SIZE, haystack.len());
     <span class="kw">let </span>align = USIZE_BYTES - <span class="number">1</span>;
     <span class="kw">let </span>start_ptr = haystack.as_ptr();
+    <span class="kw">let </span>end_ptr = haystack[haystack.len()..].as_ptr();
+    <span class="kw">let </span><span class="kw-2">mut </span>ptr = end_ptr;
 
     <span class="kw">unsafe </span>{
-        <span class="kw">let </span>end_ptr = haystack.as_ptr().add(haystack.len());
-        <span class="kw">let </span><span class="kw-2">mut </span>ptr = end_ptr;
-
         <span class="kw">if </span>haystack.len() &lt; USIZE_BYTES {
             <span class="kw">return </span>reverse_search(start_ptr, end_ptr, ptr, confirm);
         }
@@ -385,7 +378,7 @@
             <span class="kw">return </span>reverse_search(start_ptr, end_ptr, ptr, confirm);
         }
 
-        ptr = ptr.sub(end_ptr <span class="kw">as </span>usize &amp; align);
+        ptr = (end_ptr <span class="kw">as </span>usize &amp; !align) <span class="kw">as </span><span class="kw-2">*const </span>u8;
         <span class="macro">debug_assert!</span>(start_ptr &lt;= ptr &amp;&amp; ptr &lt;= end_ptr);
         <span class="kw">while </span>loop_size == LOOP_SIZE &amp;&amp; ptr &gt;= start_ptr.add(loop_size) {
             <span class="macro">debug_assert_eq!</span>(<span class="number">0</span>, (ptr <span class="kw">as </span>usize) % USIZE_BYTES);
@@ -478,10 +471,9 @@
     }
 }
 
-<span class="attr">#[cfg(all(test, feature = <span class="string">"std"</span>))]
+<span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::{inv_memchr, inv_memrchr};
-
     <span class="comment">// search string, search byte, inv_memchr result, inv_memrchr result.
     // these are expanded into a much larger set of tests in build_tests
     </span><span class="kw">const </span>TESTS: <span class="kw-2">&amp;</span>[(<span class="kw-2">&amp;</span>[u8], u8, usize, usize)] = <span class="kw-2">&amp;</span>[
@@ -497,15 +489,10 @@
     <span class="kw">type </span>TestCase = (Vec&lt;u8&gt;, u8, <span class="prelude-ty">Option</span>&lt;(usize, usize)&gt;);
 
     <span class="kw">fn </span>build_tests() -&gt; Vec&lt;TestCase&gt; {
-        <span class="attr">#[cfg(not(miri))]
-        </span><span class="kw">const </span>MAX_PER: usize = <span class="number">515</span>;
-        <span class="attr">#[cfg(miri)]
-        </span><span class="kw">const </span>MAX_PER: usize = <span class="number">10</span>;
-
         <span class="kw">let </span><span class="kw-2">mut </span>result = <span class="macro">vec!</span>[];
         <span class="kw">for </span><span class="kw-2">&amp;</span>(search, byte, fwd_pos, rev_pos) <span class="kw">in </span>TESTS {
             result.push((search.to_vec(), byte, <span class="prelude-val">Some</span>((fwd_pos, rev_pos))));
-            <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..MAX_PER {
+            <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..<span class="number">515 </span>{
                 <span class="comment">// add a bunch of copies of the search byte to the end.
                 </span><span class="kw">let </span><span class="kw-2">mut </span>suffixed: Vec&lt;u8&gt; = search.into();
                 suffixed.extend(std::iter::repeat(byte).take(i));
@@ -535,7 +522,7 @@
         }
 
         <span class="comment">// build non-matching tests for several sizes
-        </span><span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..MAX_PER {
+        </span><span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="number">515 </span>{
             result.push((
                 std::iter::repeat(<span class="string">b'\0'</span>).take(i).collect(),
                 <span class="string">b'\0'</span>,
@@ -549,12 +536,6 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_inv_memchr() {
         <span class="kw">use crate</span>::{ByteSlice, B};
-
-        <span class="attr">#[cfg(not(miri))]
-        </span><span class="kw">const </span>MAX_OFFSET: usize = <span class="number">130</span>;
-        <span class="attr">#[cfg(miri)]
-        </span><span class="kw">const </span>MAX_OFFSET: usize = <span class="number">13</span>;
-
         <span class="kw">for </span>(search, byte, matching) <span class="kw">in </span>build_tests() {
             <span class="macro">assert_eq!</span>(
                 inv_memchr(byte, <span class="kw-2">&amp;</span>search),
@@ -572,14 +553,13 @@
                 <span class="comment">// better printing
                 </span>B(<span class="kw-2">&amp;</span>search).as_bstr(),
             );
-            <span class="comment">// Test a rather large number off offsets for potential alignment
-            // issues.
-            </span><span class="kw">for </span>offset <span class="kw">in </span><span class="number">1</span>..MAX_OFFSET {
+            <span class="comment">// Test a rather large number off offsets for potential alignment issues
+            </span><span class="kw">for </span>offset <span class="kw">in </span><span class="number">1</span>..<span class="number">130 </span>{
                 <span class="kw">if </span>offset &gt;= search.len() {
                     <span class="kw">break</span>;
                 }
-                <span class="comment">// If this would cause us to shift the results off the end,
-                // skip it so that we don't have to recompute them.
+                <span class="comment">// If this would cause us to shift the results off the end, skip
+                // it so that we don't have to recompute them.
                 </span><span class="kw">if let </span><span class="prelude-val">Some</span>((f, r)) = matching {
                     <span class="kw">if </span>offset &gt; f || offset &gt; r {
                         <span class="kw">break</span>;

@@ -321,6 +321,10 @@
 <a href="#319" id="319">319</a>
 <a href="#320" id="320">320</a>
 <a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of try-runtime-cli.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -617,13 +621,17 @@
 //! [`Action::CreateSnapshot`]: try_runtime_core::commands::Action::CreateSnapshot
 //! [`Action::FastForward`]: try_runtime_core::commands::Action::FastForward
 //! [`SharedParams`]: try_runtime_core::shared_parameters::SharedParams
-//! [`SharedParams::runtime`]: try_runtime_core::shared_parameters::SharedParams::runtime
-//! [`SharedParams::overwrite_state_version`]: try_runtime_core::shared_parameters::SharedParams::overwrite_state_version
+//! [`SharedParams::runtime`]: try_runtime_core::common::shared_parameters::SharedParams::runtime
+//! [`SharedParams::overwrite_state_version`]: try_runtime_core::common::shared_parameters::SharedParams::overwrite_state_version
 
 </span><span class="kw">use </span>std::env;
 
 <span class="kw">use </span>clap::Parser;
-<span class="kw">use </span>node_primitives::Block;
+<span class="kw">use </span>sp_runtime::{
+    generic::{Block, Header},
+    traits::BlakeTwo256,
+    OpaqueExtrinsic,
+};
 <span class="kw">use </span>try_runtime_core::commands::TryRuntime;
 
 <span class="kw">fn </span>init_env() {
@@ -638,7 +646,7 @@
     init_env();
 
     <span class="kw">let </span>cmd = TryRuntime::parse();
-    cmd.run::&lt;Block, sp_io::SubstrateHostFunctions&gt;()
+    cmd.run::&lt;Block&lt;Header&lt;u32, BlakeTwo256&gt;, OpaqueExtrinsic&gt;, sp_io::SubstrateHostFunctions&gt;()
         .<span class="kw">await
         </span>.unwrap();
 }

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["UdpClientConnect","UdpClientStream","UdpStream"],"trait":["UdpSocket"]};
+window.SIDEBAR_ITEMS = {"constant":["MAX_RECEIVE_BUFFER_SIZE"],"struct":["UdpClientConnect","UdpClientStream","UdpStream"],"trait":["DnsUdpSocket","QuicLocalAddr","UdpSocket"]};

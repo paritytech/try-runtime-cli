@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/client/rpc-spec-v2/src/chain_head/api.rs`."><title>api.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_rpc_spec_v2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/rpc-spec-v2/src/chain_head/api.rs`."><title>api.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_rpc_spec_v2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../sc_rpc_spec_v2/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -148,6 +148,12 @@
 <a href="#146" id="146">146</a>
 <a href="#147" id="147">147</a>
 <a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -169,9 +175,15 @@
 </span><span class="attr">#![allow(non_snake_case)]
 
 </span><span class="doccomment">//! API trait of the chain head.
-</span><span class="kw">use </span><span class="kw">crate</span>::chain_head::event::{FollowEvent, MethodResponse, StorageQuery};
-<span class="kw">use </span>jsonrpsee::{core::RpcResult, proc_macros::rpc};
-<span class="kw">use </span>sp_rpc::list::ListOrValue;
+</span><span class="kw">use crate</span>::{
+	chain_head::{
+		error::Error,
+		event::{FollowEvent, MethodResponse},
+	},
+	common::events::StorageQuery,
+};
+<span class="kw">use </span>jsonrpsee::{proc_macros::rpc, server::ResponsePayload};
+<span class="kw">pub use </span>sp_rpc::list::ListOrValue;
 
 <span class="attr">#[rpc(client, server)]
 </span><span class="kw">pub trait </span>ChainHeadApi&lt;Hash&gt; {
@@ -181,15 +193,15 @@
 	///
 	/// This method is unstable and subject to change in the future.
 	</span><span class="attr">#[subscription(
-		name = <span class="string">"chainHead_unstable_follow" </span>=&gt; <span class="string">"chainHead_unstable_followEvent"</span>,
-		unsubscribe = <span class="string">"chainHead_unstable_unfollow"</span>,
+		name = <span class="string">"chainHead_v1_follow" </span>=&gt; <span class="string">"chainHead_v1_followEvent"</span>,
+		unsubscribe = <span class="string">"chainHead_v1_unfollow"</span>,
 		item = FollowEvent&lt;Hash&gt;,
 	)]
 	</span><span class="kw">fn </span>chain_head_unstable_follow(<span class="kw-2">&amp;</span><span class="self">self</span>, with_runtime: bool);
 
 	<span class="doccomment">/// Retrieves the body (list of transactions) of a pinned block.
 	///
-	/// This method should be seen as a complement to `chainHead_unstable_follow`,
+	/// This method should be seen as a complement to `chainHead_v1_follow`,
 	/// allowing the JSON-RPC client to retrieve more information about a block
 	/// that has been reported.
 	///
@@ -198,16 +210,16 @@
 	/// # Unstable
 	///
 	/// This method is unstable and subject to change in the future.
-	</span><span class="attr">#[method(name = <span class="string">"chainHead_unstable_body"</span>, blocking)]
-	</span><span class="kw">fn </span>chain_head_unstable_body(
+	</span><span class="attr">#[method(name = <span class="string">"chainHead_v1_body"</span>, raw_method)]
+	</span><span class="kw">async fn </span>chain_head_unstable_body(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		follow_subscription: String,
 		hash: Hash,
-	) -&gt; RpcResult&lt;MethodResponse&gt;;
+	) -&gt; ResponsePayload&lt;<span class="lifetime">'static</span>, MethodResponse&gt;;
 
 	<span class="doccomment">/// Retrieves the header of a pinned block.
 	///
-	/// This method should be seen as a complement to `chainHead_unstable_follow`,
+	/// This method should be seen as a complement to `chainHead_v1_follow`,
 	/// allowing the JSON-RPC client to retrieve more information about a block
 	/// that has been reported.
 	///
@@ -217,40 +229,40 @@
 	/// # Unstable
 	///
 	/// This method is unstable and subject to change in the future.
-	</span><span class="attr">#[method(name = <span class="string">"chainHead_unstable_header"</span>, blocking)]
-	</span><span class="kw">fn </span>chain_head_unstable_header(
+	</span><span class="attr">#[method(name = <span class="string">"chainHead_v1_header"</span>, raw_method)]
+	</span><span class="kw">async fn </span>chain_head_unstable_header(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		follow_subscription: String,
 		hash: Hash,
-	) -&gt; RpcResult&lt;<span class="prelude-ty">Option</span>&lt;String&gt;&gt;;
+	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;String&gt;, Error&gt;;
 
 	<span class="doccomment">/// Returns storage entries at a specific block's state.
 	///
 	/// # Unstable
 	///
 	/// This method is unstable and subject to change in the future.
-	</span><span class="attr">#[method(name = <span class="string">"chainHead_unstable_storage"</span>, blocking)]
-	</span><span class="kw">fn </span>chain_head_unstable_storage(
+	</span><span class="attr">#[method(name = <span class="string">"chainHead_v1_storage"</span>, raw_method)]
+	</span><span class="kw">async fn </span>chain_head_unstable_storage(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		follow_subscription: String,
 		hash: Hash,
 		items: Vec&lt;StorageQuery&lt;String&gt;&gt;,
 		child_trie: <span class="prelude-ty">Option</span>&lt;String&gt;,
-	) -&gt; RpcResult&lt;MethodResponse&gt;;
+	) -&gt; ResponsePayload&lt;<span class="lifetime">'static</span>, MethodResponse&gt;;
 
 	<span class="doccomment">/// Call into the Runtime API at a specified block's state.
 	///
 	/// # Unstable
 	///
 	/// This method is unstable and subject to change in the future.
-	</span><span class="attr">#[method(name = <span class="string">"chainHead_unstable_call"</span>, blocking)]
-	</span><span class="kw">fn </span>chain_head_unstable_call(
+	</span><span class="attr">#[method(name = <span class="string">"chainHead_v1_call"</span>, raw_method)]
+	</span><span class="kw">async fn </span>chain_head_unstable_call(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		follow_subscription: String,
 		hash: Hash,
 		function: String,
 		call_parameters: String,
-	) -&gt; RpcResult&lt;MethodResponse&gt;;
+	) -&gt; ResponsePayload&lt;<span class="lifetime">'static</span>, MethodResponse&gt;;
 
 	<span class="doccomment">/// Unpin a block or multiple blocks reported by the `follow` method.
 	///
@@ -262,12 +274,12 @@
 	/// # Unstable
 	///
 	/// This method is unstable and subject to change in the future.
-	</span><span class="attr">#[method(name = <span class="string">"chainHead_unstable_unpin"</span>, blocking)]
-	</span><span class="kw">fn </span>chain_head_unstable_unpin(
+	</span><span class="attr">#[method(name = <span class="string">"chainHead_v1_unpin"</span>, raw_method)]
+	</span><span class="kw">async fn </span>chain_head_unstable_unpin(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		follow_subscription: String,
 		hash_or_hashes: ListOrValue&lt;Hash&gt;,
-	) -&gt; RpcResult&lt;()&gt;;
+	) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt;;
 
 	<span class="doccomment">/// Resumes a storage fetch started with `chainHead_storage` after it has generated an
 	/// `operationWaitingForContinue` event.
@@ -275,25 +287,25 @@
 	/// # Unstable
 	///
 	/// This method is unstable and subject to change in the future.
-	</span><span class="attr">#[method(name = <span class="string">"chainHead_unstable_continue"</span>, blocking)]
-	</span><span class="kw">fn </span>chain_head_unstable_continue(
+	</span><span class="attr">#[method(name = <span class="string">"chainHead_v1_continue"</span>, raw_method)]
+	</span><span class="kw">async fn </span>chain_head_unstable_continue(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		follow_subscription: String,
 		operation_id: String,
-	) -&gt; RpcResult&lt;()&gt;;
+	) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt;;
 
-	<span class="doccomment">/// Stops an operation started with chainHead_unstable_body, chainHead_unstable_call, or
-	/// chainHead_unstable_storage. If the operation was still in progress, this interrupts it. If
+	<span class="doccomment">/// Stops an operation started with chainHead_v1_body, chainHead_v1_call, or
+	/// chainHead_v1_storage. If the operation was still in progress, this interrupts it. If
 	/// the operation was already finished, this call has no effect.
 	///
 	/// # Unstable
 	///
 	/// This method is unstable and subject to change in the future.
-	</span><span class="attr">#[method(name = <span class="string">"chainHead_unstable_stopOperation"</span>, blocking)]
-	</span><span class="kw">fn </span>chain_head_unstable_stop_operation(
+	</span><span class="attr">#[method(name = <span class="string">"chainHead_v1_stopOperation"</span>, raw_method)]
+	</span><span class="kw">async fn </span>chain_head_unstable_stop_operation(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		follow_subscription: String,
 		operation_id: String,
-	) -&gt; RpcResult&lt;()&gt;;
+	) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt;;
 }
 </code></pre></div></section></main></body></html>

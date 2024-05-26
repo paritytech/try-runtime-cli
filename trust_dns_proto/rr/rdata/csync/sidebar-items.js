@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["emit","read"],"struct":["CSYNC"]};
+window.SIDEBAR_ITEMS = {"struct":["CSYNC"]};

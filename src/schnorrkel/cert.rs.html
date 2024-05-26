@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/schnorrkel-0.9.1/src/cert.rs`."><title>cert.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="schnorrkel" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/schnorrkel-0.11.4/src/cert.rs`."><title>cert.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="schnorrkel" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../schnorrkel/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -231,6 +231,24 @@
 <a href="#229" id="229">229</a>
 <a href="#230" id="230">230</a>
 <a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a>
+<a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
+<a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
 </pre></div><pre class="rust"><code><span class="comment">// -*- mode: rust; -*-
 //
 // This file is part of schnorrkel.
@@ -241,24 +259,47 @@
 // - Jeffrey Burdges &lt;jeff@web3.foundation&gt;
 
 
-</span><span class="doccomment">//! ### Elliptic curve Qu-Vanstone implicit certificate scheme (ECQV) for Ristretto
+</span><span class="doccomment">//! ### Adaptor signature-based implicit certificate scheme for Ristretto
 //!
 //! [Implicit certificates](https://en.wikipedia.org/wiki/Implicit_certificate)
-//! provide an extremely space efficent public key certificate scheme.
+//! provide an extremely space efficient public key certificate scheme.
 //!
 //! As a rule, implicit certificates do not prove possession of the
 //! private key.  We thus worry more about fear rogue key attack when
 //! using them, but all protocols here should provide strong defenses
 //! against then.
 //!
-//! [1] "Standards for efficient cryptography, SEC 4: Elliptic Curve
+//! We implement an implicit certificate scheme based on adaptor
+//! signatures as recommended by [1] and [2], which appears useful for
+//!  "scriptless script" applications like [3] and [4].
+//!
+//! We should eventually place this into some more generally usable adaptor
+//! signature framework, but doing this safely this requires more work.
+//! We have not actually done security arguments for this code yet either,
+//! but we expect to find such results in the paymet channel literature [3].
+//! We might find arguments around Elliptic curve Qu-Vanstone (ECQV)
+//! helpful too [5,6].
+//!
+//! [1] "Schnorr Signatures for secp256k1"
+//!     by Pieter Wuille, Jonas Nick, and Tim Ruffing
+//!     https://github.com/sipa/bips/blob/bip-schnorr/bip-schnorr.mediawiki#Adaptor_Signatures
+//! [2] Ruben Somsen. "Schnorr signatures, adaptor signatures and statechains"
+//!     https://bitcoinedge.org/transcript/telaviv2019/statechains
+//! [3] Giulio Malavolta and Pedro Moreno-Sanchez and Clara Schneidewind and Aniket Kate and Matteo Maffei
+//!     "Anonymous Multi-Hop Locks for Blockchain Scalability and Interoperability"
+//!     https://eprint.iacr.org/2018/472
+//! [4] Jonas Nick.  "Scriptless Scripts [Using Adaptor Signatures]"
+//!     https://github.com/ElementsProject/scriptless-scripts
+//! [5] "Standards for efficient cryptography, SEC 4: Elliptic Curve
 //!     Qu-Vanstone Implicit Certificate Scheme (ECQV)".
 //!     http://www.secg.org/sec4-1.0.pdf
-//! [2] Daniel R. L. Brown, Robert P. Gallant, and Scott A. Vanstone.
+//! [6] Daniel R. L. Brown, Robert P. Gallant, and Scott A. Vanstone.
 //!     "Provably Secure Implicit Certificate Schemes". Financial
 //!     Cryptography 2001. Lecture Notes in Computer Science.
 //!     Springer Berlin Heidelberg. 2339 (1): 156–165. doi:10.1007/3-540-46088-8_15.
 //!     http://www.cacr.math.uwaterloo.ca/techreports/2000/corr2000-55.ps
+</span><span class="comment">//
+// Found [4] via https://download.wpsoftware.net/bitcoin/wizardry/mw-slides/2018-05-18-l2/slides.pdf via [1]
 
 </span><span class="kw">use </span>curve25519_dalek::constants;
 <span class="kw">use </span>curve25519_dalek::ristretto::{CompressedRistretto};
@@ -268,60 +309,52 @@
 <span class="kw">use </span><span class="kw">crate</span>::context::SigningTranscript;
 
 
-<span class="doccomment">/// ECQV Implicit Certificate Secret
+<span class="doccomment">/// Adaptor Implicit Certificate Secret
 ///
-/// Issuing an ECQV implicit certificate requires producing
+/// Issuing an Adaptor implicit certificate requires producing
 /// this and securely sending it to the certificate holder.
 </span><span class="attr">#[derive(Clone, Copy)] </span><span class="comment">// Debug, Eq, PartialEq
-</span><span class="kw">pub struct </span>ECQVCertSecret(<span class="kw">pub </span>[u8; <span class="number">64</span>]);
+</span><span class="kw">pub struct </span>AdaptorCertSecret(<span class="kw">pub </span>[u8; <span class="number">64</span>]);
 <span class="doccomment">/// TODO: Serde serialization/deserialization
 
-</span><span class="comment">/*
-impl&lt;'a&gt; From&lt;&amp;'a ECQVCertSecret&gt; for &amp;'a ECQVCertPublic {
-    from(secret: &amp;ECQVCertSecret) -&gt; &amp;ECQVCertPublic {
-        unsafe { ::core::mem::transmute(secret) }
-    }
-}
-*/
-
-</span><span class="kw">impl </span>From&lt;ECQVCertSecret&gt; <span class="kw">for </span>ECQVCertPublic {
-    <span class="kw">fn </span>from(secret: ECQVCertSecret) -&gt; ECQVCertPublic {
-        <span class="kw">let </span><span class="kw-2">mut </span>public = ECQVCertPublic([<span class="number">0u8</span>; <span class="number">32</span>]);
+</span><span class="kw">impl </span>From&lt;AdaptorCertSecret&gt; <span class="kw">for </span>AdaptorCertPublic {
+    <span class="kw">fn </span>from(secret: AdaptorCertSecret) -&gt; AdaptorCertPublic {
+        <span class="kw">let </span><span class="kw-2">mut </span>public = AdaptorCertPublic([<span class="number">0u8</span>; <span class="number">32</span>]);
         public.<span class="number">0</span>.copy_from_slice(<span class="kw-2">&amp;</span>secret.<span class="number">0</span>[<span class="number">0</span>..<span class="number">32</span>]);
         public
     }
 }
 
-<span class="doccomment">/// ECQV Implicit Certificate Public Key Reconstruction Data
+<span class="doccomment">/// Adaptor Implicit Certificate Public Key Reconstruction Data
 ///
-/// Identifying the public key of, and implicity verifying, an ECQV
+/// Identifying the public key of, and implicitly verifying, an Adaptor
 /// implicit certificate requires this data, which is produced
 /// when the certificate holder accepts the implicit certificate.
 </span><span class="attr">#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
-</span><span class="kw">pub struct </span>ECQVCertPublic(<span class="kw">pub </span>[u8; <span class="number">32</span>]);
+</span><span class="kw">pub struct </span>AdaptorCertPublic(<span class="kw">pub </span>[u8; <span class="number">32</span>]);
 <span class="doccomment">/// TODO: Serde serialization/deserialization
 
-</span><span class="kw">impl </span>ECQVCertPublic {
+</span><span class="kw">impl </span>AdaptorCertPublic {
     <span class="kw">fn </span>derive_e&lt;T: SigningTranscript&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>t: T) -&gt; Scalar {
-        t.challenge_scalar(<span class="string">b"ecqv-e"</span>)
+        t.challenge_scalar(<span class="string">b"adaptor-e"</span>)
     }
 }
 
 <span class="kw">impl </span>Keypair {
-    <span class="doccomment">/// Issue an ECQV implicit certificate
+    <span class="doccomment">/// Issue an Adaptor implicit certificate
     ///
     /// Aside from the issuing `Keypair` supplied as `self`, you provide both
     /// (1) a `SigningTranscript` called `t` that incorporates both the context 
     ///     and the certificate requester's identity, and
     /// (2) the `seed_public_key` supplied by the certificate recipient
     ///     in their certificate request.
-    /// We return an `ECQVCertSecret` which the issuer sent to the
+    /// We return an `AdaptorCertSecret` which the issuer sent to the
     /// certificate requester, ans from which the certificate requester
     /// derives their certified key pair.
-    </span><span class="kw">pub fn </span>issue_ecqv_cert&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>t: T, seed_public_key: <span class="kw-2">&amp;</span>PublicKey) -&gt; ECQVCertSecret
+    </span><span class="kw">pub fn </span>issue_adaptor_cert&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>t: T, seed_public_key: <span class="kw-2">&amp;</span>PublicKey) -&gt; AdaptorCertSecret
     <span class="kw">where </span>T: SigningTranscript
     {
-        t.proto_name(<span class="string">b"ECQV"</span>);
+        t.proto_name(<span class="string">b"Adaptor"</span>);
         t.commit_point(<span class="string">b"issuer-pk"</span>,<span class="self">self</span>.public.as_compressed());
 
         <span class="comment">// We cannot commit the `seed_public_key` to the transcript
@@ -330,15 +363,15 @@ impl&lt;'a&gt; From&lt;&amp;'a ECQVCertSecret&gt; for &amp;'a ECQVCertPublic {
         </span><span class="kw">let </span>k = t.witness_scalar(<span class="string">b"issuing"</span>,<span class="kw-2">&amp;</span>[ <span class="kw-2">&amp;</span><span class="self">self</span>.secret.nonce, seed_public_key.as_compressed().as_bytes() ]);
 
         <span class="comment">// Compute the public key reconstruction data
-        </span><span class="kw">let </span>gamma = seed_public_key.as_point() + <span class="kw-2">&amp;</span>k * <span class="kw-2">&amp;</span>constants::RISTRETTO_BASEPOINT_TABLE;
+        </span><span class="kw">let </span>gamma = seed_public_key.as_point() + <span class="kw-2">&amp;</span>k * constants::RISTRETTO_BASEPOINT_TABLE;
         <span class="kw">let </span>gamma = gamma.compress();
         t.commit_point(<span class="string">b"gamma"</span>,<span class="kw-2">&amp;</span>gamma);
-        <span class="kw">let </span>cert_public = ECQVCertPublic(gamma.<span class="number">0</span>);
+        <span class="kw">let </span>cert_public = AdaptorCertPublic(gamma.<span class="number">0</span>);
 
         <span class="comment">// Compute the secret key reconstruction data
-        </span><span class="kw">let </span>s = cert_public.derive_e(t) * k + <span class="self">self</span>.secret.key;
+        </span><span class="kw">let </span>s = k + cert_public.derive_e(t) * <span class="self">self</span>.secret.key;
 
-        <span class="kw">let </span><span class="kw-2">mut </span>cert_secret = ECQVCertSecret([<span class="number">0u8</span>; <span class="number">64</span>]);
+        <span class="kw">let </span><span class="kw-2">mut </span>cert_secret = AdaptorCertSecret([<span class="number">0u8</span>; <span class="number">64</span>]);
         cert_secret.<span class="number">0</span>[<span class="number">0</span>..<span class="number">32</span>].copy_from_slice(<span class="kw-2">&amp;</span>cert_public.<span class="number">0</span>[..]);
         cert_secret.<span class="number">0</span>[<span class="number">32</span>..<span class="number">64</span>].copy_from_slice(s.as_bytes());
         cert_secret
@@ -346,12 +379,12 @@ impl&lt;'a&gt; From&lt;&amp;'a ECQVCertSecret&gt; for &amp;'a ECQVCertPublic {
 }
 
 <span class="kw">impl </span>PublicKey {
-    <span class="doccomment">/// Accept an ECQV implicit certificate
+    <span class="doccomment">/// Accept an Adaptor implicit certificate
     ///
-    /// We request an ECQV implicit certificate by first creating an
+    /// We request an Adaptor implicit certificate by first creating an
     /// ephemeral `Keypair` and sending the public portion to the issuer
-    /// as `seed_public_key`.  An issuer issues the certificat by replying
-    /// with the `ECQVCertSecret` created by `issue_ecqv_cert`.
+    /// as `seed_public_key`.  An issuer issues the certificate by replying
+    /// with the `AdaptorCertSecret` created by `issue_adaptor_cert`.
     ///
     /// Aside from the issuer `PublicKey` supplied as `self`, you provide
     /// (1) a `SigningTranscript` called `t` that incorporates both the context
@@ -359,20 +392,20 @@ impl&lt;'a&gt; From&lt;&amp;'a ECQVCertSecret&gt; for &amp;'a ECQVCertPublic {
     /// (2) the `seed_secret_key` corresponding to the `seed_public_key`
     ///     they sent to the issuer by the certificate recipient in their
     ///     certificate request, and
-    /// (3) the `ECQVCertSecret` send by the issuer to the certificate
+    /// (3) the `AdaptorCertSecret` send by the issuer to the certificate
     ///     requester.
     /// We return both your certificate's new `SecretKey` as well as
-    /// an `ECQVCertPublic` from which third parties may derive
+    /// an `AdaptorCertPublic` from which third parties may derive
     /// corresponding public key from `h` and the issuer's public key.
-    </span><span class="kw">pub fn </span>accept_ecqv_cert&lt;T&gt;(
+    </span><span class="kw">pub fn </span>accept_adaptor_cert&lt;T&gt;(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="kw-2">mut </span>t: T,
         seed_secret_key: <span class="kw-2">&amp;</span>SecretKey,
-        cert_secret: ECQVCertSecret
-    ) -&gt; SignatureResult&lt;(ECQVCertPublic, SecretKey)&gt;
+        cert_secret: AdaptorCertSecret
+    ) -&gt; SignatureResult&lt;(AdaptorCertPublic, SecretKey)&gt;
     <span class="kw">where </span>T: SigningTranscript
     {
-        t.proto_name(<span class="string">b"ECQV"</span>);
+        t.proto_name(<span class="string">b"Adaptor"</span>);
         t.commit_point(<span class="string">b"issuer-pk"</span>,<span class="self">self</span>.as_compressed());
 
         <span class="comment">// Again we cannot commit much to the transcript, but we again
@@ -382,37 +415,37 @@ impl&lt;'a&gt; From&lt;&amp;'a ECQVCertSecret&gt; for &amp;'a ECQVCertPublic {
 
         <span class="kw">let </span><span class="kw-2">mut </span>s = [<span class="number">0u8</span>; <span class="number">32</span>];
         s.copy_from_slice(<span class="kw-2">&amp;</span>cert_secret.<span class="number">0</span>[<span class="number">32</span>..<span class="number">64</span>]);
-        <span class="kw">let </span>s = Scalar::from_canonical_bytes(s).ok_or(SignatureError::ScalarFormatError) <span class="question-mark">?</span>;
-        <span class="kw">let </span>cert_public : ECQVCertPublic = cert_secret.into();
-        <span class="kw">let </span>gamma = CompressedRistretto(cert_public.<span class="number">0</span>.clone());
+        <span class="kw">let </span>s = <span class="kw">crate</span>::scalar_from_canonical_bytes(s).ok_or(SignatureError::ScalarFormatError) <span class="question-mark">?</span>;
+        <span class="kw">let </span>cert_public : AdaptorCertPublic = cert_secret.into();
+        <span class="kw">let </span>gamma = CompressedRistretto(cert_public.<span class="number">0</span>);
         t.commit_point(<span class="string">b"gamma"</span>,<span class="kw-2">&amp;</span>gamma);
 
-        <span class="kw">let </span>key = s + cert_public.derive_e(t) * seed_secret_key.key;
+        <span class="kw">let </span>key = s + seed_secret_key.key;
         <span class="prelude-val">Ok</span>(( cert_public, SecretKey { key, nonce } ))
     }
 }
 
 <span class="kw">impl </span>Keypair {
-    <span class="doccomment">/// Issue an ECQV Implicit Certificate for yourself
+    <span class="doccomment">/// Issue an Adaptor Implicit Certificate for yourself
     ///
     /// We can issue an implicit certificate to ourselves if we merely
     /// want to certify an associated public key.  We should prefer
     /// this option over "hierarchical deterministic" key derivation
-    /// because compromizing the resulting secret key does not
-    /// compromize the issuer's secret key.
+    /// because compromising the resulting secret key does not
+    /// compromise the issuer's secret key.
     ///
     /// In this case, we avoid the entire interactive protocol described
-    /// by `issue_ecqv_cert` and `accept_ecqv_cert` by hiding it an all
-    /// managment of the ephemeral `Keypair` inside this function.
+    /// by `issue_adaptor_cert` and `accept_adaptor_cert` by hiding it an all
+    /// management of the ephemeral `Keypair` inside this function.
     ///
     /// Aside from the issuing secret key supplied as `self`, you provide
     /// only a digest `h` that incorporates any context and metadata
     /// pertaining to the issued key.
-    </span><span class="kw">pub fn </span>issue_self_ecqv_cert&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, t: T) -&gt; (ECQVCertPublic, SecretKey)
+    </span><span class="kw">pub fn </span>issue_self_adaptor_cert&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, t: T) -&gt; (AdaptorCertPublic, SecretKey)
     <span class="kw">where </span>T: SigningTranscript+Clone
     {
         <span class="kw">let </span><span class="kw-2">mut </span>bytes = [<span class="number">0u8</span>; <span class="number">96</span>];
-        t.witness_bytes(<span class="string">b"issue_self_ecqv_cert"</span>, <span class="kw-2">&amp;mut </span>bytes, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="self">self</span>.secret.nonce, <span class="kw-2">&amp;</span><span class="self">self</span>.secret.to_bytes() <span class="kw">as </span><span class="kw-2">&amp;</span>[u8]]);
+        t.witness_bytes(<span class="string">b"issue_self_adaptor_cert"</span>, <span class="kw-2">&amp;mut </span>bytes, <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="self">self</span>.secret.nonce, <span class="kw-2">&amp;</span><span class="self">self</span>.secret.to_bytes() <span class="kw">as </span><span class="kw-2">&amp;</span>[u8]]);
 
         <span class="kw">let </span><span class="kw-2">mut </span>nonce = [<span class="number">0u8</span>; <span class="number">32</span>];
         nonce.copy_from_slice(<span class="kw-2">&amp;</span>bytes[<span class="number">64</span>..<span class="number">96</span>]);
@@ -422,24 +455,28 @@ impl&lt;'a&gt; From&lt;&amp;'a ECQVCertSecret&gt; for &amp;'a ECQVCertPublic {
         <span class="kw">let </span>key = Scalar::from_bytes_mod_order_wide(<span class="kw-2">&amp;</span>key);
 
         <span class="kw">let </span>seed = SecretKey { key, nonce }.to_keypair();
-        <span class="kw">let </span>cert_secret = <span class="self">self</span>.issue_ecqv_cert(t.clone(), <span class="kw-2">&amp;</span>seed.public);
-        <span class="self">self</span>.public.accept_ecqv_cert(t, <span class="kw-2">&amp;</span>seed.secret, cert_secret).expect(<span class="string">"Cert issued above and known to produce signature errors; qed"</span>)
+        <span class="kw">let </span>cert_secret = <span class="self">self</span>.issue_adaptor_cert(t.clone(), <span class="kw-2">&amp;</span>seed.public);
+        <span class="self">self</span>.public.accept_adaptor_cert(t, <span class="kw-2">&amp;</span>seed.secret, cert_secret).expect(<span class="string">"Cert issued above and known to produce signature errors; qed"</span>)
     }
 }
 
 <span class="kw">impl </span>PublicKey {
-    <span class="doccomment">///
-    </span><span class="kw">pub fn </span>open_ecqv_cert&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>t: T, cert_public: <span class="kw-2">&amp;</span>ECQVCertPublic) -&gt; SignatureResult&lt;PublicKey&gt;
+    <span class="doccomment">/// Extract the certified pulic key from an adaptor certificate
+    /// 
+    /// We've no confirmation that this public key was certified
+    /// until we use it in some authenticated setting, like an AEAD
+    /// or another signature.
+    </span><span class="kw">pub fn </span>open_adaptor_cert&lt;T&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>t: T, cert_public: <span class="kw-2">&amp;</span>AdaptorCertPublic) -&gt; SignatureResult&lt;PublicKey&gt;
     <span class="kw">where </span>T: SigningTranscript
     {
-        t.proto_name(<span class="string">b"ECQV"</span>);
+        t.proto_name(<span class="string">b"Adaptor"</span>);
         t.commit_point(<span class="string">b"issuer-pk"</span>,<span class="self">self</span>.as_compressed());
 
-        <span class="kw">let </span>gamma = CompressedRistretto(cert_public.<span class="number">0</span>.clone());
+        <span class="kw">let </span>gamma = CompressedRistretto(cert_public.<span class="number">0</span>);
         t.commit_point(<span class="string">b"gamma"</span>,<span class="kw-2">&amp;</span>gamma);
         <span class="kw">let </span>gamma = gamma.decompress().ok_or(SignatureError::PointDecompressionError) <span class="question-mark">?</span>;
 
-        <span class="kw">let </span>point = <span class="self">self</span>.as_point() + cert_public.derive_e(t) * gamma;
+        <span class="kw">let </span>point = cert_public.derive_e(t) * <span class="self">self</span>.as_point() + gamma;
         <span class="prelude-val">Ok</span>(PublicKey::from_point(point))
     }
 }
@@ -448,18 +485,17 @@ impl&lt;'a&gt; From&lt;&amp;'a ECQVCertSecret&gt; for &amp;'a ECQVCertPublic {
 </span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-    <span class="attr">#[test]
-    </span><span class="kw">fn </span>ecqv_cert_public_vs_private_paths() {
+    <span class="attr">#[cfg(feature = <span class="string">"getrandom"</span>)]
+    #[test]
+    </span><span class="kw">fn </span>adaptor_cert_public_vs_private_paths() {
         <span class="kw">let </span>t = signing_context(<span class="string">b""</span>).bytes(<span class="string">b"MrMeow!"</span>);
 
-        <span class="comment">// #[cfg(feature = "getrandom")]
-        </span><span class="kw">let </span><span class="kw-2">mut </span>csprng = ::rand_core::OsRng;
+        <span class="kw">let </span><span class="kw-2">mut </span>csprng = rand_core::OsRng;
         <span class="kw">let </span>issuer = Keypair::generate_with(<span class="kw-2">&amp;mut </span>csprng);
 
-        <span class="kw">let </span>(cert_public,secret_key) = issuer.issue_self_ecqv_cert(t.clone());
-        <span class="kw">let </span>public_key = issuer.public.open_ecqv_cert(t,<span class="kw-2">&amp;</span>cert_public).unwrap();
+        <span class="kw">let </span>(cert_public,secret_key) = issuer.issue_self_adaptor_cert(t.clone());
+        <span class="kw">let </span>public_key = issuer.public.open_adaptor_cert(t,<span class="kw-2">&amp;</span>cert_public).unwrap();
         <span class="macro">assert_eq!</span>(secret_key.to_public(), public_key);
     }
 }
-
 </code></pre></div></section></main></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/client/chain-spec/src/genesis_block.rs`."><title>genesis_block.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_chain_spec" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/chain-spec/src/genesis_block.rs`."><title>genesis_block.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_chain_spec" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../sc_chain_spec/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -138,8 +138,6 @@
 <a href="#136" id="136">136</a>
 <a href="#137" id="137">137</a>
 <a href="#138" id="138">138</a>
-<a href="#139" id="139">139</a>
-<a href="#140" id="140">140</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -160,23 +158,25 @@
 
 </span><span class="doccomment">//! Tool for creating the genesis block.
 
-</span><span class="kw">use </span>std::{collections::hash_map::DefaultHasher, marker::PhantomData, sync::Arc};
+</span><span class="kw">use </span>std::{marker::PhantomData, sync::Arc};
 
+<span class="kw">use </span>codec::Encode;
 <span class="kw">use </span>sc_client_api::{backend::Backend, BlockImportOperation};
 <span class="kw">use </span>sc_executor::RuntimeVersionOf;
 <span class="kw">use </span>sp_core::storage::{well_known_keys, StateVersion, Storage};
 <span class="kw">use </span>sp_runtime::{
-	traits::{Block <span class="kw">as </span>BlockT, Hash <span class="kw">as </span>HashT, Header <span class="kw">as </span>HeaderT, Zero},
+	traits::{Block <span class="kw">as </span>BlockT, Hash <span class="kw">as </span>HashT, HashingFor, Header <span class="kw">as </span>HeaderT, Zero},
 	BuildStorage,
 };
 
 <span class="doccomment">/// Return the state version given the genesis storage and executor.
-</span><span class="kw">pub fn </span>resolve_state_version_from_wasm&lt;E&gt;(
+</span><span class="kw">pub fn </span>resolve_state_version_from_wasm&lt;E, H&gt;(
 	storage: <span class="kw-2">&amp;</span>Storage,
 	executor: <span class="kw-2">&amp;</span>E,
 ) -&gt; sp_blockchain::Result&lt;StateVersion&gt;
 <span class="kw">where
 	</span>E: RuntimeVersionOf,
+	H: HashT,
 {
 	<span class="kw">if let </span><span class="prelude-val">Some</span>(wasm) = storage.top.get(well_known_keys::CODE) {
 		<span class="kw">let </span><span class="kw-2">mut </span>ext = sp_state_machine::BasicExternalities::new_empty(); <span class="comment">// just to read runtime version.
@@ -185,12 +185,7 @@
 		<span class="kw">let </span>runtime_code = sp_core::traits::RuntimeCode {
 			code_fetcher: <span class="kw-2">&amp;</span>code_fetcher,
 			heap_pages: <span class="prelude-val">None</span>,
-			hash: {
-				<span class="kw">use </span>std::hash::{Hash, Hasher};
-				<span class="kw">let </span><span class="kw-2">mut </span>state = DefaultHasher::new();
-				wasm.hash(<span class="kw-2">&amp;mut </span>state);
-				state.finish().to_le_bytes().to_vec()
-			},
+			hash: &lt;H <span class="kw">as </span>HashT&gt;::hash(wasm).encode(),
 		};
 		<span class="kw">let </span>runtime_version = RuntimeVersionOf::runtime_version(executor, <span class="kw-2">&amp;mut </span>ext, <span class="kw-2">&amp;</span>runtime_code)
 			.map_err(|e| sp_blockchain::Error::VersionInvalid(e.to_string()))<span class="question-mark">?</span>;
@@ -271,7 +266,8 @@
 	<span class="kw">fn </span>build_genesis_block(<span class="self">self</span>) -&gt; sp_blockchain::Result&lt;(Block, <span class="self">Self</span>::BlockImportOperation)&gt; {
 		<span class="kw">let </span><span class="self">Self </span>{ genesis_storage, commit_genesis_state, backend, executor, _phantom } = <span class="self">self</span>;
 
-		<span class="kw">let </span>genesis_state_version = resolve_state_version_from_wasm(<span class="kw-2">&amp;</span>genesis_storage, <span class="kw-2">&amp;</span>executor)<span class="question-mark">?</span>;
+		<span class="kw">let </span>genesis_state_version =
+			resolve_state_version_from_wasm::&lt;<span class="kw">_</span>, HashingFor&lt;Block&gt;&gt;(<span class="kw-2">&amp;</span>genesis_storage, <span class="kw-2">&amp;</span>executor)<span class="question-mark">?</span>;
 		<span class="kw">let </span><span class="kw-2">mut </span>op = backend.begin_operation()<span class="question-mark">?</span>;
 		<span class="kw">let </span>state_root =
 			op.set_genesis_state(genesis_storage, commit_genesis_state, genesis_state_version)<span class="question-mark">?</span>;

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["emit","read"]};
+window.SIDEBAR_ITEMS = {"fn":["emit","read"],"struct":["A","Ipv4Addr"]};

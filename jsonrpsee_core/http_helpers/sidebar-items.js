@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["read_body","read_header_value","read_header_values"]};
+window.SIDEBAR_ITEMS = {"enum":["HttpError"],"fn":["read_body","read_header_value","read_header_values"]};

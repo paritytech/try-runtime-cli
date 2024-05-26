@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-resolver-0.22.0/src/async_resolver.rs`."><title>async_resolver.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="trust_dns_resolver" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-resolver-0.23.2/src/async_resolver.rs`."><title>async_resolver.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="trust_dns_resolver" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../trust_dns_resolver/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -1280,69 +1280,6 @@
 <a href="#1278" id="1278">1278</a>
 <a href="#1279" id="1279">1279</a>
 <a href="#1280" id="1280">1280</a>
-<a href="#1281" id="1281">1281</a>
-<a href="#1282" id="1282">1282</a>
-<a href="#1283" id="1283">1283</a>
-<a href="#1284" id="1284">1284</a>
-<a href="#1285" id="1285">1285</a>
-<a href="#1286" id="1286">1286</a>
-<a href="#1287" id="1287">1287</a>
-<a href="#1288" id="1288">1288</a>
-<a href="#1289" id="1289">1289</a>
-<a href="#1290" id="1290">1290</a>
-<a href="#1291" id="1291">1291</a>
-<a href="#1292" id="1292">1292</a>
-<a href="#1293" id="1293">1293</a>
-<a href="#1294" id="1294">1294</a>
-<a href="#1295" id="1295">1295</a>
-<a href="#1296" id="1296">1296</a>
-<a href="#1297" id="1297">1297</a>
-<a href="#1298" id="1298">1298</a>
-<a href="#1299" id="1299">1299</a>
-<a href="#1300" id="1300">1300</a>
-<a href="#1301" id="1301">1301</a>
-<a href="#1302" id="1302">1302</a>
-<a href="#1303" id="1303">1303</a>
-<a href="#1304" id="1304">1304</a>
-<a href="#1305" id="1305">1305</a>
-<a href="#1306" id="1306">1306</a>
-<a href="#1307" id="1307">1307</a>
-<a href="#1308" id="1308">1308</a>
-<a href="#1309" id="1309">1309</a>
-<a href="#1310" id="1310">1310</a>
-<a href="#1311" id="1311">1311</a>
-<a href="#1312" id="1312">1312</a>
-<a href="#1313" id="1313">1313</a>
-<a href="#1314" id="1314">1314</a>
-<a href="#1315" id="1315">1315</a>
-<a href="#1316" id="1316">1316</a>
-<a href="#1317" id="1317">1317</a>
-<a href="#1318" id="1318">1318</a>
-<a href="#1319" id="1319">1319</a>
-<a href="#1320" id="1320">1320</a>
-<a href="#1321" id="1321">1321</a>
-<a href="#1322" id="1322">1322</a>
-<a href="#1323" id="1323">1323</a>
-<a href="#1324" id="1324">1324</a>
-<a href="#1325" id="1325">1325</a>
-<a href="#1326" id="1326">1326</a>
-<a href="#1327" id="1327">1327</a>
-<a href="#1328" id="1328">1328</a>
-<a href="#1329" id="1329">1329</a>
-<a href="#1330" id="1330">1330</a>
-<a href="#1331" id="1331">1331</a>
-<a href="#1332" id="1332">1332</a>
-<a href="#1333" id="1333">1333</a>
-<a href="#1334" id="1334">1334</a>
-<a href="#1335" id="1335">1335</a>
-<a href="#1336" id="1336">1336</a>
-<a href="#1337" id="1337">1337</a>
-<a href="#1338" id="1338">1338</a>
-<a href="#1339" id="1339">1339</a>
-<a href="#1340" id="1340">1340</a>
-<a href="#1341" id="1341">1341</a>
-<a href="#1342" id="1342">1342</a>
-<a href="#1343" id="1343">1343</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2019 Benjamin Fry &lt;benjaminfry@me.com&gt;
 //
 // Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
@@ -1361,7 +1298,6 @@
 <span class="kw">use </span>proto::rr::domain::TryParseIp;
 <span class="kw">use </span>proto::rr::{IntoName, Name, Record, RecordType};
 <span class="kw">use </span>proto::xfer::{DnsRequestOptions, RetryDnsHandle};
-<span class="kw">use </span>proto::DnsHandle;
 <span class="kw">use </span>tracing::{debug, trace};
 
 <span class="kw">use </span><span class="kw">crate</span>::caching_client::CachingClient;
@@ -1370,12 +1306,9 @@
 <span class="kw">use </span><span class="kw">crate</span>::error::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">crate</span>::lookup::{<span class="self">self</span>, Lookup, LookupEither, LookupFuture};
 <span class="kw">use </span><span class="kw">crate</span>::lookup_ip::{LookupIp, LookupIpFuture};
-<span class="kw">use </span><span class="kw">crate</span>::name_server::{
-    ConnectionProvider, GenericConnection, GenericConnectionProvider, NameServerPool,
-    RuntimeProvider,
-};
 <span class="attr">#[cfg(feature = <span class="string">"tokio-runtime"</span>)]
-</span><span class="kw">use </span><span class="kw">crate</span>::name_server::{TokioConnection, TokioConnectionProvider, TokioHandle};
+</span><span class="kw">use </span><span class="kw">crate</span>::name_server::TokioConnectionProvider;
+<span class="kw">use </span><span class="kw">crate</span>::name_server::{ConnectionProvider, NameServerPool};
 
 <span class="kw">use </span><span class="kw">crate</span>::Hosts;
 
@@ -1406,17 +1339,17 @@
 /// linked to it. When all of its [`AsyncResolver`]s have been dropped, the
 /// background future will finish.
 </span><span class="attr">#[derive(Clone)]
-</span><span class="kw">pub struct </span>AsyncResolver&lt;C: DnsHandle&lt;Error = ResolveError&gt;, P: ConnectionProvider&lt;Conn = C&gt;&gt; {
+</span><span class="kw">pub struct </span>AsyncResolver&lt;P: ConnectionProvider&gt; {
     config: ResolverConfig,
     options: ResolverOpts,
-    client_cache: CachingClient&lt;LookupEither&lt;C, P&gt;, ResolveError&gt;,
+    client_cache: CachingClient&lt;LookupEither&lt;P&gt;, ResolveError&gt;,
     hosts: <span class="prelude-ty">Option</span>&lt;Arc&lt;Hosts&gt;&gt;,
 }
 
 <span class="doccomment">/// An AsyncResolver used with Tokio
 </span><span class="attr">#[cfg(feature = <span class="string">"tokio-runtime"</span>)]
 #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"tokio-runtime"</span>)))]
-</span><span class="kw">pub type </span>TokioAsyncResolver = AsyncResolver&lt;TokioConnection, TokioConnectionProvider&gt;;
+</span><span class="kw">pub type </span>TokioAsyncResolver = AsyncResolver&lt;TokioConnectionProvider&gt;;
 
 <span class="macro">macro_rules!</span> lookup_fn {
     (<span class="macro-nonterminal">$p</span>:ident, <span class="macro-nonterminal">$l</span>:ty, <span class="macro-nonterminal">$r</span>:path) =&gt; {
@@ -1467,8 +1400,8 @@
     /// background task that runs resolutions for the `AsyncResolver`. See the
     /// documentation for `AsyncResolver` for more information on how to use
     /// the background future.
-    </span><span class="kw">pub fn </span>tokio(config: ResolverConfig, options: ResolverOpts) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ResolveError&gt; {
-        <span class="self">Self</span>::new(config, options, TokioHandle)
+    </span><span class="kw">pub fn </span>tokio(config: ResolverConfig, options: ResolverOpts) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::new(config, options, TokioConnectionProvider::default())
     }
 
     <span class="doccomment">/// Constructs a new Tokio based Resolver with the system configuration.
@@ -1481,11 +1414,11 @@
         doc(cfg(all(feature = <span class="string">"system-config"</span>, any(unix, target_os = <span class="string">"windows"</span>))))
     )]
     </span><span class="kw">pub fn </span>tokio_from_system_conf() -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ResolveError&gt; {
-        <span class="self">Self</span>::from_system_conf(TokioHandle)
+        <span class="self">Self</span>::from_system_conf(TokioConnectionProvider::default())
     }
 }
 
-<span class="kw">impl</span>&lt;R: RuntimeProvider&gt; AsyncResolver&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt; {
+<span class="kw">impl</span>&lt;R: ConnectionProvider&gt; AsyncResolver&lt;R&gt; {
     <span class="doccomment">/// Construct a new generic `AsyncResolver` with the provided configuration.
     ///
     /// see [TokioAsyncResolver::tokio(..)] instead.
@@ -1501,16 +1434,8 @@
     /// background task that runs resolutions for the `AsyncResolver`. See the
     /// documentation for `AsyncResolver` for more information on how to use
     /// the background future.
-    </span><span class="kw">pub fn </span>new(
-        config: ResolverConfig,
-        options: ResolverOpts,
-        runtime: R::Handle,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ResolveError&gt; {
-        <span class="self">Self</span>::new_with_conn(
-            config,
-            options,
-            GenericConnectionProvider::&lt;R&gt;::new(runtime),
-        )
+    </span><span class="kw">pub fn </span>new(config: ResolverConfig, options: ResolverOpts, provider: R) -&gt; <span class="self">Self </span>{
+        <span class="self">Self</span>::new_with_conn(config, options, provider)
     }
 
     <span class="doccomment">/// Constructs a new Resolver with the system configuration.
@@ -1524,8 +1449,8 @@
         docsrs,
         doc(cfg(all(feature = <span class="string">"system-config"</span>, any(unix, target_os = <span class="string">"windows"</span>))))
     )]
-    </span><span class="kw">pub fn </span>from_system_conf(runtime: R::Handle) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ResolveError&gt; {
-        <span class="self">Self</span>::from_system_conf_with_provider(GenericConnectionProvider::&lt;R&gt;::new(runtime))
+    </span><span class="kw">pub fn </span>from_system_conf(runtime: R) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ResolveError&gt; {
+        <span class="self">Self</span>::from_system_conf_with_provider(runtime)
     }
 
     <span class="doccomment">/// Flushes/Removes all entries from the cache
@@ -1534,7 +1459,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;C: DnsHandle&lt;Error = ResolveError&gt;, P: ConnectionProvider&lt;Conn = C&gt;&gt; AsyncResolver&lt;C, P&gt; {
+<span class="kw">impl</span>&lt;P: ConnectionProvider&gt; AsyncResolver&lt;P&gt; {
     <span class="doccomment">/// Construct a new `AsyncResolver` with the provided configuration.
     ///
     /// # Arguments
@@ -1548,12 +1473,7 @@
     /// background task that runs resolutions for the `AsyncResolver`. See the
     /// documentation for `AsyncResolver` for more information on how to use
     /// the background future.
-    </span><span class="attr">#[allow(clippy::unnecessary_wraps)]
-    </span><span class="kw">pub fn </span>new_with_conn(
-        config: ResolverConfig,
-        options: ResolverOpts,
-        conn_provider: P,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ResolveError&gt; {
+    </span><span class="kw">pub fn </span>new_with_conn(config: ResolverConfig, options: ResolverOpts, conn_provider: P) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>pool = NameServerPool::from_config_with_provider(<span class="kw-2">&amp;</span>config, <span class="kw-2">&amp;</span>options, conn_provider);
         <span class="kw">let </span>either;
         <span class="kw">let </span>client = RetryDnsHandle::new(pool, options.attempts);
@@ -1582,12 +1502,12 @@
 
         <span class="macro">trace!</span>(<span class="string">"handle passed back"</span>);
         <span class="kw">let </span>lru = DnsLru::new(options.cache_size, dns_lru::TtlConfig::from_opts(<span class="kw-2">&amp;</span>options));
-        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+        <span class="self">Self </span>{
             config,
             options,
             client_cache: CachingClient::with_cache(lru, either, options.preserve_intermediates),
             hosts,
-        })
+        }
     }
 
     <span class="doccomment">/// Constructs a new Resolver with the system configuration.
@@ -1601,7 +1521,7 @@
     )]
     </span><span class="kw">pub fn </span>from_system_conf_with_provider(conn_provider: P) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ResolveError&gt; {
         <span class="kw">let </span>(config, options) = <span class="kw">super</span>::system_conf::read_system_conf()<span class="question-mark">?</span>;
-        <span class="self">Self</span>::new_with_conn(config, options, conn_provider)
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span>::new_with_conn(config, options, conn_provider))
     }
 
     <span class="doccomment">/// Per request options based on the ResolverOpts
@@ -1749,7 +1669,7 @@
             </span><span class="kw">if </span><span class="self">self</span>.options.ndots &gt; <span class="number">4 </span>{
                 finally_ip_addr = <span class="prelude-val">Some</span>(record);
             } <span class="kw">else </span>{
-                <span class="kw">let </span>query = Query::query(name, ip_addr.to_record_type());
+                <span class="kw">let </span>query = Query::query(name, ip_addr.record_type());
                 <span class="kw">let </span>lookup = Lookup::new_with_max_ttl(query, Arc::from([record]));
                 <span class="kw">return </span><span class="prelude-val">Ok</span>(lookup.into());
             }
@@ -1803,9 +1723,7 @@
     <span class="macro">lookup_fn!</span>(txt_lookup, lookup::TxtLookup, RecordType::TXT);
 }
 
-<span class="kw">impl</span>&lt;C: DnsHandle&lt;Error = ResolveError&gt;, P: ConnectionProvider&lt;Conn = C&gt;&gt; fmt::Debug
-    <span class="kw">for </span>AsyncResolver&lt;C, P&gt;
-{
+<span class="kw">impl</span>&lt;P: ConnectionProvider&gt; fmt::Debug <span class="kw">for </span>AsyncResolver&lt;P&gt; {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
         f.debug_struct(<span class="string">"AsyncResolver"</span>)
             .field(<span class="string">"request_tx"</span>, <span class="kw-2">&amp;</span><span class="string">"..."</span>)
@@ -1821,22 +1739,17 @@
     <span class="kw">use </span>std::{net::<span class="kw-2">*</span>, str::FromStr};
 
     <span class="kw">use </span><span class="kw">crate</span>::config::{LookupIpStrategy, NameServerConfig, ResolverConfig, ResolverOpts};
-    <span class="kw">use </span><span class="kw">crate</span>::name_server::{GenericConnection, GenericConnectionProvider, RuntimeProvider};
+    <span class="kw">use </span><span class="kw">crate</span>::name_server::ConnectionProvider;
     <span class="kw">use </span><span class="kw">crate</span>::AsyncResolver;
     <span class="kw">use </span>proto::{rr::Name, Executor};
 
     <span class="doccomment">/// Test IP lookup from URLs.
-    </span><span class="kw">pub fn </span>lookup_test&lt;E: Executor, R: RuntimeProvider&gt;(
+    </span><span class="kw">pub fn </span>lookup_test&lt;E: Executor, R: ConnectionProvider&gt;(
         config: ResolverConfig,
         <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
+        handle: R,
     ) {
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
-            config,
-            ResolverOpts::default(),
-            handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        <span class="kw">let </span>resolver = AsyncResolver::&lt;R&gt;::new(config, ResolverOpts::default(), handle);
 
         <span class="kw">let </span>response = exec
             .block_on(resolver.lookup_ip(<span class="string">"www.example.com."</span>))
@@ -1858,13 +1771,9 @@
     }
 
     <span class="doccomment">/// Test IP lookup from IP literals.
-    </span><span class="kw">pub fn </span>ip_lookup_test&lt;E: Executor, R: RuntimeProvider&gt;(<span class="kw-2">mut </span>exec: E, handle: R::Handle) {
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
-            ResolverConfig::default(),
-            ResolverOpts::default(),
-            handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+    </span><span class="kw">pub fn </span>ip_lookup_test&lt;E: Executor, R: ConnectionProvider&gt;(<span class="kw-2">mut </span>exec: E, handle: R) {
+        <span class="kw">let </span>resolver =
+            AsyncResolver::&lt;R&gt;::new(ResolverConfig::default(), ResolverOpts::default(), handle);
 
         <span class="kw">let </span>response = exec
             .block_on(resolver.lookup_ip(<span class="string">"10.1.0.2"</span>))
@@ -1888,24 +1797,20 @@
     }
 
     <span class="doccomment">/// Test IP lookup from IP literals across threads.
-    </span><span class="kw">pub fn </span>ip_lookup_across_threads_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
-        handle: R::Handle,
+    </span><span class="kw">pub fn </span>ip_lookup_across_threads_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(
+        handle: R,
     ) {
         <span class="comment">// Test ensuring that running the background task on a separate
         // executor in a separate thread from the futures returned by the
         // AsyncResolver works correctly.
         </span><span class="kw">use </span>std::thread;
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
-            ResolverConfig::default(),
-            ResolverOpts::default(),
-            handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        <span class="kw">let </span>resolver =
+            AsyncResolver::&lt;R&gt;::new(ResolverConfig::default(), ResolverOpts::default(), handle);
 
         <span class="kw">let </span>resolver_one = resolver.clone();
         <span class="kw">let </span>resolver_two = resolver;
 
-        <span class="kw">let </span>test_fn = |resolver: AsyncResolver&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;| {
+        <span class="kw">let </span>test_fn = |resolver: AsyncResolver&lt;R&gt;| {
             <span class="kw">let </span><span class="kw-2">mut </span>exec = E::new();
 
             <span class="kw">let </span>response = exec
@@ -1941,16 +1846,16 @@
         thread_two.join().expect(<span class="string">"thread_two failed"</span>);
     }
 
-    <span class="doccomment">/// Test IP lookup from URLs with DNSSec validation.
+    <span class="doccomment">/// Test IP lookup from URLs with DNSSEC validation.
     </span><span class="attr">#[cfg(feature = <span class="string">"dnssec"</span>)]
     #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"dnssec"</span>)))]
-    </span><span class="kw">pub fn </span>sec_lookup_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
+    </span><span class="kw">pub fn </span>sec_lookup_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(
         <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
+        handle: R,
     ) {
         <span class="comment">//env_logger::try_init().ok();
 
-        </span><span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
+        </span><span class="kw">let </span>resolver = AsyncResolver::new(
             ResolverConfig::default(),
             ResolverOpts {
                 validate: <span class="bool-val">true</span>,
@@ -1958,8 +1863,7 @@
                 ..ResolverOpts::default()
             },
             handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        );
 
         <span class="kw">let </span>response = exec
             .block_on(resolver.lookup_ip(<span class="string">"www.example.com."</span>))
@@ -1981,17 +1885,17 @@
         }
     }
 
-    <span class="doccomment">/// Test IP lookup from domains that exist but unsigned with DNSSec validation.
+    <span class="doccomment">/// Test IP lookup from domains that exist but unsigned with DNSSEC validation.
     </span><span class="attr">#[allow(deprecated)]
     #[cfg(feature = <span class="string">"dnssec"</span>)]
     #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"dnssec"</span>)))]
-    </span><span class="kw">pub fn </span>sec_lookup_fails_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
+    </span><span class="kw">pub fn </span>sec_lookup_fails_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(
         <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
+        handle: R,
     ) {
         <span class="kw">use </span><span class="kw">crate</span>::error::<span class="kw-2">*</span>;
         <span class="kw">use </span>proto::rr::RecordType;
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
+        <span class="kw">let </span>resolver = AsyncResolver::new(
             ResolverConfig::default(),
             ResolverOpts {
                 validate: <span class="bool-val">true</span>,
@@ -1999,8 +1903,7 @@
                 ..ResolverOpts::default()
             },
             handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        );
 
         <span class="comment">// needs to be a domain that exists, but is not signed (eventually this will be)
         </span><span class="kw">let </span>response = exec.block_on(resolver.lookup_ip(<span class="string">"trust-dns.org."</span>));
@@ -2010,7 +1913,7 @@
 
         <span class="kw">use </span>proto::error::{ProtoError, ProtoErrorKind};
 
-        <span class="kw">let </span>error_str = <span class="macro">format!</span>(<span class="string">"{}"</span>, error);
+        <span class="kw">let </span>error_str = <span class="macro">format!</span>(<span class="string">"{error}"</span>);
         <span class="kw">let </span>name = Name::from_str(<span class="string">"trust-dns.org."</span>).unwrap();
         <span class="kw">let </span>expected_str = <span class="macro">format!</span>(
             <span class="string">"{}"</span>,
@@ -2029,15 +1932,12 @@
     <span class="doccomment">/// Test AsyncResolver created from system configuration with IP lookup.
     </span><span class="attr">#[cfg(feature = <span class="string">"system-config"</span>)]
     #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"system-config"</span>)))]
-    </span><span class="kw">pub fn </span>system_lookup_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
+    </span><span class="kw">pub fn </span>system_lookup_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(
         <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
+        handle: R,
     ) {
         <span class="kw">let </span>resolver =
-            AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::from_system_conf(
-                handle,
-            )
-            .expect(<span class="string">"failed to create resolver"</span>);
+            AsyncResolver::&lt;R&gt;::from_system_conf(handle).expect(<span class="string">"failed to create resolver"</span>);
 
         <span class="kw">let </span>response = exec
             .block_on(resolver.lookup_ip(<span class="string">"www.example.com."</span>))
@@ -2061,15 +1961,12 @@
     <span class="doccomment">/// Test AsyncResolver created from system configuration with host lookups.
     </span><span class="attr">#[cfg(feature = <span class="string">"system-config"</span>)]
     #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"system-config"</span>)))]
-    </span><span class="kw">pub fn </span>hosts_lookup_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
+    </span><span class="kw">pub fn </span>hosts_lookup_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(
         <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
+        handle: R,
     ) {
         <span class="kw">let </span>resolver =
-            AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::from_system_conf(
-                handle,
-            )
-            .expect(<span class="string">"failed to create resolver"</span>);
+            AsyncResolver::&lt;R&gt;::from_system_conf(handle).expect(<span class="string">"failed to create resolver"</span>);
 
         <span class="kw">let </span>response = exec
             .block_on(resolver.lookup_ip(<span class="string">"a.com"</span>))
@@ -2086,10 +1983,7 @@
     }
 
     <span class="doccomment">/// Test fqdn.
-    </span><span class="kw">pub fn </span>fqdn_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
-        <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
-    ) {
+    </span><span class="kw">pub fn </span>fqdn_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(<span class="kw-2">mut </span>exec: E, handle: R) {
         <span class="kw">let </span>domain = Name::from_str(<span class="string">"incorrect.example.com."</span>).unwrap();
         <span class="kw">let </span>search = <span class="macro">vec!</span>[
             Name::from_str(<span class="string">"bad.example.com."</span>).unwrap(),
@@ -2098,15 +1992,14 @@
         <span class="kw">let </span>name_servers: Vec&lt;NameServerConfig&gt; =
             ResolverConfig::default().name_servers().to_owned();
 
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
+        <span class="kw">let </span>resolver = AsyncResolver::&lt;R&gt;::new(
             ResolverConfig::from_parts(<span class="prelude-val">Some</span>(domain), search, name_servers),
             ResolverOpts {
                 ip_strategy: LookupIpStrategy::Ipv4Only,
                 ..ResolverOpts::default()
             },
             handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        );
 
         <span class="kw">let </span>response = exec
             .block_on(resolver.lookup_ip(<span class="string">"www.example.com."</span>))
@@ -2123,10 +2016,7 @@
     }
 
     <span class="doccomment">/// Test ndots with non-fqdn.
-    </span><span class="kw">pub fn </span>ndots_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
-        <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
-    ) {
+    </span><span class="kw">pub fn </span>ndots_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(<span class="kw-2">mut </span>exec: E, handle: R) {
         <span class="kw">let </span>domain = Name::from_str(<span class="string">"incorrect.example.com."</span>).unwrap();
         <span class="kw">let </span>search = <span class="macro">vec!</span>[
             Name::from_str(<span class="string">"bad.example.com."</span>).unwrap(),
@@ -2135,7 +2025,7 @@
         <span class="kw">let </span>name_servers: Vec&lt;NameServerConfig&gt; =
             ResolverConfig::default().name_servers().to_owned();
 
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
+        <span class="kw">let </span>resolver = AsyncResolver::&lt;R&gt;::new(
             ResolverConfig::from_parts(<span class="prelude-val">Some</span>(domain), search, name_servers),
             ResolverOpts {
                 <span class="comment">// our name does have 2, the default should be fine, let's just narrow the test criteria a bit.
@@ -2144,8 +2034,7 @@
                 ..ResolverOpts::default()
             },
             handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        );
 
         <span class="comment">// notice this is not a FQDN, no trailing dot.
         </span><span class="kw">let </span>response = exec
@@ -2163,9 +2052,9 @@
     }
 
     <span class="doccomment">/// Test large ndots with non-fqdn.
-    </span><span class="kw">pub fn </span>large_ndots_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
+    </span><span class="kw">pub fn </span>large_ndots_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(
         <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
+        handle: R,
     ) {
         <span class="kw">let </span>domain = Name::from_str(<span class="string">"incorrect.example.com."</span>).unwrap();
         <span class="kw">let </span>search = <span class="macro">vec!</span>[
@@ -2175,7 +2064,7 @@
         <span class="kw">let </span>name_servers: Vec&lt;NameServerConfig&gt; =
             ResolverConfig::default().name_servers().to_owned();
 
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
+        <span class="kw">let </span>resolver = AsyncResolver::&lt;R&gt;::new(
             ResolverConfig::from_parts(<span class="prelude-val">Some</span>(domain), search, name_servers),
             ResolverOpts {
                 <span class="comment">// matches kubernetes default
@@ -2184,8 +2073,7 @@
                 ..ResolverOpts::default()
             },
             handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        );
 
         <span class="comment">// notice this is not a FQDN, no trailing dot.
         </span><span class="kw">let </span>response = exec
@@ -2203,9 +2091,9 @@
     }
 
     <span class="doccomment">/// Test domain search.
-    </span><span class="kw">pub fn </span>domain_search_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
+    </span><span class="kw">pub fn </span>domain_search_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(
         <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
+        handle: R,
     ) {
         <span class="comment">//env_logger::try_init().ok();
 
@@ -2218,15 +2106,14 @@
         <span class="kw">let </span>name_servers: Vec&lt;NameServerConfig&gt; =
             ResolverConfig::default().name_servers().to_owned();
 
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
+        <span class="kw">let </span>resolver = AsyncResolver::&lt;R&gt;::new(
             ResolverConfig::from_parts(<span class="prelude-val">Some</span>(domain), search, name_servers),
             ResolverOpts {
                 ip_strategy: LookupIpStrategy::Ipv4Only,
                 ..ResolverOpts::default()
             },
             handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        );
 
         <span class="comment">// notice no dots, should not trigger ndots rule
         </span><span class="kw">let </span>response = exec
@@ -2244,9 +2131,9 @@
     }
 
     <span class="doccomment">/// Test search lists.
-    </span><span class="kw">pub fn </span>search_list_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
+    </span><span class="kw">pub fn </span>search_list_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(
         <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
+        handle: R,
     ) {
         <span class="kw">let </span>domain = Name::from_str(<span class="string">"incorrect.example.com."</span>).unwrap();
         <span class="kw">let </span>search = <span class="macro">vec!</span>[
@@ -2258,15 +2145,14 @@
         <span class="kw">let </span>name_servers: Vec&lt;NameServerConfig&gt; =
             ResolverConfig::default().name_servers().to_owned();
 
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
+        <span class="kw">let </span>resolver = AsyncResolver::&lt;R&gt;::new(
             ResolverConfig::from_parts(<span class="prelude-val">Some</span>(domain), search, name_servers),
             ResolverOpts {
                 ip_strategy: LookupIpStrategy::Ipv4Only,
                 ..ResolverOpts::default()
             },
             handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        );
 
         <span class="comment">// notice no dots, should not trigger ndots rule
         </span><span class="kw">let </span>response = exec
@@ -2284,16 +2170,9 @@
     }
 
     <span class="doccomment">/// Test idna.
-    </span><span class="kw">pub fn </span>idna_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
-        <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
-    ) {
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
-            ResolverConfig::default(),
-            ResolverOpts::default(),
-            handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+    </span><span class="kw">pub fn </span>idna_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(<span class="kw-2">mut </span>exec: E, handle: R) {
+        <span class="kw">let </span>resolver =
+            AsyncResolver::&lt;R&gt;::new(ResolverConfig::default(), ResolverOpts::default(), handle);
 
         <span class="kw">let </span>response = exec
             .block_on(resolver.lookup_ip(<span class="string">"中国.icom.museum."</span>))
@@ -2305,19 +2184,18 @@
     }
 
     <span class="doccomment">/// Test ipv4 localhost.
-    </span><span class="kw">pub fn </span>localhost_ipv4_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
+    </span><span class="kw">pub fn </span>localhost_ipv4_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(
         <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
+        handle: R,
     ) {
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
+        <span class="kw">let </span>resolver = AsyncResolver::&lt;R&gt;::new(
             ResolverConfig::default(),
             ResolverOpts {
                 ip_strategy: LookupIpStrategy::Ipv4thenIpv6,
                 ..ResolverOpts::default()
             },
             handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        );
 
         <span class="kw">let </span>response = exec
             .block_on(resolver.lookup_ip(<span class="string">"localhost"</span>))
@@ -2331,19 +2209,18 @@
     }
 
     <span class="doccomment">/// Test ipv6 localhost.
-    </span><span class="kw">pub fn </span>localhost_ipv6_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
+    </span><span class="kw">pub fn </span>localhost_ipv6_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(
         <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
+        handle: R,
     ) {
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
+        <span class="kw">let </span>resolver = AsyncResolver::&lt;R&gt;::new(
             ResolverConfig::default(),
             ResolverOpts {
                 ip_strategy: LookupIpStrategy::Ipv6thenIpv4,
                 ..ResolverOpts::default()
             },
             handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        );
 
         <span class="kw">let </span>response = exec
             .block_on(resolver.lookup_ip(<span class="string">"localhost"</span>))
@@ -2357,14 +2234,14 @@
     }
 
     <span class="doccomment">/// Test ipv4 search with large ndots.
-    </span><span class="kw">pub fn </span>search_ipv4_large_ndots_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
+    </span><span class="kw">pub fn </span>search_ipv4_large_ndots_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(
         <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
+        handle: R,
     ) {
         <span class="kw">let </span><span class="kw-2">mut </span>config = ResolverConfig::default();
         config.add_search(Name::from_str(<span class="string">"example.com"</span>).unwrap());
 
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
+        <span class="kw">let </span>resolver = AsyncResolver::&lt;R&gt;::new(
             config,
             ResolverOpts {
                 ip_strategy: LookupIpStrategy::Ipv4Only,
@@ -2372,8 +2249,7 @@
                 ..ResolverOpts::default()
             },
             handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        );
 
         <span class="kw">let </span>response = exec
             .block_on(resolver.lookup_ip(<span class="string">"198.51.100.35"</span>))
@@ -2387,14 +2263,14 @@
     }
 
     <span class="doccomment">/// Test ipv6 search with large ndots.
-    </span><span class="kw">pub fn </span>search_ipv6_large_ndots_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
+    </span><span class="kw">pub fn </span>search_ipv6_large_ndots_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: ConnectionProvider&gt;(
         <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
+        handle: R,
     ) {
         <span class="kw">let </span><span class="kw-2">mut </span>config = ResolverConfig::default();
         config.add_search(Name::from_str(<span class="string">"example.com"</span>).unwrap());
 
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
+        <span class="kw">let </span>resolver = AsyncResolver::&lt;R&gt;::new(
             config,
             ResolverOpts {
                 ip_strategy: LookupIpStrategy::Ipv4Only,
@@ -2402,8 +2278,7 @@
                 ..ResolverOpts::default()
             },
             handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        );
 
         <span class="kw">let </span>response = exec
             .block_on(resolver.lookup_ip(<span class="string">"2001:db8::c633:6423"</span>))
@@ -2417,14 +2292,17 @@
     }
 
     <span class="doccomment">/// Test ipv6 name parse fails.
-    </span><span class="kw">pub fn </span>search_ipv6_name_parse_fails_test&lt;E: Executor + Send + <span class="lifetime">'static</span>, R: RuntimeProvider&gt;(
+    </span><span class="kw">pub fn </span>search_ipv6_name_parse_fails_test&lt;
+        E: Executor + Send + <span class="lifetime">'static</span>,
+        R: ConnectionProvider,
+    &gt;(
         <span class="kw-2">mut </span>exec: E,
-        handle: R::Handle,
+        handle: R,
     ) {
         <span class="kw">let </span><span class="kw-2">mut </span>config = ResolverConfig::default();
         config.add_search(Name::from_str(<span class="string">"example.com"</span>).unwrap());
 
-        <span class="kw">let </span>resolver = AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;R&gt;&gt;::new(
+        <span class="kw">let </span>resolver = AsyncResolver::&lt;R&gt;::new(
             config,
             ResolverOpts {
                 ip_strategy: LookupIpStrategy::Ipv4Only,
@@ -2432,8 +2310,7 @@
                 ..ResolverOpts::default()
             },
             handle,
-        )
-        .expect(<span class="string">"failed to create resolver"</span>);
+        );
 
         <span class="kw">let </span>response = exec
             .block_on(resolver.lookup_ip(<span class="string">"2001:db8::198.51.100.35"</span>))
@@ -2448,12 +2325,13 @@
 }
 <span class="attr">#[cfg(test)]
 #[cfg(feature = <span class="string">"tokio-runtime"</span>)]
+#[allow(clippy::extra_unused_type_parameters)]
 </span><span class="kw">mod </span>tests {
     <span class="kw">use </span>proto::xfer::DnsRequest;
     <span class="kw">use </span>tokio::runtime::Runtime;
 
     <span class="kw">use </span><span class="kw">crate</span>::config::{ResolverConfig, ResolverOpts};
-    <span class="kw">use </span><span class="kw">crate</span>::name_server::{TokioConnection, TokioConnectionProvider, TokioRuntime};
+    <span class="kw">use </span><span class="kw">crate</span>::name_server::GenericConnection;
 
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
@@ -2472,56 +2350,56 @@
         <span class="macro">assert!</span>(is_send_t::&lt;ResolverOpts&gt;());
         <span class="macro">assert!</span>(is_sync_t::&lt;ResolverOpts&gt;());
 
-        <span class="macro">assert!</span>(is_send_t::&lt;
-            AsyncResolver&lt;TokioConnection, TokioConnectionProvider&gt;,
-        &gt;());
-        <span class="macro">assert!</span>(is_sync_t::&lt;
-            AsyncResolver&lt;TokioConnection, TokioConnectionProvider&gt;,
-        &gt;());
+        <span class="macro">assert!</span>(is_send_t::&lt;AsyncResolver&lt;TokioConnectionProvider&gt;&gt;());
+        <span class="macro">assert!</span>(is_sync_t::&lt;AsyncResolver&lt;TokioConnectionProvider&gt;&gt;());
 
         <span class="macro">assert!</span>(is_send_t::&lt;DnsRequest&gt;());
-        <span class="macro">assert!</span>(is_send_t::&lt;LookupIpFuture&lt;TokioConnection, ResolveError&gt;&gt;());
-        <span class="macro">assert!</span>(is_send_t::&lt;LookupFuture&lt;TokioConnection, ResolveError&gt;&gt;());
+        <span class="macro">assert!</span>(is_send_t::&lt;LookupIpFuture&lt;GenericConnection, ResolveError&gt;&gt;());
+        <span class="macro">assert!</span>(is_send_t::&lt;LookupFuture&lt;GenericConnection, ResolveError&gt;&gt;());
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_lookup_google() {
         <span class="kw">use </span><span class="kw">super</span>::testing::lookup_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        lookup_test::&lt;Runtime, TokioRuntime&gt;(ResolverConfig::google(), io_loop, handle)
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        lookup_test::&lt;Runtime, TokioConnectionProvider&gt;(ResolverConfig::google(), io_loop, handle)
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_lookup_cloudflare() {
         <span class="kw">use </span><span class="kw">super</span>::testing::lookup_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        lookup_test::&lt;Runtime, TokioRuntime&gt;(ResolverConfig::cloudflare(), io_loop, handle)
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        lookup_test::&lt;Runtime, TokioConnectionProvider&gt;(
+            ResolverConfig::cloudflare(),
+            io_loop,
+            handle,
+        )
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_lookup_quad9() {
         <span class="kw">use </span><span class="kw">super</span>::testing::lookup_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        lookup_test::&lt;Runtime, TokioRuntime&gt;(ResolverConfig::quad9(), io_loop, handle)
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        lookup_test::&lt;Runtime, TokioConnectionProvider&gt;(ResolverConfig::quad9(), io_loop, handle)
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_ip_lookup() {
         <span class="kw">use </span><span class="kw">super</span>::testing::ip_lookup_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        ip_lookup_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle)
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        ip_lookup_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle)
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_ip_lookup_across_threads() {
         <span class="kw">use </span><span class="kw">super</span>::testing::ip_lookup_across_threads_test;
         <span class="kw">let </span>_io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        ip_lookup_across_threads_test::&lt;Runtime, TokioRuntime&gt;(handle)
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        ip_lookup_across_threads_test::&lt;Runtime, TokioConnectionProvider&gt;(handle)
     }
 
     <span class="attr">#[test]
@@ -2529,8 +2407,8 @@
     </span><span class="kw">fn </span>test_sec_lookup() {
         <span class="kw">use </span><span class="kw">super</span>::testing::sec_lookup_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        sec_lookup_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        sec_lookup_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
@@ -2538,8 +2416,8 @@
     </span><span class="kw">fn </span>test_sec_lookup_fails() {
         <span class="kw">use </span><span class="kw">super</span>::testing::sec_lookup_fails_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        sec_lookup_fails_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        sec_lookup_fails_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
@@ -2549,121 +2427,117 @@
     </span><span class="kw">fn </span>test_system_lookup() {
         <span class="kw">use </span><span class="kw">super</span>::testing::system_lookup_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        system_lookup_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        system_lookup_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
     #[ignore]
     </span><span class="comment">// these appear to not work on CI, test on macos with `10.1.0.104  a.com`
     </span><span class="attr">#[cfg(unix)]
+    #[cfg(feature = <span class="string">"system-config"</span>)]
     </span><span class="kw">fn </span>test_hosts_lookup() {
         <span class="kw">use </span><span class="kw">super</span>::testing::hosts_lookup_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        hosts_lookup_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        hosts_lookup_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_fqdn() {
         <span class="kw">use </span><span class="kw">super</span>::testing::fqdn_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        fqdn_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        fqdn_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_ndots() {
         <span class="kw">use </span><span class="kw">super</span>::testing::ndots_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        ndots_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        ndots_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_large_ndots() {
         <span class="kw">use </span><span class="kw">super</span>::testing::large_ndots_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        large_ndots_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        large_ndots_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_domain_search() {
         <span class="kw">use </span><span class="kw">super</span>::testing::domain_search_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        domain_search_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        domain_search_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_search_list() {
         <span class="kw">use </span><span class="kw">super</span>::testing::search_list_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        search_list_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        search_list_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_idna() {
         <span class="kw">use </span><span class="kw">super</span>::testing::idna_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        idna_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        idna_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_localhost_ipv4() {
         <span class="kw">use </span><span class="kw">super</span>::testing::localhost_ipv4_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        localhost_ipv4_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        localhost_ipv4_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_localhost_ipv6() {
         <span class="kw">use </span><span class="kw">super</span>::testing::localhost_ipv6_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        localhost_ipv6_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        localhost_ipv6_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_search_ipv4_large_ndots() {
         <span class="kw">use </span><span class="kw">super</span>::testing::search_ipv4_large_ndots_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        search_ipv4_large_ndots_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        search_ipv4_large_ndots_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_search_ipv6_large_ndots() {
         <span class="kw">use </span><span class="kw">super</span>::testing::search_ipv6_large_ndots_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        search_ipv6_large_ndots_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        search_ipv6_large_ndots_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_search_ipv6_name_parse_fails() {
         <span class="kw">use </span><span class="kw">super</span>::testing::search_ipv6_name_parse_fails_test;
         <span class="kw">let </span>io_loop = Runtime::new().expect(<span class="string">"failed to create tokio runtime io_loop"</span>);
-        <span class="kw">let </span>handle = TokioHandle;
-        search_ipv6_name_parse_fails_test::&lt;Runtime, TokioRuntime&gt;(io_loop, handle);
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
+        search_ipv6_name_parse_fails_test::&lt;Runtime, TokioConnectionProvider&gt;(io_loop, handle);
     }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_build_names_onion() {
-        <span class="kw">let </span>handle = TokioHandle;
+        <span class="kw">let </span>handle = TokioConnectionProvider::default();
         <span class="kw">let </span><span class="kw-2">mut </span>config = ResolverConfig::default();
         config.add_search(Name::from_ascii(<span class="string">"example.com."</span>).unwrap());
         <span class="kw">let </span>resolver =
-            AsyncResolver::&lt;GenericConnection, GenericConnectionProvider&lt;TokioRuntime&gt;&gt;::new(
-                config,
-                ResolverOpts::default(),
-                handle,
-            )
-            .expect(<span class="string">"failed to create resolver"</span>);
+            AsyncResolver::&lt;TokioConnectionProvider&gt;::new(config, ResolverOpts::default(), handle);
         <span class="kw">let </span>tor_address = [
             Name::from_ascii(<span class="string">"2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion"</span>)
                 .unwrap(),

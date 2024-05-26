@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["emit","read"],"struct":["NULL"]};
+window.SIDEBAR_ITEMS = {"struct":["NULL"]};

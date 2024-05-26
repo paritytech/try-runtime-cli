@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-resolver-0.22.0/src/name_server/name_server.rs`."><title>name_server.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_resolver" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-resolver-0.23.2/src/name_server/name_server.rs`."><title>name_server.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_resolver" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../trust_dns_resolver/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -336,21 +336,6 @@
 <a href="#334" id="334">334</a>
 <a href="#335" id="335">335</a>
 <a href="#336" id="336">336</a>
-<a href="#337" id="337">337</a>
-<a href="#338" id="338">338</a>
-<a href="#339" id="339">339</a>
-<a href="#340" id="340">340</a>
-<a href="#341" id="341">341</a>
-<a href="#342" id="342">342</a>
-<a href="#343" id="343">343</a>
-<a href="#344" id="344">344</a>
-<a href="#345" id="345">345</a>
-<a href="#346" id="346">346</a>
-<a href="#347" id="347">347</a>
-<a href="#348" id="348">348</a>
-<a href="#349" id="349">349</a>
-<a href="#350" id="350">350</a>
-<a href="#351" id="351">351</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2019 Benjamin Fry &lt;benjaminfry@me.com&gt;
 //
 // Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
@@ -372,59 +357,49 @@
 <span class="kw">use </span>proto::xfer::{DnsHandle, DnsRequest, DnsResponse, FirstAnswer};
 <span class="kw">use </span>tracing::debug;
 
-<span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
-</span><span class="kw">use </span><span class="kw">crate</span>::config::Protocol;
 <span class="kw">use </span><span class="kw">crate</span>::config::{NameServerConfig, ResolverOpts};
 <span class="kw">use </span><span class="kw">crate</span>::error::ResolveError;
-<span class="kw">use </span><span class="kw">crate</span>::name_server::{ConnectionProvider, NameServerState, NameServerStats};
-<span class="attr">#[cfg(feature = <span class="string">"tokio-runtime"</span>)]
-</span><span class="kw">use </span><span class="kw">crate</span>::name_server::{TokioConnection, TokioConnectionProvider, TokioHandle};
+<span class="kw">use </span><span class="kw">crate</span>::name_server::connection_provider::{ConnectionProvider, GenericConnector};
+<span class="kw">use </span><span class="kw">crate</span>::name_server::{NameServerState, NameServerStats};
+<span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
+</span><span class="kw">use </span>proto::multicast::{MdnsClientConnect, MdnsClientStream, MdnsQueryType};
 
-<span class="doccomment">/// Specifies the details of a remote NameServer used for lookups
+<span class="doccomment">/// This struct is used to create `DnsHandle` with the help of `P`.
 </span><span class="attr">#[derive(Clone)]
-</span><span class="kw">pub struct </span>NameServer&lt;
-    C: DnsHandle&lt;Error = ResolveError&gt; + Send,
-    P: ConnectionProvider&lt;Conn = C&gt; + Send,
-&gt; {
+</span><span class="kw">pub struct </span>NameServer&lt;P: ConnectionProvider&gt; {
     config: NameServerConfig,
     options: ResolverOpts,
-    client: Arc&lt;Mutex&lt;<span class="prelude-ty">Option</span>&lt;C&gt;&gt;&gt;,
+    client: Arc&lt;Mutex&lt;<span class="prelude-ty">Option</span>&lt;P::Conn&gt;&gt;&gt;,
     state: Arc&lt;NameServerState&gt;,
     stats: Arc&lt;NameServerStats&gt;,
-    conn_provider: P,
+    connection_provider: P,
 }
 
-<span class="kw">impl</span>&lt;C: DnsHandle&lt;Error = ResolveError&gt;, P: ConnectionProvider&lt;Conn = C&gt;&gt; Debug
-    <span class="kw">for </span>NameServer&lt;C, P&gt;
+<span class="doccomment">/// Specifies the details of a remote NameServer used for lookups
+</span><span class="kw">pub type </span>GenericNameServer&lt;R&gt; = NameServer&lt;GenericConnector&lt;R&gt;&gt;;
+
+<span class="kw">impl</span>&lt;P&gt; Debug <span class="kw">for </span>NameServer&lt;P&gt;
+<span class="kw">where
+    </span>P: ConnectionProvider + Send,
 {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), fmt::Error&gt; {
         <span class="macro">write!</span>(f, <span class="string">"config: {:?}, options: {:?}"</span>, <span class="self">self</span>.config, <span class="self">self</span>.options)
     }
 }
 
-<span class="attr">#[cfg(feature = <span class="string">"tokio-runtime"</span>)]
-#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"tokio-runtime"</span>)))]
-</span><span class="kw">impl </span>NameServer&lt;TokioConnection, TokioConnectionProvider&gt; {
-    <span class="doccomment">/// A shortcut for constructing a nameserver usable in the Tokio runtime
-    </span><span class="kw">pub fn </span>new(config: NameServerConfig, options: ResolverOpts, runtime: TokioHandle) -&gt; <span class="self">Self </span>{
-        <span class="self">Self</span>::new_with_provider(config, options, TokioConnectionProvider::new(runtime))
-    }
-}
-
-<span class="kw">impl</span>&lt;C: DnsHandle&lt;Error = ResolveError&gt;, P: ConnectionProvider&lt;Conn = C&gt;&gt; NameServer&lt;C, P&gt; {
+<span class="kw">impl</span>&lt;P&gt; NameServer&lt;P&gt;
+<span class="kw">where
+    </span>P: ConnectionProvider + Send,
+{
     <span class="doccomment">/// Construct a new Nameserver with the configuration and options. The connection provider will create UDP and TCP sockets
-    </span><span class="kw">pub fn </span>new_with_provider(
-        config: NameServerConfig,
-        options: ResolverOpts,
-        conn_provider: P,
-    ) -&gt; <span class="self">Self </span>{
+    </span><span class="kw">pub fn </span>new(config: NameServerConfig, options: ResolverOpts, connection_provider: P) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             config,
             options,
             client: Arc::new(Mutex::new(<span class="prelude-val">None</span>)),
             state: Arc::new(NameServerState::init(<span class="prelude-val">None</span>)),
             stats: Arc::new(NameServerStats::default()),
-            conn_provider,
+            connection_provider,
         }
     }
 
@@ -432,8 +407,8 @@
     </span><span class="kw">pub fn </span>from_conn(
         config: NameServerConfig,
         options: ResolverOpts,
-        client: C,
-        conn_provider: P,
+        client: P::Conn,
+        connection_provider: P,
     ) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             config,
@@ -441,7 +416,7 @@
             client: Arc::new(Mutex::new(<span class="prelude-val">Some</span>(client))),
             state: Arc::new(NameServerState::init(<span class="prelude-val">None</span>)),
             stats: Arc::new(NameServerStats::default()),
-            conn_provider,
+            connection_provider,
         }
     }
 
@@ -460,7 +435,7 @@
     <span class="doccomment">/// This will return a mutable client to allows for sending messages.
     ///
     /// If the connection is in a failed state, then this will establish a new connection
-    </span><span class="kw">async fn </span>connected_mut_client(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;C, ResolveError&gt; {
+    </span><span class="kw">async fn </span>connected_mut_client(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;P::Conn, ResolveError&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>client = <span class="self">self</span>.client.lock().<span class="kw">await</span>;
 
         <span class="comment">// if this is in a failure state
@@ -470,10 +445,11 @@
             <span class="comment">// TODO: we need the local EDNS options
             </span><span class="self">self</span>.state.reinit(<span class="prelude-val">None</span>);
 
-            <span class="kw">let </span>new_client = <span class="self">self
-                </span>.conn_provider
-                .new_connection(<span class="kw-2">&amp;</span><span class="self">self</span>.config, <span class="kw-2">&amp;</span><span class="self">self</span>.options)
-                .<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="kw">let </span>new_client = Box::pin(
+                <span class="self">self</span>.connection_provider
+                    .new_connection(<span class="kw-2">&amp;</span><span class="self">self</span>.config, <span class="kw-2">&amp;</span><span class="self">self</span>.options),
+            )
+            .<span class="kw">await</span><span class="question-mark">?</span>;
 
             <span class="comment">// establish a new connection
             </span><span class="kw-2">*</span>client = <span class="prelude-val">Some</span>(new_client);
@@ -491,13 +467,18 @@
         request: R,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;DnsResponse, ResolveError&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>client = <span class="self">self</span>.connected_mut_client().<span class="kw">await</span><span class="question-mark">?</span>;
+        <span class="kw">let </span>now = Instant::now();
         <span class="kw">let </span>response = client.send(request).first_answer().<span class="kw">await</span>;
+        <span class="kw">let </span>rtt = now.elapsed();
 
         <span class="kw">match </span>response {
             <span class="prelude-val">Ok</span>(response) =&gt; {
+                <span class="comment">// Record the measured latency.
+                </span><span class="self">self</span>.stats.record_rtt(rtt);
+
                 <span class="comment">// First evaluate if the message succeeded.
                 </span><span class="kw">let </span>response =
-                    ResolveError::from_response(response, <span class="self">self</span>.config.trust_nx_responses)<span class="question-mark">?</span>;
+                    ResolveError::from_response(response, <span class="self">self</span>.config.trust_negative_responses)<span class="question-mark">?</span>;
 
                 <span class="comment">// TODO: consider making message::take_edns...
                 </span><span class="kw">let </span>remote_edns = response.extensions().clone();
@@ -505,8 +486,6 @@
                 <span class="comment">// take the remote edns options and store them
                 </span><span class="self">self</span>.state.establish(remote_edns);
 
-                <span class="comment">// record the success
-                </span><span class="self">self</span>.stats.next_success();
                 <span class="prelude-val">Ok</span>(response)
             }
             <span class="prelude-val">Err</span>(error) =&gt; {
@@ -516,7 +495,7 @@
                 </span><span class="self">self</span>.state.fail(Instant::now());
 
                 <span class="comment">// record the failure
-                </span><span class="self">self</span>.stats.next_failure();
+                </span><span class="self">self</span>.stats.record_connection_failure();
 
                 <span class="comment">// These are connection failures, not lookup failures, that is handled in the resolver layer
                 </span><span class="prelude-val">Err</span>(error)
@@ -524,16 +503,15 @@
         }
     }
 
-    <span class="doccomment">/// Specifies that thie NameServer will treat negative responses as permanent failures and will not retry
+    <span class="doccomment">/// Specifies that this NameServer will treat negative responses as permanent failures and will not retry
     </span><span class="kw">pub fn </span>trust_nx_responses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="self">self</span>.config.trust_nx_responses
+        <span class="self">self</span>.config.trust_negative_responses
     }
 }
 
-<span class="kw">impl</span>&lt;C, P&gt; DnsHandle <span class="kw">for </span>NameServer&lt;C, P&gt;
+<span class="kw">impl</span>&lt;P&gt; DnsHandle <span class="kw">for </span>NameServer&lt;P&gt;
 <span class="kw">where
-    </span>C: DnsHandle&lt;Error = ResolveError&gt;,
-    P: ConnectionProvider&lt;Conn = C&gt;,
+    </span>P: ConnectionProvider + Clone,
 {
     <span class="kw">type </span>Response = Pin&lt;Box&lt;<span class="kw">dyn </span>Stream&lt;Item = <span class="prelude-ty">Result</span>&lt;DnsResponse, ResolveError&gt;&gt; + Send&gt;&gt;;
     <span class="kw">type </span>Error = ResolveError;
@@ -550,7 +528,10 @@
     }
 }
 
-<span class="kw">impl</span>&lt;C: DnsHandle&lt;Error = ResolveError&gt;, P: ConnectionProvider&lt;Conn = C&gt;&gt; Ord <span class="kw">for </span>NameServer&lt;C, P&gt; {
+<span class="kw">impl</span>&lt;P&gt; Ord <span class="kw">for </span>NameServer&lt;P&gt;
+<span class="kw">where
+    </span>P: ConnectionProvider + Send,
+{
     <span class="doccomment">/// Custom implementation of Ord for NameServer which incorporates the performance of the connection into it's ranking
     </span><span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; Ordering {
         <span class="comment">// if they are literally equal, just return
@@ -558,31 +539,22 @@
             <span class="kw">return </span>Ordering::Equal;
         }
 
-        <span class="comment">// otherwise, run our evaluation to determine the next to be returned from the Heap
-        //   this will prefer established connections, we should try other connections after
-        //   some number to make sure that all are used. This is more important for when
-        //   latency is started to be used.
-        </span><span class="kw">match </span><span class="self">self</span>.state.cmp(<span class="kw-2">&amp;</span>other.state) {
-            Ordering::Equal =&gt; (),
-            o =&gt; {
-                <span class="kw">return </span>o;
-            }
-        }
-
         <span class="self">self</span>.stats.cmp(<span class="kw-2">&amp;</span>other.stats)
     }
 }
 
-<span class="kw">impl</span>&lt;C: DnsHandle&lt;Error = ResolveError&gt;, P: ConnectionProvider&lt;Conn = C&gt;&gt; PartialOrd
-    <span class="kw">for </span>NameServer&lt;C, P&gt;
+<span class="kw">impl</span>&lt;P&gt; PartialOrd <span class="kw">for </span>NameServer&lt;P&gt;
+<span class="kw">where
+    </span>P: ConnectionProvider + Send,
 {
     <span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Ordering&gt; {
         <span class="prelude-val">Some</span>(<span class="self">self</span>.cmp(other))
     }
 }
 
-<span class="kw">impl</span>&lt;C: DnsHandle&lt;Error = ResolveError&gt;, P: ConnectionProvider&lt;Conn = C&gt;&gt; PartialEq
-    <span class="kw">for </span>NameServer&lt;C, P&gt;
+<span class="kw">impl</span>&lt;P&gt; PartialEq <span class="kw">for </span>NameServer&lt;P&gt;
+<span class="kw">where
+    </span>P: ConnectionProvider + Send,
 {
     <span class="doccomment">/// NameServers are equal if the config (connection information) are equal
     </span><span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
@@ -590,29 +562,28 @@
     }
 }
 
-<span class="kw">impl</span>&lt;C: DnsHandle&lt;Error = ResolveError&gt;, P: ConnectionProvider&lt;Conn = C&gt;&gt; Eq <span class="kw">for </span>NameServer&lt;C, P&gt; {}
+<span class="kw">impl</span>&lt;P&gt; Eq <span class="kw">for </span>NameServer&lt;P&gt; <span class="kw">where </span>P: ConnectionProvider + Send {}
 
 <span class="comment">// TODO: once IPv6 is better understood, also make this a binary keep.
 </span><span class="attr">#[cfg(feature = <span class="string">"mdns"</span>)]
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>mdns_nameserver&lt;C, P&gt;(
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>mdns_nameserver&lt;P&gt;(
     options: ResolverOpts,
     conn_provider: P,
-    trust_nx_responses: bool,
-) -&gt; NameServer&lt;C, P&gt;
+    trust_negative_responses: bool,
+) -&gt; GenericNameServer&lt;P&gt;
 <span class="kw">where
-    </span>C: DnsHandle&lt;Error = ResolveError&gt;,
-    P: ConnectionProvider&lt;Conn = C&gt;,
+    </span>P: ConnectionProvider,
 {
     <span class="kw">let </span>config = NameServerConfig {
         socket_addr: <span class="kw-2">*</span>MDNS_IPV4,
         protocol: Protocol::Mdns,
         tls_dns_name: <span class="prelude-val">None</span>,
-        trust_nx_responses,
+        trust_negative_responses,
         <span class="attr">#[cfg(feature = <span class="string">"dns-over-rustls"</span>)]
         </span>tls_config: <span class="prelude-val">None</span>,
         bind_addr: <span class="prelude-val">None</span>,
     };
-    NameServer::new_with_provider(config, options, conn_provider)
+    GenericNameServer::new_with_provider(config, options, conn_provider)
 }
 
 <span class="attr">#[cfg(test)]
@@ -630,6 +601,7 @@
 
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span><span class="kw">crate</span>::config::Protocol;
+    <span class="kw">use </span><span class="kw">crate</span>::name_server::TokioConnectionProvider;
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_name_server() {
@@ -639,18 +611,17 @@
             socket_addr: SocketAddr::new(IpAddr::V4(Ipv4Addr::new(<span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>)), <span class="number">53</span>),
             protocol: Protocol::Udp,
             tls_dns_name: <span class="prelude-val">None</span>,
-            trust_nx_responses: <span class="bool-val">false</span>,
+            trust_negative_responses: <span class="bool-val">false</span>,
             <span class="attr">#[cfg(feature = <span class="string">"dns-over-rustls"</span>)]
             </span>tls_config: <span class="prelude-val">None</span>,
             bind_addr: <span class="prelude-val">None</span>,
         };
         <span class="kw">let </span>io_loop = Runtime::new().unwrap();
-        <span class="kw">let </span>runtime_handle = TokioHandle;
         <span class="kw">let </span>name_server = future::lazy(|<span class="kw">_</span>| {
-            NameServer::&lt;<span class="kw">_</span>, TokioConnectionProvider&gt;::new(
+            GenericNameServer::new(
                 config,
                 ResolverOpts::default(),
-                runtime_handle,
+                TokioConnectionProvider::default(),
             )
         });
 
@@ -678,15 +649,14 @@
             socket_addr: SocketAddr::new(IpAddr::V4(Ipv4Addr::new(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">252</span>)), <span class="number">252</span>),
             protocol: Protocol::Udp,
             tls_dns_name: <span class="prelude-val">None</span>,
-            trust_nx_responses: <span class="bool-val">false</span>,
+            trust_negative_responses: <span class="bool-val">false</span>,
             <span class="attr">#[cfg(feature = <span class="string">"dns-over-rustls"</span>)]
             </span>tls_config: <span class="prelude-val">None</span>,
             bind_addr: <span class="prelude-val">None</span>,
         };
         <span class="kw">let </span>io_loop = Runtime::new().unwrap();
-        <span class="kw">let </span>runtime_handle = TokioHandle;
         <span class="kw">let </span>name_server = future::lazy(|<span class="kw">_</span>| {
-            NameServer::&lt;<span class="kw">_</span>, TokioConnectionProvider&gt;::new(config, options, runtime_handle)
+            GenericNameServer::new(config, options, TokioConnectionProvider::default())
         });
 
         <span class="kw">let </span>name = Name::parse(<span class="string">"www.example.com."</span>, <span class="prelude-val">None</span>).unwrap();

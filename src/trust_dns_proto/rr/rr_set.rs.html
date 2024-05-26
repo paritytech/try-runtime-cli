@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.22.0/src/rr/rr_set.rs`."><title>rr_set.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/trust-dns-proto-0.23.2/src/rr/rr_set.rs`."><title>rr_set.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="trust_dns_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../trust_dns_proto/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -993,15 +993,15 @@
 <a href="#991" id="991">991</a>
 <a href="#992" id="992">992</a>
 <a href="#993" id="993">993</a>
-</pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2019 Benjamin Fry &lt;benjaminfry@me.com&gt;
+<a href="#994" id="994">994</a>
+</pre></div><pre class="rust"><code><span class="comment">// Copyright 2015-2023 Benjamin Fry &lt;benjaminfry@me.com&gt;
 //
 // Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
 // http://apache.org/licenses/LICENSE-2.0&gt; or the MIT license &lt;LICENSE-MIT or
 // http://opensource.org/licenses/MIT&gt;, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
-</span><span class="kw">use </span>std::iter::Chain;
-<span class="kw">use </span>std::slice::Iter;
-<span class="kw">use </span>std::vec;
+
+</span><span class="kw">use </span>std::{iter::Chain, slice::Iter, vec};
 
 <span class="kw">use </span>tracing::{info, warn};
 
@@ -1032,7 +1032,7 @@
     /// * `record_type` - `RecordType` of this `RecordSet`, all records in the `RecordSet` must be of the
     ///                   specified `RecordType`.
     /// * `serial` - current serial number of the `SOA` record, this is to be used for `IXFR` and
-    ///              signing for DNSSec after updates.
+    ///              signing for DNSSEC after updates.
     ///
     /// # Return value
     ///
@@ -1233,7 +1233,7 @@
 
     <span class="doccomment">/// creates a new Record as part of this RecordSet, adding the associated RData
     </span><span class="kw">pub fn </span>add_rdata(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rdata: RData) -&gt; bool {
-        <span class="macro">debug_assert_eq!</span>(<span class="self">self</span>.record_type, rdata.to_record_type());
+        <span class="macro">debug_assert_eq!</span>(<span class="self">self</span>.record_type, rdata.record_type());
 
         <span class="kw">let </span><span class="kw-2">mut </span>record = Record::with(<span class="self">self</span>.name.clone(), <span class="self">self</span>.record_type, <span class="self">self</span>.ttl);
         record.set_data(<span class="prelude-val">Some</span>(rdata));
@@ -1265,7 +1265,7 @@
     ///
     /// * `record` - `Record` asserts that the `name` and `record_type` match the `RecordSet`.
     /// * `serial` - current serial number of the `SOA` record, this is to be used for `IXFR` and
-    ///              signing for DNSSec after updates. The serial will only be updated if the
+    ///              signing for DNSSEC after updates. The serial will only be updated if the
     ///              record was added.
     ///
     /// # Return value
@@ -1275,14 +1275,14 @@
     /// TODO: make a default add without serial number for basic usage
     </span><span class="kw">pub fn </span>insert(<span class="kw-2">&amp;mut </span><span class="self">self</span>, record: Record, serial: u32) -&gt; bool {
         <span class="macro">assert_eq!</span>(record.name(), <span class="kw-2">&amp;</span><span class="self">self</span>.name);
-        <span class="macro">assert_eq!</span>(record.rr_type(), <span class="self">self</span>.record_type);
+        <span class="macro">assert_eq!</span>(record.record_type(), <span class="self">self</span>.record_type);
 
         <span class="comment">// RFC 2136                       DNS Update                     April 1997
         //
         // 1.1.5. The following RR types cannot be appended to an RRset.  If the
         //  following comparison rules are met, then an attempt to add the new RR
         //  will result in the replacement of the previous RR:
-        </span><span class="kw">match </span>record.rr_type() {
+        </span><span class="kw">match </span>record.record_type() {
             <span class="comment">// SOA    compare only NAME, CLASS and TYPE -- it is not possible to
             //         have more than one SOA per zone, even if any of the data
             //         fields differ.
@@ -1388,7 +1388,7 @@
     /// * `record` - `Record` asserts that the `name` and `record_type` match the `RecordSet`. Removes
     ///              any `record` if the record data, `RData`, match.
     /// * `serial` - current serial number of the `SOA` record, this is to be used for `IXFR` and
-    ///              signing for DNSSec after updates. The serial will only be updated if the
+    ///              signing for DNSSEC after updates. The serial will only be updated if the
     ///              record was added.
     ///
     /// # Return value
@@ -1396,9 +1396,11 @@
     /// True if a record was removed.
     </span><span class="kw">pub fn </span>remove(<span class="kw-2">&amp;mut </span><span class="self">self</span>, record: <span class="kw-2">&amp;</span>Record, serial: u32) -&gt; bool {
         <span class="macro">assert_eq!</span>(record.name(), <span class="kw-2">&amp;</span><span class="self">self</span>.name);
-        <span class="macro">assert!</span>(record.rr_type() == <span class="self">self</span>.record_type || record.rr_type() == RecordType::ANY);
+        <span class="macro">assert!</span>(
+            record.record_type() == <span class="self">self</span>.record_type || record.record_type() == RecordType::ANY
+        );
 
-        <span class="kw">match </span>record.rr_type() {
+        <span class="kw">match </span>record.record_type() {
             <span class="comment">// never delete the last NS record
             </span>RecordType::NS =&gt; {
                 <span class="kw">if </span><span class="self">self</span>.records.len() &lt;= <span class="number">1 </span>{
@@ -1449,7 +1451,7 @@
     <span class="kw">pub </span>ttl: u32,
     <span class="kw">pub </span>records: Vec&lt;Record&gt;,
     <span class="kw">pub </span>rrsigs: Vec&lt;Record&gt;,
-    <span class="kw">pub </span>serial: u32, <span class="comment">// serial number at which this record was modifie,
+    <span class="kw">pub </span>serial: u32, <span class="comment">// serial number at which this record was modified,
 </span>}
 
 <span class="kw">impl </span>From&lt;RecordSet&gt; <span class="kw">for </span>RecordSetParts {
@@ -1479,7 +1481,7 @@
     <span class="kw">fn </span>from(record: Record) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             name: record.name().clone(),
-            record_type: record.rr_type(),
+            record_type: record.record_type(),
             dns_class: record.dns_class(),
             ttl: record.ttl(),
             records: <span class="macro">vec!</span>[record],
@@ -1555,14 +1557,14 @@
             <span class="self">self</span>.rrsigs
                 .by_ref()
                 .filter(|record| {
-                    <span class="kw">if let </span><span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::SIG(<span class="kw-2">ref </span>rrsig))) = record.data() {
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::RRSIG(<span class="kw-2">ref </span>rrsig))) = record.data() {
                         supported_algorithms.has(rrsig.algorithm())
                     } <span class="kw">else </span>{
                         <span class="bool-val">false
                     </span>}
                 })
                 .max_by_key(|record| {
-                    <span class="kw">if let </span><span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::SIG(<span class="kw-2">ref </span>rrsig))) = record.data() {
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::RRSIG(<span class="kw-2">ref </span>rrsig))) = record.data() {
                         rrsig.algorithm()
                     } <span class="kw">else </span>{
                         <span class="attr">#[allow(deprecated)]
@@ -1587,7 +1589,7 @@
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'r</span>&gt; RrsetRecords&lt;<span class="lifetime">'r</span>&gt; {
-    <span class="doccomment">/// This is a best effort emptyness check
+    <span class="doccomment">/// This is a best effort emptiness check
     </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="macro">matches!</span>(<span class="kw-2">*</span><span class="self">self</span>, RrsetRecords::Empty)
     }
@@ -1611,7 +1613,7 @@
     <span class="kw">use </span>std::net::Ipv4Addr;
     <span class="kw">use </span>std::str::FromStr;
 
-    <span class="kw">use </span><span class="kw">crate</span>::rr::rdata::SOA;
+    <span class="kw">use </span><span class="kw">crate</span>::rr::rdata::{CNAME, NS, SOA};
     <span class="kw">use </span><span class="kw">crate</span>::rr::<span class="kw-2">*</span>;
 
     <span class="attr">#[test]
@@ -1625,7 +1627,7 @@
             .set_ttl(<span class="number">86400</span>)
             .set_rr_type(record_type)
             .set_dns_class(DNSClass::IN)
-            .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">24</span>))))
+            .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">24</span>).into())))
             .clone();
 
         <span class="macro">assert!</span>(rr_set.insert(insert.clone(), <span class="number">0</span>));
@@ -1643,7 +1645,7 @@
             .set_ttl(<span class="number">86400</span>)
             .set_rr_type(record_type)
             .set_dns_class(DNSClass::IN)
-            .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">25</span>))))
+            .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">25</span>).into())))
             .clone();
         <span class="macro">assert!</span>(rr_set.insert(insert1.clone(), <span class="number">0</span>));
         <span class="macro">assert_eq!</span>(rr_set.records_without_rrsigs().count(), <span class="number">2</span>);
@@ -1740,14 +1742,14 @@
             .set_ttl(<span class="number">3600</span>)
             .set_rr_type(RecordType::CNAME)
             .set_dns_class(DNSClass::IN)
-            .set_data(<span class="prelude-val">Some</span>(RData::CNAME(cname)))
+            .set_data(<span class="prelude-val">Some</span>(RData::CNAME(CNAME(cname))))
             .clone();
         <span class="kw">let </span>new_record = Record::new()
             .set_name(name)
             .set_ttl(<span class="number">3600</span>)
             .set_rr_type(RecordType::CNAME)
             .set_dns_class(DNSClass::IN)
-            .set_data(<span class="prelude-val">Some</span>(RData::CNAME(new_cname)))
+            .set_data(<span class="prelude-val">Some</span>(RData::CNAME(CNAME(new_cname))))
             .clone();
 
         <span class="macro">assert!</span>(rr_set.insert(insert.clone(), <span class="number">0</span>));
@@ -1772,14 +1774,14 @@
             .set_ttl(<span class="number">86400</span>)
             .set_rr_type(record_type)
             .set_dns_class(DNSClass::IN)
-            .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">24</span>))))
+            .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">24</span>).into())))
             .clone();
         <span class="kw">let </span>insert1 = Record::new()
             .set_name(name)
             .set_ttl(<span class="number">86400</span>)
             .set_rr_type(record_type)
             .set_dns_class(DNSClass::IN)
-            .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">25</span>))))
+            .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">25</span>).into())))
             .clone();
 
         <span class="macro">assert!</span>(rr_set.insert(insert.clone(), <span class="number">0</span>));
@@ -1830,18 +1832,18 @@
             .set_ttl(<span class="number">86400</span>)
             .set_rr_type(RecordType::NS)
             .set_dns_class(DNSClass::IN)
-            .set_data(<span class="prelude-val">Some</span>(RData::NS(
-                Name::from_str(<span class="string">"a.iana-servers.net."</span>).unwrap(),
-            )))
+            .set_data(<span class="prelude-val">Some</span>(RData::NS(NS(
+                Name::from_str(<span class="string">"a.iana-servers.net."</span>).unwrap()
+            ))))
             .clone();
         <span class="kw">let </span>ns2 = Record::new()
             .set_name(name)
             .set_ttl(<span class="number">86400</span>)
             .set_rr_type(RecordType::NS)
             .set_dns_class(DNSClass::IN)
-            .set_data(<span class="prelude-val">Some</span>(RData::NS(
-                Name::from_str(<span class="string">"b.iana-servers.net."</span>).unwrap(),
-            )))
+            .set_data(<span class="prelude-val">Some</span>(RData::NS(NS(
+                Name::from_str(<span class="string">"b.iana-servers.net."</span>).unwrap()
+            ))))
             .clone();
 
         <span class="macro">assert!</span>(rr_set.insert(ns1.clone(), <span class="number">0</span>));
@@ -1863,11 +1865,11 @@
     </span><span class="attr">#[allow(clippy::blocks_in_if_conditions)]
     </span><span class="kw">fn </span>test_get_filter() {
         <span class="kw">use </span><span class="kw">crate</span>::rr::dnssec::rdata::DNSSECRData;
-        <span class="kw">use </span><span class="kw">crate</span>::rr::dnssec::rdata::SIG;
+        <span class="kw">use </span><span class="kw">crate</span>::rr::dnssec::rdata::RRSIG;
         <span class="kw">use </span><span class="kw">crate</span>::rr::dnssec::{Algorithm, SupportedAlgorithms};
 
         <span class="kw">let </span>name = Name::root();
-        <span class="kw">let </span>rsasha256 = SIG::new(
+        <span class="kw">let </span>rsasha256 = RRSIG::new(
             RecordType::A,
             Algorithm::RSASHA256,
             <span class="number">0</span>,
@@ -1878,7 +1880,7 @@
             Name::root(),
             <span class="macro">vec!</span>[],
         );
-        <span class="kw">let </span>ecp256 = SIG::new(
+        <span class="kw">let </span>ecp256 = RRSIG::new(
             RecordType::A,
             Algorithm::ECDSAP256SHA256,
             <span class="number">0</span>,
@@ -1889,7 +1891,7 @@
             Name::root(),
             <span class="macro">vec!</span>[],
         );
-        <span class="kw">let </span>ecp384 = SIG::new(
+        <span class="kw">let </span>ecp384 = RRSIG::new(
             RecordType::A,
             Algorithm::ECDSAP384SHA384,
             <span class="number">0</span>,
@@ -1900,7 +1902,7 @@
             Name::root(),
             <span class="macro">vec!</span>[],
         );
-        <span class="kw">let </span>ed25519 = SIG::new(
+        <span class="kw">let </span>ed25519 = RRSIG::new(
             RecordType::A,
             Algorithm::ED25519,
             <span class="number">0</span>,
@@ -1917,28 +1919,28 @@
             .set_ttl(<span class="number">3600</span>)
             .set_rr_type(RecordType::RRSIG)
             .set_dns_class(DNSClass::IN)
-            .set_data(<span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::SIG(rsasha256))))
+            .set_data(<span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::RRSIG(rsasha256))))
             .clone();
         <span class="kw">let </span>rrsig_ecp256 = Record::new()
             .set_name(name.clone())
             .set_ttl(<span class="number">3600</span>)
             .set_rr_type(RecordType::RRSIG)
             .set_dns_class(DNSClass::IN)
-            .set_data(<span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::SIG(ecp256))))
+            .set_data(<span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::RRSIG(ecp256))))
             .clone();
         <span class="kw">let </span>rrsig_ecp384 = Record::new()
             .set_name(name.clone())
             .set_ttl(<span class="number">3600</span>)
             .set_rr_type(RecordType::RRSIG)
             .set_dns_class(DNSClass::IN)
-            .set_data(<span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::SIG(ecp384))))
+            .set_data(<span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::RRSIG(ecp384))))
             .clone();
         <span class="kw">let </span>rrsig_ed25519 = Record::new()
             .set_name(name.clone())
             .set_ttl(<span class="number">3600</span>)
             .set_rr_type(RecordType::RRSIG)
             .set_dns_class(DNSClass::IN)
-            .set_data(<span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::SIG(ed25519))))
+            .set_data(<span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::RRSIG(ed25519))))
             .clone();
 
         <span class="kw">let </span>a = Record::new()
@@ -1946,7 +1948,7 @@
             .set_ttl(<span class="number">3600</span>)
             .set_rr_type(RecordType::A)
             .set_dns_class(DNSClass::IN)
-            .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">24</span>))))
+            .set_data(<span class="prelude-val">Some</span>(RData::A(Ipv4Addr::new(<span class="number">93</span>, <span class="number">184</span>, <span class="number">216</span>, <span class="number">24</span>).into())))
             .clone();
 
         <span class="kw">let </span><span class="kw-2">mut </span>rrset = RecordSet::from(a);
@@ -1958,7 +1960,7 @@
         <span class="macro">assert!</span>(rrset
             .records_with_rrsigs(SupportedAlgorithms::all(),)
             .any(
-                |r| <span class="kw">if let </span><span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::SIG(<span class="kw-2">ref </span>sig))) = r.data() {
+                |r| <span class="kw">if let </span><span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::RRSIG(<span class="kw-2">ref </span>sig))) = r.data() {
                     sig.algorithm() == Algorithm::ED25519
                 } <span class="kw">else </span>{
                     <span class="bool-val">false
@@ -1968,7 +1970,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>supported_algorithms = SupportedAlgorithms::new();
         supported_algorithms.set(Algorithm::ECDSAP384SHA384);
         <span class="macro">assert!</span>(rrset.records_with_rrsigs(supported_algorithms).any(|r| {
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::SIG(<span class="kw-2">ref </span>sig))) = r.data() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::RRSIG(<span class="kw-2">ref </span>sig))) = r.data() {
                 sig.algorithm() == Algorithm::ECDSAP384SHA384
             } <span class="kw">else </span>{
                 <span class="bool-val">false
@@ -1978,7 +1980,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>supported_algorithms = SupportedAlgorithms::new();
         supported_algorithms.set(Algorithm::ED25519);
         <span class="macro">assert!</span>(rrset.records_with_rrsigs(supported_algorithms).any(|r| {
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::SIG(<span class="kw-2">ref </span>sig))) = r.data() {
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(RData::DNSSEC(DNSSECRData::RRSIG(<span class="kw-2">ref </span>sig))) = r.data() {
                 sig.algorithm() == Algorithm::ED25519
             } <span class="kw">else </span>{
                 <span class="bool-val">false

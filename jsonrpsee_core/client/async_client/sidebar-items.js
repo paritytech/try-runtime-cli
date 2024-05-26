@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["Client","ClientBuilder"]};
+window.SIDEBAR_ITEMS = {"struct":["Client","ClientBuilder","PingConfig"]};

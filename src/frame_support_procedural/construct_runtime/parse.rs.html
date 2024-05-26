@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/frame/support/procedural/src/construct_runtime/parse.rs`."><title>parse.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/frame/support/procedural/src/construct_runtime/parse.rs`."><title>parse.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../frame_support_procedural/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -780,6 +780,15 @@
 <a href="#778" id="778">778</a>
 <a href="#779" id="779">779</a>
 <a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
+<a href="#784" id="784">784</a>
+<a href="#785" id="785">785</a>
+<a href="#786" id="786">786</a>
+<a href="#787" id="787">787</a>
+<a href="#788" id="788">788</a>
+<a href="#789" id="789">789</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -824,6 +833,7 @@
 	<span class="macro">syn::custom_keyword!</span>(ValidateUnsigned);
 	<span class="macro">syn::custom_keyword!</span>(FreezeReason);
 	<span class="macro">syn::custom_keyword!</span>(HoldReason);
+	<span class="macro">syn::custom_keyword!</span>(Task);
 	<span class="macro">syn::custom_keyword!</span>(LockId);
 	<span class="macro">syn::custom_keyword!</span>(SlashReason);
 	<span class="macro">syn::custom_keyword!</span>(exclude_parts);
@@ -1103,7 +1113,7 @@
 <span class="doccomment">/// A struct representing a path to a pallet. `PalletPath` is almost identical to the standard
 /// Rust path with a few restrictions:
 /// - No leading colons allowed
-/// - Path segments can only consist of identifers separated by colons
+/// - Path segments can only consist of identifiers separated by colons
 </span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>PalletPath {
 	<span class="kw">pub </span>inner: Path,
@@ -1186,6 +1196,7 @@
 	ValidateUnsigned(keyword::ValidateUnsigned),
 	FreezeReason(keyword::FreezeReason),
 	HoldReason(keyword::HoldReason),
+	Task(keyword::Task),
 	LockId(keyword::LockId),
 	SlashReason(keyword::SlashReason),
 }
@@ -1216,6 +1227,8 @@
 			<span class="prelude-val">Ok</span>(<span class="self">Self</span>::FreezeReason(input.parse()<span class="question-mark">?</span>))
 		} <span class="kw">else if </span>lookahead.peek(keyword::HoldReason) {
 			<span class="prelude-val">Ok</span>(<span class="self">Self</span>::HoldReason(input.parse()<span class="question-mark">?</span>))
+		} <span class="kw">else if </span>lookahead.peek(keyword::Task) {
+			<span class="prelude-val">Ok</span>(<span class="self">Self</span>::Task(input.parse()<span class="question-mark">?</span>))
 		} <span class="kw">else if </span>lookahead.peek(keyword::LockId) {
 			<span class="prelude-val">Ok</span>(<span class="self">Self</span>::LockId(input.parse()<span class="question-mark">?</span>))
 		} <span class="kw">else if </span>lookahead.peek(keyword::SlashReason) {
@@ -1241,6 +1254,7 @@
 			<span class="self">Self</span>::ValidateUnsigned(<span class="kw">_</span>) =&gt; <span class="string">"ValidateUnsigned"</span>,
 			<span class="self">Self</span>::FreezeReason(<span class="kw">_</span>) =&gt; <span class="string">"FreezeReason"</span>,
 			<span class="self">Self</span>::HoldReason(<span class="kw">_</span>) =&gt; <span class="string">"HoldReason"</span>,
+			<span class="self">Self</span>::Task(<span class="kw">_</span>) =&gt; <span class="string">"Task"</span>,
 			<span class="self">Self</span>::LockId(<span class="kw">_</span>) =&gt; <span class="string">"LockId"</span>,
 			<span class="self">Self</span>::SlashReason(<span class="kw">_</span>) =&gt; <span class="string">"SlashReason"</span>,
 		}
@@ -1253,7 +1267,7 @@
 
 	<span class="doccomment">/// Returns the names of all pallet parts that allow to have a generic argument.
 	</span><span class="kw">fn </span>all_generic_arg() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>[<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str] {
-		<span class="kw-2">&amp;</span>[<span class="string">"Event"</span>, <span class="string">"Error"</span>, <span class="string">"Origin"</span>, <span class="string">"Config"</span>]
+		<span class="kw-2">&amp;</span>[<span class="string">"Event"</span>, <span class="string">"Error"</span>, <span class="string">"Origin"</span>, <span class="string">"Config"</span>, <span class="string">"Task"</span>]
 	}
 }
 
@@ -1271,6 +1285,7 @@
 			<span class="self">Self</span>::ValidateUnsigned(inner) =&gt; inner.to_tokens(tokens),
 			<span class="self">Self</span>::FreezeReason(inner) =&gt; inner.to_tokens(tokens),
 			<span class="self">Self</span>::HoldReason(inner) =&gt; inner.to_tokens(tokens),
+			<span class="self">Self</span>::Task(inner) =&gt; inner.to_tokens(tokens),
 			<span class="self">Self</span>::LockId(inner) =&gt; inner.to_tokens(tokens),
 			<span class="self">Self</span>::SlashReason(inner) =&gt; inner.to_tokens(tokens),
 		}
@@ -1371,7 +1386,7 @@
 	</span><span class="kw">pub </span>is_expanded: bool,
 	<span class="doccomment">/// The name of the pallet, e.g.`System` in `System: frame_system`.
 	</span><span class="kw">pub </span>name: Ident,
-	<span class="doccomment">/// Either automatically infered, or defined (e.g. `MyPallet ...  = 3,`).
+	<span class="doccomment">/// Either automatically inferred, or defined (e.g. `MyPallet ...  = 3,`).
 	</span><span class="kw">pub </span>index: u8,
 	<span class="doccomment">/// The path of the pallet, e.g. `frame_system` in `System: frame_system`.
 	</span><span class="kw">pub </span>path: PalletPath,
@@ -1381,6 +1396,8 @@
 	</span><span class="kw">pub </span>pallet_parts: Vec&lt;PalletPart&gt;,
 	<span class="doccomment">/// Expressions specified inside of a #[cfg] attribute.
 	</span><span class="kw">pub </span>cfg_pattern: Vec&lt;cfg_expr::Expression&gt;,
+	<span class="doccomment">/// The doc literals
+	</span><span class="kw">pub </span>docs: Vec&lt;syn::Expr&gt;,
 }
 
 <span class="kw">impl </span>Pallet {
@@ -1410,7 +1427,7 @@
 /// +----------+    +----------+    +------------------+
 /// ```
 </span><span class="kw">enum </span>PalletsConversion {
-	<span class="doccomment">/// Pallets implicitely declare parts.
+	<span class="doccomment">/// Pallets implicitly declare parts.
 	///
 	/// `System: frame_system`.
 	</span>Implicit(Vec&lt;PalletDeclaration&gt;),
@@ -1424,7 +1441,7 @@
 	<span class="doccomment">/// Pallets explicitly declare parts that are fully expanded.
 	///
 	/// This is the end state that contains extra parts included by
-	/// default by Subtrate.
+	/// default by Substrate.
 	///
 	/// `System: frame_system expanded::{Error} ::{Pallet, Call}`
 	///
@@ -1436,7 +1453,7 @@
 ///
 /// Check if all pallet have explicit declaration of their parts, if so then assign index to each
 /// pallet using same rules as rust for fieldless enum. I.e. implicit are assigned number
-/// incrementedly from last explicit or 0.
+/// incrementally from last explicit or 0.
 </span><span class="kw">fn </span>convert_pallets(pallets: Vec&lt;PalletDeclaration&gt;) -&gt; syn::Result&lt;PalletsConversion&gt; {
 	<span class="kw">if </span>pallets.iter().any(|pallet| pallet.pallet_parts.is_none()) {
 		<span class="kw">return </span><span class="prelude-val">Ok</span>(PalletsConversion::Implicit(pallets))
@@ -1550,6 +1567,7 @@
 				instance: pallet.instance,
 				cfg_pattern,
 				pallet_parts,
+				docs: <span class="macro">vec!</span>[],
 			})
 		})
 		.collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;&gt;()<span class="question-mark">?</span>;

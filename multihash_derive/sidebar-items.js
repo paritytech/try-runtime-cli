@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"derive":["Multihash"]};
+window.SIDEBAR_ITEMS = {"derive":["Multihash","MultihashDigest"],"struct":["Error","Multihash","UnsupportedCode"],"trait":["Hasher","MultihashDigest"]};

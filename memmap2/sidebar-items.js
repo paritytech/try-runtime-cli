@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Advice"],"struct":["Mmap","MmapMut","MmapOptions","MmapRaw","MmapRawDescriptor"],"trait":["MmapAsRawDesc"]};
+window.SIDEBAR_ITEMS = {"enum":["Advice","UncheckedAdvice"],"struct":["Mmap","MmapMut","MmapOptions","MmapRaw","MmapRawDescriptor","RemapOptions"],"trait":["MmapAsRawDesc"]};

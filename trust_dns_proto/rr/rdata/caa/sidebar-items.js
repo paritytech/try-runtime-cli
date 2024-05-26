@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Property","Value"],"fn":["emit","read","read_iodef","read_issuer"],"struct":["CAA","KeyValue"]};
+window.SIDEBAR_ITEMS = {"enum":["Property","Value"],"fn":["read_iodef","read_issuer"],"struct":["CAA","KeyValue"]};

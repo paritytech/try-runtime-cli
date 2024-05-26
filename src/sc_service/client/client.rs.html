@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/client/service/src/client/client.rs`."><title>client.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_service" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/service/src/client/client.rs`."><title>client.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_service" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../sc_service/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -2111,6 +2111,26 @@
 <a href="#2109" id="2109">2109</a>
 <a href="#2110" id="2110">2110</a>
 <a href="#2111" id="2111">2111</a>
+<a href="#2112" id="2112">2112</a>
+<a href="#2113" id="2113">2113</a>
+<a href="#2114" id="2114">2114</a>
+<a href="#2115" id="2115">2115</a>
+<a href="#2116" id="2116">2116</a>
+<a href="#2117" id="2117">2117</a>
+<a href="#2118" id="2118">2118</a>
+<a href="#2119" id="2119">2119</a>
+<a href="#2120" id="2120">2120</a>
+<a href="#2121" id="2121">2121</a>
+<a href="#2122" id="2122">2122</a>
+<a href="#2123" id="2123">2123</a>
+<a href="#2124" id="2124">2124</a>
+<a href="#2125" id="2125">2125</a>
+<a href="#2126" id="2126">2126</a>
+<a href="#2127" id="2127">2127</a>
+<a href="#2128" id="2128">2128</a>
+<a href="#2129" id="2129">2129</a>
+<a href="#2130" id="2130">2130</a>
+<a href="#2131" id="2131">2131</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2132,8 +2152,8 @@
 </span><span class="doccomment">//! Substrate Client
 
 </span><span class="kw">use </span><span class="kw">super</span>::block_rules::{BlockRules, LookupResult <span class="kw">as </span>BlockLookupResult};
-<span class="kw">use </span>futures::{FutureExt, StreamExt};
-<span class="kw">use </span>log::{error, info, trace, warn};
+<span class="kw">use </span><span class="kw">crate</span>::client::notification_pinning::NotificationPinningWorker;
+<span class="kw">use </span>log::{debug, info, trace, warn};
 <span class="kw">use </span>parking_lot::{Mutex, RwLock};
 <span class="kw">use </span>prometheus_endpoint::Registry;
 <span class="kw">use </span>rand::Rng;
@@ -2151,7 +2171,7 @@
 	execution_extensions::ExecutionExtensions,
 	notifications::{StorageEventStream, StorageNotifications},
 	CallExecutor, ExecutorProvider, KeysIter, OnFinalityAction, OnImportAction, PairsIter,
-	ProofProvider, UsageProvider,
+	ProofProvider, UnpinWorkerMessage, UsageProvider,
 };
 <span class="kw">use </span>sc_consensus::{
 	BlockCheckParams, BlockImportParams, ForkChoiceStrategy, ImportResult, StateAction,
@@ -2190,7 +2210,7 @@
 	ChildStorageCollection, KeyValueStates, KeyValueStorageLevel, StorageCollection,
 	MAX_NESTED_TRIE_DEPTH,
 };
-<span class="kw">use </span>sp_trie::{CompactProof, MerkleValue, StorageProof};
+<span class="kw">use </span>sp_trie::{proof_size_extension::ProofSizeExt, CompactProof, MerkleValue, StorageProof};
 <span class="kw">use </span>std::{
 	collections::{HashMap, HashSet},
 	marker::PhantomData,
@@ -2227,7 +2247,7 @@
 	block_rules: BlockRules&lt;Block&gt;,
 	config: ClientConfig&lt;Block&gt;,
 	telemetry: <span class="prelude-ty">Option</span>&lt;TelemetryHandle&gt;,
-	unpin_worker_sender: TracingUnboundedSender&lt;Block::Hash&gt;,
+	unpin_worker_sender: TracingUnboundedSender&lt;UnpinWorkerMessage&lt;Block&gt;&gt;,
 	_phantom: PhantomData&lt;RA&gt;,
 }
 
@@ -2297,7 +2317,7 @@
 	)
 }
 
-<span class="doccomment">/// Relevant client configuration items relevant for the client.
+<span class="doccomment">/// Client configuration items.
 </span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>ClientConfig&lt;Block: BlockT&gt; {
 	<span class="doccomment">/// Enable the offchain worker db.
@@ -2311,6 +2331,8 @@
 	<span class="doccomment">/// Map of WASM runtime substitute starting at the child of the given block until the runtime
 	/// version doesn't match anymore.
 	</span><span class="kw">pub </span>wasm_runtime_substitutes: HashMap&lt;NumberFor&lt;Block&gt;, Vec&lt;u8&gt;&gt;,
+	<span class="doccomment">/// Enable recording of storage proofs during block import
+	</span><span class="kw">pub </span>enable_import_proof_recording: bool,
 }
 
 <span class="kw">impl</span>&lt;Block: BlockT&gt; Default <span class="kw">for </span>ClientConfig&lt;Block&gt; {
@@ -2321,6 +2343,7 @@
 			wasm_runtime_overrides: <span class="prelude-val">None</span>,
 			no_genesis: <span class="bool-val">false</span>,
 			wasm_runtime_substitutes: HashMap::new(),
+			enable_import_proof_recording: <span class="bool-val">false</span>,
 		}
 	}
 }
@@ -2436,19 +2459,35 @@
 			// dropped, the block will be unpinned automatically.
 			</span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>notification) = finality_notification {
 				<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = <span class="self">self</span>.backend.pin_block(notification.hash) {
-					<span class="macro">error!</span>(
+					<span class="macro">debug!</span>(
 						<span class="string">"Unable to pin block for finality notification. hash: {}, Error: {}"</span>,
 						notification.hash, err
 					);
-				};
+				} <span class="kw">else </span>{
+					<span class="kw">let _ </span>= <span class="self">self
+						</span>.unpin_worker_sender
+						.unbounded_send(UnpinWorkerMessage::AnnouncePin(notification.hash))
+						.map_err(|e| {
+							<span class="macro">log::error!</span>(
+								<span class="string">"Unable to send AnnouncePin worker message for finality: {e}"
+							</span>)
+						});
+				}
 			}
 
 			<span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>notification) = import_notification {
 				<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = <span class="self">self</span>.backend.pin_block(notification.hash) {
-					<span class="macro">error!</span>(
+					<span class="macro">debug!</span>(
 						<span class="string">"Unable to pin block for import notification. hash: {}, Error: {}"</span>,
 						notification.hash, err
 					);
+				} <span class="kw">else </span>{
+					<span class="kw">let _ </span>= <span class="self">self
+						</span>.unpin_worker_sender
+						.unbounded_send(UnpinWorkerMessage::AnnouncePin(notification.hash))
+						.map_err(|e| {
+							<span class="macro">log::error!</span>(<span class="string">"Unable to send AnnouncePin worker message for import: {e}"</span>)
+						});
 				};
 			}
 
@@ -2526,25 +2565,12 @@
 			backend.commit_operation(op)<span class="question-mark">?</span>;
 		}
 
-		<span class="kw">let </span>(unpin_worker_sender, <span class="kw-2">mut </span>rx) =
-			tracing_unbounded::&lt;Block::Hash&gt;(<span class="string">"unpin-worker-channel"</span>, <span class="number">10_000</span>);
-		<span class="kw">let </span>task_backend = Arc::downgrade(<span class="kw-2">&amp;</span>backend);
-		spawn_handle.spawn(
-			<span class="string">"unpin-worker"</span>,
-			<span class="prelude-val">None</span>,
-			<span class="kw">async move </span>{
-				<span class="kw">while let </span><span class="prelude-val">Some</span>(message) = rx.next().<span class="kw">await </span>{
-					<span class="kw">if let </span><span class="prelude-val">Some</span>(backend) = task_backend.upgrade() {
-						backend.unpin_block(message);
-					} <span class="kw">else </span>{
-						<span class="macro">log::debug!</span>(<span class="string">"Terminating unpin-worker, backend reference was dropped."</span>);
-						<span class="kw">return
-					</span>}
-				}
-				<span class="macro">log::debug!</span>(<span class="string">"Terminating unpin-worker, stream terminated."</span>)
-			}
-			.boxed(),
+		<span class="kw">let </span>(unpin_worker_sender, rx) = tracing_unbounded::&lt;UnpinWorkerMessage&lt;Block&gt;&gt;(
+			<span class="string">"notification-pinning-worker-channel"</span>,
+			<span class="number">10_000</span>,
 		);
+		<span class="kw">let </span>unpin_worker = NotificationPinningWorker::new(rx, backend.clone());
+		spawn_handle.spawn(<span class="string">"notification-pinning-worker"</span>, <span class="prelude-val">None</span>, Box::pin(unpin_worker.run()));
 
 		<span class="prelude-val">Ok</span>(Client {
 			backend,
@@ -2785,8 +2811,10 @@
 
 						<span class="comment">// This is use by fast sync for runtime version to be resolvable from
 						// changes.
-						</span><span class="kw">let </span>state_version =
-							resolve_state_version_from_wasm(<span class="kw-2">&amp;</span>storage, <span class="kw-2">&amp;</span><span class="self">self</span>.executor)<span class="question-mark">?</span>;
+						</span><span class="kw">let </span>state_version = resolve_state_version_from_wasm::&lt;<span class="kw">_</span>, HashingFor&lt;Block&gt;&gt;(
+							<span class="kw-2">&amp;</span>storage,
+							<span class="kw-2">&amp;</span><span class="self">self</span>.executor,
+						)<span class="question-mark">?</span>;
 						<span class="kw">let </span>state_root = operation.op.reset_storage(storage, state_version)<span class="question-mark">?</span>;
 						<span class="kw">if </span>state_root != <span class="kw-2">*</span>import_headers.post().state_root() {
 							<span class="comment">// State root mismatch when importing state. This should not happen in
@@ -2971,6 +2999,14 @@
 
 				runtime_api.set_call_context(CallContext::Onchain);
 
+				<span class="kw">if </span><span class="self">self</span>.config.enable_import_proof_recording {
+					runtime_api.record_proof();
+					<span class="kw">let </span>recorder = runtime_api
+						.proof_recorder()
+						.expect(<span class="string">"Proof recording is enabled in the line above; qed."</span>);
+					runtime_api.register_extension(ProofSizeExt::new(recorder));
+				}
+
 				runtime_api.execute_block(
 					<span class="kw-2">*</span>parent_hash,
 					Block::new(import_block.header.clone(), body.clone()),
@@ -3075,8 +3111,12 @@
 
 			<span class="comment">// The stale heads are the leaves that will be displaced after the
 			// block is finalized.
-			</span><span class="kw">let </span>stale_heads =
-				<span class="self">self</span>.backend.blockchain().displaced_leaves_after_finalizing(block_number)<span class="question-mark">?</span>;
+			</span><span class="kw">let </span>stale_heads = <span class="self">self
+				</span>.backend
+				.blockchain()
+				.displaced_leaves_after_finalizing(hash, block_number)<span class="question-mark">?
+				</span>.hashes()
+				.collect();
 
 			<span class="kw">let </span>header = <span class="self">self
 				</span>.backend

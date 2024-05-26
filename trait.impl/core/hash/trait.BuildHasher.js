@@ -1,5 +1,6 @@
 (function() {var implementors = {
 "ahash":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.78.0/core/hash/trait.BuildHasher.html\" title=\"trait core::hash::BuildHasher\">BuildHasher</a> for <a class=\"struct\" href=\"ahash/random_state/struct.RandomState.html\" title=\"struct ahash::random_state::RandomState\">RandomState</a>"]],
+"no_std_compat":[],
 "scale_info":[],
 "schnellru":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.78.0/core/hash/trait.BuildHasher.html\" title=\"trait core::hash::BuildHasher\">BuildHasher</a> for <a class=\"struct\" href=\"schnellru/struct.RandomState.html\" title=\"struct schnellru::RandomState\">RandomState</a>"]],
 "sp_std":[],

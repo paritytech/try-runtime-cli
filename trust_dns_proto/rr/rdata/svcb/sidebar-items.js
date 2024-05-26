@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["SvcParamKey","SvcParamValue"],"fn":["emit","read"],"struct":["Alpn","EchConfig","IpHint","Mandatory","SVCB","Unknown"]};
+window.SIDEBAR_ITEMS = {"enum":["SvcParamKey","SvcParamValue"],"struct":["Alpn","EchConfig","IpHint","Mandatory","SVCB","Unknown"]};

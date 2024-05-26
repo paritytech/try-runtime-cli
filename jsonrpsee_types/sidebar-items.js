@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["error","params","request","response"],"type":["EmptyServerParams"]};
+window.SIDEBAR_ITEMS = {"mod":["error","params","request","response"]};

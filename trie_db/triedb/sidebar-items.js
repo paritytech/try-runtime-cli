@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["TrieDB","TrieDBBuilder","TrieDBIterator","TrieDBKeyIterator"]};
+window.SIDEBAR_ITEMS = {"struct":["TrieDB","TrieDBBuilder","TrieDBDoubleEndedIterator","TrieDBIterator","TrieDBKeyDoubleEndedIterator","TrieDBKeyIterator"]};

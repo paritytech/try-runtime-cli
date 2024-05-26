@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tracing-subscriber-0.2.25/src/filter/env/directive.rs`."><title>directive.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="tracing_subscriber" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tracing-subscriber-0.3.18/src/filter/env/directive.rs`."><title>directive.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="tracing_subscriber" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../../tracing_subscriber/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -846,20 +846,41 @@
 <a href="#844" id="844">844</a>
 <a href="#845" id="845">845</a>
 <a href="#846" id="846">846</a>
+<a href="#847" id="847">847</a>
+<a href="#848" id="848">848</a>
+<a href="#849" id="849">849</a>
+<a href="#850" id="850">850</a>
+<a href="#851" id="851">851</a>
+<a href="#852" id="852">852</a>
+<a href="#853" id="853">853</a>
+<a href="#854" id="854">854</a>
+<a href="#855" id="855">855</a>
+<a href="#856" id="856">856</a>
+<a href="#857" id="857">857</a>
+<a href="#858" id="858">858</a>
+<a href="#859" id="859">859</a>
+<a href="#860" id="860">860</a>
+<a href="#861" id="861">861</a>
+<a href="#862" id="862">862</a>
+<a href="#863" id="863">863</a>
+<a href="#864" id="864">864</a>
+<a href="#865" id="865">865</a>
+<a href="#866" id="866">866</a>
+<a href="#867" id="867">867</a>
 </pre></div><pre class="rust"><code><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="kw">crate</span>::filter::directive::{FilterVec, ParseError, StaticDirective};
 <span class="kw">use </span><span class="kw">crate</span>::filter::{
     directive::{DirectiveSet, Match},
     env::{field, FieldMap},
     level::LevelFilter,
 };
-<span class="kw">use </span>lazy_static::lazy_static;
+<span class="kw">use </span>once_cell::sync::Lazy;
 <span class="kw">use </span>regex::Regex;
 <span class="kw">use </span>std::{cmp::Ordering, fmt, iter::FromIterator, str::FromStr};
 <span class="kw">use </span>tracing_core::{span, Level, Metadata};
 
 <span class="doccomment">/// A single filtering directive.
 </span><span class="comment">// TODO(eliza): add a builder for programmatically constructing directives?
-</span><span class="attr">#[derive(Debug, Eq, PartialEq)]
+</span><span class="attr">#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"env-filter"</span>)))]
 </span><span class="kw">pub struct </span>Directive {
     in_span: <span class="prelude-ty">Option</span>&lt;String&gt;,
@@ -955,80 +976,59 @@
             .collect();
         (Dynamics::from_iter(dyns), statics)
     }
-}
 
-<span class="kw">impl </span>Match <span class="kw">for </span>Directive {
-    <span class="kw">fn </span>cares_about(<span class="kw-2">&amp;</span><span class="self">self</span>, meta: <span class="kw-2">&amp;</span>Metadata&lt;<span class="lifetime">'_</span>&gt;) -&gt; bool {
-        <span class="comment">// Does this directive have a target filter, and does it match the
-        // metadata's target?
-        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>target) = <span class="self">self</span>.target {
-            <span class="kw">if </span>!meta.target().starts_with(<span class="kw-2">&amp;</span>target[..]) {
-                <span class="kw">return </span><span class="bool-val">false</span>;
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>deregexify(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="kw">for </span>field <span class="kw">in </span><span class="kw-2">&amp;mut </span><span class="self">self</span>.fields {
+            field.value = <span class="kw">match </span>field.value.take() {
+                <span class="prelude-val">Some</span>(field::ValueMatch::Pat(pat)) =&gt; {
+                    <span class="prelude-val">Some</span>(field::ValueMatch::Debug(pat.into_debug_match()))
+                }
+                x =&gt; x,
             }
         }
-
-        <span class="comment">// Do we have a name filter, and does it match the metadata's name?
-        // TODO(eliza): put name globbing here?
-        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>name) = <span class="self">self</span>.in_span {
-            <span class="kw">if </span>name != meta.name() {
-                <span class="kw">return </span><span class="bool-val">false</span>;
-            }
-        }
-
-        <span class="comment">// Does the metadata define all the fields that this directive cares about?
-        </span><span class="kw">let </span>fields = meta.fields();
-        <span class="kw">for </span>field <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.fields {
-            <span class="kw">if </span>fields.field(<span class="kw-2">&amp;</span>field.name).is_none() {
-                <span class="kw">return </span><span class="bool-val">false</span>;
-            }
-        }
-
-        <span class="bool-val">true
-    </span>}
-
-    <span class="kw">fn </span>level(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>LevelFilter {
-        <span class="kw-2">&amp;</span><span class="self">self</span>.level
     }
-}
 
-<span class="kw">impl </span>FromStr <span class="kw">for </span>Directive {
-    <span class="kw">type </span><span class="prelude-val">Err </span>= ParseError;
-    <span class="kw">fn </span>from_str(from: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Err&gt; {
-        <span class="macro">lazy_static!</span> {
-            <span class="kw">static </span><span class="kw-2">ref </span>DIRECTIVE_RE: Regex = Regex::new(
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn </span>parse(from: <span class="kw-2">&amp;</span>str, regex: bool) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ParseError&gt; {
+        <span class="kw">static </span>DIRECTIVE_RE: Lazy&lt;Regex&gt; = Lazy::new(|| {
+            Regex::new(
                 <span class="string">r"(?x)
-                ^(?P&lt;global_level&gt;(?i:trace|debug|info|warn|error|off|[0-5]))$ |
-                 #                 ^^^.
-                 #                     `note: we match log level names case-insensitively
-                ^
-                (?: # target name or span name
-                    (?P&lt;target&gt;[\w:-]+)|(?P&lt;span&gt;\[[^\]]*\])
-                ){1,2}
-                (?: # level or nothing
-                    =(?P&lt;level&gt;(?i:trace|debug|info|warn|error|off|[0-5]))?
-                     #          ^^^.
-                     #              `note: we match log level names case-insensitively
-                )?
-                $
-                "
-            </span>)
-            .unwrap();
-            <span class="kw">static </span><span class="kw-2">ref </span>SPAN_PART_RE: Regex =
-                Regex::new(<span class="string">r#"(?P&lt;name&gt;[^\]\{]+)?(?:\{(?P&lt;fields&gt;[^\}]*)\})?"#</span>).unwrap();
-            <span class="kw">static </span><span class="kw-2">ref </span>FIELD_FILTER_RE: Regex =
-                <span class="comment">// TODO(eliza): this doesn't _currently_ handle value matchers that include comma
-                // characters. We should fix that.
-                </span>Regex::new(<span class="string">r#"(?x)
-                    (
-                        # field name
-                        [[:word:]][[[:word:]]\.]*
-                        # value part (optional)
-                        (?:=[^,]+)?
-                    )
-                    # trailing comma or EOS
-                    (?:,\s?|$)
-                "#</span>).unwrap();
-        }
+            ^(?P&lt;global_level&gt;(?i:trace|debug|info|warn|error|off|[0-5]))$ |
+                #                 ^^^.
+                #                     `note: we match log level names case-insensitively
+            ^
+            (?: # target name or span name
+                (?P&lt;target&gt;[\w:-]+)|(?P&lt;span&gt;\[[^\]]*\])
+            ){1,2}
+            (?: # level or nothing
+                =(?P&lt;level&gt;(?i:trace|debug|info|warn|error|off|[0-5]))?
+                    #          ^^^.
+                    #              `note: we match log level names case-insensitively
+            )?
+            $
+            "</span>,
+            )
+            .unwrap()
+        });
+        <span class="kw">static </span>SPAN_PART_RE: Lazy&lt;Regex&gt; =
+            Lazy::new(|| Regex::new(<span class="string">r"(?P&lt;name&gt;[^\]\{]+)?(?:\{(?P&lt;fields&gt;[^\}]*)\})?"</span>).unwrap());
+        <span class="kw">static </span>FIELD_FILTER_RE: Lazy&lt;Regex&gt; =
+            <span class="comment">// TODO(eliza): this doesn't _currently_ handle value matchers that include comma
+            // characters. We should fix that.
+            </span>Lazy::new(|| {
+                Regex::new(
+                    <span class="string">r"(?x)
+                (
+                    # field name
+                    [[:word:]][[[:word:]]\.]*
+                    # value part (optional)
+                    (?:=[^,]+)?
+                )
+                # trailing comma or EOS
+                (?:,\s?|$)
+            "</span>,
+                )
+                .unwrap()
+            });
 
         <span class="kw">let </span>caps = DIRECTIVE_RE.captures(from).ok_or_else(ParseError::new)<span class="question-mark">?</span>;
 
@@ -1062,7 +1062,7 @@
                     .map(|c| {
                         FIELD_FILTER_RE
                             .find_iter(c.as_str())
-                            .map(|c| c.as_str().parse())
+                            .map(|c| field::Match::parse(c.as_str(), regex))
                             .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw">_</span>&gt;, <span class="kw">_</span>&gt;&gt;()
                     })
                     .unwrap_or_else(|| <span class="prelude-val">Ok</span>(Vec::new()));
@@ -1076,12 +1076,54 @@
             <span class="comment">// Setting the target without the level enables every level for that target
             </span>.unwrap_or(LevelFilter::TRACE);
 
-        <span class="prelude-val">Ok</span>(Directive {
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             level,
             target,
             in_span,
             fields: fields<span class="question-mark">?</span>,
         })
+    }
+}
+
+<span class="kw">impl </span>Match <span class="kw">for </span>Directive {
+    <span class="kw">fn </span>cares_about(<span class="kw-2">&amp;</span><span class="self">self</span>, meta: <span class="kw-2">&amp;</span>Metadata&lt;<span class="lifetime">'_</span>&gt;) -&gt; bool {
+        <span class="comment">// Does this directive have a target filter, and does it match the
+        // metadata's target?
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>target) = <span class="self">self</span>.target {
+            <span class="kw">if </span>!meta.target().starts_with(<span class="kw-2">&amp;</span>target[..]) {
+                <span class="kw">return </span><span class="bool-val">false</span>;
+            }
+        }
+
+        <span class="comment">// Do we have a name filter, and does it match the metadata's name?
+        // TODO(eliza): put name globbing here?
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>name) = <span class="self">self</span>.in_span {
+            <span class="kw">if </span>name != meta.name() {
+                <span class="kw">return </span><span class="bool-val">false</span>;
+            }
+        }
+
+        <span class="comment">// Does the metadata define all the fields that this directive cares about?
+        </span><span class="kw">let </span>actual_fields = meta.fields();
+        <span class="kw">for </span>expected_field <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.fields {
+            <span class="comment">// Does the actual field set (from the metadata) contain this field?
+            </span><span class="kw">if </span>actual_fields.field(<span class="kw-2">&amp;</span>expected_field.name).is_none() {
+                <span class="kw">return </span><span class="bool-val">false</span>;
+            }
+        }
+
+        <span class="bool-val">true
+    </span>}
+
+    <span class="kw">fn </span>level(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>LevelFilter {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.level
+    }
+}
+
+<span class="kw">impl </span>FromStr <span class="kw">for </span>Directive {
+    <span class="kw">type </span><span class="prelude-val">Err </span>= ParseError;
+    <span class="kw">fn </span>from_str(from: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Err&gt; {
+        Directive::parse(from, <span class="bool-val">true</span>)
     }
 }
 

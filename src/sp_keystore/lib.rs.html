@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/1d5d4a4/substrate/primitives/keystore/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_keystore" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/primitives/keystore/src/lib.rs`."><title>lib.rs - source</title><script> if (window.location.protocol !== "file:") document.write(`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2">`)</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-e935ef01ae1c1829.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_keystore" data-themes="" data-resource-suffix="" data-rustdoc-version="1.78.0 (9b00956e5 2024-04-29)" data-channel="1.78.0" data-search-js="search-42d8da7a6b9792c2.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-12cf3b4f4f9dc36d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
             <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
     <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../sp_keystore/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
@@ -709,6 +709,48 @@
 <a href="#707" id="707">707</a>
 <a href="#708" id="708">708</a>
 <a href="#709" id="709">709</a>
+<a href="#710" id="710">710</a>
+<a href="#711" id="711">711</a>
+<a href="#712" id="712">712</a>
+<a href="#713" id="713">713</a>
+<a href="#714" id="714">714</a>
+<a href="#715" id="715">715</a>
+<a href="#716" id="716">716</a>
+<a href="#717" id="717">717</a>
+<a href="#718" id="718">718</a>
+<a href="#719" id="719">719</a>
+<a href="#720" id="720">720</a>
+<a href="#721" id="721">721</a>
+<a href="#722" id="722">722</a>
+<a href="#723" id="723">723</a>
+<a href="#724" id="724">724</a>
+<a href="#725" id="725">725</a>
+<a href="#726" id="726">726</a>
+<a href="#727" id="727">727</a>
+<a href="#728" id="728">728</a>
+<a href="#729" id="729">729</a>
+<a href="#730" id="730">730</a>
+<a href="#731" id="731">731</a>
+<a href="#732" id="732">732</a>
+<a href="#733" id="733">733</a>
+<a href="#734" id="734">734</a>
+<a href="#735" id="735">735</a>
+<a href="#736" id="736">736</a>
+<a href="#737" id="737">737</a>
+<a href="#738" id="738">738</a>
+<a href="#739" id="739">739</a>
+<a href="#740" id="740">740</a>
+<a href="#741" id="741">741</a>
+<a href="#742" id="742">742</a>
+<a href="#743" id="743">743</a>
+<a href="#744" id="744">744</a>
+<a href="#745" id="745">745</a>
+<a href="#746" id="746">746</a>
+<a href="#747" id="747">747</a>
+<a href="#748" id="748">748</a>
+<a href="#749" id="749">749</a>
+<a href="#750" id="750">750</a>
+<a href="#751" id="751">751</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -728,7 +770,11 @@
 
 </span><span class="doccomment">//! Keystore traits
 
-</span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
+</span><span class="attr">#![cfg_attr(not(feature = <span class="string">"std"</span>), no_std)]
+
+</span><span class="kw">extern crate </span>alloc;
+
+<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
 </span><span class="kw">pub mod </span>testing;
 
 <span class="attr">#[cfg(feature = <span class="string">"bandersnatch-experimental"</span>)]
@@ -740,24 +786,34 @@
 	ecdsa, ed25519, sr25519,
 };
 
-<span class="kw">use </span>std::sync::Arc;
+<span class="kw">use </span>alloc::{string::String, sync::Arc, vec::Vec};
 
 <span class="doccomment">/// Keystore error
-</span><span class="attr">#[derive(Debug, thiserror::Error)]
+</span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub enum </span>Error {
 	<span class="doccomment">/// Public key type is not supported
-	</span><span class="attr">#[error(<span class="string">"Key not supported: {0:?}"</span>)]
 	</span>KeyNotSupported(KeyTypeId),
 	<span class="doccomment">/// Validation error
-	</span><span class="attr">#[error(<span class="string">"Validation error: {0}"</span>)]
 	</span>ValidationError(String),
 	<span class="doccomment">/// Keystore unavailable
-	</span><span class="attr">#[error(<span class="string">"Keystore unavailable"</span>)]
 	</span>Unavailable,
 	<span class="doccomment">/// Programming errors
-	</span><span class="attr">#[error(<span class="string">"An unknown keystore error occurred: {0}"</span>)]
 	</span>Other(String),
 }
+
+<span class="kw">impl </span>core::fmt::Display <span class="kw">for </span>Error {
+	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
+		<span class="kw">match </span><span class="self">self </span>{
+			Error::KeyNotSupported(key_type) =&gt; <span class="macro">write!</span>(fmt, <span class="string">"Key not supported: {key_type:?}"</span>),
+			Error::ValidationError(error) =&gt; <span class="macro">write!</span>(fmt, <span class="string">"Validation error: {error}"</span>),
+			Error::Unavailable =&gt; fmt.write_str(<span class="string">"Keystore unavailable"</span>),
+			Error::Other(error) =&gt; <span class="macro">write!</span>(fmt, <span class="string">"An unknown keystore error occurred: {error}"</span>),
+		}
+	}
+}
+
+<span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
+</span><span class="kw">impl </span>std::error::Error <span class="kw">for </span>Error {}
 
 <span class="doccomment">/// Something that generates, stores and provides access to secret keys.
 </span><span class="kw">pub trait </span>Keystore: Send + Sync {
@@ -803,19 +859,19 @@
 		data: <span class="kw-2">&amp;</span>sr25519::vrf::VrfSignData,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;sr25519::vrf::VrfSignature&gt;, Error&gt;;
 
-	<span class="doccomment">/// Generate an sr25519 VRF output for a given input data.
+	<span class="doccomment">/// Generate an sr25519 VRF pre-output for a given input data.
 	///
 	/// Receives [`KeyTypeId`] and an [`sr25519::Public`] key to be able to map
 	/// them to a private key that exists in the keystore.
 	///
 	/// Returns `None` if the given `key_type` and `public` combination doesn't
 	/// exist in the keystore or an `Err` when something failed.
-	</span><span class="kw">fn </span>sr25519_vrf_output(
+	</span><span class="kw">fn </span>sr25519_vrf_pre_output(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		key_type: KeyTypeId,
 		public: <span class="kw-2">&amp;</span>sr25519::Public,
 		input: <span class="kw-2">&amp;</span>sr25519::vrf::VrfInput,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;sr25519::vrf::VrfOutput&gt;, Error&gt;;
+	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;sr25519::vrf::VrfPreOutput&gt;, Error&gt;;
 
 	<span class="doccomment">/// Returns all ed25519 public keys for the given key type.
 	</span><span class="kw">fn </span>ed25519_public_keys(<span class="kw-2">&amp;</span><span class="self">self</span>, key_type: KeyTypeId) -&gt; Vec&lt;ed25519::Public&gt;;
@@ -934,7 +990,7 @@
 		input: <span class="kw-2">&amp;</span>bandersnatch::vrf::VrfSignData,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;bandersnatch::vrf::VrfSignature&gt;, Error&gt;;
 
-	<span class="doccomment">/// Generate a bandersnatch VRF (pre)output for a given input data.
+	<span class="doccomment">/// Generate a bandersnatch VRF pre-output for a given input data.
 	///
 	/// Receives [`KeyTypeId`] and an [`bandersnatch::Public`] key to be able to map
 	/// them to a private key that exists in the keystore.
@@ -942,12 +998,12 @@
 	/// Returns `None` if the given `key_type` and `public` combination doesn't
 	/// exist in the keystore or an `Err` when something failed.
 	</span><span class="attr">#[cfg(feature = <span class="string">"bandersnatch-experimental"</span>)]
-	</span><span class="kw">fn </span>bandersnatch_vrf_output(
+	</span><span class="kw">fn </span>bandersnatch_vrf_pre_output(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		key_type: KeyTypeId,
 		public: <span class="kw-2">&amp;</span>bandersnatch::Public,
 		input: <span class="kw-2">&amp;</span>bandersnatch::vrf::VrfInput,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;bandersnatch::vrf::VrfOutput&gt;, Error&gt;;
+	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;bandersnatch::vrf::VrfPreOutput&gt;, Error&gt;;
 
 	<span class="doccomment">/// Generate a bandersnatch ring-VRF signature for the given data.
 	///
@@ -1060,6 +1116,24 @@
 	/// An `Err` will be returned if generating the signature itself failed.
 	</span><span class="attr">#[cfg(feature = <span class="string">"bls-experimental"</span>)]
 	</span><span class="kw">fn </span>ecdsa_bls377_sign(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		key_type: KeyTypeId,
+		public: <span class="kw-2">&amp;</span>ecdsa_bls377::Public,
+		msg: <span class="kw-2">&amp;</span>[u8],
+	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;ecdsa_bls377::Signature&gt;, Error&gt;;
+
+	<span class="doccomment">/// Hashes the `message` using keccak256 and then signs it using ECDSA
+	/// algorithm. It does not affect the behavior of BLS12-377 component. It generates
+	/// BLS12-377 Signature according to IETF standard.
+	///
+	/// Receives [`KeyTypeId`] and a [`ecdsa_bls377::Public`] key to be able to map
+	/// them to a private key that exists in the keystore.
+	///
+	/// Returns an [`ecdsa_bls377::Signature`] or `None` in case the given `key_type`
+	/// and `public` combination doesn't exist in the keystore.
+	/// An `Err` will be returned if generating the signature itself failed.
+	</span><span class="attr">#[cfg(feature = <span class="string">"bls-experimental"</span>)]
+	</span><span class="kw">fn </span>ecdsa_bls377_sign_with_keccak256(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		key_type: KeyTypeId,
 		public: <span class="kw-2">&amp;</span>ecdsa_bls377::Public,
@@ -1185,13 +1259,13 @@
 		(<span class="kw-2">**</span><span class="self">self</span>).sr25519_vrf_sign(key_type, public, data)
 	}
 
-	<span class="kw">fn </span>sr25519_vrf_output(
+	<span class="kw">fn </span>sr25519_vrf_pre_output(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		key_type: KeyTypeId,
 		public: <span class="kw-2">&amp;</span>sr25519::Public,
 		input: <span class="kw-2">&amp;</span>sr25519::vrf::VrfInput,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;sr25519::vrf::VrfOutput&gt;, Error&gt; {
-		(<span class="kw-2">**</span><span class="self">self</span>).sr25519_vrf_output(key_type, public, input)
+	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;sr25519::vrf::VrfPreOutput&gt;, Error&gt; {
+		(<span class="kw-2">**</span><span class="self">self</span>).sr25519_vrf_pre_output(key_type, public, input)
 	}
 
 	<span class="kw">fn </span>ed25519_public_keys(<span class="kw-2">&amp;</span><span class="self">self</span>, key_type: KeyTypeId) -&gt; Vec&lt;ed25519::Public&gt; {
@@ -1280,13 +1354,13 @@
 	}
 
 	<span class="attr">#[cfg(feature = <span class="string">"bandersnatch-experimental"</span>)]
-	</span><span class="kw">fn </span>bandersnatch_vrf_output(
+	</span><span class="kw">fn </span>bandersnatch_vrf_pre_output(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		key_type: KeyTypeId,
 		public: <span class="kw-2">&amp;</span>bandersnatch::Public,
 		input: <span class="kw-2">&amp;</span>bandersnatch::vrf::VrfInput,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;bandersnatch::vrf::VrfOutput&gt;, Error&gt; {
-		(<span class="kw-2">**</span><span class="self">self</span>).bandersnatch_vrf_output(key_type, public, input)
+	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;bandersnatch::vrf::VrfPreOutput&gt;, Error&gt; {
+		(<span class="kw-2">**</span><span class="self">self</span>).bandersnatch_vrf_pre_output(key_type, public, input)
 	}
 
 	<span class="attr">#[cfg(feature = <span class="string">"bandersnatch-experimental"</span>)]
@@ -1370,6 +1444,16 @@
 		msg: <span class="kw-2">&amp;</span>[u8],
 	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;ecdsa_bls377::Signature&gt;, Error&gt; {
 		(<span class="kw-2">**</span><span class="self">self</span>).ecdsa_bls377_sign(key_type, public, msg)
+	}
+
+	<span class="attr">#[cfg(feature = <span class="string">"bls-experimental"</span>)]
+	</span><span class="kw">fn </span>ecdsa_bls377_sign_with_keccak256(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		key_type: KeyTypeId,
+		public: <span class="kw-2">&amp;</span>ecdsa_bls377::Public,
+		msg: <span class="kw-2">&amp;</span>[u8],
+	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;ecdsa_bls377::Signature&gt;, Error&gt; {
+		(<span class="kw-2">**</span><span class="self">self</span>).ecdsa_bls377_sign_with_keccak256(key_type, public, msg)
 	}
 
 	<span class="kw">fn </span>insert(<span class="kw-2">&amp;</span><span class="self">self</span>, key_type: KeyTypeId, suri: <span class="kw-2">&amp;</span>str, public: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
