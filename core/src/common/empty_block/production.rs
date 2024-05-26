@@ -19,7 +19,7 @@ use crate::{
     full_extensions,
 };
 
-pub async fn mine_block<Block: BlockT, HostFns: HostFunctions>(
+pub async fn mine_block<Block, HostFns: HostFunctions>(
     ext_mutex: Arc<Mutex<TestExternalities<HashingFor<Block>>>>,
     executor: &WasmExecutor<HostFns>,
     previous_block_building_info: Option<(InherentData, Digest)>,
@@ -83,7 +83,7 @@ where
 }
 
 /// Produces next block containing only inherents.
-pub async fn produce_next_block<Block: BlockT, HostFns: HostFunctions>(
+pub async fn produce_next_block<Block, HostFns: HostFunctions>(
     ext_mutex: Arc<Mutex<TestExternalities<HashingFor<Block>>>>,
     executor: &WasmExecutor<HostFns>,
     parent_header: Block::Header,
