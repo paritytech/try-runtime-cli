@@ -15,19 +15,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::{collections::BTreeMap, fmt::Debug, str::FromStr};
+use std::{collections::BTreeMap, fmt::Debug, str::FromStr, time::Duration};
 
 use bytesize::ByteSize;
 use frame_try_runtime::UpgradeCheckSelect;
 use log::Level;
 use parity_scale_codec::Encode;
 use sc_executor::sp_wasm_interface::HostFunctions;
-use sp_core::{hexdisplay::HexDisplay, Hasher};
-use sp_runtime::traits::{Block as BlockT, HashingFor, NumberFor};
+use sp_core::{hexdisplay::HexDisplay, Hasher, H256};
+use sp_runtime::{
+    traits::{Block as BlockT, HashingFor, NumberFor},
+    DeserializeOwned,
+};
 use sp_state_machine::{CompactProof, OverlayedChanges, StorageProof};
+use tokio::sync::Mutex;
 
 use crate::{
     common::{
+        empty_block::{inherents::providers::ProviderVariant, production::mine_block},
         misc_logging::basti_log,
         state::{build_executor, state_machine_call_with_proof, RuntimeChecks, State},
     },
@@ -82,14 +87,16 @@ pub struct Command {
     #[clap(long, default_value = "true", default_missing_value = "true")]
     pub mbms: bool,
 
-     /// The chain blocktime in milliseconds.
+    /// The chain blocktime in milliseconds.
     #[arg(long)]
     pub blocktime: u64,
-
 }
 
 // Runs the `on-runtime-upgrade` command.
-pub async fn run<Block, HostFns>(shared: SharedParams, command: Command) -> sc_cli::Result<()>
+pub async fn run<Block: BlockT<Hash = H256> + DeserializeOwned, HostFns>(
+    shared: SharedParams,
+    command: Command,
+) -> sc_cli::Result<()>
 where
     Block: BlockT + serde::de::DeserializeOwned,
     <Block::Hash as FromStr>::Err: Debug,
@@ -264,11 +271,13 @@ where
         std::process::exit(1);
     }
 
+    let inner_ext = std::sync::Arc::new(Mutex::new(ext.inner_ext));
+
     if command.mbms {
         // Check if MBMs are in progress
         let mut parent_header = ext.header.clone();
         let mut parent_block_building_info = None;
-        let provider_variant = ProviderVariant::Smart(Duration::from_millis(command.blocktime.expect("--blocktime is a required arg to run mbms."));
+        let provider_variant = ProviderVariant::Smart(Duration::from_millis(command.blocktime));
 
         while check_mbm_in_progress() {
             let (next_block_building_info, next_header) = mine_block::<Block, HostFns>(
@@ -277,7 +286,7 @@ where
                 parent_block_building_info,
                 parent_header.clone(),
                 provider_variant,
-                command.try_state.clone(),
+                frame_try_runtime::TryStateSelect::None,
             )
             .await?;
 
