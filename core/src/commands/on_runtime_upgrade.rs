@@ -28,7 +28,7 @@ use sp_state_machine::{CompactProof, OverlayedChanges, StorageProof};
 
 use crate::{
     common::{
-        misc_logging,
+        misc_logging::basti_log,
         state::{build_executor, state_machine_call_with_proof, RuntimeChecks, State},
     },
     RefTimeInfo, SharedParams, LOG_TARGET,
@@ -76,6 +76,16 @@ pub struct Command {
     /// storage before and after running the same set of migrations the second time.
     #[clap(long, default_value = "false", default_missing_value = "true")]
     pub print_storage_diff: bool,
+
+    /// Whether or multi-block migrations should be executed to completion after single block
+    /// migratons are completed.
+    #[clap(long, default_value = "true", default_missing_value = "true")]
+    pub mbms: bool,
+
+     /// The chain blocktime in milliseconds.
+    #[arg(long)]
+    pub blocktime: u64,
+
 }
 
 // Runs the `on-runtime-upgrade` command.
@@ -108,7 +118,7 @@ where
     }
 
     // Run `TryRuntime_on_runtime_upgrade` with the given checks.
-    misc_logging::basti_log(
+    basti_log(
         Level::Info,
         format!(
             "🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}",
@@ -138,7 +148,7 @@ where
     let (proof, ref_time_results) = match command.checks {
         UpgradeCheckSelect::None => (proof, ref_time_results),
         _ => {
-            misc_logging::basti_log(
+            basti_log(
                 Level::Info,
                 "🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements.",
             );
@@ -163,7 +173,7 @@ where
             true
         }
         false => {
-            misc_logging::basti_log(
+            basti_log(
                 Level::Info,
                 format!(
                     "🔬 Running TryRuntime_on_runtime_upgrade again to check idempotency: {:?}",
@@ -247,14 +257,41 @@ where
     };
 
     if !weight_ok || !idempotency_ok {
-        misc_logging::basti_log(
+        basti_log(
             Level::Error,
-            "❌ Issues detected, exiting non-zero. See logs.",
+            "❌ Runtime Upgrade issues detected, exiting non-zero. See logs.",
         );
         std::process::exit(1);
     }
 
+    if command.mbms {
+        // Check if MBMs are in progress
+        let mut parent_header = ext.header.clone();
+        let mut parent_block_building_info = None;
+        let provider_variant = ProviderVariant::Smart(Duration::from_millis(command.blocktime.expect("--blocktime is a required arg to run mbms."));
+
+        while check_mbm_in_progress() {
+            let (next_block_building_info, next_header) = mine_block::<Block, HostFns>(
+                inner_ext.clone(),
+                &executor,
+                parent_block_building_info,
+                parent_header.clone(),
+                provider_variant,
+                command.try_state.clone(),
+            )
+            .await?;
+
+            parent_block_building_info = Some(next_block_building_info);
+            parent_header = next_header;
+        }
+    }
+
     Ok(())
+}
+
+fn check_mbm_in_progress() -> bool {
+    // Check if MBMs are in progress
+    false
 }
 
 enum WeightSafety {
