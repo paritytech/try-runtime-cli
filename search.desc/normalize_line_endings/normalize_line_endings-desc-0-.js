@@ -1,0 +1,1 @@
+searchState.loadedDescShard("normalize_line_endings", 0, "Normalize line endings\nTake a Chars and return similar struct with normalized …")

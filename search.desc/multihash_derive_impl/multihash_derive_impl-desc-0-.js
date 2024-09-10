@@ -1,0 +1,1 @@
+searchState.loadedDescShard("multihash_derive_impl", 0, "This is an internal crate that implements the actual …\nCustom derive for the <code>MultihashDigest</code> trait.")

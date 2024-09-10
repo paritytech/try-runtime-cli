@@ -1,0 +1,1 @@
+searchState.loadedDescShard("mockall_derive", 0, "Proc Macros for use with Mockall")
