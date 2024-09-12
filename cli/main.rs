@@ -20,10 +20,12 @@
 //! Substrate's programmatic testing framework.
 //!
 //! > As the name suggests, `try-runtime` is a detailed testing framework that gives you a lot of
-//! control over what is being executed in which environment. It is recommended that user's first
-//! familiarize themselves with substrate in depth, particularly the execution model. It is critical
-//! to deeply understand how the wasm/client/runtime interactions, and the runtime apis work in the
-//! substrate runtime, before commencing to working with `try-runtime`.
+//! > control over what is being executed in which environment. It is recommended that user's first
+//! > familiarize themselves with substrate in depth, particularly the execution model. It is
+//! > critical
+//! > to deeply understand how the wasm/client/runtime interactions, and the runtime apis work in
+//! > the
+//! > substrate runtime, before commencing to working with `try-runtime`.
 //!
 //! #### Resources
 //!
@@ -176,9 +178,9 @@
 //!
 //! For the following examples, we assume the existence of the following:
 //!
-//! 1. a substrate node compiled with `--features try-runtime`, called `substrate`. This will be
-//! the running node that you connect to, and provide a wasm blob that has try-runtime
-//! functionality enabled.
+//! 1. a substrate node compiled with `--features try-runtime`, called `substrate`. This will be the
+//!    running node that you connect to, and provide a wasm blob that has try-runtime functionality
+//!    enabled.
 //! 2. the `try-runtime` CLI binary on your path.
 //!
 //! ```bash
@@ -200,8 +202,8 @@
 //! ```
 //!
 //! * Same as the previous example, but run it at specific block number's state and using the live
-//! polkadot network. This means that this block hash's state should not yet have been pruned by the
-//! node running at `rpc.polkadot.io`.
+//!   polkadot network. This means that this block hash's state should not yet have been pruned by
+//!   the node running at `rpc.polkadot.io`.
 //!
 //! ```bash
 //! try-runtime \
