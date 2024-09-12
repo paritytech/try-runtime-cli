@@ -118,6 +118,7 @@ impl<B: BlockT> sp_inherents::InherentDataProvider for InherentDataProvider<B> {
             raw_downward_messages: Default::default(),
             raw_horizontal_messages: Default::default(),
             additional_key_values: Some(additional_key_values),
+            para_id: para_id.into(),
         }
         .provide_inherent_data(inherent_data)
         .await

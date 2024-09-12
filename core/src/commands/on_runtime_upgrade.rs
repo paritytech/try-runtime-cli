@@ -412,7 +412,7 @@ fn collect_storage_changes_as_hex<Block: BlockT>(
         .filter_map(|(key, entry)| {
             Some((
                 HexDisplay::from(key).to_string(),
-                HexDisplay::from(entry.value_ref().as_ref()?).to_string(),
+                HexDisplay::from(entry.clone().value().unwrap()).to_string(),
             ))
         })
         .collect()
