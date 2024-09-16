@@ -143,7 +143,7 @@ pub enum State {
 }
 
 /// Checks to perform on the given runtime, compared to the existing runtime.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct RuntimeChecks {
     /// Enforce the `spec_name`s match
     pub name_matches: bool,
