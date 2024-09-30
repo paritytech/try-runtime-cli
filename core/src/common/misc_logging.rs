@@ -1,5 +1,6 @@
 use log::{log, Level};
 use paris::formatter::colorize_string;
+
 use crate::LOG_TARGET;
 
 fn level_to_color(level: Level) -> &'static str {
@@ -43,20 +44,21 @@ pub fn basti_log(level: Level, message: &str) {
 }
 
 /// Temporarily demote the log level to a specific level and restore on drop.
-pub struct LogMuffle(log::LevelFilter);
-impl LogMuffle {
+pub struct LogLevelGuard(log::LevelFilter);
+impl LogLevelGuard {
     pub fn new(new_level: log::LevelFilter) -> Self {
         let old_level = log::max_level();
         log::set_max_level(new_level);
         Self(old_level)
     }
 
-    pub fn error() -> Self {
+    /// Only show errors.
+    pub fn only_errors() -> Self {
         Self::new(log::LevelFilter::Error)
     }
 }
 
-impl Drop for LogMuffle {
+impl Drop for LogLevelGuard {
     fn drop(&mut self) {
         log::set_max_level(self.0);
     }

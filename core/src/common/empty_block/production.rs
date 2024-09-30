@@ -7,28 +7,33 @@ use sp_core::H256;
 use sp_inherents::InherentData;
 use sp_runtime::{
     traits::{Block as BlockT, HashingFor, Header, NumberFor, One},
-    DeserializeOwned, Digest,
+    DeserializeOwned, Digest, ExtrinsicInclusionMode,
 };
-use sp_runtime::ExtrinsicInclusionMode;
 use sp_state_machine::TestExternalities;
 use sp_std::fmt::Debug;
 use tokio::sync::Mutex;
 
-use crate::common::misc_logging::LogMuffle;
 use super::inherents::{pre_apply::pre_apply_inherents, providers::InherentProvider};
 use crate::{
-    common::{empty_block::inherents::providers::ProviderVariant, state::state_machine_call},
+    common::{
+        empty_block::inherents::providers::ProviderVariant, misc_logging::LogLevelGuard,
+        state::state_machine_call,
+    },
     full_extensions,
 };
 
-pub async fn mine_block<Block: BlockT, HostFns: HostFunctions>(
+pub async fn mine_block<Block, HostFns: HostFunctions>(
     ext_mutex: Arc<Mutex<TestExternalities<HashingFor<Block>>>>,
     executor: &WasmExecutor<HostFns>,
     previous_block_building_info: Option<(InherentData, Digest)>,
     parent_header: Block::Header,
     provider_variant: ProviderVariant,
     try_state: frame_try_runtime::TryStateSelect,
-) -> Result<((InherentData, Digest), Block::Header, Option<ExtrinsicInclusionMode>)>
+) -> Result<(
+    (InherentData, Digest),
+    Block::Header,
+    Option<ExtrinsicInclusionMode>,
+)>
 where
     Block: BlockT<Hash = H256> + DeserializeOwned,
     Block::Header: DeserializeOwned,
@@ -48,7 +53,7 @@ where
     );
 
     // Prevent it from printing all logs twice:
-    let muffle = LogMuffle::error();
+    let muffle = LogLevelGuard::only_errors();
     let (next_block, new_block_building_info, mode) = produce_next_block::<Block, HostFns>(
         ext_mutex.clone(),
         executor,
@@ -94,13 +99,17 @@ where
 }
 
 /// Produces next block containing only inherents.
-pub async fn produce_next_block<Block: BlockT, HostFns: HostFunctions>(
+pub async fn produce_next_block<Block, HostFns: HostFunctions>(
     ext_mutex: Arc<Mutex<TestExternalities<HashingFor<Block>>>>,
     executor: &WasmExecutor<HostFns>,
     parent_header: Block::Header,
     chain: ProviderVariant,
     previous_block_building_info: Option<(InherentData, Digest)>,
-) -> Result<(Block, (InherentData, Digest), Option<ExtrinsicInclusionMode>)>
+) -> Result<(
+    Block,
+    (InherentData, Digest),
+    Option<ExtrinsicInclusionMode>,
+)>
 where
     Block: BlockT<Hash = H256> + DeserializeOwned,
     Block::Header: DeserializeOwned,
@@ -140,7 +149,13 @@ where
     let ext = ext_guard.deref_mut();
     // Only RA API version 5 supports returning a mode, so need to check.
     let mode = if core_version::<Block, HostFns>(ext, executor)? >= 5 {
-        let mode = call::<ExtrinsicInclusionMode, Block, _>(ext, executor, "Core_initialize_block", &header.encode()).await?;
+        let mode = call::<ExtrinsicInclusionMode, Block, _>(
+            ext,
+            executor,
+            "Core_initialize_block",
+            &header.encode(),
+        )
+        .await?;
         Some(mode)
     } else {
         call::<(), Block, _>(ext, executor, "Core_initialize_block", &header.encode()).await?;
@@ -169,7 +184,11 @@ where
     ext.commit_all().unwrap();
     drop(ext_guard);
 
-    Ok((Block::new(header, extrinsics), (inherent_data, digest), mode))
+    Ok((
+        Block::new(header, extrinsics),
+        (inherent_data, digest),
+        mode,
+    ))
 }
 
 /// Call `method` with `data` and actually save storage changes to `externalities`.

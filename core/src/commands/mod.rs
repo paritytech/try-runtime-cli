@@ -150,7 +150,13 @@ impl Action {
     {
         match &self {
             Action::OnRuntimeUpgrade(ref cmd) => {
-                on_runtime_upgrade::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
+                on_runtime_upgrade::CheckOnRuntimeUpgrade::<Block, HostFns> {
+                    shared: shared.clone(),
+                    command: cmd.clone(),
+                    _phantom: Default::default(),
+                }
+                .run()
+                .await
             }
             Action::ExecuteBlock(cmd) => {
                 execute_block::run::<Block, HostFns>(shared.clone(), cmd.clone()).await

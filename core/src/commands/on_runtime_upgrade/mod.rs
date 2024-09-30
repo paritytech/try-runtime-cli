@@ -17,10 +17,10 @@
 
 pub mod mbms;
 
-use std::{collections::BTreeMap, fmt::Debug, str::FromStr, time::Duration};
-use std::ops::DerefMut;
+use std::{collections::BTreeMap, fmt::Debug, str::FromStr};
 
 use bytesize::ByteSize;
+use frame_remote_externalities::RemoteExternalities;
 use frame_try_runtime::UpgradeCheckSelect;
 use log::Level;
 use parity_scale_codec::Encode;
@@ -30,21 +30,16 @@ use sp_runtime::{
     traits::{Block as BlockT, HashingFor, NumberFor},
     DeserializeOwned,
 };
-use sp_core::twox_128;
-use parity_scale_codec::Codec;
-use sp_state_machine::TestExternalities;
 use sp_state_machine::{CompactProof, OverlayedChanges, StorageProof};
-use tokio::sync::Mutex;
 
 use crate::{
+    commands::on_runtime_upgrade::mbms::MbmChecker,
     common::{
-        empty_block::{inherents::providers::ProviderVariant, production::mine_block},
-        misc_logging::basti_log,
+        misc_logging::{basti_log, LogLevelGuard},
         state::{build_executor, state_machine_call_with_proof, RuntimeChecks, State},
     },
     RefTimeInfo, SharedParams, LOG_TARGET,
 };
-use crate::commands::on_runtime_upgrade::mbms::MbmChecker;
 
 /// Configuration for [`run`].
 #[derive(Debug, Clone, clap::Parser)]
@@ -94,22 +89,25 @@ pub struct Command {
     #[clap(long, default_value = "false", default_missing_value = "true")]
     pub no_mbms: bool,
 
-	/// The maximum duration we expect all MBMs combined to take.
-	///
-	/// This value is just here to ensure that the CLI won't run forever in case of a buggy MBM.
-	#[clap(long, default_value = "600")]
-	pub mbm_max_blocks: u32,
+    /// The maximum duration we expect all MBMs combined to take.
+    ///
+    /// This value is just here to ensure that the CLI won't run forever in case of a buggy MBM.
+    #[clap(long, default_value = "600")]
+    pub mbm_max_blocks: u32,
 
     /// The chain blocktime in milliseconds.
     #[arg(long)]
     pub blocktime: u64,
 }
 
-// Runs the `on-runtime-upgrade` command.
-pub async fn run<Block: BlockT<Hash = H256> + DeserializeOwned, HostFns>(
-    shared: SharedParams,
-    command: Command,
-) -> sc_cli::Result<()>
+/// Convenience struct to hold all the generic args and where clauses.
+pub(crate) struct CheckOnRuntimeUpgrade<Block, HostFns> {
+    pub shared: SharedParams,
+    pub command: Command,
+    pub _phantom: std::marker::PhantomData<(Block, HostFns)>,
+}
+
+impl<Block: BlockT<Hash = H256> + DeserializeOwned, HostFns> CheckOnRuntimeUpgrade<Block, HostFns>
 where
     Block: BlockT + serde::de::DeserializeOwned,
     <Block::Hash as FromStr>::Err: Debug,
@@ -118,186 +116,203 @@ where
     <NumberFor<Block> as FromStr>::Err: Debug,
     HostFns: HostFunctions,
 {
-    let executor = build_executor(&shared);
-    let runtime_checks = RuntimeChecks {
-        name_matches: !shared.disable_spec_name_check,
-        version_increases: !command.disable_spec_version_check,
-        try_runtime_feature_enabled: true,
-    };
-    let ext = command
-        .state
-        .to_ext::<Block, HostFns>(&shared, &executor, None, runtime_checks)
-        .await?;
+    // Runs the `on-runtime-upgrade` command.
+    pub async fn run(&self) -> sc_cli::Result<()> {
+        let shared = &self.shared;
+        let command = &self.command;
 
-    if let State::Live(_) = command.state {
-        log::info!(
-            target: LOG_TARGET,
-            "🚀 Speed up your workflow by using snapshots instead of live state. \
-            See `try-runtime create-snapshot --help`."
+        let executor = build_executor(shared);
+        let runtime_checks = RuntimeChecks {
+            name_matches: !shared.disable_spec_name_check,
+            version_increases: !command.disable_spec_version_check,
+            try_runtime_feature_enabled: true,
+        };
+        let ext = command
+            .state
+            .to_ext::<Block, HostFns>(shared, &executor, None, runtime_checks)
+            .await?;
+
+        let sync_checks = if command.no_mbms {
+            command.checks
+        } else {
+            UpgradeCheckSelect::None
+        };
+
+        // Run `TryRuntime_on_runtime_upgrade` with the given checks.
+        basti_log(
+            Level::Info,
+            format!(
+                "🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}",
+                sync_checks
+            )
+            .as_str(),
         );
+
+        // Check the Single-Block-Migrations work:
+        let mut overlayed_changes = Default::default();
+        let _ = state_machine_call_with_proof::<Block, HostFns>(
+            &ext,
+            &mut overlayed_changes,
+            &executor,
+            "TryRuntime_on_runtime_upgrade",
+            sync_checks.encode().as_ref(),
+            Default::default(), // we don't really need any extensions here.
+            shared.export_proof.clone(),
+        )?;
+
+        let idempotency_ok = self.check_idempotency(&ext, &overlayed_changes)?;
+        let weight_ok = self.check_weight(&ext)?;
+
+        self.check_mbms(runtime_checks).await?;
+
+        if !weight_ok || !idempotency_ok {
+            return Err("Runtime Upgrade issues detected, exiting non-zero. See logs.".into());
+        }
+
+        Ok(())
     }
 
-    let sync_checks = if command.no_mbms {
-        command.checks
-    } else {
-        UpgradeCheckSelect::None
-    };
-
-    // Run `TryRuntime_on_runtime_upgrade` with the given checks.
-    basti_log(
-        Level::Info,
-        format!(
-            "🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}",
-            sync_checks
-        )
-        .as_str(),
-    );
-
-    // Save the overlayed changes from the first run, so we can use them later for idempotency
-    // checks.
-    let mut overlayed_changes = Default::default();
-    let (proof, encoded_result) = state_machine_call_with_proof::<Block, HostFns>(
-        &ext,
-        &mut overlayed_changes,
-        &executor,
-        "TryRuntime_on_runtime_upgrade",
-        sync_checks.encode().as_ref(),
-        Default::default(), // we don't really need any extensions here.
-        shared.export_proof.clone(),
-    )?;
-    let ref_time_results = encoded_result.try_into()?;
-
-    // If the above call ran with checks then we need to run the call again without checks to
-    // measure PoV correctly.
-    // Otherwise, storage lookups from try-runtime logic like pre/post hooks are included in the PoV
-    // calculation.
-    let (proof, ref_time_results) = match sync_checks {
-        UpgradeCheckSelect::None => (proof, ref_time_results),
-        _ => {
-            basti_log(
-                Level::Info,
-                "🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements.",
-            );
-            let (proof, encoded_result) = state_machine_call_with_proof::<Block, HostFns>(
-                &ext,
-                &mut Default::default(),
-                &executor,
-                "TryRuntime_on_runtime_upgrade",
-                UpgradeCheckSelect::None.encode().as_ref(),
-                Default::default(), // we don't really need any extensions here.
-                shared.export_proof.clone(),
-            )?;
-            let ref_time_results = encoded_result.try_into()?;
-            (proof, ref_time_results)
-        }
-    };
-
-    // Check idempotency
-    let idempotency_ok = match command.disable_idempotency_checks {
-        true => {
-            log::info!("ℹ Skipping idempotency check");
-            true
-        }
-        false => {
+    /// Check that the migrations are idempotent.
+    ///
+    /// Expects the overlayed changes from the first execution of the migrations.
+    fn check_idempotency(
+        &self,
+        ext: &RemoteExternalities<Block>,
+        changes: &OverlayedChanges<HashingFor<Block>>,
+    ) -> sc_cli::Result<bool> {
+        if self.command.disable_idempotency_checks {
             basti_log(
                 Level::Info,
                 format!(
                     "🔬 Running TryRuntime_on_runtime_upgrade again to check idempotency: {:?}",
-                    command.checks
+                    self.command.checks
                 )
                 .as_str(),
             );
-            let (oc_pre_root, _) = overlayed_changes.storage_root(&ext.backend, ext.state_version);
-            overlayed_changes.start_transaction();
+            let executor = build_executor(&self.shared);
+
+            let before = changes.clone();
+            let mut after = changes.clone();
+
+            // Don't print all logs again.
+            let _quiet = LogLevelGuard::only_errors();
             match state_machine_call_with_proof::<Block, HostFns>(
-                &ext,
-                &mut overlayed_changes,
+                ext,
+                &mut after,
                 &executor,
                 "TryRuntime_on_runtime_upgrade",
                 UpgradeCheckSelect::None.encode().as_ref(),
-                Default::default(), // we don't really need any extensions here.
-                shared.export_proof.clone(),
+                Default::default(),
+                self.shared.export_proof.clone(),
             ) {
-                Ok(_) => {
-                    // Execution was OK, check if the storage root changed.
-                    let (oc_post_root, _) =
-                        overlayed_changes.storage_root(&ext.backend, ext.state_version);
-                    if oc_pre_root != oc_post_root {
-                        log::error!("❌ Migrations are not idempotent. Selectively remove migrations from Executive until you find the culprit.");
-                        if command.print_storage_diff {
-                            log::info!("Changed storage keys:");
-                            let changes_after =
-                                collect_storage_changes_as_hex::<Block>(&overlayed_changes);
-                            overlayed_changes.rollback_transaction().expect(
-                                "Migrations must not rollback transactions that they did not open",
-                            );
-                            let changes_before =
-                                collect_storage_changes_as_hex::<Block>(&overlayed_changes);
-
-                            similar_asserts::assert_eq!(changes_before, changes_after);
-                        } else {
-                            log::error!("Run with --print-storage-diff to see list of changed storage keys.");
-                        }
-
-                        false
-                    } else {
-                        // Exeuction was OK and state root didn't change
-                        true
-                    }
-                }
+                Ok(_) => self.changed(ext, before, after),
                 Err(e) => {
                     log::error!(
-                        "❌ Migrations are not idempotent, they failed during the second execution.",
-                    );
+                            "❌ Migrations are not idempotent, they failed during the second execution.",
+                        );
                     log::debug!("{:?}", e);
-                    false
+                    Ok(false)
                 }
             }
+        } else {
+            log::info!("ℹ Skipping idempotency check");
+            Ok(true)
         }
-    };
+    }
 
-    // Check weight safety
-    let pre_root = ext.backend.root();
-    let pov_safety = analyse_pov::<HashingFor<Block>>(proof, *pre_root, command.no_weight_warnings);
-    let ref_time_safety = analyse_ref_time(ref_time_results, command.no_weight_warnings);
-    let weight_ok = match (pov_safety, ref_time_safety, command.no_weight_warnings) {
-        (_, _, true) => {
-            log::info!("ℹ Skipped checking weight safety");
-            true
+    async fn check_mbms(&self, runtime_checks: RuntimeChecks) -> sc_cli::Result<()> {
+        if self.command.no_mbms {
+            log::info!("ℹ Skipping Multi-Block-Migrations");
+            return Ok(());
         }
-        (WeightSafety::ProbablySafe, WeightSafety::ProbablySafe, _) => {
-            log::info!(
-                target: LOG_TARGET,
-                "✅ No weight safety issues detected. \
-                Please note this does not guarantee a successful runtime upgrade. \
-                Always test your runtime upgrade with recent state, and ensure that the weight usage \
-                of your migrations will not drastically differ between testing and actual on-chain \
-                execution."
-            );
-            true
-        }
-        _ => {
-            log::error!(target: LOG_TARGET, "❌ Weight safety issues detected.");
-            false
-        }
-    };
 
-    if !weight_ok || !idempotency_ok {
+        let checker = MbmChecker::<Block, HostFns> {
+            command: self.command.clone(),
+            shared: self.shared.clone(),
+            runtime_checks,
+            _phantom: Default::default(),
+        };
+
+        checker.check_mbms().await
+    }
+
+    /// Check that the migrations don't use more weights than a block.
+    fn check_weight(&self, ext: &RemoteExternalities<Block>) -> sc_cli::Result<bool> {
+        if self.command.no_weight_warnings {
+            log::info!("ℹ Skipping weight safety check");
+            return Ok(true);
+        }
         basti_log(
-            Level::Error,
-            "❌ Runtime Upgrade issues detected, exiting non-zero. See logs.",
+            Level::Info,
+            "🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements.",
         );
-        //std::process::exit(1);
+
+        let executor = build_executor(&self.shared);
+        let _quiet = LogLevelGuard::only_errors();
+        let (proof, encoded_result) = state_machine_call_with_proof::<Block, HostFns>(
+            ext,
+            &mut Default::default(),
+            &executor,
+            "TryRuntime_on_runtime_upgrade",
+            UpgradeCheckSelect::None.encode().as_ref(),
+            Default::default(),
+            self.shared.export_proof.clone(),
+        )?;
+        let ref_time_results = encoded_result.try_into()?;
+        drop(_quiet);
+
+        let pre_root = ext.backend.root();
+        let pov_safety = analyse_pov::<HashingFor<Block>>(proof, *pre_root);
+        let ref_time_safety = analyse_ref_time(ref_time_results);
+
+        match (pov_safety, ref_time_safety) {
+            (WeightSafety::ProbablySafe, WeightSafety::ProbablySafe) => {
+                log::info!(
+                    target: LOG_TARGET,
+                    "✅ No weight safety issues detected. \
+                    Please note this does not guarantee a successful runtime upgrade. \
+                    Always test your runtime upgrade with recent state, and ensure that the weight usage \
+                    of your migrations will not drastically differ between testing and actual on-chain \
+                    execution."
+                );
+                Ok(true)
+            }
+            _ => {
+                log::error!(target: LOG_TARGET, "❌ Weight safety issues detected.");
+                Ok(false)
+            }
+        }
     }
 
-    if !command.no_mbms {
-		let checker = MbmChecker::<Block, HostFns> { command, shared, runtime_checks, _phantom: Default::default() };
-        checker.check_mbms().await?;
-    }
+    /// Whether any storage was changed.
+    fn changed(
+        &self,
+        ext: &RemoteExternalities<Block>,
+        mut before: OverlayedChanges<HashingFor<Block>>,
+        mut after: OverlayedChanges<HashingFor<Block>>,
+    ) -> sc_cli::Result<bool> {
+        let root_before = before.storage_root(&ext.backend, ext.state_version);
+        let root_after = after.storage_root(&ext.backend, ext.state_version);
 
-    Ok(())
+        if root_before == root_after {
+            return Ok(false);
+        }
+
+        log::error!("❌ Migrations must behave the same when executed twice. This was not the case as a storage root hash mismatch was detected. Remove migrations one-by-one and re-run until you find the culprit.");
+
+        if self.command.print_storage_diff {
+            log::info!("Changed storage keys:");
+            let changes_before = collect_storage_changes_as_hex::<Block>(&before);
+            let changes_after = collect_storage_changes_as_hex::<Block>(&after);
+
+            similar_asserts::assert_eq!(changes_before, changes_after);
+            Err("Storage changes detected: migrations not idempotent".into())
+        } else {
+            log::error!("Run with --print-storage-diff to see list of changed storage keys.");
+            Ok(true)
+        }
+    }
 }
-
 
 enum WeightSafety {
     ProbablySafe,
@@ -307,11 +322,11 @@ enum WeightSafety {
 /// The default maximum PoV size in MB.
 const DEFAULT_MAX_POV_SIZE: ByteSize = ByteSize::mb(5);
 
-/// The fraction of the total avaliable ref_time or pov size afterwhich a warning should be logged.
+/// The fraction of the total available ref_time or pov size after which a warning should be logged.
 const DEFAULT_WARNING_THRESHOLD: f32 = 0.8;
 
 /// Analyse the given ref_times and return if there is a potential weight safety issue.
-fn analyse_pov<H>(proof: StorageProof, pre_root: H::Out, no_weight_warnings: bool) -> WeightSafety
+fn analyse_pov<H>(proof: StorageProof, pre_root: H::Out) -> WeightSafety
 where
     H: Hasher,
 {
@@ -359,9 +374,8 @@ where
         to verify that a PoV of this size fits within any relaychain constraints.",
         ByteSize(compressed_compact_proof.len() as u64),
     );
-    if !no_weight_warnings
-        && compressed_compact_proof.len() as f32
-            > DEFAULT_MAX_POV_SIZE.as_u64() as f32 * DEFAULT_WARNING_THRESHOLD
+    if compressed_compact_proof.len() as f32
+        > DEFAULT_MAX_POV_SIZE.as_u64() as f32 * DEFAULT_WARNING_THRESHOLD
     {
         log::warn!(
             target: LOG_TARGET,
@@ -377,7 +391,7 @@ where
 }
 
 /// Analyse the given ref_times and return if there is a potential weight safety issue.
-fn analyse_ref_time(ref_time_results: RefTimeInfo, no_weight_warnings: bool) -> WeightSafety {
+fn analyse_ref_time(ref_time_results: RefTimeInfo) -> WeightSafety {
     let RefTimeInfo { used, max } = ref_time_results;
     let (used, max) = (used.as_secs_f32(), max.as_secs_f32());
     log::info!(
@@ -387,7 +401,7 @@ fn analyse_ref_time(ref_time_results: RefTimeInfo, no_weight_warnings: bool) -> 
         used / max * 100.0,
         max,
     );
-    if !no_weight_warnings && used >= max * DEFAULT_WARNING_THRESHOLD {
+    if used >= max * DEFAULT_WARNING_THRESHOLD {
         log::warn!(
             target: LOG_TARGET,
             "Consumed ref_time is >= {}% of the max allowed ref_time. Please ensure the \
@@ -405,11 +419,11 @@ fn collect_storage_changes_as_hex<Block: BlockT>(
 ) -> BTreeMap<String, String> {
     overlayed_changes
         .changes()
-        .filter_map(|(key, entry)| {
-            Some((
+        .map(|(key, entry)| {
+            (
                 HexDisplay::from(key).to_string(),
                 HexDisplay::from(entry.clone().value().unwrap()).to_string(),
-            ))
+            )
         })
         .collect()
 }
