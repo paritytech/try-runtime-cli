@@ -36,6 +36,7 @@ mod on_runtime_upgrade {
             .arg(format!("--runtime={}", runtime_path))
             .args(command_extra_args)
             .arg("on-runtime-upgrade")
+            .arg("--blocktime=12000")
             .args(sub_command_extra_args)
             .args(["snap", format!("--path={}", snap_path).as_str()])
             .kill_on_drop(true)
