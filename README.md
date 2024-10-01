@@ -1,6 +1,6 @@
 <!-- cargo-rdme start -->
 
-## Try-runtime
+# Try-runtime
 
 Substrate's programmatic testing framework.
 
@@ -12,7 +12,7 @@ Substrate's programmatic testing framework.
 > the
 > substrate runtime, before commencing to working with `try-runtime`.
 
-##### Resources
+#### Resources
 
 Some resources about the above:
 
@@ -22,7 +22,7 @@ Some resources about the above:
 
 ---
 
-### Background Knowledge
+## Background Knowledge
 
 The basis of all try-runtime commands is the same: connect to a live node, scrape its *state*
 and put it inside a [`TestExternalities`], then call into a *specific runtime-api* using the
@@ -51,7 +51,7 @@ To recap, a typical try-runtime command does the following:
 2. Overwrite the `:CODE:` with a given wasm blob
 3. Test some functionality via calling a runtime-api.
 
-### Installation
+## Installation
 ```bash
 # Install latest version (recommended for local development)
 cargo install --git https://github.com/paritytech/try-runtime-cli --locked
@@ -61,7 +61,7 @@ try-runtime --help
 try-runtime on-runtime-upgrade --help
 ```
 
-### Usage
+## Usage
 
 To use any of the provided commands, [`SharedParams`] must be provided. The most important of
 which being [`SharedParams::runtime`], which specifies which runtime to use. Furthermore,
@@ -86,7 +86,7 @@ Finally, to make sure there are no errors regarding this, always run any `try-ru
 with `executor=trace` logging targets, which will specify which runtime is being used per api
 call. Moreover, `remote-ext`, `try-runtime` and `runtime` logs targets will also be useful.
 
-### Spec name check
+## Spec name check
 
 A common pitfall is that you might be running some test on top of the state of chain `x`, with
 the runtime of chain `y`. To avoid this all commands do a spec-name check before executing
@@ -96,7 +96,7 @@ then the spec names match. The spec versions are warned, but are not mandated to
 > If anything, in most cases, we expect spec-versions to NOT match, because try-runtime is all
 > about testing unreleased runtimes.
 
-### Note on signature and state-root checks
+## Note on signature and state-root checks
 
 All of the commands calling into `TryRuntime_execute_block` ([`Action::ExecuteBlock`] and
 [`Action::FollowChain`]) disable both state root and signature checks. This is because in 99%
@@ -107,12 +107,12 @@ canonical chain state. This implies:
 2. replaying all transactions will fail, because the spec-version is part of the transaction
    signature.
 
-### Best Practices
+## Best Practices
 
 Try-runtime is all about battle-testing unreleased runtimes. The following list of suggestions
 help developers maximize their testing coverage and make the best use of `try-runtime` features.
 
-#### Testing Runtime Upgrades
+### Testing Runtime Upgrades
 
 One of the most powerful abilities of `try-runtime` is using the
 [`OnRuntimeUpgrade::pre_upgrade`] and [`OnRuntimeUpgrade::post_upgrade`] hooks to test runtime
@@ -135,12 +135,12 @@ after the migration. [`OnRuntimeUpgrade::pre_upgrade`] returns a [`Vec<u8>`] tha
 arbitrary encoded data (usually some pre-upgrade state) which will be passed to
 [`OnRuntimeUpgrade::pre_upgrade`] after upgrading and used for post checking.
 
-#### [`VersionedMigration`]
+### [`VersionedMigration`]
 
 It is strongly suggested to use [`VersionedMigration`] when writing custom migrations for
 pallets.
 
-#### State Consistency
+### State Consistency
 
 Similarly, each pallet can expose a function in `#[pallet::hooks]` section as follows:
 
@@ -152,13 +152,13 @@ fn try_state(_: BlockNumber) -> Result<(), TryRuntimeError> {}
 which is called on numerous code paths in the try-runtime tool. These checks should ensure that
 the state of the pallet is consistent and correct. See [`TryState`] for more info.
 
-#### Logging
+### Logging
 
 It is super helpful to make sure your migration code uses logging (always with a `runtime` log
 target prefix, e.g. `runtime::balance`) and state exactly at which stage it is, and what it is
 doing.
 
-### Examples
+## Examples
 
 For the following examples, we assume the existence of the following:
 
