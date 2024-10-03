@@ -67,3 +67,33 @@ impl frame_support::traits::OnRuntimeUpgrade for OverweightMigration {
 	}
 }
 ```
+
+### MBMs
+
+```rust
+use frame_support::pallet_prelude::Get;
+pub struct ExampleMbm<T>(core::marker::PhantomData<T>);
+
+impl<T: Get<u32>> frame_support::migrations::SteppedMigration for ExampleMbm<T> {
+	type Cursor = u32;
+	type Identifier = u32;
+
+	fn id() -> Self::Identifier {
+		T::get()
+	}
+
+	fn step(
+		cursor: Option<Self::Cursor>,
+		_meter: &mut frame_support::weights::WeightMeter,
+	) -> Result<Option<Self::Cursor>, frame_support::migrations::SteppedMigrationError> {
+		let cursor = cursor.unwrap_or(0);
+		log::error!("Migrating #{} with cursor: {}", T::get(), cursor) ;
+
+		if cursor < T::get() {
+			Ok(Some(cursor + 1))
+		} else {
+			Ok(None)
+		}
+	}
+}
+```

@@ -7,7 +7,7 @@ use sp_core::H256;
 use sp_inherents::InherentData;
 use sp_runtime::{
     traits::{Block as BlockT, HashingFor, Header, NumberFor, One},
-    DeserializeOwned, Digest,
+    DeserializeOwned, Digest, ExtrinsicInclusionMode,
 };
 use sp_state_machine::TestExternalities;
 use sp_std::fmt::Debug;
@@ -15,7 +15,10 @@ use tokio::sync::Mutex;
 
 use super::inherents::{pre_apply::pre_apply_inherents, providers::InherentProvider};
 use crate::{
-    common::{empty_block::inherents::providers::ProviderVariant, state::state_machine_call},
+    common::{
+        empty_block::inherents::providers::ProviderVariant, misc_logging::LogLevelGuard,
+        state::state_machine_call,
+    },
     full_extensions,
 };
 
@@ -26,7 +29,11 @@ pub async fn mine_block<Block, HostFns: HostFunctions>(
     parent_header: Block::Header,
     provider_variant: ProviderVariant,
     try_state: frame_try_runtime::TryStateSelect,
-) -> Result<((InherentData, Digest), Block::Header)>
+) -> Result<(
+    (InherentData, Digest),
+    Block::Header,
+    Option<ExtrinsicInclusionMode>,
+)>
 where
     Block: BlockT<Hash = H256> + DeserializeOwned,
     Block::Header: DeserializeOwned,
@@ -45,7 +52,9 @@ where
         *parent_header.number() + One::one()
     );
 
-    let (next_block, new_block_building_info) = produce_next_block::<Block, HostFns>(
+    // Prevent it from printing all logs twice:
+    let muffle = LogLevelGuard::only_errors();
+    let (next_block, new_block_building_info, mode) = produce_next_block::<Block, HostFns>(
         ext_mutex.clone(),
         executor,
         parent_header.clone(),
@@ -53,6 +62,7 @@ where
         previous_block_building_info,
     )
     .await?;
+    drop(muffle);
 
     log::info!(
         "Produced a new block ({})",
@@ -72,14 +82,20 @@ where
         next_block.clone(),
         state_root_check,
         signature_check,
-        try_state,
+        try_state.clone(),
     )
         .encode();
-    call::<Block, _>(ext, executor, "TryRuntime_execute_block", &payload).await?;
+    //call::<(), Block, _>(ext, executor, "TryRuntime_execute_block", &payload).await?;
+
+    if try_state == frame_try_runtime::TryStateSelect::None {
+        call::<(), Block, _>(ext, executor, "Core_execute_block", &next_block.encode()).await?;
+    } else {
+        call::<(), Block, _>(ext, executor, "TryRuntime_execute_block", &payload).await?;
+    }
 
     log::info!("Executed the new block");
 
-    Ok((new_block_building_info, next_block.header().clone()))
+    Ok((new_block_building_info, next_block.header().clone(), mode))
 }
 
 /// Produces next block containing only inherents.
@@ -89,7 +105,11 @@ pub async fn produce_next_block<Block, HostFns: HostFunctions>(
     parent_header: Block::Header,
     chain: ProviderVariant,
     previous_block_building_info: Option<(InherentData, Digest)>,
-) -> Result<(Block, (InherentData, Digest))>
+) -> Result<(
+    Block,
+    (InherentData, Digest),
+    Option<ExtrinsicInclusionMode>,
+)>
 where
     Block: BlockT<Hash = H256> + DeserializeOwned,
     Block::Header: DeserializeOwned,
@@ -110,6 +130,7 @@ where
 
     pre_apply_inherents::<Block>(ext);
     drop(ext_guard);
+
     let inherent_data = inherent_data_provider
         .create_inherent_data()
         .await
@@ -126,7 +147,20 @@ where
 
     let mut ext_guard = ext_mutex.lock().await;
     let ext = ext_guard.deref_mut();
-    call::<Block, _>(ext, executor, "Core_initialize_block", &header.encode()).await?;
+    // Only RA API version 5 supports returning a mode, so need to check.
+    let mode = if core_version::<Block, HostFns>(ext, executor)? >= 5 {
+        let mode = call::<ExtrinsicInclusionMode, Block, _>(
+            ext,
+            executor,
+            "Core_initialize_block",
+            &header.encode(),
+        )
+        .await?;
+        Some(mode)
+    } else {
+        call::<(), Block, _>(ext, executor, "Core_initialize_block", &header.encode()).await?;
+        None
+    };
 
     let extrinsics = dry_call::<Vec<Block::Extrinsic>, Block, _>(
         ext,
@@ -136,7 +170,7 @@ where
     )?;
 
     for xt in &extrinsics {
-        call::<Block, _>(ext, executor, "BlockBuilder_apply_extrinsic", &xt.encode()).await?;
+        call::<(), Block, _>(ext, executor, "BlockBuilder_apply_extrinsic", &xt.encode()).await?;
     }
 
     let header = dry_call::<Block::Header, Block, _>(
@@ -146,21 +180,25 @@ where
         &[0u8; 0],
     )?;
 
-    call::<Block, _>(ext, executor, "BlockBuilder_finalize_block", &[0u8; 0]).await?;
-
+    call::<(), Block, _>(ext, executor, "BlockBuilder_finalize_block", &[0u8; 0]).await?;
+    ext.commit_all().unwrap();
     drop(ext_guard);
 
-    Ok((Block::new(header, extrinsics), (inherent_data, digest)))
+    Ok((
+        Block::new(header, extrinsics),
+        (inherent_data, digest),
+        mode,
+    ))
 }
 
 /// Call `method` with `data` and actually save storage changes to `externalities`.
-async fn call<Block: BlockT, HostFns: HostFunctions>(
+async fn call<T: Decode, Block: BlockT, HostFns: HostFunctions>(
     externalities: &mut TestExternalities<HashingFor<Block>>,
     executor: &WasmExecutor<HostFns>,
     method: &'static str,
     data: &[u8],
-) -> Result<()> {
-    let (mut changes, _) = state_machine_call::<Block, HostFns>(
+) -> Result<T> {
+    let (mut changes, result) = state_machine_call::<Block, HostFns>(
         externalities,
         executor,
         method,
@@ -176,7 +214,14 @@ async fn call<Block: BlockT, HostFns: HostFunctions>(
         storage_changes.transaction,
     );
 
-    Ok(())
+    T::decode(&mut &*result).map_err(|e| sc_cli::Error::Input(format!("{:?}", e)))
+}
+
+pub fn core_version<Block: BlockT, HostFns: HostFunctions>(
+    externalities: &TestExternalities<HashingFor<Block>>,
+    executor: &WasmExecutor<HostFns>,
+) -> Result<u32> {
+    dry_call::<u32, Block, HostFns>(externalities, executor, "Core_version", &[])
 }
 
 /// Call `method` with `data` and return the result. `externalities` will not change.
