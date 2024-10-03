@@ -1,8 +1,8 @@
 #![cfg(unix)]
 
 mod on_runtime_upgrade {
-    use std::time::Duration;
-    use std::path::PathBuf;
+    use std::{path::PathBuf, time::Duration};
+
     use assert_cmd::cargo::cargo_bin;
     use substrate_cli_test_utils as common;
     use tokio::process::Command;
@@ -19,7 +19,10 @@ mod on_runtime_upgrade {
             let project_root = env!("CARGO_MANIFEST_DIR");
             Self {
                 snap_path: format!("{}/tests/snaps/{}.snap", project_root, snap_name),
-                runtime_path: format!("{}/tests/runtimes/{}.compact.compressed.wasm", project_root, runtime_name),
+                runtime_path: format!(
+                    "{}/tests/runtimes/{}.compact.compressed.wasm",
+                    project_root, runtime_name
+                ),
                 command_extra_args: Vec::new(),
                 sub_command_extra_args: Vec::new(),
             }
@@ -45,12 +48,17 @@ mod on_runtime_upgrade {
             } else {
                 assert_err(out);
             }
-        }).await;
+        })
+        .await;
     }
 
     fn on_runtime_upgrade(config: &TestConfig) -> tokio::process::Child {
         let path = cargo_bin("try-runtime");
-        assert!(path.exists(), "try-runtime binary not found at path: {}", path.display());
+        assert!(
+            path.exists(),
+            "try-runtime binary not found at path: {}",
+            path.display()
+        );
 
         Command::new(path)
             .stdout(std::process::Stdio::piped())
@@ -93,18 +101,34 @@ mod on_runtime_upgrade {
         let snap = PathBuf::from(&config.snap_path);
         let project = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
 
-        assert!(snap.exists(), "Snap file not found at path: {}", snap.display());
-        assert!(project.exists(), "Project directory not found at path: {}", project.display());
+        assert!(
+            snap.exists(),
+            "Snap file not found at path: {}",
+            snap.display()
+        );
+        assert!(
+            project.exists(),
+            "Project directory not found at path: {}",
+            project.display()
+        );
     }
 
     #[tokio::test]
     async fn ok_works() {
-        run_test(TestConfig::new("rococo-people", "people_rococo_runtime_ok"), true).await;
+        run_test(
+            TestConfig::new("rococo-people", "people_rococo_runtime_ok"),
+            true,
+        )
+        .await;
     }
 
     #[tokio::test]
     async fn weight_max_fails() {
-        run_test(TestConfig::new("rococo-people", "people_rococo_runtime_weight_max"), false).await;
+        run_test(
+            TestConfig::new("rococo-people", "people_rococo_runtime_weight_max"),
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
@@ -112,13 +136,18 @@ mod on_runtime_upgrade {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_weight_max")
                 .with_sub_command_args(&["--no-weight-warnings"]),
-            true
-        ).await;
+            true,
+        )
+        .await;
     }
 
     #[tokio::test]
     async fn pre_upgrade_fail_fails() {
-        run_test(TestConfig::new("rococo-people", "people_rococo_runtime_pre_upgrade_fail"), false).await;
+        run_test(
+            TestConfig::new("rococo-people", "people_rococo_runtime_pre_upgrade_fail"),
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
@@ -126,8 +155,9 @@ mod on_runtime_upgrade {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_pre_upgrade_fail")
                 .with_sub_command_args(&["--checks=pre-and-post"]),
-            false
-        ).await;
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
@@ -135,13 +165,18 @@ mod on_runtime_upgrade {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_pre_upgrade_fail")
                 .with_sub_command_args(&["--checks=none"]),
-            true
-        ).await;
+            true,
+        )
+        .await;
     }
 
     #[tokio::test]
     async fn post_upgrade_fail_fails() {
-        run_test(TestConfig::new("rococo-people", "people_rococo_runtime_post_upgrade_fail"), false).await;
+        run_test(
+            TestConfig::new("rococo-people", "people_rococo_runtime_post_upgrade_fail"),
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
@@ -149,8 +184,9 @@ mod on_runtime_upgrade {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_post_upgrade_fail")
                 .with_sub_command_args(&["--checks=pre-and-post"]),
-            false
-        ).await;
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
@@ -158,18 +194,33 @@ mod on_runtime_upgrade {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_post_upgrade_fail")
                 .with_sub_command_args(&["--checks=none"]),
-            true
-        ).await;
+            true,
+        )
+        .await;
     }
 
     #[tokio::test]
     async fn post_upgrade_storage_change_fails() {
-        run_test(TestConfig::new("rococo-people", "people_rococo_runtime_post_upgrade_storage_change"), false).await;
+        run_test(
+            TestConfig::new(
+                "rococo-people",
+                "people_rococo_runtime_post_upgrade_storage_change",
+            ),
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
     async fn not_idempotent_execution_fails() {
-        run_test(TestConfig::new("rococo-people", "people_rococo_runtime_not_idempotent_panic"), false).await;
+        run_test(
+            TestConfig::new(
+                "rococo-people",
+                "people_rococo_runtime_not_idempotent_panic",
+            ),
+            false,
+        )
+        .await;
     }
 
     /// If a Migration panics on second execution than it cannot be ignored. This is something that
@@ -177,29 +228,48 @@ mod on_runtime_upgrade {
     #[tokio::test]
     async fn not_idempotent_execution_issue_canot_be_ignored() {
         run_test(
-            TestConfig::new("rococo-people", "people_rococo_runtime_not_idempotent_panic")
-                .with_sub_command_args(&["--disable-idempotency-checks"]),
-            false
-        ).await;
+            TestConfig::new(
+                "rococo-people",
+                "people_rococo_runtime_not_idempotent_panic",
+            )
+            .with_sub_command_args(&["--disable-idempotency-checks"]),
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
     async fn not_idempotent_state_root_fails() {
-        run_test(TestConfig::new("rococo-people", "people_rococo_runtime_not_idempotent_state_root"), false).await;
+        run_test(
+            TestConfig::new(
+                "rococo-people",
+                "people_rococo_runtime_not_idempotent_state_root",
+            ),
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
     async fn not_idempotent_state_root_issue_can_be_ignored() {
         run_test(
-            TestConfig::new("rococo-people", "people_rococo_runtime_not_idempotent_state_root")
-                .with_sub_command_args(&["--disable-idempotency-checks"]),
-            true
-        ).await;
+            TestConfig::new(
+                "rococo-people",
+                "people_rococo_runtime_not_idempotent_state_root",
+            )
+            .with_sub_command_args(&["--disable-idempotency-checks"]),
+            true,
+        )
+        .await;
     }
 
     #[tokio::test]
     async fn non_matching_spec_name_fails() {
-        run_test(TestConfig::new("rococo-people", "people_rococo_runtime_different_spec_name"), false).await;
+        run_test(
+            TestConfig::new("rococo-people", "people_rococo_runtime_different_spec_name"),
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
@@ -207,13 +277,18 @@ mod on_runtime_upgrade {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_different_spec_name")
                 .with_command_args(&["--disable-spec-name-check"]),
-            true
-        ).await;
+            true,
+        )
+        .await;
     }
 
     #[tokio::test]
     async fn non_incrementing_spec_version_fails() {
-        run_test(TestConfig::new("rococo-people", "people_rococo_runtime_same_spec_version"), false).await;
+        run_test(
+            TestConfig::new("rococo-people", "people_rococo_runtime_same_spec_version"),
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
@@ -221,8 +296,9 @@ mod on_runtime_upgrade {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_same_spec_version")
                 .with_sub_command_args(&["--disable-spec-version-check"]),
-            true
-        ).await;
+            true,
+        )
+        .await;
     }
 
     /// Two migrations, one taking 100 blocks and another one taking 200.
@@ -230,8 +306,9 @@ mod on_runtime_upgrade {
     async fn mbm_double_ok_300b_works() {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_mbm_double_ok_300b"),
-            true
-        ).await;
+            true,
+        )
+        .await;
     }
 
     /// 300 block migrations works since we give it 300 blocks.
@@ -240,8 +317,9 @@ mod on_runtime_upgrade {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_mbm_double_ok_300b")
                 .with_sub_command_args(&["--mbm-max-blocks=300"]),
-            true
-        ).await;
+            true,
+        )
+        .await;
     }
 
     /// 300 block migrations fails since we only give it 299 blocks.
@@ -250,42 +328,56 @@ mod on_runtime_upgrade {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_mbm_double_ok_300b")
                 .with_sub_command_args(&["--mbm-max-blocks=299"]),
-            false
-        ).await;
+            false,
+        )
+        .await;
     }
 
     /// The same MBM configured multiple times, with other ones in between.
     #[tokio::test]
     async fn mbm_double_ok_80b_duplicates_works() {
         run_test(
-            TestConfig::new("rococo-people", "people_rococo_runtime_mbm_duplicates_ok_80b"),
-            true
-        ).await;
+            TestConfig::new(
+                "rococo-people",
+                "people_rococo_runtime_mbm_duplicates_ok_80b",
+            ),
+            true,
+        )
+        .await;
     }
 
     // TODO check that it does not modify storage on success
     #[tokio::test]
     async fn mbm_pre_upgrade_fail_fails() {
         run_test(
-            TestConfig::new("rococo-people", "people_rococo_runtime_mbm_pre_upgrade_fails"),
-            false
-        ).await;
+            TestConfig::new(
+                "rococo-people",
+                "people_rococo_runtime_mbm_pre_upgrade_fails",
+            ),
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
     async fn mbm_post_upgrade_fail_fails() {
         run_test(
-            TestConfig::new("rococo-people", "people_rococo_runtime_mbm_post_upgrade_fails"),
-            false
-        ).await;
+            TestConfig::new(
+                "rococo-people",
+                "people_rococo_runtime_mbm_post_upgrade_fails",
+            ),
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
     async fn mbm_fail_fails() {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_mbm_fails"),
-            false
-        ).await;
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
@@ -293,15 +385,18 @@ mod on_runtime_upgrade {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_mbm_fails")
                 .with_sub_command_args(&["--disable-mbms-checks"]),
-            false
-        ).await;
+            false,
+        )
+        .await;
     }
 
     #[tokio::test]
     async fn mbm_empty_works() {
         run_test(
-            TestConfig::new("rococo-people", "people_rococo_runtime_mbm_empty"), true
-        ).await;
+            TestConfig::new("rococo-people", "people_rococo_runtime_mbm_empty"),
+            true,
+        )
+        .await;
     }
 
     /*#[tokio::test]

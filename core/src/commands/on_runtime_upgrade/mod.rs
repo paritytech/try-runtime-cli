@@ -25,12 +25,11 @@ use frame_try_runtime::UpgradeCheckSelect;
 use log::Level;
 use parity_scale_codec::Encode;
 use sc_executor::sp_wasm_interface::HostFunctions;
-use sp_core::{hexdisplay::HexDisplay, Hasher, H256};
+use sp_core::{hexdisplay::HexDisplay, twox_128, Hasher, H256};
 use sp_runtime::{
     traits::{Block as BlockT, HashingFor, NumberFor},
     DeserializeOwned,
 };
-use sp_core::twox_128;
 use sp_state_machine::{CompactProof, OverlayedChanges, StorageProof};
 
 use crate::{
@@ -203,7 +202,7 @@ where
             after.clear_prefix(&key);
 
             // Don't print all logs again.
-           // let _quiet = LogLevelGuard::only_errors();
+            // let _quiet = LogLevelGuard::only_errors();
             match state_machine_call_with_proof::<Block, HostFns>(
                 ext,
                 &mut after,
@@ -213,13 +212,15 @@ where
                 Default::default(),
                 self.shared.export_proof.clone(),
             ) {
-                Ok(_) => if self.changed(ext, before, after)? {
-                    log::error!("❌ Migrations must behave the same when executed twice. This was not the case as a storage root hash mismatch was detected. Remove migrations one-by-one and re-run until you find the culprit.");
-                    Ok(false)
-                } else {
-                    log::info!("✅ Migrations are idempotent");
-                    Ok(true)
-                },
+                Ok(_) => {
+                    if self.changed(ext, before, after)? {
+                        log::error!("❌ Migrations must behave the same when executed twice. This was not the case as a storage root hash mismatch was detected. Remove migrations one-by-one and re-run until you find the culprit.");
+                        Ok(false)
+                    } else {
+                        log::info!("✅ Migrations are idempotent");
+                        Ok(true)
+                    }
+                }
                 Err(e) => {
                     log::error!(
                             "❌ Migrations are not idempotent, they failed during the second execution.",
@@ -448,10 +449,10 @@ fn collect_storage_changes_as_hex<Block: BlockT>(
         .map(|(key, entry)| {
             (
                 HexDisplay::from(key).to_string(),
-                entry.clone().value().map_or_else(
-                    || "<deleted>".to_string(),
-                    hex::encode,
-                ),
+                entry
+                    .clone()
+                    .value()
+                    .map_or_else(|| "<deleted>".to_string(), hex::encode),
             )
         })
         .collect()

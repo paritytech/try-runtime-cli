@@ -91,7 +91,8 @@ where
             // The first block does not yet have the MBMs enabled.
             let first_is_free = n == 0;
 
-            if n > (self.command.mbm_max_blocks + 1) { // +1 for the MBM init block
+            if n > (self.command.mbm_max_blocks + 1) {
+                // +1 for the MBM init block
                 log::error!(target: LOG_TARGET, "MBM reached its maximum number of allowed blocks after {} blocks. Increase --mbm-max-blocks if you think this is not a bug.", n);
                 return Err("MBM max blocks reached".into());
             } else if first_is_free || Self::poll_mbms_ongoing(mode, inner_ext.clone()).await {
