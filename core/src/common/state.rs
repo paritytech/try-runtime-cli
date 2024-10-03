@@ -307,7 +307,7 @@ impl State {
             if runtime_checks.version_increases
                 && new_version.spec_version <= old_version.spec_version
             {
-                return Err("New runtime spec version must be greater than the on-chain runtime spec version. Use `--disable-spec-version-check` to disable this check.".into());
+                return Err(format!("New runtime spec version must be greater than the on-chain runtime spec version: {} <= {}. Use `--disable-spec-version-check` to disable this check.", new_version.spec_version, old_version.spec_version).into());
             }
         }
 
