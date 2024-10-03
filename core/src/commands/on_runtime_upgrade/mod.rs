@@ -30,6 +30,7 @@ use sp_runtime::{
     traits::{Block as BlockT, HashingFor, NumberFor},
     DeserializeOwned,
 };
+use sp_core::twox_128;
 use sp_state_machine::{CompactProof, OverlayedChanges, StorageProof};
 
 use crate::{
@@ -87,7 +88,7 @@ pub struct Command {
     /// Whether or multi-block migrations should be executed to completion after single block
     /// migratons are completed.
     #[clap(long, default_value = "false", default_missing_value = "true")]
-    pub no_mbms: bool,
+    pub disable_mbm_checks: bool,
 
     /// The maximum duration we expect all MBMs combined to take.
     ///
@@ -127,12 +128,12 @@ where
             version_increases: !command.disable_spec_version_check,
             try_runtime_feature_enabled: true,
         };
-        let ext = command
+        let mut ext = command
             .state
             .to_ext::<Block, HostFns>(shared, &executor, None, runtime_checks)
             .await?;
 
-        let sync_checks = if command.no_mbms {
+        let sync_checks = if command.disable_mbm_checks {
             command.checks
         } else {
             UpgradeCheckSelect::None
@@ -160,7 +161,7 @@ where
             shared.export_proof.clone(),
         )?;
 
-        let idempotency_ok = self.check_idempotency(&ext, &overlayed_changes)?;
+        let idempotency_ok = self.check_idempotency(&mut ext, &overlayed_changes)?;
         let weight_ok = self.check_weight(&ext)?;
 
         self.check_mbms(runtime_checks).await?;
@@ -177,10 +178,10 @@ where
     /// Expects the overlayed changes from the first execution of the migrations.
     fn check_idempotency(
         &self,
-        ext: &RemoteExternalities<Block>,
+        ext: &mut RemoteExternalities<Block>,
         changes: &OverlayedChanges<HashingFor<Block>>,
     ) -> sc_cli::Result<bool> {
-        if self.command.disable_idempotency_checks {
+        if !self.command.disable_idempotency_checks {
             basti_log(
                 Level::Info,
                 format!(
@@ -194,8 +195,15 @@ where
             let before = changes.clone();
             let mut after = changes.clone();
 
+            // The MBM pallet refuses to interrupt ongoing MBMs, so we need to pretend that it did
+            // not run yet. We cannot just use a prefious state since the single-block-migrations
+            // would not be tested for idempotency.
+            // TODO add switch and guessing logic for the MBM pallet name.
+            let key = [twox_128(b"MultiBlockMigrations"), twox_128(b"Cursor")].concat();
+            after.clear_prefix(&key);
+
             // Don't print all logs again.
-            let _quiet = LogLevelGuard::only_errors();
+           // let _quiet = LogLevelGuard::only_errors();
             match state_machine_call_with_proof::<Block, HostFns>(
                 ext,
                 &mut after,
@@ -205,7 +213,13 @@ where
                 Default::default(),
                 self.shared.export_proof.clone(),
             ) {
-                Ok(_) => self.changed(ext, before, after),
+                Ok(_) => if self.changed(ext, before, after)? {
+                    log::error!("❌ Migrations must behave the same when executed twice. This was not the case as a storage root hash mismatch was detected. Remove migrations one-by-one and re-run until you find the culprit.");
+                    Ok(false)
+                } else {
+                    log::info!("✅ Migrations are idempotent");
+                    Ok(true)
+                },
                 Err(e) => {
                     log::error!(
                             "❌ Migrations are not idempotent, they failed during the second execution.",
@@ -221,7 +235,7 @@ where
     }
 
     async fn check_mbms(&self, runtime_checks: RuntimeChecks) -> sc_cli::Result<()> {
-        if self.command.no_mbms {
+        if self.command.disable_mbm_checks {
             log::info!("ℹ Skipping Multi-Block-Migrations");
             return Ok(());
         }
@@ -244,7 +258,7 @@ where
         }
         basti_log(
             Level::Info,
-            "🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again without checks for weight measurements.",
+            "🔬 TryRuntime_on_runtime_upgrade succeeded! Running it again for weight measurements.",
         );
 
         let executor = build_executor(&self.shared);
@@ -291,14 +305,26 @@ where
         mut before: OverlayedChanges<HashingFor<Block>>,
         mut after: OverlayedChanges<HashingFor<Block>>,
     ) -> sc_cli::Result<bool> {
-        let root_before = before.storage_root(&ext.backend, ext.state_version);
-        let root_after = after.storage_root(&ext.backend, ext.state_version);
+        // Events are fine to not be idempotent.
+        let key = [twox_128(b"System"), twox_128(b"Events")].concat();
+        after.clear_prefix(&key);
+        before.clear_prefix(&key);
+        let key = [twox_128(b"System"), twox_128(b"EventCount")].concat();
+        after.clear_prefix(&key);
+        before.clear_prefix(&key);
+
+        let (root_before, _) = before.storage_root(&ext.backend, ext.state_version);
+        let (root_after, _) = after.storage_root(&ext.backend, ext.state_version);
+
+        log::info!(
+            "Storage root before: 0x{}, after: 0x{}",
+            hex::encode(&root_before),
+            hex::encode(&root_after),
+        );
 
         if root_before == root_after {
             return Ok(false);
         }
-
-        log::error!("❌ Migrations must behave the same when executed twice. This was not the case as a storage root hash mismatch was detected. Remove migrations one-by-one and re-run until you find the culprit.");
 
         if self.command.print_storage_diff {
             log::info!("Changed storage keys:");
@@ -422,7 +448,10 @@ fn collect_storage_changes_as_hex<Block: BlockT>(
         .map(|(key, entry)| {
             (
                 HexDisplay::from(key).to_string(),
-                HexDisplay::from(entry.clone().value().unwrap()).to_string(),
+                entry.clone().value().map_or_else(
+                    || "<deleted>".to_string(),
+                    |v| hex::encode(v),
+                ),
             )
         })
         .collect()
