@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/litep2p-2515ad90543f141a/e03a602/src/transport/websocket/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litep2p-0.7.0/src/transport/websocket/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -623,9 +623,6 @@
 <a href="#623" id="623">623</a>
 <a href="#624" id="624">624</a>
 <a href="#625" id="625">625</a>
-<a href="#626" id="626">626</a>
-<a href="#627" id="627">627</a>
-<a href="#628" id="628">628</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2023 litep2p developers
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -650,34 +647,31 @@
 
 </span><span class="kw">use crate</span>::{
     config::Role,
-    error::{AddressError, Error},
+    error::{AddressError, Error, NegotiationError},
     transport::{
+        common::listener::{DialAddresses, GetSocketAddr, SocketListener, WebSocketAddress},
         manager::TransportHandle,
         websocket::{
             config::Config,
             connection::{NegotiatedConnection, WebSocketConnection},
-            listener::{AddressType, DialAddresses, WebSocketListener},
         },
         Transport, TransportBuilder, TransportEvent,
     },
     types::ConnectionId,
-    PeerId,
+    DialError, PeerId,
 };
 
 <span class="kw">use </span>futures::{future::BoxFuture, stream::FuturesUnordered, Stream, StreamExt};
 <span class="kw">use </span>multiaddr::{Multiaddr, Protocol};
 <span class="kw">use </span>socket2::{Domain, Socket, Type};
+<span class="kw">use </span>std::net::SocketAddr;
 <span class="kw">use </span>tokio::net::TcpStream;
 <span class="kw">use </span>tokio_tungstenite::{MaybeTlsStream, WebSocketStream};
-<span class="kw">use </span>trust_dns_resolver::{
-    config::{ResolverConfig, ResolverOpts},
-    TokioAsyncResolver,
-};
+
 <span class="kw">use </span>url::Url;
 
 <span class="kw">use </span>std::{
     collections::{HashMap, HashSet},
-    net::SocketAddr,
     pin::Pin,
     task::{Context, Poll},
     time::Duration,
@@ -686,32 +680,21 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>substream::Substream;
 
 <span class="kw">mod </span>connection;
-<span class="kw">mod </span>listener;
 <span class="kw">mod </span>stream;
 <span class="kw">mod </span>substream;
 
 <span class="kw">pub mod </span>config;
 
-<span class="attr">#[derive(Debug)]
-</span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>WebSocketError {
-    <span class="doccomment">/// Error.
-    </span>error: Error,
-
-    <span class="doccomment">/// Connection ID.
-    </span>connection_id: <span class="prelude-ty">Option</span>&lt;ConnectionId&gt;,
-}
-
-<span class="kw">impl </span>WebSocketError {
-    <span class="kw">pub fn </span>new(error: Error, connection_id: <span class="prelude-ty">Option</span>&lt;ConnectionId&gt;) -&gt; <span class="self">Self </span>{
-        <span class="self">Self </span>{
-            error,
-            connection_id,
-        }
-    }
-}
-
 <span class="doccomment">/// Logging target for the file.
 </span><span class="kw">const </span>LOG_TARGET: <span class="kw-2">&amp;</span>str = <span class="string">"litep2p::websocket"</span>;
+
+<span class="doccomment">/// Pending inbound connection.
+</span><span class="kw">struct </span>PendingInboundConnection {
+    <span class="doccomment">/// Socket address of the remote peer.
+    </span>connection: TcpStream,
+    <span class="doccomment">/// Address of the remote peer.
+    </span>address: SocketAddr,
+}
 
 <span class="doccomment">/// WebSocket transport.
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>WebSocketTransport {
@@ -722,7 +705,7 @@
     </span>config: Config,
 
     <span class="doccomment">/// WebSocket listener.
-    </span>listener: WebSocketListener,
+    </span>listener: SocketListener,
 
     <span class="doccomment">/// Dial addresses.
     </span>dial_addresses: DialAddresses,
@@ -730,9 +713,13 @@
     <span class="doccomment">/// Pending dials.
     </span>pending_dials: HashMap&lt;ConnectionId, Multiaddr&gt;,
 
+    <span class="doccomment">/// Pending inbound connections.
+    </span>pending_inbound_connections: HashMap&lt;ConnectionId, PendingInboundConnection&gt;,
+
     <span class="doccomment">/// Pending connections.
-    </span>pending_connections:
-        FuturesUnordered&lt;BoxFuture&lt;<span class="lifetime">'static</span>, <span class="prelude-ty">Result</span>&lt;NegotiatedConnection, WebSocketError&gt;&gt;&gt;,
+    </span>pending_connections: FuturesUnordered&lt;
+        BoxFuture&lt;<span class="lifetime">'static</span>, <span class="prelude-ty">Result</span>&lt;NegotiatedConnection, (ConnectionId, DialError)&gt;&gt;,
+    &gt;,
 
     <span class="doccomment">/// Pending raw, unnegotiated connections.
     </span>pending_raw_connections: FuturesUnordered&lt;
@@ -744,7 +731,7 @@
                     Multiaddr,
                     WebSocketStream&lt;MaybeTlsStream&lt;TcpStream&gt;&gt;,
                 ),
-                ConnectionId,
+                (ConnectionId, Vec&lt;(Multiaddr, DialError)&gt;),
             &gt;,
         &gt;,
     &gt;,
@@ -760,32 +747,66 @@
 }
 
 <span class="kw">impl </span>WebSocketTransport {
+    <span class="doccomment">/// Handle inbound connection.
+    </span><span class="kw">fn </span>on_inbound_connection(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        connection_id: ConnectionId,
+        connection: TcpStream,
+        address: SocketAddr,
+    ) {
+        <span class="kw">let </span>keypair = <span class="self">self</span>.context.keypair.clone();
+        <span class="kw">let </span>yamux_config = <span class="self">self</span>.config.yamux_config.clone();
+        <span class="kw">let </span>connection_open_timeout = <span class="self">self</span>.config.connection_open_timeout;
+        <span class="kw">let </span>max_read_ahead_factor = <span class="self">self</span>.config.noise_read_ahead_frame_count;
+        <span class="kw">let </span>max_write_buffer_size = <span class="self">self</span>.config.noise_write_buffer_size;
+        <span class="kw">let </span>address = Multiaddr::empty()
+            .with(Protocol::from(address.ip()))
+            .with(Protocol::Tcp(address.port()))
+            .with(Protocol::Ws(std::borrow::Cow::Borrowed(<span class="string">"/"</span>)));
+
+        <span class="self">self</span>.pending_connections.push(Box::pin(<span class="kw">async move </span>{
+            <span class="kw">match </span>tokio::time::timeout(connection_open_timeout, <span class="kw">async move </span>{
+                WebSocketConnection::accept_connection(
+                    connection,
+                    connection_id,
+                    keypair,
+                    address,
+                    yamux_config,
+                    max_read_ahead_factor,
+                    max_write_buffer_size,
+                )
+                .<span class="kw">await
+                </span>.map_err(|error| (connection_id, error.into()))
+            })
+            .<span class="kw">await
+            </span>{
+                <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>((connection_id, DialError::Timeout)),
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(error)) =&gt; <span class="prelude-val">Err</span>(error),
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(result)) =&gt; <span class="prelude-val">Ok</span>(result),
+            }
+        }));
+    }
+
     <span class="doccomment">/// Convert `Multiaddr` into `url::Url`
-    </span><span class="kw">fn </span>multiaddr_into_url(address: Multiaddr) -&gt; <span class="kw">crate</span>::Result&lt;(Url, PeerId)&gt; {
+    </span><span class="kw">fn </span>multiaddr_into_url(address: Multiaddr) -&gt; <span class="prelude-ty">Result</span>&lt;(Url, PeerId), AddressError&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>protocol_stack = address.iter();
 
-        <span class="kw">let </span>dial_address = <span class="kw">match </span>protocol_stack
-            .next()
-            .ok_or_else(|| Error::TransportNotSupported(address.clone()))<span class="question-mark">?
-        </span>{
+        <span class="kw">let </span>dial_address = <span class="kw">match </span>protocol_stack.next().ok_or(AddressError::InvalidProtocol)<span class="question-mark">? </span>{
             Protocol::Ip4(address) =&gt; address.to_string(),
             Protocol::Ip6(address) =&gt; <span class="macro">format!</span>(<span class="string">"[{address}]"</span>),
             Protocol::Dns(address) | Protocol::Dns4(address) | Protocol::Dns6(address) =&gt;
                 address.to_string(),
 
-            <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::TransportNotSupported(address)),
+            <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(AddressError::InvalidProtocol),
         };
 
-        <span class="kw">let </span>url = <span class="kw">match </span>protocol_stack
-            .next()
-            .ok_or_else(|| Error::TransportNotSupported(address.clone()))<span class="question-mark">?
-        </span>{
+        <span class="kw">let </span>url = <span class="kw">match </span>protocol_stack.next().ok_or(AddressError::InvalidProtocol)<span class="question-mark">? </span>{
             Protocol::Tcp(port) =&gt; <span class="kw">match </span>protocol_stack.next() {
                 <span class="prelude-val">Some</span>(Protocol::Ws(<span class="kw">_</span>)) =&gt; <span class="macro">format!</span>(<span class="string">"ws://{dial_address}:{port}/"</span>),
                 <span class="prelude-val">Some</span>(Protocol::Wss(<span class="kw">_</span>)) =&gt; <span class="macro">format!</span>(<span class="string">"wss://{dial_address}:{port}/"</span>),
-                <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::TransportNotSupported(address.clone())),
+                <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(AddressError::InvalidProtocol),
             },
-            <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::TransportNotSupported(address)),
+            <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(AddressError::InvalidProtocol),
         };
 
         <span class="kw">let </span>peer = <span class="kw">match </span>protocol_stack.next() {
@@ -796,13 +817,15 @@
                     <span class="question-mark">?</span>protocol,
                     <span class="string">"invalid protocol, expected `Protocol::Ws`/`Protocol::Wss`"</span>,
                 );
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::AddressError(AddressError::PeerIdMissing));
+                <span class="kw">return </span><span class="prelude-val">Err</span>(AddressError::PeerIdMissing);
             }
         };
 
         <span class="macro">tracing::trace!</span>(target: LOG_TARGET, <span class="question-mark">?</span>url, <span class="string">"parse address"</span>);
 
-        url::Url::parse(<span class="kw-2">&amp;</span>url).map(|url| (url, peer)).map_err(|<span class="kw">_</span>| Error::InvalidData)
+        url::Url::parse(<span class="kw-2">&amp;</span>url)
+            .map(|url| (url, peer))
+            .map_err(|<span class="kw">_</span>| AddressError::InvalidUrl)
     }
 
     <span class="doccomment">/// Dial remote peer over `address`.
@@ -810,59 +833,17 @@
         address: Multiaddr,
         dial_addresses: DialAddresses,
         connection_open_timeout: Duration,
-    ) -&gt; <span class="kw">crate</span>::Result&lt;(Multiaddr, WebSocketStream&lt;MaybeTlsStream&lt;TcpStream&gt;&gt;)&gt; {
+        nodelay: bool,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(Multiaddr, WebSocketStream&lt;MaybeTlsStream&lt;TcpStream&gt;&gt;), DialError&gt; {
         <span class="kw">let </span>(url, <span class="kw">_</span>) = <span class="self">Self</span>::multiaddr_into_url(address.clone())<span class="question-mark">?</span>;
-        <span class="kw">let </span>(socket_address, <span class="kw">_</span>) = WebSocketListener::get_socket_address(<span class="kw-2">&amp;</span>address)<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>remote_address = <span class="kw">match </span>socket_address {
-            AddressType::Socket(address) =&gt; address,
-            AddressType::Dns(url, port) =&gt; {
-                <span class="kw">let </span>address = address.clone();
-                <span class="kw">let </span>future = <span class="kw">async move </span>{
-                    <span class="kw">match </span>TokioAsyncResolver::tokio(
-                        ResolverConfig::default(),
-                        ResolverOpts::default(),
-                    )
-                    .lookup_ip(url.clone())
-                    .<span class="kw">await
-                    </span>{
-                        <span class="comment">// TODO: ugly
-                        </span><span class="prelude-val">Ok</span>(lookup) =&gt; {
-                            <span class="kw">let </span>iter = lookup.iter();
-                            <span class="kw">for </span>ip <span class="kw">in </span>iter {
-                                <span class="kw">match </span>(
-                                    address.iter().next().expect(<span class="string">"protocol to exist"</span>),
-                                    ip.is_ipv4(),
-                                ) {
-                                    (Protocol::Dns(<span class="kw">_</span>), <span class="bool-val">true</span>)
-                                    | (Protocol::Dns4(<span class="kw">_</span>), <span class="bool-val">true</span>)
-                                    | (Protocol::Dns6(<span class="kw">_</span>), <span class="bool-val">false</span>) =&gt; {
-                                        <span class="macro">tracing::trace!</span>(
-                                            target: LOG_TARGET,
-                                            <span class="question-mark">?</span>address,
-                                            <span class="question-mark">?</span>ip,
-                                            <span class="string">"address resolved"</span>,
-                                        );
-
-                                        <span class="kw">return </span><span class="prelude-val">Ok</span>(SocketAddr::new(ip, port));
-                                    }
-                                    <span class="kw">_ </span>=&gt; {}
-                                }
-                            }
-
-                            <span class="prelude-val">Err</span>(Error::Unknown)
-                        }
-                        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(Error::Unknown),
-                    }
-                };
-
-                <span class="kw">match </span>tokio::time::timeout(connection_open_timeout, future).<span class="kw">await </span>{
-                    <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Timeout),
-                    <span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(error)) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(error),
-                    <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(address)) =&gt; address,
-                }
-            }
-        };
+        <span class="kw">let </span>(socket_address, <span class="kw">_</span>) = WebSocketAddress::multiaddr_to_socket_address(<span class="kw-2">&amp;</span>address)<span class="question-mark">?</span>;
+        <span class="kw">let </span>remote_address =
+            <span class="kw">match </span>tokio::time::timeout(connection_open_timeout, socket_address.lookup_ip()).<span class="kw">await </span>{
+                <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(DialError::Timeout),
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(error)) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(error.into()),
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(address)) =&gt; address,
+            };
 
         <span class="kw">let </span>domain = <span class="kw">match </span>remote_address.is_ipv4() {
             <span class="bool-val">true </span>=&gt; Domain::IPV4,
@@ -873,6 +854,7 @@
             socket.set_only_v6(<span class="bool-val">true</span>)<span class="question-mark">?</span>;
         }
         socket.set_nonblocking(<span class="bool-val">true</span>)<span class="question-mark">?</span>;
+        socket.set_nodelay(nodelay)<span class="question-mark">?</span>;
 
         <span class="kw">match </span>dial_addresses.local_dial_address(<span class="kw-2">&amp;</span>remote_address.ip()) {
             <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(dial_address)) =&gt; {
@@ -896,27 +878,26 @@
                 <span class="prelude-val">Ok</span>(()) =&gt; {}
                 <span class="prelude-val">Err</span>(error) <span class="kw">if </span>error.raw_os_error() == <span class="prelude-val">Some</span>(libc::EINPROGRESS) =&gt; {}
                 <span class="prelude-val">Err</span>(error) <span class="kw">if </span>error.kind() == std::io::ErrorKind::WouldBlock =&gt; {}
-                <span class="prelude-val">Err</span>(error) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Other(error.to_string())),
+                <span class="prelude-val">Err</span>(err) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(DialError::from(err)),
             }
 
-            <span class="kw">let </span>stream = TcpStream::try_from(Into::&lt;std::net::TcpStream&gt;::into(socket))
-                .map_err(|error| Error::Other(error.to_string()))<span class="question-mark">?</span>;
-            stream.writable().<span class="kw">await</span>.map_err(|error| Error::Other(error.to_string()))<span class="question-mark">?</span>;
-
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(error) =
-                stream.take_error().map_err(|error| Error::Other(error.to_string()))<span class="question-mark">?
-            </span>{
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::Other(error.to_string()));
+            <span class="kw">let </span>stream = TcpStream::try_from(Into::&lt;std::net::TcpStream&gt;::into(socket))<span class="question-mark">?</span>;
+            stream.writable().<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(e) = stream.take_error()<span class="question-mark">? </span>{
+                <span class="kw">return </span><span class="prelude-val">Err</span>(DialError::from(e));
             }
 
             <span class="prelude-val">Ok</span>((
                 address,
-                tokio_tungstenite::client_async_tls(url, stream).<span class="kw">await</span><span class="question-mark">?</span>.<span class="number">0</span>,
+                tokio_tungstenite::client_async_tls(url, stream)
+                    .<span class="kw">await
+                    </span>.map_err(NegotiationError::WebSocket)<span class="question-mark">?
+                    </span>.<span class="number">0</span>,
             ))
         };
 
         <span class="kw">match </span>tokio::time::timeout(connection_open_timeout, future).<span class="kw">await </span>{
-            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(Error::Timeout),
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(DialError::Timeout),
             <span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(error)) =&gt; <span class="prelude-val">Err</span>(error),
             <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>((address, stream))) =&gt; <span class="prelude-val">Ok</span>((address, stream)),
         }
@@ -940,9 +921,10 @@
             listen_addresses = <span class="question-mark">?</span>config.listen_addresses,
             <span class="string">"start websocket transport"</span>,
         );
-        <span class="kw">let </span>(listener, listen_addresses, dial_addresses) = WebSocketListener::new(
+        <span class="kw">let </span>(listener, listen_addresses, dial_addresses) = SocketListener::new::&lt;WebSocketAddress&gt;(
             std::mem::take(<span class="kw-2">&amp;mut </span>config.listen_addresses),
             config.reuse_port,
+            config.nodelay,
         );
 
         <span class="prelude-val">Ok</span>((
@@ -955,6 +937,7 @@
                 opened_raw: HashMap::new(),
                 pending_open: HashMap::new(),
                 pending_dials: HashMap::new(),
+                pending_inbound_connections: HashMap::new(),
                 pending_connections: FuturesUnordered::new(),
                 pending_raw_connections: FuturesUnordered::new(),
             },
@@ -972,6 +955,8 @@
         <span class="kw">let </span>max_read_ahead_factor = <span class="self">self</span>.config.noise_read_ahead_frame_count;
         <span class="kw">let </span>max_write_buffer_size = <span class="self">self</span>.config.noise_write_buffer_size;
         <span class="kw">let </span>dial_addresses = <span class="self">self</span>.dial_addresses.clone();
+        <span class="kw">let </span>nodelay = <span class="self">self</span>.config.nodelay;
+
         <span class="self">self</span>.pending_dials.insert(connection_id, address.clone());
 
         <span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="question-mark">?</span>connection_id, <span class="question-mark">?</span>address, <span class="string">"open connection"</span>);
@@ -981,9 +966,10 @@
                 address.clone(),
                 dial_addresses,
                 connection_open_timeout,
+                nodelay,
             )
             .<span class="kw">await
-            </span>.map_err(|error| WebSocketError::new(error, <span class="prelude-val">Some</span>(connection_id)))<span class="question-mark">?</span>;
+            </span>.map_err(|error| (connection_id, error))<span class="question-mark">?</span>;
 
             WebSocketConnection::open_connection(
                 connection_id,
@@ -997,12 +983,12 @@
                 max_write_buffer_size,
             )
             .<span class="kw">await
-            </span>.map_err(|error| WebSocketError::new(error, <span class="prelude-val">Some</span>(connection_id)))
+            </span>.map_err(|error| (connection_id, error.into()))
         };
 
         <span class="self">self</span>.pending_connections.push(Box::pin(<span class="kw">async move </span>{
             <span class="kw">match </span>tokio::time::timeout(connection_open_timeout, future).<span class="kw">await </span>{
-                <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(WebSocketError::new(Error::Timeout, <span class="prelude-val">Some</span>(connection_id))),
+                <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>((connection_id, DialError::Timeout)),
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(error)) =&gt; <span class="prelude-val">Err</span>(error),
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(result)) =&gt; <span class="prelude-val">Ok</span>(result),
             }
@@ -1049,7 +1035,23 @@
     }
 
     <span class="kw">fn </span>reject(<span class="kw-2">&amp;mut </span><span class="self">self</span>, connection_id: ConnectionId) -&gt; <span class="kw">crate</span>::Result&lt;()&gt; {
-        <span class="self">self</span>.canceled.insert(connection_id);
+        <span class="self">self</span>.pending_open
+            .remove(<span class="kw-2">&amp;</span>connection_id)
+            .map_or(<span class="prelude-val">Err</span>(Error::ConnectionDoesntExist(connection_id)), |<span class="kw">_</span>| <span class="prelude-val">Ok</span>(()))
+    }
+
+    <span class="kw">fn </span>accept_pending(<span class="kw-2">&amp;mut </span><span class="self">self</span>, connection_id: ConnectionId) -&gt; <span class="kw">crate</span>::Result&lt;()&gt; {
+        <span class="kw">let </span>pending = <span class="self">self
+            </span>.pending_inbound_connections
+            .remove(<span class="kw-2">&amp;</span>connection_id)
+            .ok_or(Error::ConnectionDoesntExist(connection_id))<span class="question-mark">?</span>;
+
+        <span class="self">self</span>.on_inbound_connection(connection_id, pending.connection, pending.address);
+
+        <span class="prelude-val">Ok</span>(())
+    }
+
+    <span class="kw">fn </span>reject_pending(<span class="kw-2">&amp;mut </span><span class="self">self</span>, connection_id: ConnectionId) -&gt; <span class="kw">crate</span>::Result&lt;()&gt; {
         <span class="self">self</span>.pending_open
             .remove(<span class="kw-2">&amp;</span>connection_id)
             .map_or(<span class="prelude-val">Err</span>(Error::ConnectionDoesntExist(connection_id)), |<span class="kw">_</span>| <span class="prelude-val">Ok</span>(()))
@@ -1060,33 +1062,46 @@
         connection_id: ConnectionId,
         addresses: Vec&lt;Multiaddr&gt;,
     ) -&gt; <span class="kw">crate</span>::Result&lt;()&gt; {
+        <span class="kw">let </span>num_addresses = addresses.len();
         <span class="kw">let </span><span class="kw-2">mut </span>futures: FuturesUnordered&lt;<span class="kw">_</span>&gt; = addresses
             .into_iter()
             .map(|address| {
                 <span class="kw">let </span>connection_open_timeout = <span class="self">self</span>.config.connection_open_timeout;
                 <span class="kw">let </span>dial_addresses = <span class="self">self</span>.dial_addresses.clone();
+                <span class="kw">let </span>nodelay = <span class="self">self</span>.config.nodelay;
 
                 <span class="kw">async move </span>{
-                    WebSocketTransport::dial_peer(address, dial_addresses, connection_open_timeout)
-                        .<span class="kw">await
-                </span>}
+                    WebSocketTransport::dial_peer(
+                        address.clone(),
+                        dial_addresses,
+                        connection_open_timeout,
+                        nodelay,
+                    )
+                    .<span class="kw">await
+                    </span>.map_err(|error| (address, error))
+                }
             })
             .collect();
 
         <span class="self">self</span>.pending_raw_connections.push(Box::pin(<span class="kw">async move </span>{
+            <span class="kw">let </span><span class="kw-2">mut </span>errors = Vec::with_capacity(num_addresses);
+
             <span class="kw">while let </span><span class="prelude-val">Some</span>(result) = futures.next().<span class="kw">await </span>{
                 <span class="kw">match </span>result {
                     <span class="prelude-val">Ok</span>((address, stream)) =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>((connection_id, address, stream)),
-                    <span class="prelude-val">Err</span>(error) =&gt; <span class="macro">tracing::debug!</span>(
-                        target: LOG_TARGET,
-                        <span class="question-mark">?</span>connection_id,
-                        <span class="question-mark">?</span>error,
-                        <span class="string">"failed to open connection"</span>,
-                    ),
+                    <span class="prelude-val">Err</span>(error) =&gt; {
+                        <span class="macro">tracing::debug!</span>(
+                            target: LOG_TARGET,
+                            <span class="question-mark">?</span>connection_id,
+                            <span class="question-mark">?</span>error,
+                            <span class="string">"failed to open connection"</span>,
+                        );
+                        errors.push(error)
+                    }
                 }
             }
 
-            <span class="prelude-val">Err</span>(connection_id)
+            <span class="prelude-val">Err</span>((connection_id, errors))
         }));
 
         <span class="prelude-val">Ok</span>(())
@@ -1131,11 +1146,11 @@
                     max_write_buffer_size,
                 )
                 .<span class="kw">await
-                </span>.map_err(|error| WebSocketError::new(error, <span class="prelude-val">Some</span>(connection_id)))
+                </span>.map_err(|error| (connection_id, error.into()))
             })
             .<span class="kw">await
             </span>{
-                <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(WebSocketError::new(Error::Timeout, <span class="prelude-val">Some</span>(connection_id))),
+                <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>((connection_id, DialError::Timeout)),
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(error)) =&gt; <span class="prelude-val">Err</span>(error),
                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(connection)) =&gt; <span class="prelude-val">Ok</span>(connection),
             }
@@ -1153,44 +1168,25 @@
     <span class="kw">type </span>Item = TransportEvent;
 
     <span class="kw">fn </span>poll_next(<span class="kw-2">mut </span><span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt;&gt; {
-        <span class="kw">while let </span>Poll::Ready(<span class="prelude-val">Some</span>(connection)) = <span class="self">self</span>.listener.poll_next_unpin(cx) {
-            <span class="kw">match </span>connection {
-                <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span>Poll::Ready(<span class="prelude-val">None</span>),
-                <span class="prelude-val">Ok</span>((stream, address)) =&gt; {
+        <span class="kw">if let </span>Poll::Ready(<span class="prelude-val">Some</span>(connection)) = <span class="self">self</span>.listener.poll_next_unpin(cx) {
+            <span class="kw">return match </span>connection {
+                <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; Poll::Ready(<span class="prelude-val">None</span>),
+                <span class="prelude-val">Ok</span>((connection, address)) =&gt; {
                     <span class="kw">let </span>connection_id = <span class="self">self</span>.context.next_connection_id();
-                    <span class="kw">let </span>keypair = <span class="self">self</span>.context.keypair.clone();
-                    <span class="kw">let </span>yamux_config = <span class="self">self</span>.config.yamux_config.clone();
-                    <span class="kw">let </span>connection_open_timeout = <span class="self">self</span>.config.connection_open_timeout;
-                    <span class="kw">let </span>max_read_ahead_factor = <span class="self">self</span>.config.noise_read_ahead_frame_count;
-                    <span class="kw">let </span>max_write_buffer_size = <span class="self">self</span>.config.noise_write_buffer_size;
-                    <span class="kw">let </span>address = Multiaddr::empty()
-                        .with(Protocol::from(address.ip()))
-                        .with(Protocol::Tcp(address.port()))
-                        .with(Protocol::Ws(std::borrow::Cow::Owned(<span class="string">"/"</span>.to_string())));
 
-                    <span class="self">self</span>.pending_connections.push(Box::pin(<span class="kw">async move </span>{
-                        <span class="kw">match </span>tokio::time::timeout(connection_open_timeout, <span class="kw">async move </span>{
-                            WebSocketConnection::accept_connection(
-                                stream,
-                                connection_id,
-                                keypair,
-                                address,
-                                yamux_config,
-                                max_read_ahead_factor,
-                                max_write_buffer_size,
-                            )
-                            .<span class="kw">await
-                            </span>.map_err(|error| WebSocketError::new(error, <span class="prelude-val">None</span>))
-                        })
-                        .<span class="kw">await
-                        </span>{
-                            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(WebSocketError::new(Error::Timeout, <span class="prelude-val">None</span>)),
-                            <span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(error)) =&gt; <span class="prelude-val">Err</span>(error),
-                            <span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(result)) =&gt; <span class="prelude-val">Ok</span>(result),
-                        }
-                    }));
+                    <span class="self">self</span>.pending_inbound_connections.insert(
+                        connection_id,
+                        PendingInboundConnection {
+                            connection,
+                            address,
+                        },
+                    );
+
+                    Poll::Ready(<span class="prelude-val">Some</span>(TransportEvent::PendingInboundConnection {
+                        connection_id,
+                    }))
                 }
-            }
+            };
         }
 
         <span class="kw">while let </span>Poll::Ready(<span class="prelude-val">Some</span>(result)) = <span class="self">self</span>.pending_raw_connections.poll_next_unpin(cx) {
@@ -1213,9 +1209,12 @@
                         }));
                     }
                 }
-                <span class="prelude-val">Err</span>(connection_id) =&gt;
+                <span class="prelude-val">Err</span>((connection_id, errors)) =&gt;
                     <span class="kw">if </span>!<span class="self">self</span>.canceled.remove(<span class="kw-2">&amp;</span>connection_id) {
-                        <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(TransportEvent::OpenFailure { connection_id }));
+                        <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(TransportEvent::OpenFailure {
+                            connection_id,
+                            errors,
+                        }));
                     },
             }
         }
@@ -1232,22 +1231,17 @@
                         endpoint,
                     }));
                 }
-                <span class="prelude-val">Err</span>(error) =&gt; <span class="kw">match </span>error.connection_id {
-                    <span class="prelude-val">Some</span>(connection_id) =&gt; <span class="kw">match </span><span class="self">self</span>.pending_dials.remove(<span class="kw-2">&amp;</span>connection_id) {
-                        <span class="prelude-val">Some</span>(address) =&gt;
-                            <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(TransportEvent::DialFailure {
-                                connection_id,
-                                address,
-                                error: error.error,
-                            })),
-                        <span class="prelude-val">None </span>=&gt; {
-                            <span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="question-mark">?</span>error, <span class="string">"failed to establish connection"</span>)
-                        }
-                    },
-                    <span class="prelude-val">None </span>=&gt; {
-                        <span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="question-mark">?</span>error, <span class="string">"failed to establish connection"</span>)
+                <span class="prelude-val">Err</span>((connection_id, error)) =&gt; {
+                    <span class="kw">if let </span><span class="prelude-val">Some</span>(address) = <span class="self">self</span>.pending_dials.remove(<span class="kw-2">&amp;</span>connection_id) {
+                        <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Some</span>(TransportEvent::DialFailure {
+                            connection_id,
+                            address,
+                            error,
+                        }));
+                    } <span class="kw">else </span>{
+                        <span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="question-mark">?</span>error, <span class="question-mark">?</span>connection_id, <span class="string">"Pending inbound connection failed"</span>);
                     }
-                },
+                }
             }
         }
 

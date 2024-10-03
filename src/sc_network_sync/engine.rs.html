@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/network/sync/src/engine.rs`."><title>engine.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network_sync" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/client/network/sync/src/engine.rs`."><title>engine.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network_sync" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1276,120 +1276,6 @@
 <a href="#1276" id="1276">1276</a>
 <a href="#1277" id="1277">1277</a>
 <a href="#1278" id="1278">1278</a>
-<a href="#1279" id="1279">1279</a>
-<a href="#1280" id="1280">1280</a>
-<a href="#1281" id="1281">1281</a>
-<a href="#1282" id="1282">1282</a>
-<a href="#1283" id="1283">1283</a>
-<a href="#1284" id="1284">1284</a>
-<a href="#1285" id="1285">1285</a>
-<a href="#1286" id="1286">1286</a>
-<a href="#1287" id="1287">1287</a>
-<a href="#1288" id="1288">1288</a>
-<a href="#1289" id="1289">1289</a>
-<a href="#1290" id="1290">1290</a>
-<a href="#1291" id="1291">1291</a>
-<a href="#1292" id="1292">1292</a>
-<a href="#1293" id="1293">1293</a>
-<a href="#1294" id="1294">1294</a>
-<a href="#1295" id="1295">1295</a>
-<a href="#1296" id="1296">1296</a>
-<a href="#1297" id="1297">1297</a>
-<a href="#1298" id="1298">1298</a>
-<a href="#1299" id="1299">1299</a>
-<a href="#1300" id="1300">1300</a>
-<a href="#1301" id="1301">1301</a>
-<a href="#1302" id="1302">1302</a>
-<a href="#1303" id="1303">1303</a>
-<a href="#1304" id="1304">1304</a>
-<a href="#1305" id="1305">1305</a>
-<a href="#1306" id="1306">1306</a>
-<a href="#1307" id="1307">1307</a>
-<a href="#1308" id="1308">1308</a>
-<a href="#1309" id="1309">1309</a>
-<a href="#1310" id="1310">1310</a>
-<a href="#1311" id="1311">1311</a>
-<a href="#1312" id="1312">1312</a>
-<a href="#1313" id="1313">1313</a>
-<a href="#1314" id="1314">1314</a>
-<a href="#1315" id="1315">1315</a>
-<a href="#1316" id="1316">1316</a>
-<a href="#1317" id="1317">1317</a>
-<a href="#1318" id="1318">1318</a>
-<a href="#1319" id="1319">1319</a>
-<a href="#1320" id="1320">1320</a>
-<a href="#1321" id="1321">1321</a>
-<a href="#1322" id="1322">1322</a>
-<a href="#1323" id="1323">1323</a>
-<a href="#1324" id="1324">1324</a>
-<a href="#1325" id="1325">1325</a>
-<a href="#1326" id="1326">1326</a>
-<a href="#1327" id="1327">1327</a>
-<a href="#1328" id="1328">1328</a>
-<a href="#1329" id="1329">1329</a>
-<a href="#1330" id="1330">1330</a>
-<a href="#1331" id="1331">1331</a>
-<a href="#1332" id="1332">1332</a>
-<a href="#1333" id="1333">1333</a>
-<a href="#1334" id="1334">1334</a>
-<a href="#1335" id="1335">1335</a>
-<a href="#1336" id="1336">1336</a>
-<a href="#1337" id="1337">1337</a>
-<a href="#1338" id="1338">1338</a>
-<a href="#1339" id="1339">1339</a>
-<a href="#1340" id="1340">1340</a>
-<a href="#1341" id="1341">1341</a>
-<a href="#1342" id="1342">1342</a>
-<a href="#1343" id="1343">1343</a>
-<a href="#1344" id="1344">1344</a>
-<a href="#1345" id="1345">1345</a>
-<a href="#1346" id="1346">1346</a>
-<a href="#1347" id="1347">1347</a>
-<a href="#1348" id="1348">1348</a>
-<a href="#1349" id="1349">1349</a>
-<a href="#1350" id="1350">1350</a>
-<a href="#1351" id="1351">1351</a>
-<a href="#1352" id="1352">1352</a>
-<a href="#1353" id="1353">1353</a>
-<a href="#1354" id="1354">1354</a>
-<a href="#1355" id="1355">1355</a>
-<a href="#1356" id="1356">1356</a>
-<a href="#1357" id="1357">1357</a>
-<a href="#1358" id="1358">1358</a>
-<a href="#1359" id="1359">1359</a>
-<a href="#1360" id="1360">1360</a>
-<a href="#1361" id="1361">1361</a>
-<a href="#1362" id="1362">1362</a>
-<a href="#1363" id="1363">1363</a>
-<a href="#1364" id="1364">1364</a>
-<a href="#1365" id="1365">1365</a>
-<a href="#1366" id="1366">1366</a>
-<a href="#1367" id="1367">1367</a>
-<a href="#1368" id="1368">1368</a>
-<a href="#1369" id="1369">1369</a>
-<a href="#1370" id="1370">1370</a>
-<a href="#1371" id="1371">1371</a>
-<a href="#1372" id="1372">1372</a>
-<a href="#1373" id="1373">1373</a>
-<a href="#1374" id="1374">1374</a>
-<a href="#1375" id="1375">1375</a>
-<a href="#1376" id="1376">1376</a>
-<a href="#1377" id="1377">1377</a>
-<a href="#1378" id="1378">1378</a>
-<a href="#1379" id="1379">1379</a>
-<a href="#1380" id="1380">1380</a>
-<a href="#1381" id="1381">1381</a>
-<a href="#1382" id="1382">1382</a>
-<a href="#1383" id="1383">1383</a>
-<a href="#1384" id="1384">1384</a>
-<a href="#1385" id="1385">1385</a>
-<a href="#1386" id="1386">1386</a>
-<a href="#1387" id="1387">1387</a>
-<a href="#1388" id="1388">1388</a>
-<a href="#1389" id="1389">1389</a>
-<a href="#1390" id="1390">1390</a>
-<a href="#1391" id="1391">1391</a>
-<a href="#1392" id="1392">1392</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1416,7 +1302,6 @@
 		BlockAnnounceValidationResult, BlockAnnounceValidator <span class="kw">as </span>BlockAnnounceValidatorStream,
 	},
 	block_relay_protocol::{BlockDownloader, BlockResponseError},
-	block_request_handler::MAX_BLOCKS_IN_RESPONSE,
 	pending_responses::{PendingResponses, ResponseEvent},
 	schema::v1::{StateRequest, StateResponse},
 	service::{
@@ -1424,8 +1309,8 @@
 		syncing_service::{SyncingService, ToServiceCommand},
 	},
 	strategy::{
-		warp::{EncodedProof, WarpProofRequest, WarpSyncParams},
-		StrategyKey, SyncingAction, SyncingConfig, SyncingStrategy,
+		warp::{EncodedProof, WarpProofRequest},
+		StrategyKey, SyncingAction, SyncingStrategy,
 	},
 	types::{
 		BadPeer, ExtendedPeerInfo, OpaqueStateRequest, OpaqueStateResponse, PeerRequest, SyncEvent,
@@ -1434,12 +1319,7 @@
 };
 
 <span class="kw">use </span>codec::{Decode, DecodeAll, Encode};
-<span class="kw">use </span>futures::{
-	channel::oneshot,
-	future::{BoxFuture, Fuse},
-	FutureExt, StreamExt,
-};
-<span class="kw">use </span>libp2p::request_response::OutboundFailure;
+<span class="kw">use </span>futures::{channel::oneshot, FutureExt, StreamExt};
 <span class="kw">use </span>log::{debug, error, trace, warn};
 <span class="kw">use </span>prometheus_endpoint::{
 	register, Counter, Gauge, MetricSource, Opts, PrometheusError, Registry, SourcedGauge, U64,
@@ -1453,7 +1333,7 @@
 <span class="kw">use </span>sc_network::{
 	config::{FullNetworkConfiguration, NotificationHandshake, ProtocolId, SetConfig},
 	peer_store::PeerStoreProvider,
-	request_responses::{IfDisconnected, RequestFailure},
+	request_responses::{IfDisconnected, OutboundFailure, RequestFailure},
 	service::{
 		traits::{Direction, NotificationConfig, NotificationEvent, ValidationResult},
 		NotificationMetrics,
@@ -1585,7 +1465,7 @@
 
 <span class="kw">pub struct </span>SyncingEngine&lt;B: BlockT, Client&gt; {
 	<span class="doccomment">/// Syncing strategy.
-	</span>strategy: SyncingStrategy&lt;B, Client&gt;,
+	</span>strategy: Box&lt;<span class="kw">dyn </span>SyncingStrategy&lt;B&gt;&gt;,
 
 	<span class="doccomment">/// Blockchain client.
 	</span>client: Arc&lt;Client&gt;,
@@ -1649,10 +1529,6 @@
 	<span class="doccomment">/// The `PeerId`'s of all boot nodes.
 	</span>boot_node_ids: HashSet&lt;PeerId&gt;,
 
-	<span class="doccomment">/// A channel to get target block header if we skip over proofs downloading during warp sync.
-	</span>warp_sync_target_block_header_rx_fused:
-		Fuse&lt;BoxFuture&lt;<span class="lifetime">'static</span>, <span class="prelude-ty">Result</span>&lt;B::Header, oneshot::Canceled&gt;&gt;&gt;,
-
 	<span class="doccomment">/// Protocol name used for block announcements
 	</span>block_announce_protocol_name: ProtocolName,
 
@@ -1670,12 +1546,6 @@
 
 	<span class="doccomment">/// Block downloader
 	</span>block_downloader: Arc&lt;<span class="kw">dyn </span>BlockDownloader&lt;B&gt;&gt;,
-
-	<span class="doccomment">/// Protocol name used to send out state requests
-	</span>state_request_protocol_name: ProtocolName,
-
-	<span class="doccomment">/// Protocol name used to send out warp sync requests
-	</span>warp_sync_protocol_name: <span class="prelude-ty">Option</span>&lt;ProtocolName&gt;,
 
 	<span class="doccomment">/// Handle to import queue.
 	</span>import_queue: Box&lt;<span class="kw">dyn </span>ImportQueueService&lt;B&gt;&gt;,
@@ -1701,36 +1571,15 @@
 		protocol_id: ProtocolId,
 		fork_id: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;String&gt;,
 		block_announce_validator: Box&lt;<span class="kw">dyn </span>BlockAnnounceValidator&lt;B&gt; + Send&gt;,
-		warp_sync_params: <span class="prelude-ty">Option</span>&lt;WarpSyncParams&lt;B&gt;&gt;,
+		syncing_strategy: Box&lt;<span class="kw">dyn </span>SyncingStrategy&lt;B&gt;&gt;,
 		network_service: service::network::NetworkServiceHandle,
 		import_queue: Box&lt;<span class="kw">dyn </span>ImportQueueService&lt;B&gt;&gt;,
 		block_downloader: Arc&lt;<span class="kw">dyn </span>BlockDownloader&lt;B&gt;&gt;,
-		state_request_protocol_name: ProtocolName,
-		warp_sync_protocol_name: <span class="prelude-ty">Option</span>&lt;ProtocolName&gt;,
 		peer_store_handle: Arc&lt;<span class="kw">dyn </span>PeerStoreProvider&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(<span class="self">Self</span>, SyncingService&lt;B&gt;, N::NotificationProtocolConfig), ClientError&gt;
 	<span class="kw">where
 		</span>N: NetworkBackend&lt;B, &lt;B <span class="kw">as </span>BlockT&gt;::Hash&gt;,
 	{
-		<span class="kw">let </span>mode = net_config.network_config.sync_mode;
-		<span class="kw">let </span>max_parallel_downloads = net_config.network_config.max_parallel_downloads;
-		<span class="kw">let </span>max_blocks_per_request =
-			<span class="kw">if </span>net_config.network_config.max_blocks_per_request &gt; MAX_BLOCKS_IN_RESPONSE <span class="kw">as </span>u32 {
-				<span class="macro">log::info!</span>(
-					target: LOG_TARGET,
-					<span class="string">"clamping maximum blocks per request to {}"</span>,
-					MAX_BLOCKS_IN_RESPONSE,
-				);
-				MAX_BLOCKS_IN_RESPONSE <span class="kw">as </span>u32
-			} <span class="kw">else </span>{
-				net_config.network_config.max_blocks_per_request
-			};
-		<span class="kw">let </span>syncing_config = SyncingConfig {
-			mode,
-			max_parallel_downloads,
-			max_blocks_per_request,
-			metrics_registry: metrics_registry.cloned(),
-		};
 		<span class="kw">let </span>cache_capacity = (net_config.network_config.default_peers_set.in_peers +
 			net_config.network_config.default_peers_set.out_peers)
 			.max(<span class="number">1</span>);
@@ -1740,12 +1589,7 @@
 				imp_p.insert(reserved.peer_id);
 			}
 			<span class="kw">for </span>config <span class="kw">in </span>net_config.notification_protocols() {
-				<span class="kw">let </span>peer_ids = config
-					.set_config()
-					.reserved_nodes
-					.iter()
-					.map(|info| info.peer_id)
-					.collect::&lt;Vec&lt;PeerId&gt;&gt;();
+				<span class="kw">let </span>peer_ids = config.set_config().reserved_nodes.iter().map(|info| info.peer_id);
 				imp_p.extend(peer_ids);
 			}
 
@@ -1779,48 +1623,25 @@
 			total.saturating_sub(net_config.network_config.default_peers_set_num_full) <span class="kw">as </span>usize
 		};
 
+		<span class="kw">let </span>info = client.info();
+
 		<span class="kw">let </span>(block_announce_config, notification_service) =
 			<span class="self">Self</span>::get_block_announce_proto_config::&lt;N&gt;(
 				protocol_id,
 				fork_id,
 				roles,
-				client.info().best_number,
-				client.info().best_hash,
-				client
-					.block_hash(Zero::zero())
-					.ok()
-					.flatten()
-					.expect(<span class="string">"Genesis block exists; qed"</span>),
+				info.best_number,
+				info.best_hash,
+				info.genesis_hash,
 				<span class="kw-2">&amp;</span>net_config.network_config.default_peers_set,
 				network_metrics,
 				Arc::clone(<span class="kw-2">&amp;</span>peer_store_handle),
 			);
 
-		<span class="comment">// Split warp sync params into warp sync config and a channel to retrieve target block
-		// header.
-		</span><span class="kw">let </span>(warp_sync_config, warp_sync_target_block_header_rx) =
-			warp_sync_params.map_or((<span class="prelude-val">None</span>, <span class="prelude-val">None</span>), |params| {
-				<span class="kw">let </span>(config, target_block_rx) = params.split();
-				(<span class="prelude-val">Some</span>(config), target_block_rx)
-			});
-
-		<span class="comment">// Make sure polling of the target block channel is a no-op if there is no block to
-		// retrieve.
-		</span><span class="kw">let </span>warp_sync_target_block_header_rx_fused = warp_sync_target_block_header_rx
-			.map_or(futures::future::pending().boxed().fuse(), |rx| rx.boxed().fuse());
-
-		<span class="comment">// Initialize syncing strategy.
-		</span><span class="kw">let </span>strategy = SyncingStrategy::new(syncing_config, client.clone(), warp_sync_config)<span class="question-mark">?</span>;
-
 		<span class="kw">let </span>block_announce_protocol_name = block_announce_config.protocol_name().clone();
 		<span class="kw">let </span>(tx, service_rx) = tracing_unbounded(<span class="string">"mpsc_chain_sync"</span>, <span class="number">100_000</span>);
 		<span class="kw">let </span>num_connected = Arc::new(AtomicUsize::new(<span class="number">0</span>));
 		<span class="kw">let </span>is_major_syncing = Arc::new(AtomicBool::new(<span class="bool-val">false</span>));
-		<span class="kw">let </span>genesis_hash = client
-			.block_hash(<span class="number">0u32</span>.into())
-			.ok()
-			.flatten()
-			.expect(<span class="string">"Genesis block exists; qed"</span>);
 
 		<span class="comment">// `default_peers_set.in_peers` contains an unspecified amount of light peers so the number
 		// of full inbound peers must be calculated from the total full peer count
@@ -1838,7 +1659,7 @@
 			<span class="self">Self </span>{
 				roles,
 				client,
-				strategy,
+				strategy: syncing_strategy,
 				network_service,
 				peers: HashMap::new(),
 				block_announce_data_cache: LruMap::new(ByLength::new(cache_capacity)),
@@ -1849,10 +1670,9 @@
 				num_connected: num_connected.clone(),
 				is_major_syncing: is_major_syncing.clone(),
 				service_rx,
-				genesis_hash,
+				genesis_hash: info.genesis_hash,
 				important_peers,
 				default_peers_set_no_slot_connected_peers: HashSet::new(),
-				warp_sync_target_block_header_rx_fused,
 				boot_node_ids,
 				default_peers_set_no_slot_peers,
 				default_peers_set_num_full,
@@ -1876,22 +1696,11 @@
 				</span>},
 				pending_responses: PendingResponses::new(),
 				block_downloader,
-				state_request_protocol_name,
-				warp_sync_protocol_name,
 				import_queue,
 			},
 			SyncingService::new(tx, num_connected, is_major_syncing),
 			block_announce_config,
 		))
-	}
-
-	<span class="doccomment">/// Report Prometheus metrics.
-	</span><span class="kw">pub fn </span>report_metrics(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-		<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = <span class="kw-2">&amp;</span><span class="self">self</span>.metrics {
-			<span class="kw">let </span>n = u64::try_from(<span class="self">self</span>.peers.len()).unwrap_or(std::u64::MAX);
-			metrics.peers.set(n);
-		}
-		<span class="self">self</span>.strategy.report_metrics();
 	}
 
 	<span class="kw">fn </span>update_peer_info(
@@ -1928,6 +1737,10 @@
 			},
 			BlockAnnounceValidationResult::Failure { peer_id, disconnect } =&gt; {
 				<span class="kw">if </span>disconnect {
+					<span class="macro">log::debug!</span>(
+						target: LOG_TARGET,
+						<span class="string">"Disconnecting peer {peer_id} due to block announce validation failure"</span>,
+					);
 					<span class="self">self</span>.network_service
 						.disconnect_peer(peer_id, <span class="self">self</span>.block_announce_protocol_name.clone());
 				}
@@ -1953,8 +1766,8 @@
 					<span class="string">"Received block announce from disconnected peer {peer_id}"</span>,
 				);
 				<span class="macro">debug_assert!</span>(<span class="bool-val">false</span>);
-				<span class="kw">return
-			</span>},
+				<span class="kw">return</span>;
+			},
 		};
 		peer.known_blocks.insert(hash);
 
@@ -1978,18 +1791,18 @@
 			<span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(header)) =&gt; header,
 			<span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; {
 				<span class="macro">log::warn!</span>(target: LOG_TARGET, <span class="string">"Trying to announce unknown block: {hash}"</span>);
-				<span class="kw">return
-			</span>},
+				<span class="kw">return</span>;
+			},
 			<span class="prelude-val">Err</span>(e) =&gt; {
 				<span class="macro">log::warn!</span>(target: LOG_TARGET, <span class="string">"Error reading block header {hash}: {e}"</span>);
-				<span class="kw">return
-			</span>},
+				<span class="kw">return</span>;
+			},
 		};
 
 		<span class="comment">// don't announce genesis block since it will be ignored
 		</span><span class="kw">if </span>header.number().is_zero() {
-			<span class="kw">return
-		</span>}
+			<span class="kw">return</span>;
+		}
 
 		<span class="kw">let </span>is_best = <span class="self">self</span>.client.info().best_hash == hash;
 		<span class="macro">log::debug!</span>(target: LOG_TARGET, <span class="string">"Reannouncing block {hash:?} is_best: {is_best}"</span>);
@@ -2016,23 +1829,16 @@
 	<span class="kw">pub async fn </span>run(<span class="kw-2">mut </span><span class="self">self</span>) {
 		<span class="kw">loop </span>{
 			<span class="macro">tokio::select!</span> {
-				<span class="kw">_ </span>= <span class="self">self</span>.tick_timeout.tick() =&gt; <span class="self">self</span>.perform_periodic_actions(),
+				<span class="kw">_ </span>= <span class="self">self</span>.tick_timeout.tick() =&gt; {
+					<span class="comment">// TODO: This tick should not be necessary, but
+					//  `self.process_strategy_actions()` is not called in some cases otherwise and
+					//  some tests fail because of this
+				</span>},
 				command = <span class="self">self</span>.service_rx.select_next_some() =&gt;
 					<span class="self">self</span>.process_service_command(command),
 				notification_event = <span class="self">self</span>.notification_service.next_event() =&gt; <span class="kw">match </span>notification_event {
 					<span class="prelude-val">Some</span>(event) =&gt; <span class="self">self</span>.process_notification_event(event),
 					<span class="prelude-val">None </span>=&gt; <span class="kw">return</span>,
-				},
-				<span class="comment">// TODO: setting of warp sync target block should be moved to the initialization of
-				// `SyncingEngine`, see https://github.com/paritytech/polkadot-sdk/issues/3537.
-				</span>warp_target_block_header = <span class="kw-2">&amp;mut </span><span class="self">self</span>.warp_sync_target_block_header_rx_fused =&gt; {
-					<span class="kw">if let </span><span class="prelude-val">Err</span>(<span class="kw">_</span>) = <span class="self">self</span>.pass_warp_sync_target_block_header(warp_target_block_header) {
-						<span class="macro">error!</span>(
-							target: LOG_TARGET,
-							<span class="string">"Failed to set warp sync target block header, terminating `SyncingEngine`."</span>,
-						);
-						<span class="kw">return
-					</span>}
 				},
 				response_event = <span class="self">self</span>.pending_responses.select_next_some() =&gt;
 					<span class="self">self</span>.process_response_event(response_event),
@@ -2041,8 +1847,7 @@
 			}
 
 			<span class="comment">// Update atomic variables
-			</span><span class="self">self</span>.num_connected.store(<span class="self">self</span>.peers.len(), Ordering::Relaxed);
-			<span class="self">self</span>.is_major_syncing.store(<span class="self">self</span>.strategy.is_major_syncing(), Ordering::Relaxed);
+			</span><span class="self">self</span>.is_major_syncing.store(<span class="self">self</span>.strategy.is_major_syncing(), Ordering::Relaxed);
 
 			<span class="comment">// Process actions requested by a syncing strategy.
 			</span><span class="kw">if let </span><span class="prelude-val">Err</span>(e) = <span class="self">self</span>.process_strategy_actions() {
@@ -2050,8 +1855,8 @@
 					target: LOG_TARGET,
 					<span class="string">"Terminating `SyncingEngine` due to fatal error: {e:?}."</span>,
 				);
-				<span class="kw">return
-			</span>}
+				<span class="kw">return</span>;
+			}
 		}
 	}
 
@@ -2091,16 +1896,16 @@
 						<span class="string">"Processed {action:?}, response removed: {removed}."</span>,
 					);
 				},
-				SyncingAction::SendStateRequest { peer_id, key, request } =&gt; {
-					<span class="self">self</span>.send_state_request(peer_id, key, request);
+				SyncingAction::SendStateRequest { peer_id, key, protocol_name, request } =&gt; {
+					<span class="self">self</span>.send_state_request(peer_id, key, protocol_name, request);
 
 					<span class="macro">trace!</span>(
 						target: LOG_TARGET,
 						<span class="string">"Processed `ChainSyncAction::SendStateRequest` to {peer_id}."</span>,
 					);
 				},
-				SyncingAction::SendWarpProofRequest { peer_id, key, request } =&gt; {
-					<span class="self">self</span>.send_warp_proof_request(peer_id, key, request.clone());
+				SyncingAction::SendWarpProofRequest { peer_id, key, protocol_name, request } =&gt; {
+					<span class="self">self</span>.send_warp_proof_request(peer_id, key, protocol_name, request.clone());
 
 					<span class="macro">trace!</span>(
 						target: LOG_TARGET,
@@ -2137,16 +1942,12 @@
 						number,
 					)
 				},
-				<span class="comment">// Nothing to do, this is handled internally by `SyncingStrategy`.
+				<span class="comment">// Nothing to do, this is handled internally by `PolkadotSyncingStrategy`.
 				</span>SyncingAction::Finished =&gt; {},
 			}
 		}
 
 		<span class="prelude-val">Ok</span>(())
-	}
-
-	<span class="kw">fn </span>perform_periodic_actions(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-		<span class="self">self</span>.report_metrics();
 	}
 
 	<span class="kw">fn </span>process_service_command(<span class="kw-2">&amp;mut </span><span class="self">self</span>, command: ToServiceCommand&lt;B&gt;) {
@@ -2191,24 +1992,10 @@
 				);
 			},
 			ToServiceCommand::Status(tx) =&gt; {
-				<span class="kw">let </span><span class="kw-2">mut </span>status = <span class="self">self</span>.strategy.status();
-				status.num_connected_peers = <span class="self">self</span>.peers.len() <span class="kw">as </span>u32;
-				<span class="kw">let _ </span>= tx.send(status);
+				<span class="kw">let _ </span>= tx.send(<span class="self">self</span>.strategy.status());
 			},
 			ToServiceCommand::NumActivePeers(tx) =&gt; {
 				<span class="kw">let _ </span>= tx.send(<span class="self">self</span>.num_active_peers());
-			},
-			ToServiceCommand::SyncState(tx) =&gt; {
-				<span class="kw">let _ </span>= tx.send(<span class="self">self</span>.strategy.status());
-			},
-			ToServiceCommand::BestSeenBlock(tx) =&gt; {
-				<span class="kw">let _ </span>= tx.send(<span class="self">self</span>.strategy.status().best_seen_block);
-			},
-			ToServiceCommand::NumSyncPeers(tx) =&gt; {
-				<span class="kw">let _ </span>= tx.send(<span class="self">self</span>.strategy.status().num_peers);
-			},
-			ToServiceCommand::NumQueuedBlocks(tx) =&gt; {
-				<span class="kw">let _ </span>= tx.send(<span class="self">self</span>.strategy.status().queued_blocks);
 			},
 			ToServiceCommand::NumDownloadedBlocks(tx) =&gt; {
 				<span class="kw">let _ </span>= tx.send(<span class="self">self</span>.strategy.num_downloaded_blocks());
@@ -2217,11 +2004,8 @@
 				<span class="kw">let _ </span>= tx.send(<span class="self">self</span>.strategy.num_sync_requests());
 			},
 			ToServiceCommand::PeersInfo(tx) =&gt; {
-				<span class="kw">let </span>peers_info = <span class="self">self
-					</span>.peers
-					.iter()
-					.map(|(peer_id, peer)| (<span class="kw-2">*</span>peer_id, peer.info.clone()))
-					.collect();
+				<span class="kw">let </span>peers_info =
+					<span class="self">self</span>.peers.iter().map(|(peer_id, peer)| (<span class="kw-2">*</span>peer_id, peer.info)).collect();
 				<span class="kw">let _ </span>= tx.send(peers_info);
 			},
 			ToServiceCommand::OnBlockFinalized(hash, header) =&gt;
@@ -2273,31 +2057,15 @@
 						target: LOG_TARGET,
 						<span class="string">"received notification from {peer} who had been earlier refused by `SyncingEngine`"</span>,
 					);
-					<span class="kw">return
-				</span>}
+					<span class="kw">return</span>;
+				}
 
 				<span class="kw">let </span><span class="prelude-val">Ok</span>(announce) = BlockAnnounce::decode(<span class="kw-2">&amp;mut </span>notification.as_ref()) <span class="kw">else </span>{
 					<span class="macro">log::warn!</span>(target: LOG_TARGET, <span class="string">"failed to decode block announce"</span>);
-					<span class="kw">return
-				</span>};
+					<span class="kw">return</span>;
+				};
 
 				<span class="self">self</span>.push_block_announce_validation(peer, announce);
-			},
-		}
-	}
-
-	<span class="kw">fn </span>pass_warp_sync_target_block_header(
-		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
-		header: <span class="prelude-ty">Result</span>&lt;B::Header, oneshot::Canceled&gt;,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
-		<span class="kw">match </span>header {
-			<span class="prelude-val">Ok</span>(header) =&gt; <span class="self">self</span>.strategy.set_warp_sync_target_block_header(header),
-			<span class="prelude-val">Err</span>(err) =&gt; {
-				<span class="macro">error!</span>(
-					target: LOG_TARGET,
-					<span class="string">"Failed to get target block for warp sync. Error: {err:?}"</span>,
-				);
-				<span class="prelude-val">Err</span>(())
 			},
 		}
 	}
@@ -2308,8 +2076,12 @@
 	</span><span class="kw">fn </span>on_sync_peer_disconnected(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer_id: PeerId) {
 		<span class="kw">let </span><span class="prelude-val">Some</span>(info) = <span class="self">self</span>.peers.remove(<span class="kw-2">&amp;</span>peer_id) <span class="kw">else </span>{
 			<span class="macro">log::debug!</span>(target: LOG_TARGET, <span class="string">"{peer_id} does not exist in `SyncingEngine`"</span>);
-			<span class="kw">return
-		</span>};
+			<span class="kw">return</span>;
+		};
+		<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = <span class="kw-2">&amp;</span><span class="self">self</span>.metrics {
+			metrics.peers.dec();
+		}
+		<span class="self">self</span>.num_connected.fetch_sub(<span class="number">1</span>, Ordering::AcqRel);
 
 		<span class="kw">if </span><span class="self">self</span>.important_peers.contains(<span class="kw-2">&amp;</span>peer_id) {
 			<span class="macro">log::warn!</span>(target: LOG_TARGET, <span class="string">"Reserved peer {peer_id} disconnected"</span>);
@@ -2318,7 +2090,8 @@
 		}
 
 		<span class="kw">if </span>!<span class="self">self</span>.default_peers_set_no_slot_connected_peers.remove(<span class="kw-2">&amp;</span>peer_id) &amp;&amp;
-			info.inbound &amp;&amp; info.info.roles.is_full()
+			info.inbound &amp;&amp;
+			info.info.roles.is_full()
 		{
 			<span class="kw">match </span><span class="self">self</span>.num_in_peers.checked_sub(<span class="number">1</span>) {
 				<span class="prelude-val">Some</span>(value) =&gt; {
@@ -2378,7 +2151,7 @@
 				);
 			}
 
-			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="bool-val">true</span>)
+			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="bool-val">true</span>);
 		}
 
 		<span class="prelude-val">Ok</span>(handshake)
@@ -2413,7 +2186,7 @@
 				<span class="string">"Called `validate_connection()` with already connected peer {peer_id}"</span>,
 			);
 			<span class="macro">debug_assert!</span>(<span class="bool-val">false</span>);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="bool-val">false</span>)
+			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="bool-val">false</span>);
 		}
 
 		<span class="kw">let </span>no_slot_peer = <span class="self">self</span>.default_peers_set_no_slot_peers.contains(<span class="kw-2">&amp;</span>peer_id);
@@ -2426,7 +2199,7 @@
 					this_peer_reserved_slot
 		{
 			<span class="macro">log::debug!</span>(target: LOG_TARGET, <span class="string">"Too many full nodes, rejecting {peer_id}"</span>);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="bool-val">false</span>)
+			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="bool-val">false</span>);
 		}
 
 		<span class="comment">// make sure to accept no more than `--in-peers` many full nodes
@@ -2436,7 +2209,7 @@
 			<span class="self">self</span>.num_in_peers == <span class="self">self</span>.max_in_peers
 		{
 			<span class="macro">log::debug!</span>(target: LOG_TARGET, <span class="string">"All inbound slots have been consumed, rejecting {peer_id}"</span>);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="bool-val">false</span>)
+			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="bool-val">false</span>);
 		}
 
 		<span class="comment">// make sure that all slots are not occupied by light peers
@@ -2447,7 +2220,7 @@
 			(<span class="self">self</span>.peers.len() - <span class="self">self</span>.strategy.num_peers()) &gt;= <span class="self">self</span>.default_peers_set_num_light
 		{
 			<span class="macro">log::debug!</span>(target: LOG_TARGET, <span class="string">"Too many light nodes, rejecting {peer_id}"</span>);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="bool-val">false</span>)
+			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="bool-val">false</span>);
 		}
 
 		<span class="prelude-val">Ok</span>(handshake)
@@ -2485,7 +2258,12 @@
 
 		<span class="macro">log::debug!</span>(target: LOG_TARGET, <span class="string">"Connected {peer_id}"</span>);
 
-		<span class="self">self</span>.peers.insert(peer_id, peer);
+		<span class="kw">if </span><span class="self">self</span>.peers.insert(peer_id, peer).is_none() {
+			<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = <span class="kw-2">&amp;</span><span class="self">self</span>.metrics {
+				metrics.peers.inc();
+			}
+			<span class="self">self</span>.num_connected.fetch_add(<span class="number">1</span>, Ordering::AcqRel);
+		}
 		<span class="self">self</span>.peer_store_handle.set_peer_role(<span class="kw-2">&amp;</span>peer_id, status.roles.into());
 
 		<span class="kw">if </span><span class="self">self</span>.default_peers_set_no_slot_peers.contains(<span class="kw-2">&amp;</span>peer_id) {
@@ -2504,8 +2282,8 @@
 		<span class="kw">if </span>!<span class="self">self</span>.peers.contains_key(<span class="kw-2">&amp;</span>peer_id) {
 			<span class="macro">trace!</span>(target: LOG_TARGET, <span class="string">"Cannot send block request to unknown peer {peer_id}"</span>);
 			<span class="macro">debug_assert!</span>(<span class="bool-val">false</span>);
-			<span class="kw">return
-		</span>}
+			<span class="kw">return</span>;
+		}
 
 		<span class="kw">let </span>downloader = <span class="self">self</span>.block_downloader.clone();
 
@@ -2521,13 +2299,14 @@
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		peer_id: PeerId,
 		key: StrategyKey,
+		protocol_name: ProtocolName,
 		request: OpaqueStateRequest,
 	) {
 		<span class="kw">if </span>!<span class="self">self</span>.peers.contains_key(<span class="kw-2">&amp;</span>peer_id) {
 			<span class="macro">trace!</span>(target: LOG_TARGET, <span class="string">"Cannot send state request to unknown peer {peer_id}"</span>);
 			<span class="macro">debug_assert!</span>(<span class="bool-val">false</span>);
-			<span class="kw">return
-		</span>}
+			<span class="kw">return</span>;
+		}
 
 		<span class="kw">let </span>(tx, rx) = oneshot::channel();
 
@@ -2537,7 +2316,7 @@
 			<span class="prelude-val">Ok</span>(data) =&gt; {
 				<span class="self">self</span>.network_service.start_request(
 					peer_id,
-					<span class="self">self</span>.state_request_protocol_name.clone(),
+					protocol_name,
 					data,
 					tx,
 					IfDisconnected::ImmediateError,
@@ -2556,33 +2335,26 @@
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		peer_id: PeerId,
 		key: StrategyKey,
+		protocol_name: ProtocolName,
 		request: WarpProofRequest&lt;B&gt;,
 	) {
 		<span class="kw">if </span>!<span class="self">self</span>.peers.contains_key(<span class="kw-2">&amp;</span>peer_id) {
 			<span class="macro">trace!</span>(target: LOG_TARGET, <span class="string">"Cannot send warp proof request to unknown peer {peer_id}"</span>);
 			<span class="macro">debug_assert!</span>(<span class="bool-val">false</span>);
-			<span class="kw">return
-		</span>}
+			<span class="kw">return</span>;
+		}
 
 		<span class="kw">let </span>(tx, rx) = oneshot::channel();
 
 		<span class="self">self</span>.pending_responses.insert(peer_id, key, PeerRequest::WarpProof, rx.boxed());
 
-		<span class="kw">match </span><span class="kw-2">&amp;</span><span class="self">self</span>.warp_sync_protocol_name {
-			<span class="prelude-val">Some</span>(name) =&gt; <span class="self">self</span>.network_service.start_request(
-				peer_id,
-				name.clone(),
-				request.encode(),
-				tx,
-				IfDisconnected::ImmediateError,
-			),
-			<span class="prelude-val">None </span>=&gt; {
-				<span class="macro">log::warn!</span>(
-					target: LOG_TARGET,
-					<span class="string">"Trying to send warp sync request when no protocol is configured {request:?}"</span>,
-				);
-			},
-		}
+		<span class="self">self</span>.network_service.start_request(
+			peer_id,
+			protocol_name,
+			request.encode(),
+			tx,
+			IfDisconnected::ImmediateError,
+		);
 	}
 
 	<span class="kw">fn </span>encode_state_request(request: <span class="kw-2">&amp;</span>OpaqueStateRequest) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;u8&gt;, String&gt; {
@@ -2624,8 +2396,8 @@
 								peer_id,
 								<span class="self">self</span>.block_announce_protocol_name.clone(),
 							);
-							<span class="kw">return
-						</span>},
+							<span class="kw">return</span>;
+						},
 						<span class="prelude-val">Err</span>(BlockResponseError::ExtractionFailed(e)) =&gt; {
 							<span class="macro">debug!</span>(
 								target: LOG_TARGET,
@@ -2634,8 +2406,8 @@
 								e
 							);
 							<span class="self">self</span>.network_service.report_peer(peer_id, rep::BAD_MESSAGE);
-							<span class="kw">return
-						</span>},
+							<span class="kw">return</span>;
+						},
 					}
 				},
 				PeerRequest::State =&gt; {
@@ -2651,8 +2423,8 @@
 								peer_id,
 								<span class="self">self</span>.block_announce_protocol_name.clone(),
 							);
-							<span class="kw">return
-						</span>},
+							<span class="kw">return</span>;
+						},
 					};
 
 					<span class="self">self</span>.strategy.on_state_response(peer_id, key, response);

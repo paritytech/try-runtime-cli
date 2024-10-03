@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/simple-dns-0.5.7/src/dns/resource_record.rs`."><title>resource_record.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="simple_dns" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/simple-dns-0.7.1/src/dns/resource_record.rs`."><title>resource_record.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="simple_dns" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -366,9 +366,15 @@
 <a href="#366" id="366">366</a>
 <a href="#367" id="367">367</a>
 <a href="#368" id="368">368</a>
+<a href="#369" id="369">369</a>
+<a href="#370" id="370">370</a>
+<a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
+<a href="#374" id="374">374</a>
 </pre></div><pre class="rust"><code><span class="kw">use crate</span>::{QCLASS, QTYPE};
 
-<span class="kw">use super</span>::{name::Label, rdata::RData, Name, PacketPart, CLASS, TYPE};
+<span class="kw">use super</span>::{name::Label, rdata::RData, Name, WireFormat, CLASS, TYPE};
 <span class="kw">use </span>core::fmt::Debug;
 <span class="kw">use </span>std::{collections::HashMap, convert::TryInto, hash::Hash};
 
@@ -424,7 +430,6 @@
     }
 
     <span class="doccomment">/// Return true if current resource match given query type
-    /// The types `A` and `AAAA` will match each other
     </span><span class="kw">pub fn </span>match_qtype(<span class="kw-2">&amp;</span><span class="self">self</span>, qtype: QTYPE) -&gt; bool {
         <span class="kw">let </span>type_code = <span class="self">self</span>.rdata.type_code();
         <span class="kw">match </span>qtype {
@@ -433,10 +438,7 @@
             QTYPE::AXFR =&gt; <span class="bool-val">true</span>, <span class="comment">// TODO: figure out what to do here
             </span>QTYPE::MAILB =&gt; type_code == TYPE::MR || type_code == TYPE::MB || type_code == TYPE::MG,
             QTYPE::MAILA =&gt; type_code == TYPE::MX,
-            QTYPE::TYPE(ty) =&gt; <span class="kw">match </span>ty {
-                TYPE::A | TYPE::AAAA =&gt; type_code == TYPE::A || type_code == TYPE::AAAA,
-                <span class="kw">_ </span>=&gt; ty == type_code,
-            },
+            QTYPE::TYPE(ty) =&gt; ty == type_code,
         }
     }
 
@@ -466,26 +468,25 @@
             out.write_all(<span class="kw-2">&amp;</span>class)<span class="question-mark">?</span>;
         }
 
-        out.write_all(<span class="kw-2">&amp;</span><span class="self">self</span>.ttl.to_be_bytes())<span class="question-mark">?</span>;
-        out.write_all(<span class="kw-2">&amp;</span>(<span class="self">self</span>.rdata.len() <span class="kw">as </span>u16).to_be_bytes())
+        out.write_all(<span class="kw-2">&amp;</span><span class="self">self</span>.ttl.to_be_bytes())
             .map_err(<span class="kw">crate</span>::SimpleDnsError::from)
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; PacketPart&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span>ResourceRecord&lt;<span class="lifetime">'a</span>&gt; {
-    <span class="kw">fn </span>parse(data: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], position: usize) -&gt; <span class="kw">crate</span>::Result&lt;<span class="self">Self</span>&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; WireFormat&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span>ResourceRecord&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">fn </span>parse(data: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], position: <span class="kw-2">&amp;mut </span>usize) -&gt; <span class="kw">crate</span>::Result&lt;<span class="self">Self</span>&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
     {
         <span class="kw">let </span>name = Name::parse(data, position)<span class="question-mark">?</span>;
-        <span class="kw">let </span>offset = position + name.len();
-
-        <span class="kw">if </span>offset + <span class="number">8 </span>&gt; data.len() {
+        <span class="kw">if </span><span class="kw-2">*</span>position + <span class="number">8 </span>&gt; data.len() {
             <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="kw">crate</span>::SimpleDnsError::InsufficientData);
         }
 
-        <span class="kw">let </span>ttl = u32::from_be_bytes(data[offset + <span class="number">4</span>..offset + <span class="number">8</span>].try_into()<span class="question-mark">?</span>);
-        <span class="kw">let </span>rdata = RData::parse(data, offset)<span class="question-mark">?</span>;
+        <span class="kw">let </span>class_value = u16::from_be_bytes(data[<span class="kw-2">*</span>position + <span class="number">2</span>..<span class="kw-2">*</span>position + <span class="number">4</span>].try_into()<span class="question-mark">?</span>);
+        <span class="kw">let </span>ttl = u32::from_be_bytes(data[<span class="kw-2">*</span>position + <span class="number">4</span>..<span class="kw-2">*</span>position + <span class="number">8</span>].try_into()<span class="question-mark">?</span>);
+        <span class="kw">let </span>rdata = RData::parse(data, position)<span class="question-mark">?</span>;
+
         <span class="kw">if </span>rdata.type_code() == TYPE::OPT {
             <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
                 name,
@@ -495,8 +496,6 @@
                 cache_flush: <span class="bool-val">false</span>,
             })
         } <span class="kw">else </span>{
-            <span class="kw">let </span>class_value = u16::from_be_bytes(data[offset + <span class="number">2</span>..offset + <span class="number">4</span>].try_into()<span class="question-mark">?</span>);
-
             <span class="kw">let </span>cache_flush = class_value &amp; flag::CACHE_FLUSH == flag::CACHE_FLUSH;
             <span class="kw">let </span>class = (class_value &amp; !flag::CACHE_FLUSH).try_into()<span class="question-mark">?</span>;
 
@@ -517,6 +516,7 @@
     <span class="kw">fn </span>write_to&lt;T: std::io::Write&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, out: <span class="kw-2">&amp;mut </span>T) -&gt; <span class="kw">crate</span>::Result&lt;()&gt; {
         <span class="self">self</span>.name.write_to(out)<span class="question-mark">?</span>;
         <span class="self">self</span>.write_common(out)<span class="question-mark">?</span>;
+        out.write_all(<span class="kw-2">&amp;</span>(<span class="self">self</span>.rdata.len() <span class="kw">as </span>u16).to_be_bytes())<span class="question-mark">?</span>;
         <span class="self">self</span>.rdata.write_to(out)
     }
 
@@ -527,7 +527,17 @@
     ) -&gt; <span class="kw">crate</span>::Result&lt;()&gt; {
         <span class="self">self</span>.name.write_compressed_to(out, name_refs)<span class="question-mark">?</span>;
         <span class="self">self</span>.write_common(out)<span class="question-mark">?</span>;
-        <span class="self">self</span>.rdata.write_compressed_to(out, name_refs)
+
+        <span class="kw">let </span>len_position = out.stream_position()<span class="question-mark">?</span>;
+        out.write_all(<span class="kw-2">&amp;</span>[<span class="number">0</span>, <span class="number">0</span>])<span class="question-mark">?</span>;
+
+        <span class="self">self</span>.rdata.write_compressed_to(out, name_refs)<span class="question-mark">?</span>;
+        <span class="kw">let </span>end = out.stream_position()<span class="question-mark">?</span>;
+
+        out.seek(std::io::SeekFrom::Start(len_position))<span class="question-mark">?</span>;
+        out.write_all(<span class="kw-2">&amp;</span>((end - len_position - <span class="number">2</span>) <span class="kw">as </span>u16).to_be_bytes())<span class="question-mark">?</span>;
+        out.seek(std::io::SeekFrom::End(<span class="number">0</span>))<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(())
     }
 }
 
@@ -560,7 +570,7 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_parse() {
         <span class="kw">let </span>bytes = <span class="string">b"\x04_srv\x04_udp\x05local\x00\x00\x01\x00\x01\x00\x00\x00\x0a\x00\x04\xff\xff\xff\xff"</span>;
-        <span class="kw">let </span>rr = ResourceRecord::parse(<span class="kw-2">&amp;</span>bytes[..], <span class="number">0</span>).unwrap();
+        <span class="kw">let </span>rr = ResourceRecord::parse(<span class="kw-2">&amp;</span>bytes[..], <span class="kw-2">&amp;mut </span><span class="number">0</span>).unwrap();
 
         <span class="macro">assert_eq!</span>(<span class="string">"_srv._udp.local"</span>, rr.name.to_string());
         <span class="macro">assert_eq!</span>(CLASS::IN, rr.class);
@@ -575,9 +585,31 @@
     }
 
     <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_empty_rdata() {
+        <span class="kw">let </span>rr = ResourceRecord {
+            class: CLASS::NONE,
+            name: <span class="string">"_srv._udp.local"</span>.try_into().unwrap(),
+            ttl: <span class="number">0</span>,
+            rdata: RData::Empty(TYPE::A),
+            cache_flush: <span class="bool-val">false</span>,
+        };
+
+        <span class="macro">assert_eq!</span>(rr.rdata.type_code(), TYPE::A);
+        <span class="macro">assert_eq!</span>(rr.rdata.len(), <span class="number">0</span>);
+
+        <span class="kw">let </span><span class="kw-2">mut </span>data = Vec::new();
+        rr.write_to(<span class="kw-2">&amp;mut </span>data).expect(<span class="string">"failed to write"</span>);
+
+        <span class="kw">let </span>parsed_rr = ResourceRecord::parse(<span class="kw-2">&amp;</span>data, <span class="kw-2">&amp;mut </span><span class="number">0</span>).expect(<span class="string">"failed to parse"</span>);
+        <span class="macro">assert_eq!</span>(parsed_rr.rdata.type_code(), TYPE::A);
+        <span class="macro">assert_eq!</span>(parsed_rr.rdata.len(), <span class="number">0</span>);
+        <span class="macro">assert!</span>(<span class="macro">matches!</span>(parsed_rr.rdata, RData::Empty(TYPE::A)));
+    }
+
+    <span class="attr">#[test]
     </span><span class="kw">fn </span>test_cache_flush_parse() {
         <span class="kw">let </span>bytes = <span class="string">b"\x04_srv\x04_udp\x05local\x00\x00\x01\x80\x01\x00\x00\x00\x0a\x00\x04\xff\xff\xff\xff"</span>;
-        <span class="kw">let </span>rr = ResourceRecord::parse(<span class="kw-2">&amp;</span>bytes[..], <span class="number">0</span>).unwrap();
+        <span class="kw">let </span>rr = ResourceRecord::parse(<span class="kw-2">&amp;</span>bytes[..], <span class="kw-2">&amp;mut </span><span class="number">0</span>).unwrap();
 
         <span class="macro">assert_eq!</span>(CLASS::IN, rr.class);
         <span class="macro">assert!</span>(rr.cache_flush);
@@ -656,25 +688,6 @@
     }
 
     <span class="attr">#[test]
-    </span><span class="kw">fn </span>test_match_qtype_for_aaaa() {
-        <span class="kw">let </span><span class="kw-2">mut </span>rr = ResourceRecord {
-            class: CLASS::IN,
-            name: <span class="string">"_srv._udp.local"</span>.try_into().unwrap(),
-            ttl: <span class="number">10</span>,
-            rdata: RData::A(<span class="kw">crate</span>::rdata::A { address: <span class="number">0 </span>}),
-            cache_flush: <span class="bool-val">false</span>,
-        };
-
-        <span class="macro">assert!</span>(rr.match_qtype(TYPE::A.into()));
-        <span class="macro">assert!</span>(rr.match_qtype(TYPE::AAAA.into()));
-
-        rr.rdata = RData::AAAA(<span class="kw">crate</span>::rdata::AAAA { address: <span class="number">0 </span>});
-
-        <span class="macro">assert!</span>(rr.match_qtype(TYPE::A.into()));
-        <span class="macro">assert!</span>(rr.match_qtype(TYPE::AAAA.into()));
-    }
-
-    <span class="attr">#[test]
     </span><span class="kw">fn </span>test_eq() {
         <span class="kw">let </span>a = ResourceRecord::new(
             Name::new_unchecked(<span class="string">"_srv.local"</span>),
@@ -723,11 +736,10 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>parse_sample_files() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>std::error::Error&gt;&gt; {
         <span class="kw">for </span>file_path <span class="kw">in </span>std::fs::read_dir(<span class="string">"samples/zonefile"</span>)<span class="question-mark">? </span>{
-            <span class="kw">let </span>data = std::fs::read(<span class="kw-2">&amp;</span>file_path<span class="question-mark">?</span>.path())<span class="question-mark">?</span>;
+            <span class="kw">let </span>data = std::fs::read(file_path<span class="question-mark">?</span>.path())<span class="question-mark">?</span>;
             <span class="kw">let </span><span class="kw-2">mut </span>pos = <span class="number">0</span>;
             <span class="kw">while </span>pos &lt; data.len() {
-                <span class="kw">let </span>res = <span class="kw">crate</span>::ResourceRecord::parse(<span class="kw-2">&amp;</span>data, pos)<span class="question-mark">?</span>;
-                pos += res.len();
+                <span class="kw">crate</span>::ResourceRecord::parse(<span class="kw-2">&amp;</span>data, <span class="kw-2">&amp;mut </span>pos)<span class="question-mark">?</span>;
             }
         }
 

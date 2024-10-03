@@ -618,7 +618,7 @@
 }
 
 <span class="doccomment">/// Checks to perform on the given runtime, compared to the existing runtime.
-</span><span class="attr">#[derive(Debug)]
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
 </span><span class="kw">pub struct </span>RuntimeChecks {
     <span class="doccomment">/// Enforce the `spec_name`s match
     </span><span class="kw">pub </span>name_matches: bool,
@@ -782,7 +782,7 @@
             <span class="kw">if </span>runtime_checks.version_increases
                 &amp;&amp; new_version.spec_version &lt;= old_version.spec_version
             {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"New runtime spec version must be greater than the on-chain runtime spec version. Use `--disable-spec-version-check` to disable this check."</span>.into());
+                <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">"New runtime spec version must be greater than the on-chain runtime spec version: {} &lt;= {}. Use `--disable-spec-version-check` to disable this check."</span>, new_version.spec_version, old_version.spec_version).into());
             }
         }
 

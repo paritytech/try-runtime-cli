@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-core-0.22.5/src/client/async_client/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="jsonrpsee_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-core-0.24.5/src/client/async_client/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="jsonrpsee_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1114,14 +1114,15 @@
 <span class="kw">use </span>futures_util::stream::StreamExt;
 <span class="kw">use </span>futures_util::Stream;
 <span class="kw">use </span>jsonrpsee_types::response::{ResponsePayload, SubscriptionError};
-<span class="kw">use </span>jsonrpsee_types::{Notification, NotificationSer, RequestSer, Response, SubscriptionResponse};
+<span class="kw">use </span>jsonrpsee_types::{NotificationSer, RequestSer, Response, SubscriptionResponse};
 <span class="kw">use </span>serde::de::DeserializeOwned;
 <span class="kw">use </span>tokio::sync::{mpsc, oneshot};
 <span class="kw">use </span>tracing::instrument;
 
 <span class="kw">use </span><span class="self">self</span>::utils::{InactivityCheck, IntervalStream};
+<span class="kw">use super</span>::{generate_batch_id_range, subscription_channel, FrontToBack, IdKind, RequestIdManager};
 
-<span class="kw">use super</span>::{generate_batch_id_range, FrontToBack, IdKind, RequestIdManager};
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>Notification&lt;<span class="lifetime">'a</span>&gt; = jsonrpsee_types::Notification&lt;<span class="lifetime">'a</span>, <span class="prelude-ty">Option</span>&lt;serde_json::Value&gt;&gt;;
 
 <span class="kw">const </span>LOG_TARGET: <span class="kw-2">&amp;</span>str = <span class="string">"jsonrpsee-client"</span>;
 <span class="kw">const </span>NOT_POISONED: <span class="kw-2">&amp;</span>str = <span class="string">"Not poisoned; qed"</span>;
@@ -1401,7 +1402,7 @@
 			to_back: to_back.clone(),
 			request_timeout: <span class="self">self</span>.request_timeout,
 			error: ErrorFromBack::new(to_back, disconnect_reason),
-			id_manager: RequestIdManager::new(<span class="self">self</span>.max_concurrent_requests, <span class="self">self</span>.id_kind),
+			id_manager: RequestIdManager::new(<span class="self">self</span>.id_kind),
 			max_log_length: <span class="self">self</span>.max_log_length,
 			on_exit: <span class="prelude-val">Some</span>(client_dropped_tx),
 		}
@@ -1459,7 +1460,7 @@
 			to_back: to_back.clone(),
 			request_timeout: <span class="self">self</span>.request_timeout,
 			error: ErrorFromBack::new(to_back, disconnect_reason),
-			id_manager: RequestIdManager::new(<span class="self">self</span>.max_concurrent_requests, <span class="self">self</span>.id_kind),
+			id_manager: RequestIdManager::new(<span class="self">self</span>.id_kind),
 			max_log_length: <span class="self">self</span>.max_log_length,
 			on_exit: <span class="prelude-val">Some</span>(client_dropped_tx),
 		}
@@ -1535,7 +1536,7 @@
 		</span>Params: ToRpcParams + Send,
 	{
 		<span class="comment">// NOTE: we use this to guard against max number of concurrent requests.
-		</span><span class="kw">let </span>_req_id = <span class="self">self</span>.id_manager.next_request_id()<span class="question-mark">?</span>;
+		</span><span class="kw">let </span>_req_id = <span class="self">self</span>.id_manager.next_request_id();
 		<span class="kw">let </span>params = params.to_rpc_params()<span class="question-mark">?</span>;
 		<span class="kw">let </span>notif = NotificationSer::borrowed(<span class="kw-2">&amp;</span>method, params.as_deref());
 
@@ -1561,8 +1562,7 @@
 		Params: ToRpcParams + Send,
 	{
 		<span class="kw">let </span>(send_back_tx, send_back_rx) = oneshot::channel();
-		<span class="kw">let </span>guard = <span class="self">self</span>.id_manager.next_request_id()<span class="question-mark">?</span>;
-		<span class="kw">let </span>id = guard.inner();
+		<span class="kw">let </span>id = <span class="self">self</span>.id_manager.next_request_id();
 
 		<span class="kw">let </span>params = params.to_rpc_params()<span class="question-mark">?</span>;
 		<span class="kw">let </span>raw =
@@ -1596,8 +1596,8 @@
 		</span>R: DeserializeOwned,
 	{
 		<span class="kw">let </span>batch = batch.build()<span class="question-mark">?</span>;
-		<span class="kw">let </span>guard = <span class="self">self</span>.id_manager.next_request_id()<span class="question-mark">?</span>;
-		<span class="kw">let </span>id_range = generate_batch_id_range(<span class="kw-2">&amp;</span>guard, batch.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
+		<span class="kw">let </span>id = <span class="self">self</span>.id_manager.next_request_id();
+		<span class="kw">let </span>id_range = generate_batch_id_range(id, batch.len() <span class="kw">as </span>u64)<span class="question-mark">?</span>;
 
 		<span class="kw">let </span><span class="kw-2">mut </span>batches = Vec::with_capacity(batch.len());
 		<span class="kw">for </span>((method, params), id) <span class="kw">in </span>batch.into_iter().zip(id_range.clone()) {
@@ -1677,8 +1677,8 @@
 			<span class="kw">return </span><span class="prelude-val">Err</span>(RegisterMethodError::SubscriptionNameConflict(unsubscribe_method.to_owned()).into());
 		}
 
-		<span class="kw">let </span>guard = <span class="self">self</span>.id_manager.next_request_two_ids()<span class="question-mark">?</span>;
-		<span class="kw">let </span>(id_sub, id_unsub) = guard.inner();
+		<span class="kw">let </span>id_sub = <span class="self">self</span>.id_manager.next_request_id();
+		<span class="kw">let </span>id_unsub = <span class="self">self</span>.id_manager.next_request_id();
 		<span class="kw">let </span>params = params.to_rpc_params()<span class="question-mark">?</span>;
 
 		<span class="kw">let </span>raw = serde_json::to_string(<span class="kw-2">&amp;</span>RequestSer::borrowed(<span class="kw-2">&amp;</span>id_sub, <span class="kw-2">&amp;</span>subscribe_method, params.as_deref()))
@@ -1736,13 +1736,13 @@
 
 		<span class="kw">let </span>res = call_with_timeout(<span class="self">self</span>.request_timeout, send_back_rx).<span class="kw">await</span>;
 
-		<span class="kw">let </span>(notifs_rx, method) = <span class="kw">match </span>res {
+		<span class="kw">let </span>(rx, method) = <span class="kw">match </span>res {
 			<span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(val)) =&gt; val,
 			<span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(err)) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(err),
 			<span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="self">self</span>.disconnect_reason().<span class="kw">await</span>),
 		};
 
-		<span class="prelude-val">Ok</span>(Subscription::new(<span class="self">self</span>.to_back.clone(), notifs_rx, SubscriptionKind::Method(method)))
+		<span class="prelude-val">Ok</span>(Subscription::new(<span class="self">self</span>.to_back.clone(), rx, SubscriptionKind::Method(method)))
 	}
 }
 
@@ -1776,7 +1776,7 @@
 				}
 				<span class="comment">// Subscription response.
 				</span><span class="kw">else if let </span><span class="prelude-val">Ok</span>(response) = serde_json::from_slice::&lt;SubscriptionResponse&lt;<span class="kw">_</span>&gt;&gt;(raw) {
-					<span class="kw">if let </span><span class="prelude-val">Err</span>(<span class="prelude-val">Some</span>(sub_id)) = process_subscription_response(<span class="kw-2">&amp;mut </span>manager.lock(), response) {
+					<span class="kw">if let </span><span class="prelude-val">Some</span>(sub_id) = process_subscription_response(<span class="kw-2">&amp;mut </span>manager.lock(), response) {
 						<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[FrontToBack::SubscriptionClosed(sub_id)]);
 					}
 				}
@@ -1785,7 +1785,7 @@
 					process_subscription_close_response(<span class="kw-2">&amp;mut </span>manager.lock(), response);
 				}
 				<span class="comment">// Incoming Notification
-				</span><span class="kw">else if let </span><span class="prelude-val">Ok</span>(notif) = serde_json::from_slice::&lt;Notification&lt;<span class="kw">_</span>&gt;&gt;(raw) {
+				</span><span class="kw">else if let </span><span class="prelude-val">Ok</span>(notif) = serde_json::from_slice::&lt;Notification&gt;(raw) {
 					process_notification(<span class="kw-2">&amp;mut </span>manager.lock(), notif);
 				} <span class="kw">else </span>{
 					<span class="kw">return </span><span class="prelude-val">Err</span>(unparse_error(raw));
@@ -1816,13 +1816,13 @@
 							}
 						} <span class="kw">else if let </span><span class="prelude-val">Ok</span>(response) = serde_json::from_str::&lt;SubscriptionResponse&lt;<span class="kw">_</span>&gt;&gt;(r.get()) {
 							got_notif = <span class="bool-val">true</span>;
-							<span class="kw">if let </span><span class="prelude-val">Err</span>(<span class="prelude-val">Some</span>(sub_id)) = process_subscription_response(<span class="kw-2">&amp;mut </span>manager.lock(), response) {
+							<span class="kw">if let </span><span class="prelude-val">Some</span>(sub_id) = process_subscription_response(<span class="kw-2">&amp;mut </span>manager.lock(), response) {
 								messages.push(FrontToBack::SubscriptionClosed(sub_id));
 							}
 						} <span class="kw">else if let </span><span class="prelude-val">Ok</span>(response) = serde_json::from_slice::&lt;SubscriptionError&lt;<span class="kw">_</span>&gt;&gt;(raw) {
 							got_notif = <span class="bool-val">true</span>;
 							process_subscription_close_response(<span class="kw-2">&amp;mut </span>manager.lock(), response);
-						} <span class="kw">else if let </span><span class="prelude-val">Ok</span>(notif) = serde_json::from_str::&lt;Notification&lt;<span class="kw">_</span>&gt;&gt;(r.get()) {
+						} <span class="kw">else if let </span><span class="prelude-val">Ok</span>(notif) = serde_json::from_str::&lt;Notification&gt;(r.get()) {
 							got_notif = <span class="bool-val">true</span>;
 							process_notification(<span class="kw-2">&amp;mut </span>manager.lock(), notif);
 						} <span class="kw">else </span>{
@@ -1938,7 +1938,7 @@
 		}
 		<span class="comment">// User called `register_notification` on the front-end.
 		</span>FrontToBack::RegisterNotification(reg) =&gt; {
-			<span class="kw">let </span>(subscribe_tx, subscribe_rx) = mpsc::channel(max_buffer_capacity_per_subscription);
+			<span class="kw">let </span>(subscribe_tx, subscribe_rx) = subscription_channel(max_buffer_capacity_per_subscription);
 
 			<span class="kw">if </span>manager.lock().insert_notification_handler(<span class="kw-2">&amp;</span>reg.method, subscribe_tx).is_ok() {
 				<span class="kw">let _ </span>= reg.send_back.send(<span class="prelude-val">Ok</span>((subscribe_rx, reg.method)));
@@ -2087,7 +2087,7 @@
 			}
 			<span class="kw">_ </span>= inactivity_stream.next() =&gt; {
 				<span class="kw">if </span>inactivity_check.is_inactive() {
-					<span class="kw">break </span><span class="prelude-val">Err</span>(Error::Transport(<span class="macro">anyhow::anyhow!</span>(<span class="string">"WebSocket ping/pong inactive"</span>)));
+					<span class="kw">break </span><span class="prelude-val">Err</span>(Error::Transport(<span class="string">"WebSocket ping/pong inactive"</span>.into()));
 				}
 			}
 		}

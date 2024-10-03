@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/env_logger-0.10.2/src/logger.rs`."><title>logger.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="env_logger" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="icon" href="https://www.rust-lang.org/static/images/favicon.ico"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/env_logger-0.11.5/src/logger.rs`."><title>logger.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="env_logger" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1014,12 +1014,27 @@
 <a href="#1014" id="1014">1014</a>
 <a href="#1015" id="1015">1015</a>
 <a href="#1016" id="1016">1016</a>
+<a href="#1017" id="1017">1017</a>
+<a href="#1018" id="1018">1018</a>
+<a href="#1019" id="1019">1019</a>
+<a href="#1020" id="1020">1020</a>
+<a href="#1021" id="1021">1021</a>
+<a href="#1022" id="1022">1022</a>
+<a href="#1023" id="1023">1023</a>
+<a href="#1024" id="1024">1024</a>
+<a href="#1025" id="1025">1025</a>
+<a href="#1026" id="1026">1026</a>
+<a href="#1027" id="1027">1027</a>
+<a href="#1028" id="1028">1028</a>
+<a href="#1029" id="1029">1029</a>
+<a href="#1030" id="1030">1030</a>
+<a href="#1031" id="1031">1031</a>
+<a href="#1032" id="1032">1032</a>
+<a href="#1033" id="1033">1033</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::{borrow::Cow, cell::RefCell, env, io};
 
 <span class="kw">use </span>log::{LevelFilter, Log, Metadata, Record, SetLoggerError};
 
-<span class="kw">use </span><span class="kw">crate</span>::filter;
-<span class="kw">use </span><span class="kw">crate</span>::filter::Filter;
 <span class="kw">use </span><span class="kw">crate</span>::fmt;
 <span class="kw">use </span><span class="kw">crate</span>::fmt::writer::{<span class="self">self</span>, Writer};
 <span class="kw">use </span><span class="kw">crate</span>::fmt::{FormatFn, Formatter};
@@ -1054,7 +1069,7 @@
 /// ```
 </span><span class="attr">#[derive(Default)]
 </span><span class="kw">pub struct </span>Builder {
-    filter: filter::Builder,
+    filter: env_filter::Builder,
     writer: writer::Builder,
     format: fmt::Builder,
     built: bool,
@@ -1239,6 +1254,9 @@
     /// to format and output without intermediate heap allocations. The default
     /// `env_logger` formatter takes advantage of this.
     ///
+    /// When the `color` feature is enabled, styling via ANSI escape codes is supported and the
+    /// output will automatically respect [`Builder::write_style`].
+    ///
     /// # Examples
     ///
     /// Use a custom format to write only the log message:
@@ -1255,9 +1273,9 @@
     /// [`Formatter`]: fmt/struct.Formatter.html
     /// [`String`]: https://doc.rust-lang.org/stable/std/string/struct.String.html
     /// [`std::fmt`]: https://doc.rust-lang.org/std/fmt/index.html
-    </span><span class="kw">pub fn </span>format&lt;F: <span class="lifetime">'static</span>&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, format: F) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self
+    </span><span class="kw">pub fn </span>format&lt;F&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, format: F) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self
     </span><span class="kw">where
-        </span>F: Fn(<span class="kw-2">&amp;mut </span>Formatter, <span class="kw-2">&amp;</span>Record) -&gt; io::Result&lt;()&gt; + Sync + Send,
+        </span>F: Fn(<span class="kw-2">&amp;mut </span>Formatter, <span class="kw-2">&amp;</span>Record&lt;<span class="lifetime">'_</span>&gt;) -&gt; io::Result&lt;()&gt; + Sync + Send + <span class="lifetime">'static</span>,
     {
         <span class="self">self</span>.format.custom_format = <span class="prelude-val">Some</span>(Box::new(format));
         <span class="self">self
@@ -1325,6 +1343,25 @@
     <span class="doccomment">/// Configures the end of line suffix.
     </span><span class="kw">pub fn </span>format_suffix(<span class="kw-2">&amp;mut </span><span class="self">self</span>, suffix: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.format.format_suffix = suffix;
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Set the format for structured key/value pairs in the log record
+    ///
+    /// With the default format, this function is called for each record and should format
+    /// the structured key-value pairs as returned by [`log::Record::key_values`].
+    ///
+    /// The format function is expected to output the string directly to the `Formatter` so that
+    /// implementations can use the [`std::fmt`] macros, similar to the main format function.
+    ///
+    /// The default format uses a space to separate each key-value pair, with an "=" between
+    /// the key and value.
+    </span><span class="attr">#[cfg(feature = <span class="string">"unstable-kv"</span>)]
+    </span><span class="kw">pub fn </span>format_key_values&lt;F&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, format: F) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self
+    </span><span class="kw">where
+        </span>F: Fn(<span class="kw-2">&amp;mut </span>Formatter, <span class="kw-2">&amp;</span><span class="kw">dyn </span>log::kv::Source) -&gt; io::Result&lt;()&gt; + Sync + Send + <span class="lifetime">'static</span>,
+    {
+        <span class="self">self</span>.format.kv_format = <span class="prelude-val">Some</span>(Box::new(format));
         <span class="self">self
     </span>}
 
@@ -1512,7 +1549,7 @@
 }
 
 <span class="kw">impl </span>std::fmt::Debug <span class="kw">for </span>Builder {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter) -&gt; std::fmt::Result {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
         <span class="kw">if </span><span class="self">self</span>.built {
             f.debug_struct(<span class="string">"Logger"</span>).field(<span class="string">"built"</span>, <span class="kw-2">&amp;</span><span class="bool-val">true</span>).finish()
         } <span class="kw">else </span>{
@@ -1545,7 +1582,7 @@
 /// [`Builder`]: struct.Builder.html
 </span><span class="kw">pub struct </span>Logger {
     writer: Writer,
-    filter: Filter,
+    filter: env_filter::Filter,
     format: FormatFn,
 }
 
@@ -1611,17 +1648,17 @@
     }
 
     <span class="doccomment">/// Checks if this record matches the configured filter.
-    </span><span class="kw">pub fn </span>matches(<span class="kw-2">&amp;</span><span class="self">self</span>, record: <span class="kw-2">&amp;</span>Record) -&gt; bool {
+    </span><span class="kw">pub fn </span>matches(<span class="kw-2">&amp;</span><span class="self">self</span>, record: <span class="kw-2">&amp;</span>Record&lt;<span class="lifetime">'_</span>&gt;) -&gt; bool {
         <span class="self">self</span>.filter.matches(record)
     }
 }
 
 <span class="kw">impl </span>Log <span class="kw">for </span>Logger {
-    <span class="kw">fn </span>enabled(<span class="kw-2">&amp;</span><span class="self">self</span>, metadata: <span class="kw-2">&amp;</span>Metadata) -&gt; bool {
+    <span class="kw">fn </span>enabled(<span class="kw-2">&amp;</span><span class="self">self</span>, metadata: <span class="kw-2">&amp;</span>Metadata&lt;<span class="lifetime">'_</span>&gt;) -&gt; bool {
         <span class="self">self</span>.filter.enabled(metadata)
     }
 
-    <span class="kw">fn </span>log(<span class="kw-2">&amp;</span><span class="self">self</span>, record: <span class="kw-2">&amp;</span>Record) {
+    <span class="kw">fn </span>log(<span class="kw-2">&amp;</span><span class="self">self</span>, record: <span class="kw-2">&amp;</span>Record&lt;<span class="lifetime">'_</span>&gt;) {
         <span class="kw">if </span><span class="self">self</span>.matches(record) {
             <span class="comment">// Log records are written to a thread-local buffer before being printed
             // to the terminal. We clear these buffers afterwards, but they aren't shrunk
@@ -1633,10 +1670,10 @@
             // formatter and its buffer are discarded and recreated.
 
             </span><span class="macro">thread_local!</span> {
-                <span class="kw">static </span>FORMATTER: RefCell&lt;<span class="prelude-ty">Option</span>&lt;Formatter&gt;&gt; = RefCell::new(<span class="prelude-val">None</span>);
+                <span class="kw">static </span>FORMATTER: RefCell&lt;<span class="prelude-ty">Option</span>&lt;Formatter&gt;&gt; = <span class="kw">const </span>{ RefCell::new(<span class="prelude-val">None</span>) };
             }
 
-            <span class="kw">let </span>print = |formatter: <span class="kw-2">&amp;mut </span>Formatter, record: <span class="kw-2">&amp;</span>Record| {
+            <span class="kw">let </span>print = |formatter: <span class="kw-2">&amp;mut </span>Formatter, record: <span class="kw-2">&amp;</span>Record&lt;<span class="lifetime">'_</span>&gt;| {
                 <span class="kw">let _ </span>=
                     (<span class="self">self</span>.format)(formatter, record).and_then(|<span class="kw">_</span>| formatter.print(<span class="kw-2">&amp;</span><span class="self">self</span>.writer));
 
@@ -1646,31 +1683,28 @@
 
             <span class="kw">let </span>printed = FORMATTER
                 .try_with(|tl_buf| {
-                    <span class="kw">match </span>tl_buf.try_borrow_mut() {
+                    <span class="kw">if let </span><span class="prelude-val">Ok</span>(<span class="kw-2">mut </span>tl_buf) = tl_buf.try_borrow_mut() {
                         <span class="comment">// There are no active borrows of the buffer
-                        </span><span class="prelude-val">Ok</span>(<span class="kw-2">mut </span>tl_buf) =&gt; <span class="kw">match </span><span class="kw-2">*</span>tl_buf {
+                        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>formatter) = <span class="kw-2">*</span>tl_buf {
                             <span class="comment">// We have a previously set formatter
-                            </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>formatter) =&gt; {
-                                <span class="comment">// Check the buffer style. If it's different from the logger's
-                                // style then drop the buffer and recreate it.
-                                </span><span class="kw">if </span>formatter.write_style() != <span class="self">self</span>.writer.write_style() {
-                                    <span class="kw-2">*</span>formatter = Formatter::new(<span class="kw-2">&amp;</span><span class="self">self</span>.writer);
-                                }
 
-                                print(formatter, record);
+                            // Check the buffer style. If it's different from the logger's
+                            // style then drop the buffer and recreate it.
+                            </span><span class="kw">if </span>formatter.write_style() != <span class="self">self</span>.writer.write_style() {
+                                <span class="kw-2">*</span>formatter = Formatter::new(<span class="kw-2">&amp;</span><span class="self">self</span>.writer);
                             }
+
+                            print(formatter, record);
+                        } <span class="kw">else </span>{
                             <span class="comment">// We don't have a previously set formatter
-                            </span><span class="prelude-val">None </span>=&gt; {
-                                <span class="kw">let </span><span class="kw-2">mut </span>formatter = Formatter::new(<span class="kw-2">&amp;</span><span class="self">self</span>.writer);
-                                print(<span class="kw-2">&amp;mut </span>formatter, record);
+                            </span><span class="kw">let </span><span class="kw-2">mut </span>formatter = Formatter::new(<span class="kw-2">&amp;</span><span class="self">self</span>.writer);
+                            print(<span class="kw-2">&amp;mut </span>formatter, record);
 
-                                <span class="kw-2">*</span>tl_buf = <span class="prelude-val">Some</span>(formatter);
-                            }
-                        },
-                        <span class="comment">// There's already an active borrow of the buffer (due to re-entrancy)
-                        </span><span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
-                            print(<span class="kw-2">&amp;mut </span>Formatter::new(<span class="kw-2">&amp;</span><span class="self">self</span>.writer), record);
+                            <span class="kw-2">*</span>tl_buf = <span class="prelude-val">Some</span>(formatter);
                         }
+                    } <span class="kw">else </span>{
+                        <span class="comment">// There's already an active borrow of the buffer (due to re-entrancy)
+                        </span>print(<span class="kw-2">&amp;mut </span>Formatter::new(<span class="kw-2">&amp;</span><span class="self">self</span>.writer), record);
                     }
                 })
                 .is_ok();
@@ -1688,7 +1722,7 @@
 }
 
 <span class="kw">impl </span>std::fmt::Debug <span class="kw">for </span>Logger {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter) -&gt; std::fmt::Result {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
         f.debug_struct(<span class="string">"Logger"</span>)
             .field(<span class="string">"filter"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.filter)
             .finish()
@@ -1845,7 +1879,7 @@
     <span class="kw">fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
         env::var(<span class="kw-2">&amp;*</span><span class="self">self</span>.name)
             .ok()
-            .or_else(|| <span class="self">self</span>.default.to_owned().map(|v| v.into_owned()))
+            .or_else(|| <span class="self">self</span>.default.clone().map(|v| v.into_owned()))
     }
 }
 

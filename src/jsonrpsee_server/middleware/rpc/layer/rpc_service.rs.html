@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.22.5/src/middleware/rpc/layer/rpc_service.rs`."><title>rpc_service.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.24.5/src/middleware/rpc/layer/rpc_service.rs`."><title>rpc_service.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -147,6 +147,7 @@
 <a href="#147" id="147">147</a>
 <a href="#148" id="148">148</a>
 <a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any
@@ -179,9 +180,10 @@
 <span class="kw">use </span>std::sync::Arc;
 
 <span class="kw">use </span><span class="kw">crate</span>::middleware::rpc::RpcServiceT;
+<span class="kw">use </span><span class="kw">crate</span>::ConnectionId;
 <span class="kw">use </span>futures_util::future::BoxFuture;
 <span class="kw">use </span>jsonrpsee_core::server::{
-	BoundedSubscriptions, ConnectionDetails, MethodCallback, MethodResponse, MethodSink, Methods, SubscriptionState,
+	BoundedSubscriptions, MethodCallback, MethodResponse, MethodSink, Methods, SubscriptionState,
 };
 <span class="kw">use </span>jsonrpsee_core::traits::IdProvider;
 <span class="kw">use </span>jsonrpsee_types::error::{reject_too_many_subscriptions, ErrorCode};
@@ -190,7 +192,7 @@
 <span class="doccomment">/// JSON-RPC service middleware.
 </span><span class="attr">#[derive(Clone, Debug)]
 </span><span class="kw">pub struct </span>RpcService {
-	conn_id: usize,
+	conn_id: ConnectionId,
 	methods: Methods,
 	max_response_body_size: usize,
 	cfg: RpcServiceCfg,
@@ -212,7 +214,12 @@
 
 <span class="kw">impl </span>RpcService {
 	<span class="doccomment">/// Create a new service.
-	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(methods: Methods, max_response_body_size: usize, conn_id: usize, cfg: RpcServiceCfg) -&gt; <span class="self">Self </span>{
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(
+		methods: Methods,
+		max_response_body_size: usize,
+		conn_id: ConnectionId,
+		cfg: RpcServiceCfg,
+	) -&gt; <span class="self">Self </span>{
 		<span class="self">Self </span>{ methods, max_response_body_size, conn_id, cfg }
 	}
 }
@@ -226,13 +233,13 @@
 		<span class="kw">let </span>conn_id = <span class="self">self</span>.conn_id;
 		<span class="kw">let </span>max_response_body_size = <span class="self">self</span>.max_response_body_size;
 
-		<span class="kw">let </span>params = req.params();
-		<span class="kw">let </span>name = req.method_name();
-		<span class="kw">let </span>id = req.id().clone();
+		<span class="kw">let </span>Request { id, method, params, extensions, .. } = req;
+		<span class="kw">let </span>params = jsonrpsee_types::Params::new(params.as_ref().map(|p| serde_json::value::RawValue::get(p)));
 
-		<span class="kw">match </span><span class="self">self</span>.methods.method_with_name(name) {
+		<span class="kw">match </span><span class="self">self</span>.methods.method_with_name(<span class="kw-2">&amp;</span>method) {
 			<span class="prelude-val">None </span>=&gt; {
-				<span class="kw">let </span>rp = MethodResponse::error(id, ErrorObject::from(ErrorCode::MethodNotFound));
+				<span class="kw">let </span>rp =
+					MethodResponse::error(id, ErrorObject::from(ErrorCode::MethodNotFound)).with_extensions(extensions);
 				ResponseFuture::ready(rp)
 			}
 			<span class="prelude-val">Some</span>((_name, method)) =&gt; <span class="kw">match </span>method {
@@ -240,19 +247,11 @@
 					<span class="kw">let </span>params = params.into_owned();
 					<span class="kw">let </span>id = id.into_owned();
 
-					<span class="kw">let </span>fut = (callback)(id, params, conn_id, max_response_body_size);
-					ResponseFuture::future(fut)
-				}
-				MethodCallback::AsyncWithDetails(callback) =&gt; {
-					<span class="kw">let </span>params = params.into_owned();
-					<span class="kw">let </span>id = id.into_owned();
-
-					<span class="comment">// Note: Add the `Request::extensions` to the connection details when available here.
-					</span><span class="kw">let </span>fut = (callback)(id, params, ConnectionDetails::_new(conn_id), max_response_body_size);
+					<span class="kw">let </span>fut = (callback)(id, params, conn_id, max_response_body_size, extensions);
 					ResponseFuture::future(fut)
 				}
 				MethodCallback::Sync(callback) =&gt; {
-					<span class="kw">let </span>rp = (callback)(id, params, max_response_body_size);
+					<span class="kw">let </span>rp = (callback)(id, params, max_response_body_size, extensions);
 					ResponseFuture::ready(rp)
 				}
 				MethodCallback::Subscription(callback) =&gt; {
@@ -264,7 +263,8 @@
 					} = <span class="self">self</span>.cfg.clone()
 					<span class="kw">else </span>{
 						<span class="macro">tracing::warn!</span>(<span class="string">"Subscriptions not supported"</span>);
-						<span class="kw">let </span>rp = MethodResponse::error(id, ErrorObject::from(ErrorCode::InternalError));
+						<span class="kw">let </span>rp = MethodResponse::error(id, ErrorObject::from(ErrorCode::InternalError))
+							.with_extensions(extensions);
 						<span class="kw">return </span>ResponseFuture::ready(rp);
 					};
 
@@ -272,11 +272,12 @@
 						<span class="kw">let </span>conn_state =
 							SubscriptionState { conn_id, id_provider: <span class="kw-2">&amp;*</span>id_provider.clone(), subscription_permit: p };
 
-						<span class="kw">let </span>fut = callback(id.clone(), params, sink, conn_state);
+						<span class="kw">let </span>fut = callback(id.clone(), params, sink, conn_state, extensions);
 						ResponseFuture::future(fut)
 					} <span class="kw">else </span>{
 						<span class="kw">let </span>max = bounded_subscriptions.max();
-						<span class="kw">let </span>rp = MethodResponse::error(id, reject_too_many_subscriptions(max));
+						<span class="kw">let </span>rp =
+							MethodResponse::error(id, reject_too_many_subscriptions(max)).with_extensions(extensions);
 						ResponseFuture::ready(rp)
 					}
 				}
@@ -285,11 +286,12 @@
 
 					</span><span class="kw">let </span>RpcServiceCfg::CallsAndSubscriptions { .. } = <span class="self">self</span>.cfg <span class="kw">else </span>{
 						<span class="macro">tracing::warn!</span>(<span class="string">"Subscriptions not supported"</span>);
-						<span class="kw">let </span>rp = MethodResponse::error(id, ErrorObject::from(ErrorCode::InternalError));
+						<span class="kw">let </span>rp = MethodResponse::error(id, ErrorObject::from(ErrorCode::InternalError))
+							.with_extensions(extensions);
 						<span class="kw">return </span>ResponseFuture::ready(rp);
 					};
 
-					<span class="kw">let </span>rp = callback(id, params, conn_id, max_response_body_size);
+					<span class="kw">let </span>rp = callback(id, params, conn_id, max_response_body_size, extensions);
 					ResponseFuture::ready(rp)
 				}
 			},

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hyper-0.14.28/src/proto/h2/server.rs`."><title>server.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="hyper" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hyper-1.4.1/src/proto/h2/server.rs`."><title>server.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="hyper" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -541,46 +541,35 @@
 <a href="#541" id="541">541</a>
 <a href="#542" id="542">542</a>
 <a href="#543" id="543">543</a>
-<a href="#544" id="544">544</a>
-<a href="#545" id="545">545</a>
-<a href="#546" id="546">546</a>
-<a href="#547" id="547">547</a>
-<a href="#548" id="548">548</a>
-<a href="#549" id="549">549</a>
-<a href="#550" id="550">550</a>
-<a href="#551" id="551">551</a>
-<a href="#552" id="552">552</a>
-<a href="#553" id="553">553</a>
-<a href="#554" id="554">554</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::error::Error <span class="kw">as </span>StdError;
 <span class="kw">use </span>std::future::Future;
-<span class="kw">use </span>std::marker::Unpin;
 <span class="kw">use </span>std::pin::Pin;
 <span class="kw">use </span>std::task::{Context, Poll};
-<span class="attr">#[cfg(feature = <span class="string">"runtime"</span>)]
-</span><span class="kw">use </span>std::time::Duration;
+<span class="kw">use </span>std::time::Duration;
 
 <span class="kw">use </span>bytes::Bytes;
+<span class="kw">use </span>futures_util::ready;
 <span class="kw">use </span>h2::server::{Connection, Handshake, SendResponse};
 <span class="kw">use </span>h2::{Reason, RecvStream};
 <span class="kw">use </span>http::{Method, Request};
 <span class="kw">use </span>pin_project_lite::pin_project;
-<span class="kw">use </span>tokio::io::{AsyncRead, AsyncWrite};
-<span class="kw">use </span>tracing::{debug, trace, warn};
 
 <span class="kw">use super</span>::{ping, PipeToSendStream, SendBuf};
-<span class="kw">use </span><span class="kw">crate</span>::body::HttpBody;
+<span class="kw">use </span><span class="kw">crate</span>::body::{Body, Incoming <span class="kw">as </span>IncomingBody};
 <span class="kw">use </span><span class="kw">crate</span>::common::date;
-<span class="kw">use </span><span class="kw">crate</span>::common::exec::ConnStreamExec;
+<span class="kw">use </span><span class="kw">crate</span>::common::io::Compat;
+<span class="kw">use </span><span class="kw">crate</span>::common::time::Time;
 <span class="kw">use </span><span class="kw">crate</span>::ext::Protocol;
 <span class="kw">use </span><span class="kw">crate</span>::headers;
 <span class="kw">use </span><span class="kw">crate</span>::proto::h2::ping::Recorder;
 <span class="kw">use </span><span class="kw">crate</span>::proto::h2::{H2Upgraded, UpgradedSendStream};
 <span class="kw">use </span><span class="kw">crate</span>::proto::Dispatched;
+<span class="kw">use </span><span class="kw">crate</span>::rt::bounds::Http2ServerConnExec;
+<span class="kw">use </span><span class="kw">crate</span>::rt::{Read, Write};
 <span class="kw">use </span><span class="kw">crate</span>::service::HttpService;
 
 <span class="kw">use </span><span class="kw">crate</span>::upgrade::{OnUpgrade, Pending, Upgraded};
-<span class="kw">use crate</span>::{Body, Response};
+<span class="kw">use </span><span class="kw">crate</span>::Response;
 
 <span class="comment">// Our defaults are chosen for the "majority" case, which usually are not
 // resource constrained, and so the spec default of 64kb can be too limiting
@@ -592,9 +581,10 @@
 </span><span class="kw">const </span>DEFAULT_STREAM_WINDOW: u32 = <span class="number">1024 </span>* <span class="number">1024</span>; <span class="comment">// 1mb
 </span><span class="kw">const </span>DEFAULT_MAX_FRAME_SIZE: u32 = <span class="number">1024 </span>* <span class="number">16</span>; <span class="comment">// 16kb
 </span><span class="kw">const </span>DEFAULT_MAX_SEND_BUF_SIZE: usize = <span class="number">1024 </span>* <span class="number">400</span>; <span class="comment">// 400kb
-</span><span class="kw">const </span>DEFAULT_SETTINGS_MAX_HEADER_LIST_SIZE: u32 = <span class="number">16 </span>&lt;&lt; <span class="number">20</span>; <span class="comment">// 16 MB "sane default" taken from golang http2
+</span><span class="kw">const </span>DEFAULT_SETTINGS_MAX_HEADER_LIST_SIZE: u32 = <span class="number">1024 </span>* <span class="number">16</span>; <span class="comment">// 16kb
+</span><span class="kw">const </span>DEFAULT_MAX_LOCAL_ERROR_RESET_STREAMS: usize = <span class="number">1024</span>;
 
-</span><span class="attr">#[derive(Clone, Debug)]
+<span class="attr">#[derive(Clone, Debug)]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>Config {
     <span class="kw">pub</span>(<span class="kw">crate</span>) adaptive_window: bool,
     <span class="kw">pub</span>(<span class="kw">crate</span>) initial_conn_window_size: u32,
@@ -603,12 +593,12 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) enable_connect_protocol: bool,
     <span class="kw">pub</span>(<span class="kw">crate</span>) max_concurrent_streams: <span class="prelude-ty">Option</span>&lt;u32&gt;,
     <span class="kw">pub</span>(<span class="kw">crate</span>) max_pending_accept_reset_streams: <span class="prelude-ty">Option</span>&lt;usize&gt;,
-    <span class="attr">#[cfg(feature = <span class="string">"runtime"</span>)]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) keep_alive_interval: <span class="prelude-ty">Option</span>&lt;Duration&gt;,
-    <span class="attr">#[cfg(feature = <span class="string">"runtime"</span>)]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) keep_alive_timeout: Duration,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) max_local_error_reset_streams: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) keep_alive_interval: <span class="prelude-ty">Option</span>&lt;Duration&gt;,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) keep_alive_timeout: Duration,
     <span class="kw">pub</span>(<span class="kw">crate</span>) max_send_buffer_size: usize,
     <span class="kw">pub</span>(<span class="kw">crate</span>) max_header_list_size: u32,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) date_header: bool,
 }
 
 <span class="kw">impl </span>Default <span class="kw">for </span>Config {
@@ -619,14 +609,14 @@
             initial_stream_window_size: DEFAULT_STREAM_WINDOW,
             max_frame_size: DEFAULT_MAX_FRAME_SIZE,
             enable_connect_protocol: <span class="bool-val">false</span>,
-            max_concurrent_streams: <span class="prelude-val">None</span>,
+            max_concurrent_streams: <span class="prelude-val">Some</span>(<span class="number">200</span>),
             max_pending_accept_reset_streams: <span class="prelude-val">None</span>,
-            <span class="attr">#[cfg(feature = <span class="string">"runtime"</span>)]
-            </span>keep_alive_interval: <span class="prelude-val">None</span>,
-            <span class="attr">#[cfg(feature = <span class="string">"runtime"</span>)]
-            </span>keep_alive_timeout: Duration::from_secs(<span class="number">20</span>),
+            max_local_error_reset_streams: <span class="prelude-val">Some</span>(DEFAULT_MAX_LOCAL_ERROR_RESET_STREAMS),
+            keep_alive_interval: <span class="prelude-val">None</span>,
+            keep_alive_timeout: Duration::from_secs(<span class="number">20</span>),
             max_send_buffer_size: DEFAULT_MAX_SEND_BUF_SIZE,
             max_header_list_size: DEFAULT_SETTINGS_MAX_HEADER_LIST_SIZE,
+            date_header: <span class="bool-val">true</span>,
         }
     }
 }
@@ -634,22 +624,24 @@
 <span class="macro">pin_project!</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>Server&lt;T, S, B, E&gt;
     <span class="kw">where
-        </span>S: HttpService&lt;Body&gt;,
-        B: HttpBody,
+        </span>S: HttpService&lt;IncomingBody&gt;,
+        B: Body,
     {
         exec: E,
+        timer: Time,
         service: S,
         state: State&lt;T, B&gt;,
+        date_header: bool,
     }
 }
 
 <span class="kw">enum </span>State&lt;T, B&gt;
 <span class="kw">where
-    </span>B: HttpBody,
+    </span>B: Body,
 {
     Handshaking {
         ping_config: ping::Config,
-        hs: Handshake&lt;T, SendBuf&lt;B::Data&gt;&gt;,
+        hs: Handshake&lt;Compat&lt;T&gt;, SendBuf&lt;B::Data&gt;&gt;,
     },
     Serving(Serving&lt;T, B&gt;),
     Closed,
@@ -657,28 +649,36 @@
 
 <span class="kw">struct </span>Serving&lt;T, B&gt;
 <span class="kw">where
-    </span>B: HttpBody,
+    </span>B: Body,
 {
     ping: <span class="prelude-ty">Option</span>&lt;(ping::Recorder, ping::Ponger)&gt;,
-    conn: Connection&lt;T, SendBuf&lt;B::Data&gt;&gt;,
+    conn: Connection&lt;Compat&lt;T&gt;, SendBuf&lt;B::Data&gt;&gt;,
     closing: <span class="prelude-ty">Option</span>&lt;<span class="kw">crate</span>::Error&gt;,
+    date_header: bool,
 }
 
 <span class="kw">impl</span>&lt;T, S, B, E&gt; Server&lt;T, S, B, E&gt;
 <span class="kw">where
-    </span>T: AsyncRead + AsyncWrite + Unpin,
-    S: HttpService&lt;Body, ResBody = B&gt;,
+    </span>T: Read + Write + Unpin,
+    S: HttpService&lt;IncomingBody, ResBody = B&gt;,
     S::Error: Into&lt;Box&lt;<span class="kw">dyn </span>StdError + Send + Sync&gt;&gt;,
-    B: HttpBody + <span class="lifetime">'static</span>,
-    E: ConnStreamExec&lt;S::Future, B&gt;,
+    B: Body + <span class="lifetime">'static</span>,
+    E: Http2ServerConnExec&lt;S::Future, B&gt;,
 {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(io: T, service: S, config: <span class="kw-2">&amp;</span>Config, exec: E) -&gt; Server&lt;T, S, B, E&gt; {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(
+        io: T,
+        service: S,
+        config: <span class="kw-2">&amp;</span>Config,
+        exec: E,
+        timer: Time,
+    ) -&gt; Server&lt;T, S, B, E&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>builder = h2::server::Builder::default();
         builder
             .initial_window_size(config.initial_stream_window_size)
             .initial_connection_window_size(config.initial_conn_window_size)
             .max_frame_size(config.max_frame_size)
             .max_header_list_size(config.max_header_list_size)
+            .max_local_error_reset_streams(config.max_pending_accept_reset_streams)
             .max_send_buffer_size(config.max_send_buffer_size);
         <span class="kw">if let </span><span class="prelude-val">Some</span>(max) = config.max_concurrent_streams {
             builder.max_concurrent_streams(max);
@@ -689,7 +689,7 @@
         <span class="kw">if </span>config.enable_connect_protocol {
             builder.enable_connect_protocol();
         }
-        <span class="kw">let </span>handshake = builder.handshake(io);
+        <span class="kw">let </span>handshake = builder.handshake(Compat::new(io));
 
         <span class="kw">let </span>bdp = <span class="kw">if </span>config.adaptive_window {
             <span class="prelude-val">Some</span>(config.initial_stream_window_size)
@@ -699,23 +699,22 @@
 
         <span class="kw">let </span>ping_config = ping::Config {
             bdp_initial_window: bdp,
-            <span class="attr">#[cfg(feature = <span class="string">"runtime"</span>)]
-            </span>keep_alive_interval: config.keep_alive_interval,
-            <span class="attr">#[cfg(feature = <span class="string">"runtime"</span>)]
-            </span>keep_alive_timeout: config.keep_alive_timeout,
+            keep_alive_interval: config.keep_alive_interval,
+            keep_alive_timeout: config.keep_alive_timeout,
             <span class="comment">// If keep-alive is enabled for servers, always enabled while
             // idle, so it can more aggressively close dead connections.
-            </span><span class="attr">#[cfg(feature = <span class="string">"runtime"</span>)]
             </span>keep_alive_while_idle: <span class="bool-val">true</span>,
         };
 
         Server {
             exec,
+            timer,
             state: State::Handshaking {
                 ping_config,
                 hs: handshake,
             },
             service,
+            date_header: config.date_header,
         }
     }
 
@@ -741,11 +740,11 @@
 
 <span class="kw">impl</span>&lt;T, S, B, E&gt; Future <span class="kw">for </span>Server&lt;T, S, B, E&gt;
 <span class="kw">where
-    </span>T: AsyncRead + AsyncWrite + Unpin,
-    S: HttpService&lt;Body, ResBody = B&gt;,
+    </span>T: Read + Write + Unpin,
+    S: HttpService&lt;IncomingBody, ResBody = B&gt;,
     S::Error: Into&lt;Box&lt;<span class="kw">dyn </span>StdError + Send + Sync&gt;&gt;,
-    B: HttpBody + <span class="lifetime">'static</span>,
-    E: ConnStreamExec&lt;S::Future, B&gt;,
+    B: Body + <span class="lifetime">'static</span>,
+    E: Http2ServerConnExec&lt;S::Future, B&gt;,
 {
     <span class="kw">type </span>Output = <span class="kw">crate</span>::Result&lt;Dispatched&gt;;
 
@@ -760,7 +759,7 @@
                     <span class="kw">let </span><span class="kw-2">mut </span>conn = <span class="macro">ready!</span>(Pin::new(hs).poll(cx).map_err(<span class="kw">crate</span>::Error::new_h2))<span class="question-mark">?</span>;
                     <span class="kw">let </span>ping = <span class="kw">if </span>ping_config.is_enabled() {
                         <span class="kw">let </span>pp = conn.ping_pong().expect(<span class="string">"conn.ping_pong"</span>);
-                        <span class="prelude-val">Some</span>(ping::channel(pp, ping_config.clone()))
+                        <span class="prelude-val">Some</span>(ping::channel(pp, ping_config.clone(), me.timer.clone()))
                     } <span class="kw">else </span>{
                         <span class="prelude-val">None
                     </span>};
@@ -768,6 +767,7 @@
                         ping,
                         conn,
                         closing: <span class="prelude-val">None</span>,
+                        date_header: me.date_header,
                     })
                 }
                 State::Serving(<span class="kw-2">ref mut </span>srv) =&gt; {
@@ -787,8 +787,8 @@
 
 <span class="kw">impl</span>&lt;T, B&gt; Serving&lt;T, B&gt;
 <span class="kw">where
-    </span>T: AsyncRead + AsyncWrite + Unpin,
-    B: HttpBody + <span class="lifetime">'static</span>,
+    </span>T: Read + Write + Unpin,
+    B: Body + <span class="lifetime">'static</span>,
 {
     <span class="kw">fn </span>poll_server&lt;S, E&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
@@ -797,47 +797,15 @@
         exec: <span class="kw-2">&amp;mut </span>E,
     ) -&gt; Poll&lt;<span class="kw">crate</span>::Result&lt;()&gt;&gt;
     <span class="kw">where
-        </span>S: HttpService&lt;Body, ResBody = B&gt;,
+        </span>S: HttpService&lt;IncomingBody, ResBody = B&gt;,
         S::Error: Into&lt;Box&lt;<span class="kw">dyn </span>StdError + Send + Sync&gt;&gt;,
-        E: ConnStreamExec&lt;S::Future, B&gt;,
+        E: Http2ServerConnExec&lt;S::Future, B&gt;,
     {
         <span class="kw">if </span><span class="self">self</span>.closing.is_none() {
             <span class="kw">loop </span>{
                 <span class="self">self</span>.poll_ping(cx);
 
-                <span class="comment">// Check that the service is ready to accept a new request.
-                //
-                // - If not, just drive the connection some.
-                // - If ready, try to accept a new request from the connection.
-                </span><span class="kw">match </span>service.poll_ready(cx) {
-                    Poll::Ready(<span class="prelude-val">Ok</span>(())) =&gt; (),
-                    Poll::Pending =&gt; {
-                        <span class="comment">// use `poll_closed` instead of `poll_accept`,
-                        // in order to avoid accepting a request.
-                        </span><span class="macro">ready!</span>(<span class="self">self</span>.conn.poll_closed(cx).map_err(<span class="kw">crate</span>::Error::new_h2))<span class="question-mark">?</span>;
-                        <span class="macro">trace!</span>(<span class="string">"incoming connection complete"</span>);
-                        <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(()));
-                    }
-                    Poll::Ready(<span class="prelude-val">Err</span>(err)) =&gt; {
-                        <span class="kw">let </span>err = <span class="kw">crate</span>::Error::new_user_service(err);
-                        <span class="macro">debug!</span>(<span class="string">"service closed: {}"</span>, err);
-
-                        <span class="kw">let </span>reason = err.h2_reason();
-                        <span class="kw">if </span>reason == Reason::NO_ERROR {
-                            <span class="comment">// NO_ERROR is only used for graceful shutdowns...
-                            </span><span class="macro">trace!</span>(<span class="string">"interpreting NO_ERROR user error as graceful_shutdown"</span>);
-                            <span class="self">self</span>.conn.graceful_shutdown();
-                        } <span class="kw">else </span>{
-                            <span class="macro">trace!</span>(<span class="string">"abruptly shutting down with {:?}"</span>, reason);
-                            <span class="self">self</span>.conn.abrupt_shutdown(reason);
-                        }
-                        <span class="self">self</span>.closing = <span class="prelude-val">Some</span>(err);
-                        <span class="kw">break</span>;
-                    }
-                }
-
-                <span class="comment">// When the service is ready, accepts an incoming request.
-                </span><span class="kw">match </span><span class="macro">ready!</span>(<span class="self">self</span>.conn.poll_accept(cx)) {
+                <span class="kw">match </span><span class="macro">ready!</span>(<span class="self">self</span>.conn.poll_accept(cx)) {
                     <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>((req, <span class="kw-2">mut </span>respond))) =&gt; {
                         <span class="macro">trace!</span>(<span class="string">"incoming request"</span>);
                         <span class="kw">let </span>content_length = headers::content_length_parse_all(req.headers());
@@ -856,7 +824,7 @@
                             (
                                 Request::from_parts(
                                     parts,
-                                    <span class="kw">crate</span>::Body::h2(stream, content_length.into(), ping),
+                                    IncomingBody::h2(stream, content_length.into(), ping),
                                 ),
                                 <span class="prelude-val">None</span>,
                             )
@@ -870,7 +838,7 @@
                             <span class="macro">debug_assert!</span>(parts.extensions.get::&lt;OnUpgrade&gt;().is_none());
                             parts.extensions.insert(upgrade);
                             (
-                                Request::from_parts(parts, <span class="kw">crate</span>::Body::empty()),
+                                Request::from_parts(parts, IncomingBody::empty()),
                                 <span class="prelude-val">Some</span>(ConnectParts {
                                     pending,
                                     ping,
@@ -883,7 +851,13 @@
                             req.extensions_mut().insert(Protocol::from_inner(protocol));
                         }
 
-                        <span class="kw">let </span>fut = H2Stream::new(service.call(req), connect_parts, respond);
+                        <span class="kw">let </span>fut = H2Stream::new(
+                            service.call(req),
+                            connect_parts,
+                            respond,
+                            <span class="self">self</span>.date_header,
+                        );
+
                         exec.execute_h2stream(fut);
                     }
                     <span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(e)) =&gt; {
@@ -919,8 +893,7 @@
                     <span class="self">self</span>.conn.set_target_window_size(wnd);
                     <span class="kw">let _ </span>= <span class="self">self</span>.conn.set_initial_window_size(wnd);
                 }
-                <span class="attr">#[cfg(feature = <span class="string">"runtime"</span>)]
-                </span>Poll::Ready(ping::Ponged::KeepAliveTimedOut) =&gt; {
+                Poll::Ready(ping::Ponged::KeepAliveTimedOut) =&gt; {
                     <span class="macro">debug!</span>(<span class="string">"keep-alive timed out, closing connection"</span>);
                     <span class="self">self</span>.conn.abrupt_shutdown(h2::Reason::NO_ERROR);
                 }
@@ -934,11 +907,12 @@
     <span class="attr">#[allow(missing_debug_implementations)]
     </span><span class="kw">pub struct </span>H2Stream&lt;F, B&gt;
     <span class="kw">where
-        </span>B: HttpBody,
+        </span>B: Body,
     {
         reply: SendResponse&lt;SendBuf&lt;B::Data&gt;&gt;,
         <span class="attr">#[pin]
         </span>state: H2StreamState&lt;F, B&gt;,
+        date_header: bool,
     }
 }
 
@@ -946,7 +920,7 @@
     <span class="attr">#[project = H2StreamStateProj]
     </span><span class="kw">enum </span>H2StreamState&lt;F, B&gt;
     <span class="kw">where
-        </span>B: HttpBody,
+        </span>B: Body,
     {
         Service {
             <span class="attr">#[pin]
@@ -968,16 +942,18 @@
 
 <span class="kw">impl</span>&lt;F, B&gt; H2Stream&lt;F, B&gt;
 <span class="kw">where
-    </span>B: HttpBody,
+    </span>B: Body,
 {
     <span class="kw">fn </span>new(
         fut: F,
         connect_parts: <span class="prelude-ty">Option</span>&lt;ConnectParts&gt;,
         respond: SendResponse&lt;SendBuf&lt;B::Data&gt;&gt;,
+        date_header: bool,
     ) -&gt; H2Stream&lt;F, B&gt; {
         H2Stream {
             reply: respond,
             state: H2StreamState::Service { fut, connect_parts },
+            date_header,
         }
     }
 }
@@ -998,7 +974,7 @@
 <span class="kw">impl</span>&lt;F, B, E&gt; H2Stream&lt;F, B&gt;
 <span class="kw">where
     </span>F: Future&lt;Output = <span class="prelude-ty">Result</span>&lt;Response&lt;B&gt;, E&gt;&gt;,
-    B: HttpBody,
+    B: Body,
     B::Data: <span class="lifetime">'static</span>,
     B::Error: Into&lt;Box&lt;<span class="kw">dyn </span>StdError + Send + Sync&gt;&gt;,
     E: Into&lt;Box&lt;<span class="kw">dyn </span>StdError + Send + Sync&gt;&gt;,
@@ -1036,10 +1012,12 @@
                     <span class="kw">let </span><span class="kw-2">mut </span>res = ::http::Response::from_parts(head, ());
                     <span class="kw">super</span>::strip_connection_headers(res.headers_mut(), <span class="bool-val">false</span>);
 
-                    <span class="comment">// set Date header if it isn't already set...
-                    </span>res.headers_mut()
-                        .entry(::http::header::DATE)
-                        .or_insert_with(date::update_and_header_value);
+                    <span class="comment">// set Date header if it isn't already set if instructed
+                    </span><span class="kw">if </span><span class="kw-2">*</span>me.date_header {
+                        res.headers_mut()
+                            .entry(::http::header::DATE)
+                            .or_insert_with(date::update_and_header_value);
+                    }
 
                     <span class="kw">if let </span><span class="prelude-val">Some</span>(connect_parts) = connect_parts.take() {
                         <span class="kw">if </span>res.status().is_success() {
@@ -1091,7 +1069,7 @@
 <span class="kw">impl</span>&lt;F, B, E&gt; Future <span class="kw">for </span>H2Stream&lt;F, B&gt;
 <span class="kw">where
     </span>F: Future&lt;Output = <span class="prelude-ty">Result</span>&lt;Response&lt;B&gt;, E&gt;&gt;,
-    B: HttpBody,
+    B: Body,
     B::Data: <span class="lifetime">'static</span>,
     B::Error: Into&lt;Box&lt;<span class="kw">dyn </span>StdError + Send + Sync&gt;&gt;,
     E: Into&lt;Box&lt;<span class="kw">dyn </span>StdError + Send + Sync&gt;&gt;,
@@ -1100,8 +1078,8 @@
 
     <span class="kw">fn </span>poll(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="self">Self</span>::Output&gt; {
         <span class="self">self</span>.poll2(cx).map(|res| {
-            <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = res {
-                <span class="macro">debug!</span>(<span class="string">"stream error: {}"</span>, e);
+            <span class="kw">if let </span><span class="prelude-val">Err</span>(_e) = res {
+                <span class="macro">debug!</span>(<span class="string">"stream error: {}"</span>, _e);
             }
         })
     }

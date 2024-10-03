@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Event","InboundFailure","Message","OutboundFailure","ProtocolSupport"],"mod":["codec","handler"],"struct":["Behaviour","Config","RequestId","ResponseChannel"],"trait":["Codec","ProtocolName","RequestResponseCodec"],"type":["HandlerEvent","RequestResponse","RequestResponseConfig","RequestResponseEvent","RequestResponseMessage"]};
+window.SIDEBAR_ITEMS = {"enum":["Event","InboundFailure","Message","OutboundFailure","ProtocolSupport"],"struct":["Behaviour","Config","RequestId","ResponseChannel"],"trait":["Codec"]};

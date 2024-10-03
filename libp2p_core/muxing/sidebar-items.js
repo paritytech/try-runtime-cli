@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["StreamMuxerEvent"],"struct":["Close","SingletonMuxer","StreamMuxerBox","SubstreamBox"],"trait":["StreamMuxer","StreamMuxerExt"]};
+window.SIDEBAR_ITEMS = {"enum":["StreamMuxerEvent"],"struct":["Close","StreamMuxerBox","SubstreamBox"],"trait":["StreamMuxer","StreamMuxerExt"]};

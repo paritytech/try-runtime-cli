@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tower-http-0.4.4/src/cors/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="tower_http" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tower-http-0.5.2/src/cors/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="tower_http" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -746,21 +746,20 @@
 <a href="#746" id="746">746</a>
 <a href="#747" id="747">747</a>
 <a href="#748" id="748">748</a>
-<a href="#749" id="749">749</a>
-<a href="#750" id="750">750</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Middleware which adds headers for [CORS][mdn].
 //!
 //! # Example
 //!
 //! ```
 //! use http::{Request, Response, Method, header};
-//! use hyper::Body;
+//! use http_body_util::Full;
+//! use bytes::Bytes;
 //! use tower::{ServiceBuilder, ServiceExt, Service};
 //! use tower_http::cors::{Any, CorsLayer};
 //! use std::convert::Infallible;
 //!
-//! async fn handle(request: Request&lt;Body&gt;) -&gt; Result&lt;Response&lt;Body&gt;, Infallible&gt; {
-//!     Ok(Response::new(Body::empty()))
+//! async fn handle(request: Request&lt;Full&lt;Bytes&gt;&gt;) -&gt; Result&lt;Response&lt;Full&lt;Bytes&gt;&gt;, Infallible&gt; {
+//!     Ok(Response::new(Full::default()))
 //! }
 //!
 //! # #[tokio::main]
@@ -777,7 +776,7 @@
 //!
 //! let request = Request::builder()
 //!     .header(header::ORIGIN, "https://example.com")
-//!     .body(Body::empty())
+//!     .body(Full::default())
 //!     .unwrap();
 //!
 //! let response = service
@@ -799,7 +798,6 @@
 </span><span class="attr">#![allow(clippy::enum_variant_names)]
 
 </span><span class="kw">use </span>bytes::{BufMut, BytesMut};
-<span class="kw">use </span>futures_core::ready;
 <span class="kw">use </span>http::{
     header::{<span class="self">self</span>, HeaderName},
     HeaderMap, HeaderValue, Method, Request, Response,
@@ -810,7 +808,7 @@
     future::Future,
     mem,
     pin::Pin,
-    task::{Context, Poll},
+    task::{ready, Context, Poll},
 };
 <span class="kw">use </span>tower_layer::Layer;
 <span class="kw">use </span>tower_service::Service;
@@ -823,6 +821,9 @@
 <span class="kw">mod </span>expose_headers;
 <span class="kw">mod </span>max_age;
 <span class="kw">mod </span>vary;
+
+<span class="attr">#[cfg(test)]
+</span><span class="kw">mod </span>tests;
 
 <span class="kw">pub use </span><span class="self">self</span>::{
     allow_credentials::AllowCredentials, allow_headers::AllowHeaders, allow_methods::AllowMethods,
@@ -1368,24 +1369,10 @@
 
         <span class="comment">// These headers are applied to both preflight and subsequent regular CORS requests:
         // https://fetch.spec.whatwg.org/#http-responses
-
         </span>headers.extend(<span class="self">self</span>.layer.allow_origin.to_header(origin, <span class="kw-2">&amp;</span>parts));
         headers.extend(<span class="self">self</span>.layer.allow_credentials.to_header(origin, <span class="kw-2">&amp;</span>parts));
         headers.extend(<span class="self">self</span>.layer.allow_private_network.to_header(origin, <span class="kw-2">&amp;</span>parts));
-
-        <span class="kw">let </span><span class="kw-2">mut </span>vary_headers = <span class="self">self</span>.layer.vary.values();
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(first) = vary_headers.next() {
-            <span class="kw">let </span><span class="kw-2">mut </span>header = <span class="kw">match </span>headers.entry(header::VARY) {
-                header::Entry::Occupied(<span class="kw">_</span>) =&gt; {
-                    <span class="macro">unreachable!</span>(<span class="string">"no vary header inserted up to this point"</span>)
-                }
-                header::Entry::Vacant(v) =&gt; v.insert_entry(first),
-            };
-
-            <span class="kw">for </span>val <span class="kw">in </span>vary_headers {
-                header.append(val);
-            }
-        }
+        headers.extend(<span class="self">self</span>.layer.vary.to_header());
 
         <span class="comment">// Return results immediately upon preflight request
         </span><span class="kw">if </span>parts.method == Method::OPTIONS {
@@ -1445,7 +1432,16 @@
         <span class="kw">match </span><span class="self">self</span>.project().inner.project() {
             KindProj::CorsCall { future, headers } =&gt; {
                 <span class="kw">let </span><span class="kw-2">mut </span>response: Response&lt;B&gt; = <span class="macro">ready!</span>(future.poll(cx))<span class="question-mark">?</span>;
-                response.headers_mut().extend(headers.drain());
+
+                <span class="kw">let </span>response_headers = response.headers_mut();
+
+                <span class="comment">// vary header can have multiple values, don't overwrite
+                // previously-set value(s).
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(vary) = headers.remove(header::VARY) {
+                    response_headers.append(header::VARY, vary);
+                }
+                <span class="comment">// extend will overwrite previous headers of remaining names
+                </span>response_headers.extend(headers.drain());
 
                 Poll::Ready(<span class="prelude-val">Ok</span>(response))
             }

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["is_close"]};
+window.SIDEBAR_ITEMS = {};

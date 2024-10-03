@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["DuplicateProtonameError","IndexedProtoName","Info","IntoMultiHandler","MultiHandler","Upgrade"]};
+window.SIDEBAR_ITEMS = {"struct":["DuplicateProtonameError","IndexedProtoName","Info","MultiHandler","Upgrade"]};

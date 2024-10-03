@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gimli-0.28.1/src/read/index.rs`."><title>index.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="gimli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/gimli-0.31.0/src/read/index.rs`."><title>index.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="gimli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -533,6 +533,102 @@
 <a href="#533" id="533">533</a>
 <a href="#534" id="534">534</a>
 <a href="#535" id="535">535</a>
+<a href="#536" id="536">536</a>
+<a href="#537" id="537">537</a>
+<a href="#538" id="538">538</a>
+<a href="#539" id="539">539</a>
+<a href="#540" id="540">540</a>
+<a href="#541" id="541">541</a>
+<a href="#542" id="542">542</a>
+<a href="#543" id="543">543</a>
+<a href="#544" id="544">544</a>
+<a href="#545" id="545">545</a>
+<a href="#546" id="546">546</a>
+<a href="#547" id="547">547</a>
+<a href="#548" id="548">548</a>
+<a href="#549" id="549">549</a>
+<a href="#550" id="550">550</a>
+<a href="#551" id="551">551</a>
+<a href="#552" id="552">552</a>
+<a href="#553" id="553">553</a>
+<a href="#554" id="554">554</a>
+<a href="#555" id="555">555</a>
+<a href="#556" id="556">556</a>
+<a href="#557" id="557">557</a>
+<a href="#558" id="558">558</a>
+<a href="#559" id="559">559</a>
+<a href="#560" id="560">560</a>
+<a href="#561" id="561">561</a>
+<a href="#562" id="562">562</a>
+<a href="#563" id="563">563</a>
+<a href="#564" id="564">564</a>
+<a href="#565" id="565">565</a>
+<a href="#566" id="566">566</a>
+<a href="#567" id="567">567</a>
+<a href="#568" id="568">568</a>
+<a href="#569" id="569">569</a>
+<a href="#570" id="570">570</a>
+<a href="#571" id="571">571</a>
+<a href="#572" id="572">572</a>
+<a href="#573" id="573">573</a>
+<a href="#574" id="574">574</a>
+<a href="#575" id="575">575</a>
+<a href="#576" id="576">576</a>
+<a href="#577" id="577">577</a>
+<a href="#578" id="578">578</a>
+<a href="#579" id="579">579</a>
+<a href="#580" id="580">580</a>
+<a href="#581" id="581">581</a>
+<a href="#582" id="582">582</a>
+<a href="#583" id="583">583</a>
+<a href="#584" id="584">584</a>
+<a href="#585" id="585">585</a>
+<a href="#586" id="586">586</a>
+<a href="#587" id="587">587</a>
+<a href="#588" id="588">588</a>
+<a href="#589" id="589">589</a>
+<a href="#590" id="590">590</a>
+<a href="#591" id="591">591</a>
+<a href="#592" id="592">592</a>
+<a href="#593" id="593">593</a>
+<a href="#594" id="594">594</a>
+<a href="#595" id="595">595</a>
+<a href="#596" id="596">596</a>
+<a href="#597" id="597">597</a>
+<a href="#598" id="598">598</a>
+<a href="#599" id="599">599</a>
+<a href="#600" id="600">600</a>
+<a href="#601" id="601">601</a>
+<a href="#602" id="602">602</a>
+<a href="#603" id="603">603</a>
+<a href="#604" id="604">604</a>
+<a href="#605" id="605">605</a>
+<a href="#606" id="606">606</a>
+<a href="#607" id="607">607</a>
+<a href="#608" id="608">608</a>
+<a href="#609" id="609">609</a>
+<a href="#610" id="610">610</a>
+<a href="#611" id="611">611</a>
+<a href="#612" id="612">612</a>
+<a href="#613" id="613">613</a>
+<a href="#614" id="614">614</a>
+<a href="#615" id="615">615</a>
+<a href="#616" id="616">616</a>
+<a href="#617" id="617">617</a>
+<a href="#618" id="618">618</a>
+<a href="#619" id="619">619</a>
+<a href="#620" id="620">620</a>
+<a href="#621" id="621">621</a>
+<a href="#622" id="622">622</a>
+<a href="#623" id="623">623</a>
+<a href="#624" id="624">624</a>
+<a href="#625" id="625">625</a>
+<a href="#626" id="626">626</a>
+<a href="#627" id="627">627</a>
+<a href="#628" id="628">628</a>
+<a href="#629" id="629">629</a>
+<a href="#630" id="630">630</a>
+<a href="#631" id="631">631</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>core::slice;
 
 <span class="kw">use </span><span class="kw">crate</span>::common::SectionId;
@@ -556,6 +652,20 @@
     /// section.
     </span><span class="kw">pub fn </span>new(section: <span class="kw-2">&amp;</span><span class="lifetime">'input </span>[u8], endian: Endian) -&gt; <span class="self">Self </span>{
         <span class="self">Self</span>::from(EndianSlice::new(section, endian))
+    }
+}
+
+<span class="kw">impl</span>&lt;T&gt; DebugCuIndex&lt;T&gt; {
+    <span class="doccomment">/// Create a `DebugCuIndex` section that references the data in `self`.
+    ///
+    /// This is useful when `R` implements `Reader` but `T` does not.
+    ///
+    /// Used by `DwarfPackageSections::borrow`.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>borrow&lt;<span class="lifetime">'a</span>, F, R&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>, <span class="kw-2">mut </span>borrow: F) -&gt; DebugCuIndex&lt;R&gt;
+    <span class="kw">where
+        </span>F: FnMut(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>T) -&gt; R,
+    {
+        borrow(<span class="kw-2">&amp;</span><span class="self">self</span>.section).into()
     }
 }
 
@@ -601,6 +711,20 @@
     }
 }
 
+<span class="kw">impl</span>&lt;T&gt; DebugTuIndex&lt;T&gt; {
+    <span class="doccomment">/// Create a `DebugTuIndex` section that references the data in `self`.
+    ///
+    /// This is useful when `R` implements `Reader` but `T` does not.
+    ///
+    /// Used by `DwarfPackageSections::borrow`.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>borrow&lt;<span class="lifetime">'a</span>, F, R&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>, <span class="kw-2">mut </span>borrow: F) -&gt; DebugTuIndex&lt;R&gt;
+    <span class="kw">where
+        </span>F: FnMut(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>T) -&gt; R,
+    {
+        borrow(<span class="kw-2">&amp;</span><span class="self">self</span>.section).into()
+    }
+}
+
 <span class="kw">impl</span>&lt;R&gt; Section&lt;R&gt; <span class="kw">for </span>DebugTuIndex&lt;R&gt; {
     <span class="kw">fn </span>id() -&gt; SectionId {
         SectionId::DebugTuIndex
@@ -636,7 +760,7 @@
     hash_ids: R,
     hash_rows: R,
     <span class="comment">// Only `section_count` values are valid.
-    </span>sections: [SectionId; SECTION_COUNT_MAX <span class="kw">as </span>usize],
+    </span>sections: [IndexSectionId; SECTION_COUNT_MAX <span class="kw">as </span>usize],
     offsets: R,
     sizes: R,
 }
@@ -645,13 +769,13 @@
     <span class="kw">fn </span>parse(<span class="kw-2">mut </span>input: R) -&gt; <span class="prelude-ty">Result</span>&lt;UnitIndex&lt;R&gt;&gt; {
         <span class="kw">if </span>input.is_empty() {
             <span class="kw">return </span><span class="prelude-val">Ok</span>(UnitIndex {
-                version: <span class="number">5</span>,
+                version: <span class="number">0</span>,
                 section_count: <span class="number">0</span>,
                 unit_count: <span class="number">0</span>,
                 slot_count: <span class="number">0</span>,
                 hash_ids: input.clone(),
                 hash_rows: input.clone(),
-                sections: [SectionId::DebugAbbrev; SECTION_COUNT_MAX <span class="kw">as </span>usize],
+                sections: [IndexSectionId::DebugAbbrev; SECTION_COUNT_MAX <span class="kw">as </span>usize],
                 offsets: input.clone(),
                 sizes: input.clone(),
             });
@@ -673,14 +797,14 @@
         <span class="kw">let </span>section_count = input.read_u32()<span class="question-mark">?</span>;
         <span class="kw">let </span>unit_count = input.read_u32()<span class="question-mark">?</span>;
         <span class="kw">let </span>slot_count = input.read_u32()<span class="question-mark">?</span>;
-        <span class="kw">if </span>slot_count == <span class="number">0 </span>|| slot_count &amp; (slot_count - <span class="number">1</span>) != <span class="number">0 </span>|| slot_count &lt;= unit_count {
+        <span class="kw">if </span>slot_count != <span class="number">0 </span>&amp;&amp; (slot_count &amp; (slot_count - <span class="number">1</span>) != <span class="number">0 </span>|| slot_count &lt;= unit_count) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidIndexSlotCount);
         }
 
         <span class="kw">let </span>hash_ids = input.split(R::Offset::from_u64(u64::from(slot_count) * <span class="number">8</span>)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
         <span class="kw">let </span>hash_rows = input.split(R::Offset::from_u64(u64::from(slot_count) * <span class="number">4</span>)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
 
-        <span class="kw">let </span><span class="kw-2">mut </span>sections = [SectionId::DebugAbbrev; SECTION_COUNT_MAX <span class="kw">as </span>usize];
+        <span class="kw">let </span><span class="kw-2">mut </span>sections = [IndexSectionId::DebugAbbrev; SECTION_COUNT_MAX <span class="kw">as </span>usize];
         <span class="kw">if </span>section_count &gt; SECTION_COUNT_MAX.into() {
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidIndexSectionCount);
         }
@@ -688,26 +812,26 @@
             <span class="kw">let </span>section = input.read_u32()<span class="question-mark">?</span>;
             sections[i <span class="kw">as </span>usize] = <span class="kw">if </span>version == <span class="number">2 </span>{
                 <span class="kw">match </span>constants::DwSectV2(section) {
-                    constants::DW_SECT_V2_INFO =&gt; SectionId::DebugInfo,
-                    constants::DW_SECT_V2_TYPES =&gt; SectionId::DebugTypes,
-                    constants::DW_SECT_V2_ABBREV =&gt; SectionId::DebugAbbrev,
-                    constants::DW_SECT_V2_LINE =&gt; SectionId::DebugLine,
-                    constants::DW_SECT_V2_LOC =&gt; SectionId::DebugLoc,
-                    constants::DW_SECT_V2_STR_OFFSETS =&gt; SectionId::DebugStrOffsets,
-                    constants::DW_SECT_V2_MACINFO =&gt; SectionId::DebugMacinfo,
-                    constants::DW_SECT_V2_MACRO =&gt; SectionId::DebugMacro,
-                    <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::UnknownIndexSection),
+                    constants::DW_SECT_V2_INFO =&gt; IndexSectionId::DebugInfo,
+                    constants::DW_SECT_V2_TYPES =&gt; IndexSectionId::DebugTypes,
+                    constants::DW_SECT_V2_ABBREV =&gt; IndexSectionId::DebugAbbrev,
+                    constants::DW_SECT_V2_LINE =&gt; IndexSectionId::DebugLine,
+                    constants::DW_SECT_V2_LOC =&gt; IndexSectionId::DebugLoc,
+                    constants::DW_SECT_V2_STR_OFFSETS =&gt; IndexSectionId::DebugStrOffsets,
+                    constants::DW_SECT_V2_MACINFO =&gt; IndexSectionId::DebugMacinfo,
+                    constants::DW_SECT_V2_MACRO =&gt; IndexSectionId::DebugMacro,
+                    section =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::UnknownIndexSectionV2(section)),
                 }
             } <span class="kw">else </span>{
                 <span class="kw">match </span>constants::DwSect(section) {
-                    constants::DW_SECT_INFO =&gt; SectionId::DebugInfo,
-                    constants::DW_SECT_ABBREV =&gt; SectionId::DebugAbbrev,
-                    constants::DW_SECT_LINE =&gt; SectionId::DebugLine,
-                    constants::DW_SECT_LOCLISTS =&gt; SectionId::DebugLocLists,
-                    constants::DW_SECT_STR_OFFSETS =&gt; SectionId::DebugStrOffsets,
-                    constants::DW_SECT_MACRO =&gt; SectionId::DebugMacro,
-                    constants::DW_SECT_RNGLISTS =&gt; SectionId::DebugRngLists,
-                    <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::UnknownIndexSection),
+                    constants::DW_SECT_INFO =&gt; IndexSectionId::DebugInfo,
+                    constants::DW_SECT_ABBREV =&gt; IndexSectionId::DebugAbbrev,
+                    constants::DW_SECT_LINE =&gt; IndexSectionId::DebugLine,
+                    constants::DW_SECT_LOCLISTS =&gt; IndexSectionId::DebugLocLists,
+                    constants::DW_SECT_STR_OFFSETS =&gt; IndexSectionId::DebugStrOffsets,
+                    constants::DW_SECT_MACRO =&gt; IndexSectionId::DebugMacro,
+                    constants::DW_SECT_RNGLISTS =&gt; IndexSectionId::DebugRngLists,
+                    section =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::UnknownIndexSection(section)),
                 }
             };
         }
@@ -763,7 +887,7 @@
     </span>}
 
     <span class="doccomment">/// Return the section offsets and sizes for the given row index.
-    </span><span class="kw">pub fn </span>sections(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>row: u32) -&gt; <span class="prelude-ty">Result</span>&lt;UnitIndexSectionIterator&lt;R&gt;&gt; {
+    </span><span class="kw">pub fn </span>sections(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>row: u32) -&gt; <span class="prelude-ty">Result</span>&lt;UnitIndexSectionIterator&lt;<span class="lifetime">'_</span>, R&gt;&gt; {
         <span class="kw">if </span>row == <span class="number">0 </span>{
             <span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidIndexRow);
         }
@@ -787,6 +911,8 @@
     }
 
     <span class="doccomment">/// Return the version.
+    ///
+    /// Defaults to 0 for empty sections.
     </span><span class="kw">pub fn </span>version(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u16 {
         <span class="self">self</span>.version
     }
@@ -810,7 +936,7 @@
 <span class="doccomment">/// An iterator over the section offsets and sizes for a row in a `UnitIndex`.
 </span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>UnitIndexSectionIterator&lt;<span class="lifetime">'index</span>, R: Reader&gt; {
-    sections: slice::Iter&lt;<span class="lifetime">'index</span>, SectionId&gt;,
+    sections: slice::Iter&lt;<span class="lifetime">'index</span>, IndexSectionId&gt;,
     offsets: R,
     sizes: R,
 }
@@ -835,11 +961,59 @@
 </span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 </span><span class="kw">pub struct </span>UnitIndexSection {
     <span class="doccomment">/// The section kind.
-    </span><span class="kw">pub </span>section: SectionId,
+    </span><span class="kw">pub </span>section: IndexSectionId,
     <span class="doccomment">/// The base offset of the unit's contribution to the section.
     </span><span class="kw">pub </span>offset: u32,
     <span class="doccomment">/// The size of the unit's contribution to the section.
     </span><span class="kw">pub </span>size: u32,
+}
+
+<span class="doccomment">/// Section kinds which are permitted in a `.dwp` index.
+</span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+</span><span class="kw">pub enum </span>IndexSectionId {
+    <span class="doccomment">/// The `.debug_abbrev.dwo` section.
+    </span>DebugAbbrev,
+    <span class="doccomment">/// The `.debug_info.dwo` section.
+    </span>DebugInfo,
+    <span class="doccomment">/// The `.debug_line.dwo` section.
+    </span>DebugLine,
+    <span class="doccomment">/// The `.debug_loc.dwo` section.
+    </span>DebugLoc,
+    <span class="doccomment">/// The `.debug_loclists.dwo` section.
+    </span>DebugLocLists,
+    <span class="doccomment">/// The `.debug_macinfo.dwo` section.
+    </span>DebugMacinfo,
+    <span class="doccomment">/// The `.debug_macro.dwo` section.
+    </span>DebugMacro,
+    <span class="doccomment">/// The `.debug_rnglists.dwo` section.
+    </span>DebugRngLists,
+    <span class="doccomment">/// The `.debug_str_offsets.dwo` section.
+    </span>DebugStrOffsets,
+    <span class="doccomment">/// The `.debug_types.dwo` section.
+    </span>DebugTypes,
+}
+
+<span class="kw">impl </span>IndexSectionId {
+    <span class="doccomment">/// Returns the corresponding `SectionId`.
+    </span><span class="kw">pub fn </span>section_id(<span class="self">self</span>) -&gt; SectionId {
+        <span class="kw">match </span><span class="self">self </span>{
+            IndexSectionId::DebugAbbrev =&gt; SectionId::DebugAbbrev,
+            IndexSectionId::DebugInfo =&gt; SectionId::DebugInfo,
+            IndexSectionId::DebugLine =&gt; SectionId::DebugLine,
+            IndexSectionId::DebugLoc =&gt; SectionId::DebugLoc,
+            IndexSectionId::DebugLocLists =&gt; SectionId::DebugLocLists,
+            IndexSectionId::DebugMacro =&gt; SectionId::DebugMacro,
+            IndexSectionId::DebugMacinfo =&gt; SectionId::DebugMacinfo,
+            IndexSectionId::DebugRngLists =&gt; SectionId::DebugRngLists,
+            IndexSectionId::DebugStrOffsets =&gt; SectionId::DebugStrOffsets,
+            IndexSectionId::DebugTypes =&gt; SectionId::DebugTypes,
+        }
+    }
+
+    <span class="doccomment">/// Returns the ELF section name for this kind, when found in a .dwo or .dwp file.
+    </span><span class="kw">pub fn </span>dwo_name(<span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str {
+        <span class="self">self</span>.section_id().dwo_name().unwrap()
+    }
 }
 
 <span class="attr">#[cfg(test)]
@@ -852,6 +1026,24 @@
     </span><span class="kw">fn </span>test_empty() {
         <span class="kw">let </span>buf = EndianSlice::new(<span class="kw-2">&amp;</span>[], BigEndian);
         <span class="kw">let </span>index = UnitIndex::parse(buf).unwrap();
+        <span class="macro">assert_eq!</span>(index.version(), <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(index.unit_count(), <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(index.slot_count(), <span class="number">0</span>);
+        <span class="macro">assert!</span>(index.find(<span class="number">0</span>).is_none());
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_zero_slots() {
+        <span class="attr">#[rustfmt::skip]
+        </span><span class="kw">let </span>section = Section::with_endian(Endian::Big)
+            <span class="comment">// Header.
+            </span>.D32(<span class="number">2</span>).D32(<span class="number">0</span>).D32(<span class="number">0</span>).D32(<span class="number">0</span>);
+        <span class="kw">let </span>buf = section.get_contents().unwrap();
+        <span class="kw">let </span>buf = EndianSlice::new(<span class="kw-2">&amp;</span>buf, BigEndian);
+        <span class="kw">let </span>index = UnitIndex::parse(buf).unwrap();
+        <span class="macro">assert_eq!</span>(index.version(), <span class="number">2</span>);
+        <span class="macro">assert_eq!</span>(index.unit_count(), <span class="number">0</span>);
+        <span class="macro">assert_eq!</span>(index.slot_count(), <span class="number">0</span>);
         <span class="macro">assert!</span>(index.find(<span class="number">0</span>).is_none());
     }
 
@@ -924,26 +1116,26 @@
         <span class="macro">assert_eq!</span>(
             index.sections,
             [
-                SectionId::DebugInfo,
-                SectionId::DebugTypes,
-                SectionId::DebugAbbrev,
-                SectionId::DebugLine,
-                SectionId::DebugLoc,
-                SectionId::DebugStrOffsets,
-                SectionId::DebugMacinfo,
-                SectionId::DebugMacro,
+                IndexSectionId::DebugInfo,
+                IndexSectionId::DebugTypes,
+                IndexSectionId::DebugAbbrev,
+                IndexSectionId::DebugLine,
+                IndexSectionId::DebugLoc,
+                IndexSectionId::DebugStrOffsets,
+                IndexSectionId::DebugMacinfo,
+                IndexSectionId::DebugMacro,
             ]
         );
         <span class="attr">#[rustfmt::skip]
         </span><span class="kw">let </span>expect = [
-            UnitIndexSection { section: SectionId::DebugInfo, offset: <span class="number">11</span>, size: <span class="number">21 </span>},
-            UnitIndexSection { section: SectionId::DebugTypes, offset: <span class="number">12</span>, size: <span class="number">22 </span>},
-            UnitIndexSection { section: SectionId::DebugAbbrev, offset: <span class="number">13</span>, size: <span class="number">23 </span>},
-            UnitIndexSection { section: SectionId::DebugLine, offset: <span class="number">14</span>, size: <span class="number">24 </span>},
-            UnitIndexSection { section: SectionId::DebugLoc, offset: <span class="number">15</span>, size: <span class="number">25 </span>},
-            UnitIndexSection { section: SectionId::DebugStrOffsets, offset: <span class="number">16</span>, size: <span class="number">26 </span>},
-            UnitIndexSection { section: SectionId::DebugMacinfo, offset: <span class="number">17</span>, size: <span class="number">27 </span>},
-            UnitIndexSection { section: SectionId::DebugMacro, offset: <span class="number">18</span>, size: <span class="number">28 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugInfo, offset: <span class="number">11</span>, size: <span class="number">21 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugTypes, offset: <span class="number">12</span>, size: <span class="number">22 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugAbbrev, offset: <span class="number">13</span>, size: <span class="number">23 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugLine, offset: <span class="number">14</span>, size: <span class="number">24 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugLoc, offset: <span class="number">15</span>, size: <span class="number">25 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugStrOffsets, offset: <span class="number">16</span>, size: <span class="number">26 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugMacinfo, offset: <span class="number">17</span>, size: <span class="number">27 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugMacro, offset: <span class="number">18</span>, size: <span class="number">28 </span>},
         ];
         <span class="kw">let </span><span class="kw-2">mut </span>sections = index.sections(<span class="number">1</span>).unwrap();
         <span class="kw">for </span>section <span class="kw">in </span><span class="kw-2">&amp;</span>expect {
@@ -979,24 +1171,24 @@
         <span class="macro">assert_eq!</span>(
             index.sections[..<span class="number">7</span>],
             [
-                SectionId::DebugInfo,
-                SectionId::DebugAbbrev,
-                SectionId::DebugLine,
-                SectionId::DebugLocLists,
-                SectionId::DebugStrOffsets,
-                SectionId::DebugMacro,
-                SectionId::DebugRngLists,
+                IndexSectionId::DebugInfo,
+                IndexSectionId::DebugAbbrev,
+                IndexSectionId::DebugLine,
+                IndexSectionId::DebugLocLists,
+                IndexSectionId::DebugStrOffsets,
+                IndexSectionId::DebugMacro,
+                IndexSectionId::DebugRngLists,
             ]
         );
         <span class="attr">#[rustfmt::skip]
         </span><span class="kw">let </span>expect = [
-            UnitIndexSection { section: SectionId::DebugInfo, offset: <span class="number">11</span>, size: <span class="number">21 </span>},
-            UnitIndexSection { section: SectionId::DebugAbbrev, offset: <span class="number">12</span>, size: <span class="number">22 </span>},
-            UnitIndexSection { section: SectionId::DebugLine, offset: <span class="number">13</span>, size: <span class="number">23 </span>},
-            UnitIndexSection { section: SectionId::DebugLocLists, offset: <span class="number">14</span>, size: <span class="number">24 </span>},
-            UnitIndexSection { section: SectionId::DebugStrOffsets, offset: <span class="number">15</span>, size: <span class="number">25 </span>},
-            UnitIndexSection { section: SectionId::DebugMacro, offset: <span class="number">16</span>, size: <span class="number">26 </span>},
-            UnitIndexSection { section: SectionId::DebugRngLists, offset: <span class="number">17</span>, size: <span class="number">27 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugInfo, offset: <span class="number">11</span>, size: <span class="number">21 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugAbbrev, offset: <span class="number">12</span>, size: <span class="number">22 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugLine, offset: <span class="number">13</span>, size: <span class="number">23 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugLocLists, offset: <span class="number">14</span>, size: <span class="number">24 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugStrOffsets, offset: <span class="number">15</span>, size: <span class="number">25 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugMacro, offset: <span class="number">16</span>, size: <span class="number">26 </span>},
+            UnitIndexSection { section: IndexSectionId::DebugRngLists, offset: <span class="number">17</span>, size: <span class="number">27 </span>},
         ];
         <span class="kw">let </span><span class="kw-2">mut </span>sections = index.sections(<span class="number">1</span>).unwrap();
         <span class="kw">for </span>section <span class="kw">in </span><span class="kw-2">&amp;</span>expect {

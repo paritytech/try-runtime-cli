@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["DtlsError","IceError","NetError","PacketError","ProtoError","RtpError","SctpError","SdpError"]};

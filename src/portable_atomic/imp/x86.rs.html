@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/portable-atomic-1.6.0/src/imp/x86.rs`."><title>x86.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="portable_atomic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/portable-atomic-1.9.0/src/imp/x86.rs`."><title>x86.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="portable_atomic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -225,23 +225,36 @@
 <a href="#225" id="225">225</a>
 <a href="#226" id="226">226</a>
 <a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
 </pre></div><pre class="rust"><code><span class="comment">// SPDX-License-Identifier: Apache-2.0 OR MIT
 
-// Atomic operations implementation on x86/x86_64.
-//
-// This module provides atomic operations not supported by LLVM or optimizes
-// cases where LLVM code generation is not optimal.
-//
-// Note: On Miri and ThreadSanitizer which do not support inline assembly, we don't use
-// this module and use CAS loop instead.
-//
-// Refs:
-// - x86 and amd64 instruction reference https://www.felixcloutier.com/x86
-//
-// Generated asm:
-// - x86_64 https://godbolt.org/z/d17eTs5Ec
+/*
+Atomic operations implementation on x86/x86_64.
 
-</span><span class="kw">use </span>core::{arch::asm, sync::atomic::Ordering};
+This module provides atomic operations not supported by LLVM or optimizes
+cases where LLVM code generation is not optimal.
+
+Note: On Miri and ThreadSanitizer which do not support inline assembly, we don't use
+this module and use CAS loop instead.
+
+Refs:
+- x86 and amd64 instruction reference https://www.felixcloutier.com/x86
+
+Generated asm:
+- x86_64 https://godbolt.org/z/Kcsj1jd9c
+*/
+
+</span><span class="attr">#[cfg(not(portable_atomic_no_asm))]
+</span><span class="kw">use </span>core::arch::asm;
+<span class="kw">use </span>core::sync::atomic::Ordering;
 
 <span class="kw">use </span><span class="kw">super</span>::core_atomic::{
     AtomicI16, AtomicI32, AtomicI64, AtomicI8, AtomicIsize, AtomicU16, AtomicU32, AtomicU64,
@@ -350,10 +363,12 @@
         // LLVM 16+ can generate `lock bt{s,r,c}` for both immediate and register bit offsets.
         // https://godbolt.org/z/TGhr5z4ds
         // So, use fetch_* based implementations on LLVM 16+, otherwise use asm based implementations.
-        </span><span class="attr">#[cfg(portable_atomic_llvm_16)]
+        </span><span class="attr">#[cfg(not(portable_atomic_pre_llvm_16))]
         </span><span class="macro">impl_default_bit_opts!</span>(<span class="macro-nonterminal">$atomic_type</span>, <span class="macro-nonterminal">$int_type</span>);
-        <span class="attr">#[cfg(not(portable_atomic_llvm_16))]
+        <span class="attr">#[cfg(portable_atomic_pre_llvm_16)]
         </span><span class="kw">impl </span><span class="macro-nonterminal">$atomic_type </span>{
+            <span class="comment">// `&lt;integer&gt;::BITS` requires Rust 1.53
+            </span><span class="kw">const </span>BITS: u32 = (core::mem::size_of::&lt;<span class="macro-nonterminal">$int_type</span>&gt;() * <span class="number">8</span>) <span class="kw">as </span>u32;
             <span class="attr">#[inline]
             </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>bit_set(<span class="kw-2">&amp;</span><span class="self">self</span>, bit: u32, _order: Ordering) -&gt; bool {
                 <span class="kw">let </span>dst = <span class="self">self</span>.as_ptr();
@@ -370,12 +385,13 @@
                         <span class="macro">concat!</span>(<span class="string">"lock bts "</span>, <span class="macro-nonterminal">$ptr_size</span>, <span class="string">" ptr [{dst"</span>, <span class="macro">ptr_modifier!</span>(), <span class="string">"}], {bit"</span>, <span class="macro-nonterminal">$val_modifier</span>, <span class="string">"}"</span>),
                         <span class="string">"setb {r}"</span>,
                         dst = <span class="kw">in</span>(reg) dst,
-                        bit = <span class="kw">in</span>(reg) (bit &amp; (<span class="macro-nonterminal">$int_type::BITS </span>- <span class="number">1</span>)) <span class="kw">as </span><span class="macro-nonterminal">$int_type</span>,
+                        bit = <span class="kw">in</span>(reg) (bit &amp; (<span class="self">Self</span>::BITS - <span class="number">1</span>)) <span class="kw">as </span><span class="macro-nonterminal">$int_type</span>,
                         r = out(reg_byte) r,
                         <span class="comment">// Do not use `preserves_flags` because BTS modifies the CF flag.
                         </span>options(nostack),
                     );
-                    r != <span class="number">0
+                    <span class="kw">crate</span>::utils::assert_unchecked(r == <span class="number">0 </span>|| r == <span class="number">1</span>); <span class="comment">// may help remove extra test
+                    </span>r != <span class="number">0
                 </span>}
             }
             <span class="attr">#[inline]
@@ -394,12 +410,13 @@
                         <span class="macro">concat!</span>(<span class="string">"lock btr "</span>, <span class="macro-nonterminal">$ptr_size</span>, <span class="string">" ptr [{dst"</span>, <span class="macro">ptr_modifier!</span>(), <span class="string">"}], {bit"</span>, <span class="macro-nonterminal">$val_modifier</span>, <span class="string">"}"</span>),
                         <span class="string">"setb {r}"</span>,
                         dst = <span class="kw">in</span>(reg) dst,
-                        bit = <span class="kw">in</span>(reg) (bit &amp; (<span class="macro-nonterminal">$int_type::BITS </span>- <span class="number">1</span>)) <span class="kw">as </span><span class="macro-nonterminal">$int_type</span>,
+                        bit = <span class="kw">in</span>(reg) (bit &amp; (<span class="self">Self</span>::BITS - <span class="number">1</span>)) <span class="kw">as </span><span class="macro-nonterminal">$int_type</span>,
                         r = out(reg_byte) r,
                         <span class="comment">// Do not use `preserves_flags` because BTR modifies the CF flag.
                         </span>options(nostack),
                     );
-                    r != <span class="number">0
+                    <span class="kw">crate</span>::utils::assert_unchecked(r == <span class="number">0 </span>|| r == <span class="number">1</span>); <span class="comment">// may help remove extra test
+                    </span>r != <span class="number">0
                 </span>}
             }
             <span class="attr">#[inline]
@@ -418,12 +435,13 @@
                         <span class="macro">concat!</span>(<span class="string">"lock btc "</span>, <span class="macro-nonterminal">$ptr_size</span>, <span class="string">" ptr [{dst"</span>, <span class="macro">ptr_modifier!</span>(), <span class="string">"}], {bit"</span>, <span class="macro-nonterminal">$val_modifier</span>, <span class="string">"}"</span>),
                         <span class="string">"setb {r}"</span>,
                         dst = <span class="kw">in</span>(reg) dst,
-                        bit = <span class="kw">in</span>(reg) (bit &amp; (<span class="macro-nonterminal">$int_type::BITS </span>- <span class="number">1</span>)) <span class="kw">as </span><span class="macro-nonterminal">$int_type</span>,
+                        bit = <span class="kw">in</span>(reg) (bit &amp; (<span class="self">Self</span>::BITS - <span class="number">1</span>)) <span class="kw">as </span><span class="macro-nonterminal">$int_type</span>,
                         r = out(reg_byte) r,
                         <span class="comment">// Do not use `preserves_flags` because BTC modifies the CF flag.
                         </span>options(nostack),
                     );
-                    r != <span class="number">0
+                    <span class="kw">crate</span>::utils::assert_unchecked(r == <span class="number">0 </span>|| r == <span class="number">1</span>); <span class="comment">// may help remove extra test
+                    </span>r != <span class="number">0
                 </span>}
             }
         }

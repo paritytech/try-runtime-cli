@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/rpc-spec-v2/src/chain_head/subscription/inner.rs`."><title>inner.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="sc_rpc_spec_v2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/client/rpc-spec-v2/src/chain_head/subscription/inner.rs`."><title>inner.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="sc_rpc_spec_v2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1453,6 +1453,11 @@
 <a href="#1453" id="1453">1453</a>
 <a href="#1454" id="1454">1454</a>
 <a href="#1455" id="1455">1455</a>
+<a href="#1456" id="1456">1456</a>
+<a href="#1457" id="1457">1457</a>
+<a href="#1458" id="1458">1458</a>
+<a href="#1459" id="1459">1459</a>
+<a href="#1460" id="1460">1460</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2301,6 +2306,7 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
+	<span class="kw">use </span>jsonrpsee::ConnectionId;
 	<span class="kw">use </span>sc_block_builder::BlockBuilderBuilder;
 	<span class="kw">use </span>sc_service::client::new_in_mem;
 	<span class="kw">use </span>sp_consensus::BlockOrigin;
@@ -2344,7 +2350,7 @@
 	}
 
 	<span class="kw">fn </span>produce_blocks(
-		<span class="kw-2">mut </span>client: Arc&lt;Client&lt;sc_client_api::in_mem::Backend&lt;Block&gt;&gt;&gt;,
+		client: Arc&lt;Client&lt;sc_client_api::in_mem::Backend&lt;Block&gt;&gt;&gt;,
 		num_blocks: usize,
 	) -&gt; Vec&lt;&lt;Block <span class="kw">as </span>BlockT&gt;::Hash&gt; {
 		<span class="kw">let </span><span class="kw-2">mut </span>blocks = Vec::with_capacity(num_blocks);
@@ -2875,17 +2881,20 @@
 				rpc_connections.clone(),
 			);
 
-		<span class="kw">let </span>reserved_sub_first = subscription_management.reserve_subscription(<span class="number">1</span>).unwrap();
-		<span class="kw">let </span><span class="kw-2">mut </span>reserved_sub_second = subscription_management.reserve_subscription(<span class="number">1</span>).unwrap();
+		<span class="kw">let </span>reserved_sub_first =
+			subscription_management.reserve_subscription(ConnectionId(<span class="number">1</span>)).unwrap();
+		<span class="kw">let </span><span class="kw-2">mut </span>reserved_sub_second =
+			subscription_management.reserve_subscription(ConnectionId(<span class="number">1</span>)).unwrap();
 		<span class="comment">// Subscriptions reserved but not yet populated.
 		</span><span class="macro">assert_eq!</span>(subs.read().subs.len(), <span class="number">0</span>);
 
 		<span class="comment">// Cannot reserve anymore.
-		</span><span class="macro">assert!</span>(subscription_management.reserve_subscription(<span class="number">1</span>).is_none());
+		</span><span class="macro">assert!</span>(subscription_management.reserve_subscription(ConnectionId(<span class="number">1</span>)).is_none());
 		<span class="comment">// Drop the first subscription.
 		</span>drop(reserved_sub_first);
 		<span class="comment">// Space is freed-up for the rpc connections.
-		</span><span class="kw">let </span><span class="kw-2">mut </span>reserved_sub_first = subscription_management.reserve_subscription(<span class="number">1</span>).unwrap();
+		</span><span class="kw">let </span><span class="kw-2">mut </span>reserved_sub_first =
+			subscription_management.reserve_subscription(ConnectionId(<span class="number">1</span>)).unwrap();
 
 		<span class="comment">// Insert subscriptions.
 		</span><span class="kw">let </span>_sub_data_first =
@@ -2900,7 +2909,8 @@
 		<span class="comment">// Check that the subscription is removed.
 		</span><span class="macro">assert_eq!</span>(subs.read().subs.len(), <span class="number">1</span>);
 		<span class="comment">// Space is freed-up for the rpc connections.
-		</span><span class="kw">let </span>reserved_sub_first = subscription_management.reserve_subscription(<span class="number">1</span>).unwrap();
+		</span><span class="kw">let </span>reserved_sub_first =
+			subscription_management.reserve_subscription(ConnectionId(<span class="number">1</span>)).unwrap();
 
 		<span class="comment">// Drop all subscriptions.
 		</span>drop(reserved_sub_first);

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["deflate"],"struct":["Param"],"trait":["Extension"]};
+window.SIDEBAR_ITEMS = {"struct":["Param"],"trait":["Extension"]};

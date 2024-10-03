@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-core-0.22.5/src/client/async_client/helpers.rs`."><title>helpers.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="jsonrpsee_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-core-0.24.5/src/client/async_client/helpers.rs`."><title>helpers.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="jsonrpsee_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -265,6 +265,9 @@
 <a href="#265" id="265">265</a>
 <a href="#266" id="266">266</a>
 <a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any
@@ -292,19 +295,18 @@
 // DEALINGS IN THE SOFTWARE.
 
 </span><span class="kw">use </span><span class="kw">crate</span>::client::async_client::manager::{RequestManager, RequestStatus};
-<span class="kw">use </span><span class="kw">crate</span>::client::async_client::LOG_TARGET;
-<span class="kw">use </span><span class="kw">crate</span>::client::{Error, RequestMessage, TransportSenderT};
+<span class="kw">use </span><span class="kw">crate</span>::client::async_client::{Notification, LOG_TARGET};
+<span class="kw">use </span><span class="kw">crate</span>::client::{subscription_channel, Error, RequestMessage, TransportSenderT, TrySubscriptionSendError};
 <span class="kw">use </span><span class="kw">crate</span>::params::ArrayParams;
 <span class="kw">use </span><span class="kw">crate</span>::traits::ToRpcParams;
 
 <span class="kw">use </span>futures_timer::Delay;
 <span class="kw">use </span>futures_util::future::{<span class="self">self</span>, Either};
-<span class="kw">use </span>tokio::sync::{mpsc, oneshot};
+<span class="kw">use </span>tokio::sync::oneshot;
 
 <span class="kw">use </span>jsonrpsee_types::response::SubscriptionError;
 <span class="kw">use </span>jsonrpsee_types::{
-	ErrorObject, Id, InvalidRequestId, Notification, RequestSer, Response, ResponseSuccess, SubscriptionId,
-	SubscriptionResponse,
+	ErrorObject, Id, InvalidRequestId, RequestSer, Response, ResponseSuccess, SubscriptionId, SubscriptionResponse,
 };
 <span class="kw">use </span>serde_json::Value <span class="kw">as </span>JsonValue;
 <span class="kw">use </span>std::ops::Range;
@@ -357,34 +359,34 @@
 
 <span class="doccomment">/// Attempts to process a subscription response.
 ///
-/// Returns `Ok()` if the response was successfully sent to the frontend.
-/// Return `Err(None)` if the subscription was not found.
-/// Returns `Err(Some(msg))` if the channel to the `Subscription` was full.
+/// Returns `Some(sub_id)` if the subscription should be closed otherwise
+/// `None` is returned.
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>process_subscription_response(
 	manager: <span class="kw-2">&amp;mut </span>RequestManager,
 	response: SubscriptionResponse&lt;JsonValue&gt;,
-) -&gt; <span class="prelude-ty">Result</span>&lt;(), <span class="prelude-ty">Option</span>&lt;SubscriptionId&lt;<span class="lifetime">'static</span>&gt;&gt;&gt; {
+) -&gt; <span class="prelude-ty">Option</span>&lt;SubscriptionId&lt;<span class="lifetime">'static</span>&gt;&gt; {
 	<span class="kw">let </span>sub_id = response.params.subscription.into_owned();
 	<span class="kw">let </span>request_id = <span class="kw">match </span>manager.get_request_id_by_subscription_id(<span class="kw-2">&amp;</span>sub_id) {
 		<span class="prelude-val">Some</span>(request_id) =&gt; request_id,
 		<span class="prelude-val">None </span>=&gt; {
 			<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"Subscription {:?} is not active"</span>, sub_id);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="prelude-val">None</span>);
+			<span class="kw">return </span><span class="prelude-val">None</span>;
 		}
 	};
 
 	<span class="kw">match </span>manager.as_subscription_mut(<span class="kw-2">&amp;</span>request_id) {
-		<span class="prelude-val">Some</span>(send_back_sink) =&gt; <span class="kw">match </span>send_back_sink.try_send(response.params.result) {
-			<span class="prelude-val">Ok</span>(()) =&gt; <span class="prelude-val">Ok</span>(()),
-			<span class="prelude-val">Err</span>(err) =&gt; {
-				<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"Dropping subscription {:?} error: {:?}"</span>, sub_id, err);
-				<span class="prelude-val">Err</span>(<span class="prelude-val">Some</span>(sub_id))
+		<span class="prelude-val">Some</span>(send_back_sink) =&gt; <span class="kw">match </span>send_back_sink.send(response.params.result) {
+			<span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">None</span>,
+			<span class="prelude-val">Err</span>(TrySubscriptionSendError::Closed) =&gt; <span class="prelude-val">Some</span>(sub_id),
+			<span class="prelude-val">Err</span>(TrySubscriptionSendError::TooSlow(m)) =&gt; {
+				<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"Subscription {{method={}, sub_id={:?}}} couldn't keep up with server; failed to send {m}"</span>, response.method, sub_id);
+				<span class="prelude-val">Some</span>(sub_id)
 			}
 		},
 		<span class="prelude-val">None </span>=&gt; {
 			<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"Subscription {:?} is not active"</span>, sub_id);
-			<span class="prelude-val">Err</span>(<span class="prelude-val">None</span>)
-		}
+			<span class="prelude-val">None
+		</span>}
 	}
 }
 
@@ -415,12 +417,16 @@
 /// will continue.
 ///
 /// It's possible that user close down the subscription before this notification is received.
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>process_notification(manager: <span class="kw-2">&amp;mut </span>RequestManager, notif: Notification&lt;JsonValue&gt;) {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>process_notification(manager: <span class="kw-2">&amp;mut </span>RequestManager, notif: Notification) {
 	<span class="kw">match </span>manager.as_notification_handler_mut(notif.method.to_string()) {
-		<span class="prelude-val">Some</span>(send_back_sink) =&gt; <span class="kw">match </span>send_back_sink.try_send(notif.params) {
+		<span class="comment">// If the notification doesn't have params, we just send an empty JSON object to indicate that to the user.
+		</span><span class="prelude-val">Some</span>(send_back_sink) =&gt; <span class="kw">match </span>send_back_sink.send(notif.params.unwrap_or_default()) {
 			<span class="prelude-val">Ok</span>(()) =&gt; (),
-			<span class="prelude-val">Err</span>(err) =&gt; {
-				<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"Could not send notification, dropping handler for {:?} error: {:?}"</span>, notif.method, err);
+			<span class="prelude-val">Err</span>(TrySubscriptionSendError::Closed) =&gt; {
+				<span class="kw">let _ </span>= manager.remove_notification_handler(<span class="kw-2">&amp;</span>notif.method);
+			}
+			<span class="prelude-val">Err</span>(TrySubscriptionSendError::TooSlow(m)) =&gt; {
+				<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"Notification `{}` couldn't keep up with server; failed to send {m}"</span>, notif.method);
 				<span class="kw">let _ </span>= manager.remove_notification_handler(<span class="kw-2">&amp;</span>notif.method);
 			}
 		},
@@ -473,7 +479,7 @@
 				}
 			};
 
-			<span class="kw">let </span>(subscribe_tx, subscribe_rx) = mpsc::channel(max_capacity_per_subscription);
+			<span class="kw">let </span>(subscribe_tx, subscribe_rx) = subscription_channel(max_capacity_per_subscription);
 			<span class="kw">if </span>manager
 				.insert_subscription(response_id.clone(), unsub_id, sub_id.clone(), subscribe_tx, unsubscribe_method)
 				.is_ok()

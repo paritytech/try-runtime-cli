@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["run"],"struct":["Command"]};
+window.SIDEBAR_ITEMS = {"mod":["mbms"],"struct":["Command"]};

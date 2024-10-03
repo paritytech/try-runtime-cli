@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/multistream-select-0.12.1/src/length_delimited.rs`."><title>length_delimited.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="multistream_select" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/multistream-select-0.13.0/src/length_delimited.rs`."><title>length_delimited.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="multistream_select" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -525,13 +525,6 @@
 <a href="#525" id="525">525</a>
 <a href="#526" id="526">526</a>
 <a href="#527" id="527">527</a>
-<a href="#528" id="528">528</a>
-<a href="#529" id="529">529</a>
-<a href="#530" id="530">530</a>
-<a href="#531" id="531">531</a>
-<a href="#532" id="532">532</a>
-<a href="#533" id="533">533</a>
-<a href="#534" id="534">534</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2017 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -574,7 +567,7 @@
 /// unlikely to be more than 16KiB long.
 </span><span class="attr">#[pin_project::pin_project]
 #[derive(Debug)]
-</span><span class="kw">pub struct </span>LengthDelimited&lt;R&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>LengthDelimited&lt;R&gt; {
     <span class="doccomment">/// The inner I/O resource.
     </span><span class="attr">#[pin]
     </span>inner: R,
@@ -610,7 +603,7 @@
 <span class="kw">impl</span>&lt;R&gt; LengthDelimited&lt;R&gt; {
     <span class="doccomment">/// Creates a new I/O resource for reading and writing unsigned-varint
     /// length delimited frames.
-    </span><span class="kw">pub fn </span>new(inner: R) -&gt; LengthDelimited&lt;R&gt; {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(inner: R) -&gt; LengthDelimited&lt;R&gt; {
         LengthDelimited {
             inner,
             read_state: ReadState::default(),
@@ -627,7 +620,7 @@
     /// The read buffer is guaranteed to be empty whenever `Stream::poll` yields
     /// a new `Bytes` frame. The write buffer is guaranteed to be empty after
     /// flushing.
-    </span><span class="kw">pub fn </span>into_inner(<span class="self">self</span>) -&gt; R {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>into_inner(<span class="self">self</span>) -&gt; R {
         <span class="macro">assert!</span>(<span class="self">self</span>.read_buffer.is_empty());
         <span class="macro">assert!</span>(<span class="self">self</span>.write_buffer.is_empty());
         <span class="self">self</span>.inner
@@ -640,7 +633,7 @@
     /// This is typically done if further uvi-framed messages are expected to be
     /// received but no more such messages are written, allowing the writing of
     /// follow-up protocol data to commence.
-    </span><span class="kw">pub fn </span>into_reader(<span class="self">self</span>) -&gt; LengthDelimitedReader&lt;R&gt; {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>into_reader(<span class="self">self</span>) -&gt; LengthDelimitedReader&lt;R&gt; {
         LengthDelimitedReader { inner: <span class="self">self </span>}
     }
 
@@ -649,10 +642,7 @@
     ///
     /// After this method returns `Poll::Ready`, the write buffer of frames
     /// submitted to the `Sink` is guaranteed to be empty.
-    </span><span class="kw">pub fn </span>poll_write_buffer(
-        <span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;,
-        cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;,
-    ) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;(), io::Error&gt;&gt;
+    </span><span class="kw">fn </span>poll_write_buffer(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;(), io::Error&gt;&gt;
     <span class="kw">where
         </span>R: AsyncWrite,
     {
@@ -834,7 +824,7 @@
 /// frames on an underlying I/O resource combined with direct `AsyncWrite` access.
 </span><span class="attr">#[pin_project::pin_project]
 #[derive(Debug)]
-</span><span class="kw">pub struct </span>LengthDelimitedReader&lt;R&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>LengthDelimitedReader&lt;R&gt; {
     <span class="attr">#[pin]
     </span>inner: LengthDelimited&lt;R&gt;,
 }
@@ -852,7 +842,7 @@
     /// yield a new `Message`. The write buffer is guaranteed to be empty whenever
     /// [`LengthDelimited::poll_write_buffer`] yields [`Poll::Ready`] or after
     /// the [`Sink`] has been completely flushed via [`Sink::poll_flush`].
-    </span><span class="kw">pub fn </span>into_inner(<span class="self">self</span>) -&gt; R {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>into_inner(<span class="self">self</span>) -&gt; R {
         <span class="self">self</span>.inner.into_inner()
     }
 }
@@ -922,7 +912,6 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
     <span class="kw">use </span><span class="kw">crate</span>::length_delimited::LengthDelimited;
-    <span class="kw">use </span>async_std::net::{TcpListener, TcpStream};
     <span class="kw">use </span>futures::{io::Cursor, prelude::<span class="kw-2">*</span>};
     <span class="kw">use </span>quickcheck::<span class="kw-2">*</span>;
     <span class="kw">use </span>std::io::ErrorKind;
@@ -1025,15 +1014,13 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>writing_reading() {
         <span class="kw">fn </span>prop(frames: Vec&lt;Vec&lt;u8&gt;&gt;) -&gt; TestResult {
-            async_std::task::block_on(<span class="kw">async move </span>{
-                <span class="kw">let </span>listener = TcpListener::bind(<span class="string">"127.0.0.1:0"</span>).<span class="kw">await</span>.unwrap();
-                <span class="kw">let </span>listener_addr = listener.local_addr().unwrap();
+            <span class="kw">let </span>(client_connection, server_connection) = futures_ringbuf::Endpoint::pair(<span class="number">100</span>, <span class="number">100</span>);
 
+            async_std::task::block_on(<span class="kw">async move </span>{
                 <span class="kw">let </span>expected_frames = frames.clone();
                 <span class="kw">let </span>server = async_std::task::spawn(<span class="kw">async move </span>{
-                    <span class="kw">let </span>socket = listener.accept().<span class="kw">await</span>.unwrap().<span class="number">0</span>;
                     <span class="kw">let </span><span class="kw-2">mut </span>connec =
-                        rw_stream_sink::RwStreamSink::new(LengthDelimited::new(socket));
+                        rw_stream_sink::RwStreamSink::new(LengthDelimited::new(server_connection));
 
                     <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[<span class="number">0u8</span>; <span class="number">0</span>];
                     <span class="kw">for </span>expected <span class="kw">in </span>expected_frames {
@@ -1049,8 +1036,7 @@
                 });
 
                 <span class="kw">let </span>client = async_std::task::spawn(<span class="kw">async move </span>{
-                    <span class="kw">let </span>socket = TcpStream::connect(<span class="kw-2">&amp;</span>listener_addr).<span class="kw">await</span>.unwrap();
-                    <span class="kw">let </span><span class="kw-2">mut </span>connec = LengthDelimited::new(socket);
+                    <span class="kw">let </span><span class="kw-2">mut </span>connec = LengthDelimited::new(client_connection);
                     <span class="kw">for </span>frame <span class="kw">in </span>frames {
                         connec.send(From::from(frame)).<span class="kw">await</span>.unwrap();
                     }

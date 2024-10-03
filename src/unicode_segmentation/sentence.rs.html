@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/unicode-segmentation-1.11.0/src/sentence.rs`."><title>sentence.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="unicode_segmentation" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="icon" href="https://unicode-rs.github.io/unicode-rs_sm.png"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/unicode-segmentation-1.12.0/src/sentence.rs`."><title>sentence.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="unicode_segmentation" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="icon" href="https://unicode-rs.github.io/unicode-rs_sm.png"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -416,8 +416,6 @@
 <a href="#416" id="416">416</a>
 <a href="#417" id="417">417</a>
 <a href="#418" id="418">418</a>
-<a href="#419" id="419">419</a>
-<a href="#420" id="420">420</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2012-2014 The Rust Project Developers. See the COPYRIGHT
 // file at the top-level directory of this distribution and at
 // http://rust-lang.org/COPYRIGHT.
@@ -438,7 +436,7 @@
 
     <span class="comment">// Describe a parsed part of source string as described in this table:
     // https://unicode.org/reports/tr29/#Default_Sentence_Boundaries
-    </span><span class="attr">#[derive(Clone, Copy, PartialEq, Eq)]
+    </span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq, Eq)]
     </span><span class="kw">enum </span>StatePart {
         Sot,
         Eot,
@@ -453,7 +451,7 @@
         STerm,
     }
 
-    <span class="attr">#[derive(Clone, PartialEq, Eq)]
+    <span class="attr">#[derive(Debug, Clone, PartialEq, Eq)]
     </span><span class="kw">struct </span>SentenceBreaksState(<span class="kw">pub </span>[StatePart; <span class="number">4</span>]);
 
     <span class="kw">const </span>INITIAL_STATE: SentenceBreaksState = SentenceBreaksState([
@@ -463,7 +461,7 @@
         StatePart::Sot,
     ]);
 
-    <span class="attr">#[derive(Clone)]
+    <span class="attr">#[derive(Debug, Clone)]
     </span><span class="kw">pub struct </span>SentenceBreaks&lt;<span class="lifetime">'a</span>&gt; {
         <span class="kw">pub </span>string: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str,
         pos: usize,
@@ -684,9 +682,7 @@
             }
 
             <span class="comment">// SB2 https://unicode.org/reports/tr29/#SB2
-            </span><span class="kw">if </span><span class="self">self</span>.state.match1(StatePart::Sot) {
-                <span class="prelude-val">None
-            </span>} <span class="kw">else if </span><span class="self">self</span>.state.match1(StatePart::Eot) {
+            </span><span class="kw">if </span><span class="self">self</span>.state.match1(StatePart::Sot) || <span class="self">self</span>.state.match1(StatePart::Eot) {
                 <span class="prelude-val">None
             </span>} <span class="kw">else </span>{
                 <span class="self">self</span>.state = <span class="self">self</span>.state.end();
@@ -695,7 +691,7 @@
         }
     }
 
-    <span class="kw">pub fn </span>new_sentence_breaks&lt;<span class="lifetime">'a</span>&gt;(source: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str) -&gt; SentenceBreaks&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">pub fn </span>new_sentence_breaks(source: <span class="kw-2">&amp;</span>str) -&gt; SentenceBreaks&lt;<span class="lifetime">'_</span>&gt; {
         SentenceBreaks {
             string: source,
             pos: <span class="number">0</span>,
@@ -716,7 +712,7 @@
 ///
 /// [`unicode_sentences`]: trait.UnicodeSegmentation.html#tymethod.unicode_sentences
 /// [`UnicodeSegmentation`]: trait.UnicodeSegmentation.html
-</span><span class="attr">#[derive(Clone)]
+</span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>UnicodeSentences&lt;<span class="lifetime">'a</span>&gt; {
     inner: Filter&lt;USentenceBounds&lt;<span class="lifetime">'a</span>&gt;, <span class="kw">fn</span>(&amp;&amp;str) -&gt; bool&gt;,
 }
@@ -729,7 +725,7 @@
 ///
 /// [`split_sentence_bounds`]: trait.UnicodeSegmentation.html#tymethod.split_sentence_bounds
 /// [`UnicodeSegmentation`]: trait.UnicodeSegmentation.html
-</span><span class="attr">#[derive(Clone)]
+</span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>USentenceBounds&lt;<span class="lifetime">'a</span>&gt; {
     iter: fwd::SentenceBreaks&lt;<span class="lifetime">'a</span>&gt;,
     sentence_start: <span class="prelude-ty">Option</span>&lt;usize&gt;,
@@ -742,14 +738,14 @@
 ///
 /// [`split_sentence_bound_indices`]: trait.UnicodeSegmentation.html#tymethod.split_sentence_bound_indices
 /// [`UnicodeSegmentation`]: trait.UnicodeSegmentation.html
-</span><span class="attr">#[derive(Clone)]
+</span><span class="attr">#[derive(Debug, Clone)]
 </span><span class="kw">pub struct </span>USentenceBoundIndices&lt;<span class="lifetime">'a</span>&gt; {
     start_offset: usize,
     iter: USentenceBounds&lt;<span class="lifetime">'a</span>&gt;,
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub fn </span>new_sentence_bounds&lt;<span class="lifetime">'a</span>&gt;(source: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str) -&gt; USentenceBounds&lt;<span class="lifetime">'a</span>&gt; {
+</span><span class="kw">pub fn </span>new_sentence_bounds(source: <span class="kw-2">&amp;</span>str) -&gt; USentenceBounds&lt;<span class="lifetime">'_</span>&gt; {
     USentenceBounds {
         iter: fwd::new_sentence_breaks(source),
         sentence_start: <span class="prelude-val">None</span>,
@@ -757,7 +753,7 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub fn </span>new_sentence_bound_indices&lt;<span class="lifetime">'a</span>&gt;(source: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str) -&gt; USentenceBoundIndices&lt;<span class="lifetime">'a</span>&gt; {
+</span><span class="kw">pub fn </span>new_sentence_bound_indices(source: <span class="kw-2">&amp;</span>str) -&gt; USentenceBoundIndices&lt;<span class="lifetime">'_</span>&gt; {
     USentenceBoundIndices {
         start_offset: source.as_ptr() <span class="kw">as </span>usize,
         iter: new_sentence_bounds(source),
@@ -765,12 +761,12 @@
 }
 
 <span class="attr">#[inline]
-</span><span class="kw">pub fn </span>new_unicode_sentences&lt;<span class="lifetime">'b</span>&gt;(s: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>str) -&gt; UnicodeSentences&lt;<span class="lifetime">'b</span>&gt; {
+</span><span class="kw">pub fn </span>new_unicode_sentences(s: <span class="kw-2">&amp;</span>str) -&gt; UnicodeSentences&lt;<span class="lifetime">'_</span>&gt; {
     <span class="kw">use </span><span class="kw">super</span>::UnicodeSegmentation;
     <span class="kw">use </span><span class="kw">crate</span>::tables::util::is_alphanumeric;
 
     <span class="kw">fn </span>has_alphanumeric(s: &amp;&amp;str) -&gt; bool {
-        s.chars().any(|c| is_alphanumeric(c))
+        s.chars().any(is_alphanumeric)
     }
     <span class="kw">let </span>has_alphanumeric: <span class="kw">fn</span>(&amp;&amp;str) -&gt; bool = has_alphanumeric; <span class="comment">// coerce to fn pointer
 
@@ -804,7 +800,7 @@
 
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>str&gt; {
-        <span class="kw">if </span><span class="self">self</span>.sentence_start == <span class="prelude-val">None </span>{
+        <span class="kw">if </span><span class="self">self</span>.sentence_start.is_none() {
             <span class="kw">if let </span><span class="prelude-val">Some</span>(start_pos) = <span class="self">self</span>.iter.next() {
                 <span class="self">self</span>.sentence_start = <span class="prelude-val">Some</span>(start_pos)
             } <span class="kw">else </span>{

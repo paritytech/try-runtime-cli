@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/cli/src/runner.rs`."><title>runner.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/client/cli/src/runner.rs`."><title>runner.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -412,6 +412,10 @@
 <a href="#412" id="412">412</a>
 <a href="#413" id="413">413</a>
 <a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -607,7 +611,10 @@
 </span><span class="kw">mod </span>tests {
 	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 	<span class="kw">use </span>sc_network::config::NetworkConfiguration;
-	<span class="kw">use </span>sc_service::{Arc, ChainType, GenericChainSpec, NoExtension};
+	<span class="kw">use </span>sc_service::{
+		config::{ExecutorConfiguration, RpcConfiguration},
+		Arc, ChainType, GenericChainSpec, NoExtension,
+	};
 	<span class="kw">use </span>std::{
 		path::PathBuf,
 		sync::atomic::{AtomicU64, Ordering},
@@ -666,44 +673,45 @@
 				state_pruning: <span class="prelude-val">None</span>,
 				blocks_pruning: sc_client_db::BlocksPruning::KeepAll,
 				chain_spec: Box::new(
-					GenericChainSpec::&lt;()&gt;::builder(Default::default(), NoExtension::None)
-						.with_name(<span class="string">"test"</span>)
-						.with_id(<span class="string">"test_id"</span>)
-						.with_chain_type(ChainType::Development)
-						.with_genesis_config_patch(Default::default())
-						.build(),
+					GenericChainSpec::&lt;NoExtension, ()&gt;::builder(
+						Default::default(),
+						NoExtension::None,
+					)
+					.with_name(<span class="string">"test"</span>)
+					.with_id(<span class="string">"test_id"</span>)
+					.with_chain_type(ChainType::Development)
+					.with_genesis_config_patch(Default::default())
+					.build(),
 				),
-				wasm_method: Default::default(),
+				executor: ExecutorConfiguration::default(),
 				wasm_runtime_overrides: <span class="prelude-val">None</span>,
-				rpc_addr: <span class="prelude-val">None</span>,
-				rpc_max_connections: Default::default(),
-				rpc_cors: <span class="prelude-val">None</span>,
-				rpc_methods: Default::default(),
-				rpc_max_request_size: Default::default(),
-				rpc_max_response_size: Default::default(),
-				rpc_id_provider: Default::default(),
-				rpc_max_subs_per_conn: Default::default(),
-				rpc_message_buffer_capacity: Default::default(),
-				rpc_port: <span class="number">9944</span>,
-				rpc_batch_config: sc_service::config::RpcBatchRequestConfig::Unlimited,
-				rpc_rate_limit: <span class="prelude-val">None</span>,
-				rpc_rate_limit_whitelisted_ips: Default::default(),
-				rpc_rate_limit_trust_proxy_headers: Default::default(),
+				rpc: RpcConfiguration {
+					addr: <span class="prelude-val">None</span>,
+					max_connections: Default::default(),
+					cors: <span class="prelude-val">None</span>,
+					methods: Default::default(),
+					max_request_size: Default::default(),
+					max_response_size: Default::default(),
+					id_provider: Default::default(),
+					max_subs_per_conn: Default::default(),
+					message_buffer_capacity: Default::default(),
+					port: <span class="number">9944</span>,
+					batch_config: sc_service::config::RpcBatchRequestConfig::Unlimited,
+					rate_limit: <span class="prelude-val">None</span>,
+					rate_limit_whitelisted_ips: Default::default(),
+					rate_limit_trust_proxy_headers: Default::default(),
+				},
 				prometheus_config: <span class="prelude-val">None</span>,
 				telemetry_endpoints: <span class="prelude-val">None</span>,
-				default_heap_pages: <span class="prelude-val">None</span>,
 				offchain_worker: Default::default(),
 				force_authoring: <span class="bool-val">false</span>,
 				disable_grandpa: <span class="bool-val">false</span>,
 				dev_key_seed: <span class="prelude-val">None</span>,
 				tracing_targets: <span class="prelude-val">None</span>,
 				tracing_receiver: Default::default(),
-				max_runtime_instances: <span class="number">8</span>,
 				announce_block: <span class="bool-val">true</span>,
 				base_path: sc_service::BasePath::new(root.clone()),
 				data_path: root,
-				informant_output_format: Default::default(),
-				runtime_cache_size: <span class="number">2</span>,
 			},
 			runtime,
 			Signals::dummy(),

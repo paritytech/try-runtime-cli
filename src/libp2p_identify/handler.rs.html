@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-identify-0.42.2/src/handler.rs`."><title>handler.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="libp2p_identify" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-identify-0.43.1/src/handler.rs`."><title>handler.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="libp2p_identify" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -348,6 +348,107 @@
 <a href="#348" id="348">348</a>
 <a href="#349" id="349">349</a>
 <a href="#350" id="350">350</a>
+<a href="#351" id="351">351</a>
+<a href="#352" id="352">352</a>
+<a href="#353" id="353">353</a>
+<a href="#354" id="354">354</a>
+<a href="#355" id="355">355</a>
+<a href="#356" id="356">356</a>
+<a href="#357" id="357">357</a>
+<a href="#358" id="358">358</a>
+<a href="#359" id="359">359</a>
+<a href="#360" id="360">360</a>
+<a href="#361" id="361">361</a>
+<a href="#362" id="362">362</a>
+<a href="#363" id="363">363</a>
+<a href="#364" id="364">364</a>
+<a href="#365" id="365">365</a>
+<a href="#366" id="366">366</a>
+<a href="#367" id="367">367</a>
+<a href="#368" id="368">368</a>
+<a href="#369" id="369">369</a>
+<a href="#370" id="370">370</a>
+<a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
+<a href="#374" id="374">374</a>
+<a href="#375" id="375">375</a>
+<a href="#376" id="376">376</a>
+<a href="#377" id="377">377</a>
+<a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
+<a href="#380" id="380">380</a>
+<a href="#381" id="381">381</a>
+<a href="#382" id="382">382</a>
+<a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
+<a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
+<a href="#431" id="431">431</a>
+<a href="#432" id="432">432</a>
+<a href="#433" id="433">433</a>
+<a href="#434" id="434">434</a>
+<a href="#435" id="435">435</a>
+<a href="#436" id="436">436</a>
+<a href="#437" id="437">437</a>
+<a href="#438" id="438">438</a>
+<a href="#439" id="439">439</a>
+<a href="#440" id="440">440</a>
+<a href="#441" id="441">441</a>
+<a href="#442" id="442">442</a>
+<a href="#443" id="443">443</a>
+<a href="#444" id="444">444</a>
+<a href="#445" id="445">445</a>
+<a href="#446" id="446">446</a>
+<a href="#447" id="447">447</a>
+<a href="#448" id="448">448</a>
+<a href="#449" id="449">449</a>
+<a href="#450" id="450">450</a>
+<a href="#451" id="451">451</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2018 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -368,29 +469,31 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-</span><span class="kw">use </span><span class="kw">crate</span>::protocol::{
-    <span class="self">self</span>, Identify, InboundPush, Info, OutboundPush, Protocol, Push, UpgradeError,
-};
+</span><span class="kw">use </span><span class="kw">crate</span>::protocol::{Info, PushInfo, UpgradeError};
+<span class="kw">use crate</span>::{protocol, PROTOCOL_NAME, PUSH_PROTOCOL_NAME};
 <span class="kw">use </span>either::Either;
-<span class="kw">use </span>futures::future::BoxFuture;
 <span class="kw">use </span>futures::prelude::<span class="kw-2">*</span>;
-<span class="kw">use </span>futures::stream::FuturesUnordered;
+<span class="kw">use </span>futures_bounded::Timeout;
 <span class="kw">use </span>futures_timer::Delay;
-<span class="kw">use </span>libp2p_core::upgrade::SelectUpgrade;
+<span class="kw">use </span>libp2p_core::upgrade::{ReadyUpgrade, SelectUpgrade};
 <span class="kw">use </span>libp2p_core::Multiaddr;
 <span class="kw">use </span>libp2p_identity::PeerId;
 <span class="kw">use </span>libp2p_identity::PublicKey;
 <span class="kw">use </span>libp2p_swarm::handler::{
     ConnectionEvent, DialUpgradeError, FullyNegotiatedInbound, FullyNegotiatedOutbound,
+    ProtocolSupport,
 };
 <span class="kw">use </span>libp2p_swarm::{
-    ConnectionHandler, ConnectionHandlerEvent, ConnectionHandlerUpgrErr, KeepAlive,
-    NegotiatedSubstream, SubstreamProtocol,
+    ConnectionHandler, ConnectionHandlerEvent, KeepAlive, StreamProtocol, StreamUpgradeError,
+    SubstreamProtocol, SupportedProtocols,
 };
-<span class="kw">use </span>log::warn;
+<span class="kw">use </span>log::{warn, Level};
 <span class="kw">use </span>smallvec::SmallVec;
-<span class="kw">use </span>std::collections::VecDeque;
-<span class="kw">use </span>std::{io, pin::Pin, task::Context, task::Poll, time::Duration};
+<span class="kw">use </span>std::collections::HashSet;
+<span class="kw">use </span>std::{io, task::Context, task::Poll, time::Duration};
+
+<span class="kw">const </span>STREAM_TIMEOUT: Duration = Duration::from_secs(<span class="number">60</span>);
+<span class="kw">const </span>MAX_CONCURRENT_STREAMS_PER_CONNECTION: usize = <span class="number">10</span>;
 
 <span class="doccomment">/// Protocol handler for sending and receiving identification requests.
 ///
@@ -399,23 +502,23 @@
 /// permitting the underlying connection to be closed.
 </span><span class="kw">pub struct </span>Handler {
     remote_peer_id: PeerId,
-    inbound_identify_push: <span class="prelude-ty">Option</span>&lt;BoxFuture&lt;<span class="lifetime">'static</span>, <span class="prelude-ty">Result</span>&lt;Info, UpgradeError&gt;&gt;&gt;,
     <span class="doccomment">/// Pending events to yield.
     </span>events: SmallVec&lt;
-        [ConnectionHandlerEvent&lt;Either&lt;Identify, Push&lt;OutboundPush&gt;&gt;, (), Event, io::Error&gt;; <span class="number">4</span>],
+        [ConnectionHandlerEvent&lt;
+            Either&lt;ReadyUpgrade&lt;StreamProtocol&gt;, ReadyUpgrade&lt;StreamProtocol&gt;&gt;,
+            (),
+            Event,
+            io::Error,
+        &gt;; <span class="number">4</span>],
     &gt;,
 
-    <span class="doccomment">/// Streams awaiting `BehaviourInfo` to then send identify requests.
-    </span>reply_streams: VecDeque&lt;NegotiatedSubstream&gt;,
-
-    <span class="doccomment">/// Pending identification replies, awaiting being sent.
-    </span>pending_replies: FuturesUnordered&lt;BoxFuture&lt;<span class="lifetime">'static</span>, <span class="prelude-ty">Result</span>&lt;PeerId, UpgradeError&gt;&gt;&gt;,
+    active_streams: futures_bounded::FuturesSet&lt;<span class="prelude-ty">Result</span>&lt;Success, UpgradeError&gt;&gt;,
 
     <span class="doccomment">/// Future that fires when we need to identify the node again.
     </span>trigger_next_identify: Delay,
 
-    <span class="doccomment">/// Whether the handler should keep the connection alive.
-    </span>keep_alive: KeepAlive,
+    <span class="doccomment">/// Whether we have exchanged at least one periodic identify.
+    </span>exchanged_one_periodic_identify: bool,
 
     <span class="doccomment">/// The interval of `trigger_next_identify`, i.e. the recurrent delay.
     </span>interval: Duration,
@@ -433,19 +536,20 @@
 
     <span class="doccomment">/// Address observed by or for the remote.
     </span>observed_addr: Multiaddr,
+
+    <span class="doccomment">/// Identify information about the remote peer.
+    </span>remote_info: <span class="prelude-ty">Option</span>&lt;Info&gt;,
+
+    local_supported_protocols: SupportedProtocols,
+    remote_supported_protocols: HashSet&lt;StreamProtocol&gt;,
+    external_addresses: HashSet&lt;Multiaddr&gt;,
 }
 
 <span class="doccomment">/// An event from `Behaviour` with the information requested by the `Handler`.
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub struct </span>InEvent {
-    <span class="doccomment">/// The addresses that the peer is listening on.
-    </span><span class="kw">pub </span>listen_addrs: Vec&lt;Multiaddr&gt;,
-
-    <span class="doccomment">/// The list of protocols supported by the peer, e.g. `/ipfs/ping/1.0.0`.
-    </span><span class="kw">pub </span>supported_protocols: Vec&lt;String&gt;,
-
-    <span class="doccomment">/// The protocol w.r.t. the information requested.
-    </span><span class="kw">pub </span>protocol: Protocol,
+</span><span class="kw">pub enum </span>InEvent {
+    AddressesChanged(HashSet&lt;Multiaddr&gt;),
+    Push,
 }
 
 <span class="doccomment">/// Event produced by the `Handler`.
@@ -455,17 +559,16 @@
     <span class="doccomment">/// We obtained identification information from the remote.
     </span>Identified(Info),
     <span class="doccomment">/// We replied to an identification request from the remote.
-    </span>Identification(PeerId),
+    </span>Identification,
     <span class="doccomment">/// We actively pushed our identification information to the remote.
     </span>IdentificationPushed,
-    <span class="doccomment">/// We received a request for identification.
-    </span>Identify,
     <span class="doccomment">/// Failed to identify the remote, or to reply to an identification request.
-    </span>IdentificationError(ConnectionHandlerUpgrErr&lt;UpgradeError&gt;),
+    </span>IdentificationError(StreamUpgradeError&lt;UpgradeError&gt;),
 }
 
 <span class="kw">impl </span>Handler {
     <span class="doccomment">/// Creates a new `Handler`.
+    </span><span class="attr">#[allow(clippy::too_many_arguments)]
     </span><span class="kw">pub fn </span>new(
         initial_delay: Duration,
         interval: Duration,
@@ -474,20 +577,26 @@
         protocol_version: String,
         agent_version: String,
         observed_addr: Multiaddr,
+        external_addresses: HashSet&lt;Multiaddr&gt;,
     ) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             remote_peer_id,
-            inbound_identify_push: Default::default(),
             events: SmallVec::new(),
-            reply_streams: VecDeque::new(),
-            pending_replies: FuturesUnordered::new(),
+            active_streams: futures_bounded::FuturesSet::new(
+                STREAM_TIMEOUT,
+                MAX_CONCURRENT_STREAMS_PER_CONNECTION,
+            ),
             trigger_next_identify: Delay::new(initial_delay),
-            keep_alive: KeepAlive::Yes,
+            exchanged_one_periodic_identify: <span class="bool-val">false</span>,
             interval,
             public_key,
             protocol_version,
             agent_version,
             observed_addr,
+            local_supported_protocols: SupportedProtocols::default(),
+            remote_supported_protocols: HashSet::default(),
+            remote_info: Default::default(),
+            external_addresses,
         }
     }
 
@@ -501,25 +610,28 @@
         &gt;,
     ) {
         <span class="kw">match </span>output {
-            future::Either::Left(substream) =&gt; {
-                <span class="self">self</span>.events
-                    .push(ConnectionHandlerEvent::Custom(Event::Identify));
-                <span class="kw">if </span>!<span class="self">self</span>.reply_streams.is_empty() {
-                    <span class="macro">warn!</span>(
-                        <span class="string">"New inbound identify request from {} while a previous one \
-                         is still pending. Queueing the new one."</span>,
-                        <span class="self">self</span>.remote_peer_id,
-                    );
+            future::Either::Left(stream) =&gt; {
+                <span class="kw">let </span>info = <span class="self">self</span>.build_info();
+
+                <span class="kw">if </span><span class="self">self
+                    </span>.active_streams
+                    .try_push(
+                        protocol::send_identify(stream, info).map_ok(|<span class="kw">_</span>| Success::SentIdentify),
+                    )
+                    .is_err()
+                {
+                    <span class="macro">warn!</span>(<span class="string">"Dropping inbound stream because we are at capacity"</span>);
+                } <span class="kw">else </span>{
+                    <span class="self">self</span>.exchanged_one_periodic_identify = <span class="bool-val">true</span>;
                 }
-                <span class="self">self</span>.reply_streams.push_back(substream);
             }
-            future::Either::Right(fut) =&gt; {
-                <span class="kw">if </span><span class="self">self</span>.inbound_identify_push.replace(fut).is_some() {
-                    <span class="macro">warn!</span>(
-                        <span class="string">"New inbound identify push stream from {} while still \
-                         upgrading previous one. Replacing previous with new."</span>,
-                        <span class="self">self</span>.remote_peer_id,
-                    );
+            future::Either::Right(stream) =&gt; {
+                <span class="kw">if </span><span class="self">self
+                    </span>.active_streams
+                    .try_push(protocol::recv_push(stream).map_ok(Success::ReceivedIdentifyPush))
+                    .is_err()
+                {
+                    <span class="macro">warn!</span>(<span class="string">"Dropping inbound identify push stream because we are at capacity"</span>);
                 }
             }
         }
@@ -535,96 +647,130 @@
         &gt;,
     ) {
         <span class="kw">match </span>output {
-            future::Either::Left(remote_info) =&gt; {
-                <span class="self">self</span>.events
-                    .push(ConnectionHandlerEvent::Custom(Event::Identified(
-                        remote_info,
-                    )));
-                <span class="self">self</span>.keep_alive = KeepAlive::No;
+            future::Either::Left(stream) =&gt; {
+                <span class="kw">if </span><span class="self">self
+                    </span>.active_streams
+                    .try_push(protocol::recv_identify(stream).map_ok(Success::ReceivedIdentify))
+                    .is_err()
+                {
+                    <span class="macro">warn!</span>(<span class="string">"Dropping outbound identify stream because we are at capacity"</span>);
+                }
             }
-            future::Either::Right(()) =&gt; <span class="self">self
-                </span>.events
-                .push(ConnectionHandlerEvent::Custom(Event::IdentificationPushed)),
+            future::Either::Right(stream) =&gt; {
+                <span class="kw">let </span>info = <span class="self">self</span>.build_info();
+
+                <span class="kw">if </span><span class="self">self
+                    </span>.active_streams
+                    .try_push(
+                        protocol::send_identify(stream, info).map_ok(|<span class="kw">_</span>| Success::SentIdentifyPush),
+                    )
+                    .is_err()
+                {
+                    <span class="macro">warn!</span>(<span class="string">"Dropping outbound identify push stream because we are at capacity"</span>);
+                }
+            }
         }
     }
 
-    <span class="kw">fn </span>on_dial_upgrade_error(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        DialUpgradeError { error: err, .. }: DialUpgradeError&lt;
-            &lt;<span class="self">Self </span><span class="kw">as </span>ConnectionHandler&gt;::OutboundOpenInfo,
-            &lt;<span class="self">Self </span><span class="kw">as </span>ConnectionHandler&gt;::OutboundProtocol,
-        &gt;,
-    ) {
-        <span class="kw">use </span>libp2p_core::upgrade::UpgradeError;
+    <span class="kw">fn </span>build_info(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; Info {
+        Info {
+            public_key: <span class="self">self</span>.public_key.clone(),
+            protocol_version: <span class="self">self</span>.protocol_version.clone(),
+            agent_version: <span class="self">self</span>.agent_version.clone(),
+            listen_addrs: Vec::from_iter(<span class="self">self</span>.external_addresses.iter().cloned()),
+            protocols: Vec::from_iter(<span class="self">self</span>.local_supported_protocols.iter().cloned()),
+            observed_addr: <span class="self">self</span>.observed_addr.clone(),
+        }
+    }
 
-        <span class="kw">let </span>err = err.map_upgrade_err(|e| <span class="kw">match </span>e {
-            UpgradeError::Select(e) =&gt; UpgradeError::Select(e),
-            UpgradeError::Apply(Either::Left(ioe)) =&gt; UpgradeError::Apply(ioe),
-            UpgradeError::Apply(Either::Right(ioe)) =&gt; UpgradeError::Apply(ioe),
-        });
-        <span class="self">self</span>.events
-            .push(ConnectionHandlerEvent::Custom(Event::IdentificationError(
-                err,
-            )));
-        <span class="self">self</span>.keep_alive = KeepAlive::No;
-        <span class="self">self</span>.trigger_next_identify.reset(<span class="self">self</span>.interval);
+    <span class="kw">fn </span>handle_incoming_info(<span class="kw-2">&amp;mut </span><span class="self">self</span>, info: <span class="kw-2">&amp;</span>Info) {
+        <span class="self">self</span>.remote_info.replace(info.clone());
+
+        <span class="self">self</span>.update_supported_protocols_for_remote(info);
+    }
+
+    <span class="kw">fn </span>update_supported_protocols_for_remote(<span class="kw-2">&amp;mut </span><span class="self">self</span>, remote_info: <span class="kw-2">&amp;</span>Info) {
+        <span class="kw">let </span>new_remote_protocols = HashSet::from_iter(remote_info.protocols.clone());
+
+        <span class="kw">let </span>remote_added_protocols = new_remote_protocols
+            .difference(<span class="kw-2">&amp;</span><span class="self">self</span>.remote_supported_protocols)
+            .cloned()
+            .collect::&lt;HashSet&lt;<span class="kw">_</span>&gt;&gt;();
+        <span class="kw">let </span>remote_removed_protocols = <span class="self">self
+            </span>.remote_supported_protocols
+            .difference(<span class="kw-2">&amp;</span>new_remote_protocols)
+            .cloned()
+            .collect::&lt;HashSet&lt;<span class="kw">_</span>&gt;&gt;();
+
+        <span class="kw">if </span>!remote_added_protocols.is_empty() {
+            <span class="self">self</span>.events
+                .push(ConnectionHandlerEvent::ReportRemoteProtocols(
+                    ProtocolSupport::Added(remote_added_protocols),
+                ));
+        }
+
+        <span class="kw">if </span>!remote_removed_protocols.is_empty() {
+            <span class="self">self</span>.events
+                .push(ConnectionHandlerEvent::ReportRemoteProtocols(
+                    ProtocolSupport::Removed(remote_removed_protocols),
+                ));
+        }
+
+        <span class="self">self</span>.remote_supported_protocols = new_remote_protocols;
+    }
+
+    <span class="kw">fn </span>local_protocols_to_string(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; String {
+        <span class="self">self</span>.local_supported_protocols
+            .iter()
+            .map(|p| p.to_string())
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
+            .join(<span class="string">", "</span>)
     }
 }
 
 <span class="kw">impl </span>ConnectionHandler <span class="kw">for </span>Handler {
-    <span class="kw">type </span>InEvent = InEvent;
-    <span class="kw">type </span>OutEvent = Event;
+    <span class="kw">type </span>FromBehaviour = InEvent;
+    <span class="kw">type </span>ToBehaviour = Event;
     <span class="kw">type </span>Error = io::Error;
-    <span class="kw">type </span>InboundProtocol = SelectUpgrade&lt;Identify, Push&lt;InboundPush&gt;&gt;;
-    <span class="kw">type </span>OutboundProtocol = Either&lt;Identify, Push&lt;OutboundPush&gt;&gt;;
+    <span class="kw">type </span>InboundProtocol =
+        SelectUpgrade&lt;ReadyUpgrade&lt;StreamProtocol&gt;, ReadyUpgrade&lt;StreamProtocol&gt;&gt;;
+    <span class="kw">type </span>OutboundProtocol = Either&lt;ReadyUpgrade&lt;StreamProtocol&gt;, ReadyUpgrade&lt;StreamProtocol&gt;&gt;;
     <span class="kw">type </span>OutboundOpenInfo = ();
     <span class="kw">type </span>InboundOpenInfo = ();
 
     <span class="kw">fn </span>listen_protocol(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SubstreamProtocol&lt;<span class="self">Self</span>::InboundProtocol, <span class="self">Self</span>::InboundOpenInfo&gt; {
-        SubstreamProtocol::new(SelectUpgrade::new(Identify, Push::inbound()), ())
+        SubstreamProtocol::new(
+            SelectUpgrade::new(
+                ReadyUpgrade::new(PROTOCOL_NAME),
+                ReadyUpgrade::new(PUSH_PROTOCOL_NAME),
+            ),
+            (),
+        )
     }
 
-    <span class="kw">fn </span>on_behaviour_event(
-        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        InEvent {
-            listen_addrs,
-            supported_protocols,
-            protocol,
-        }: <span class="self">Self</span>::InEvent,
-    ) {
-        <span class="kw">let </span>info = Info {
-            public_key: <span class="self">self</span>.public_key.clone(),
-            protocol_version: <span class="self">self</span>.protocol_version.clone(),
-            agent_version: <span class="self">self</span>.agent_version.clone(),
-            listen_addrs,
-            protocols: supported_protocols,
-            observed_addr: <span class="self">self</span>.observed_addr.clone(),
-        };
-
-        <span class="kw">match </span>protocol {
-            Protocol::Push =&gt; {
+    <span class="kw">fn </span>on_behaviour_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>, event: <span class="self">Self</span>::FromBehaviour) {
+        <span class="kw">match </span>event {
+            InEvent::AddressesChanged(addresses) =&gt; {
+                <span class="self">self</span>.external_addresses = addresses;
+            }
+            InEvent::Push =&gt; {
                 <span class="self">self</span>.events
                     .push(ConnectionHandlerEvent::OutboundSubstreamRequest {
-                        protocol: SubstreamProtocol::new(Either::Right(Push::outbound(info)), ()),
+                        protocol: SubstreamProtocol::new(
+                            Either::Right(ReadyUpgrade::new(PUSH_PROTOCOL_NAME)),
+                            (),
+                        ),
                     });
-            }
-            Protocol::Identify(<span class="kw">_</span>) =&gt; {
-                <span class="kw">let </span>substream = <span class="self">self
-                    </span>.reply_streams
-                    .pop_front()
-                    .expect(<span class="string">"A BehaviourInfo reply should have a matching substream."</span>);
-                <span class="kw">let </span>peer = <span class="self">self</span>.remote_peer_id;
-                <span class="kw">let </span>fut = Box::pin(<span class="kw">async move </span>{
-                    protocol::send(substream, info).<span class="kw">await</span><span class="question-mark">?</span>;
-                    <span class="prelude-val">Ok</span>(peer)
-                });
-                <span class="self">self</span>.pending_replies.push(fut);
             }
         }
     }
 
     <span class="kw">fn </span>connection_keep_alive(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; KeepAlive {
-        <span class="self">self</span>.keep_alive
+        <span class="kw">if </span>!<span class="self">self</span>.active_streams.is_empty() {
+            <span class="kw">return </span>KeepAlive::Yes;
+        }
+
+        KeepAlive::No
     }
 
     <span class="kw">fn </span>poll(
@@ -633,46 +779,64 @@
     ) -&gt; Poll&lt;
         ConnectionHandlerEvent&lt;<span class="self">Self</span>::OutboundProtocol, <span class="self">Self</span>::OutboundOpenInfo, Event, <span class="self">Self</span>::Error&gt;,
     &gt; {
-        <span class="kw">if </span>!<span class="self">self</span>.events.is_empty() {
-            <span class="kw">return </span>Poll::Ready(<span class="self">self</span>.events.remove(<span class="number">0</span>));
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(event) = <span class="self">self</span>.events.pop() {
+            <span class="kw">return </span>Poll::Ready(event);
         }
 
         <span class="comment">// Poll the future that fires when we need to identify the node again.
-        </span><span class="kw">match </span>Future::poll(Pin::new(<span class="kw-2">&amp;mut </span><span class="self">self</span>.trigger_next_identify), cx) {
-            Poll::Pending =&gt; {}
-            Poll::Ready(()) =&gt; {
-                <span class="self">self</span>.trigger_next_identify.reset(<span class="self">self</span>.interval);
-                <span class="kw">let </span>ev = ConnectionHandlerEvent::OutboundSubstreamRequest {
-                    protocol: SubstreamProtocol::new(Either::Left(Identify), ()),
+        </span><span class="kw">if let </span>Poll::Ready(()) = <span class="self">self</span>.trigger_next_identify.poll_unpin(cx) {
+            <span class="self">self</span>.trigger_next_identify.reset(<span class="self">self</span>.interval);
+            <span class="kw">let </span>event = ConnectionHandlerEvent::OutboundSubstreamRequest {
+                protocol: SubstreamProtocol::new(
+                    Either::Left(ReadyUpgrade::new(PROTOCOL_NAME)),
+                    (),
+                ),
+            };
+            <span class="kw">return </span>Poll::Ready(event);
+        }
+
+        <span class="kw">match </span><span class="self">self</span>.active_streams.poll_unpin(cx) {
+            Poll::Ready(<span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(Success::ReceivedIdentify(remote_info)))) =&gt; {
+                <span class="self">self</span>.handle_incoming_info(<span class="kw-2">&amp;</span>remote_info);
+
+                <span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::NotifyBehaviour(Event::Identified(
+                    remote_info,
+                )));
+            }
+            Poll::Ready(<span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(Success::SentIdentifyPush))) =&gt; {
+                <span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::NotifyBehaviour(
+                    Event::IdentificationPushed,
+                ));
+            }
+            Poll::Ready(<span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(Success::SentIdentify))) =&gt; {
+                <span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::NotifyBehaviour(
+                    Event::Identification,
+                ));
+            }
+            Poll::Ready(<span class="prelude-val">Ok</span>(<span class="prelude-val">Ok</span>(Success::ReceivedIdentifyPush(remote_push_info)))) =&gt; {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>info) = <span class="self">self</span>.remote_info.clone() {
+                    info.merge(remote_push_info);
+                    <span class="self">self</span>.handle_incoming_info(<span class="kw-2">&amp;</span>info);
+
+                    <span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::NotifyBehaviour(
+                        Event::Identified(info),
+                    ));
                 };
-                <span class="kw">return </span>Poll::Ready(ev);
             }
-        }
-
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(Poll::Ready(res)) = <span class="self">self
-            </span>.inbound_identify_push
-            .as_mut()
-            .map(|f| f.poll_unpin(cx))
-        {
-            <span class="self">self</span>.inbound_identify_push.take();
-
-            <span class="kw">if let </span><span class="prelude-val">Ok</span>(info) = res {
-                <span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::Custom(Event::Identified(info)));
+            Poll::Ready(<span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(e))) =&gt; {
+                <span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::NotifyBehaviour(
+                    Event::IdentificationError(StreamUpgradeError::Apply(e)),
+                ));
             }
+            Poll::Ready(<span class="prelude-val">Err</span>(Timeout { .. })) =&gt; {
+                <span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::NotifyBehaviour(
+                    Event::IdentificationError(StreamUpgradeError::Timeout),
+                ));
+            }
+            Poll::Pending =&gt; {}
         }
 
-        <span class="comment">// Check for pending replies to send.
-        </span><span class="kw">match </span><span class="self">self</span>.pending_replies.poll_next_unpin(cx) {
-            Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(peer_id))) =&gt; Poll::Ready(ConnectionHandlerEvent::Custom(
-                Event::Identification(peer_id),
-            )),
-            Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(err))) =&gt; Poll::Ready(ConnectionHandlerEvent::Custom(
-                Event::IdentificationError(ConnectionHandlerUpgrErr::Upgrade(
-                    libp2p_core::upgrade::UpgradeError::Apply(err),
-                )),
-            )),
-            Poll::Ready(<span class="prelude-val">None</span>) | Poll::Pending =&gt; Poll::Pending,
-        }
+        Poll::Pending
     }
 
     <span class="kw">fn </span>on_connection_event(
@@ -691,11 +855,49 @@
             ConnectionEvent::FullyNegotiatedOutbound(fully_negotiated_outbound) =&gt; {
                 <span class="self">self</span>.on_fully_negotiated_outbound(fully_negotiated_outbound)
             }
-            ConnectionEvent::DialUpgradeError(dial_upgrade_error) =&gt; {
-                <span class="self">self</span>.on_dial_upgrade_error(dial_upgrade_error)
+            ConnectionEvent::DialUpgradeError(DialUpgradeError { error, .. }) =&gt; {
+                <span class="self">self</span>.events.push(ConnectionHandlerEvent::NotifyBehaviour(
+                    Event::IdentificationError(
+                        error.map_upgrade_err(|e| void::unreachable(e.into_inner())),
+                    ),
+                ));
+                <span class="self">self</span>.trigger_next_identify.reset(<span class="self">self</span>.interval);
             }
-            ConnectionEvent::AddressChange(<span class="kw">_</span>) | ConnectionEvent::ListenUpgradeError(<span class="kw">_</span>) =&gt; {}
+            ConnectionEvent::AddressChange(<span class="kw">_</span>)
+            | ConnectionEvent::ListenUpgradeError(<span class="kw">_</span>)
+            | ConnectionEvent::RemoteProtocolsChange(<span class="kw">_</span>) =&gt; {}
+            ConnectionEvent::LocalProtocolsChange(change) =&gt; {
+                <span class="kw">let </span>before = <span class="macro">log::log_enabled!</span>(Level::Debug)
+                    .then(|| <span class="self">self</span>.local_protocols_to_string())
+                    .unwrap_or_default();
+                <span class="kw">let </span>protocols_changed = <span class="self">self</span>.local_supported_protocols.on_protocols_change(change);
+                <span class="kw">let </span>after = <span class="macro">log::log_enabled!</span>(Level::Debug)
+                    .then(|| <span class="self">self</span>.local_protocols_to_string())
+                    .unwrap_or_default();
+
+                <span class="kw">if </span>protocols_changed &amp;&amp; <span class="self">self</span>.exchanged_one_periodic_identify {
+                    <span class="macro">log::debug!</span>(
+                        <span class="string">"Supported listen protocols changed from [{before}] to [{after}], pushing to {}"</span>,
+                        <span class="self">self</span>.remote_peer_id
+                    );
+
+                    <span class="self">self</span>.events
+                        .push(ConnectionHandlerEvent::OutboundSubstreamRequest {
+                            protocol: SubstreamProtocol::new(
+                                Either::Right(ReadyUpgrade::new(PUSH_PROTOCOL_NAME)),
+                                (),
+                            ),
+                        });
+                }
+            }
         }
     }
+}
+
+<span class="kw">enum </span>Success {
+    SentIdentify,
+    ReceivedIdentify(Info),
+    SentIdentifyPush,
+    ReceivedIdentifyPush(PushInfo),
 }
 </code></pre></div></section></main></body></html>

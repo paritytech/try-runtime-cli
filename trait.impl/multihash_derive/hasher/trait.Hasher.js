@@ -1,3 +1,0 @@
-(function() {var implementors = {
-"multihash_codetable":[["impl <a class=\"trait\" href=\"multihash_derive/hasher/trait.Hasher.html\" title=\"trait multihash_derive::hasher::Hasher\">Hasher</a> for <a class=\"struct\" href=\"multihash_codetable/struct.Sha2_256.html\" title=\"struct multihash_codetable::Sha2_256\">Sha2_256</a>"],["impl <a class=\"trait\" href=\"multihash_derive/hasher/trait.Hasher.html\" title=\"trait multihash_derive::hasher::Hasher\">Hasher</a> for <a class=\"struct\" href=\"multihash_codetable/struct.Sha2_512.html\" title=\"struct multihash_codetable::Sha2_512\">Sha2_512</a>"]]
-};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

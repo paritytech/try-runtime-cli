@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["DnsErr","ResolveErrorKind"],"struct":["GenDnsConfig","ResolveError","ResolverConfig","ResolverOpts"],"type":["TokioDnsConfig"]};
+window.SIDEBAR_ITEMS = {"enum":["Error","ResolveErrorKind"],"mod":["tokio"],"struct":["ResolveError","ResolverConfig","ResolverOpts","Transport"],"type":["DnsErr","GenDnsConfig","TokioDnsConfig"]};

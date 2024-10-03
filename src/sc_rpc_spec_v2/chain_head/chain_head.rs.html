@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/rpc-spec-v2/src/chain_head/chain_head.rs`."><title>chain_head.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_rpc_spec_v2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/client/rpc-spec-v2/src/chain_head/chain_head.rs`."><title>chain_head.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_rpc_spec_v2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -644,6 +644,19 @@
 <a href="#644" id="644">644</a>
 <a href="#645" id="645">645</a>
 <a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a>
+<a href="#651" id="651">651</a>
+<a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
+<a href="#656" id="656">656</a>
+<a href="#657" id="657">657</a>
+<a href="#658" id="658">658</a>
+<a href="#659" id="659">659</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -682,15 +695,15 @@
 <span class="kw">use </span>codec::Encode;
 <span class="kw">use </span>futures::{channel::oneshot, future::FutureExt};
 <span class="kw">use </span>jsonrpsee::{
-	core::async_trait, server::ResponsePayload, types::SubscriptionId, ConnectionDetails,
-	MethodResponseFuture, PendingSubscriptionSink, SubscriptionSink,
+	core::async_trait, server::ResponsePayload, types::SubscriptionId, ConnectionId, Extensions,
+	MethodResponseFuture, PendingSubscriptionSink,
 };
 <span class="kw">use </span>log::debug;
 <span class="kw">use </span>sc_client_api::{
 	Backend, BlockBackend, BlockchainEvents, CallExecutor, ChildInfo, ExecutorProvider, StorageKey,
 	StorageProvider,
 };
-<span class="kw">use </span>sc_rpc::utils::to_sub_message;
+<span class="kw">use </span>sc_rpc::utils::Subscription;
 <span class="kw">use </span>sp_api::CallApiAt;
 <span class="kw">use </span>sp_blockchain::{Error <span class="kw">as </span>BlockChainError, HeaderBackend, HeaderMetadata};
 <span class="kw">use </span>sp_core::{traits::CallContext, Bytes};
@@ -804,7 +817,7 @@
 }
 
 <span class="doccomment">/// Helper to convert the `subscription ID` to a string.
-</span><span class="kw">pub fn </span>read_subscription_id_as_string(sink: <span class="kw-2">&amp;</span>SubscriptionSink) -&gt; String {
+</span><span class="kw">pub fn </span>read_subscription_id_as_string(sink: <span class="kw-2">&amp;</span>Subscription) -&gt; String {
 	<span class="kw">match </span>sink.subscription_id() {
 		SubscriptionId::Num(n) =&gt; n.to_string(),
 		SubscriptionId::Str(s) =&gt; s.into_owned().into(),
@@ -859,7 +872,7 @@
 				<span class="kw">return
 			</span>};
 
-			<span class="kw">let </span><span class="prelude-val">Ok</span>(sink) = pending.accept().<span class="kw">await else </span>{ <span class="kw">return </span>};
+			<span class="kw">let </span><span class="prelude-val">Ok</span>(sink) = pending.accept().<span class="kw">await</span>.map(Subscription::from) <span class="kw">else </span>{ <span class="kw">return </span>};
 
 			<span class="kw">let </span>sub_id = read_subscription_id_as_string(<span class="kw-2">&amp;</span>sink);
 			<span class="comment">// Keep track of the subscription.
@@ -869,8 +882,7 @@
 				<span class="comment">// Inserting the subscription can only fail if the JsonRPSee generated a duplicate
 				// subscription ID.
 				</span><span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">"[follow][id={:?}] Subscription already accepted"</span>, sub_id);
-				<span class="kw">let </span>msg = to_sub_message(<span class="kw-2">&amp;</span>sink, <span class="kw-2">&amp;</span>FollowEvent::&lt;String&gt;::Stop);
-				<span class="kw">let _ </span>= sink.send(msg).<span class="kw">await</span>;
+				<span class="kw">let _ </span>= sink.send(<span class="kw-2">&amp;</span>FollowEvent::&lt;String&gt;::Stop).<span class="kw">await</span>;
 				<span class="kw">return
 			</span>};
 			<span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">"[follow][id={:?}] Subscription accepted"</span>, sub_id);
@@ -897,14 +909,16 @@
 
 	<span class="kw">async fn </span>chain_head_unstable_body(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		connection_details: ConnectionDetails,
+		ext: <span class="kw-2">&amp;</span>Extensions,
 		follow_subscription: String,
 		hash: Block::Hash,
 	) -&gt; ResponsePayload&lt;<span class="lifetime">'static</span>, MethodResponse&gt; {
-		<span class="kw">if </span>!<span class="self">self
-			</span>.subscriptions
-			.contains_subscription(connection_details.id(), <span class="kw-2">&amp;</span>follow_subscription)
-		{
+		<span class="kw">let </span>conn_id = ext
+			.get::&lt;ConnectionId&gt;()
+			.copied()
+			.expect(<span class="string">"ConnectionId is always set by jsonrpsee; qed"</span>);
+
+		<span class="kw">if </span>!<span class="self">self</span>.subscriptions.contains_subscription(conn_id, <span class="kw-2">&amp;</span>follow_subscription) {
 			<span class="comment">// The spec says to return `LimitReached` if the follow subscription is invalid or
 			// stale.
 			</span><span class="kw">return </span>ResponsePayload::success(MethodResponse::LimitReached);
@@ -981,14 +995,16 @@
 
 	<span class="kw">async fn </span>chain_head_unstable_header(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		connection_details: ConnectionDetails,
+		ext: <span class="kw-2">&amp;</span>Extensions,
 		follow_subscription: String,
 		hash: Block::Hash,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;String&gt;, ChainHeadRpcError&gt; {
-		<span class="kw">if </span>!<span class="self">self
-			</span>.subscriptions
-			.contains_subscription(connection_details.id(), <span class="kw-2">&amp;</span>follow_subscription)
-		{
+		<span class="kw">let </span>conn_id = ext
+			.get::&lt;ConnectionId&gt;()
+			.copied()
+			.expect(<span class="string">"ConnectionId is always set by jsonrpsee; qed"</span>);
+
+		<span class="kw">if </span>!<span class="self">self</span>.subscriptions.contains_subscription(conn_id, <span class="kw-2">&amp;</span>follow_subscription) {
 			<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
 		}
 
@@ -1017,16 +1033,18 @@
 
 	<span class="kw">async fn </span>chain_head_unstable_storage(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		connection_details: ConnectionDetails,
+		ext: <span class="kw-2">&amp;</span>Extensions,
 		follow_subscription: String,
 		hash: Block::Hash,
 		items: Vec&lt;StorageQuery&lt;String&gt;&gt;,
 		child_trie: <span class="prelude-ty">Option</span>&lt;String&gt;,
 	) -&gt; ResponsePayload&lt;<span class="lifetime">'static</span>, MethodResponse&gt; {
-		<span class="kw">if </span>!<span class="self">self
-			</span>.subscriptions
-			.contains_subscription(connection_details.id(), <span class="kw-2">&amp;</span>follow_subscription)
-		{
+		<span class="kw">let </span>conn_id = ext
+			.get::&lt;ConnectionId&gt;()
+			.copied()
+			.expect(<span class="string">"ConnectionId is always set by jsonrpsee; qed"</span>);
+
+		<span class="kw">if </span>!<span class="self">self</span>.subscriptions.contains_subscription(conn_id, <span class="kw-2">&amp;</span>follow_subscription) {
 			<span class="comment">// The spec says to return `LimitReached` if the follow subscription is invalid or
 			// stale.
 			</span><span class="kw">return </span>ResponsePayload::success(MethodResponse::LimitReached);
@@ -1098,7 +1116,7 @@
 
 	<span class="kw">async fn </span>chain_head_unstable_call(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		connection_details: ConnectionDetails,
+		ext: <span class="kw-2">&amp;</span>Extensions,
 		follow_subscription: String,
 		hash: Block::Hash,
 		function: String,
@@ -1109,10 +1127,12 @@
 			<span class="prelude-val">Err</span>(err) =&gt; <span class="kw">return </span>ResponsePayload::error(err),
 		};
 
-		<span class="kw">if </span>!<span class="self">self
-			</span>.subscriptions
-			.contains_subscription(connection_details.id(), <span class="kw-2">&amp;</span>follow_subscription)
-		{
+		<span class="kw">let </span>conn_id = ext
+			.get::&lt;ConnectionId&gt;()
+			.copied()
+			.expect(<span class="string">"ConnectionId is always set by jsonrpsee; qed"</span>);
+
+		<span class="kw">if </span>!<span class="self">self</span>.subscriptions.contains_subscription(conn_id, <span class="kw-2">&amp;</span>follow_subscription) {
 			<span class="comment">// The spec says to return `LimitReached` if the follow subscription is invalid or
 			// stale.
 			</span><span class="kw">return </span>ResponsePayload::success(MethodResponse::LimitReached);
@@ -1176,14 +1196,16 @@
 
 	<span class="kw">async fn </span>chain_head_unstable_unpin(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		connection_details: ConnectionDetails,
+		ext: <span class="kw-2">&amp;</span>Extensions,
 		follow_subscription: String,
 		hash_or_hashes: ListOrValue&lt;Block::Hash&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(), ChainHeadRpcError&gt; {
-		<span class="kw">if </span>!<span class="self">self
-			</span>.subscriptions
-			.contains_subscription(connection_details.id(), <span class="kw-2">&amp;</span>follow_subscription)
-		{
+		<span class="kw">let </span>conn_id = ext
+			.get::&lt;ConnectionId&gt;()
+			.copied()
+			.expect(<span class="string">"ConnectionId is always set by jsonrpsee; qed"</span>);
+
+		<span class="kw">if </span>!<span class="self">self</span>.subscriptions.contains_subscription(conn_id, <span class="kw-2">&amp;</span>follow_subscription) {
 			<span class="kw">return </span><span class="prelude-val">Ok</span>(());
 		}
 
@@ -1212,14 +1234,16 @@
 
 	<span class="kw">async fn </span>chain_head_unstable_continue(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		connection_details: ConnectionDetails,
+		ext: <span class="kw-2">&amp;</span>Extensions,
 		follow_subscription: String,
 		operation_id: String,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(), ChainHeadRpcError&gt; {
-		<span class="kw">if </span>!<span class="self">self
-			</span>.subscriptions
-			.contains_subscription(connection_details.id(), <span class="kw-2">&amp;</span>follow_subscription)
-		{
+		<span class="kw">let </span>conn_id = ext
+			.get::&lt;ConnectionId&gt;()
+			.copied()
+			.expect(<span class="string">"ConnectionId is always set by jsonrpsee; qed"</span>);
+
+		<span class="kw">if </span>!<span class="self">self</span>.subscriptions.contains_subscription(conn_id, <span class="kw-2">&amp;</span>follow_subscription) {
 			<span class="kw">return </span><span class="prelude-val">Ok</span>(())
 		}
 
@@ -1238,14 +1262,16 @@
 
 	<span class="kw">async fn </span>chain_head_unstable_stop_operation(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		connection_details: ConnectionDetails,
+		ext: <span class="kw-2">&amp;</span>Extensions,
 		follow_subscription: String,
 		operation_id: String,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(), ChainHeadRpcError&gt; {
-		<span class="kw">if </span>!<span class="self">self
-			</span>.subscriptions
-			.contains_subscription(connection_details.id(), <span class="kw-2">&amp;</span>follow_subscription)
-		{
+		<span class="kw">let </span>conn_id = ext
+			.get::&lt;ConnectionId&gt;()
+			.copied()
+			.expect(<span class="string">"ConnectionId is always set by jsonrpsee; qed"</span>);
+
+		<span class="kw">if </span>!<span class="self">self</span>.subscriptions.contains_subscription(conn_id, <span class="kw-2">&amp;</span>follow_subscription) {
 			<span class="kw">return </span><span class="prelude-val">Ok</span>(())
 		}
 

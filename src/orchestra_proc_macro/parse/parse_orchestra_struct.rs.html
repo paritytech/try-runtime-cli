@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/orchestra-proc-macro-0.3.5/src/parse/parse_orchestra_struct.rs`."><title>parse_orchestra_struct.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="orchestra_proc_macro" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/orchestra-proc-macro-0.4.0/src/parse/parse_orchestra_struct.rs`."><title>parse_orchestra_struct.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="orchestra_proc_macro" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -893,6 +893,44 @@
 <a href="#893" id="893">893</a>
 <a href="#894" id="894">894</a>
 <a href="#895" id="895">895</a>
+<a href="#896" id="896">896</a>
+<a href="#897" id="897">897</a>
+<a href="#898" id="898">898</a>
+<a href="#899" id="899">899</a>
+<a href="#900" id="900">900</a>
+<a href="#901" id="901">901</a>
+<a href="#902" id="902">902</a>
+<a href="#903" id="903">903</a>
+<a href="#904" id="904">904</a>
+<a href="#905" id="905">905</a>
+<a href="#906" id="906">906</a>
+<a href="#907" id="907">907</a>
+<a href="#908" id="908">908</a>
+<a href="#909" id="909">909</a>
+<a href="#910" id="910">910</a>
+<a href="#911" id="911">911</a>
+<a href="#912" id="912">912</a>
+<a href="#913" id="913">913</a>
+<a href="#914" id="914">914</a>
+<a href="#915" id="915">915</a>
+<a href="#916" id="916">916</a>
+<a href="#917" id="917">917</a>
+<a href="#918" id="918">918</a>
+<a href="#919" id="919">919</a>
+<a href="#920" id="920">920</a>
+<a href="#921" id="921">921</a>
+<a href="#922" id="922">922</a>
+<a href="#923" id="923">923</a>
+<a href="#924" id="924">924</a>
+<a href="#925" id="925">925</a>
+<a href="#926" id="926">926</a>
+<a href="#927" id="927">927</a>
+<a href="#928" id="928">928</a>
+<a href="#929" id="929">929</a>
+<a href="#930" id="930">930</a>
+<a href="#931" id="931">931</a>
+<a href="#932" id="932">932</a>
+<a href="#933" id="933">933</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) 2021 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -935,6 +973,7 @@
 	<span class="macro">syn::custom_keyword!</span>(sends);
 	<span class="macro">syn::custom_keyword!</span>(message_capacity);
 	<span class="macro">syn::custom_keyword!</span>(signal_capacity);
+	<span class="macro">syn::custom_keyword!</span>(can_receive_priority_messages);
 }
 
 <span class="attr">#[derive(Clone, Debug)]
@@ -953,6 +992,8 @@
 	</span>MessageChannelCapacity(ChannelCapacity&lt;kw::message_capacity&gt;),
 	<span class="doccomment">/// Custom signal channels capacity for this subsystem
 	</span>SignalChannelCapacity(ChannelCapacity&lt;kw::signal_capacity&gt;),
+	<span class="doccomment">/// The subsystem can receive priority messages
+	</span>CanReceivePriorityMessages(kw::can_receive_priority_messages),
 }
 
 <span class="kw">impl </span>Parse <span class="kw">for </span>SubSysAttrItem {
@@ -968,6 +1009,8 @@
 			<span class="self">Self</span>::MessageChannelCapacity(input.parse::&lt;ChannelCapacity&lt;kw::message_capacity&gt;&gt;()<span class="question-mark">?</span>)
 		} <span class="kw">else if </span>lookahead.peek(kw::signal_capacity) {
 			<span class="self">Self</span>::SignalChannelCapacity(input.parse::&lt;ChannelCapacity&lt;kw::signal_capacity&gt;&gt;()<span class="question-mark">?</span>)
+		} <span class="kw">else if </span>lookahead.peek(kw::can_receive_priority_messages) {
+			<span class="self">Self</span>::CanReceivePriorityMessages(input.parse::&lt;kw::can_receive_priority_messages&gt;()<span class="question-mark">?</span>)
 		} <span class="kw">else </span>{
 			<span class="self">Self</span>::Consumes(input.parse::&lt;Consumes&gt;()<span class="question-mark">?</span>)
 		})
@@ -994,6 +1037,9 @@
 			},
 			<span class="self">Self</span>::SignalChannelCapacity(<span class="kw">_</span>) =&gt; {
 				<span class="macro">quote!</span> {}
+			},
+			<span class="self">Self</span>::CanReceivePriorityMessages(can_receive_priority_messages) =&gt; {
+				<span class="macro">quote!</span> { #can_receive_priority_messages }
 			},
 		};
 		tokens.extend(ts.into_iter());
@@ -1025,6 +1071,8 @@
 	</span><span class="kw">pub</span>(<span class="kw">crate</span>) message_capacity: <span class="prelude-ty">Option</span>&lt;usize&gt;,
 	<span class="doccomment">/// Custom signal channel capacity
 	</span><span class="kw">pub</span>(<span class="kw">crate</span>) signal_capacity: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+	<span class="doccomment">/// The subsystem can receive priority messages
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) can_receive_priority_messages: bool,
 
 	<span class="kw">pub</span>(<span class="kw">crate</span>) feature_gates: <span class="prelude-ty">Option</span>&lt;CfgPredicate&gt;,
 }
@@ -1247,6 +1295,8 @@
 	</span><span class="kw">pub</span>(<span class="kw">crate</span>) message_capacity: <span class="prelude-ty">Option</span>&lt;ChannelCapacity&lt;kw::message_capacity&gt;&gt;,
 	<span class="doccomment">/// Custom signal channel capacity
 	</span><span class="kw">pub</span>(<span class="kw">crate</span>) signal_capacity: <span class="prelude-ty">Option</span>&lt;ChannelCapacity&lt;kw::signal_capacity&gt;&gt;,
+	<span class="doccomment">/// The subsystem can receive priority messages
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) can_receive_priority_messages: bool,
 }
 
 <span class="kw">impl </span>Parse <span class="kw">for </span>SubSystemAttrItems {
@@ -1288,8 +1338,18 @@
 		<span class="kw">let </span>wip = <span class="macro">extract_variant!</span>(unique, Wip; default = <span class="bool-val">false</span>);
 		<span class="kw">let </span>message_capacity = <span class="macro">extract_variant!</span>(unique, MessageChannelCapacity take );
 		<span class="kw">let </span>signal_capacity = <span class="macro">extract_variant!</span>(unique, SignalChannelCapacity take );
+		<span class="kw">let </span>can_receive_priority_messages =
+			<span class="macro">extract_variant!</span>(unique, CanReceivePriorityMessages; default = <span class="bool-val">false</span>);
 
-		<span class="prelude-val">Ok</span>(<span class="self">Self </span>{ blocking, wip, sends, consumes, message_capacity, signal_capacity })
+		<span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+			blocking,
+			wip,
+			sends,
+			consumes,
+			message_capacity,
+			signal_capacity,
+			can_receive_priority_messages,
+		})
 	}
 }
 
@@ -1381,6 +1441,10 @@
 		default_capacity: usize,
 	) -&gt; Vec&lt;LitInt&gt; {
 		signal_channel_capacities_without_wip(<span class="kw-2">&amp;</span><span class="self">self</span>.enabled_subsystems, default_capacity)
+	}
+
+	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>can_receive_priority_messages_without_wip(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;syn::LitBool&gt; {
+		can_receive_priority_messages_without_wip(<span class="kw-2">&amp;</span><span class="self">self</span>.enabled_subsystems)
 	}
 }
 
@@ -1633,6 +1697,7 @@
 					sends,
 					message_capacity,
 					signal_capacity,
+					can_receive_priority_messages,
 					..
 				} = subsystem_attrs;
 
@@ -1656,6 +1721,7 @@
 					message_capacity,
 					signal_capacity,
 					feature_gates,
+					can_receive_priority_messages,
 				});
 			} <span class="kw">else </span>{
 				<span class="comment">// collect the "baggage"
@@ -1786,6 +1852,16 @@
 		.map(|e| e.borrow())
 		.filter(|ssf| !ssf.wip)
 		.map(|ssf| ssf.message_to_consume())
+		.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>can_receive_priority_messages_without_wip(
+	subsystems: <span class="kw-2">&amp;</span>Vec&lt;<span class="kw-2">&amp;</span>SubSysField&gt;,
+) -&gt; Vec&lt;syn::LitBool&gt; {
+	subsystems
+		.iter()
+		.filter(|ssf| !ssf.wip)
+		.map(|ssf| syn::LitBool::new(ssf.can_receive_priority_messages, ssf.name.span()))
 		.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
 }
 </code></pre></div></section></main></body></html>

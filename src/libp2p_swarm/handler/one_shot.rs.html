@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-swarm-0.42.2/src/handler/one_shot.rs`."><title>one_shot.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="libp2p_swarm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-swarm-0.43.7/src/handler/one_shot.rs`."><title>one_shot.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="libp2p_swarm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -271,6 +271,20 @@
 <a href="#271" id="271">271</a>
 <a href="#272" id="272">272</a>
 <a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -292,8 +306,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 </span><span class="kw">use </span><span class="kw">crate</span>::handler::{
-    ConnectionEvent, ConnectionHandler, ConnectionHandlerEvent, ConnectionHandlerUpgrErr,
-    DialUpgradeError, FullyNegotiatedInbound, FullyNegotiatedOutbound, KeepAlive,
+    ConnectionEvent, ConnectionHandler, ConnectionHandlerEvent, DialUpgradeError,
+    FullyNegotiatedInbound, FullyNegotiatedOutbound, KeepAlive, StreamUpgradeError,
     SubstreamProtocol,
 };
 <span class="kw">use </span><span class="kw">crate</span>::upgrade::{InboundUpgradeSend, OutboundUpgradeSend};
@@ -310,7 +324,7 @@
     <span class="doccomment">/// The upgrade for inbound substreams.
     </span>listen_protocol: SubstreamProtocol&lt;TInbound, ()&gt;,
     <span class="doccomment">/// If `Some`, something bad happened and we should shut down the handler with an error.
-    </span>pending_error: <span class="prelude-ty">Option</span>&lt;ConnectionHandlerUpgrErr&lt;&lt;TOutbound <span class="kw">as </span>OutboundUpgradeSend&gt;::Error&gt;&gt;,
+    </span>pending_error: <span class="prelude-ty">Option</span>&lt;StreamUpgradeError&lt;&lt;TOutbound <span class="kw">as </span>OutboundUpgradeSend&gt;::Error&gt;&gt;,
     <span class="doccomment">/// Queue of events to produce in `poll()`.
     </span>events_out: SmallVec&lt;[TEvent; <span class="number">4</span>]&gt;,
     <span class="doccomment">/// Queue of outbound substreams to open.
@@ -394,9 +408,9 @@
     SubstreamProtocol&lt;TInbound, ()&gt;: Clone,
     TEvent: Debug + Send + <span class="lifetime">'static</span>,
 {
-    <span class="kw">type </span>InEvent = TOutbound;
-    <span class="kw">type </span>OutEvent = TEvent;
-    <span class="kw">type </span>Error = ConnectionHandlerUpgrErr&lt;&lt;<span class="self">Self</span>::OutboundProtocol <span class="kw">as </span>OutboundUpgradeSend&gt;::Error&gt;;
+    <span class="kw">type </span>FromBehaviour = TOutbound;
+    <span class="kw">type </span>ToBehaviour = TEvent;
+    <span class="kw">type </span>Error = StreamUpgradeError&lt;&lt;<span class="self">Self</span>::OutboundProtocol <span class="kw">as </span>OutboundUpgradeSend&gt;::Error&gt;;
     <span class="kw">type </span>InboundProtocol = TInbound;
     <span class="kw">type </span>OutboundProtocol = TOutbound;
     <span class="kw">type </span>OutboundOpenInfo = ();
@@ -406,7 +420,7 @@
         <span class="self">self</span>.listen_protocol.clone()
     }
 
-    <span class="kw">fn </span>on_behaviour_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>, event: <span class="self">Self</span>::InEvent) {
+    <span class="kw">fn </span>on_behaviour_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>, event: <span class="self">Self</span>::FromBehaviour) {
         <span class="self">self</span>.send_request(event);
     }
 
@@ -414,23 +428,27 @@
         <span class="self">self</span>.keep_alive
     }
 
-    <span class="kw">fn </span>poll(
+    <span class="attr">#[allow(deprecated)]
+    </span><span class="kw">fn </span>poll(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;,
     ) -&gt; Poll&lt;
         ConnectionHandlerEvent&lt;
             <span class="self">Self</span>::OutboundProtocol,
             <span class="self">Self</span>::OutboundOpenInfo,
-            <span class="self">Self</span>::OutEvent,
+            <span class="self">Self</span>::ToBehaviour,
             <span class="self">Self</span>::Error,
         &gt;,
     &gt; {
         <span class="kw">if let </span><span class="prelude-val">Some</span>(err) = <span class="self">self</span>.pending_error.take() {
-            <span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::Close(err));
+            <span class="attr">#[allow(deprecated)]
+            </span><span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::Close(err));
         }
 
         <span class="kw">if </span>!<span class="self">self</span>.events_out.is_empty() {
-            <span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::Custom(<span class="self">self</span>.events_out.remove(<span class="number">0</span>)));
+            <span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::NotifyBehaviour(
+                <span class="self">self</span>.events_out.remove(<span class="number">0</span>),
+            ));
         } <span class="kw">else </span>{
             <span class="self">self</span>.events_out.shrink_to_fit();
         }
@@ -447,7 +465,8 @@
         } <span class="kw">else </span>{
             <span class="self">self</span>.dial_queue.shrink_to_fit();
 
-            <span class="kw">if </span><span class="self">self</span>.dial_negotiated == <span class="number">0 </span>&amp;&amp; <span class="self">self</span>.keep_alive.is_yes() {
+            <span class="attr">#[allow(deprecated)]
+            </span><span class="kw">if </span><span class="self">self</span>.dial_negotiated == <span class="number">0 </span>&amp;&amp; <span class="self">self</span>.keep_alive.is_yes() {
                 <span class="self">self</span>.keep_alive = KeepAlive::Until(Instant::now() + <span class="self">self</span>.config.keep_alive_timeout);
             }
         }
@@ -470,6 +489,7 @@
                 ..
             }) =&gt; {
                 <span class="comment">// If we're shutting down the connection for inactivity, reset the timeout.
+                </span><span class="attr">#[allow(deprecated)]
                 </span><span class="kw">if </span>!<span class="self">self</span>.keep_alive.is_yes() {
                     <span class="self">self</span>.keep_alive =
                         KeepAlive::Until(Instant::now() + <span class="self">self</span>.config.keep_alive_timeout);
@@ -490,7 +510,10 @@
                     <span class="self">self</span>.keep_alive = KeepAlive::No;
                 }
             }
-            ConnectionEvent::AddressChange(<span class="kw">_</span>) | ConnectionEvent::ListenUpgradeError(<span class="kw">_</span>) =&gt; {}
+            ConnectionEvent::AddressChange(<span class="kw">_</span>)
+            | ConnectionEvent::ListenUpgradeError(<span class="kw">_</span>)
+            | ConnectionEvent::LocalProtocolsChange(<span class="kw">_</span>)
+            | ConnectionEvent::RemoteProtocolsChange(<span class="kw">_</span>) =&gt; {}
         }
     }
 }
@@ -499,6 +522,9 @@
 </span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>OneShotHandlerConfig {
     <span class="doccomment">/// Keep-alive timeout for idle connections.
+    </span><span class="attr">#[deprecated(
+        note = <span class="string">"Set a global idle connection timeout via `SwarmBuilder::idle_connection_timeout` instead."
+    </span>)]
     </span><span class="kw">pub </span>keep_alive_timeout: Duration,
     <span class="doccomment">/// Timeout for outbound substream upgrades.
     </span><span class="kw">pub </span>outbound_substream_timeout: Duration,
@@ -507,7 +533,8 @@
 }
 
 <span class="kw">impl </span>Default <span class="kw">for </span>OneShotHandlerConfig {
-    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+    <span class="attr">#[allow(deprecated)]
+    </span><span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         OneShotHandlerConfig {
             keep_alive_timeout: Duration::from_secs(<span class="number">10</span>),
             outbound_substream_timeout: Duration::from_secs(<span class="number">10</span>),
@@ -526,6 +553,7 @@
     <span class="kw">use </span>void::Void;
 
     <span class="attr">#[test]
+    #[allow(deprecated)]
     </span><span class="kw">fn </span>do_not_keep_idle_connection_alive() {
         <span class="kw">let </span><span class="kw-2">mut </span>handler: OneShotHandler&lt;<span class="kw">_</span>, DeniedUpgrade, Void&gt; = OneShotHandler::new(
             SubstreamProtocol::new(DeniedUpgrade {}, ()),

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/network/src/service.rs`."><title>service.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/client/network/src/service.rs`."><title>service.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1893,6 +1893,51 @@
 <a href="#1893" id="1893">1893</a>
 <a href="#1894" id="1894">1894</a>
 <a href="#1895" id="1895">1895</a>
+<a href="#1896" id="1896">1896</a>
+<a href="#1897" id="1897">1897</a>
+<a href="#1898" id="1898">1898</a>
+<a href="#1899" id="1899">1899</a>
+<a href="#1900" id="1900">1900</a>
+<a href="#1901" id="1901">1901</a>
+<a href="#1902" id="1902">1902</a>
+<a href="#1903" id="1903">1903</a>
+<a href="#1904" id="1904">1904</a>
+<a href="#1905" id="1905">1905</a>
+<a href="#1906" id="1906">1906</a>
+<a href="#1907" id="1907">1907</a>
+<a href="#1908" id="1908">1908</a>
+<a href="#1909" id="1909">1909</a>
+<a href="#1910" id="1910">1910</a>
+<a href="#1911" id="1911">1911</a>
+<a href="#1912" id="1912">1912</a>
+<a href="#1913" id="1913">1913</a>
+<a href="#1914" id="1914">1914</a>
+<a href="#1915" id="1915">1915</a>
+<a href="#1916" id="1916">1916</a>
+<a href="#1917" id="1917">1917</a>
+<a href="#1918" id="1918">1918</a>
+<a href="#1919" id="1919">1919</a>
+<a href="#1920" id="1920">1920</a>
+<a href="#1921" id="1921">1921</a>
+<a href="#1922" id="1922">1922</a>
+<a href="#1923" id="1923">1923</a>
+<a href="#1924" id="1924">1924</a>
+<a href="#1925" id="1925">1925</a>
+<a href="#1926" id="1926">1926</a>
+<a href="#1927" id="1927">1927</a>
+<a href="#1928" id="1928">1928</a>
+<a href="#1929" id="1929">1929</a>
+<a href="#1930" id="1930">1930</a>
+<a href="#1931" id="1931">1931</a>
+<a href="#1932" id="1932">1932</a>
+<a href="#1933" id="1933">1933</a>
+<a href="#1934" id="1934">1934</a>
+<a href="#1935" id="1935">1935</a>
+<a href="#1936" id="1936">1936</a>
+<a href="#1937" id="1937">1937</a>
+<a href="#1938" id="1938">1938</a>
+<a href="#1939" id="1939">1939</a>
+<a href="#1940" id="1940">1940</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1950,24 +1995,26 @@
 	},
 	transport,
 	types::ProtocolName,
-	Multiaddr, NotificationService, PeerId, ReputationChange,
+	NotificationService, ReputationChange,
 };
 
 <span class="kw">use </span>codec::DecodeAll;
 <span class="kw">use </span>either::Either;
 <span class="kw">use </span>futures::{channel::oneshot, prelude::<span class="kw-2">*</span>};
 <span class="attr">#[allow(deprecated)]
-</span><span class="kw">use </span>libp2p::{
-	connection_limits::Exceeded,
+</span><span class="kw">use </span>libp2p::swarm::THandlerErr;
+<span class="kw">use </span>libp2p::{
+	connection_limits::{ConnectionLimits, Exceeded},
 	core::{upgrade, ConnectedPoint, Endpoint},
 	identify::Info <span class="kw">as </span>IdentifyInfo,
-	kad::record::Key <span class="kw">as </span>KademliaKey,
-	multiaddr,
-	ping::Failure <span class="kw">as </span>PingFailure,
+	identity::ed25519,
+	kad::{record::Key <span class="kw">as </span>KademliaKey, Record},
+	multiaddr::{<span class="self">self</span>, Multiaddr},
 	swarm::{
-		AddressScore, ConnectionError, ConnectionId, ConnectionLimits, DialError, Executor,
-		ListenError, NetworkBehaviour, Swarm, SwarmBuilder, SwarmEvent, THandlerErr,
+		Config <span class="kw">as </span>SwarmConfig, ConnectionError, ConnectionId, DialError, Executor, ListenError,
+		NetworkBehaviour, Swarm, SwarmEvent,
 	},
+	PeerId,
 };
 <span class="kw">use </span>log::{debug, error, info, trace, warn};
 <span class="kw">use </span>metrics::{Histogram, MetricSources, Metrics};
@@ -1982,6 +2029,10 @@
 <span class="kw">use </span>sc_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
 <span class="kw">use </span>sp_runtime::traits::Block <span class="kw">as </span>BlockT;
 
+<span class="kw">pub use </span>behaviour::{InboundFailure, OutboundFailure, ResponseFailure};
+<span class="kw">pub use </span>libp2p::identity::{DecodingError, Keypair, PublicKey};
+<span class="kw">pub use </span>metrics::NotificationMetrics;
+<span class="kw">pub use </span>protocol::NotificationsSink;
 <span class="kw">use </span>std::{
 	cmp,
 	collections::{HashMap, HashSet},
@@ -1994,13 +2045,8 @@
 		atomic::{AtomicUsize, Ordering},
 		Arc,
 	},
-	time::Duration,
+	time::{Duration, Instant},
 };
-
-<span class="kw">pub use </span>behaviour::{InboundFailure, OutboundFailure, ResponseFailure};
-<span class="kw">pub use </span>libp2p::identity::{DecodingError, Keypair, PublicKey};
-<span class="kw">pub use </span>metrics::NotificationMetrics;
-<span class="kw">pub use </span>protocol::NotificationsSink;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>metrics;
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>out_events;
@@ -2080,8 +2126,11 @@
 	}
 
 	<span class="doccomment">/// Create `PeerStore`.
-	</span><span class="kw">fn </span>peer_store(bootnodes: Vec&lt;sc_network_types::PeerId&gt;) -&gt; <span class="self">Self</span>::PeerStore {
-		PeerStore::new(bootnodes.into_iter().map(From::from).collect())
+	</span><span class="kw">fn </span>peer_store(
+		bootnodes: Vec&lt;sc_network_types::PeerId&gt;,
+		metrics_registry: <span class="prelude-ty">Option</span>&lt;Registry&gt;,
+	) -&gt; <span class="self">Self</span>::PeerStore {
+		PeerStore::new(bootnodes.into_iter().map(From::from).collect(), metrics_registry)
 	}
 
 	<span class="kw">fn </span>register_notification_metrics(registry: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Registry&gt;) -&gt; NotificationMetrics {
@@ -2163,6 +2212,11 @@
 		</span><span class="kw">let </span>local_identity = network_config.node_key.clone().into_keypair()<span class="question-mark">?</span>;
 		<span class="kw">let </span>local_public = local_identity.public();
 		<span class="kw">let </span>local_peer_id = local_public.to_peer_id();
+
+		<span class="comment">// Convert to libp2p types.
+		</span><span class="kw">let </span>local_identity: ed25519::Keypair = local_identity.into();
+		<span class="kw">let </span>local_public: ed25519::PublicKey = local_public.into();
+		<span class="kw">let </span>local_peer_id: PeerId = local_peer_id.into();
 
 		network_config.boot_nodes = network_config
 			.boot_nodes
@@ -2265,7 +2319,7 @@
 			};
 
 			transport::build_transport(
-				local_identity.clone(),
+				local_identity.clone().into(),
 				config_mem,
 				network_config.yamux_window_size,
 				yamux_maximum_buffer_size,
@@ -2357,7 +2411,7 @@
 				.find(|o| o.peer_id != bootnode.peer_id)
 			{
 				<span class="prelude-val">Err</span>(Error::DuplicateBootnode {
-					address: bootnode.multiaddr.clone(),
+					address: bootnode.multiaddr.clone().into(),
 					first_id: bootnode.peer_id.into(),
 					second_id: other.peer_id.into(),
 				})
@@ -2373,7 +2427,7 @@
 			boot_node_ids
 				.entry(bootnode.peer_id.into())
 				.or_default()
-				.push(bootnode.multiaddr.clone());
+				.push(bootnode.multiaddr.clone().into());
 		}
 
 		<span class="kw">let </span>boot_node_ids = Arc::new(boot_node_ids);
@@ -2397,11 +2451,11 @@
 				<span class="macro">format!</span>(<span class="string">"{} ({})"</span>, network_config.client_version, network_config.node_name);
 
 			<span class="kw">let </span>discovery_config = {
-				<span class="kw">let </span><span class="kw-2">mut </span>config = DiscoveryConfig::new(local_public.to_peer_id());
+				<span class="kw">let </span><span class="kw-2">mut </span>config = DiscoveryConfig::new(local_peer_id);
 				config.with_permanent_addresses(
 					known_addresses
 						.iter()
-						.map(|(peer, address)| (peer.into(), address.clone()))
+						.map(|(peer, address)| (peer.into(), address.clone().into()))
 						.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
 				);
 				config.discovery_limit(u64::from(network_config.default_peers_set.out_peers) + <span class="number">15</span>);
@@ -2439,11 +2493,16 @@
 				<span class="kw">let </span>result = Behaviour::new(
 					protocol,
 					user_agent,
-					local_public,
+					local_public.into(),
 					discovery_config,
 					request_response_protocols,
 					Arc::clone(<span class="kw-2">&amp;</span>peer_store_handle),
 					external_addresses.clone(),
+					ConnectionLimits::default()
+						.with_max_established_per_peer(<span class="prelude-val">Some</span>(<span class="kw">crate</span>::MAX_CONNECTIONS_PER_PEER <span class="kw">as </span>u32))
+						.with_max_established_incoming(<span class="prelude-val">Some</span>(
+							<span class="kw">crate</span>::MAX_CONNECTIONS_ESTABLISHED_INCOMING,
+						)),
 				);
 
 				<span class="kw">match </span>result {
@@ -2453,37 +2512,27 @@
 				}
 			};
 
-			<span class="kw">let </span>builder = {
+			<span class="kw">let </span>swarm = {
 				<span class="kw">struct </span>SpawnImpl&lt;F&gt;(F);
 				<span class="kw">impl</span>&lt;F: Fn(Pin&lt;Box&lt;<span class="kw">dyn </span>Future&lt;Output = ()&gt; + Send&gt;&gt;)&gt; Executor <span class="kw">for </span>SpawnImpl&lt;F&gt; {
 					<span class="kw">fn </span>exec(<span class="kw-2">&amp;</span><span class="self">self</span>, f: Pin&lt;Box&lt;<span class="kw">dyn </span>Future&lt;Output = ()&gt; + Send&gt;&gt;) {
 						(<span class="self">self</span>.<span class="number">0</span>)(f)
 					}
 				}
-				SwarmBuilder::with_executor(
-					transport,
-					behaviour,
-					local_peer_id,
-					SpawnImpl(params.executor),
-				)
-			};
-			<span class="attr">#[allow(deprecated)]
-			</span><span class="kw">let </span>builder = builder
-				.connection_limits(
-					ConnectionLimits::default()
-						.with_max_established_per_peer(<span class="prelude-val">Some</span>(<span class="kw">crate</span>::MAX_CONNECTIONS_PER_PEER <span class="kw">as </span>u32))
-						.with_max_established_incoming(<span class="prelude-val">Some</span>(
-							<span class="kw">crate</span>::MAX_CONNECTIONS_ESTABLISHED_INCOMING,
-						)),
-				)
-				.substream_upgrade_protocol_override(upgrade::Version::V1Lazy)
-				.notify_handler_buffer_size(NonZeroUsize::new(<span class="number">32</span>).expect(<span class="string">"32 != 0; qed"</span>))
-				<span class="comment">// NOTE: 24 is somewhat arbitrary and should be tuned in the future if necessary.
-				// See &lt;https://github.com/paritytech/substrate/pull/6080&gt;
-				</span>.per_connection_event_buffer_size(<span class="number">24</span>)
-				.max_negotiating_inbound_streams(<span class="number">2048</span>);
 
-			(builder.build(), Arc::new(Libp2pBandwidthSink { sink: bandwidth }))
+				<span class="kw">let </span>config = SwarmConfig::with_executor(SpawnImpl(params.executor))
+					.with_substream_upgrade_protocol_override(upgrade::Version::V1)
+					.with_notify_handler_buffer_size(NonZeroUsize::new(<span class="number">32</span>).expect(<span class="string">"32 != 0; qed"</span>))
+					<span class="comment">// NOTE: 24 is somewhat arbitrary and should be tuned in the future if
+					// necessary. See &lt;https://github.com/paritytech/substrate/pull/6080&gt;
+					</span>.with_per_connection_event_buffer_size(<span class="number">24</span>)
+					.with_max_negotiating_inbound_streams(<span class="number">2048</span>)
+					.with_idle_connection_timeout(Duration::from_secs(<span class="number">10</span>));
+
+				Swarm::new(transport, behaviour, local_peer_id, config)
+			};
+
+			(swarm, Arc::new(Libp2pBandwidthSink { sink: bandwidth }))
 		};
 
 		<span class="comment">// Initialize the metrics.
@@ -2500,29 +2549,25 @@
 
 		<span class="comment">// Listen on multiaddresses.
 		</span><span class="kw">for </span>addr <span class="kw">in </span><span class="kw-2">&amp;</span>network_config.listen_addresses {
-			<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = Swarm::&lt;Behaviour&lt;B&gt;&gt;::listen_on(<span class="kw-2">&amp;mut </span>swarm, addr.clone()) {
+			<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = Swarm::&lt;Behaviour&lt;B&gt;&gt;::listen_on(<span class="kw-2">&amp;mut </span>swarm, addr.clone().into()) {
 				<span class="macro">warn!</span>(target: <span class="string">"sub-libp2p"</span>, <span class="string">"Can't listen on {} because: {:?}"</span>, addr, err)
 			}
 		}
 
 		<span class="comment">// Add external addresses.
 		</span><span class="kw">for </span>addr <span class="kw">in </span><span class="kw-2">&amp;</span>network_config.public_addresses {
-			Swarm::&lt;Behaviour&lt;B&gt;&gt;::add_external_address(
-				<span class="kw-2">&amp;mut </span>swarm,
-				addr.clone(),
-				AddressScore::Infinite,
-			);
+			Swarm::&lt;Behaviour&lt;B&gt;&gt;::add_external_address(<span class="kw-2">&amp;mut </span>swarm, addr.clone().into());
 		}
 
-		<span class="kw">let </span>listen_addresses = Arc::new(Mutex::new(HashSet::new()));
+		<span class="kw">let </span>listen_addresses_set = Arc::new(Mutex::new(HashSet::new()));
 
 		<span class="kw">let </span>service = Arc::new(NetworkService {
 			bandwidth,
 			external_addresses,
-			listen_addresses: listen_addresses.clone(),
+			listen_addresses: listen_addresses_set.clone(),
 			num_connected: num_connected.clone(),
 			local_peer_id,
-			local_identity,
+			local_identity: local_identity.into(),
 			to_worker,
 			notification_protocol_ids,
 			protocol_handles,
@@ -2533,7 +2578,7 @@
 		});
 
 		<span class="prelude-val">Ok</span>(NetworkWorker {
-			listen_addresses,
+			listen_addresses: listen_addresses_set,
 			num_connected,
 			network_service: swarm,
 			service,
@@ -2692,7 +2737,7 @@
 
 		<span class="kw">let </span>peer_id = Swarm::&lt;Behaviour&lt;B&gt;&gt;::local_peer_id(swarm).to_base58();
 		<span class="kw">let </span>listened_addresses = swarm.listeners().cloned().collect();
-		<span class="kw">let </span>external_addresses = swarm.external_addresses().map(|r| <span class="kw-2">&amp;</span>r.addr).cloned().collect();
+		<span class="kw">let </span>external_addresses = swarm.external_addresses().cloned().collect();
 
 		NetworkState {
 			peer_id,
@@ -2752,8 +2797,7 @@
 			.into_iter()
 			.map(|<span class="kw-2">mut </span>addr| {
 				<span class="kw">let </span>peer = <span class="kw">match </span>addr.pop() {
-					<span class="prelude-val">Some</span>(multiaddr::Protocol::P2p(key)) =&gt; PeerId::from_multihash(key)
-						.map_err(|<span class="kw">_</span>| <span class="string">"Invalid PeerId format"</span>.to_string())<span class="question-mark">?</span>,
+					<span class="prelude-val">Some</span>(multiaddr::Protocol::P2p(peer_id)) =&gt; peer_id,
 					<span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Missing PeerId from address"</span>.to_string()),
 				};
 
@@ -2775,13 +2819,13 @@
 	H: ExHashT,
 {
 	<span class="doccomment">/// Returns the local external addresses.
-	</span><span class="kw">fn </span>external_addresses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;Multiaddr&gt; {
-		<span class="self">self</span>.external_addresses.lock().iter().cloned().collect()
+	</span><span class="kw">fn </span>external_addresses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;sc_network_types::multiaddr::Multiaddr&gt; {
+		<span class="self">self</span>.external_addresses.lock().iter().cloned().map(Into::into).collect()
 	}
 
 	<span class="doccomment">/// Returns the listener addresses (without trailing `/p2p/` with our `PeerId`).
-	</span><span class="kw">fn </span>listen_addresses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;Multiaddr&gt; {
-		<span class="self">self</span>.listen_addresses.lock().iter().cloned().collect()
+	</span><span class="kw">fn </span>listen_addresses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;sc_network_types::multiaddr::Multiaddr&gt; {
+		<span class="self">self</span>.listen_addresses.lock().iter().cloned().map(Into::into).collect()
 	}
 
 	<span class="doccomment">/// Returns the local Peer ID.
@@ -2841,6 +2885,34 @@
 	</span><span class="kw">fn </span>put_value(<span class="kw-2">&amp;</span><span class="self">self</span>, key: KademliaKey, value: Vec&lt;u8&gt;) {
 		<span class="kw">let _ </span>= <span class="self">self</span>.to_worker.unbounded_send(ServiceToWorkerMsg::PutValue(key, value));
 	}
+
+	<span class="kw">fn </span>put_record_to(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		record: Record,
+		peers: HashSet&lt;sc_network_types::PeerId&gt;,
+		update_local_storage: bool,
+	) {
+		<span class="kw">let _ </span>= <span class="self">self</span>.to_worker.unbounded_send(ServiceToWorkerMsg::PutRecordTo {
+			record,
+			peers,
+			update_local_storage,
+		});
+	}
+
+	<span class="kw">fn </span>store_record(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		key: KademliaKey,
+		value: Vec&lt;u8&gt;,
+		publisher: <span class="prelude-ty">Option</span>&lt;sc_network_types::PeerId&gt;,
+		expires: <span class="prelude-ty">Option</span>&lt;Instant&gt;,
+	) {
+		<span class="kw">let _ </span>= <span class="self">self</span>.to_worker.unbounded_send(ServiceToWorkerMsg::StoreRecord(
+			key,
+			value,
+			publisher.map(Into::into),
+			expires,
+		));
+	}
 }
 
 <span class="attr">#[async_trait::async_trait]
@@ -2893,14 +2965,18 @@
 		<span class="self">self</span>.sync_protocol_handle.set_reserved_only(reserved_only);
 	}
 
-	<span class="kw">fn </span>add_known_address(<span class="kw-2">&amp;</span><span class="self">self</span>, peer_id: sc_network_types::PeerId, addr: Multiaddr) {
+	<span class="kw">fn </span>add_known_address(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		peer_id: sc_network_types::PeerId,
+		addr: sc_network_types::multiaddr::Multiaddr,
+	) {
 		<span class="kw">let _ </span>= <span class="self">self
 			</span>.to_worker
-			.unbounded_send(ServiceToWorkerMsg::AddKnownAddress(peer_id.into(), addr));
+			.unbounded_send(ServiceToWorkerMsg::AddKnownAddress(peer_id.into(), addr.into()));
 	}
 
 	<span class="kw">fn </span>report_peer(<span class="kw-2">&amp;</span><span class="self">self</span>, peer_id: sc_network_types::PeerId, cost_benefit: ReputationChange) {
-		<span class="self">self</span>.peer_store_handle.clone().report_peer(peer_id, cost_benefit);
+		<span class="self">self</span>.peer_store_handle.report_peer(peer_id, cost_benefit);
 	}
 
 	<span class="kw">fn </span>peer_reputation(<span class="kw-2">&amp;</span><span class="self">self</span>, peer_id: <span class="kw-2">&amp;</span>sc_network_types::PeerId) -&gt; i32 {
@@ -2929,7 +3005,7 @@
 
 		<span class="kw">let _ </span>= <span class="self">self</span>.to_worker.unbounded_send(ServiceToWorkerMsg::AddKnownAddress(
 			peer.peer_id.into(),
-			peer.multiaddr,
+			peer.multiaddr.into(),
 		));
 		<span class="self">self</span>.sync_protocol_handle.add_reserved_peer(peer.peer_id.into());
 
@@ -2943,16 +3019,16 @@
 	<span class="kw">fn </span>set_reserved_peers(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		protocol: ProtocolName,
-		peers: HashSet&lt;Multiaddr&gt;,
+		peers: HashSet&lt;sc_network_types::multiaddr::Multiaddr&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(), String&gt; {
 		<span class="kw">let </span><span class="prelude-val">Some</span>(set_id) = <span class="self">self</span>.notification_protocol_ids.get(<span class="kw-2">&amp;</span>protocol) <span class="kw">else </span>{
 			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">"Cannot set reserved peers for unknown protocol: {}"</span>, protocol))
 		};
 
+		<span class="kw">let </span>peers: HashSet&lt;Multiaddr&gt; = peers.into_iter().map(Into::into).collect();
 		<span class="kw">let </span>peers_addrs = <span class="self">self</span>.split_multiaddr_and_peer_id(peers)<span class="question-mark">?</span>;
 
-		<span class="kw">let </span><span class="kw-2">mut </span>peers: HashSet&lt;sc_network_types::PeerId&gt; =
-			HashSet::with_capacity(peers_addrs.len());
+		<span class="kw">let </span><span class="kw-2">mut </span>peers: HashSet&lt;PeerId&gt; = HashSet::with_capacity(peers_addrs.len());
 
 		<span class="kw">for </span>(peer_id, addr) <span class="kw">in </span>peers_addrs.into_iter() {
 			<span class="comment">// Make sure the local peer ID is never added to the PSM.
@@ -2969,8 +3045,7 @@
 			}
 		}
 
-		<span class="self">self</span>.protocol_handles[usize::from(<span class="kw-2">*</span>set_id)]
-			.set_reserved_peers(peers.iter().map(|peer| (<span class="kw-2">*</span>peer).into()).collect());
+		<span class="self">self</span>.protocol_handles[usize::from(<span class="kw-2">*</span>set_id)].set_reserved_peers(peers);
 
 		<span class="prelude-val">Ok</span>(())
 	}
@@ -2978,7 +3053,7 @@
 	<span class="kw">fn </span>add_peers_to_reserved_set(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		protocol: ProtocolName,
-		peers: HashSet&lt;Multiaddr&gt;,
+		peers: HashSet&lt;sc_network_types::multiaddr::Multiaddr&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;(), String&gt; {
 		<span class="kw">let </span><span class="prelude-val">Some</span>(set_id) = <span class="self">self</span>.notification_protocol_ids.get(<span class="kw-2">&amp;</span>protocol) <span class="kw">else </span>{
 			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
@@ -2987,6 +3062,7 @@
 			))
 		};
 
+		<span class="kw">let </span>peers: HashSet&lt;Multiaddr&gt; = peers.into_iter().map(Into::into).collect();
 		<span class="kw">let </span>peers = <span class="self">self</span>.split_multiaddr_and_peer_id(peers)<span class="question-mark">?</span>;
 
 		<span class="kw">for </span>(peer_id, addr) <span class="kw">in </span>peers.into_iter() {
@@ -3191,6 +3267,12 @@
 </span><span class="kw">enum </span>ServiceToWorkerMsg {
 	GetValue(KademliaKey),
 	PutValue(KademliaKey, Vec&lt;u8&gt;),
+	PutRecordTo {
+		record: Record,
+		peers: HashSet&lt;sc_network_types::PeerId&gt;,
+		update_local_storage: bool,
+	},
+	StoreRecord(KademliaKey, Vec&lt;u8&gt;, <span class="prelude-ty">Option</span>&lt;PeerId&gt;, <span class="prelude-ty">Option</span>&lt;Instant&gt;),
 	AddKnownAddress(PeerId, Multiaddr),
 	EventStream(out_events::Sender),
 	Request {
@@ -3299,9 +3381,7 @@
 			{
 				metrics.kademlia_records_sizes_total.set(num_entries <span class="kw">as </span>u64);
 			}
-			metrics
-				.peerset_num_discovered
-				.set(<span class="self">self</span>.peer_store_handle.num_known_peers() <span class="kw">as </span>u64);
+
 			metrics.pending_connections.set(
 				Swarm::network_info(<span class="kw-2">&amp;</span><span class="self">self</span>.network_service).connection_counters().num_pending()
 					<span class="kw">as </span>u64,
@@ -3318,6 +3398,14 @@
 				<span class="self">self</span>.network_service.behaviour_mut().get_value(key),
 			ServiceToWorkerMsg::PutValue(key, value) =&gt;
 				<span class="self">self</span>.network_service.behaviour_mut().put_value(key, value),
+			ServiceToWorkerMsg::PutRecordTo { record, peers, update_local_storage } =&gt; <span class="self">self
+				</span>.network_service
+				.behaviour_mut()
+				.put_record_to(record, peers, update_local_storage),
+			ServiceToWorkerMsg::StoreRecord(key, value, publisher, expires) =&gt; <span class="self">self
+				</span>.network_service
+				.behaviour_mut()
+				.store_record(key, value, publisher, expires),
 			ServiceToWorkerMsg::AddKnownAddress(peer_id, addr) =&gt;
 				<span class="self">self</span>.network_service.behaviour_mut().add_known_address(peer_id, addr),
 			ServiceToWorkerMsg::EventStream(sender) =&gt; <span class="self">self</span>.event_streams.push(sender),
@@ -3353,6 +3441,7 @@
 	}
 
 	<span class="doccomment">/// Process the next event coming from `Swarm`.
+	</span><span class="attr">#[allow(deprecated)]
 	</span><span class="kw">fn </span>handle_swarm_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>, event: SwarmEvent&lt;BehaviourOut, THandlerErr&lt;Behaviour&lt;B&gt;&gt;&gt;) {
 		<span class="kw">match </span>event {
 			SwarmEvent::Behaviour(BehaviourOut::InboundRequest { protocol, result, .. }) =&gt; {
@@ -3447,9 +3536,11 @@
 					listen_addrs.truncate(<span class="number">30</span>);
 				}
 				<span class="kw">for </span>addr <span class="kw">in </span>listen_addrs {
-					<span class="self">self</span>.network_service
-						.behaviour_mut()
-						.add_self_reported_address_to_dht(<span class="kw-2">&amp;</span>peer_id, <span class="kw-2">&amp;</span>protocols, addr);
+					<span class="self">self</span>.network_service.behaviour_mut().add_self_reported_address_to_dht(
+						<span class="kw-2">&amp;</span>peer_id,
+						<span class="kw-2">&amp;</span>protocols,
+						addr.clone(),
+					);
 				}
 				<span class="self">self</span>.peer_store_handle.add_known_peer(peer_id.into());
 			},
@@ -3519,17 +3610,21 @@
 					.report_notification_received(remote, notification);
 			},
 			SwarmEvent::Behaviour(BehaviourOut::Dht(event, duration)) =&gt; {
-				<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = <span class="self">self</span>.metrics.as_ref() {
-					<span class="kw">let </span>query_type = <span class="kw">match </span>event {
-						DhtEvent::ValueFound(<span class="kw">_</span>) =&gt; <span class="string">"value-found"</span>,
-						DhtEvent::ValueNotFound(<span class="kw">_</span>) =&gt; <span class="string">"value-not-found"</span>,
-						DhtEvent::ValuePut(<span class="kw">_</span>) =&gt; <span class="string">"value-put"</span>,
-						DhtEvent::ValuePutFailed(<span class="kw">_</span>) =&gt; <span class="string">"value-put-failed"</span>,
-					};
-					metrics
-						.kademlia_query_duration
-						.with_label_values(<span class="kw-2">&amp;</span>[query_type])
-						.observe(duration.as_secs_f64());
+				<span class="kw">match </span>(<span class="self">self</span>.metrics.as_ref(), duration) {
+					(<span class="prelude-val">Some</span>(metrics), <span class="prelude-val">Some</span>(duration)) =&gt; {
+						<span class="kw">let </span>query_type = <span class="kw">match </span>event {
+							DhtEvent::ValueFound(<span class="kw">_</span>) =&gt; <span class="string">"value-found"</span>,
+							DhtEvent::ValueNotFound(<span class="kw">_</span>) =&gt; <span class="string">"value-not-found"</span>,
+							DhtEvent::ValuePut(<span class="kw">_</span>) =&gt; <span class="string">"value-put"</span>,
+							DhtEvent::ValuePutFailed(<span class="kw">_</span>) =&gt; <span class="string">"value-put-failed"</span>,
+							DhtEvent::PutRecordRequest(<span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>, <span class="kw">_</span>) =&gt; <span class="string">"put-record-request"</span>,
+						};
+						metrics
+							.kademlia_query_duration
+							.with_label_values(<span class="kw-2">&amp;</span>[query_type])
+							.observe(duration.as_secs_f64());
+					},
+					<span class="kw">_ </span>=&gt; {},
 				}
 
 				<span class="self">self</span>.event_streams.send(Event::Dht(event));
@@ -3562,8 +3657,14 @@
 					}
 				}
 			},
-			SwarmEvent::ConnectionClosed { peer_id, cause, endpoint, num_established } =&gt; {
-				<span class="macro">debug!</span>(target: <span class="string">"sub-libp2p"</span>, <span class="string">"Libp2p =&gt; Disconnected({:?}, {:?})"</span>, peer_id, cause);
+			SwarmEvent::ConnectionClosed {
+				connection_id,
+				peer_id,
+				cause,
+				endpoint,
+				num_established,
+			} =&gt; {
+				<span class="macro">debug!</span>(target: <span class="string">"sub-libp2p"</span>, <span class="string">"Libp2p =&gt; Disconnected({peer_id:?} via {connection_id:?}, {cause:?})"</span>);
 				<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = <span class="self">self</span>.metrics.as_ref() {
 					<span class="kw">let </span>direction = <span class="kw">match </span>endpoint {
 						ConnectedPoint::Dialer { .. } =&gt; <span class="string">"out"</span>,
@@ -3572,11 +3673,13 @@
 					<span class="kw">let </span>reason = <span class="kw">match </span>cause {
 						<span class="prelude-val">Some</span>(ConnectionError::IO(<span class="kw">_</span>)) =&gt; <span class="string">"transport-error"</span>,
 						<span class="prelude-val">Some</span>(ConnectionError::Handler(Either::Left(Either::Left(
-							Either::Right(Either::Left(PingFailure::Timeout)),
-						)))) =&gt; <span class="string">"ping-timeout"</span>,
-						<span class="prelude-val">Some</span>(ConnectionError::Handler(Either::Left(Either::Left(
-							Either::Left(NotifsHandlerError::SyncNotificationsClogged),
+							Either::Left(Either::Right(
+								NotifsHandlerError::SyncNotificationsClogged,
+							)),
 						)))) =&gt; <span class="string">"sync-notifications-clogged"</span>,
+						<span class="prelude-val">Some</span>(ConnectionError::Handler(Either::Left(Either::Left(
+							Either::Right(Either::Left(<span class="kw">_</span>)),
+						)))) =&gt; <span class="string">"ping-timeout"</span>,
 						<span class="prelude-val">Some</span>(ConnectionError::Handler(<span class="kw">_</span>)) =&gt; <span class="string">"protocol-error"</span>,
 						<span class="prelude-val">Some</span>(ConnectionError::KeepAliveTimeout) =&gt; <span class="string">"keep-alive-timeout"</span>,
 						<span class="prelude-val">None </span>=&gt; <span class="string">"actively-closed"</span>,
@@ -3603,12 +3706,11 @@
 				}
 				<span class="self">self</span>.listen_addresses.lock().remove(<span class="kw-2">&amp;</span>address);
 			},
-			SwarmEvent::OutgoingConnectionError { peer_id, error } =&gt; {
+			SwarmEvent::OutgoingConnectionError { connection_id, peer_id, error } =&gt; {
 				<span class="kw">if let </span><span class="prelude-val">Some</span>(peer_id) = peer_id {
 					<span class="macro">trace!</span>(
 						target: <span class="string">"sub-libp2p"</span>,
-						<span class="string">"Libp2p =&gt; Failed to reach {:?}: {}"</span>,
-						peer_id, error,
+						<span class="string">"Libp2p =&gt; Failed to reach {peer_id:?} via {connection_id:?}: {error}"</span>,
 					);
 
 					<span class="kw">let </span>not_reported = !<span class="self">self</span>.reported_invalid_boot_nodes.contains(<span class="kw-2">&amp;</span>peer_id);
@@ -3618,8 +3720,8 @@
 					{
 						<span class="kw">if let </span>DialError::WrongPeerId { obtained, endpoint } = <span class="kw-2">&amp;</span>error {
 							<span class="kw">if let </span>ConnectedPoint::Dialer { address, role_override: <span class="kw">_ </span>} = endpoint {
-								<span class="kw">let </span>address_without_peer_id = parse_addr(address.clone())
-									.map_or_else(|<span class="kw">_</span>| address.clone(), |r| r.<span class="number">1</span>);
+								<span class="kw">let </span>address_without_peer_id = parse_addr(address.clone().into())
+									.map_or_else(|<span class="kw">_</span>| address.clone(), |r| r.<span class="number">1</span>.into());
 
 								<span class="comment">// Only report for address of boot node that was added at startup of
 								// the node and not for any address that the node learned of the
@@ -3646,12 +3748,9 @@
 							} <span class="kw">else </span>{
 								<span class="prelude-val">None
 							</span>},
-						DialError::ConnectionLimit(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="string">"limit-reached"</span>),
-						DialError::InvalidPeerId(<span class="kw">_</span>) |
-						DialError::WrongPeerId { .. } |
-						DialError::LocalPeerId { .. } =&gt; <span class="prelude-val">Some</span>(<span class="string">"invalid-peer-id"</span>),
+						DialError::LocalPeerId { .. } =&gt; <span class="prelude-val">Some</span>(<span class="string">"local-peer-id"</span>),
+						DialError::WrongPeerId { .. } =&gt; <span class="prelude-val">Some</span>(<span class="string">"invalid-peer-id"</span>),
 						DialError::Transport(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="string">"transport-error"</span>),
-						DialError::Banned |
 						DialError::NoAddresses |
 						DialError::DialPeerConditionFalse(<span class="kw">_</span>) |
 						DialError::Aborted =&gt; <span class="prelude-val">None</span>, <span class="comment">// ignore them
@@ -3661,22 +3760,25 @@
 					}
 				}
 			},
-			SwarmEvent::Dialing(peer_id) =&gt; {
-				<span class="macro">trace!</span>(target: <span class="string">"sub-libp2p"</span>, <span class="string">"Libp2p =&gt; Dialing({:?})"</span>, peer_id)
+			SwarmEvent::Dialing { connection_id, peer_id } =&gt; {
+				<span class="macro">trace!</span>(target: <span class="string">"sub-libp2p"</span>, <span class="string">"Libp2p =&gt; Dialing({peer_id:?}) via {connection_id:?}"</span>)
 			},
-			SwarmEvent::IncomingConnection { local_addr, send_back_addr } =&gt; {
-				<span class="macro">trace!</span>(target: <span class="string">"sub-libp2p"</span>, <span class="string">"Libp2p =&gt; IncomingConnection({},{}))"</span>,
-					local_addr, send_back_addr);
+			SwarmEvent::IncomingConnection { connection_id, local_addr, send_back_addr } =&gt; {
+				<span class="macro">trace!</span>(target: <span class="string">"sub-libp2p"</span>, <span class="string">"Libp2p =&gt; IncomingConnection({local_addr},{send_back_addr} via {connection_id:?}))"</span>);
 				<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = <span class="self">self</span>.metrics.as_ref() {
 					metrics.incoming_connections_total.inc();
 				}
 			},
-			SwarmEvent::IncomingConnectionError { local_addr, send_back_addr, error } =&gt; {
+			SwarmEvent::IncomingConnectionError {
+				connection_id,
+				local_addr,
+				send_back_addr,
+				error,
+			} =&gt; {
 				<span class="macro">debug!</span>(
 					target: <span class="string">"sub-libp2p"</span>,
-					<span class="string">"Libp2p =&gt; IncomingConnectionError({},{}): {}"</span>,
-					local_addr, send_back_addr, error,
-				);
+					<span class="string">"Libp2p =&gt; IncomingConnectionError({local_addr},{send_back_addr} via {connection_id:?}): {error}"
+				</span>);
 				<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = <span class="self">self</span>.metrics.as_ref() {
 					<span class="attr">#[allow(deprecated)]
 					</span><span class="kw">let </span>reason = <span class="kw">match </span>error {
@@ -3686,7 +3788,6 @@
 							} <span class="kw">else </span>{
 								<span class="prelude-val">None
 							</span>},
-						ListenError::ConnectionLimit(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="string">"limit-reached"</span>),
 						ListenError::WrongPeerId { .. } | ListenError::LocalPeerId { .. } =&gt;
 							<span class="prelude-val">Some</span>(<span class="string">"invalid-peer-id"</span>),
 						ListenError::Transport(<span class="kw">_</span>) =&gt; <span class="prelude-val">Some</span>(<span class="string">"transport-error"</span>),
@@ -3699,17 +3800,6 @@
 							.with_label_values(<span class="kw-2">&amp;</span>[reason])
 							.inc();
 					}
-				}
-			},
-			<span class="attr">#[allow(deprecated)]
-			</span>SwarmEvent::BannedPeer { peer_id, endpoint } =&gt; {
-				<span class="macro">debug!</span>(
-					target: <span class="string">"sub-libp2p"</span>,
-					<span class="string">"Libp2p =&gt; BannedPeer({}). Connected via {:?}."</span>,
-					peer_id, endpoint,
-				);
-				<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = <span class="self">self</span>.metrics.as_ref() {
-					metrics.incoming_connections_errors_total.with_label_values(<span class="kw-2">&amp;</span>[<span class="string">"banned"</span>]).inc();
 				}
 			},
 			SwarmEvent::ListenerClosed { reason, addresses, .. } =&gt; {
@@ -3755,14 +3845,14 @@
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>ensure_addresses_consistent_with_transport&lt;<span class="lifetime">'a</span>&gt;(
-	addresses: <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Multiaddr&gt;,
+	addresses: <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span>sc_network_types::multiaddr::Multiaddr&gt;,
 	transport: <span class="kw-2">&amp;</span>TransportConfig,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+	<span class="kw">use </span>sc_network_types::multiaddr::Protocol;
+
 	<span class="kw">if </span><span class="macro">matches!</span>(transport, TransportConfig::MemoryOnly) {
 		<span class="kw">let </span>addresses: Vec&lt;<span class="kw">_</span>&gt; = addresses
-			.filter(|x| {
-				x.iter().any(|y| !<span class="macro">matches!</span>(y, libp2p::core::multiaddr::Protocol::Memory(<span class="kw">_</span>)))
-			})
+			.filter(|x| x.iter().any(|y| !<span class="macro">matches!</span>(y, Protocol::Memory(<span class="kw">_</span>))))
 			.cloned()
 			.collect();
 
@@ -3774,7 +3864,7 @@
 		}
 	} <span class="kw">else </span>{
 		<span class="kw">let </span>addresses: Vec&lt;<span class="kw">_</span>&gt; = addresses
-			.filter(|x| x.iter().any(|y| <span class="macro">matches!</span>(y, libp2p::core::multiaddr::Protocol::Memory(<span class="kw">_</span>))))
+			.filter(|x| x.iter().any(|y| <span class="macro">matches!</span>(y, Protocol::Memory(<span class="kw">_</span>))))
 			.cloned()
 			.collect();
 

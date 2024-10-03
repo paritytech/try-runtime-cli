@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-kad-0.43.3/src/record_priv/store/memory.rs`."><title>memory.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="libp2p_kad" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-kad-0.44.6/src/record_priv/store/memory.rs`."><title>memory.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="libp2p_kad" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -345,7 +345,7 @@
 
 </span><span class="kw">use super</span>::<span class="kw-2">*</span>;
 
-<span class="kw">use </span><span class="kw">crate</span>::kbucket_priv;
+<span class="kw">use </span><span class="kw">crate</span>::kbucket;
 <span class="kw">use </span>libp2p_identity::PeerId;
 <span class="kw">use </span>smallvec::SmallVec;
 <span class="kw">use </span>std::borrow::Cow;
@@ -355,7 +355,7 @@
 <span class="doccomment">/// In-memory implementation of a `RecordStore`.
 </span><span class="kw">pub struct </span>MemoryStore {
     <span class="doccomment">/// The identity of the peer owning the store.
-    </span>local_key: kbucket_priv::Key&lt;PeerId&gt;,
+    </span>local_key: kbucket::Key&lt;PeerId&gt;,
     <span class="doccomment">/// The configuration of the store.
     </span>config: MemoryStoreConfig,
     <span class="doccomment">/// The stored (regular) records.
@@ -404,7 +404,7 @@
     <span class="doccomment">/// Creates a new `MemoryRecordStore` with the given configuration.
     </span><span class="kw">pub fn </span>with_config(local_id: PeerId, config: MemoryStoreConfig) -&gt; <span class="self">Self </span>{
         MemoryStore {
-            local_key: kbucket_priv::Key::from(local_id),
+            local_key: kbucket::Key::from(local_id),
             config,
             records: HashMap::default(),
             provided: HashSet::default(),
@@ -485,10 +485,10 @@
         } <span class="kw">else </span>{
             <span class="comment">// It is a new provider record for that key.
             </span><span class="kw">let </span>local_key = <span class="self">self</span>.local_key.clone();
-            <span class="kw">let </span>key = kbucket_priv::Key::new(record.key.clone());
-            <span class="kw">let </span>provider = kbucket_priv::Key::from(record.provider);
+            <span class="kw">let </span>key = kbucket::Key::new(record.key.clone());
+            <span class="kw">let </span>provider = kbucket::Key::from(record.provider);
             <span class="kw">if let </span><span class="prelude-val">Some</span>(i) = providers.iter().position(|p| {
-                <span class="kw">let </span>pk = kbucket_priv::Key::from(p.provider);
+                <span class="kw">let </span>pk = kbucket::Key::from(p.provider);
                 provider.distance(<span class="kw-2">&amp;</span>key) &lt; pk.distance(<span class="kw-2">&amp;</span>key)
             }) {
                 <span class="comment">// Insert the new provider.
@@ -546,12 +546,12 @@
     <span class="kw">use </span>quickcheck::<span class="kw-2">*</span>;
     <span class="kw">use </span>rand::Rng;
 
-    <span class="kw">fn </span>random_multihash() -&gt; Multihash {
+    <span class="kw">fn </span>random_multihash() -&gt; Multihash&lt;<span class="number">64</span>&gt; {
         Multihash::wrap(SHA_256_MH, <span class="kw-2">&amp;</span>rand::thread_rng().gen::&lt;[u8; <span class="number">32</span>]&gt;()).unwrap()
     }
 
-    <span class="kw">fn </span>distance(r: <span class="kw-2">&amp;</span>ProviderRecord) -&gt; kbucket_priv::Distance {
-        kbucket_priv::Key::new(r.key.clone()).distance(<span class="kw-2">&amp;</span>kbucket_priv::Key::from(r.provider))
+    <span class="kw">fn </span>distance(r: <span class="kw-2">&amp;</span>ProviderRecord) -&gt; kbucket::Distance {
+        kbucket::Key::new(r.key.clone()).distance(<span class="kw-2">&amp;</span>kbucket::Key::from(r.provider))
     }
 
     <span class="attr">#[test]
@@ -580,7 +580,7 @@
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>providers_ordered_by_distance_to_key() {
-        <span class="kw">fn </span>prop(providers: Vec&lt;kbucket_priv::Key&lt;PeerId&gt;&gt;) -&gt; bool {
+        <span class="kw">fn </span>prop(providers: Vec&lt;kbucket::Key&lt;PeerId&gt;&gt;) -&gt; bool {
             <span class="kw">let </span><span class="kw-2">mut </span>store = MemoryStore::new(PeerId::random());
             <span class="kw">let </span>key = Key::from(random_multihash());
 

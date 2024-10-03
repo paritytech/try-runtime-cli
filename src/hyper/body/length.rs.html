@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hyper-0.14.28/src/body/length.rs`."><title>length.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="hyper" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hyper-1.4.1/src/body/length.rs`."><title>length.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="hyper" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -121,6 +121,12 @@
 <a href="#121" id="121">121</a>
 <a href="#122" id="122">122</a>
 <a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::fmt;
 
 <span class="attr">#[derive(Clone, Copy, PartialEq, Eq)]
@@ -138,11 +144,11 @@
 }
 
 <span class="attr">#[cfg(any(feature = <span class="string">"http1"</span>, feature = <span class="string">"http2"</span>, test))]
-</span><span class="kw">const </span>MAX_LEN: u64 = std::u64::MAX - <span class="number">2</span>;
+</span><span class="kw">const </span>MAX_LEN: u64 = u64::MAX - <span class="number">2</span>;
 
 <span class="kw">impl </span>DecodedLength {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>CLOSE_DELIMITED: DecodedLength = DecodedLength(::std::u64::MAX);
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>CHUNKED: DecodedLength = DecodedLength(::std::u64::MAX - <span class="number">1</span>);
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>CLOSE_DELIMITED: DecodedLength = DecodedLength(u64::MAX);
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>CHUNKED: DecodedLength = DecodedLength(u64::MAX - <span class="number">1</span>);
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>ZERO: DecodedLength = DecodedLength(<span class="number">0</span>);
 
     <span class="attr">#[cfg(test)]
@@ -156,13 +162,17 @@
     /// Should only be called if previously confirmed this isn't
     /// CLOSE_DELIMITED or CHUNKED.
     </span><span class="attr">#[inline]
-    #[cfg(feature = <span class="string">"http1"</span>)]
+    #[cfg(all(any(feature = <span class="string">"client"</span>, feature = <span class="string">"server"</span>), feature = <span class="string">"http1"</span>))]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>danger_len(<span class="self">self</span>) -&gt; u64 {
         <span class="macro">debug_assert!</span>(<span class="self">self</span>.<span class="number">0 </span>&lt; <span class="self">Self</span>::CHUNKED.<span class="number">0</span>);
         <span class="self">self</span>.<span class="number">0
     </span>}
 
     <span class="doccomment">/// Converts to an Option&lt;u64&gt; representing a Known or Unknown length.
+    </span><span class="attr">#[cfg(all(
+        any(feature = <span class="string">"http1"</span>, feature = <span class="string">"http2"</span>),
+        any(feature = <span class="string">"client"</span>, feature = <span class="string">"server"</span>)
+    ))]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>into_opt(<span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u64&gt; {
         <span class="kw">match </span><span class="self">self </span>{
             DecodedLength::CHUNKED | DecodedLength::CLOSE_DELIMITED =&gt; <span class="prelude-val">None</span>,
@@ -173,8 +183,6 @@
     <span class="doccomment">/// Checks the `u64` is within the maximum allowed for content-length.
     </span><span class="attr">#[cfg(any(feature = <span class="string">"http1"</span>, feature = <span class="string">"http2"</span>))]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>checked_new(len: u64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="kw">crate</span>::error::Parse&gt; {
-        <span class="kw">use </span>tracing::warn;
-
         <span class="kw">if </span>len &lt;= MAX_LEN {
             <span class="prelude-val">Ok</span>(DecodedLength(len))
         } <span class="kw">else </span>{
@@ -183,7 +191,11 @@
         }
     }
 
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>sub_if(<span class="kw-2">&amp;mut </span><span class="self">self</span>, amt: u64) {
+    <span class="attr">#[cfg(all(
+        any(feature = <span class="string">"http1"</span>, feature = <span class="string">"http2"</span>),
+        any(feature = <span class="string">"client"</span>, feature = <span class="string">"server"</span>)
+    ))]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>sub_if(<span class="kw-2">&amp;mut </span><span class="self">self</span>, amt: u64) {
         <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
             DecodedLength::CHUNKED | DecodedLength::CLOSE_DELIMITED =&gt; (),
             DecodedLength(<span class="kw-2">ref mut </span>known) =&gt; {
@@ -197,7 +209,7 @@
     /// This includes 0, which of course is an exact known length.
     ///
     /// It would return false if "chunked" or otherwise size-unknown.
-    </span><span class="attr">#[cfg(feature = <span class="string">"http2"</span>)]
+    </span><span class="attr">#[cfg(all(any(feature = <span class="string">"client"</span>, feature = <span class="string">"server"</span>), feature = <span class="string">"http2"</span>))]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_exact(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
         <span class="self">self</span>.<span class="number">0 </span>&lt;= MAX_LEN
     }

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"derive":["MultihashDigest"],"enum":["Code"],"struct":["Sha2_256","Sha2_512"],"trait":["MultihashDigest"],"type":["Multihash"]};

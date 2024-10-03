@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["context_diff","get_close_matches","unified_diff"],"mod":["differ","sequencematcher"]};

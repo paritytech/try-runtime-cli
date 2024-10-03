@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hyper-rustls-0.24.2/src/connector/builder.rs`."><title>builder.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="hyper_rustls" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hyper-rustls-0.27.3/src/connector/builder.rs`."><title>builder.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="hyper_rustls" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -374,14 +374,134 @@
 <a href="#374" id="374">374</a>
 <a href="#375" id="375">375</a>
 <a href="#376" id="376">376</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>rustls::ClientConfig;
+<a href="#377" id="377">377</a>
+<a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
+<a href="#380" id="380">380</a>
+<a href="#381" id="381">381</a>
+<a href="#382" id="382">382</a>
+<a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
+<a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
+<a href="#431" id="431">431</a>
+<a href="#432" id="432">432</a>
+<a href="#433" id="433">433</a>
+<a href="#434" id="434">434</a>
+<a href="#435" id="435">435</a>
+<a href="#436" id="436">436</a>
+<a href="#437" id="437">437</a>
+<a href="#438" id="438">438</a>
+<a href="#439" id="439">439</a>
+<a href="#440" id="440">440</a>
+<a href="#441" id="441">441</a>
+<a href="#442" id="442">442</a>
+<a href="#443" id="443">443</a>
+<a href="#444" id="444">444</a>
+<a href="#445" id="445">445</a>
+<a href="#446" id="446">446</a>
+<a href="#447" id="447">447</a>
+<a href="#448" id="448">448</a>
+<a href="#449" id="449">449</a>
+<a href="#450" id="450">450</a>
+<a href="#451" id="451">451</a>
+<a href="#452" id="452">452</a>
+<a href="#453" id="453">453</a>
+<a href="#454" id="454">454</a>
+<a href="#455" id="455">455</a>
+<a href="#456" id="456">456</a>
+<a href="#457" id="457">457</a>
+<a href="#458" id="458">458</a>
+<a href="#459" id="459">459</a>
+<a href="#460" id="460">460</a>
+<a href="#461" id="461">461</a>
+<a href="#462" id="462">462</a>
+<a href="#463" id="463">463</a>
+<a href="#464" id="464">464</a>
+<a href="#465" id="465">465</a>
+<a href="#466" id="466">466</a>
+<a href="#467" id="467">467</a>
+<a href="#468" id="468">468</a>
+<a href="#469" id="469">469</a>
+<a href="#470" id="470">470</a>
+<a href="#471" id="471">471</a>
+<a href="#472" id="472">472</a>
+<a href="#473" id="473">473</a>
+<a href="#474" id="474">474</a>
+<a href="#475" id="475">475</a>
+<a href="#476" id="476">476</a>
+<a href="#477" id="477">477</a>
+<a href="#478" id="478">478</a>
+<a href="#479" id="479">479</a>
+<a href="#480" id="480">480</a>
+<a href="#481" id="481">481</a>
+<a href="#482" id="482">482</a>
+<a href="#483" id="483">483</a>
+<a href="#484" id="484">484</a>
+<a href="#485" id="485">485</a>
+</pre></div><pre class="rust"><code><span class="kw">use </span>std::sync::Arc;
 
-<span class="kw">use </span><span class="kw">super</span>::HttpsConnector;
-<span class="attr">#[cfg(any(feature = <span class="string">"rustls-native-certs"</span>, feature = <span class="string">"webpki-roots"</span>))]
+<span class="kw">use </span>hyper_util::client::legacy::connect::HttpConnector;
+<span class="attr">#[cfg(any(
+    feature = <span class="string">"rustls-native-certs"</span>,
+    feature = <span class="string">"rustls-platform-verifier"</span>,
+    feature = <span class="string">"webpki-roots"
+</span>))]
+</span><span class="kw">use </span>rustls::crypto::CryptoProvider;
+<span class="kw">use </span>rustls::ClientConfig;
+
+<span class="kw">use super</span>::{DefaultServerNameResolver, HttpsConnector, ResolveServerName};
+<span class="attr">#[cfg(any(
+    feature = <span class="string">"rustls-native-certs"</span>,
+    feature = <span class="string">"webpki-roots"</span>,
+    feature = <span class="string">"rustls-platform-verifier"
+</span>))]
 </span><span class="kw">use </span><span class="kw">crate</span>::config::ConfigBuilderExt;
-
-<span class="attr">#[cfg(feature = <span class="string">"tokio-runtime"</span>)]
-</span><span class="kw">use </span>hyper::client::HttpConnector;
+<span class="kw">use </span>pki_types::ServerName;
 
 <span class="doccomment">/// A builder for an [`HttpsConnector`]
 ///
@@ -393,12 +513,15 @@
 /// ```
 /// use hyper_rustls::HttpsConnectorBuilder;
 ///
-/// # #[cfg(all(feature = "webpki-roots", feature = "tokio-runtime", feature = "http1"))]
-/// let https = HttpsConnectorBuilder::new()
+/// # #[cfg(all(feature = "webpki-roots", feature = "http1", feature="aws-lc-rs"))]
+/// # {
+/// # let _ = rustls::crypto::aws_lc_rs::default_provider().install_default();
+///     let https = HttpsConnectorBuilder::new()
 ///     .with_webpki_roots()
 ///     .https_only()
 ///     .enable_http1()
 ///     .build();
+/// # }
 /// ```
 </span><span class="kw">pub struct </span>ConnectorBuilder&lt;State&gt;(State);
 
@@ -427,38 +550,100 @@
         ConnectorBuilder(WantsSchemes { tls_config: config })
     }
 
-    <span class="doccomment">/// Shorthand for using rustls' [safe defaults][with_safe_defaults]
-    /// and native roots
+    <span class="doccomment">/// Shorthand for using rustls' default crypto provider and other defaults, and
+    /// the platform verifier.
     ///
-    /// See [`ConfigBuilderExt::with_native_roots`]
-    ///
-    /// [with_safe_defaults]: rustls::ConfigBuilder::with_safe_defaults
-    </span><span class="attr">#[cfg(feature = <span class="string">"rustls-native-certs"</span>)]
-    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"rustls-native-certs"</span>)))]
-    </span><span class="kw">pub fn </span>with_native_roots(<span class="self">self</span>) -&gt; ConnectorBuilder&lt;WantsSchemes&gt; {
+    /// See [`ConfigBuilderExt::with_platform_verifier()`].
+    </span><span class="attr">#[cfg(all(
+        any(feature = <span class="string">"ring"</span>, feature = <span class="string">"aws-lc-rs"</span>),
+        feature = <span class="string">"rustls-platform-verifier"
+    </span>))]
+    </span><span class="kw">pub fn </span>with_platform_verifier(<span class="self">self</span>) -&gt; ConnectorBuilder&lt;WantsSchemes&gt; {
         <span class="self">self</span>.with_tls_config(
             ClientConfig::builder()
-                .with_safe_defaults()
-                .with_native_roots()
+                .with_platform_verifier()
                 .with_no_client_auth(),
         )
     }
 
-    <span class="doccomment">/// Shorthand for using rustls' [safe defaults][with_safe_defaults]
-    /// and Mozilla roots
+    <span class="doccomment">/// Shorthand for using a custom [`CryptoProvider`] and the platform verifier.
+    ///
+    /// See [`ConfigBuilderExt::with_platform_verifier()`].
+    </span><span class="attr">#[cfg(feature = <span class="string">"rustls-platform-verifier"</span>)]
+    </span><span class="kw">pub fn </span>with_provider_and_platform_verifier(
+        <span class="self">self</span>,
+        provider: <span class="kw">impl </span>Into&lt;Arc&lt;CryptoProvider&gt;&gt;,
+    ) -&gt; std::io::Result&lt;ConnectorBuilder&lt;WantsSchemes&gt;&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.with_tls_config(
+            ClientConfig::builder_with_provider(provider.into())
+                .with_safe_default_protocol_versions()
+                .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))<span class="question-mark">?
+                </span>.with_platform_verifier()
+                .with_no_client_auth(),
+        ))
+    }
+
+    <span class="doccomment">/// Shorthand for using rustls' default crypto provider and safe defaults, with
+    /// native roots.
+    ///
+    /// See [`ConfigBuilderExt::with_native_roots`]
+    </span><span class="attr">#[cfg(all(
+        any(feature = <span class="string">"ring"</span>, feature = <span class="string">"aws-lc-rs"</span>),
+        feature = <span class="string">"rustls-native-certs"
+    </span>))]
+    </span><span class="kw">pub fn </span>with_native_roots(<span class="self">self</span>) -&gt; std::io::Result&lt;ConnectorBuilder&lt;WantsSchemes&gt;&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.with_tls_config(
+            ClientConfig::builder()
+                .with_native_roots()<span class="question-mark">?
+                </span>.with_no_client_auth(),
+        ))
+    }
+
+    <span class="doccomment">/// Shorthand for using a custom [`CryptoProvider`] and native roots
+    ///
+    /// See [`ConfigBuilderExt::with_native_roots`]
+    </span><span class="attr">#[cfg(feature = <span class="string">"rustls-native-certs"</span>)]
+    </span><span class="kw">pub fn </span>with_provider_and_native_roots(
+        <span class="self">self</span>,
+        provider: <span class="kw">impl </span>Into&lt;Arc&lt;CryptoProvider&gt;&gt;,
+    ) -&gt; std::io::Result&lt;ConnectorBuilder&lt;WantsSchemes&gt;&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.with_tls_config(
+            ClientConfig::builder_with_provider(provider.into())
+                .with_safe_default_protocol_versions()
+                .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))<span class="question-mark">?
+                </span>.with_native_roots()<span class="question-mark">?
+                </span>.with_no_client_auth(),
+        ))
+    }
+
+    <span class="doccomment">/// Shorthand for using rustls' default crypto provider and its
+    /// safe defaults.
     ///
     /// See [`ConfigBuilderExt::with_webpki_roots`]
-    ///
-    /// [with_safe_defaults]: rustls::ConfigBuilder::with_safe_defaults
-    </span><span class="attr">#[cfg(feature = <span class="string">"webpki-roots"</span>)]
-    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"webpki-roots"</span>)))]
+    </span><span class="attr">#[cfg(all(any(feature = <span class="string">"ring"</span>, feature = <span class="string">"aws-lc-rs"</span>), feature = <span class="string">"webpki-roots"</span>))]
     </span><span class="kw">pub fn </span>with_webpki_roots(<span class="self">self</span>) -&gt; ConnectorBuilder&lt;WantsSchemes&gt; {
         <span class="self">self</span>.with_tls_config(
             ClientConfig::builder()
-                .with_safe_defaults()
                 .with_webpki_roots()
                 .with_no_client_auth(),
         )
+    }
+
+    <span class="doccomment">/// Shorthand for using a custom [`CryptoProvider`], Rustls' safe default
+    /// protocol versions and Mozilla roots
+    ///
+    /// See [`ConfigBuilderExt::with_webpki_roots`]
+    </span><span class="attr">#[cfg(feature = <span class="string">"webpki-roots"</span>)]
+    </span><span class="kw">pub fn </span>with_provider_and_webpki_roots(
+        <span class="self">self</span>,
+        provider: <span class="kw">impl </span>Into&lt;Arc&lt;CryptoProvider&gt;&gt;,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;ConnectorBuilder&lt;WantsSchemes&gt;, rustls::Error&gt; {
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.with_tls_config(
+            ClientConfig::builder_with_provider(provider.into())
+                .with_safe_default_protocol_versions()<span class="question-mark">?
+                </span>.with_webpki_roots()
+                .with_no_client_auth(),
+        ))
     }
 }
 
@@ -482,7 +667,7 @@
         ConnectorBuilder(WantsProtocols1 {
             tls_config: <span class="self">self</span>.<span class="number">0</span>.tls_config,
             https_only: <span class="bool-val">true</span>,
-            override_server_name: <span class="prelude-val">None</span>,
+            server_name_resolver: <span class="prelude-val">None</span>,
         })
     }
 
@@ -494,7 +679,7 @@
         ConnectorBuilder(WantsProtocols1 {
             tls_config: <span class="self">self</span>.<span class="number">0</span>.tls_config,
             https_only: <span class="bool-val">false</span>,
-            override_server_name: <span class="prelude-val">None</span>,
+            server_name_resolver: <span class="prelude-val">None</span>,
         })
     }
 }
@@ -506,7 +691,7 @@
 </span><span class="kw">pub struct </span>WantsProtocols1 {
     tls_config: ClientConfig,
     https_only: bool,
-    override_server_name: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    server_name_resolver: <span class="prelude-ty">Option</span>&lt;Arc&lt;<span class="kw">dyn </span>ResolveServerName + Sync + Send&gt;&gt;,
 }
 
 <span class="kw">impl </span>WantsProtocols1 {
@@ -515,12 +700,13 @@
             force_https: <span class="self">self</span>.https_only,
             http: conn,
             tls_config: std::sync::Arc::new(<span class="self">self</span>.tls_config),
-            override_server_name: <span class="self">self</span>.override_server_name,
+            server_name_resolver: <span class="self">self
+                </span>.server_name_resolver
+                .unwrap_or_else(|| Arc::new(DefaultServerNameResolver::default())),
         }
     }
 
-    <span class="attr">#[cfg(feature = <span class="string">"tokio-runtime"</span>)]
-    </span><span class="kw">fn </span>build(<span class="self">self</span>) -&gt; HttpsConnector&lt;HttpConnector&gt; {
+    <span class="kw">fn </span>build(<span class="self">self</span>) -&gt; HttpsConnector&lt;HttpConnector&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>http = HttpConnector::new();
         <span class="comment">// HttpConnector won't enforce scheme, but HttpsConnector will
         </span>http.enforce_http(<span class="bool-val">false</span>);
@@ -541,7 +727,6 @@
     ///
     /// This needs to be called explicitly, no protocol is enabled by default
     </span><span class="attr">#[cfg(feature = <span class="string">"http2"</span>)]
-    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"http2"</span>)))]
     </span><span class="kw">pub fn </span>enable_http2(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; ConnectorBuilder&lt;WantsProtocols3&gt; {
         <span class="self">self</span>.<span class="number">0</span>.tls_config.alpn_protocols = <span class="macro">vec!</span>[<span class="string">b"h2"</span>.to_vec()];
         ConnectorBuilder(WantsProtocols3 {
@@ -555,7 +740,6 @@
     /// For now, this could enable both HTTP 1 and 2, depending on active features.
     /// In the future, other supported versions will be enabled as well.
     </span><span class="attr">#[cfg(feature = <span class="string">"http2"</span>)]
-    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"http2"</span>)))]
     </span><span class="kw">pub fn </span>enable_all_versions(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; ConnectorBuilder&lt;WantsProtocols3&gt; {
         <span class="attr">#[cfg(feature = <span class="string">"http1"</span>)]
         </span><span class="kw">let </span>alpn_protocols = <span class="macro">vec!</span>[<span class="string">b"h2"</span>.to_vec(), <span class="string">b"http/1.1"</span>.to_vec()];
@@ -575,13 +759,42 @@
     /// of the destination URL and verify that server certificate contains
     /// this value.
     ///
+    /// If this method is called, hyper-rustls will instead use this resolver
+    /// to compute the value used to verify the server certificate.
+    </span><span class="kw">pub fn </span>with_server_name_resolver(
+        <span class="kw-2">mut </span><span class="self">self</span>,
+        resolver: <span class="kw">impl </span>ResolveServerName + <span class="lifetime">'static </span>+ Sync + Send,
+    ) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.<span class="number">0</span>.server_name_resolver = <span class="prelude-val">Some</span>(Arc::new(resolver));
+        <span class="self">self
+    </span>}
+
+    <span class="doccomment">/// Override server name for the TLS stack
+    ///
+    /// By default, for each connection hyper-rustls will extract host portion
+    /// of the destination URL and verify that server certificate contains
+    /// this value.
+    ///
     /// If this method is called, hyper-rustls will instead verify that server
     /// certificate contains `override_server_name`. Domain name included in
     /// the URL will not affect certificate validation.
-    </span><span class="kw">pub fn </span>with_server_name(<span class="kw-2">mut </span><span class="self">self</span>, override_server_name: String) -&gt; <span class="self">Self </span>{
-        <span class="self">self</span>.<span class="number">0</span>.override_server_name = <span class="prelude-val">Some</span>(override_server_name);
-        <span class="self">self
-    </span>}
+    </span><span class="attr">#[deprecated(
+        since = <span class="string">"0.27.1"</span>,
+        note = <span class="string">"use Self::with_server_name_resolver with FixedServerNameResolver instead"
+    </span>)]
+    </span><span class="kw">pub fn </span>with_server_name(<span class="self">self</span>, <span class="kw-2">mut </span>override_server_name: String) -&gt; <span class="self">Self </span>{
+        <span class="comment">// remove square brackets around IPv6 address.
+        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(trimmed) = override_server_name
+            .strip_prefix(<span class="string">'['</span>)
+            .and_then(|s| s.strip_suffix(<span class="string">']'</span>))
+        {
+            override_server_name = trimmed.to_string();
+        }
+
+        <span class="self">self</span>.with_server_name_resolver(<span class="kw">move </span>|<span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw">_</span>| {
+            ServerName::try_from(override_server_name.clone())
+        })
+    }
 }
 
 <span class="doccomment">/// State of a builder with HTTP1 enabled, that may have some other
@@ -599,7 +812,6 @@
     ///
     /// This needs to be called explicitly, no protocol is enabled by default
     </span><span class="attr">#[cfg(feature = <span class="string">"http2"</span>)]
-    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"http2"</span>)))]
     </span><span class="kw">pub fn </span>enable_http2(<span class="kw-2">mut </span><span class="self">self</span>) -&gt; ConnectorBuilder&lt;WantsProtocols3&gt; {
         <span class="self">self</span>.<span class="number">0</span>.inner.tls_config.alpn_protocols = <span class="macro">vec!</span>[<span class="string">b"h2"</span>.to_vec(), <span class="string">b"http/1.1"</span>.to_vec()];
         ConnectorBuilder(WantsProtocols3 {
@@ -609,7 +821,6 @@
     }
 
     <span class="doccomment">/// This builds an [`HttpsConnector`] built on hyper's default [`HttpConnector`]
-    </span><span class="attr">#[cfg(feature = <span class="string">"tokio-runtime"</span>)]
     </span><span class="kw">pub fn </span>build(<span class="self">self</span>) -&gt; HttpsConnector&lt;HttpConnector&gt; {
         <span class="self">self</span>.<span class="number">0</span>.inner.build()
     }
@@ -640,7 +851,6 @@
 <span class="attr">#[cfg(feature = <span class="string">"http2"</span>)]
 </span><span class="kw">impl </span>ConnectorBuilder&lt;WantsProtocols3&gt; {
     <span class="doccomment">/// This builds an [`HttpsConnector`] built on hyper's default [`HttpConnector`]
-    </span><span class="attr">#[cfg(feature = <span class="string">"tokio-runtime"</span>)]
     </span><span class="kw">pub fn </span>build(<span class="self">self</span>) -&gt; HttpsConnector&lt;HttpConnector&gt; {
         <span class="self">self</span>.<span class="number">0</span>.inner.build()
     }
@@ -660,6 +870,7 @@
     </span><span class="attr">#[test]
     #[cfg(all(feature = <span class="string">"webpki-roots"</span>, feature = <span class="string">"http1"</span>))]
     </span><span class="kw">fn </span>test_builder() {
+        ensure_global_state();
         <span class="kw">let </span>_connector = <span class="kw">super</span>::ConnectorBuilder::new()
             .with_webpki_roots()
             .https_only()
@@ -671,9 +882,9 @@
     #[cfg(feature = <span class="string">"http1"</span>)]
     #[should_panic(expected = <span class="string">"ALPN protocols should not be pre-defined"</span>)]
     </span><span class="kw">fn </span>test_reject_predefined_alpn() {
+        ensure_global_state();
         <span class="kw">let </span>roots = rustls::RootCertStore::empty();
         <span class="kw">let </span><span class="kw-2">mut </span>config_with_alpn = rustls::ClientConfig::builder()
-            .with_safe_defaults()
             .with_root_certificates(roots)
             .with_no_client_auth();
         config_with_alpn.alpn_protocols = <span class="macro">vec!</span>[<span class="string">b"fancyprotocol"</span>.to_vec()];
@@ -687,9 +898,9 @@
     <span class="attr">#[test]
     #[cfg(all(feature = <span class="string">"http1"</span>, feature = <span class="string">"http2"</span>))]
     </span><span class="kw">fn </span>test_alpn() {
+        ensure_global_state();
         <span class="kw">let </span>roots = rustls::RootCertStore::empty();
         <span class="kw">let </span>tls_config = rustls::ClientConfig::builder()
-            .with_safe_defaults()
             .with_root_certificates(roots)
             .with_no_client_auth();
         <span class="kw">let </span>connector = <span class="kw">super</span>::ConnectorBuilder::new()
@@ -748,6 +959,13 @@
             .enable_all_versions()
             .build();
         <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>connector.tls_config.alpn_protocols, <span class="kw-2">&amp;</span>[<span class="string">b"h2"</span>.to_vec()]);
+    }
+
+    <span class="kw">fn </span>ensure_global_state() {
+        <span class="attr">#[cfg(feature = <span class="string">"ring"</span>)]
+        </span><span class="kw">let _ </span>= rustls::crypto::ring::default_provider().install_default();
+        <span class="attr">#[cfg(feature = <span class="string">"aws-lc-rs"</span>)]
+        </span><span class="kw">let _ </span>= rustls::crypto::aws_lc_rs::default_provider().install_default();
     }
 }
 </code></pre></div></section></main></body></html>

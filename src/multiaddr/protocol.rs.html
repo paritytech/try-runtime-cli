@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/multiaddr-0.17.1/src/protocol.rs`."><title>protocol.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="multiaddr" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/multiaddr-0.18.2/src/protocol.rs`."><title>protocol.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="multiaddr" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -684,12 +684,164 @@
 <a href="#684" id="684">684</a>
 <a href="#685" id="685">685</a>
 <a href="#686" id="686">686</a>
+<a href="#687" id="687">687</a>
+<a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
+<a href="#691" id="691">691</a>
+<a href="#692" id="692">692</a>
+<a href="#693" id="693">693</a>
+<a href="#694" id="694">694</a>
+<a href="#695" id="695">695</a>
+<a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
+<a href="#705" id="705">705</a>
+<a href="#706" id="706">706</a>
+<a href="#707" id="707">707</a>
+<a href="#708" id="708">708</a>
+<a href="#709" id="709">709</a>
+<a href="#710" id="710">710</a>
+<a href="#711" id="711">711</a>
+<a href="#712" id="712">712</a>
+<a href="#713" id="713">713</a>
+<a href="#714" id="714">714</a>
+<a href="#715" id="715">715</a>
+<a href="#716" id="716">716</a>
+<a href="#717" id="717">717</a>
+<a href="#718" id="718">718</a>
+<a href="#719" id="719">719</a>
+<a href="#720" id="720">720</a>
+<a href="#721" id="721">721</a>
+<a href="#722" id="722">722</a>
+<a href="#723" id="723">723</a>
+<a href="#724" id="724">724</a>
+<a href="#725" id="725">725</a>
+<a href="#726" id="726">726</a>
+<a href="#727" id="727">727</a>
+<a href="#728" id="728">728</a>
+<a href="#729" id="729">729</a>
+<a href="#730" id="730">730</a>
+<a href="#731" id="731">731</a>
+<a href="#732" id="732">732</a>
+<a href="#733" id="733">733</a>
+<a href="#734" id="734">734</a>
+<a href="#735" id="735">735</a>
+<a href="#736" id="736">736</a>
+<a href="#737" id="737">737</a>
+<a href="#738" id="738">738</a>
+<a href="#739" id="739">739</a>
+<a href="#740" id="740">740</a>
+<a href="#741" id="741">741</a>
+<a href="#742" id="742">742</a>
+<a href="#743" id="743">743</a>
+<a href="#744" id="744">744</a>
+<a href="#745" id="745">745</a>
+<a href="#746" id="746">746</a>
+<a href="#747" id="747">747</a>
+<a href="#748" id="748">748</a>
+<a href="#749" id="749">749</a>
+<a href="#750" id="750">750</a>
+<a href="#751" id="751">751</a>
+<a href="#752" id="752">752</a>
+<a href="#753" id="753">753</a>
+<a href="#754" id="754">754</a>
+<a href="#755" id="755">755</a>
+<a href="#756" id="756">756</a>
+<a href="#757" id="757">757</a>
+<a href="#758" id="758">758</a>
+<a href="#759" id="759">759</a>
+<a href="#760" id="760">760</a>
+<a href="#761" id="761">761</a>
+<a href="#762" id="762">762</a>
+<a href="#763" id="763">763</a>
+<a href="#764" id="764">764</a>
+<a href="#765" id="765">765</a>
+<a href="#766" id="766">766</a>
+<a href="#767" id="767">767</a>
+<a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
+<a href="#770" id="770">770</a>
+<a href="#771" id="771">771</a>
+<a href="#772" id="772">772</a>
+<a href="#773" id="773">773</a>
+<a href="#774" id="774">774</a>
+<a href="#775" id="775">775</a>
+<a href="#776" id="776">776</a>
+<a href="#777" id="777">777</a>
+<a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
+<a href="#784" id="784">784</a>
+<a href="#785" id="785">785</a>
+<a href="#786" id="786">786</a>
+<a href="#787" id="787">787</a>
+<a href="#788" id="788">788</a>
+<a href="#789" id="789">789</a>
+<a href="#790" id="790">790</a>
+<a href="#791" id="791">791</a>
+<a href="#792" id="792">792</a>
+<a href="#793" id="793">793</a>
+<a href="#794" id="794">794</a>
+<a href="#795" id="795">795</a>
+<a href="#796" id="796">796</a>
+<a href="#797" id="797">797</a>
+<a href="#798" id="798">798</a>
+<a href="#799" id="799">799</a>
+<a href="#800" id="800">800</a>
+<a href="#801" id="801">801</a>
+<a href="#802" id="802">802</a>
+<a href="#803" id="803">803</a>
+<a href="#804" id="804">804</a>
+<a href="#805" id="805">805</a>
+<a href="#806" id="806">806</a>
+<a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
+<a href="#809" id="809">809</a>
+<a href="#810" id="810">810</a>
+<a href="#811" id="811">811</a>
+<a href="#812" id="812">812</a>
+<a href="#813" id="813">813</a>
+<a href="#814" id="814">814</a>
+<a href="#815" id="815">815</a>
+<a href="#816" id="816">816</a>
+<a href="#817" id="817">817</a>
+<a href="#818" id="818">818</a>
+<a href="#819" id="819">819</a>
+<a href="#820" id="820">820</a>
+<a href="#821" id="821">821</a>
+<a href="#822" id="822">822</a>
+<a href="#823" id="823">823</a>
+<a href="#824" id="824">824</a>
+<a href="#825" id="825">825</a>
+<a href="#826" id="826">826</a>
+<a href="#827" id="827">827</a>
+<a href="#828" id="828">828</a>
+<a href="#829" id="829">829</a>
+<a href="#830" id="830">830</a>
+<a href="#831" id="831">831</a>
+<a href="#832" id="832">832</a>
+<a href="#833" id="833">833</a>
+<a href="#834" id="834">834</a>
+<a href="#835" id="835">835</a>
+<a href="#836" id="836">836</a>
+<a href="#837" id="837">837</a>
+<a href="#838" id="838">838</a>
+<a href="#839" id="839">839</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::onion_addr::Onion3Addr;
-<span class="kw">use crate</span>::{Error, <span class="prelude-ty">Result</span>};
+<span class="kw">use crate</span>::{Error, PeerId, <span class="prelude-ty">Result</span>};
 <span class="kw">use </span>arrayref::array_ref;
 <span class="kw">use </span>byteorder::{BigEndian, ByteOrder, ReadBytesExt, WriteBytesExt};
 <span class="kw">use </span>data_encoding::BASE32;
-<span class="kw">use </span>multihash::Multihash;
 <span class="kw">use </span>std::{
     borrow::Cow,
     convert::From,
@@ -709,15 +861,15 @@
 <span class="kw">const </span>DNS6: u32 = <span class="number">55</span>;
 <span class="kw">const </span>DNSADDR: u32 = <span class="number">56</span>;
 <span class="kw">const </span>HTTP: u32 = <span class="number">480</span>;
-<span class="kw">const </span>HTTPS: u32 = <span class="number">443</span>;
-<span class="kw">const </span>IP4: u32 = <span class="number">4</span>;
+<span class="kw">const </span>HTTPS: u32 = <span class="number">443</span>; <span class="comment">// Deprecated - alias for /tls/http
+</span><span class="kw">const </span>IP4: u32 = <span class="number">4</span>;
 <span class="kw">const </span>IP6: u32 = <span class="number">41</span>;
-<span class="kw">const </span>P2P_WEBRTC_DIRECT: u32 = <span class="number">276</span>;
-<span class="kw">const </span>P2P_WEBRTC_STAR: u32 = <span class="number">275</span>;
-<span class="kw">const </span>WEBRTC: u32 = <span class="number">280</span>;
+<span class="kw">const </span>P2P_WEBRTC_DIRECT: u32 = <span class="number">276</span>; <span class="comment">// Deprecated
+</span><span class="kw">const </span>P2P_WEBRTC_STAR: u32 = <span class="number">275</span>; <span class="comment">// Deprecated
+</span><span class="kw">const </span>WEBRTC_DIRECT: u32 = <span class="number">280</span>;
 <span class="kw">const </span>CERTHASH: u32 = <span class="number">466</span>;
-<span class="kw">const </span>P2P_WEBSOCKET_STAR: u32 = <span class="number">479</span>;
-<span class="kw">const </span>MEMORY: u32 = <span class="number">777</span>;
+<span class="kw">const </span>P2P_WEBSOCKET_STAR: u32 = <span class="number">479</span>; <span class="comment">// Deprecated
+</span><span class="kw">const </span>MEMORY: u32 = <span class="number">777</span>;
 <span class="kw">const </span>ONION: u32 = <span class="number">444</span>;
 <span class="kw">const </span>ONION3: u32 = <span class="number">445</span>;
 <span class="kw">const </span>P2P: u32 = <span class="number">421</span>;
@@ -732,12 +884,28 @@
 <span class="kw">const </span>UDT: u32 = <span class="number">301</span>;
 <span class="kw">const </span>UNIX: u32 = <span class="number">400</span>;
 <span class="kw">const </span>UTP: u32 = <span class="number">302</span>;
+<span class="kw">const </span>WEBTRANSPORT: u32 = <span class="number">465</span>;
 <span class="kw">const </span>WS: u32 = <span class="number">477</span>;
 <span class="kw">const </span>WS_WITH_PATH: u32 = <span class="number">4770</span>; <span class="comment">// Note: not standard
-</span><span class="kw">const </span>WSS: u32 = <span class="number">478</span>;
-<span class="kw">const </span>WSS_WITH_PATH: u32 = <span class="number">4780</span>; <span class="comment">// Note: not standard
+</span><span class="kw">const </span>WSS: u32 = <span class="number">478</span>; <span class="comment">// Deprecated - alias for /tls/ws
+</span><span class="kw">const </span>WSS_WITH_PATH: u32 = <span class="number">4780</span>; <span class="comment">// Note: not standard
+</span><span class="kw">const </span>IP6ZONE: u32 = <span class="number">42</span>;
+<span class="kw">const </span>IPCIDR: u32 = <span class="number">43</span>;
+<span class="comment">// const IPFS: u32 = 421; // Deprecated
+</span><span class="kw">const </span>GARLIC64: u32 = <span class="number">446</span>;
+<span class="kw">const </span>GARLIC32: u32 = <span class="number">447</span>;
+<span class="kw">const </span>SNI: u32 = <span class="number">449</span>;
+<span class="kw">const </span>P2P_STARDUST: u32 = <span class="number">277</span>; <span class="comment">// Deprecated
+</span><span class="kw">const </span>WEBRTC: u32 = <span class="number">281</span>;
 
-</span><span class="kw">const </span>PATH_SEGMENT_ENCODE_SET: <span class="kw-2">&amp;</span>percent_encoding::AsciiSet = <span class="kw-2">&amp;</span>percent_encoding::CONTROLS
+<span class="doccomment">/// Type-alias for how multi-addresses use `Multihash`.
+///
+/// The `64` defines the allocation size for the digest within the `Multihash`.
+/// This allows us to use hashes such as SHA512.
+/// In case protocols like `/certhash` ever support hashes larger than that, we will need to update this size here (which will be a breaking change!).
+</span><span class="kw">type </span>Multihash = multihash::Multihash&lt;<span class="number">64</span>&gt;;
+
+<span class="kw">const </span>PATH_SEGMENT_ENCODE_SET: <span class="kw-2">&amp;</span>percent_encoding::AsciiSet = <span class="kw-2">&amp;</span>percent_encoding::CONTROLS
     .add(<span class="string">b'%'</span>)
     .add(<span class="string">b'/'</span>)
     .add(<span class="string">b'`'</span>)
@@ -757,6 +925,7 @@
 /// platform-specific. This means that the actual validation of paths needs to
 /// happen separately.
 </span><span class="attr">#[derive(PartialEq, Eq, Clone, Debug)]
+#[non_exhaustive]
 </span><span class="kw">pub enum </span>Protocol&lt;<span class="lifetime">'a</span>&gt; {
     Dccp(u16),
     Dns(Cow&lt;<span class="lifetime">'a</span>, str&gt;),
@@ -769,14 +938,14 @@
     Ip6(Ipv6Addr),
     P2pWebRtcDirect,
     P2pWebRtcStar,
-    WebRTC,
+    WebRTCDirect,
     Certhash(Multihash),
     P2pWebSocketStar,
     <span class="doccomment">/// Contains the "port" to contact. Similar to TCP or UDP, 0 means "assign me a port".
     </span>Memory(u64),
     Onion(Cow&lt;<span class="lifetime">'a</span>, [u8; <span class="number">10</span>]&gt;, u16),
     Onion3(Onion3Addr&lt;<span class="lifetime">'a</span>&gt;),
-    P2p(Multihash),
+    P2p(PeerId),
     P2pCircuit,
     Quic,
     QuicV1,
@@ -788,8 +957,16 @@
     Udt,
     Unix(Cow&lt;<span class="lifetime">'a</span>, str&gt;),
     Utp,
+    WebTransport,
     Ws(Cow&lt;<span class="lifetime">'a</span>, str&gt;),
     Wss(Cow&lt;<span class="lifetime">'a</span>, str&gt;),
+    Ip6zone(Cow&lt;<span class="lifetime">'a</span>, str&gt;),
+    Ipcidr(u8),
+    Garlic64(Cow&lt;<span class="lifetime">'a</span>, [u8]&gt;),
+    Garlic32(Cow&lt;<span class="lifetime">'a</span>, [u8]&gt;),
+    Sni(Cow&lt;<span class="lifetime">'a</span>, str&gt;),
+    P2pStardust,
+    WebRTC,
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Protocol&lt;<span class="lifetime">'a</span>&gt; {
@@ -852,10 +1029,12 @@
                 <span class="kw">let </span>s = iter.next().ok_or(Error::InvalidProtocolString)<span class="question-mark">?</span>;
                 <span class="prelude-val">Ok</span>(Protocol::Unix(Cow::Borrowed(s)))
             }
-            <span class="string">"p2p" </span>=&gt; {
+            <span class="string">"p2p" </span>| <span class="string">"ipfs" </span>=&gt; {
                 <span class="kw">let </span>s = iter.next().ok_or(Error::InvalidProtocolString)<span class="question-mark">?</span>;
                 <span class="kw">let </span>decoded = multibase::Base::Base58Btc.decode(s)<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>(Protocol::P2p(Multihash::from_bytes(<span class="kw-2">&amp;</span>decoded)<span class="question-mark">?</span>))
+                <span class="kw">let </span>peer_id =
+                    PeerId::from_bytes(<span class="kw-2">&amp;</span>decoded).map_err(|e| Error::ParsingError(Box::new(e)))<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(Protocol::P2p(peer_id))
             }
             <span class="string">"http" </span>=&gt; <span class="prelude-val">Ok</span>(Protocol::Http),
             <span class="string">"https" </span>=&gt; <span class="prelude-val">Ok</span>(Protocol::Https),
@@ -871,6 +1050,7 @@
                 .map(|(a, p)| Protocol::Onion3((a, p).into())),
             <span class="string">"quic" </span>=&gt; <span class="prelude-val">Ok</span>(Protocol::Quic),
             <span class="string">"quic-v1" </span>=&gt; <span class="prelude-val">Ok</span>(Protocol::QuicV1),
+            <span class="string">"webtransport" </span>=&gt; <span class="prelude-val">Ok</span>(Protocol::WebTransport),
             <span class="string">"ws" </span>=&gt; <span class="prelude-val">Ok</span>(Protocol::Ws(Cow::Borrowed(<span class="string">"/"</span>))),
             <span class="string">"wss" </span>=&gt; <span class="prelude-val">Ok</span>(Protocol::Wss(Cow::Borrowed(<span class="string">"/"</span>))),
             <span class="string">"x-parity-ws" </span>=&gt; {
@@ -885,11 +1065,7 @@
             }
             <span class="string">"p2p-websocket-star" </span>=&gt; <span class="prelude-val">Ok</span>(Protocol::P2pWebSocketStar),
             <span class="string">"p2p-webrtc-star" </span>=&gt; <span class="prelude-val">Ok</span>(Protocol::P2pWebRtcStar),
-            <span class="string">"webrtc" </span>=&gt; {
-                <span class="macro">log::warn!</span>(<span class="string">"Parsed deprecated /webrtc. Use /webrtc-direct instead."</span>);
-                <span class="prelude-val">Ok</span>(Protocol::WebRTC)
-            }
-            <span class="string">"webrtc-direct" </span>=&gt; <span class="prelude-val">Ok</span>(Protocol::WebRTC),
+            <span class="string">"webrtc-direct" </span>=&gt; <span class="prelude-val">Ok</span>(Protocol::WebRTCDirect),
             <span class="string">"certhash" </span>=&gt; {
                 <span class="kw">let </span>s = iter.next().ok_or(Error::InvalidProtocolString)<span class="question-mark">?</span>;
                 <span class="kw">let </span>(_base, decoded) = multibase::decode(s)<span class="question-mark">?</span>;
@@ -901,6 +1077,44 @@
                 <span class="kw">let </span>s = iter.next().ok_or(Error::InvalidProtocolString)<span class="question-mark">?</span>;
                 <span class="prelude-val">Ok</span>(Protocol::Memory(s.parse()<span class="question-mark">?</span>))
             }
+            <span class="string">"ip6zone" </span>=&gt; {
+                <span class="kw">let </span>s = iter.next().ok_or(Error::InvalidProtocolString)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(Protocol::Ip6zone(Cow::Borrowed(s)))
+            }
+            <span class="string">"ipcidr" </span>=&gt; {
+                <span class="kw">let </span>s = iter.next().ok_or(Error::InvalidProtocolString)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(Protocol::Ipcidr(s.parse()<span class="question-mark">?</span>))
+            }
+            <span class="string">"garlic64" </span>=&gt; {
+                <span class="kw">let </span>s = iter
+                    .next()
+                    .ok_or(Error::InvalidProtocolString)<span class="question-mark">?
+                    </span>.replace(<span class="string">'-'</span>, <span class="string">"+"</span>)
+                    .replace(<span class="string">'~'</span>, <span class="string">"/"</span>);
+
+                <span class="kw">if </span>s.len() &lt; <span class="number">516 </span>|| s.len() &gt; <span class="number">616 </span>{
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidProtocolString);
+                }
+
+                <span class="kw">let </span>decoded = multibase::Base::Base64.decode(s)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(Protocol::Garlic64(Cow::from(decoded)))
+            }
+            <span class="string">"garlic32" </span>=&gt; {
+                <span class="kw">let </span>s = iter.next().ok_or(Error::InvalidProtocolString)<span class="question-mark">?</span>;
+
+                <span class="kw">if </span>s.len() &lt; <span class="number">55 </span>&amp;&amp; s.len() != <span class="number">52 </span>{
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidProtocolString);
+                }
+
+                <span class="kw">let </span>decoded = multibase::Base::Base32Lower.decode(s)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(Protocol::Garlic32(Cow::from(decoded)))
+            }
+            <span class="string">"sni" </span>=&gt; {
+                <span class="kw">let </span>s = iter.next().ok_or(Error::InvalidProtocolString)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(Protocol::Sni(Cow::Borrowed(s)))
+            }
+            <span class="string">"p2p-stardust" </span>=&gt; <span class="prelude-val">Ok</span>(Protocol::P2pStardust),
+            <span class="string">"webrtc" </span>=&gt; <span class="prelude-val">Ok</span>(Protocol::WebRTC),
             unknown =&gt; <span class="prelude-val">Err</span>(Error::UnknownProtocolString(unknown.to_string())),
         }
     }
@@ -971,7 +1185,7 @@
             }
             P2P_WEBRTC_DIRECT =&gt; <span class="prelude-val">Ok</span>((Protocol::P2pWebRtcDirect, input)),
             P2P_WEBRTC_STAR =&gt; <span class="prelude-val">Ok</span>((Protocol::P2pWebRtcStar, input)),
-            WEBRTC =&gt; <span class="prelude-val">Ok</span>((Protocol::WebRTC, input)),
+            WEBRTC_DIRECT =&gt; <span class="prelude-val">Ok</span>((Protocol::WebRTCDirect, input)),
             CERTHASH =&gt; {
                 <span class="kw">let </span>(n, input) = decode::usize(input)<span class="question-mark">?</span>;
                 <span class="kw">let </span>(data, rest) = split_at(n, input)<span class="question-mark">?</span>;
@@ -1003,7 +1217,12 @@
             P2P =&gt; {
                 <span class="kw">let </span>(n, input) = decode::usize(input)<span class="question-mark">?</span>;
                 <span class="kw">let </span>(data, rest) = split_at(n, input)<span class="question-mark">?</span>;
-                <span class="prelude-val">Ok</span>((Protocol::P2p(Multihash::from_bytes(data)<span class="question-mark">?</span>), rest))
+                <span class="prelude-val">Ok</span>((
+                    Protocol::P2p(
+                        PeerId::from_bytes(data).map_err(|e| Error::ParsingError(Box::new(e)))<span class="question-mark">?</span>,
+                    ),
+                    rest,
+                ))
             }
             P2P_CIRCUIT =&gt; <span class="prelude-val">Ok</span>((Protocol::P2pCircuit, input)),
             QUIC =&gt; <span class="prelude-val">Ok</span>((Protocol::Quic, input)),
@@ -1035,6 +1254,7 @@
                 <span class="prelude-val">Ok</span>((Protocol::Unix(Cow::Borrowed(str::from_utf8(data)<span class="question-mark">?</span>)), rest))
             }
             UTP =&gt; <span class="prelude-val">Ok</span>((Protocol::Utp, input)),
+            WEBTRANSPORT =&gt; <span class="prelude-val">Ok</span>((Protocol::WebTransport, input)),
             WS =&gt; <span class="prelude-val">Ok</span>((Protocol::Ws(Cow::Borrowed(<span class="string">"/"</span>)), input)),
             WS_WITH_PATH =&gt; {
                 <span class="kw">let </span>(n, input) = decode::usize(input)<span class="question-mark">?</span>;
@@ -1047,6 +1267,35 @@
                 <span class="kw">let </span>(data, rest) = split_at(n, input)<span class="question-mark">?</span>;
                 <span class="prelude-val">Ok</span>((Protocol::Wss(Cow::Borrowed(str::from_utf8(data)<span class="question-mark">?</span>)), rest))
             }
+            IP6ZONE =&gt; {
+                <span class="kw">let </span>(n, input) = decode::usize(input)<span class="question-mark">?</span>;
+                <span class="kw">let </span>(data, rest) = split_at(n, input)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((
+                    Protocol::Ip6zone(Cow::Borrowed(str::from_utf8(data)<span class="question-mark">?</span>)),
+                    rest,
+                ))
+            }
+            IPCIDR =&gt; {
+                <span class="kw">let </span>(data, rest) = split_at(<span class="number">1</span>, input)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((Protocol::Ipcidr(data[<span class="number">0</span>]), rest))
+            }
+            GARLIC64 =&gt; {
+                <span class="kw">let </span>(n, input) = decode::usize(input)<span class="question-mark">?</span>;
+                <span class="kw">let </span>(data, rest) = split_at(n, input)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((Protocol::Garlic64(Cow::Borrowed(data)), rest))
+            }
+            GARLIC32 =&gt; {
+                <span class="kw">let </span>(n, input) = decode::usize(input)<span class="question-mark">?</span>;
+                <span class="kw">let </span>(data, rest) = split_at(n, input)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((Protocol::Garlic32(Cow::Borrowed(data)), rest))
+            }
+            SNI =&gt; {
+                <span class="kw">let </span>(n, input) = decode::usize(input)<span class="question-mark">?</span>;
+                <span class="kw">let </span>(data, rest) = split_at(n, input)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((Protocol::Sni(Cow::Borrowed(str::from_utf8(data)<span class="question-mark">?</span>)), rest))
+            }
+            P2P_STARDUST =&gt; <span class="prelude-val">Ok</span>((Protocol::P2pStardust, input)),
+            WEBRTC =&gt; <span class="prelude-val">Ok</span>((Protocol::WebRTC, input)),
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(Error::UnknownProtocolId(id)),
         }
     }
@@ -1114,9 +1363,9 @@
                 w.write_all(encode::usize(bytes.len(), <span class="kw-2">&amp;mut </span>encode::usize_buffer()))<span class="question-mark">?</span>;
                 w.write_all(bytes)<span class="question-mark">?
             </span>}
-            Protocol::P2p(multihash) =&gt; {
+            Protocol::P2p(peer_id) =&gt; {
                 w.write_all(encode::u32(P2P, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>;
-                <span class="kw">let </span>bytes = multihash.to_bytes();
+                <span class="kw">let </span>bytes = peer_id.to_bytes();
                 w.write_all(encode::usize(bytes.len(), <span class="kw-2">&amp;mut </span>encode::usize_buffer()))<span class="question-mark">?</span>;
                 w.write_all(<span class="kw-2">&amp;</span>bytes)<span class="question-mark">?
             </span>}
@@ -1136,6 +1385,7 @@
             Protocol::Udt =&gt; w.write_all(encode::u32(UDT, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>,
             Protocol::Http =&gt; w.write_all(encode::u32(HTTP, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>,
             Protocol::Https =&gt; w.write_all(encode::u32(HTTPS, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>,
+            Protocol::WebTransport =&gt; w.write_all(encode::u32(WEBTRANSPORT, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>,
             Protocol::Ws(<span class="kw-2">ref </span>s) <span class="kw">if </span>s == <span class="string">"/" </span>=&gt; w.write_all(encode::u32(WS, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>,
             Protocol::Ws(s) =&gt; {
                 w.write_all(encode::u32(WS_WITH_PATH, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>;
@@ -1152,7 +1402,7 @@
             </span>}
             Protocol::P2pWebSocketStar =&gt; w.write_all(encode::u32(P2P_WEBSOCKET_STAR, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>,
             Protocol::P2pWebRtcStar =&gt; w.write_all(encode::u32(P2P_WEBRTC_STAR, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>,
-            Protocol::WebRTC =&gt; w.write_all(encode::u32(WEBRTC, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>,
+            Protocol::WebRTCDirect =&gt; w.write_all(encode::u32(WEBRTC_DIRECT, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>,
             Protocol::Certhash(hash) =&gt; {
                 w.write_all(encode::u32(CERTHASH, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>;
                 <span class="kw">let </span>bytes = hash.to_bytes();
@@ -1165,6 +1415,34 @@
                 w.write_all(encode::u32(MEMORY, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>;
                 w.write_u64::&lt;BigEndian&gt;(<span class="kw-2">*</span>port)<span class="question-mark">?
             </span>}
+            Protocol::Ip6zone(zone_id) =&gt; {
+                w.write_all(encode::u32(IP6ZONE, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>;
+                <span class="kw">let </span>bytes = zone_id.as_bytes();
+                w.write_all(encode::usize(bytes.len(), <span class="kw-2">&amp;mut </span>encode::usize_buffer()))<span class="question-mark">?</span>;
+                w.write_all(bytes)<span class="question-mark">?
+            </span>}
+            Protocol::Ipcidr(mask) =&gt; {
+                w.write_all(encode::u32(IPCIDR, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>;
+                w.write_u8(<span class="kw-2">*</span>mask)<span class="question-mark">?
+            </span>}
+            Protocol::Garlic64(addr) =&gt; {
+                w.write_all(encode::u32(GARLIC64, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>;
+                w.write_all(encode::usize(addr.len(), <span class="kw-2">&amp;mut </span>encode::usize_buffer()))<span class="question-mark">?</span>;
+                w.write_all(addr)<span class="question-mark">?
+            </span>}
+            Protocol::Garlic32(addr) =&gt; {
+                w.write_all(encode::u32(GARLIC32, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>;
+                w.write_all(encode::usize(addr.len(), <span class="kw-2">&amp;mut </span>encode::usize_buffer()))<span class="question-mark">?</span>;
+                w.write_all(addr)<span class="question-mark">?
+            </span>}
+            Protocol::Sni(s) =&gt; {
+                w.write_all(encode::u32(SNI, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>;
+                <span class="kw">let </span>bytes = s.as_bytes();
+                w.write_all(encode::usize(bytes.len(), <span class="kw-2">&amp;mut </span>encode::usize_buffer()))<span class="question-mark">?</span>;
+                w.write_all(bytes)<span class="question-mark">?
+            </span>}
+            Protocol::P2pStardust =&gt; w.write_all(encode::u32(P2P_STARDUST, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>,
+            Protocol::WebRTC =&gt; w.write_all(encode::u32(WEBRTC, <span class="kw-2">&amp;mut </span>buf))<span class="question-mark">?</span>,
         }
         <span class="prelude-val">Ok</span>(())
     }
@@ -1184,7 +1462,7 @@
             Ip6(a) =&gt; Ip6(a),
             P2pWebRtcDirect =&gt; P2pWebRtcDirect,
             P2pWebRtcStar =&gt; P2pWebRtcStar,
-            WebRTC =&gt; WebRTC,
+            WebRTCDirect =&gt; WebRTCDirect,
             Certhash(hash) =&gt; Certhash(hash),
             P2pWebSocketStar =&gt; P2pWebSocketStar,
             Memory(a) =&gt; Memory(a),
@@ -1202,8 +1480,16 @@
             Udt =&gt; Udt,
             Unix(cow) =&gt; Unix(Cow::Owned(cow.into_owned())),
             Utp =&gt; Utp,
+            WebTransport =&gt; WebTransport,
             Ws(cow) =&gt; Ws(Cow::Owned(cow.into_owned())),
             Wss(cow) =&gt; Wss(Cow::Owned(cow.into_owned())),
+            Ip6zone(cow) =&gt; Ip6zone(Cow::Owned(cow.into_owned())),
+            Ipcidr(mask) =&gt; Ipcidr(mask),
+            Garlic64(addr) =&gt; Garlic64(Cow::Owned(addr.into_owned())),
+            Garlic32(addr) =&gt; Garlic32(Cow::Owned(addr.into_owned())),
+            Sni(cow) =&gt; Sni(Cow::Owned(cow.into_owned())),
+            P2pStardust =&gt; P2pStardust,
+            WebRTC =&gt; WebRTC,
         }
     }
 
@@ -1221,7 +1507,7 @@
             Ip6(<span class="kw">_</span>) =&gt; <span class="string">"ip6"</span>,
             P2pWebRtcDirect =&gt; <span class="string">"p2p-webrtc-direct"</span>,
             P2pWebRtcStar =&gt; <span class="string">"p2p-webrtc-star"</span>,
-            WebRTC =&gt; <span class="string">"webrtc-direct"</span>,
+            WebRTCDirect =&gt; <span class="string">"webrtc-direct"</span>,
             Certhash(<span class="kw">_</span>) =&gt; <span class="string">"certhash"</span>,
             P2pWebSocketStar =&gt; <span class="string">"p2p-websocket-star"</span>,
             Memory(<span class="kw">_</span>) =&gt; <span class="string">"memory"</span>,
@@ -1239,10 +1525,18 @@
             Udt =&gt; <span class="string">"udt"</span>,
             Unix(<span class="kw">_</span>) =&gt; <span class="string">"unix"</span>,
             Utp =&gt; <span class="string">"utp"</span>,
+            WebTransport =&gt; <span class="string">"webtransport"</span>,
             Ws(<span class="kw-2">ref </span>s) <span class="kw">if </span>s == <span class="string">"/" </span>=&gt; <span class="string">"ws"</span>,
             Ws(<span class="kw">_</span>) =&gt; <span class="string">"x-parity-ws"</span>,
             Wss(<span class="kw-2">ref </span>s) <span class="kw">if </span>s == <span class="string">"/" </span>=&gt; <span class="string">"wss"</span>,
             Wss(<span class="kw">_</span>) =&gt; <span class="string">"x-parity-wss"</span>,
+            Ip6zone(<span class="kw">_</span>) =&gt; <span class="string">"ip6zone"</span>,
+            Ipcidr(<span class="kw">_</span>) =&gt; <span class="string">"ipcidr"</span>,
+            Garlic64(<span class="kw">_</span>) =&gt; <span class="string">"garlic64"</span>,
+            Garlic32(<span class="kw">_</span>) =&gt; <span class="string">"garlic32"</span>,
+            Sni(<span class="kw">_</span>) =&gt; <span class="string">"sni"</span>,
+            P2pStardust =&gt; <span class="string">"p2p-stardust"</span>,
+            WebRTC =&gt; <span class="string">"webrtc"</span>,
         }
     }
 }
@@ -1252,19 +1546,19 @@
         <span class="kw">use </span><span class="self">self</span>::Protocol::<span class="kw-2">*</span>;
         <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, <span class="self">self</span>.tag())<span class="question-mark">?</span>;
         <span class="kw">match </span><span class="self">self </span>{
-            Dccp(port) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, port),
-            Dns(s) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, s),
-            Dns4(s) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, s),
-            Dns6(s) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, s),
-            Dnsaddr(s) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, s),
-            Ip4(addr) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, addr),
-            Ip6(addr) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, addr),
+            Dccp(port) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{port}"</span>),
+            Dns(s) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{s}"</span>),
+            Dns4(s) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{s}"</span>),
+            Dns6(s) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{s}"</span>),
+            Dnsaddr(s) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{s}"</span>),
+            Ip4(addr) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{addr}"</span>),
+            Ip6(addr) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{addr}"</span>),
             Certhash(hash) =&gt; <span class="macro">write!</span>(
                 f,
                 <span class="string">"/{}"</span>,
                 multibase::encode(multibase::Base::Base64Url, hash.to_bytes())
             ),
-            Memory(port) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, port),
+            Memory(port) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{port}"</span>),
             Onion(addr, port) =&gt; {
                 <span class="kw">let </span>s = BASE32.encode(addr.as_ref());
                 <span class="macro">write!</span>(f, <span class="string">"/{}:{}"</span>, s.to_lowercase(), port)
@@ -1274,20 +1568,32 @@
                 <span class="macro">write!</span>(f, <span class="string">"/{}:{}"</span>, s.to_lowercase(), addr.port())
             }
             P2p(c) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, multibase::Base::Base58Btc.encode(c.to_bytes())),
-            Sctp(port) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, port),
-            Tcp(port) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, port),
-            Udp(port) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, port),
-            Unix(s) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, s),
+            Sctp(port) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{port}"</span>),
+            Tcp(port) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{port}"</span>),
+            Udp(port) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{port}"</span>),
+            Unix(s) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{s}"</span>),
             Ws(s) <span class="kw">if </span>s != <span class="string">"/" </span>=&gt; {
                 <span class="kw">let </span>encoded =
                     percent_encoding::percent_encode(s.as_bytes(), PATH_SEGMENT_ENCODE_SET);
-                <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, encoded)
+                <span class="macro">write!</span>(f, <span class="string">"/{encoded}"</span>)
             }
             Wss(s) <span class="kw">if </span>s != <span class="string">"/" </span>=&gt; {
                 <span class="kw">let </span>encoded =
                     percent_encoding::percent_encode(s.as_bytes(), PATH_SEGMENT_ENCODE_SET);
-                <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, encoded)
+                <span class="macro">write!</span>(f, <span class="string">"/{encoded}"</span>)
             }
+            Ip6zone(zone) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{zone}"</span>),
+            Ipcidr(mask) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{mask}"</span>),
+            Garlic64(addr) =&gt; <span class="macro">write!</span>(
+                f,
+                <span class="string">"/{}"</span>,
+                multibase::Base::Base64
+                    .encode(addr)
+                    .replace(<span class="string">'+'</span>, <span class="string">"-"</span>)
+                    .replace(<span class="string">'/'</span>, <span class="string">"~"</span>)
+            ),
+            Garlic32(addr) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{}"</span>, multibase::Base::Base32Lower.encode(addr)),
+            Sni(s) =&gt; <span class="macro">write!</span>(f, <span class="string">"/{s}"</span>),
             <span class="kw">_ </span>=&gt; <span class="prelude-val">Ok</span>(()),
         }
     }

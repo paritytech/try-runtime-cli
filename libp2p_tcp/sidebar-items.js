@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["tokio"],"struct":["Config","Transport"],"type":["GenTcpConfig","TokioTcpTransport"]};
+window.SIDEBAR_ITEMS = {"mod":["tokio"],"struct":["Config","Transport"]};

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/network/sync/src/strategy/state.rs`."><title>state.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_network_sync" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/client/network/sync/src/strategy/state.rs`."><title>state.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_network_sync" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -747,6 +747,122 @@
 <a href="#747" id="747">747</a>
 <a href="#748" id="748">748</a>
 <a href="#749" id="749">749</a>
+<a href="#750" id="750">750</a>
+<a href="#751" id="751">751</a>
+<a href="#752" id="752">752</a>
+<a href="#753" id="753">753</a>
+<a href="#754" id="754">754</a>
+<a href="#755" id="755">755</a>
+<a href="#756" id="756">756</a>
+<a href="#757" id="757">757</a>
+<a href="#758" id="758">758</a>
+<a href="#759" id="759">759</a>
+<a href="#760" id="760">760</a>
+<a href="#761" id="761">761</a>
+<a href="#762" id="762">762</a>
+<a href="#763" id="763">763</a>
+<a href="#764" id="764">764</a>
+<a href="#765" id="765">765</a>
+<a href="#766" id="766">766</a>
+<a href="#767" id="767">767</a>
+<a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
+<a href="#770" id="770">770</a>
+<a href="#771" id="771">771</a>
+<a href="#772" id="772">772</a>
+<a href="#773" id="773">773</a>
+<a href="#774" id="774">774</a>
+<a href="#775" id="775">775</a>
+<a href="#776" id="776">776</a>
+<a href="#777" id="777">777</a>
+<a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
+<a href="#784" id="784">784</a>
+<a href="#785" id="785">785</a>
+<a href="#786" id="786">786</a>
+<a href="#787" id="787">787</a>
+<a href="#788" id="788">788</a>
+<a href="#789" id="789">789</a>
+<a href="#790" id="790">790</a>
+<a href="#791" id="791">791</a>
+<a href="#792" id="792">792</a>
+<a href="#793" id="793">793</a>
+<a href="#794" id="794">794</a>
+<a href="#795" id="795">795</a>
+<a href="#796" id="796">796</a>
+<a href="#797" id="797">797</a>
+<a href="#798" id="798">798</a>
+<a href="#799" id="799">799</a>
+<a href="#800" id="800">800</a>
+<a href="#801" id="801">801</a>
+<a href="#802" id="802">802</a>
+<a href="#803" id="803">803</a>
+<a href="#804" id="804">804</a>
+<a href="#805" id="805">805</a>
+<a href="#806" id="806">806</a>
+<a href="#807" id="807">807</a>
+<a href="#808" id="808">808</a>
+<a href="#809" id="809">809</a>
+<a href="#810" id="810">810</a>
+<a href="#811" id="811">811</a>
+<a href="#812" id="812">812</a>
+<a href="#813" id="813">813</a>
+<a href="#814" id="814">814</a>
+<a href="#815" id="815">815</a>
+<a href="#816" id="816">816</a>
+<a href="#817" id="817">817</a>
+<a href="#818" id="818">818</a>
+<a href="#819" id="819">819</a>
+<a href="#820" id="820">820</a>
+<a href="#821" id="821">821</a>
+<a href="#822" id="822">822</a>
+<a href="#823" id="823">823</a>
+<a href="#824" id="824">824</a>
+<a href="#825" id="825">825</a>
+<a href="#826" id="826">826</a>
+<a href="#827" id="827">827</a>
+<a href="#828" id="828">828</a>
+<a href="#829" id="829">829</a>
+<a href="#830" id="830">830</a>
+<a href="#831" id="831">831</a>
+<a href="#832" id="832">832</a>
+<a href="#833" id="833">833</a>
+<a href="#834" id="834">834</a>
+<a href="#835" id="835">835</a>
+<a href="#836" id="836">836</a>
+<a href="#837" id="837">837</a>
+<a href="#838" id="838">838</a>
+<a href="#839" id="839">839</a>
+<a href="#840" id="840">840</a>
+<a href="#841" id="841">841</a>
+<a href="#842" id="842">842</a>
+<a href="#843" id="843">843</a>
+<a href="#844" id="844">844</a>
+<a href="#845" id="845">845</a>
+<a href="#846" id="846">846</a>
+<a href="#847" id="847">847</a>
+<a href="#848" id="848">848</a>
+<a href="#849" id="849">849</a>
+<a href="#850" id="850">850</a>
+<a href="#851" id="851">851</a>
+<a href="#852" id="852">852</a>
+<a href="#853" id="853">853</a>
+<a href="#854" id="854">854</a>
+<a href="#855" id="855">855</a>
+<a href="#856" id="856">856</a>
+<a href="#857" id="857">857</a>
+<a href="#858" id="858">858</a>
+<a href="#859" id="859">859</a>
+<a href="#860" id="860">860</a>
+<a href="#861" id="861">861</a>
+<a href="#862" id="862">862</a>
+<a href="#863" id="863">863</a>
+<a href="#864" id="864">864</a>
+<a href="#865" id="865">865</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -769,13 +885,17 @@
 
 </span><span class="kw">use crate</span>::{
 	schema::v1::StateResponse,
-	strategy::state_sync::{ImportResult, StateSync, StateSyncProvider},
+	strategy::{
+		disconnected_peers::DisconnectedPeers,
+		state_sync::{ImportResult, StateSync, StateSyncProvider},
+	},
 	types::{BadPeer, OpaqueStateRequest, OpaqueStateResponse, SyncState, SyncStatus},
 	LOG_TARGET,
 };
 <span class="kw">use </span>log::{debug, error, trace};
 <span class="kw">use </span>sc_client_api::ProofProvider;
 <span class="kw">use </span>sc_consensus::{BlockImportError, BlockImportStatus, IncomingBlock};
+<span class="kw">use </span>sc_network::ProtocolName;
 <span class="kw">use </span>sc_network_common::sync::message::BlockAnnounce;
 <span class="kw">use </span>sc_network_types::PeerId;
 <span class="kw">use </span>sp_consensus::BlockOrigin;
@@ -798,7 +918,7 @@
 <span class="doccomment">/// Action that should be performed on [`StateStrategy`]'s behalf.
 </span><span class="kw">pub enum </span>StateStrategyAction&lt;B: BlockT&gt; {
 	<span class="doccomment">/// Send state request to peer.
-	</span>SendStateRequest { peer_id: PeerId, request: OpaqueStateRequest },
+	</span>SendStateRequest { peer_id: PeerId, protocol_name: ProtocolName, request: OpaqueStateRequest },
 	<span class="doccomment">/// Disconnect and report peer.
 	</span>DropPeer(BadPeer),
 	<span class="doccomment">/// Import blocks.
@@ -827,7 +947,9 @@
 </span><span class="kw">pub struct </span>StateStrategy&lt;B: BlockT&gt; {
 	state_sync: Box&lt;<span class="kw">dyn </span>StateSyncProvider&lt;B&gt;&gt;,
 	peers: HashMap&lt;PeerId, Peer&lt;B&gt;&gt;,
+	disconnected_peers: DisconnectedPeers,
 	actions: Vec&lt;StateStrategyAction&lt;B&gt;&gt;,
+	protocol_name: ProtocolName,
 	succeeded: bool,
 }
 
@@ -840,6 +962,7 @@
 		target_justifications: <span class="prelude-ty">Option</span>&lt;Justifications&gt;,
 		skip_proof: bool,
 		initial_peers: <span class="kw">impl </span>Iterator&lt;Item = (PeerId, NumberFor&lt;B&gt;)&gt;,
+		protocol_name: ProtocolName,
 	) -&gt; <span class="self">Self
 	</span><span class="kw">where
 		</span>Client: ProofProvider&lt;B&gt; + Send + Sync + <span class="lifetime">'static</span>,
@@ -858,7 +981,9 @@
 				skip_proof,
 			)),
 			peers,
+			disconnected_peers: DisconnectedPeers::new(),
 			actions: Vec::new(),
+			protocol_name,
 			succeeded: <span class="bool-val">false</span>,
 		}
 	}
@@ -869,6 +994,7 @@
 	</span><span class="kw">fn </span>new_with_provider(
 		state_sync_provider: Box&lt;<span class="kw">dyn </span>StateSyncProvider&lt;B&gt;&gt;,
 		initial_peers: <span class="kw">impl </span>Iterator&lt;Item = (PeerId, NumberFor&lt;B&gt;)&gt;,
+		protocol_name: ProtocolName,
 	) -&gt; <span class="self">Self </span>{
 		<span class="self">Self </span>{
 			state_sync: state_sync_provider,
@@ -877,7 +1003,9 @@
 					(peer_id, Peer { best_number, state: PeerState::Available })
 				})
 				.collect(),
+			disconnected_peers: DisconnectedPeers::new(),
 			actions: Vec::new(),
+			protocol_name,
 			succeeded: <span class="bool-val">false</span>,
 		}
 	}
@@ -889,7 +1017,15 @@
 
 	<span class="doccomment">/// Notify that a peer has disconnected.
 	</span><span class="kw">pub fn </span>remove_peer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer_id: <span class="kw-2">&amp;</span>PeerId) {
-		<span class="self">self</span>.peers.remove(peer_id);
+		<span class="kw">if let </span><span class="prelude-val">Some</span>(state) = <span class="self">self</span>.peers.remove(peer_id) {
+			<span class="kw">if </span>!state.state.is_available() {
+				<span class="kw">if let </span><span class="prelude-val">Some</span>(bad_peer) =
+					<span class="self">self</span>.disconnected_peers.on_disconnect_during_request(<span class="kw-2">*</span>peer_id)
+				{
+					<span class="self">self</span>.actions.push(StateStrategyAction::DropPeer(bad_peer));
+				}
+			}
+		}
 	}
 
 	<span class="doccomment">/// Submit a validated block announcement.
@@ -1054,7 +1190,10 @@
 		<span class="comment">// Find a random peer that is synced as much as peer majority and is above
 		// `min_best_number`.
 		</span><span class="kw">for </span>(peer_id, peer) <span class="kw">in </span><span class="self">self</span>.peers.iter_mut() {
-			<span class="kw">if </span>peer.state.is_available() &amp;&amp; peer.best_number &gt;= threshold {
+			<span class="kw">if </span>peer.state.is_available() &amp;&amp;
+				peer.best_number &gt;= threshold &amp;&amp;
+				<span class="self">self</span>.disconnected_peers.is_peer_available(peer_id)
+			{
 				peer.state = new_state;
 				<span class="kw">return </span><span class="prelude-val">Some</span>(<span class="kw-2">*</span>peer_id)
 			}
@@ -1072,7 +1211,6 @@
 			},
 			best_seen_block: <span class="prelude-val">Some</span>(<span class="self">self</span>.state_sync.target_number()),
 			num_peers: <span class="self">self</span>.peers.len().saturated_into(),
-			num_connected_peers: <span class="self">self</span>.peers.len().saturated_into(),
 			queued_blocks: <span class="number">0</span>,
 			state_sync: <span class="prelude-val">Some</span>(<span class="self">self</span>.state_sync.progress()),
 			warp_sync: <span class="prelude-val">None</span>,
@@ -1082,10 +1220,13 @@
 	<span class="doccomment">/// Get actions that should be performed by the owner on [`WarpSync`]'s behalf
 	</span><span class="attr">#[must_use]
 	</span><span class="kw">pub fn </span>actions(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = StateStrategyAction&lt;B&gt;&gt; {
-		<span class="kw">let </span>state_request = <span class="self">self
-			</span>.state_request()
-			.into_iter()
-			.map(|(peer_id, request)| StateStrategyAction::SendStateRequest { peer_id, request });
+		<span class="kw">let </span>state_request = <span class="self">self</span>.state_request().into_iter().map(|(peer_id, request)| {
+			StateStrategyAction::SendStateRequest {
+				peer_id,
+				protocol_name: <span class="self">self</span>.protocol_name.clone(),
+				request,
+			}
+		});
 		<span class="self">self</span>.actions.extend(state_request);
 
 		std::mem::take(<span class="kw-2">&amp;mut </span><span class="self">self</span>.actions).into_iter()
@@ -1109,6 +1250,7 @@
 	<span class="kw">use </span>sc_block_builder::BlockBuilderBuilder;
 	<span class="kw">use </span>sc_client_api::KeyValueStates;
 	<span class="kw">use </span>sc_consensus::{ImportedAux, ImportedState};
+	<span class="kw">use </span>sp_core::H256;
 	<span class="kw">use </span>sp_runtime::traits::Zero;
 	<span class="kw">use </span>substrate_test_runtime_client::{
 		runtime::{Block, Hash},
@@ -1141,8 +1283,15 @@
 			.block;
 		<span class="kw">let </span>target_header = target_block.header().clone();
 
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new(client, target_header, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>, <span class="bool-val">false</span>, std::iter::empty());
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new(
+			client,
+			target_header,
+			<span class="prelude-val">None</span>,
+			<span class="prelude-val">None</span>,
+			<span class="bool-val">false</span>,
+			std::iter::empty(),
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 
 		<span class="macro">assert!</span>(state_strategy
 			.schedule_next_peer(PeerState::DownloadingState, Zero::zero())
@@ -1174,6 +1323,7 @@
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
 				initial_peers,
+				ProtocolName::Static(<span class="string">""</span>),
 			);
 
 			<span class="kw">let </span>peer_id =
@@ -1207,11 +1357,67 @@
 				<span class="prelude-val">None</span>,
 				<span class="bool-val">false</span>,
 				initial_peers,
+				ProtocolName::Static(<span class="string">""</span>),
 			);
 
 			<span class="kw">let </span>peer_id = state_strategy.schedule_next_peer(PeerState::DownloadingState, <span class="number">10</span>);
 			<span class="macro">assert!</span>(<span class="kw-2">*</span>peers.get(<span class="kw-2">&amp;</span>peer_id.unwrap()).unwrap() == <span class="number">10</span>);
 		}
+	}
+
+	<span class="attr">#[test]
+	</span><span class="kw">fn </span>backedoff_number_peer_is_not_scheduled() {
+		<span class="kw">let </span>client = Arc::new(TestClientBuilder::new().set_no_genesis().build());
+		<span class="kw">let </span>target_block = BlockBuilderBuilder::new(<span class="kw-2">&amp;*</span>client)
+			.on_parent_block(client.chain_info().best_hash)
+			.with_parent_block_number(client.chain_info().best_number)
+			.build()
+			.unwrap()
+			.build()
+			.unwrap()
+			.block;
+
+		<span class="kw">let </span>peers = (<span class="number">1</span>..=<span class="number">10</span>)
+			.map(|best_number| (PeerId::random(), best_number))
+			.collect::&lt;Vec&lt;(<span class="kw">_</span>, <span class="kw">_</span>)&gt;&gt;();
+		<span class="kw">let </span>ninth_peer = peers[<span class="number">8</span>].<span class="number">0</span>;
+		<span class="kw">let </span>tenth_peer = peers[<span class="number">9</span>].<span class="number">0</span>;
+		<span class="kw">let </span>initial_peers = peers.iter().map(|(p, n)| (<span class="kw-2">*</span>p, <span class="kw-2">*</span>n));
+
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new(
+			client.clone(),
+			target_block.header().clone(),
+			<span class="prelude-val">None</span>,
+			<span class="prelude-val">None</span>,
+			<span class="bool-val">false</span>,
+			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
+		);
+
+		<span class="comment">// Disconnecting a peer without an inflight request has no effect on persistent states.
+		</span>state_strategy.remove_peer(<span class="kw-2">&amp;</span>tenth_peer);
+		<span class="macro">assert!</span>(state_strategy.disconnected_peers.is_peer_available(<span class="kw-2">&amp;</span>tenth_peer));
+
+		<span class="comment">// Disconnect the peer with an inflight request.
+		</span>state_strategy.add_peer(tenth_peer, H256::random(), <span class="number">10</span>);
+		<span class="kw">let </span>peer_id: <span class="prelude-ty">Option</span>&lt;PeerId&gt; =
+			state_strategy.schedule_next_peer(PeerState::DownloadingState, <span class="number">10</span>);
+		<span class="macro">assert_eq!</span>(tenth_peer, peer_id.unwrap());
+		state_strategy.remove_peer(<span class="kw-2">&amp;</span>tenth_peer);
+
+		<span class="comment">// Peer is backed off.
+		</span><span class="macro">assert!</span>(!state_strategy.disconnected_peers.is_peer_available(<span class="kw-2">&amp;</span>tenth_peer));
+
+		<span class="comment">// No peer available for 10'th best block because of the backoff.
+		</span>state_strategy.add_peer(tenth_peer, H256::random(), <span class="number">10</span>);
+		<span class="kw">let </span>peer_id: <span class="prelude-ty">Option</span>&lt;PeerId&gt; =
+			state_strategy.schedule_next_peer(PeerState::DownloadingState, <span class="number">10</span>);
+		<span class="macro">assert!</span>(peer_id.is_none());
+
+		<span class="comment">// Other requests can still happen.
+		</span><span class="kw">let </span>peer_id: <span class="prelude-ty">Option</span>&lt;PeerId&gt; =
+			state_strategy.schedule_next_peer(PeerState::DownloadingState, <span class="number">9</span>);
+		<span class="macro">assert_eq!</span>(ninth_peer, peer_id.unwrap());
 	}
 
 	<span class="attr">#[test]
@@ -1235,6 +1441,7 @@
 			<span class="prelude-val">None</span>,
 			<span class="bool-val">false</span>,
 			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
 		);
 
 		<span class="kw">let </span>(_peer_id, <span class="kw-2">mut </span>opaque_request) = state_strategy.state_request().unwrap();
@@ -1265,6 +1472,7 @@
 			<span class="prelude-val">None</span>,
 			<span class="bool-val">false</span>,
 			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
 		);
 
 		<span class="comment">// First request is sent.
@@ -1280,8 +1488,11 @@
 		state_sync_provider.expect_import().return_once(|<span class="kw">_</span>| ImportResult::Continue);
 		<span class="kw">let </span>peer_id = PeerId::random();
 		<span class="kw">let </span>initial_peers = std::iter::once((peer_id, <span class="number">10</span>));
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), initial_peers);
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 		<span class="comment">// Manually set the peer's state.
 		</span>state_strategy.peers.get_mut(<span class="kw-2">&amp;</span>peer_id).unwrap().state = PeerState::DownloadingState;
 
@@ -1298,8 +1509,11 @@
 		</span>state_sync_provider.expect_import().return_once(|<span class="kw">_</span>| ImportResult::BadResponse);
 		<span class="kw">let </span>peer_id = PeerId::random();
 		<span class="kw">let </span>initial_peers = std::iter::once((peer_id, <span class="number">10</span>));
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), initial_peers);
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 		<span class="comment">// Manually set the peer's state.
 		</span>state_strategy.peers.get_mut(<span class="kw-2">&amp;</span>peer_id).unwrap().state = PeerState::DownloadingState;
 		<span class="kw">let </span>dummy_response = OpaqueStateResponse(Box::new(StateResponse::default()));
@@ -1317,8 +1531,11 @@
 		</span>state_sync_provider.expect_import().return_once(|<span class="kw">_</span>| ImportResult::Continue);
 		<span class="kw">let </span>peer_id = PeerId::random();
 		<span class="kw">let </span>initial_peers = std::iter::once((peer_id, <span class="number">10</span>));
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), initial_peers);
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 		<span class="comment">// Manually set the peer's state .
 		</span>state_strategy.peers.get_mut(<span class="kw-2">&amp;</span>peer_id).unwrap().state = PeerState::DownloadingState;
 
@@ -1376,8 +1593,11 @@
 		<span class="comment">// Prepare `StateStrategy`.
 		</span><span class="kw">let </span>peer_id = PeerId::random();
 		<span class="kw">let </span>initial_peers = std::iter::once((peer_id, <span class="number">10</span>));
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), initial_peers);
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 		<span class="comment">// Manually set the peer's state .
 		</span>state_strategy.peers.get_mut(<span class="kw-2">&amp;</span>peer_id).unwrap().state = PeerState::DownloadingState;
 
@@ -1400,8 +1620,11 @@
 		<span class="kw">let </span><span class="kw-2">mut </span>state_sync_provider = MockStateSync::&lt;Block&gt;::new();
 		state_sync_provider.expect_target_hash().return_const(target_hash);
 
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), std::iter::empty());
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			std::iter::empty(),
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 
 		<span class="comment">// Unknown block imported.
 		</span>state_strategy.on_blocks_processed(
@@ -1423,8 +1646,11 @@
 		<span class="kw">let </span><span class="kw-2">mut </span>state_sync_provider = MockStateSync::&lt;Block&gt;::new();
 		state_sync_provider.expect_target_hash().return_const(target_hash);
 
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), std::iter::empty());
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			std::iter::empty(),
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 
 		<span class="comment">// Target block imported.
 		</span>state_strategy.on_blocks_processed(
@@ -1447,8 +1673,11 @@
 		<span class="kw">let </span><span class="kw-2">mut </span>state_sync_provider = MockStateSync::&lt;Block&gt;::new();
 		state_sync_provider.expect_target_hash().return_const(target_hash);
 
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), std::iter::empty());
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			std::iter::empty(),
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 
 		<span class="comment">// Target block import failed.
 		</span>state_strategy.on_blocks_processed(
@@ -1475,8 +1704,11 @@
 		<span class="comment">// Get enough peers for possible spurious requests.
 		</span><span class="kw">let </span>initial_peers = (<span class="number">1</span>..=<span class="number">10</span>).map(|best_number| (PeerId::random(), best_number));
 
-		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy =
-			StateStrategy::new_with_provider(Box::new(state_sync_provider), initial_peers);
+		<span class="kw">let </span><span class="kw-2">mut </span>state_strategy = StateStrategy::new_with_provider(
+			Box::new(state_sync_provider),
+			initial_peers,
+			ProtocolName::Static(<span class="string">""</span>),
+		);
 
 		state_strategy.on_blocks_processed(
 			<span class="number">1</span>,

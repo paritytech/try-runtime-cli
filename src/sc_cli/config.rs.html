@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/cli/src/config.rs`."><title>config.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/client/cli/src/config.rs`."><title>config.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -707,6 +707,14 @@
 <a href="#707" id="707">707</a>
 <a href="#708" id="708">708</a>
 <a href="#709" id="709">709</a>
+<a href="#710" id="710">710</a>
+<a href="#711" id="711">711</a>
+<a href="#712" id="712">712</a>
+<a href="#713" id="713">713</a>
+<a href="#714" id="714">714</a>
+<a href="#715" id="715">715</a>
+<a href="#716" id="716">716</a>
+<a href="#717" id="717">717</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -729,21 +737,22 @@
 
 </span><span class="kw">use crate</span>::{
 	arg_enums::Database, error::Result, DatabaseParams, ImportParams, KeystoreParams,
-	NetworkParams, NodeKeyParams, OffchainWorkerParams, PruningParams, SharedParams, SubstrateCli,
+	NetworkParams, NodeKeyParams, OffchainWorkerParams, PruningParams, RpcEndpoint, SharedParams,
+	SubstrateCli,
 };
 <span class="kw">use </span>log::warn;
 <span class="kw">use </span>names::{Generator, Name};
 <span class="kw">use </span>sc_service::{
 	config::{
-		BasePath, Configuration, DatabaseSource, IpNetwork, KeystoreConfig, NetworkConfiguration,
-		NodeKeyConfig, OffchainWorkerConfig, OutputFormat, PrometheusConfig, PruningMode, Role,
-		RpcBatchRequestConfig, RpcMethods, TelemetryEndpoints, TransactionPoolOptions,
-		WasmExecutionMethod,
+		BasePath, Configuration, DatabaseSource, ExecutorConfiguration, IpNetwork, KeystoreConfig,
+		NetworkConfiguration, NodeKeyConfig, OffchainWorkerConfig, PrometheusConfig, PruningMode,
+		Role, RpcBatchRequestConfig, RpcConfiguration, RpcMethods, TelemetryEndpoints,
+		TransactionPoolOptions, WasmExecutionMethod,
 	},
 	BlocksPruning, ChainSpec, TracingReceiver,
 };
 <span class="kw">use </span>sc_tracing::logging::LoggerBuilder;
-<span class="kw">use </span>std::{net::SocketAddr, num::NonZeroU32, path::PathBuf};
+<span class="kw">use </span>std::{num::NonZeroU32, path::PathBuf};
 
 <span class="doccomment">/// The maximum number of characters for a node name.
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>NODE_NAME_MAX_LENGTH: usize = <span class="number">64</span>;
@@ -881,7 +890,7 @@
 		node_key: NodeKeyConfig,
 		default_listen_port: u16,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;NetworkConfiguration&gt; {
-		<span class="prelude-val">Ok</span>(<span class="kw">if let </span><span class="prelude-val">Some</span>(network_params) = <span class="self">self</span>.network_params() {
+		<span class="kw">let </span>network_config = <span class="kw">if let </span><span class="prelude-val">Some</span>(network_params) = <span class="self">self</span>.network_params() {
 			network_params.network_config(
 				chain_spec,
 				is_dev,
@@ -894,7 +903,13 @@
 			)
 		} <span class="kw">else </span>{
 			NetworkConfiguration::new(node_name, client_id, node_key, <span class="prelude-val">Some</span>(net_config_dir))
-		})
+		};
+
+		<span class="comment">// TODO: Return error here in the next release:
+		// https://github.com/paritytech/polkadot-sdk/issues/5266
+		// if is_validator &amp;&amp; network_config.public_addresses.is_empty() {}
+
+		</span><span class="prelude-val">Ok</span>(network_config)
 	}
 
 	<span class="doccomment">/// Get the keystore configuration.
@@ -1004,7 +1019,7 @@
 	}
 
 	<span class="doccomment">/// Get the RPC address.
-	</span><span class="kw">fn </span>rpc_addr(<span class="kw-2">&amp;</span><span class="self">self</span>, _default_listen_port: u16) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;SocketAddr&gt;&gt; {
+	</span><span class="kw">fn </span>rpc_addr(<span class="kw-2">&amp;</span><span class="self">self</span>, _default_listen_port: u16) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;Vec&lt;RpcEndpoint&gt;&gt;&gt; {
 		<span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
 	}
 
@@ -1207,6 +1222,10 @@
 		<span class="kw">let </span>telemetry_endpoints = <span class="self">self</span>.telemetry_endpoints(<span class="kw-2">&amp;</span>chain_spec)<span class="question-mark">?</span>;
 		<span class="kw">let </span>runtime_cache_size = <span class="self">self</span>.runtime_cache_size()<span class="question-mark">?</span>;
 
+		<span class="kw">let </span>rpc_addrs: <span class="prelude-ty">Option</span>&lt;Vec&lt;sc_service::config::RpcEndpoint&gt;&gt; = <span class="self">self
+			</span>.rpc_addr(DCV::rpc_listen_port())<span class="question-mark">?
+			</span>.map(|addrs| addrs.into_iter().map(Into::into).collect());
+
 		<span class="prelude-val">Ok</span>(Configuration {
 			impl_name: C::impl_name(),
 			impl_version: C::impl_version(),
@@ -1228,26 +1247,32 @@
 			trie_cache_maximum_size: <span class="self">self</span>.trie_cache_maximum_size()<span class="question-mark">?</span>,
 			state_pruning: <span class="self">self</span>.state_pruning()<span class="question-mark">?</span>,
 			blocks_pruning: <span class="self">self</span>.blocks_pruning()<span class="question-mark">?</span>,
-			wasm_method: <span class="self">self</span>.wasm_method()<span class="question-mark">?</span>,
+			executor: ExecutorConfiguration {
+				wasm_method: <span class="self">self</span>.wasm_method()<span class="question-mark">?</span>,
+				default_heap_pages: <span class="self">self</span>.default_heap_pages()<span class="question-mark">?</span>,
+				max_runtime_instances,
+				runtime_cache_size,
+			},
 			wasm_runtime_overrides: <span class="self">self</span>.wasm_runtime_overrides(),
-			rpc_addr: <span class="self">self</span>.rpc_addr(DCV::rpc_listen_port())<span class="question-mark">?</span>,
-			rpc_methods: <span class="self">self</span>.rpc_methods()<span class="question-mark">?</span>,
-			rpc_max_connections: <span class="self">self</span>.rpc_max_connections()<span class="question-mark">?</span>,
-			rpc_cors: <span class="self">self</span>.rpc_cors(is_dev)<span class="question-mark">?</span>,
-			rpc_max_request_size: <span class="self">self</span>.rpc_max_request_size()<span class="question-mark">?</span>,
-			rpc_max_response_size: <span class="self">self</span>.rpc_max_response_size()<span class="question-mark">?</span>,
-			rpc_id_provider: <span class="prelude-val">None</span>,
-			rpc_max_subs_per_conn: <span class="self">self</span>.rpc_max_subscriptions_per_connection()<span class="question-mark">?</span>,
-			rpc_port: DCV::rpc_listen_port(),
-			rpc_message_buffer_capacity: <span class="self">self</span>.rpc_buffer_capacity_per_connection()<span class="question-mark">?</span>,
-			rpc_batch_config: <span class="self">self</span>.rpc_batch_config()<span class="question-mark">?</span>,
-			rpc_rate_limit: <span class="self">self</span>.rpc_rate_limit()<span class="question-mark">?</span>,
-			rpc_rate_limit_whitelisted_ips: <span class="self">self</span>.rpc_rate_limit_whitelisted_ips()<span class="question-mark">?</span>,
-			rpc_rate_limit_trust_proxy_headers: <span class="self">self</span>.rpc_rate_limit_trust_proxy_headers()<span class="question-mark">?</span>,
+			rpc: RpcConfiguration {
+				addr: rpc_addrs,
+				methods: <span class="self">self</span>.rpc_methods()<span class="question-mark">?</span>,
+				max_connections: <span class="self">self</span>.rpc_max_connections()<span class="question-mark">?</span>,
+				cors: <span class="self">self</span>.rpc_cors(is_dev)<span class="question-mark">?</span>,
+				max_request_size: <span class="self">self</span>.rpc_max_request_size()<span class="question-mark">?</span>,
+				max_response_size: <span class="self">self</span>.rpc_max_response_size()<span class="question-mark">?</span>,
+				id_provider: <span class="prelude-val">None</span>,
+				max_subs_per_conn: <span class="self">self</span>.rpc_max_subscriptions_per_connection()<span class="question-mark">?</span>,
+				port: DCV::rpc_listen_port(),
+				message_buffer_capacity: <span class="self">self</span>.rpc_buffer_capacity_per_connection()<span class="question-mark">?</span>,
+				batch_config: <span class="self">self</span>.rpc_batch_config()<span class="question-mark">?</span>,
+				rate_limit: <span class="self">self</span>.rpc_rate_limit()<span class="question-mark">?</span>,
+				rate_limit_whitelisted_ips: <span class="self">self</span>.rpc_rate_limit_whitelisted_ips()<span class="question-mark">?</span>,
+				rate_limit_trust_proxy_headers: <span class="self">self</span>.rpc_rate_limit_trust_proxy_headers()<span class="question-mark">?</span>,
+			},
 			prometheus_config: <span class="self">self
 				</span>.prometheus_config(DCV::prometheus_listen_port(), <span class="kw-2">&amp;</span>chain_spec)<span class="question-mark">?</span>,
 			telemetry_endpoints,
-			default_heap_pages: <span class="self">self</span>.default_heap_pages()<span class="question-mark">?</span>,
 			offchain_worker: <span class="self">self</span>.offchain_worker(<span class="kw-2">&amp;</span>role)<span class="question-mark">?</span>,
 			force_authoring: <span class="self">self</span>.force_authoring()<span class="question-mark">?</span>,
 			disable_grandpa: <span class="self">self</span>.disable_grandpa()<span class="question-mark">?</span>,
@@ -1255,12 +1280,9 @@
 			tracing_targets: <span class="self">self</span>.tracing_targets()<span class="question-mark">?</span>,
 			tracing_receiver: <span class="self">self</span>.tracing_receiver()<span class="question-mark">?</span>,
 			chain_spec,
-			max_runtime_instances,
 			announce_block: <span class="self">self</span>.announce_block()<span class="question-mark">?</span>,
 			role,
 			base_path,
-			informant_output_format: OutputFormat { enable_color: !<span class="self">self</span>.disable_log_color()<span class="question-mark">? </span>},
-			runtime_cache_size,
 		})
 	}
 
@@ -1317,15 +1339,9 @@
 	/// 	}
 	/// }
 	/// ```
-	</span><span class="kw">fn </span>init&lt;F&gt;(
-		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		support_url: <span class="kw-2">&amp;</span>String,
-		impl_version: <span class="kw-2">&amp;</span>String,
-		logger_hook: F,
-		config: <span class="kw-2">&amp;</span>Configuration,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
+	</span><span class="kw">fn </span>init&lt;F&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, support_url: <span class="kw-2">&amp;</span>String, impl_version: <span class="kw-2">&amp;</span>String, logger_hook: F) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;
 	<span class="kw">where
-		</span>F: FnOnce(<span class="kw-2">&amp;mut </span>LoggerBuilder, <span class="kw-2">&amp;</span>Configuration),
+		</span>F: FnOnce(<span class="kw-2">&amp;mut </span>LoggerBuilder),
 	{
 		sp_panic_handler::set(support_url, impl_version);
 
@@ -1344,7 +1360,7 @@
 		}
 
 		<span class="comment">// Call hook for custom profiling setup.
-		</span>logger_hook(<span class="kw-2">&amp;mut </span>logger, config);
+		</span>logger_hook(<span class="kw-2">&amp;mut </span>logger);
 
 		logger.init()<span class="question-mark">?</span>;
 

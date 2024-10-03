@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["DirectApi","DtlsCert","Fingerprint","IceCreds","SdpAnswer","SdpApi","SdpOffer","SdpPendingOffer"]};

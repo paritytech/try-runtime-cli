@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-core-0.39.2/src/upgrade.rs`."><title>upgrade.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="libp2p_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-core-0.40.1/src/upgrade.rs`."><title>upgrade.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="libp2p_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -185,58 +185,6 @@
 <a href="#185" id="185">185</a>
 <a href="#186" id="186">186</a>
 <a href="#187" id="187">187</a>
-<a href="#188" id="188">188</a>
-<a href="#189" id="189">189</a>
-<a href="#190" id="190">190</a>
-<a href="#191" id="191">191</a>
-<a href="#192" id="192">192</a>
-<a href="#193" id="193">193</a>
-<a href="#194" id="194">194</a>
-<a href="#195" id="195">195</a>
-<a href="#196" id="196">196</a>
-<a href="#197" id="197">197</a>
-<a href="#198" id="198">198</a>
-<a href="#199" id="199">199</a>
-<a href="#200" id="200">200</a>
-<a href="#201" id="201">201</a>
-<a href="#202" id="202">202</a>
-<a href="#203" id="203">203</a>
-<a href="#204" id="204">204</a>
-<a href="#205" id="205">205</a>
-<a href="#206" id="206">206</a>
-<a href="#207" id="207">207</a>
-<a href="#208" id="208">208</a>
-<a href="#209" id="209">209</a>
-<a href="#210" id="210">210</a>
-<a href="#211" id="211">211</a>
-<a href="#212" id="212">212</a>
-<a href="#213" id="213">213</a>
-<a href="#214" id="214">214</a>
-<a href="#215" id="215">215</a>
-<a href="#216" id="216">216</a>
-<a href="#217" id="217">217</a>
-<a href="#218" id="218">218</a>
-<a href="#219" id="219">219</a>
-<a href="#220" id="220">220</a>
-<a href="#221" id="221">221</a>
-<a href="#222" id="222">222</a>
-<a href="#223" id="223">223</a>
-<a href="#224" id="224">224</a>
-<a href="#225" id="225">225</a>
-<a href="#226" id="226">226</a>
-<a href="#227" id="227">227</a>
-<a href="#228" id="228">228</a>
-<a href="#229" id="229">229</a>
-<a href="#230" id="230">230</a>
-<a href="#231" id="231">231</a>
-<a href="#232" id="232">232</a>
-<a href="#233" id="233">233</a>
-<a href="#234" id="234">234</a>
-<a href="#235" id="235">235</a>
-<a href="#236" id="236">236</a>
-<a href="#237" id="237">237</a>
-<a href="#238" id="238">238</a>
-<a href="#239" id="239">239</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2018 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -300,86 +248,32 @@
 <span class="kw">mod </span>denied;
 <span class="kw">mod </span>either;
 <span class="kw">mod </span>error;
-<span class="kw">mod </span>from_fn;
-<span class="kw">mod </span>map;
-<span class="kw">mod </span>optional;
 <span class="kw">mod </span>pending;
 <span class="kw">mod </span>ready;
 <span class="kw">mod </span>select;
 <span class="kw">mod </span>transfer;
 
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>apply::{
+    apply, apply_inbound, apply_outbound, InboundUpgradeApply, OutboundUpgradeApply,
+};
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>error::UpgradeError;
 <span class="kw">use </span>futures::future::Future;
 
-<span class="attr">#[allow(deprecated)]
-</span><span class="kw">pub use </span><span class="self">self</span>::from_fn::{from_fn, FromFnUpgrade};
 <span class="kw">pub use </span><span class="self">self</span>::{
-    apply::{apply, apply_inbound, apply_outbound, InboundUpgradeApply, OutboundUpgradeApply},
     denied::DeniedUpgrade,
-    error::UpgradeError,
     pending::PendingUpgrade,
     ready::ReadyUpgrade,
     select::SelectUpgrade,
     transfer::{read_length_prefixed, read_varint, write_length_prefixed, write_varint},
 };
 <span class="kw">pub use </span><span class="kw">crate</span>::Negotiated;
-<span class="attr">#[allow(deprecated)]
-</span><span class="kw">pub use </span>map::{MapInboundUpgrade, MapInboundUpgradeErr, MapOutboundUpgrade, MapOutboundUpgradeErr};
 <span class="kw">pub use </span>multistream_select::{NegotiatedComplete, NegotiationError, ProtocolError, Version};
-<span class="attr">#[allow(deprecated)]
-</span><span class="kw">pub use </span>optional::OptionalUpgrade;
-
-<span class="doccomment">/// Types serving as protocol names.
-///
-/// # Context
-///
-/// In situations where we provide a list of protocols that we support,
-/// the elements of that list are required to implement the [`ProtocolName`] trait.
-///
-/// Libp2p will call [`ProtocolName::protocol_name`] on each element of that list, and transmit the
-/// returned value on the network. If the remote accepts a given protocol, the element
-/// serves as the return value of the function that performed the negotiation.
-///
-/// # Example
-///
-/// ```
-/// use libp2p_core::ProtocolName;
-///
-/// enum MyProtocolName {
-///     Version1,
-///     Version2,
-///     Version3,
-/// }
-///
-/// impl ProtocolName for MyProtocolName {
-///     fn protocol_name(&amp;self) -&gt; &amp;[u8] {
-///         match *self {
-///             MyProtocolName::Version1 =&gt; b"/myproto/1.0",
-///             MyProtocolName::Version2 =&gt; b"/myproto/2.0",
-///             MyProtocolName::Version3 =&gt; b"/myproto/3.0",
-///         }
-///     }
-/// }
-/// ```
-///
-</span><span class="kw">pub trait </span>ProtocolName {
-    <span class="doccomment">/// The protocol name as bytes. Transmitted on the network.
-    ///
-    /// **Note:** Valid protocol names must start with `/` and
-    /// not exceed 140 bytes in length.
-    </span><span class="kw">fn </span>protocol_name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8];
-}
-
-<span class="kw">impl</span>&lt;T: AsRef&lt;[u8]&gt;&gt; ProtocolName <span class="kw">for </span>T {
-    <span class="kw">fn </span>protocol_name(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
-        <span class="self">self</span>.as_ref()
-    }
-}
 
 <span class="doccomment">/// Common trait for upgrades that can be applied on inbound substreams, outbound substreams,
 /// or both.
 </span><span class="kw">pub trait </span>UpgradeInfo {
     <span class="doccomment">/// Opaque type representing a negotiable protocol.
-    </span><span class="kw">type </span>Info: ProtocolName + Clone;
+    </span><span class="kw">type </span>Info: AsRef&lt;str&gt; + Clone;
     <span class="doccomment">/// Iterator returned by `protocol_info`.
     </span><span class="kw">type </span>InfoIter: IntoIterator&lt;Item = <span class="self">Self</span>::Info&gt;;
 
@@ -403,35 +297,6 @@
     </span><span class="kw">fn </span>upgrade_inbound(<span class="self">self</span>, socket: C, info: <span class="self">Self</span>::Info) -&gt; <span class="self">Self</span>::Future;
 }
 
-<span class="doccomment">/// Extension trait for `InboundUpgrade`. Automatically implemented on all types that implement
-/// `InboundUpgrade`.
-</span><span class="attr">#[deprecated(
-    note = <span class="string">"Will be removed without replacement because it is not used within rust-libp2p."
-</span>)]
-#[allow(deprecated)]
-</span><span class="kw">pub trait </span>InboundUpgradeExt&lt;C&gt;: InboundUpgrade&lt;C&gt; {
-    <span class="doccomment">/// Returns a new object that wraps around `Self` and applies a closure to the `Output`.
-    </span><span class="kw">fn </span>map_inbound&lt;F, T&gt;(<span class="self">self</span>, f: F) -&gt; MapInboundUpgrade&lt;<span class="self">Self</span>, F&gt;
-    <span class="kw">where
-        </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="self">Self</span>::Output) -&gt; T,
-    {
-        MapInboundUpgrade::new(<span class="self">self</span>, f)
-    }
-
-    <span class="doccomment">/// Returns a new object that wraps around `Self` and applies a closure to the `Error`.
-    </span><span class="kw">fn </span>map_inbound_err&lt;F, T&gt;(<span class="self">self</span>, f: F) -&gt; MapInboundUpgradeErr&lt;<span class="self">Self</span>, F&gt;
-    <span class="kw">where
-        </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="self">Self</span>::Error) -&gt; T,
-    {
-        MapInboundUpgradeErr::new(<span class="self">self</span>, f)
-    }
-}
-
-<span class="attr">#[allow(deprecated)]
-</span><span class="kw">impl</span>&lt;C, U: InboundUpgrade&lt;C&gt;&gt; InboundUpgradeExt&lt;C&gt; <span class="kw">for </span>U {}
-
 <span class="doccomment">/// Possible upgrade on an outbound connection or substream.
 </span><span class="kw">pub trait </span>OutboundUpgrade&lt;C&gt;: UpgradeInfo {
     <span class="doccomment">/// Output after the upgrade has been successfully negotiated and the handshake performed.
@@ -448,32 +313,63 @@
     </span><span class="kw">fn </span>upgrade_outbound(<span class="self">self</span>, socket: C, info: <span class="self">Self</span>::Info) -&gt; <span class="self">Self</span>::Future;
 }
 
-<span class="doccomment">/// Extention trait for `OutboundUpgrade`. Automatically implemented on all types that implement
-/// `OutboundUpgrade`.
-</span><span class="attr">#[deprecated(
-    note = <span class="string">"Will be removed without replacement because it is not used within rust-libp2p."
-</span>)]
-#[allow(deprecated)]
-</span><span class="kw">pub trait </span>OutboundUpgradeExt&lt;C&gt;: OutboundUpgrade&lt;C&gt; {
-    <span class="doccomment">/// Returns a new object that wraps around `Self` and applies a closure to the `Output`.
-    </span><span class="kw">fn </span>map_outbound&lt;F, T&gt;(<span class="self">self</span>, f: F) -&gt; MapOutboundUpgrade&lt;<span class="self">Self</span>, F&gt;
-    <span class="kw">where
-        </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="self">Self</span>::Output) -&gt; T,
-    {
-        MapOutboundUpgrade::new(<span class="self">self</span>, f)
-    }
+<span class="doccomment">/// Possible upgrade on an inbound connection
+</span><span class="kw">pub trait </span>InboundConnectionUpgrade&lt;T&gt;: UpgradeInfo {
+    <span class="doccomment">/// Output after the upgrade has been successfully negotiated and the handshake performed.
+    </span><span class="kw">type </span>Output;
+    <span class="doccomment">/// Possible error during the handshake.
+    </span><span class="kw">type </span>Error;
+    <span class="doccomment">/// Future that performs the handshake with the remote.
+    </span><span class="kw">type </span>Future: Future&lt;Output = <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Output, <span class="self">Self</span>::Error&gt;&gt;;
 
-    <span class="doccomment">/// Returns a new object that wraps around `Self` and applies a closure to the `Error`.
-    </span><span class="kw">fn </span>map_outbound_err&lt;F, T&gt;(<span class="self">self</span>, f: F) -&gt; MapOutboundUpgradeErr&lt;<span class="self">Self</span>, F&gt;
-    <span class="kw">where
-        </span><span class="self">Self</span>: Sized,
-        F: FnOnce(<span class="self">Self</span>::Error) -&gt; T,
-    {
-        MapOutboundUpgradeErr::new(<span class="self">self</span>, f)
+    <span class="doccomment">/// After we have determined that the remote supports one of the protocols we support, this
+    /// method is called to start the handshake.
+    ///
+    /// The `info` is the identifier of the protocol, as produced by `protocol_info`.
+    </span><span class="kw">fn </span>upgrade_inbound(<span class="self">self</span>, socket: T, info: <span class="self">Self</span>::Info) -&gt; <span class="self">Self</span>::Future;
+}
+
+<span class="doccomment">/// Possible upgrade on an outbound connection
+</span><span class="kw">pub trait </span>OutboundConnectionUpgrade&lt;T&gt;: UpgradeInfo {
+    <span class="doccomment">/// Output after the upgrade has been successfully negotiated and the handshake performed.
+    </span><span class="kw">type </span>Output;
+    <span class="doccomment">/// Possible error during the handshake.
+    </span><span class="kw">type </span>Error;
+    <span class="doccomment">/// Future that performs the handshake with the remote.
+    </span><span class="kw">type </span>Future: Future&lt;Output = <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Output, <span class="self">Self</span>::Error&gt;&gt;;
+
+    <span class="doccomment">/// After we have determined that the remote supports one of the protocols we support, this
+    /// method is called to start the handshake.
+    ///
+    /// The `info` is the identifier of the protocol, as produced by `protocol_info`.
+    </span><span class="kw">fn </span>upgrade_outbound(<span class="self">self</span>, socket: T, info: <span class="self">Self</span>::Info) -&gt; <span class="self">Self</span>::Future;
+}
+
+<span class="comment">// Blanket implementation for InboundConnectionUpgrade based on InboundUpgrade for backwards compatibility
+</span><span class="kw">impl</span>&lt;U, T&gt; InboundConnectionUpgrade&lt;T&gt; <span class="kw">for </span>U
+<span class="kw">where
+    </span>U: InboundUpgrade&lt;T&gt;,
+{
+    <span class="kw">type </span>Output = &lt;U <span class="kw">as </span>InboundUpgrade&lt;T&gt;&gt;::Output;
+    <span class="kw">type </span>Error = &lt;U <span class="kw">as </span>InboundUpgrade&lt;T&gt;&gt;::Error;
+    <span class="kw">type </span>Future = &lt;U <span class="kw">as </span>InboundUpgrade&lt;T&gt;&gt;::Future;
+
+    <span class="kw">fn </span>upgrade_inbound(<span class="self">self</span>, socket: T, info: <span class="self">Self</span>::Info) -&gt; <span class="self">Self</span>::Future {
+        <span class="self">self</span>.upgrade_inbound(socket, info)
     }
 }
 
-<span class="attr">#[allow(deprecated)]
-</span><span class="kw">impl</span>&lt;C, U: OutboundUpgrade&lt;C&gt;&gt; OutboundUpgradeExt&lt;C&gt; <span class="kw">for </span>U {}
+<span class="comment">// Blanket implementation for OutboundConnectionUpgrade based on OutboundUpgrade for backwards compatibility
+</span><span class="kw">impl</span>&lt;U, T&gt; OutboundConnectionUpgrade&lt;T&gt; <span class="kw">for </span>U
+<span class="kw">where
+    </span>U: OutboundUpgrade&lt;T&gt;,
+{
+    <span class="kw">type </span>Output = &lt;U <span class="kw">as </span>OutboundUpgrade&lt;T&gt;&gt;::Output;
+    <span class="kw">type </span>Error = &lt;U <span class="kw">as </span>OutboundUpgrade&lt;T&gt;&gt;::Error;
+    <span class="kw">type </span>Future = &lt;U <span class="kw">as </span>OutboundUpgrade&lt;T&gt;&gt;::Future;
+
+    <span class="kw">fn </span>upgrade_outbound(<span class="self">self</span>, socket: T, info: <span class="self">Self</span>::Info) -&gt; <span class="self">Self</span>::Future {
+        <span class="self">self</span>.upgrade_outbound(socket, info)
+    }
+}
 </code></pre></div></section></main></body></html>

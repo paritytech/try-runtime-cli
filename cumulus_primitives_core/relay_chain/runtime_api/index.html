@@ -16,29 +16,29 @@ available in the base version.</li>
 <li>trait implementation - represents which version of the API is being implemented.</li>
 </ul>
 <p>Let’s see a quick example:</p>
-
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="macro">sp_api::decl_runtime_apis!</span> {
-	<span class="attr">#[api_version(<span class="number">2</span>)]
-	</span><span class="kw">pub trait </span>MyApi {
-		<span class="kw">fn </span>fn1();
-		<span class="kw">fn </span>fn2();
-		<span class="attr">#[api_version(<span class="number">3</span>)]
-		</span><span class="kw">fn </span>fn3();
-		<span class="attr">#[api_version(<span class="number">4</span>)]
-		</span><span class="kw">fn </span>fn4();
+<div class="example-wrap"><pre class="language-nocompile"><code>sp_api::decl_runtime_apis! {
+	#[api_version(2)]
+	pub trait MyApi {
+		fn fn1();
+		fn fn2();
+		#[api_version(3)]
+		fn fn3();
+		#[api_version(4)]
+		fn fn4();
 	}
 }
 
-<span class="kw">struct </span>Runtime {}
+struct Runtime {}
 
-<span class="macro">sp_api::impl_runtime_apis!</span> {
-    <span class="attr">#[api_version(<span class="number">3</span>)]
-    </span><span class="kw">impl </span><span class="self">self</span>::MyApi&lt;Block&gt; <span class="kw">for </span>Runtime {
-        <span class="kw">fn </span>fn1() {}
-        <span class="kw">fn </span>fn2() {}
-        <span class="kw">fn </span>fn3() {}
+sp_api::impl_runtime_apis! {
+    #[api_version(3)]
+    impl self::MyApi&lt;Block&gt; for Runtime {
+        fn fn1() {}
+        fn fn2() {}
+        fn fn3() {}
     }
-}</code></pre></div>
+}
+</code></pre></div>
 <p>A new API named <code>MyApi</code> is declared with <code>decl_runtime_apis!</code>. The trait declaration
 has got an <code>api_version</code> attribute which represents its base version - 2 in this case.</p>
 <p>The API has got three methods - <code>fn1</code>, <code>fn2</code>, <code>fn3</code> and <code>fn4</code>. <code>fn3</code> and <code>fn4</code> has got

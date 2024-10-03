@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tower-http-0.4.4/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="tower_http" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tower-http-0.5.2/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="tower_http" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -363,6 +363,9 @@
 <a href="#363" id="363">363</a>
 <a href="#364" id="364">364</a>
 <a href="#365" id="365">365</a>
+<a href="#366" id="366">366</a>
+<a href="#367" id="367">367</a>
+<a href="#368" id="368">368</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! `async fn(HttpRequest) -&gt; Result&lt;HttpResponse, Error&gt;`
 //!
 //! # Overview
@@ -389,10 +392,11 @@
 //!     trace::TraceLayer,
 //!     validate_request::ValidateRequestHeaderLayer,
 //! };
-//! use tower::{ServiceBuilder, service_fn, make::Shared};
+//! use tower::{ServiceBuilder, service_fn, BoxError};
 //! use http::{Request, Response, header::{HeaderName, CONTENT_TYPE, AUTHORIZATION}};
-//! use hyper::{Body, Error, server::Server, service::make_service_fn};
 //! use std::{sync::Arc, net::SocketAddr, convert::Infallible, iter::once};
+//! use bytes::Bytes;
+//! use http_body_util::Full;
 //! # struct DatabaseConnectionPool;
 //! # impl DatabaseConnectionPool {
 //! #     fn new() -&gt; DatabaseConnectionPool { DatabaseConnectionPool }
@@ -402,7 +406,7 @@
 //!
 //! // Our request handler. This is where we would implement the application logic
 //! // for responding to HTTP requests...
-//! async fn handler(request: Request&lt;Body&gt;) -&gt; Result&lt;Response&lt;Body&gt;, Error&gt; {
+//! async fn handler(request: Request&lt;Full&lt;Bytes&gt;&gt;) -&gt; Result&lt;Response&lt;Full&lt;Bytes&gt;&gt;, BoxError&gt; {
 //!     // ...
 //!     # todo!()
 //! }
@@ -440,13 +444,8 @@
 //!         .layer(ValidateRequestHeaderLayer::accept("application/json"))
 //!         // Wrap a `Service` in our middleware stack
 //!         .service_fn(handler);
-//!
-//!     // And run our service using `hyper`
-//!     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-//!     Server::bind(&amp;addr)
-//!         .serve(Shared::new(service))
-//!         .await
-//!         .expect("server error");
+//!     # let mut service = service;
+//!     # tower::Service::call(&amp;mut service, Request::new(Full::default()));
 //! }
 //! ```
 //!
@@ -465,11 +464,14 @@
 //!     classify::StatusInRangeAsFailures,
 //! };
 //! use tower::{ServiceBuilder, Service, ServiceExt};
-//! use hyper::Body;
+//! use hyper_util::{rt::TokioExecutor, client::legacy::Client};
+//! use http_body_util::Full;
+//! use bytes::Bytes;
 //! use http::{Request, HeaderValue, header::USER_AGENT};
 //!
 //! #[tokio::main]
 //! async fn main() {
+//! let client = Client::builder(TokioExecutor::new()).build_http();
 //!     let mut client = ServiceBuilder::new()
 //!         // Add tracing and consider server errors and client
 //!         // errors as failures.
@@ -483,15 +485,15 @@
 //!         ))
 //!         // Decompress response bodies
 //!         .layer(DecompressionLayer::new())
-//!         // Wrap a `hyper::Client` in our middleware stack.
-//!         // This is possible because `hyper::Client` implements
+//!         // Wrap a `Client` in our middleware stack.
+//!         // This is possible because `Client` implements
 //!         // `tower::Service`.
-//!         .service(hyper::Client::new());
+//!         .service(client);
 //!
 //!     // Make a request
 //!     let request = Request::builder()
 //!         .uri("http://example.com")
-//!         .body(Body::empty())
+//!         .body(Full::&lt;Bytes&gt;::default())
 //!         .unwrap();
 //!
 //!     let response = client
@@ -548,7 +550,6 @@
     clippy::todo,
     clippy::empty_enum,
     clippy::enum_glob_use,
-    clippy::pub_enum_variant_names,
     clippy::mem_forget,
     clippy::unused_self,
     clippy::filter_map_next,
@@ -576,7 +577,7 @@
     nonstandard_style,
     missing_docs
 )]
-#![deny(unreachable_pub, private_in_public)]
+#![deny(unreachable_pub)]
 #![allow(
     elided_lifetimes_in_paths,
     <span class="comment">// TODO: Remove this once the MSRV bumps to 1.42.0 or above.
@@ -589,6 +590,9 @@
 
 #[macro_use]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>macros;
+
+<span class="attr">#[cfg(test)]
+</span><span class="kw">mod </span>test_helpers;
 
 <span class="attr">#[cfg(feature = <span class="string">"auth"</span>)]
 </span><span class="kw">pub mod </span>auth;
@@ -706,6 +710,8 @@
 
 <span class="attr">#[cfg(feature = <span class="string">"validate-request"</span>)]
 </span><span class="kw">pub mod </span>validate_request;
+
+<span class="kw">pub mod </span>body;
 
 <span class="doccomment">/// The latency unit used to report latencies by middleware.
 </span><span class="attr">#[non_exhaustive]

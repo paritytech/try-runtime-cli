@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["accept","conn"],"struct":["Builder","Server"]};
+window.SIDEBAR_ITEMS = {"mod":["conn"]};

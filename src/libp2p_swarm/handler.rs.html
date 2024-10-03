@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-swarm-0.42.2/src/handler.rs`."><title>handler.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="libp2p_swarm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-swarm-0.43.7/src/handler.rs`."><title>handler.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="libp2p_swarm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -603,6 +603,202 @@
 <a href="#603" id="603">603</a>
 <a href="#604" id="604">604</a>
 <a href="#605" id="605">605</a>
+<a href="#606" id="606">606</a>
+<a href="#607" id="607">607</a>
+<a href="#608" id="608">608</a>
+<a href="#609" id="609">609</a>
+<a href="#610" id="610">610</a>
+<a href="#611" id="611">611</a>
+<a href="#612" id="612">612</a>
+<a href="#613" id="613">613</a>
+<a href="#614" id="614">614</a>
+<a href="#615" id="615">615</a>
+<a href="#616" id="616">616</a>
+<a href="#617" id="617">617</a>
+<a href="#618" id="618">618</a>
+<a href="#619" id="619">619</a>
+<a href="#620" id="620">620</a>
+<a href="#621" id="621">621</a>
+<a href="#622" id="622">622</a>
+<a href="#623" id="623">623</a>
+<a href="#624" id="624">624</a>
+<a href="#625" id="625">625</a>
+<a href="#626" id="626">626</a>
+<a href="#627" id="627">627</a>
+<a href="#628" id="628">628</a>
+<a href="#629" id="629">629</a>
+<a href="#630" id="630">630</a>
+<a href="#631" id="631">631</a>
+<a href="#632" id="632">632</a>
+<a href="#633" id="633">633</a>
+<a href="#634" id="634">634</a>
+<a href="#635" id="635">635</a>
+<a href="#636" id="636">636</a>
+<a href="#637" id="637">637</a>
+<a href="#638" id="638">638</a>
+<a href="#639" id="639">639</a>
+<a href="#640" id="640">640</a>
+<a href="#641" id="641">641</a>
+<a href="#642" id="642">642</a>
+<a href="#643" id="643">643</a>
+<a href="#644" id="644">644</a>
+<a href="#645" id="645">645</a>
+<a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a>
+<a href="#651" id="651">651</a>
+<a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
+<a href="#656" id="656">656</a>
+<a href="#657" id="657">657</a>
+<a href="#658" id="658">658</a>
+<a href="#659" id="659">659</a>
+<a href="#660" id="660">660</a>
+<a href="#661" id="661">661</a>
+<a href="#662" id="662">662</a>
+<a href="#663" id="663">663</a>
+<a href="#664" id="664">664</a>
+<a href="#665" id="665">665</a>
+<a href="#666" id="666">666</a>
+<a href="#667" id="667">667</a>
+<a href="#668" id="668">668</a>
+<a href="#669" id="669">669</a>
+<a href="#670" id="670">670</a>
+<a href="#671" id="671">671</a>
+<a href="#672" id="672">672</a>
+<a href="#673" id="673">673</a>
+<a href="#674" id="674">674</a>
+<a href="#675" id="675">675</a>
+<a href="#676" id="676">676</a>
+<a href="#677" id="677">677</a>
+<a href="#678" id="678">678</a>
+<a href="#679" id="679">679</a>
+<a href="#680" id="680">680</a>
+<a href="#681" id="681">681</a>
+<a href="#682" id="682">682</a>
+<a href="#683" id="683">683</a>
+<a href="#684" id="684">684</a>
+<a href="#685" id="685">685</a>
+<a href="#686" id="686">686</a>
+<a href="#687" id="687">687</a>
+<a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
+<a href="#691" id="691">691</a>
+<a href="#692" id="692">692</a>
+<a href="#693" id="693">693</a>
+<a href="#694" id="694">694</a>
+<a href="#695" id="695">695</a>
+<a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
+<a href="#704" id="704">704</a>
+<a href="#705" id="705">705</a>
+<a href="#706" id="706">706</a>
+<a href="#707" id="707">707</a>
+<a href="#708" id="708">708</a>
+<a href="#709" id="709">709</a>
+<a href="#710" id="710">710</a>
+<a href="#711" id="711">711</a>
+<a href="#712" id="712">712</a>
+<a href="#713" id="713">713</a>
+<a href="#714" id="714">714</a>
+<a href="#715" id="715">715</a>
+<a href="#716" id="716">716</a>
+<a href="#717" id="717">717</a>
+<a href="#718" id="718">718</a>
+<a href="#719" id="719">719</a>
+<a href="#720" id="720">720</a>
+<a href="#721" id="721">721</a>
+<a href="#722" id="722">722</a>
+<a href="#723" id="723">723</a>
+<a href="#724" id="724">724</a>
+<a href="#725" id="725">725</a>
+<a href="#726" id="726">726</a>
+<a href="#727" id="727">727</a>
+<a href="#728" id="728">728</a>
+<a href="#729" id="729">729</a>
+<a href="#730" id="730">730</a>
+<a href="#731" id="731">731</a>
+<a href="#732" id="732">732</a>
+<a href="#733" id="733">733</a>
+<a href="#734" id="734">734</a>
+<a href="#735" id="735">735</a>
+<a href="#736" id="736">736</a>
+<a href="#737" id="737">737</a>
+<a href="#738" id="738">738</a>
+<a href="#739" id="739">739</a>
+<a href="#740" id="740">740</a>
+<a href="#741" id="741">741</a>
+<a href="#742" id="742">742</a>
+<a href="#743" id="743">743</a>
+<a href="#744" id="744">744</a>
+<a href="#745" id="745">745</a>
+<a href="#746" id="746">746</a>
+<a href="#747" id="747">747</a>
+<a href="#748" id="748">748</a>
+<a href="#749" id="749">749</a>
+<a href="#750" id="750">750</a>
+<a href="#751" id="751">751</a>
+<a href="#752" id="752">752</a>
+<a href="#753" id="753">753</a>
+<a href="#754" id="754">754</a>
+<a href="#755" id="755">755</a>
+<a href="#756" id="756">756</a>
+<a href="#757" id="757">757</a>
+<a href="#758" id="758">758</a>
+<a href="#759" id="759">759</a>
+<a href="#760" id="760">760</a>
+<a href="#761" id="761">761</a>
+<a href="#762" id="762">762</a>
+<a href="#763" id="763">763</a>
+<a href="#764" id="764">764</a>
+<a href="#765" id="765">765</a>
+<a href="#766" id="766">766</a>
+<a href="#767" id="767">767</a>
+<a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
+<a href="#770" id="770">770</a>
+<a href="#771" id="771">771</a>
+<a href="#772" id="772">772</a>
+<a href="#773" id="773">773</a>
+<a href="#774" id="774">774</a>
+<a href="#775" id="775">775</a>
+<a href="#776" id="776">776</a>
+<a href="#777" id="777">777</a>
+<a href="#778" id="778">778</a>
+<a href="#779" id="779">779</a>
+<a href="#780" id="780">780</a>
+<a href="#781" id="781">781</a>
+<a href="#782" id="782">782</a>
+<a href="#783" id="783">783</a>
+<a href="#784" id="784">784</a>
+<a href="#785" id="785">785</a>
+<a href="#786" id="786">786</a>
+<a href="#787" id="787">787</a>
+<a href="#788" id="788">788</a>
+<a href="#789" id="789">789</a>
+<a href="#790" id="790">790</a>
+<a href="#791" id="791">791</a>
+<a href="#792" id="792">792</a>
+<a href="#793" id="793">793</a>
+<a href="#794" id="794">794</a>
+<a href="#795" id="795">795</a>
+<a href="#796" id="796">796</a>
+<a href="#797" id="797">797</a>
+<a href="#798" id="798">798</a>
+<a href="#799" id="799">799</a>
+<a href="#800" id="800">800</a>
+<a href="#801" id="801">801</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2018 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -652,17 +848,23 @@
 <span class="kw">mod </span>select;
 
 <span class="kw">pub use </span><span class="kw">crate</span>::upgrade::{InboundUpgradeSend, OutboundUpgradeSend, SendWrapper, UpgradeInfoSend};
-
-<span class="kw">use </span>instant::Instant;
-<span class="kw">use </span>libp2p_core::{upgrade::UpgradeError, ConnectedPoint, Multiaddr};
-<span class="kw">use </span>libp2p_identity::PeerId;
-<span class="kw">use </span>std::{cmp::Ordering, error, fmt, task::Context, task::Poll, time::Duration};
-
 <span class="kw">pub use </span>map_in::MapInEvent;
 <span class="kw">pub use </span>map_out::MapOutEvent;
 <span class="kw">pub use </span>one_shot::{OneShotHandler, OneShotHandlerConfig};
 <span class="kw">pub use </span>pending::PendingConnectionHandler;
-<span class="kw">pub use </span>select::{ConnectionHandlerSelect, IntoConnectionHandlerSelect};
+<span class="kw">pub use </span>select::ConnectionHandlerSelect;
+
+<span class="kw">use </span><span class="kw">crate</span>::StreamProtocol;
+<span class="kw">use </span>::either::Either;
+<span class="kw">use </span>instant::Instant;
+<span class="kw">use </span>libp2p_core::Multiaddr;
+<span class="kw">use </span>once_cell::sync::Lazy;
+<span class="kw">use </span>smallvec::SmallVec;
+<span class="kw">use </span>std::collections::hash_map::RandomState;
+<span class="kw">use </span>std::collections::hash_set::{Difference, Intersection};
+<span class="kw">use </span>std::collections::HashSet;
+<span class="kw">use </span>std::iter::Peekable;
+<span class="kw">use </span>std::{cmp::Ordering, error, fmt, io, task::Context, task::Poll, time::Duration};
 
 <span class="doccomment">/// A handler for a set of protocols used on a connection with a remote.
 ///
@@ -698,11 +900,14 @@
 /// When a connection is closed gracefully, the substreams used by the handler may still
 /// continue reading data until the remote closes its side of the connection.
 </span><span class="kw">pub trait </span>ConnectionHandler: Send + <span class="lifetime">'static </span>{
-    <span class="doccomment">/// Custom event that can be received from the outside.
-    </span><span class="kw">type </span>InEvent: fmt::Debug + Send + <span class="lifetime">'static</span>;
-    <span class="doccomment">/// Custom event that can be produced by the handler and that will be returned to the outside.
-    </span><span class="kw">type </span>OutEvent: fmt::Debug + Send + <span class="lifetime">'static</span>;
+    <span class="doccomment">/// A type representing the message(s) a [`NetworkBehaviour`](crate::behaviour::NetworkBehaviour) can send to a [`ConnectionHandler`] via [`ToSwarm::NotifyHandler`](crate::behaviour::ToSwarm::NotifyHandler)
+    </span><span class="kw">type </span>FromBehaviour: fmt::Debug + Send + <span class="lifetime">'static</span>;
+    <span class="doccomment">/// A type representing message(s) a [`ConnectionHandler`] can send to a [`NetworkBehaviour`](crate::behaviour::NetworkBehaviour) via [`ConnectionHandlerEvent::NotifyBehaviour`].
+    </span><span class="kw">type </span>ToBehaviour: fmt::Debug + Send + <span class="lifetime">'static</span>;
     <span class="doccomment">/// The type of errors returned by [`ConnectionHandler::poll`].
+    </span><span class="attr">#[deprecated(
+        note = <span class="string">"Will be removed together with `ConnectionHandlerEvent::Close`. See &lt;https://github.com/libp2p/rust-libp2p/issues/3591&gt; for details."
+    </span>)]
     </span><span class="kw">type </span>Error: error::Error + fmt::Debug + Send + <span class="lifetime">'static</span>;
     <span class="doccomment">/// The inbound upgrade for the protocol(s) used by the handler.
     </span><span class="kw">type </span>InboundProtocol: InboundUpgradeSend;
@@ -745,6 +950,7 @@
     </span><span class="kw">fn </span>connection_keep_alive(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; KeepAlive;
 
     <span class="doccomment">/// Should behave like `Stream::poll()`.
+    </span><span class="attr">#[allow(deprecated)]
     </span><span class="kw">fn </span>poll(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;,
@@ -752,7 +958,7 @@
         ConnectionHandlerEvent&lt;
             <span class="self">Self</span>::OutboundProtocol,
             <span class="self">Self</span>::OutboundOpenInfo,
-            <span class="self">Self</span>::OutEvent,
+            <span class="self">Self</span>::ToBehaviour,
             <span class="self">Self</span>::Error,
         &gt;,
     &gt;;
@@ -761,7 +967,7 @@
     </span><span class="kw">fn </span>map_in_event&lt;TNewIn, TMap&gt;(<span class="self">self</span>, map: TMap) -&gt; MapInEvent&lt;<span class="self">Self</span>, TNewIn, TMap&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        TMap: Fn(<span class="kw-2">&amp;</span>TNewIn) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="self">Self</span>::InEvent&gt;,
+        TMap: Fn(<span class="kw-2">&amp;</span>TNewIn) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="self">Self</span>::FromBehaviour&gt;,
     {
         MapInEvent::new(<span class="self">self</span>, map)
     }
@@ -770,7 +976,7 @@
     </span><span class="kw">fn </span>map_out_event&lt;TMap, TNewOut&gt;(<span class="self">self</span>, map: TMap) -&gt; MapOutEvent&lt;<span class="self">Self</span>, TMap&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
-        TMap: FnMut(<span class="self">Self</span>::OutEvent) -&gt; TNewOut,
+        TMap: FnMut(<span class="self">Self</span>::ToBehaviour) -&gt; TNewOut,
     {
         MapOutEvent::new(<span class="self">self</span>, map)
     }
@@ -789,7 +995,7 @@
     }
 
     <span class="doccomment">/// Informs the handler about an event from the [`NetworkBehaviour`](super::NetworkBehaviour).
-    </span><span class="kw">fn </span>on_behaviour_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _event: <span class="self">Self</span>::InEvent);
+    </span><span class="kw">fn </span>on_behaviour_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _event: <span class="self">Self</span>::FromBehaviour);
 
     <span class="kw">fn </span>on_connection_event(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
@@ -815,6 +1021,46 @@
     </span>DialUpgradeError(DialUpgradeError&lt;OOI, OP&gt;),
     <span class="doccomment">/// Informs the handler that upgrading an inbound substream to the given protocol has failed.
     </span>ListenUpgradeError(ListenUpgradeError&lt;IOI, IP&gt;),
+    <span class="doccomment">/// The local [`ConnectionHandler`] added or removed support for one or more protocols.
+    </span>LocalProtocolsChange(ProtocolsChange&lt;<span class="lifetime">'a</span>&gt;),
+    <span class="doccomment">/// The remote [`ConnectionHandler`] now supports a different set of protocols.
+    </span>RemoteProtocolsChange(ProtocolsChange&lt;<span class="lifetime">'a</span>&gt;),
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, IP, OP, IOI, OOI&gt; fmt::Debug <span class="kw">for </span>ConnectionEvent&lt;<span class="lifetime">'a</span>, IP, OP, IOI, OOI&gt;
+<span class="kw">where
+    </span>IP: InboundUpgradeSend + fmt::Debug,
+    IP::Output: fmt::Debug,
+    IP::Error: fmt::Debug,
+    OP: OutboundUpgradeSend + fmt::Debug,
+    OP::Output: fmt::Debug,
+    OP::Error: fmt::Debug,
+    IOI: fmt::Debug,
+    OOI: fmt::Debug,
+{
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
+        <span class="kw">match </span><span class="self">self </span>{
+            ConnectionEvent::FullyNegotiatedInbound(v) =&gt; {
+                f.debug_tuple(<span class="string">"FullyNegotiatedInbound"</span>).field(v).finish()
+            }
+            ConnectionEvent::FullyNegotiatedOutbound(v) =&gt; {
+                f.debug_tuple(<span class="string">"FullyNegotiatedOutbound"</span>).field(v).finish()
+            }
+            ConnectionEvent::AddressChange(v) =&gt; f.debug_tuple(<span class="string">"AddressChange"</span>).field(v).finish(),
+            ConnectionEvent::DialUpgradeError(v) =&gt; {
+                f.debug_tuple(<span class="string">"DialUpgradeError"</span>).field(v).finish()
+            }
+            ConnectionEvent::ListenUpgradeError(v) =&gt; {
+                f.debug_tuple(<span class="string">"ListenUpgradeError"</span>).field(v).finish()
+            }
+            ConnectionEvent::LocalProtocolsChange(v) =&gt; {
+                f.debug_tuple(<span class="string">"LocalProtocolsChange"</span>).field(v).finish()
+            }
+            ConnectionEvent::RemoteProtocolsChange(v) =&gt; {
+                f.debug_tuple(<span class="string">"RemoteProtocolsChange"</span>).field(v).finish()
+            }
+        }
+    }
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, IP: InboundUpgradeSend, OP: OutboundUpgradeSend, IOI, OOI&gt;
@@ -828,22 +1074,22 @@
             </span>}
             ConnectionEvent::FullyNegotiatedInbound(<span class="kw">_</span>)
             | ConnectionEvent::AddressChange(<span class="kw">_</span>)
+            | ConnectionEvent::LocalProtocolsChange(<span class="kw">_</span>)
+            | ConnectionEvent::RemoteProtocolsChange(<span class="kw">_</span>)
             | ConnectionEvent::ListenUpgradeError(<span class="kw">_</span>) =&gt; <span class="bool-val">false</span>,
         }
     }
 
     <span class="doccomment">/// Whether the event concerns an inbound stream.
     </span><span class="kw">pub fn </span>is_inbound(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-        <span class="comment">// Note: This will get simpler with https://github.com/libp2p/rust-libp2p/pull/3605.
-        </span><span class="kw">match </span><span class="self">self </span>{
-            ConnectionEvent::FullyNegotiatedInbound(<span class="kw">_</span>)
-            | ConnectionEvent::ListenUpgradeError(ListenUpgradeError {
-                error: ConnectionHandlerUpgrErr::Upgrade(UpgradeError::Select(<span class="kw">_</span>)), <span class="comment">// Only `Select` is relevant, the others may be for other handlers too.
-                </span>..
-            }) =&gt; <span class="bool-val">true</span>,
+        <span class="kw">match </span><span class="self">self </span>{
+            ConnectionEvent::FullyNegotiatedInbound(<span class="kw">_</span>) | ConnectionEvent::ListenUpgradeError(<span class="kw">_</span>) =&gt; {
+                <span class="bool-val">true
+            </span>}
             ConnectionEvent::FullyNegotiatedOutbound(<span class="kw">_</span>)
-            | ConnectionEvent::ListenUpgradeError(<span class="kw">_</span>)
             | ConnectionEvent::AddressChange(<span class="kw">_</span>)
+            | ConnectionEvent::LocalProtocolsChange(<span class="kw">_</span>)
+            | ConnectionEvent::RemoteProtocolsChange(<span class="kw">_</span>)
             | ConnectionEvent::DialUpgradeError(<span class="kw">_</span>) =&gt; <span class="bool-val">false</span>,
         }
     }
@@ -857,6 +1103,7 @@
 /// of simultaneously open negotiated inbound substreams. In other words it is up to the
 /// [`ConnectionHandler`] implementation to stop a malicious remote node to open and keep alive
 /// an excessive amount of inbound substreams.
+</span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>FullyNegotiatedInbound&lt;IP: InboundUpgradeSend, IOI&gt; {
     <span class="kw">pub </span>protocol: IP::Output,
     <span class="kw">pub </span>info: IOI,
@@ -866,28 +1113,148 @@
 ///
 /// The `protocol` field is the information that was previously passed to
 /// [`ConnectionHandlerEvent::OutboundSubstreamRequest`].
+</span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>FullyNegotiatedOutbound&lt;OP: OutboundUpgradeSend, OOI&gt; {
     <span class="kw">pub </span>protocol: OP::Output,
     <span class="kw">pub </span>info: OOI,
 }
 
 <span class="doccomment">/// [`ConnectionEvent`] variant that informs the handler about a change in the address of the remote.
+</span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>AddressChange&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>new_address: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Multiaddr,
 }
 
+<span class="doccomment">/// [`ConnectionEvent`] variant that informs the handler about a change in the protocols supported on the connection.
+</span><span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">pub enum </span>ProtocolsChange&lt;<span class="lifetime">'a</span>&gt; {
+    Added(ProtocolsAdded&lt;<span class="lifetime">'a</span>&gt;),
+    Removed(ProtocolsRemoved&lt;<span class="lifetime">'a</span>&gt;),
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; ProtocolsChange&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="doccomment">/// Compute the [`ProtocolsChange`] that results from adding `to_add` to `existing_protocols`.
+    ///
+    /// Returns `None` if the change is a no-op, i.e. `to_add` is a subset of `existing_protocols`.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>add(
+        existing_protocols: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>HashSet&lt;StreamProtocol&gt;,
+        to_add: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>HashSet&lt;StreamProtocol&gt;,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>actually_added_protocols = to_add.difference(existing_protocols).peekable();
+
+        actually_added_protocols.peek()<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Some</span>(ProtocolsChange::Added(ProtocolsAdded {
+            protocols: actually_added_protocols,
+        }))
+    }
+
+    <span class="doccomment">/// Compute the [`ProtocolsChange`] that results from removing `to_remove` from `existing_protocols`.
+    ///
+    /// Returns `None` if the change is a no-op, i.e. none of the protocols in `to_remove` are in `existing_protocols`.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>remove(
+        existing_protocols: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>HashSet&lt;StreamProtocol&gt;,
+        to_remove: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>HashSet&lt;StreamProtocol&gt;,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>actually_removed_protocols = existing_protocols.intersection(to_remove).peekable();
+
+        actually_removed_protocols.peek()<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Some</span>(ProtocolsChange::Removed(ProtocolsRemoved {
+            protocols: Either::Right(actually_removed_protocols),
+        }))
+    }
+
+    <span class="doccomment">/// Compute the [`ProtocolsChange`]s required to go from `existing_protocols` to `new_protocols`.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>from_full_sets(
+        existing_protocols: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>HashSet&lt;StreamProtocol&gt;,
+        new_protocols: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>HashSet&lt;StreamProtocol&gt;,
+    ) -&gt; SmallVec&lt;[<span class="self">Self</span>; <span class="number">2</span>]&gt; {
+        <span class="kw">if </span>existing_protocols == new_protocols {
+            <span class="kw">return </span>SmallVec::new();
+        }
+
+        <span class="kw">let </span><span class="kw-2">mut </span>changes = SmallVec::new();
+
+        <span class="kw">let </span><span class="kw-2">mut </span>added_protocols = new_protocols.difference(existing_protocols).peekable();
+        <span class="kw">let </span><span class="kw-2">mut </span>removed_protocols = existing_protocols.difference(new_protocols).peekable();
+
+        <span class="kw">if </span>added_protocols.peek().is_some() {
+            changes.push(ProtocolsChange::Added(ProtocolsAdded {
+                protocols: added_protocols,
+            }));
+        }
+
+        <span class="kw">if </span>removed_protocols.peek().is_some() {
+            changes.push(ProtocolsChange::Removed(ProtocolsRemoved {
+                protocols: Either::Left(removed_protocols),
+            }));
+        }
+
+        changes
+    }
+}
+
+<span class="doccomment">/// An [`Iterator`] over all protocols that have been added.
+</span><span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>ProtocolsAdded&lt;<span class="lifetime">'a</span>&gt; {
+    protocols: Peekable&lt;Difference&lt;<span class="lifetime">'a</span>, StreamProtocol, RandomState&gt;&gt;,
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; ProtocolsAdded&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>from_set(protocols: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>HashSet&lt;StreamProtocol, RandomState&gt;) -&gt; <span class="self">Self </span>{
+        ProtocolsAdded {
+            protocols: protocols.difference(<span class="kw-2">&amp;</span>EMPTY_HASHSET).peekable(),
+        }
+    }
+}
+
+<span class="doccomment">/// An [`Iterator`] over all protocols that have been removed.
+</span><span class="attr">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>ProtocolsRemoved&lt;<span class="lifetime">'a</span>&gt; {
+    protocols: Either&lt;
+        Peekable&lt;Difference&lt;<span class="lifetime">'a</span>, StreamProtocol, RandomState&gt;&gt;,
+        Peekable&lt;Intersection&lt;<span class="lifetime">'a</span>, StreamProtocol, RandomState&gt;&gt;,
+    &gt;,
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; ProtocolsRemoved&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="attr">#[cfg(test)]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>from_set(protocols: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>HashSet&lt;StreamProtocol, RandomState&gt;) -&gt; <span class="self">Self </span>{
+        ProtocolsRemoved {
+            protocols: Either::Left(protocols.difference(<span class="kw-2">&amp;</span>EMPTY_HASHSET).peekable()),
+        }
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Iterator <span class="kw">for </span>ProtocolsAdded&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span>StreamProtocol;
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="self">self</span>.protocols.next()
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Iterator <span class="kw">for </span>ProtocolsRemoved&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">type </span>Item = <span class="kw-2">&amp;</span><span class="lifetime">'a </span>StreamProtocol;
+    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
+        <span class="self">self</span>.protocols.next()
+    }
+}
+
 <span class="doccomment">/// [`ConnectionEvent`] variant that informs the handler
 /// that upgrading an outbound substream to the given protocol has failed.
+</span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>DialUpgradeError&lt;OOI, OP: OutboundUpgradeSend&gt; {
     <span class="kw">pub </span>info: OOI,
-    <span class="kw">pub </span>error: ConnectionHandlerUpgrErr&lt;OP::Error&gt;,
+    <span class="kw">pub </span>error: StreamUpgradeError&lt;OP::Error&gt;,
 }
 
 <span class="doccomment">/// [`ConnectionEvent`] variant that informs the handler
 /// that upgrading an inbound substream to the given protocol has failed.
+</span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>ListenUpgradeError&lt;IOI, IP: InboundUpgradeSend&gt; {
     <span class="kw">pub </span>info: IOI,
-    <span class="kw">pub </span>error: ConnectionHandlerUpgrErr&lt;IP::Error&gt;,
+    <span class="kw">pub </span>error: IP::Error,
 }
 
 <span class="doccomment">/// Configuration of inbound or outbound substream protocol(s)
@@ -967,7 +1334,7 @@
 }
 
 <span class="doccomment">/// Event produced by a handler.
-</span><span class="attr">#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+</span><span class="attr">#[derive(Debug, Clone, PartialEq, Eq)]
 </span><span class="kw">pub enum </span>ConnectionHandlerEvent&lt;TConnectionUpgrade, TOutboundOpenInfo, TCustom, TErr&gt; {
     <span class="doccomment">/// Request a new outbound substream to be opened with the remote.
     </span>OutboundSubstreamRequest {
@@ -983,10 +1350,23 @@
     /// connection, while allowing other [`ConnectionHandler`]s to continue using
     /// the connection, return [`KeepAlive::No`] in
     /// [`ConnectionHandler::connection_keep_alive`].
+    </span><span class="attr">#[deprecated(
+        note = <span class="string">"To close a connection, use `ToSwarm::CloseConnection` or `Swarm::close_connection`. See &lt;https://github.com/libp2p/rust-libp2p/issues/3591&gt; for more details."
+    </span>)]
     </span>Close(TErr),
+    <span class="doccomment">/// We learned something about the protocols supported by the remote.
+    </span>ReportRemoteProtocols(ProtocolSupport),
 
-    <span class="doccomment">/// Other event.
-    </span>Custom(TCustom),
+    <span class="doccomment">/// Event that is sent to a [`NetworkBehaviour`](crate::behaviour::NetworkBehaviour).
+    </span>NotifyBehaviour(TCustom),
+}
+
+<span class="attr">#[derive(Debug, Clone, PartialEq, Eq)]
+</span><span class="kw">pub enum </span>ProtocolSupport {
+    <span class="doccomment">/// The remote now supports these additional protocols.
+    </span>Added(HashSet&lt;StreamProtocol&gt;),
+    <span class="doccomment">/// The remote no longer supports these protocols.
+    </span>Removed(HashSet&lt;StreamProtocol&gt;),
 }
 
 <span class="doccomment">/// Event produced by a handler.
@@ -1008,8 +1388,14 @@
                     protocol: protocol.map_info(map),
                 }
             }
-            ConnectionHandlerEvent::Custom(val) =&gt; ConnectionHandlerEvent::Custom(val),
-            ConnectionHandlerEvent::Close(val) =&gt; ConnectionHandlerEvent::Close(val),
+            ConnectionHandlerEvent::NotifyBehaviour(val) =&gt; {
+                ConnectionHandlerEvent::NotifyBehaviour(val)
+            }
+            <span class="attr">#[allow(deprecated)]
+            </span>ConnectionHandlerEvent::Close(val) =&gt; ConnectionHandlerEvent::Close(val),
+            ConnectionHandlerEvent::ReportRemoteProtocols(support) =&gt; {
+                ConnectionHandlerEvent::ReportRemoteProtocols(support)
+            }
         }
     }
 
@@ -1028,8 +1414,14 @@
                     protocol: protocol.map_upgrade(map),
                 }
             }
-            ConnectionHandlerEvent::Custom(val) =&gt; ConnectionHandlerEvent::Custom(val),
-            ConnectionHandlerEvent::Close(val) =&gt; ConnectionHandlerEvent::Close(val),
+            ConnectionHandlerEvent::NotifyBehaviour(val) =&gt; {
+                ConnectionHandlerEvent::NotifyBehaviour(val)
+            }
+            <span class="attr">#[allow(deprecated)]
+            </span>ConnectionHandlerEvent::Close(val) =&gt; ConnectionHandlerEvent::Close(val),
+            ConnectionHandlerEvent::ReportRemoteProtocols(support) =&gt; {
+                ConnectionHandlerEvent::ReportRemoteProtocols(support)
+            }
         }
     }
 
@@ -1045,8 +1437,14 @@
             ConnectionHandlerEvent::OutboundSubstreamRequest { protocol } =&gt; {
                 ConnectionHandlerEvent::OutboundSubstreamRequest { protocol }
             }
-            ConnectionHandlerEvent::Custom(val) =&gt; ConnectionHandlerEvent::Custom(map(val)),
-            ConnectionHandlerEvent::Close(val) =&gt; ConnectionHandlerEvent::Close(val),
+            ConnectionHandlerEvent::NotifyBehaviour(val) =&gt; {
+                ConnectionHandlerEvent::NotifyBehaviour(map(val))
+            }
+            <span class="attr">#[allow(deprecated)]
+            </span>ConnectionHandlerEvent::Close(val) =&gt; ConnectionHandlerEvent::Close(val),
+            ConnectionHandlerEvent::ReportRemoteProtocols(support) =&gt; {
+                ConnectionHandlerEvent::ReportRemoteProtocols(support)
+            }
         }
     }
 
@@ -1062,113 +1460,79 @@
             ConnectionHandlerEvent::OutboundSubstreamRequest { protocol } =&gt; {
                 ConnectionHandlerEvent::OutboundSubstreamRequest { protocol }
             }
-            ConnectionHandlerEvent::Custom(val) =&gt; ConnectionHandlerEvent::Custom(val),
-            ConnectionHandlerEvent::Close(val) =&gt; ConnectionHandlerEvent::Close(map(val)),
+            ConnectionHandlerEvent::NotifyBehaviour(val) =&gt; {
+                ConnectionHandlerEvent::NotifyBehaviour(val)
+            }
+            <span class="attr">#[allow(deprecated)]
+            </span>ConnectionHandlerEvent::Close(val) =&gt; ConnectionHandlerEvent::Close(map(val)),
+            ConnectionHandlerEvent::ReportRemoteProtocols(support) =&gt; {
+                ConnectionHandlerEvent::ReportRemoteProtocols(support)
+            }
         }
     }
 }
+
+<span class="attr">#[deprecated(note = <span class="string">"Renamed to `StreamUpgradeError`"</span>)]
+</span><span class="kw">pub type </span>ConnectionHandlerUpgrErr&lt;TUpgrErr&gt; = StreamUpgradeError&lt;TUpgrErr&gt;;
 
 <span class="doccomment">/// Error that can happen on an outbound substream opening attempt.
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub enum </span>ConnectionHandlerUpgrErr&lt;TUpgrErr&gt; {
+</span><span class="kw">pub enum </span>StreamUpgradeError&lt;TUpgrErr&gt; {
     <span class="doccomment">/// The opening attempt timed out before the negotiation was fully completed.
     </span>Timeout,
-    <span class="doccomment">/// There was an error in the timer used.
-    </span>Timer,
-    <span class="doccomment">/// Error while upgrading the substream to the protocol we want.
-    </span>Upgrade(UpgradeError&lt;TUpgrErr&gt;),
+    <span class="doccomment">/// The upgrade produced an error.
+    </span>Apply(TUpgrErr),
+    <span class="doccomment">/// No protocol could be agreed upon.
+    </span>NegotiationFailed,
+    <span class="doccomment">/// An IO or otherwise unrecoverable error happened.
+    </span>Io(io::Error),
 }
 
-<span class="kw">impl</span>&lt;TUpgrErr&gt; ConnectionHandlerUpgrErr&lt;TUpgrErr&gt; {
-    <span class="doccomment">/// Map the inner [`UpgradeError`] type.
-    </span><span class="kw">pub fn </span>map_upgrade_err&lt;F, E&gt;(<span class="self">self</span>, f: F) -&gt; ConnectionHandlerUpgrErr&lt;E&gt;
+<span class="kw">impl</span>&lt;TUpgrErr&gt; StreamUpgradeError&lt;TUpgrErr&gt; {
+    <span class="doccomment">/// Map the inner [`StreamUpgradeError`] type.
+    </span><span class="kw">pub fn </span>map_upgrade_err&lt;F, E&gt;(<span class="self">self</span>, f: F) -&gt; StreamUpgradeError&lt;E&gt;
     <span class="kw">where
-        </span>F: FnOnce(UpgradeError&lt;TUpgrErr&gt;) -&gt; UpgradeError&lt;E&gt;,
+        </span>F: FnOnce(TUpgrErr) -&gt; E,
     {
         <span class="kw">match </span><span class="self">self </span>{
-            ConnectionHandlerUpgrErr::Timeout =&gt; ConnectionHandlerUpgrErr::Timeout,
-            ConnectionHandlerUpgrErr::Timer =&gt; ConnectionHandlerUpgrErr::Timer,
-            ConnectionHandlerUpgrErr::Upgrade(e) =&gt; ConnectionHandlerUpgrErr::Upgrade(f(e)),
+            StreamUpgradeError::Timeout =&gt; StreamUpgradeError::Timeout,
+            StreamUpgradeError::Apply(e) =&gt; StreamUpgradeError::Apply(f(e)),
+            StreamUpgradeError::NegotiationFailed =&gt; StreamUpgradeError::NegotiationFailed,
+            StreamUpgradeError::Io(e) =&gt; StreamUpgradeError::Io(e),
         }
     }
 }
 
-<span class="kw">impl</span>&lt;TUpgrErr&gt; fmt::Display <span class="kw">for </span>ConnectionHandlerUpgrErr&lt;TUpgrErr&gt;
+<span class="kw">impl</span>&lt;TUpgrErr&gt; fmt::Display <span class="kw">for </span>StreamUpgradeError&lt;TUpgrErr&gt;
 <span class="kw">where
     </span>TUpgrErr: error::Error + <span class="lifetime">'static</span>,
 {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
         <span class="kw">match </span><span class="self">self </span>{
-            ConnectionHandlerUpgrErr::Timeout =&gt; {
+            StreamUpgradeError::Timeout =&gt; {
                 <span class="macro">write!</span>(f, <span class="string">"Timeout error while opening a substream"</span>)
             }
-            ConnectionHandlerUpgrErr::Timer =&gt; {
-                <span class="macro">write!</span>(f, <span class="string">"Timer error while opening a substream"</span>)
-            }
-            ConnectionHandlerUpgrErr::Upgrade(err) =&gt; {
-                <span class="macro">write!</span>(f, <span class="string">"Upgrade: "</span>)<span class="question-mark">?</span>;
+            StreamUpgradeError::Apply(err) =&gt; {
+                <span class="macro">write!</span>(f, <span class="string">"Apply: "</span>)<span class="question-mark">?</span>;
                 <span class="kw">crate</span>::print_error_chain(f, err)
+            }
+            StreamUpgradeError::NegotiationFailed =&gt; {
+                <span class="macro">write!</span>(f, <span class="string">"no protocols could be agreed upon"</span>)
+            }
+            StreamUpgradeError::Io(e) =&gt; {
+                <span class="macro">write!</span>(f, <span class="string">"IO error: "</span>)<span class="question-mark">?</span>;
+                <span class="kw">crate</span>::print_error_chain(f, e)
             }
         }
     }
 }
 
-<span class="kw">impl</span>&lt;TUpgrErr&gt; error::Error <span class="kw">for </span>ConnectionHandlerUpgrErr&lt;TUpgrErr&gt;
+<span class="kw">impl</span>&lt;TUpgrErr&gt; error::Error <span class="kw">for </span>StreamUpgradeError&lt;TUpgrErr&gt;
 <span class="kw">where
     </span>TUpgrErr: error::Error + <span class="lifetime">'static</span>,
 {
     <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>error::Error + <span class="lifetime">'static</span>)&gt; {
-        <span class="kw">match </span><span class="self">self </span>{
-            ConnectionHandlerUpgrErr::Timeout =&gt; <span class="prelude-val">None</span>,
-            ConnectionHandlerUpgrErr::Timer =&gt; <span class="prelude-val">None</span>,
-            ConnectionHandlerUpgrErr::Upgrade(<span class="kw">_</span>) =&gt; <span class="prelude-val">None</span>,
-        }
-    }
-}
-
-<span class="doccomment">/// Prototype for a [`ConnectionHandler`].
-</span><span class="attr">#[deprecated(
-    note = <span class="string">"Implement `ConnectionHandler` directly and use `NetworkBehaviour::{handle_pending_inbound_connection,handle_pending_outbound_connection}` to handle pending connections."
-</span>)]
-</span><span class="kw">pub trait </span>IntoConnectionHandler: Send + <span class="lifetime">'static </span>{
-    <span class="doccomment">/// The protocols handler.
-    </span><span class="kw">type </span>Handler: ConnectionHandler;
-
-    <span class="doccomment">/// Builds the protocols handler.
-    ///
-    /// The `PeerId` is the id of the node the handler is going to handle.
-    </span><span class="kw">fn </span>into_handler(
-        <span class="self">self</span>,
-        remote_peer_id: <span class="kw-2">&amp;</span>PeerId,
-        connected_point: <span class="kw-2">&amp;</span>ConnectedPoint,
-    ) -&gt; <span class="self">Self</span>::Handler;
-
-    <span class="doccomment">/// Return the handler's inbound protocol.
-    </span><span class="kw">fn </span>inbound_protocol(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; &lt;<span class="self">Self</span>::Handler <span class="kw">as </span>ConnectionHandler&gt;::InboundProtocol;
-
-    <span class="doccomment">/// Builds an implementation of [`IntoConnectionHandler`] that handles both this protocol and the
-    /// other one together.
-    </span><span class="kw">fn </span>select&lt;TProto2&gt;(<span class="self">self</span>, other: TProto2) -&gt; IntoConnectionHandlerSelect&lt;<span class="self">Self</span>, TProto2&gt;
-    <span class="kw">where
-        </span><span class="self">Self</span>: Sized,
-    {
-        IntoConnectionHandlerSelect::new(<span class="self">self</span>, other)
-    }
-}
-
-<span class="attr">#[allow(deprecated)]
-</span><span class="kw">impl</span>&lt;T&gt; IntoConnectionHandler <span class="kw">for </span>T
-<span class="kw">where
-    </span>T: ConnectionHandler,
-{
-    <span class="kw">type </span>Handler = <span class="self">Self</span>;
-
-    <span class="kw">fn </span>into_handler(<span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>PeerId, <span class="kw">_</span>: <span class="kw-2">&amp;</span>ConnectedPoint) -&gt; <span class="self">Self </span>{
-        <span class="self">self
-    </span>}
-
-    <span class="kw">fn </span>inbound_protocol(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; &lt;<span class="self">Self</span>::Handler <span class="kw">as </span>ConnectionHandler&gt;::InboundProtocol {
-        <span class="self">self</span>.listen_protocol().into_upgrade().<span class="number">0
+        <span class="prelude-val">None
     </span>}
 }
 
@@ -1176,6 +1540,9 @@
 </span><span class="attr">#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 </span><span class="kw">pub enum </span>KeepAlive {
     <span class="doccomment">/// If nothing new happens, the connection should be closed at the given `Instant`.
+    </span><span class="attr">#[deprecated(
+        note = <span class="string">"Use `swarm::Config::with_idle_connection_timeout` instead. See &lt;https://github.com/libp2p/rust-libp2p/issues/3844&gt; for details."
+    </span>)]
     </span>Until(Instant),
     <span class="doccomment">/// Keep the connection alive.
     </span>Yes,
@@ -1196,7 +1563,8 @@
     }
 }
 
-<span class="kw">impl </span>Ord <span class="kw">for </span>KeepAlive {
+<span class="attr">#[allow(deprecated)]
+</span><span class="kw">impl </span>Ord <span class="kw">for </span>KeepAlive {
     <span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span>KeepAlive) -&gt; Ordering {
         <span class="kw">use </span><span class="self">self</span>::KeepAlive::<span class="kw-2">*</span>;
 
@@ -1208,4 +1576,28 @@
         }
     }
 }
+
+<span class="attr">#[cfg(test)]
+</span><span class="kw">impl </span>quickcheck::Arbitrary <span class="kw">for </span>KeepAlive {
+    <span class="kw">fn </span>arbitrary(g: <span class="kw-2">&amp;mut </span>quickcheck::Gen) -&gt; <span class="self">Self </span>{
+        <span class="kw">match </span>quickcheck::GenRange::gen_range(g, <span class="number">1u8</span>..<span class="number">4</span>) {
+            <span class="number">1 </span>=&gt;
+            {
+                <span class="attr">#[allow(deprecated)]
+                </span>KeepAlive::Until(
+                    Instant::now()
+                        .checked_add(Duration::arbitrary(g))
+                        .unwrap_or(Instant::now()),
+                )
+            }
+            <span class="number">2 </span>=&gt; KeepAlive::Yes,
+            <span class="number">3 </span>=&gt; KeepAlive::No,
+            <span class="kw">_ </span>=&gt; <span class="macro">unreachable!</span>(),
+        }
+    }
+}
+
+<span class="doccomment">/// A statically declared, empty [`HashSet`] allows us to work around borrow-checker rules for
+/// [`ProtocolsAdded::from_set`]. The lifetimes don't work unless we have a [`HashSet`] with a `'static' lifetime.
+</span><span class="kw">static </span>EMPTY_HASHSET: Lazy&lt;HashSet&lt;StreamProtocol&gt;&gt; = Lazy::new(HashSet::new);
 </code></pre></div></section></main></body></html>

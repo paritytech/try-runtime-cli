@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Extension","RawPacket","VideoOrientation"],"mod":["rtcp"],"struct":["ExtensionMap","ExtensionValues","RtpHeader","RtpPacket","SeqNo","Ssrc","StreamPaused","StreamRx","StreamTx","UserExtensionValues"],"trait":["ExtensionSerializer"]};

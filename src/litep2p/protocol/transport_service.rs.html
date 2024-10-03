@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/litep2p-2515ad90543f141a/e03a602/src/protocol/transport_service.rs`."><title>transport_service.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litep2p-0.7.0/src/protocol/transport_service.rs`."><title>transport_service.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -861,6 +861,36 @@
 <a href="#861" id="861">861</a>
 <a href="#862" id="862">862</a>
 <a href="#863" id="863">863</a>
+<a href="#864" id="864">864</a>
+<a href="#865" id="865">865</a>
+<a href="#866" id="866">866</a>
+<a href="#867" id="867">867</a>
+<a href="#868" id="868">868</a>
+<a href="#869" id="869">869</a>
+<a href="#870" id="870">870</a>
+<a href="#871" id="871">871</a>
+<a href="#872" id="872">872</a>
+<a href="#873" id="873">873</a>
+<a href="#874" id="874">874</a>
+<a href="#875" id="875">875</a>
+<a href="#876" id="876">876</a>
+<a href="#877" id="877">877</a>
+<a href="#878" id="878">878</a>
+<a href="#879" id="879">879</a>
+<a href="#880" id="880">880</a>
+<a href="#881" id="881">881</a>
+<a href="#882" id="882">882</a>
+<a href="#883" id="883">883</a>
+<a href="#884" id="884">884</a>
+<a href="#885" id="885">885</a>
+<a href="#886" id="886">886</a>
+<a href="#887" id="887">887</a>
+<a href="#888" id="888">888</a>
+<a href="#889" id="889">889</a>
+<a href="#890" id="890">890</a>
+<a href="#891" id="891">891</a>
+<a href="#892" id="892">892</a>
+<a href="#893" id="893">893</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2023 litep2p developers
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -882,7 +912,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 </span><span class="kw">use crate</span>::{
-    error::Error,
+    addresses::PublicAddresses,
+    error::{Error, ImmediateDialError, SubstreamError},
     protocol::{connection::ConnectionHandle, InnerTransportEvent, TransportEvent},
     transport::{manager::TransportManagerHandle, Endpoint},
     types::{protocol::ProtocolName, ConnectionId, SubstreamId},
@@ -965,7 +996,7 @@
 </span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>TransportService {
     <span class="doccomment">/// Local peer ID.
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) local_peer_id: PeerId,
+    </span>local_peer_id: PeerId,
 
     <span class="doccomment">/// Protocol.
     </span>protocol: ProtocolName,
@@ -985,8 +1016,11 @@
     <span class="doccomment">/// Next substream ID.
     </span>next_substream_id: Arc&lt;AtomicUsize&gt;,
 
+    <span class="doccomment">/// Close the connection if no substreams are open within this time frame.
+    </span>keep_alive_timeout: Duration,
+
     <span class="doccomment">/// Pending keep-alive timeouts.
-    </span>keep_alive_timeouts: FuturesUnordered&lt;BoxFuture&lt;<span class="lifetime">'static</span>, (PeerId, ConnectionId)&gt;&gt;,
+    </span>pending_keep_alive_timeouts: FuturesUnordered&lt;BoxFuture&lt;<span class="lifetime">'static</span>, (PeerId, ConnectionId)&gt;&gt;,
 }
 
 <span class="kw">impl </span>TransportService {
@@ -997,6 +1031,7 @@
         fallback_names: Vec&lt;ProtocolName&gt;,
         next_substream_id: Arc&lt;AtomicUsize&gt;,
         transport_handle: TransportManagerHandle,
+        keep_alive_timeout: Duration,
     ) -&gt; (<span class="self">Self</span>, Sender&lt;InnerTransportEvent&gt;) {
         <span class="kw">let </span>(tx, rx) = channel(DEFAULT_CHANNEL_SIZE);
 
@@ -1009,10 +1044,21 @@
                 transport_handle,
                 next_substream_id,
                 connections: HashMap::new(),
-                keep_alive_timeouts: FuturesUnordered::new(),
+                keep_alive_timeout,
+                pending_keep_alive_timeouts: FuturesUnordered::new(),
             },
             tx,
         )
+    }
+
+    <span class="doccomment">/// Get the list of public addresses of the node.
+    </span><span class="kw">pub fn </span>public_addresses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PublicAddresses {
+        <span class="self">self</span>.transport_handle.public_addresses()
+    }
+
+    <span class="doccomment">/// Get the list of listen addresses of the node.
+    </span><span class="kw">pub fn </span>listen_addresses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; HashSet&lt;Multiaddr&gt; {
+        <span class="self">self</span>.transport_handle.listen_addresses()
     }
 
     <span class="doccomment">/// Handle connection established event.
@@ -1031,6 +1077,7 @@
             <span class="question-mark">?</span>connection_id,
             <span class="string">"connection established"</span>,
         );
+        <span class="kw">let </span>keep_alive_timeout = <span class="self">self</span>.keep_alive_timeout;
 
         <span class="kw">match </span><span class="self">self</span>.connections.get_mut(<span class="kw-2">&amp;</span>peer) {
             <span class="prelude-val">Some</span>(context) =&gt; <span class="kw">match </span>context.secondary {
@@ -1045,8 +1092,8 @@
                     <span class="prelude-val">None
                 </span>}
                 <span class="prelude-val">None </span>=&gt; {
-                    <span class="self">self</span>.keep_alive_timeouts.push(Box::pin(<span class="kw">async move </span>{
-                        tokio::time::sleep(Duration::from_secs(<span class="number">5</span>)).<span class="kw">await</span>;
+                    <span class="self">self</span>.pending_keep_alive_timeouts.push(Box::pin(<span class="kw">async move </span>{
+                        tokio::time::sleep(keep_alive_timeout).<span class="kw">await</span>;
                         (peer, connection_id)
                     }));
                     context.secondary = <span class="prelude-val">Some</span>(handle);
@@ -1056,8 +1103,8 @@
             },
             <span class="prelude-val">None </span>=&gt; {
                 <span class="self">self</span>.connections.insert(peer, ConnectionContext::new(handle));
-                <span class="self">self</span>.keep_alive_timeouts.push(Box::pin(<span class="kw">async move </span>{
-                    tokio::time::sleep(Duration::from_secs(<span class="number">5</span>)).<span class="kw">await</span>;
+                <span class="self">self</span>.pending_keep_alive_timeouts.push(Box::pin(<span class="kw">async move </span>{
+                    tokio::time::sleep(keep_alive_timeout).<span class="kw">await</span>;
                     (peer, connection_id)
                 }));
 
@@ -1136,7 +1183,7 @@
     <span class="doccomment">/// Dial `peer` using `PeerId`.
     ///
     /// Call fails if `Litep2p` doesn't have a known address for the peer.
-    </span><span class="kw">pub fn </span>dial(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer: <span class="kw-2">&amp;</span>PeerId) -&gt; <span class="kw">crate</span>::Result&lt;()&gt; {
+    </span><span class="kw">pub fn </span>dial(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer: <span class="kw-2">&amp;</span>PeerId) -&gt; <span class="prelude-ty">Result</span>&lt;(), ImmediateDialError&gt; {
         <span class="self">self</span>.transport_handle.dial(peer)
     }
 
@@ -1148,7 +1195,7 @@
     /// Calling this function is only necessary for those addresses that are discovered out-of-band
     /// since `Litep2p` internally keeps track of all peer addresses it has learned through user
     /// calling this function, Kademlia peer discoveries and `Identify` responses.
-    </span><span class="kw">pub fn </span>dial_address(<span class="kw-2">&amp;mut </span><span class="self">self</span>, address: Multiaddr) -&gt; <span class="kw">crate</span>::Result&lt;()&gt; {
+    </span><span class="kw">pub fn </span>dial_address(<span class="kw-2">&amp;mut </span><span class="self">self</span>, address: Multiaddr) -&gt; <span class="prelude-ty">Result</span>&lt;(), ImmediateDialError&gt; {
         <span class="self">self</span>.transport_handle.dial_address(address)
     }
 
@@ -1173,12 +1220,15 @@
     ///
     /// Call fails if there is no connection open to `peer` or the channel towards
     /// the connection is clogged.
-    </span><span class="kw">pub fn </span>open_substream(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer: PeerId) -&gt; <span class="kw">crate</span>::Result&lt;SubstreamId&gt; {
+    </span><span class="kw">pub fn </span>open_substream(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer: PeerId) -&gt; <span class="prelude-ty">Result</span>&lt;SubstreamId, SubstreamError&gt; {
         <span class="comment">// always prefer the primary connection
-        </span><span class="kw">let </span>connection =
-            <span class="kw-2">&amp;mut </span><span class="self">self</span>.connections.get_mut(<span class="kw-2">&amp;</span>peer).ok_or(Error::PeerDoesntExist(peer))<span class="question-mark">?</span>.primary;
+        </span><span class="kw">let </span>connection = <span class="kw-2">&amp;mut </span><span class="self">self
+            </span>.connections
+            .get_mut(<span class="kw-2">&amp;</span>peer)
+            .ok_or(SubstreamError::PeerDoesNotExist(peer))<span class="question-mark">?
+            </span>.primary;
 
-        <span class="kw">let </span>permit = connection.try_get_permit().ok_or(Error::ConnectionClosed)<span class="question-mark">?</span>;
+        <span class="kw">let </span>permit = connection.try_get_permit().ok_or(SubstreamError::ConnectionClosed)<span class="question-mark">?</span>;
         <span class="kw">let </span>substream_id =
             SubstreamId::from(<span class="self">self</span>.next_substream_id.fetch_add(<span class="number">1usize</span>, Ordering::Relaxed));
 
@@ -1219,6 +1269,11 @@
 
         connection.primary.force_close()
     }
+
+    <span class="doccomment">/// Get local peer ID.
+    </span><span class="kw">pub fn </span>local_peer_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PeerId {
+        <span class="self">self</span>.local_peer_id
+    }
 }
 
 <span class="kw">impl </span>Stream <span class="kw">for </span>TransportService {
@@ -1250,7 +1305,7 @@
         }
 
         <span class="kw">while let </span>Poll::Ready(<span class="prelude-val">Some</span>((peer, connection_id))) =
-            <span class="self">self</span>.keep_alive_timeouts.poll_next_unpin(cx)
+            <span class="self">self</span>.pending_keep_alive_timeouts.poll_next_unpin(cx)
         {
             <span class="kw">if let </span><span class="prelude-val">Some</span>(context) = <span class="self">self</span>.connections.get_mut(<span class="kw-2">&amp;</span>peer) {
                 <span class="macro">tracing::trace!</span>(
@@ -1273,7 +1328,10 @@
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use crate</span>::{
         protocol::TransportService,
-        transport::manager::{handle::InnerTransportManagerCommand, TransportManagerHandle},
+        transport::{
+            manager::{handle::InnerTransportManagerCommand, TransportManagerHandle},
+            KEEP_ALIVE_TIMEOUT,
+        },
     };
     <span class="kw">use </span>futures::StreamExt;
     <span class="kw">use </span>parking_lot::RwLock;
@@ -1294,6 +1352,7 @@
             cmd_tx,
             HashSet::new(),
             Default::default(),
+            PublicAddresses::new(peer),
         );
 
         <span class="kw">let </span>(service, sender) = TransportService::new(
@@ -1302,6 +1361,7 @@
             Vec::new(),
             Arc::new(AtomicUsize::new(<span class="number">0usize</span>)),
             handle,
+            KEEP_ALIVE_TIMEOUT,
         );
 
         (service, sender, cmd_rx)
@@ -1643,7 +1703,7 @@
         };
 
         <span class="comment">// verify the first connection state is correct
-        </span><span class="macro">assert_eq!</span>(service.keep_alive_timeouts.len(), <span class="number">1</span>);
+        </span><span class="macro">assert_eq!</span>(service.pending_keep_alive_timeouts.len(), <span class="number">1</span>);
         <span class="kw">match </span>service.connections.get(<span class="kw-2">&amp;</span>peer) {
             <span class="prelude-val">Some</span>(context) =&gt; {
                 <span class="macro">assert_eq!</span>(
@@ -1678,7 +1738,7 @@
         // doesn't exist anymore
         //
         // the peer is removed because there is no connection to them
-        </span><span class="macro">assert_eq!</span>(service.keep_alive_timeouts.len(), <span class="number">1</span>);
+        </span><span class="macro">assert_eq!</span>(service.pending_keep_alive_timeouts.len(), <span class="number">1</span>);
         <span class="macro">assert!</span>(service.connections.get(<span class="kw-2">&amp;</span>peer).is_none());
 
         <span class="comment">// register new primary connection but verify that there are now two pending keep-alive
@@ -1706,7 +1766,7 @@
         };
 
         <span class="comment">// verify the first connection state is correct
-        </span><span class="macro">assert_eq!</span>(service.keep_alive_timeouts.len(), <span class="number">2</span>);
+        </span><span class="macro">assert_eq!</span>(service.pending_keep_alive_timeouts.len(), <span class="number">2</span>);
         <span class="kw">match </span>service.connections.get(<span class="kw-2">&amp;</span>peer) {
             <span class="prelude-val">Some</span>(context) =&gt; {
                 <span class="macro">assert_eq!</span>(

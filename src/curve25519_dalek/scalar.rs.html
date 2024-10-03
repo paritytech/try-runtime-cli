@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/curve25519-dalek-4.1.1/src/scalar.rs`."><title>scalar.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="curve25519_dalek" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/curve25519-dalek-4.1.3/src/scalar.rs`."><title>scalar.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="curve25519_dalek" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2079,9 +2079,6 @@
 <a href="#2079" id="2079">2079</a>
 <a href="#2080" id="2080">2080</a>
 <a href="#2081" id="2081">2081</a>
-<a href="#2082" id="2082">2082</a>
-<a href="#2083" id="2083">2083</a>
-<a href="#2084" id="2084">2084</a>
 </pre></div><pre class="rust"><code><span class="comment">// -*- mode: rust; -*-
 //
 // This file is part of curve25519-dalek.
@@ -2196,8 +2193,6 @@
 //! has been enabled.
 
 </span><span class="kw">use </span>core::borrow::Borrow;
-<span class="kw">use </span>core::cmp::{Eq, PartialEq};
-<span class="kw">use </span>core::convert::TryInto;
 <span class="kw">use </span>core::fmt::Debug;
 <span class="kw">use </span>core::iter::{Product, Sum};
 <span class="kw">use </span>core::ops::Index;
@@ -2208,13 +2203,13 @@
 
 <span class="kw">use </span>cfg_if::cfg_if;
 
+<span class="attr">#[cfg(feature = <span class="string">"group"</span>)]
+</span><span class="kw">use </span>group::ff::{Field, FromUniformBytes, PrimeField};
 <span class="attr">#[cfg(feature = <span class="string">"group-bits"</span>)]
 </span><span class="kw">use </span>group::ff::{FieldBits, PrimeFieldBits};
-<span class="attr">#[cfg(feature = <span class="string">"group"</span>)]
-</span><span class="kw">use </span>{
-    group::ff::{Field, FromUniformBytes, PrimeField},
-    rand_core::RngCore,
-};
+
+<span class="attr">#[cfg(any(test, feature = <span class="string">"group"</span>))]
+</span><span class="kw">use </span>rand_core::RngCore;
 
 <span class="attr">#[cfg(any(test, feature = <span class="string">"rand_core"</span>))]
 </span><span class="kw">use </span>rand_core::CryptoRngCore;
@@ -2371,7 +2366,7 @@
 }
 
 <span class="kw">impl </span>Debug <span class="kw">for </span>Scalar {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>::core::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; ::core::fmt::Result {
+    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>core::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; core::fmt::Result {
         <span class="macro">write!</span>(f, <span class="string">"Scalar{{\n\tbytes: {:?},\n}}"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.bytes)
     }
 }
@@ -2486,7 +2481,7 @@
 <span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
 </span><span class="kw">use </span>serde::de::Visitor;
 <span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-</span><span class="kw">use </span>serde::{<span class="self">self</span>, Deserialize, Deserializer, Serialize, Serializer};
+</span><span class="kw">use </span>serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 <span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
 #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"serde"</span>)))]
@@ -2516,7 +2511,7 @@
         <span class="kw">impl</span>&lt;<span class="lifetime">'de</span>&gt; Visitor&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>ScalarVisitor {
             <span class="kw">type </span>Value = Scalar;
 
-            <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>::core::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; ::core::fmt::Result {
+            <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>core::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; core::fmt::Result {
                 formatter.write_str(
                     <span class="string">"a sequence of 32 bytes whose little-endian interpretation is less than the \
                     basepoint order ℓ"</span>,
@@ -2917,7 +2912,7 @@
         }
 
         <span class="attr">#[cfg(feature = <span class="string">"zeroize"</span>)]
-        </span>zeroize::Zeroize::zeroize(<span class="kw-2">&amp;mut </span>scratch);
+        </span>Zeroize::zeroize(<span class="kw-2">&amp;mut </span>scratch);
 
         ret
     }
@@ -3319,11 +3314,13 @@
     }
 
     <span class="kw">fn </span>sqrt_ratio(num: <span class="kw-2">&amp;</span><span class="self">Self</span>, div: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; (Choice, <span class="self">Self</span>) {
-        group::ff::helpers::sqrt_ratio_generic(num, div)
+        <span class="attr">#[allow(unused_qualifications)]
+        </span>group::ff::helpers::sqrt_ratio_generic(num, div)
     }
 
     <span class="kw">fn </span>sqrt(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; CtOption&lt;<span class="self">Self</span>&gt; {
-        group::ff::helpers::sqrt_tonelli_shanks(
+        <span class="attr">#[allow(unused_qualifications)]
+        </span>group::ff::helpers::sqrt_tonelli_shanks(
             <span class="self">self</span>,
             [
                 <span class="number">0xcb02_4c63_4b9e_ba7d</span>,
@@ -3477,12 +3474,9 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>test {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use </span><span class="kw">crate</span>::constants;
 
     <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
     </span><span class="kw">use </span>alloc::vec::Vec;
-
-    <span class="kw">use </span>rand::RngCore;
 
     <span class="doccomment">/// x = 2238329342913194256032495932344128051776374960164957527413114840482143558222
     </span><span class="kw">pub static </span>X: Scalar = Scalar {

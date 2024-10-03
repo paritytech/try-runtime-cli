@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["basti_log"]};
+window.SIDEBAR_ITEMS = {"fn":["basti_log"],"struct":["LogLevelGuard"]};

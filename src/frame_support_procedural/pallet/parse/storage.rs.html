@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/frame/support/procedural/src/pallet/parse/storage.rs`."><title>storage.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/frame/support/procedural/src/pallet/parse/storage.rs`."><title>storage.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -945,6 +945,9 @@
 <a href="#945" id="945">945</a>
 <a href="#946" id="946">946</a>
 <a href="#947" id="947">947</a>
+<a href="#948" id="948">948</a>
+<a href="#949" id="949">949</a>
+<a href="#950" id="950">950</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1154,6 +1157,8 @@
 	</span><span class="kw">pub </span>try_decode: bool,
 	<span class="doccomment">/// Whether or not a default hasher is allowed to replace `_`
 	</span><span class="kw">pub </span>use_default_hasher: bool,
+	<span class="doccomment">/// Attributes
+	</span><span class="kw">pub </span>attrs: Vec&lt;syn::Attribute&gt;,
 }
 
 <span class="doccomment">/// The parsed generic from the
@@ -1320,7 +1325,7 @@
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, Duplicated named generic"</span>;
 			<span class="kw">let </span><span class="kw-2">mut </span>err = syn::Error::new(arg.ident.span(), msg);
 			err.combine(syn::Error::new(other.ident.span(), msg));
-			<span class="kw">return </span><span class="prelude-val">Err</span>(err)
+			<span class="kw">return </span><span class="prelude-val">Err</span>(err);
 		}
 		parsed.insert(arg.ident.to_string(), arg.clone());
 	}
@@ -1613,7 +1618,7 @@
 				in order to expand metadata, found `{}`."</span>,
 				found,
 			);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(segment.ident.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(segment.ident.span(), msg));
 		},
 	};
 
@@ -1624,7 +1629,7 @@
 		<span class="kw">_ </span>=&gt; {
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, invalid number of generic generic arguments, \
 				expect more that 0 generic arguments."</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(segment.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(segment.span(), msg));
 		},
 	};
 
@@ -1671,7 +1676,7 @@
 		typ
 	} <span class="kw">else </span>{
 		<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, expected type path"</span>;
-		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty.span(), msg))
+		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty.span(), msg));
 	};
 
 	<span class="kw">let </span>key_struct = typ.path.segments.last().ok_or_else(|| {
@@ -1680,14 +1685,14 @@
 	})<span class="question-mark">?</span>;
 	<span class="kw">if </span>key_struct.ident != <span class="string">"Key" </span>&amp;&amp; key_struct.ident != <span class="string">"NMapKey" </span>{
 		<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, expected Key or NMapKey struct"</span>;
-		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(key_struct.ident.span(), msg))
+		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(key_struct.ident.span(), msg));
 	}
 
 	<span class="kw">let </span>ty_params = <span class="kw">if let </span>syn::PathArguments::AngleBracketed(args) = <span class="kw-2">&amp;</span>key_struct.arguments {
 		args
 	} <span class="kw">else </span>{
 		<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, expected angle bracketed arguments"</span>;
-		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(key_struct.arguments.span(), msg))
+		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(key_struct.arguments.span(), msg));
 	};
 
 	<span class="kw">if </span>ty_params.args.len() != <span class="number">2 </span>{
@@ -1696,14 +1701,14 @@
 			for Key struct, expected 2 args, found {}"</span>,
 			ty_params.args.len()
 		);
-		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty_params.span(), msg))
+		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty_params.span(), msg));
 	}
 
 	<span class="kw">let </span>key = <span class="kw">match </span><span class="kw-2">&amp;</span>ty_params.args[<span class="number">1</span>] {
 		syn::GenericArgument::Type(key_ty) =&gt; key_ty.clone(),
 		<span class="kw">_ </span>=&gt; {
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, expected type"</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty_params.args[<span class="number">1</span>].span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty_params.args[<span class="number">1</span>].span(), msg));
 		},
 	};
 
@@ -1737,7 +1742,7 @@
 		<span class="kw">let </span>item = <span class="kw">if let </span>syn::Item::Type(item) = item {
 			item
 		} <span class="kw">else </span>{
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), <span class="string">"Invalid pallet::storage, expect item type."</span>))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), <span class="string">"Invalid pallet::storage, expect item type."</span>));
 		};
 
 		<span class="kw">let </span>attrs: Vec&lt;PalletStorageAttr&gt; = helper::take_item_pallet_attrs(<span class="kw-2">&amp;mut </span>item.attrs)<span class="question-mark">?</span>;
@@ -1757,12 +1762,12 @@
 			typ
 		} <span class="kw">else </span>{
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, expected type path"</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.ty.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.ty.span(), msg));
 		};
 
 		<span class="kw">if </span>typ.path.segments.len() != <span class="number">1 </span>{
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, expected type path with one segment"</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.ty.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.ty.span(), msg));
 		}
 
 		<span class="kw">let </span>(named_generics, metadata, query_kind, use_default_hasher) =
@@ -1805,7 +1810,7 @@
 								for ResultQuery, expected 1 type argument, found {}"</span>,
 								args.len(),
 							);
-							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(args.span(), msg))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(args.span(), msg));
 						}
 
 						args[<span class="number">0</span>].clone()
@@ -1816,7 +1821,7 @@
 							expected angle-bracketed arguments, found `{}`"</span>,
 							args.to_token_stream().to_string()
 						);
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(args.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(args.span(), msg));
 					},
 				};
 
@@ -1832,7 +1837,7 @@
 								segments, found {}"</span>,
 								err_variant.len(),
 							);
-							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(err_variant.span(), msg))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(err_variant.span(), msg));
 						}
 						<span class="kw">let </span><span class="kw-2">mut </span>error = err_variant.clone();
 						<span class="kw">let </span>err_variant = error
@@ -1868,7 +1873,7 @@
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::storage, cannot generate getter because QueryKind is not \
 				identifiable. QueryKind must be `OptionQuery`, `ResultQuery`, `ValueQuery`, or default \
 				one to be identifiable."</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(getter.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(getter.span(), msg));
 		}
 
 		<span class="prelude-val">Ok</span>(StorageDef {
@@ -1889,6 +1894,7 @@
 			whitelisted,
 			try_decode,
 			use_default_hasher,
+			attrs: item.attrs.clone(),
 		})
 	}
 }

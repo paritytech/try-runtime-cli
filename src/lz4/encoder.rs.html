@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/lz4-1.24.0/src/encoder.rs`."><title>encoder.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="lz4" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/lz4-1.28.0/src/encoder.rs`."><title>encoder.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="lz4" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -257,6 +257,52 @@
 <a href="#257" id="257">257</a>
 <a href="#258" id="258">258</a>
 <a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::liblz4::<span class="kw-2">*</span>;
 <span class="kw">use </span><span class="kw">super</span>::size_t;
 <span class="kw">use </span>std::cmp;
@@ -273,12 +319,15 @@
 </span><span class="kw">pub struct </span>EncoderBuilder {
     block_size: BlockSize,
     block_mode: BlockMode,
+    <span class="comment">// 1: each block followed by a checksum of block's compressed data; 0: disabled (default)
+    </span>block_checksum: BlockChecksum,
     checksum: ContentChecksum,
     <span class="comment">// 0 == default (fast mode); values above 16 count as 16; values below 0 count as 0
     </span>level: u32,
     <span class="comment">// 1 == always flush (reduce need for tmp buffer)
     </span>auto_flush: bool,
     favor_dec_speed: bool,
+    content_size: u64,
 }
 
 <span class="attr">#[derive(Debug)]
@@ -295,9 +344,11 @@
             block_size: BlockSize::Default,
             block_mode: BlockMode::Linked,
             checksum: ContentChecksum::ChecksumEnabled,
+            block_checksum: BlockChecksum::BlockChecksumEnabled,
             level: <span class="number">0</span>,
             auto_flush: <span class="bool-val">false</span>,
             favor_dec_speed: <span class="bool-val">false</span>,
+            content_size: <span class="number">0</span>,
         }
     }
 
@@ -308,6 +359,11 @@
 
     <span class="kw">pub fn </span>block_mode(<span class="kw-2">&amp;mut </span><span class="self">self</span>, block_mode: BlockMode) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
         <span class="self">self</span>.block_mode = block_mode;
+        <span class="self">self
+    </span>}
+
+    <span class="kw">pub fn </span>block_checksum(<span class="kw-2">&amp;mut </span><span class="self">self</span>, block_checksum: BlockChecksum) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.block_checksum = block_checksum;
         <span class="self">self
     </span>}
 
@@ -333,6 +389,11 @@
         <span class="self">self
     </span>}
 
+    <span class="kw">pub fn </span>content_size(<span class="kw-2">&amp;mut </span><span class="self">self</span>, content_size: u64) -&gt; <span class="kw-2">&amp;mut </span><span class="self">Self </span>{
+        <span class="self">self</span>.content_size = content_size;
+        <span class="self">self
+    </span>}
+
     <span class="kw">pub fn </span>build&lt;W: Write&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, w: W) -&gt; <span class="prelude-ty">Result</span>&lt;Encoder&lt;W&gt;&gt; {
         <span class="kw">let </span>block_size = <span class="self">self</span>.block_size.get_size();
         <span class="kw">let </span>preferences = LZ4FPreferences {
@@ -340,7 +401,10 @@
                 block_size_id: <span class="self">self</span>.block_size.clone(),
                 block_mode: <span class="self">self</span>.block_mode.clone(),
                 content_checksum_flag: <span class="self">self</span>.checksum.clone(),
-                reserved: [<span class="number">0</span>; <span class="number">5</span>],
+                content_size: <span class="self">self</span>.content_size.clone(),
+                frame_type: FrameType::Frame,
+                dict_id: <span class="number">0</span>,
+                block_checksum_flag: <span class="self">self</span>.block_checksum.clone(),
             },
             compression_level: <span class="self">self</span>.level,
             auto_flush: <span class="kw">if </span><span class="self">self</span>.auto_flush { <span class="number">1 </span>} <span class="kw">else </span>{ <span class="number">0 </span>},
@@ -474,15 +538,43 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_encoder_random() {
         <span class="kw">let </span><span class="kw-2">mut </span>encoder = EncoderBuilder::new().level(<span class="number">1</span>).build(Vec::new()).unwrap();
-        <span class="kw">let </span><span class="kw-2">mut </span>buffer = Vec::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>input = Vec::new();
         <span class="kw">let </span><span class="kw-2">mut </span>rnd: u32 = <span class="number">42</span>;
         <span class="kw">for _ in </span><span class="number">0</span>..<span class="number">1024 </span>* <span class="number">1024 </span>{
-            buffer.push((rnd &amp; <span class="number">0xFF</span>) <span class="kw">as </span>u8);
+            input.push((rnd &amp; <span class="number">0xFF</span>) <span class="kw">as </span>u8);
             rnd = ((<span class="number">1664525 </span><span class="kw">as </span>u64) * (rnd <span class="kw">as </span>u64) + (<span class="number">1013904223 </span><span class="kw">as </span>u64)) <span class="kw">as </span>u32;
         }
-        encoder.write(<span class="kw-2">&amp;</span>buffer).unwrap();
-        <span class="kw">let </span>(<span class="kw">_</span>, result) = encoder.finish();
+        encoder.write(<span class="kw-2">&amp;</span>input).unwrap();
+        <span class="kw">let </span>(compressed, result) = encoder.finish();
         result.unwrap();
+
+        <span class="kw">let </span><span class="kw-2">mut </span>dec = <span class="kw">crate</span>::decoder::Decoder::new(<span class="kw-2">&amp;</span>compressed[..]).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>output = Vec::new();
+        dec.read_to_end(<span class="kw-2">&amp;mut </span>output).unwrap();
+        <span class="macro">assert_eq!</span>(input, output);
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_encoder_content_size() {
+        <span class="kw">let </span><span class="kw-2">mut </span>encoder = EncoderBuilder::new()
+            .level(<span class="number">1</span>)
+            .content_size(<span class="number">1024 </span>* <span class="number">1024</span>)
+            .build(Vec::new())
+            .unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>input = Vec::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>rnd: u32 = <span class="number">42</span>;
+        <span class="kw">for _ in </span><span class="number">0</span>..<span class="number">1024 </span>* <span class="number">1024 </span>{
+            input.push((rnd &amp; <span class="number">0xFF</span>) <span class="kw">as </span>u8);
+            rnd = ((<span class="number">1664525 </span><span class="kw">as </span>u64) * (rnd <span class="kw">as </span>u64) + (<span class="number">1013904223 </span><span class="kw">as </span>u64)) <span class="kw">as </span>u32;
+        }
+        encoder.write(<span class="kw-2">&amp;</span>input).unwrap();
+        <span class="kw">let </span>(compressed, result) = encoder.finish();
+        result.unwrap();
+
+        <span class="kw">let </span><span class="kw-2">mut </span>dec = <span class="kw">crate</span>::decoder::Decoder::new(<span class="kw-2">&amp;</span>compressed[..]).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>output = Vec::new();
+        dec.read_to_end(<span class="kw-2">&amp;mut </span>output).unwrap();
+        <span class="macro">assert_eq!</span>(input, output);
     }
 
     <span class="attr">#[test]

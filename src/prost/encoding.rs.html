@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.12.4/src/encoding.rs`."><title>encoding.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="prost" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/prost-0.12.6/src/encoding.rs`."><title>encoding.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="prost" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1792,6 +1792,14 @@
 <a href="#1792" id="1792">1792</a>
 <a href="#1793" id="1793">1793</a>
 <a href="#1794" id="1794">1794</a>
+<a href="#1795" id="1795">1795</a>
+<a href="#1796" id="1796">1796</a>
+<a href="#1797" id="1797">1797</a>
+<a href="#1798" id="1798">1798</a>
+<a href="#1799" id="1799">1799</a>
+<a href="#1800" id="1800">1800</a>
+<a href="#1801" id="1801">1801</a>
+<a href="#1802" id="1802">1802</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! Utility functions and types for encoding and decoding Protobuf types.
 //!
 //! Meant to be used only from `Message` implementations.
@@ -1803,7 +1811,6 @@
 <span class="kw">use </span>alloc::string::String;
 <span class="kw">use </span>alloc::vec::Vec;
 <span class="kw">use </span>core::cmp::min;
-<span class="kw">use </span>core::convert::TryFrom;
 <span class="kw">use </span>core::mem;
 <span class="kw">use </span>core::str;
 <span class="kw">use </span>core::u32;
@@ -3217,15 +3224,16 @@ from_uint64(value) {
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>test {
-    <span class="kw">use </span>alloc::string::ToString;
+    <span class="attr">#[cfg(not(feature = <span class="string">"std"</span>))]
+    </span><span class="kw">use </span>alloc::string::ToString;
     <span class="kw">use </span>core::borrow::Borrow;
     <span class="kw">use </span>core::fmt::Debug;
     <span class="kw">use </span>core::u64;
 
-    <span class="kw">use </span>::bytes::{Bytes, BytesMut};
+    <span class="kw">use </span>::bytes::BytesMut;
     <span class="kw">use </span>proptest::{prelude::<span class="kw-2">*</span>, test_runner::TestCaseResult};
 
-    <span class="kw">use </span><span class="kw">crate</span>::encoding::<span class="kw-2">*</span>;
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 
     <span class="kw">pub fn </span>check_type&lt;T, B&gt;(
         value: T,
@@ -3410,11 +3418,14 @@ from_uint64(value) {
 
             <span class="macro">assert_eq!</span>(encoded_len_varint(value), encoded.len());
 
-            <span class="kw">let </span>roundtrip_value = decode_varint(<span class="kw-2">&amp;mut </span>encoded.clone()).expect(<span class="string">"decoding failed"</span>);
+            <span class="comment">// See: https://github.com/tokio-rs/prost/pull/1008 for copying reasoning.
+            </span><span class="kw">let </span><span class="kw-2">mut </span>encoded_copy = encoded;
+            <span class="kw">let </span>roundtrip_value = decode_varint(<span class="kw-2">&amp;mut </span>encoded_copy).expect(<span class="string">"decoding failed"</span>);
             <span class="macro">assert_eq!</span>(value, roundtrip_value);
 
+            <span class="kw">let </span><span class="kw-2">mut </span>encoded_copy = encoded;
             <span class="kw">let </span>roundtrip_value =
-                decode_varint_slow(<span class="kw-2">&amp;mut </span>encoded.clone()).expect(<span class="string">"slow decoding failed"</span>);
+                decode_varint_slow(<span class="kw-2">&amp;mut </span>encoded_copy).expect(<span class="string">"slow decoding failed"</span>);
             <span class="macro">assert_eq!</span>(value, roundtrip_value);
         }
 
@@ -3473,13 +3484,18 @@ from_uint64(value) {
         );
     }
 
+    <span class="kw">const </span>U64_MAX_PLUS_ONE: <span class="kw-2">&amp;</span>[u8] = <span class="kw-2">&amp;</span>[<span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0x02</span>];
+
     <span class="attr">#[test]
     </span><span class="kw">fn </span>varint_overflow() {
-        <span class="kw">let </span>u64_max_plus_one: <span class="kw-2">&amp;</span>[u8] = <span class="kw-2">&amp;</span>[<span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0xFF</span>, <span class="number">0x02</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>copy = U64_MAX_PLUS_ONE;
+        decode_varint(<span class="kw-2">&amp;mut </span>copy).expect_err(<span class="string">"decoding u64::MAX + 1 succeeded"</span>);
+    }
 
-        decode_varint(<span class="kw-2">&amp;mut </span>u64_max_plus_one.clone()).expect_err(<span class="string">"decoding u64::MAX + 1 succeeded"</span>);
-        decode_varint_slow(<span class="kw-2">&amp;mut </span>u64_max_plus_one.clone())
-            .expect_err(<span class="string">"slow decoding u64::MAX + 1 succeeded"</span>);
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>variant_slow_overflow() {
+        <span class="kw">let </span><span class="kw-2">mut </span>copy = U64_MAX_PLUS_ONE;
+        decode_varint_slow(<span class="kw-2">&amp;mut </span>copy).expect_err(<span class="string">"slow decoding u64::MAX + 1 succeeded"</span>);
     }
 
     <span class="doccomment">/// This big bowl o' macro soup generates an encoding property test for each combination of map

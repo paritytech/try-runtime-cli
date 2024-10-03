@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.22.5/src/server.rs`."><title>server.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.24.5/src/server.rs`."><title>server.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1340,6 +1340,10 @@
 <a href="#1340" id="1340">1340</a>
 <a href="#1341" id="1341">1341</a>
 <a href="#1342" id="1342">1342</a>
+<a href="#1343" id="1343">1343</a>
+<a href="#1344" id="1344">1344</a>
+<a href="#1345" id="1345">1345</a>
+<a href="#1346" id="1346">1346</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any
@@ -1379,23 +1383,26 @@
 <span class="kw">use </span><span class="kw">crate</span>::middleware::rpc::{RpcService, RpcServiceBuilder, RpcServiceCfg, RpcServiceT};
 <span class="kw">use </span><span class="kw">crate</span>::transport::ws::BackgroundTaskParams;
 <span class="kw">use </span><span class="kw">crate</span>::transport::{http, ws};
-<span class="kw">use </span><span class="kw">crate</span>::LOG_TARGET;
+<span class="kw">use </span><span class="kw">crate</span>::utils::deserialize;
+<span class="kw">use crate</span>::{Extensions, HttpBody, HttpRequest, HttpResponse, LOG_TARGET};
 
 <span class="kw">use </span>futures_util::future::{<span class="self">self</span>, Either, FutureExt};
 <span class="kw">use </span>futures_util::io::{BufReader, BufWriter};
 
-<span class="kw">use </span>hyper::body::HttpBody;
-
+<span class="kw">use </span>hyper::body::Bytes;
+<span class="kw">use </span>hyper_util::rt::{TokioExecutor, TokioIo};
 <span class="kw">use </span>jsonrpsee_core::id_providers::RandomIntegerIdProvider;
 <span class="kw">use </span>jsonrpsee_core::server::helpers::prepare_error;
-<span class="kw">use </span>jsonrpsee_core::server::{BatchResponseBuilder, BoundedSubscriptions, MethodResponse, MethodSink, Methods};
+<span class="kw">use </span>jsonrpsee_core::server::{
+	BatchResponseBuilder, BoundedSubscriptions, ConnectionId, MethodResponse, MethodSink, Methods,
+};
 <span class="kw">use </span>jsonrpsee_core::traits::IdProvider;
-<span class="kw">use </span>jsonrpsee_core::{JsonRawValue, TEN_MB_SIZE_BYTES};
+<span class="kw">use </span>jsonrpsee_core::{BoxError, JsonRawValue, TEN_MB_SIZE_BYTES};
 
 <span class="kw">use </span>jsonrpsee_types::error::{
 	reject_too_big_batch_request, ErrorCode, BATCHES_NOT_SUPPORTED_CODE, BATCHES_NOT_SUPPORTED_MSG,
 };
-<span class="kw">use </span>jsonrpsee_types::{ErrorObject, Id, InvalidRequest, Notification, Request};
+<span class="kw">use </span>jsonrpsee_types::{ErrorObject, Id, InvalidRequest, Notification};
 <span class="kw">use </span>soketto::handshake::http::is_upgrade_request;
 <span class="kw">use </span>tokio::net::{TcpListener, TcpStream, ToSocketAddrs};
 <span class="kw">use </span>tokio::sync::{mpsc, watch, OwnedSemaphorePermit};
@@ -1437,22 +1444,17 @@
 	}
 }
 
-<span class="kw">impl</span>&lt;HttpMiddleware, RpcMiddleware, B&gt; Server&lt;HttpMiddleware, RpcMiddleware&gt;
+<span class="kw">impl</span>&lt;HttpMiddleware, RpcMiddleware, Body&gt; Server&lt;HttpMiddleware, RpcMiddleware&gt;
 <span class="kw">where
 	</span>RpcMiddleware: tower::Layer&lt;RpcService&gt; + Clone + Send + <span class="lifetime">'static</span>,
 	<span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; &lt;RpcMiddleware <span class="kw">as </span>Layer&lt;RpcService&gt;&gt;::Service: RpcServiceT&lt;<span class="lifetime">'a</span>&gt;,
 	HttpMiddleware: Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt; + Send + <span class="lifetime">'static</span>,
-	&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service: Send
-		+ Service&lt;
-			hyper::Request&lt;hyper::Body&gt;,
-			Response = hyper::Response&lt;B&gt;,
-			Error = Box&lt;(<span class="kw">dyn </span>StdError + Send + Sync + <span class="lifetime">'static</span>)&gt;,
-		&gt;,
-	&lt;&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;hyper::Request&lt;hyper::Body&gt;&gt;&gt;::Future:
-		Send,
-	B: HttpBody + Send + <span class="lifetime">'static</span>,
-	&lt;B <span class="kw">as </span>HttpBody&gt;::Error: Send + Sync + StdError,
-	&lt;B <span class="kw">as </span>HttpBody&gt;::Data: Send,
+	&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service:
+		Send + Clone + Service&lt;HttpRequest, Response = HttpResponse&lt;Body&gt;, Error = BoxError&gt;,
+	&lt;&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;HttpRequest&gt;&gt;::Future: Send,
+	Body: http_body::Body&lt;Data = Bytes&gt; + Send + <span class="lifetime">'static</span>,
+	&lt;Body <span class="kw">as </span>http_body::Body&gt;::Error: Into&lt;BoxError&gt;,
+	&lt;Body <span class="kw">as </span>http_body::Body&gt;::Data: Send,
 {
 	<span class="doccomment">/// Start responding to connections requests.
 	///
@@ -1484,7 +1486,6 @@
 		<span class="kw">loop </span>{
 			<span class="kw">match </span>try_accept_conn(<span class="kw-2">&amp;</span>listener, stopped).<span class="kw">await </span>{
 				AcceptConnection::Established { socket, remote_addr, stop } =&gt; {
-
 					process_connection(ProcessConnection {
 						http_middleware: <span class="kw-2">&amp;</span><span class="self">self</span>.http_middleware,
 						rpc_middleware: <span class="self">self</span>.rpc_middleware.clone(),
@@ -2129,54 +2130,67 @@
 	/// # Examples
 	///
 	/// ```no_run
-	/// use hyper::service::{make_service_fn, service_fn};
-	/// use hyper::server::conn::AddrStream;
-	/// use jsonrpsee_server::{Methods, ServerHandle, ws, stop_channel};
+	/// use jsonrpsee_server::{Methods, ServerHandle, ws, stop_channel, serve_with_graceful_shutdown};
 	/// use tower::Service;
 	/// use std::{error::Error as StdError, net::SocketAddr};
+	/// use futures_util::future::{self, Either};
+	/// use hyper_util::rt::{TokioIo, TokioExecutor};
 	///
 	/// fn run_server() -&gt; ServerHandle {
-	///     let addr = SocketAddr::from(([127, 0, 0, 1], 0));
 	///     let (stop_handle, server_handle) = stop_channel();
 	///     let svc_builder = jsonrpsee_server::Server::builder().max_connections(33).to_service_builder();
 	///     let methods = Methods::new();
-	///     let stop_handle2 = stop_handle.clone();
-	///
-	///     let make_service = make_service_fn(move |_conn: &amp;AddrStream| {
-	///         // You may use `conn` or the actual HTTP request to get connection related details.
-	///         let stop_handle = stop_handle2.clone();
-	///         let svc_builder = svc_builder.clone();
-	///         let methods = methods.clone();
-	///
-	///         async move {
-	///             Ok::&lt;_, Box&lt;dyn StdError + Send + Sync&gt;&gt;(service_fn(move |req| {
-	///                 let stop_handle = stop_handle.clone();
-	///                 let svc_builder = svc_builder.clone();
-	///                 let methods = methods.clone();
-	///                 let mut svc = svc_builder.build(methods, stop_handle);
-	///
-	///                 // It's not possible to know whether the websocket upgrade handshake failed or not here.
-	///                 let is_websocket = ws::is_upgrade_request(&amp;req);
-	///
-	///                 if is_websocket {
-	///                     println!("websocket")
-	///                 } else {
-	///                     println!("http")
-	///                 }
-	///
-	///                 /// Call the jsonrpsee service which
-	///                 /// may upgrade it to a WebSocket connection
-	///                 /// or treat it as "ordinary HTTP request".
-	///                 svc.call(req)
-	///             }))
-	///         }
-	///     });
-	///
-	///     let server = hyper::Server::bind(&amp;addr).serve(make_service);
+	///     let stop_handle = stop_handle.clone();
 	///
 	///     tokio::spawn(async move {
-	///         let graceful = server.with_graceful_shutdown(async move { stop_handle.shutdown().await });
-	///         graceful.await.unwrap()
+	///         let listener = tokio::net::TcpListener::bind(SocketAddr::from(([127, 0, 0, 1], 0))).await.unwrap();
+	///
+	///         loop {
+	///              // The `tokio::select!` macro is used to wait for either of the
+	///              // listeners to accept a new connection or for the server to be
+	///              // stopped.
+	///              let (sock, remote_addr) = tokio::select! {
+	///                  res = listener.accept() =&gt; {
+	///                      match res {
+	///                         Ok(sock) =&gt; sock,
+	///                         Err(e) =&gt; {
+	///                             tracing::error!("failed to accept v4 connection: {:?}", e);
+	///                             continue;
+	///                         }
+	///                       }
+	///                  }
+	///                  _ = stop_handle.clone().shutdown() =&gt; break,
+	///              };
+	///
+	///              let stop_handle2 = stop_handle.clone();
+	///              let svc_builder2 = svc_builder.clone();
+	///              let methods2 = methods.clone();
+	///
+	///              let svc = tower::service_fn(move |req| {
+	///                   let stop_handle = stop_handle2.clone();
+	///                   let svc_builder = svc_builder2.clone();
+	///                   let methods = methods2.clone();
+	///
+	///                   let mut svc = svc_builder.build(methods, stop_handle.clone());
+	///
+	///                   // It's not possible to know whether the websocket upgrade handshake failed or not here.
+	///                   let is_websocket = ws::is_upgrade_request(&amp;req);
+	///
+	///                   if is_websocket {
+	///                       println!("websocket")
+	///                   } else {
+	///                       println!("http")
+	///                   }
+	///
+	///                   // Call the jsonrpsee service which
+	///                   // may upgrade it to a WebSocket connection
+	///                   // or treat it as "ordinary HTTP request".
+	///                   async move { svc.call(req).await }
+	///               });
+	///
+	///               // Upgrade the connection to a HTTP service with graceful shutdown.
+	///               tokio::spawn(serve_with_graceful_shutdown(sock, svc, stop_handle.clone().shutdown()));
+	///          }
 	///     });
 	///
 	///     server_handle
@@ -2302,32 +2316,28 @@
 	}
 }
 
-<span class="kw">impl</span>&lt;RpcMiddleware, HttpMiddleware&gt; hyper::service::Service&lt;hyper::Request&lt;hyper::Body&gt;&gt;
-	<span class="kw">for </span>TowerService&lt;RpcMiddleware, HttpMiddleware&gt;
+<span class="kw">impl</span>&lt;Body, RpcMiddleware, HttpMiddleware&gt; Service&lt;HttpRequest&lt;Body&gt;&gt; <span class="kw">for </span>TowerService&lt;RpcMiddleware, HttpMiddleware&gt;
 <span class="kw">where
 	</span>RpcMiddleware: <span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; tower::Layer&lt;RpcService&gt; + Clone,
 	&lt;RpcMiddleware <span class="kw">as </span>Layer&lt;RpcService&gt;&gt;::Service: Send + Sync + <span class="lifetime">'static</span>,
 	<span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; &lt;RpcMiddleware <span class="kw">as </span>Layer&lt;RpcService&gt;&gt;::Service: RpcServiceT&lt;<span class="lifetime">'a</span>&gt;,
 	HttpMiddleware: Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt; + Send + <span class="lifetime">'static</span>,
-	&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service: Send
-		+ Service&lt;
-			hyper::Request&lt;hyper::Body&gt;,
-			Response = hyper::Response&lt;hyper::Body&gt;,
-			Error = Box&lt;(<span class="kw">dyn </span>StdError + Send + Sync + <span class="lifetime">'static</span>)&gt;,
-		&gt;,
-	&lt;&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;hyper::Request&lt;hyper::Body&gt;&gt;&gt;::Future:
+	&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service:
+		Send + Service&lt;HttpRequest&lt;Body&gt;, Response = HttpResponse, Error = Box&lt;(<span class="kw">dyn </span>StdError + Send + Sync + <span class="lifetime">'static</span>)&gt;&gt;,
+	&lt;&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;HttpRequest&lt;Body&gt;&gt;&gt;::Future:
 		Send + <span class="lifetime">'static</span>,
+	Body: http_body::Body&lt;Data = Bytes&gt; + Send + <span class="lifetime">'static</span>,
+	Body::Error: Into&lt;BoxError&gt;,
 {
-	<span class="kw">type </span>Response = hyper::Response&lt;hyper::Body&gt;;
-	<span class="kw">type </span>Error = Box&lt;<span class="kw">dyn </span>StdError + Send + Sync + <span class="lifetime">'static</span>&gt;;
+	<span class="kw">type </span>Response = HttpResponse;
+	<span class="kw">type </span>Error = BoxError;
 	<span class="kw">type </span>Future = Pin&lt;Box&lt;<span class="kw">dyn </span>Future&lt;Output = <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Response, <span class="self">Self</span>::Error&gt;&gt; + Send&gt;&gt;;
 
-	<span class="doccomment">/// Opens door for back pressure implementation.
-	</span><span class="kw">fn </span>poll_ready(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>std::task::Context) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;(), <span class="self">Self</span>::Error&gt;&gt; {
+	<span class="kw">fn </span>poll_ready(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _cx: <span class="kw-2">&amp;mut </span>std::task::Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;(), <span class="self">Self</span>::Error&gt;&gt; {
 		Poll::Ready(<span class="prelude-val">Ok</span>(()))
 	}
 
-	<span class="kw">fn </span>call(<span class="kw-2">&amp;mut </span><span class="self">self</span>, request: hyper::Request&lt;hyper::Body&gt;) -&gt; <span class="self">Self</span>::Future {
+	<span class="kw">fn </span>call(<span class="kw-2">&amp;mut </span><span class="self">self</span>, request: HttpRequest&lt;Body&gt;) -&gt; <span class="self">Self</span>::Future {
 		Box::pin(<span class="self">self</span>.http_middleware.service(<span class="self">self</span>.rpc_middleware.clone()).call(request))
 	}
 }
@@ -2343,26 +2353,29 @@
 	on_session_close: <span class="prelude-ty">Option</span>&lt;SessionClose&gt;,
 }
 
-<span class="kw">impl</span>&lt;RpcMiddleware&gt; hyper::service::Service&lt;hyper::Request&lt;hyper::Body&gt;&gt; <span class="kw">for </span>TowerServiceNoHttp&lt;RpcMiddleware&gt;
+<span class="kw">impl</span>&lt;Body, RpcMiddleware&gt; Service&lt;HttpRequest&lt;Body&gt;&gt; <span class="kw">for </span>TowerServiceNoHttp&lt;RpcMiddleware&gt;
 <span class="kw">where
 	</span>RpcMiddleware: <span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; tower::Layer&lt;RpcService&gt;,
 	&lt;RpcMiddleware <span class="kw">as </span>Layer&lt;RpcService&gt;&gt;::Service: Send + Sync + <span class="lifetime">'static</span>,
 	<span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; &lt;RpcMiddleware <span class="kw">as </span>Layer&lt;RpcService&gt;&gt;::Service: RpcServiceT&lt;<span class="lifetime">'a</span>&gt;,
+	Body: http_body::Body&lt;Data = Bytes&gt; + Send + <span class="lifetime">'static</span>,
+	Body::Error: Into&lt;BoxError&gt;,
 {
-	<span class="kw">type </span>Response = hyper::Response&lt;hyper::Body&gt;;
+	<span class="kw">type </span>Response = HttpResponse;
 
 	<span class="comment">// The following associated type is required by the `impl&lt;B, U, M: JsonRpcMiddleware&gt; Server&lt;B, L&gt;` bounds.
 	// It satisfies the server's bounds when the `tower::ServiceBuilder&lt;B&gt;` is not set (ie `B: Identity`).
-	</span><span class="kw">type </span>Error = Box&lt;<span class="kw">dyn </span>StdError + Send + Sync + <span class="lifetime">'static</span>&gt;;
+	</span><span class="kw">type </span>Error = BoxError;
 
 	<span class="kw">type </span>Future = Pin&lt;Box&lt;<span class="kw">dyn </span>Future&lt;Output = <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Response, <span class="self">Self</span>::Error&gt;&gt; + Send&gt;&gt;;
 
-	<span class="doccomment">/// Opens door for back pressure implementation.
-	</span><span class="kw">fn </span>poll_ready(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut </span>std::task::Context) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;(), <span class="self">Self</span>::Error&gt;&gt; {
+	<span class="kw">fn </span>poll_ready(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _cx: <span class="kw-2">&amp;mut </span>std::task::Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::task::Poll&lt;<span class="prelude-ty">Result</span>&lt;(), <span class="self">Self</span>::Error&gt;&gt; {
 		Poll::Ready(<span class="prelude-val">Ok</span>(()))
 	}
 
-	<span class="kw">fn </span>call(<span class="kw-2">&amp;mut </span><span class="self">self</span>, request: hyper::Request&lt;hyper::Body&gt;) -&gt; <span class="self">Self</span>::Future {
+	<span class="kw">fn </span>call(<span class="kw-2">&amp;mut </span><span class="self">self</span>, request: HttpRequest&lt;Body&gt;) -&gt; <span class="self">Self</span>::Future {
+		<span class="kw">let </span><span class="kw-2">mut </span>request = request.map(HttpBody::new);
+
 		<span class="kw">let </span>conn_guard = <span class="kw-2">&amp;</span><span class="self">self</span>.inner.conn_guard;
 		<span class="kw">let </span>stop_handle = <span class="self">self</span>.inner.stop_handle.clone();
 		<span class="kw">let </span>conn_id = <span class="self">self</span>.inner.conn_id;
@@ -2379,6 +2392,10 @@
 		<span class="kw">let </span>max_conns = conn_guard.max_connections();
 		<span class="kw">let </span>curr_conns = max_conns - conn_guard.available_connections();
 		<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"Accepting new connection {}/{}"</span>, curr_conns, max_conns);
+
+		<span class="kw">let </span>req_ext = request.extensions_mut();
+		req_ext.insert::&lt;ConnectionGuard&gt;(conn_guard.clone());
+		req_ext.insert::&lt;ConnectionId&gt;(conn.conn_id.into());
 
 		<span class="kw">let </span>is_upgrade_request = is_upgrade_request(<span class="kw-2">&amp;</span>request);
 
@@ -2409,7 +2426,7 @@
 					<span class="kw">let </span>rpc_service = RpcService::new(
 						this.methods.clone(),
 						this.server_cfg.max_response_body_size <span class="kw">as </span>usize,
-						this.conn_id <span class="kw">as </span>usize,
+						this.conn_id.into(),
 						cfg,
 					);
 
@@ -2417,6 +2434,8 @@
 
 					tokio::spawn(
 						<span class="kw">async move </span>{
+							<span class="kw">let </span>extensions = request.extensions().clone();
+
 							<span class="kw">let </span>upgraded = <span class="kw">match </span>hyper::upgrade::on(request).<span class="kw">await </span>{
 								<span class="prelude-val">Ok</span>(u) =&gt; u,
 								<span class="prelude-val">Err</span>(e) =&gt; {
@@ -2425,7 +2444,9 @@
 								}
 							};
 
-							<span class="kw">let </span>stream = BufReader::new(BufWriter::new(upgraded.compat()));
+							<span class="kw">let </span>io = hyper_util::rt::TokioIo::new(upgraded);
+
+							<span class="kw">let </span>stream = BufReader::new(BufWriter::new(io.compat()));
 							<span class="kw">let </span><span class="kw-2">mut </span>ws_builder = server.into_builder(stream);
 							ws_builder.set_max_message_size(this.server_cfg.max_request_body_size <span class="kw">as </span>usize);
 							<span class="kw">let </span>(sender, receiver) = ws_builder.finish();
@@ -2440,6 +2461,7 @@
 								rx,
 								pending_calls_completed,
 								on_session_close,
+								extensions,
 							};
 
 							ws::background_task(params).<span class="kw">await</span>;
@@ -2447,11 +2469,11 @@
 						.in_current_span(),
 					);
 
-					response.map(|()| hyper::Body::empty())
+					response.map(|()| HttpBody::empty())
 				}
 				<span class="prelude-val">Err</span>(e) =&gt; {
 					<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"Could not upgrade connection: {}"</span>, e);
-					hyper::Response::new(hyper::Body::from(<span class="macro">format!</span>(<span class="string">"Could not upgrade connection: {e}"</span>)))
+					HttpResponse::new(HttpBody::from(<span class="macro">format!</span>(<span class="string">"Could not upgrade connection: {e}"</span>)))
 				}
 			};
 
@@ -2466,7 +2488,7 @@
 			<span class="kw">let </span>rpc_service = <span class="self">self</span>.rpc_middleware.service(RpcService::new(
 				methods,
 				max_response_size <span class="kw">as </span>usize,
-				this.conn_id <span class="kw">as </span>usize,
+				this.conn_id.into(),
 				RpcServiceCfg::OnlyCalls,
 			));
 
@@ -2494,24 +2516,17 @@
 }
 
 <span class="attr">#[instrument(name = <span class="string">"connection"</span>, skip_all, fields(remote_addr = %params.remote_addr, conn_id = %params.conn_id), level = <span class="string">"INFO"</span>)]
-</span><span class="kw">fn </span>process_connection&lt;<span class="lifetime">'a</span>, RpcMiddleware, HttpMiddleware, U&gt;(
-	params: ProcessConnection&lt;HttpMiddleware, RpcMiddleware&gt;
-
-) <span class="kw">where
+</span><span class="kw">fn </span>process_connection&lt;<span class="lifetime">'a</span>, RpcMiddleware, HttpMiddleware, Body&gt;(params: ProcessConnection&lt;HttpMiddleware, RpcMiddleware&gt;)
+<span class="kw">where
 	</span>RpcMiddleware: <span class="lifetime">'static</span>,
 	HttpMiddleware: Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt; + Send + <span class="lifetime">'static</span>,
-	&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service: Send
-		+ <span class="lifetime">'static
-		</span>+ Service&lt;
-			hyper::Request&lt;hyper::Body&gt;,
-			Response = hyper::Response&lt;U&gt;,
-			Error = Box&lt;(<span class="kw">dyn </span>StdError + Send + Sync + <span class="lifetime">'static</span>)&gt;,
-		&gt;,
-	&lt;&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;hyper::Request&lt;hyper::Body&gt;&gt;&gt;::Future:
+	&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service:
+		Send + <span class="lifetime">'static </span>+ Clone + Service&lt;HttpRequest, Response = HttpResponse&lt;Body&gt;, Error = BoxError&gt;,
+	&lt;&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;HttpRequest&gt;&gt;::Future:
 		Send + <span class="lifetime">'static</span>,
-	U: HttpBody + Send + <span class="lifetime">'static</span>,
-	&lt;U <span class="kw">as </span>HttpBody&gt;::Error: Send + Sync + StdError,
-	&lt;U <span class="kw">as </span>HttpBody&gt;::Data: Send,
+	Body: http_body::Body&lt;Data = Bytes&gt; + Send + <span class="lifetime">'static</span>,
+	&lt;Body <span class="kw">as </span>http_body::Body&gt;::Error: Into&lt;BoxError&gt;,
+	&lt;Body <span class="kw">as </span>http_body::Body&gt;::Data: Send,
 {
 	<span class="kw">let </span>ProcessConnection {
 		http_middleware,
@@ -2546,39 +2561,31 @@
 	<span class="kw">let </span>service = http_middleware.service(tower_service);
 
 	tokio::spawn(<span class="kw">async </span>{
-		to_http_service(socket, service, stop_handle).in_current_span().<span class="kw">await</span>;
+		<span class="comment">// this requires Clone.
+		</span><span class="kw">let </span>service = <span class="kw">crate</span>::utils::TowerToHyperService::new(service);
+		<span class="kw">let </span>io = TokioIo::new(socket);
+		<span class="kw">let </span>builder = hyper_util::server::conn::auto::Builder::new(TokioExecutor::new());
+
+		<span class="kw">let </span>conn = builder.serve_connection_with_upgrades(io, service);
+		<span class="kw">let </span>stopped = stop_handle.shutdown();
+
+		<span class="macro">tokio::pin!</span>(stopped, conn);
+
+		<span class="kw">let </span>res = <span class="kw">match </span>future::select(conn, stopped).<span class="kw">await </span>{
+			Either::Left((conn, <span class="kw">_</span>)) =&gt; conn,
+			Either::Right((<span class="kw">_</span>, <span class="kw-2">mut </span>conn)) =&gt; {
+				<span class="comment">// NOTE: the connection should continue to be polled until shutdown can finish.
+				// Thus, both lines below are needed and not a nit.
+				</span>conn.as_mut().graceful_shutdown();
+				conn.<span class="kw">await
+			</span>}
+		};
+
+		<span class="kw">if let </span><span class="prelude-val">Err</span>(e) = res {
+			<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"HTTP serve connection failed {:?}"</span>, e);
+		}
 		drop(drop_on_completion)
 	});
-}
-
-<span class="comment">// Attempts to create a HTTP connection from a socket.
-</span><span class="kw">async fn </span>to_http_service&lt;S, B&gt;(socket: TcpStream, service: S, stop_handle: StopHandle)
-<span class="kw">where
-	</span>S: Service&lt;hyper::Request&lt;hyper::Body&gt;, Response = hyper::Response&lt;B&gt;&gt; + Send + <span class="lifetime">'static</span>,
-	S::Error: Into&lt;Box&lt;<span class="kw">dyn </span>std::error::Error + Send + Sync&gt;&gt;,
-	S::Future: Send,
-	B: HttpBody + Send + <span class="lifetime">'static</span>,
-	&lt;B <span class="kw">as </span>HttpBody&gt;::Error: Send + Sync + StdError,
-	&lt;B <span class="kw">as </span>HttpBody&gt;::Data: Send,
-{
-	<span class="kw">let </span>conn = hyper::server::conn::Http::new().serve_connection(socket, service).with_upgrades();
-	<span class="kw">let </span>stopped = stop_handle.shutdown();
-
-	<span class="macro">tokio::pin!</span>(stopped);
-
-	<span class="kw">let </span>res = <span class="kw">match </span>future::select(conn, stopped).<span class="kw">await </span>{
-		Either::Left((conn, <span class="kw">_</span>)) =&gt; conn,
-		Either::Right((<span class="kw">_</span>, <span class="kw-2">mut </span>conn)) =&gt; {
-			<span class="comment">// NOTE: the connection should continue to be polled until shutdown can finish.
-			// Thus, both lines below are needed and not a nit.
-			</span>Pin::new(<span class="kw-2">&amp;mut </span>conn).graceful_shutdown();
-			conn.<span class="kw">await
-		</span>}
-	};
-
-	<span class="kw">if let </span><span class="prelude-val">Err</span>(e) = res {
-		<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"HTTP serve connection failed {:?}"</span>, e);
-	}
 }
 
 <span class="kw">enum </span>AcceptConnection&lt;S&gt; {
@@ -2609,13 +2616,14 @@
 	batch_config: BatchRequestConfig,
 	max_response_size: u32,
 	rpc_service: <span class="kw-2">&amp;</span>S,
+	extensions: Extensions,
 ) -&gt; <span class="prelude-ty">Option</span>&lt;MethodResponse&gt;
 <span class="kw">where
 	for</span>&lt;<span class="lifetime">'a</span>&gt; S: RpcServiceT&lt;<span class="lifetime">'a</span>&gt; + Send,
 {
 	<span class="comment">// Single request or notification
 	</span><span class="kw">if </span>is_single {
-		<span class="kw">if let </span><span class="prelude-val">Ok</span>(req) = serde_json::from_slice(body) {
+		<span class="kw">if let </span><span class="prelude-val">Ok</span>(req) = deserialize::from_slice_with_extensions(body, extensions) {
 			<span class="prelude-val">Some</span>(rpc_service.call(req).<span class="kw">await</span>)
 		} <span class="kw">else if let </span><span class="prelude-val">Ok</span>(_notif) = serde_json::from_slice::&lt;Notif&gt;(body) {
 			<span class="prelude-val">None
@@ -2647,7 +2655,7 @@
 			<span class="kw">let </span><span class="kw-2">mut </span>batch_response = BatchResponseBuilder::new_with_limit(max_response_size <span class="kw">as </span>usize);
 
 			<span class="kw">for </span>call <span class="kw">in </span>batch {
-				<span class="kw">if let </span><span class="prelude-val">Ok</span>(req) = serde_json::from_str::&lt;Request&gt;(call.get()) {
+				<span class="kw">if let </span><span class="prelude-val">Ok</span>(req) = deserialize::from_str_with_extensions(call.get(), extensions.clone()) {
 					<span class="kw">let </span>rp = rpc_service.call(req).<span class="kw">await</span>;
 
 					<span class="kw">if let </span><span class="prelude-val">Err</span>(too_large) = batch_response.append(<span class="kw-2">&amp;</span>rp) {

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-core-0.39.2/src/transport/choice.rs`."><title>choice.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="libp2p_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-core-0.40.1/src/transport/choice.rs`."><title>choice.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="libp2p_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -135,6 +135,59 @@
 <a href="#135" id="135">135</a>
 <a href="#136" id="136">136</a>
 <a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
+<a href="#157" id="157">157</a>
+<a href="#158" id="158">158</a>
+<a href="#159" id="159">159</a>
+<a href="#160" id="160">160</a>
+<a href="#161" id="161">161</a>
+<a href="#162" id="162">162</a>
+<a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2017 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -159,6 +212,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::transport::{ListenerId, Transport, TransportError, TransportEvent};
 <span class="kw">use </span>either::Either;
 <span class="kw">use </span>futures::future;
+<span class="kw">use </span>log::{debug, trace};
 <span class="kw">use </span>multiaddr::Multiaddr;
 <span class="kw">use </span>std::{pin::Pin, task::Context, task::Poll};
 
@@ -183,14 +237,42 @@
     <span class="kw">type </span>ListenerUpgrade = EitherFuture&lt;A::ListenerUpgrade, B::ListenerUpgrade&gt;;
     <span class="kw">type </span>Dial = EitherFuture&lt;A::Dial, B::Dial&gt;;
 
-    <span class="kw">fn </span>listen_on(<span class="kw-2">&amp;mut </span><span class="self">self</span>, addr: Multiaddr) -&gt; <span class="prelude-ty">Result</span>&lt;ListenerId, TransportError&lt;<span class="self">Self</span>::Error&gt;&gt; {
-        <span class="kw">let </span>addr = <span class="kw">match </span><span class="self">self</span>.<span class="number">0</span>.listen_on(addr) {
-            <span class="prelude-val">Err</span>(TransportError::MultiaddrNotSupported(addr)) =&gt; addr,
+    <span class="kw">fn </span>listen_on(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        id: ListenerId,
+        addr: Multiaddr,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(), TransportError&lt;<span class="self">Self</span>::Error&gt;&gt; {
+        <span class="macro">trace!</span>(
+            <span class="string">"Attempting to listen on {} using {}"</span>,
+            addr,
+            std::any::type_name::&lt;A&gt;()
+        );
+        <span class="kw">let </span>addr = <span class="kw">match </span><span class="self">self</span>.<span class="number">0</span>.listen_on(id, addr) {
+            <span class="prelude-val">Err</span>(TransportError::MultiaddrNotSupported(addr)) =&gt; {
+                <span class="macro">debug!</span>(
+                    <span class="string">"Failed to listen on {} using {}"</span>,
+                    addr,
+                    std::any::type_name::&lt;A&gt;()
+                );
+                addr
+            }
             res =&gt; <span class="kw">return </span>res.map_err(|err| err.map(Either::Left)),
         };
 
-        <span class="kw">let </span>addr = <span class="kw">match </span><span class="self">self</span>.<span class="number">1</span>.listen_on(addr) {
-            <span class="prelude-val">Err</span>(TransportError::MultiaddrNotSupported(addr)) =&gt; addr,
+        <span class="macro">trace!</span>(
+            <span class="string">"Attempting to listen on {} using {}"</span>,
+            addr,
+            std::any::type_name::&lt;B&gt;()
+        );
+        <span class="kw">let </span>addr = <span class="kw">match </span><span class="self">self</span>.<span class="number">1</span>.listen_on(id, addr) {
+            <span class="prelude-val">Err</span>(TransportError::MultiaddrNotSupported(addr)) =&gt; {
+                <span class="macro">debug!</span>(
+                    <span class="string">"Failed to listen on {} using {}"</span>,
+                    addr,
+                    std::any::type_name::&lt;B&gt;()
+                );
+                addr
+            }
             res =&gt; <span class="kw">return </span>res.map_err(|err| err.map(Either::Right)),
         };
 
@@ -202,17 +284,41 @@
     }
 
     <span class="kw">fn </span>dial(<span class="kw-2">&amp;mut </span><span class="self">self</span>, addr: Multiaddr) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Dial, TransportError&lt;<span class="self">Self</span>::Error&gt;&gt; {
+        <span class="macro">trace!</span>(
+            <span class="string">"Attempting to dial {} using {}"</span>,
+            addr,
+            std::any::type_name::&lt;A&gt;()
+        );
         <span class="kw">let </span>addr = <span class="kw">match </span><span class="self">self</span>.<span class="number">0</span>.dial(addr) {
             <span class="prelude-val">Ok</span>(connec) =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(EitherFuture::First(connec)),
-            <span class="prelude-val">Err</span>(TransportError::MultiaddrNotSupported(addr)) =&gt; addr,
+            <span class="prelude-val">Err</span>(TransportError::MultiaddrNotSupported(addr)) =&gt; {
+                <span class="macro">debug!</span>(
+                    <span class="string">"Failed to dial {} using {}"</span>,
+                    addr,
+                    std::any::type_name::&lt;A&gt;()
+                );
+                addr
+            }
             <span class="prelude-val">Err</span>(TransportError::Other(err)) =&gt; {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(TransportError::Other(Either::Left(err)))
             }
         };
 
+        <span class="macro">trace!</span>(
+            <span class="string">"Attempting to dial {} using {}"</span>,
+            addr,
+            std::any::type_name::&lt;A&gt;()
+        );
         <span class="kw">let </span>addr = <span class="kw">match </span><span class="self">self</span>.<span class="number">1</span>.dial(addr) {
             <span class="prelude-val">Ok</span>(connec) =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(EitherFuture::Second(connec)),
-            <span class="prelude-val">Err</span>(TransportError::MultiaddrNotSupported(addr)) =&gt; addr,
+            <span class="prelude-val">Err</span>(TransportError::MultiaddrNotSupported(addr)) =&gt; {
+                <span class="macro">debug!</span>(
+                    <span class="string">"Failed to dial {} using {}"</span>,
+                    addr,
+                    std::any::type_name::&lt;A&gt;()
+                );
+                addr
+            }
             <span class="prelude-val">Err</span>(TransportError::Other(err)) =&gt; {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(TransportError::Other(Either::Right(err)))
             }

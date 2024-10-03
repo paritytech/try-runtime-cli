@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["aio","codec","decode","encode","io"]};
+window.SIDEBAR_ITEMS = {"mod":["codec","decode","encode","io"]};

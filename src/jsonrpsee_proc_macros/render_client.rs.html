@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-proc-macros-0.22.5/src/render_client.rs`."><title>render_client.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jsonrpsee_proc_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-proc-macros-0.24.5/src/render_client.rs`."><title>render_client.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jsonrpsee_proc_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -288,9 +288,6 @@
 <a href="#288" id="288">288</a>
 <a href="#289" id="289">289</a>
 <a href="#290" id="290">290</a>
-<a href="#291" id="291">291</a>
-<a href="#292" id="292">292</a>
-<a href="#293" id="293">293</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any
@@ -318,7 +315,7 @@
 // DEALINGS IN THE SOFTWARE.
 </span><span class="kw">use </span><span class="kw">crate</span>::attributes::ParamKind;
 <span class="kw">use </span><span class="kw">crate</span>::helpers::generate_where_clause;
-<span class="kw">use </span><span class="kw">crate</span>::rpc_macro::{RpcDescription, RpcMethod, RpcSubscription};
+<span class="kw">use </span><span class="kw">crate</span>::rpc_macro::{RpcDescription, RpcFnArg, RpcMethod, RpcSubscription};
 <span class="kw">use </span>proc_macro2::TokenStream <span class="kw">as </span>TokenStream2;
 <span class="kw">use </span>quote::{quote, quote_spanned};
 <span class="kw">use </span>syn::spanned::Spanned;
@@ -501,16 +498,13 @@
 		<span class="prelude-val">Ok</span>(method)
 	}
 
-	<span class="kw">fn </span>encode_params(
-		<span class="kw-2">&amp;</span><span class="self">self</span>,
-		params: <span class="kw-2">&amp;</span>[(syn::PatIdent, syn::Type)],
-		param_kind: <span class="kw-2">&amp;</span>ParamKind,
-		signature: <span class="kw-2">&amp;</span>syn::TraitItemFn,
-	) -&gt; TokenStream2 {
+	<span class="kw">fn </span>encode_params(<span class="kw-2">&amp;</span><span class="self">self</span>, params: <span class="kw-2">&amp;</span>[RpcFnArg], param_kind: <span class="kw-2">&amp;</span>ParamKind, signature: <span class="kw-2">&amp;</span>syn::TraitItemFn) -&gt; TokenStream2 {
 		<span class="kw">const </span>ILLEGAL_PARAM_NAME: <span class="kw-2">&amp;</span>str = <span class="string">"__RpcParams__"</span>;
 
 		<span class="kw">let </span>jsonrpsee = <span class="self">self</span>.jsonrpsee_client_path.as_ref().unwrap();
 		<span class="kw">let </span>p = Ident::new(ILLEGAL_PARAM_NAME, proc_macro2::Span::call_site());
+
+		<span class="kw">let </span>reexports = <span class="self">self</span>.jrps_client_item(<span class="macro">quote!</span> { core::__reexports });
 
 		<span class="kw">if </span>params.is_empty() {
 			<span class="kw">return </span><span class="macro">quote!</span>({
@@ -518,7 +512,7 @@
 			});
 		}
 
-		<span class="kw">if </span>params.iter().any(|(param, <span class="kw">_</span>)| param.ident == p) {
+		<span class="kw">if </span>params.iter().any(|arg| arg.arg_pat().ident == p) {
 			<span class="macro">panic!</span>(
 				<span class="string">"Cannot use `{}` as a parameter name because it's overlapping with an internal variable in the generated code. Change it something else to make it work"</span>, ILLEGAL_PARAM_NAME
 			);
@@ -529,10 +523,10 @@
 				<span class="comment">// Extract parameter names.
 				</span><span class="kw">let </span>param_names = extract_param_names(<span class="kw-2">&amp;</span>signature.sig);
 				<span class="comment">// Combine parameter names and values to pass them as parameters.
-				</span><span class="kw">let </span>params_insert = param_names.iter().zip(params).map(|pair| {
-					<span class="kw">let </span>name = pair.<span class="number">0</span>;
+				</span><span class="kw">let </span>params_insert = params.iter().map(|arg| {
 					<span class="comment">// Throw away the type.
-					</span><span class="kw">let </span>(value, _value_type) = pair.<span class="number">1</span>;
+					</span><span class="kw">let </span>value = arg.arg_pat();
+					<span class="kw">let </span>name = arg.name();
 					<span class="macro">quote!</span>(#name, #value)
 				});
 
@@ -547,8 +541,8 @@
 				<span class="macro">quote!</span>({
 					<span class="kw">let </span><span class="kw-2">mut </span>#p = #jsonrpsee::core::params::ObjectParams::new();
 					#(
-						<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = #p.insert( #params_insert ) {
-							<span class="macro">panic!</span>(<span class="string">"Parameter `{}` cannot be serialized: {:?}"</span>, <span class="macro">stringify!</span>( #params_insert ), err);
+						<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = #p.insert(#params_insert) {
+							#reexports::panic_fail_serialize(<span class="macro">stringify!</span>(#params_insert), err);
 						}
 					)*
 					#p
@@ -556,13 +550,13 @@
 			}
 			ParamKind::Array =&gt; {
 				<span class="comment">// Throw away the type.
-				</span><span class="kw">let </span>params = params.iter().map(|(param, _param_type)| param);
+				</span><span class="kw">let </span>params = params.iter().map(RpcFnArg::arg_pat);
 
 				<span class="macro">quote!</span>({
 					<span class="kw">let </span><span class="kw-2">mut </span>#p = #jsonrpsee::core::params::ArrayParams::new();
 					#(
-						<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = #p.insert( #params ) {
-							<span class="macro">panic!</span>(<span class="string">"Parameter `{}` cannot be serialized: {:?}"</span>, <span class="macro">stringify!</span>( #params ), err);
+						<span class="kw">if let </span><span class="prelude-val">Err</span>(err) = #p.insert(#params) {
+							#reexports::panic_fail_serialize(<span class="macro">stringify!</span>(#params), err);
 						}
 					)*
 					#p

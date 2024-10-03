@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-mdns-0.43.1/src/behaviour/socket.rs`."><title>socket.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="libp2p_mdns" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-mdns-0.44.0/src/behaviour/socket.rs`."><title>socket.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="libp2p_mdns" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -131,7 +131,6 @@
 <a href="#131" id="131">131</a>
 <a href="#132" id="132">132</a>
 <a href="#133" id="133">133</a>
-<a href="#134" id="134">134</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2018 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -160,6 +159,7 @@
 };
 
 <span class="doccomment">/// Interface that must be implemented by the different runtimes to use the [`UdpSocket`] in async mode
+</span><span class="attr">#[allow(unreachable_pub)] </span><span class="comment">// Users should not depend on this.
 </span><span class="kw">pub trait </span>AsyncSocket: Unpin + Send + <span class="lifetime">'static </span>{
     <span class="doccomment">/// Create the async socket from the [`std::net::UdpSocket`]
     </span><span class="kw">fn </span>from_std(socket: UdpSocket) -&gt; std::io::Result&lt;<span class="self">Self</span>&gt;
@@ -183,14 +183,13 @@
 }
 
 <span class="attr">#[cfg(feature = <span class="string">"async-io"</span>)]
-</span><span class="kw">pub mod </span>asio {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>asio {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span>async_io::Async;
     <span class="kw">use </span>futures::FutureExt;
 
     <span class="doccomment">/// AsyncIo UdpSocket
-    </span><span class="kw">pub type </span>AsyncUdpSocket = Async&lt;UdpSocket&gt;;
-
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>AsyncUdpSocket = Async&lt;UdpSocket&gt;;
     <span class="kw">impl </span>AsyncSocket <span class="kw">for </span>AsyncUdpSocket {
         <span class="kw">fn </span>from_std(socket: UdpSocket) -&gt; std::io::Result&lt;<span class="self">Self</span>&gt; {
             Async::new(socket)
@@ -226,13 +225,12 @@
 }
 
 <span class="attr">#[cfg(feature = <span class="string">"tokio"</span>)]
-</span><span class="kw">pub mod </span>tokio {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>tokio {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span>::tokio::{io::ReadBuf, net::UdpSocket <span class="kw">as </span>TkUdpSocket};
 
     <span class="doccomment">/// Tokio ASync Socket`
-    </span><span class="kw">pub type </span>TokioUdpSocket = TkUdpSocket;
-
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>TokioUdpSocket = TkUdpSocket;
     <span class="kw">impl </span>AsyncSocket <span class="kw">for </span>TokioUdpSocket {
         <span class="kw">fn </span>from_std(socket: UdpSocket) -&gt; std::io::Result&lt;<span class="self">Self</span>&gt; {
             socket.set_nonblocking(<span class="bool-val">true</span>)<span class="question-mark">?</span>;

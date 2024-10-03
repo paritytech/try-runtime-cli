@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.22.5/src/middleware/http/authority.rs`."><title>authority.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.24.5/src/middleware/http/authority.rs`."><title>authority.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -233,6 +233,7 @@
 <a href="#233" id="233">233</a>
 <a href="#234" id="234">234</a>
 <a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2023 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any
@@ -261,8 +262,8 @@
 
 </span><span class="doccomment">//! Utility and types related to the authority of an URI.
 
-</span><span class="kw">use </span>http::uri::{InvalidUri, Uri};
-<span class="kw">use </span>hyper::{Body, Request};
+</span><span class="kw">use </span><span class="kw">crate</span>::HttpRequest;
+<span class="kw">use </span>http::uri::{InvalidUri, Uri};
 <span class="kw">use </span>jsonrpsee_core::http_helpers;
 
 <span class="doccomment">/// Represent the http URI scheme that is returned by the HTTP host header
@@ -280,10 +281,10 @@
 </span><span class="attr">#[derive(Debug, thiserror::Error)]
 </span><span class="kw">pub enum </span>AuthorityError {
 	<span class="doccomment">/// Invalid URI.
-	</span><span class="attr">#[error(<span class="string">"{0}"</span>)]
+	</span><span class="attr">#[error(transparent)]
 	</span>InvalidUri(InvalidUri),
 	<span class="doccomment">/// Invalid port.
-	</span><span class="attr">#[error(<span class="string">"{0}"</span>)]
+	</span><span class="attr">#[error(<span class="string">"Invalid port: {0}"</span>)]
 	</span>InvalidPort(String),
 	<span class="doccomment">/// The host was not found.
 	</span><span class="attr">#[error(<span class="string">"The host was not found"</span>)]
@@ -331,7 +332,7 @@
 	///
 	/// The `Authority` can be sent by the client in the `Host header` or in the `URI`
 	/// such that both must be checked.
-	</span><span class="kw">pub fn </span>from_http_request(request: <span class="kw-2">&amp;</span>Request&lt;Body&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
+	</span><span class="kw">pub fn </span>from_http_request&lt;T&gt;(request: <span class="kw-2">&amp;</span>HttpRequest&lt;T&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
 		<span class="comment">// NOTE: we use our own `Authority type` here because an invalid port number would return `None` here
 		// and that should be denied.
 		</span><span class="kw">let </span>host_header =
@@ -394,13 +395,14 @@
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
-	<span class="kw">use super</span>::{Authority, Port};
+	<span class="kw">use super</span>::{Authority, HttpRequest, Port};
 	<span class="kw">use </span>hyper::header::HOST;
-	<span class="kw">use </span>hyper::Body;
 
 	<span class="kw">fn </span>authority(host: <span class="kw-2">&amp;</span>str, port: Port) -&gt; Authority {
 		Authority { host: host.to_owned(), port }
 	}
+
+	<span class="kw">type </span>EmptyBody = http_body_util::Empty&lt;hyper::body::Bytes&gt;;
 
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>should_parse_valid_authority() {
@@ -435,22 +437,22 @@
 
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>authority_from_http_only_host_works() {
-		<span class="kw">let </span>req = hyper::Request::builder().header(HOST, <span class="string">"example.com"</span>).body(Body::empty()).unwrap();
+		<span class="kw">let </span>req = HttpRequest::builder().header(HOST, <span class="string">"example.com"</span>).body(EmptyBody::new()).unwrap();
 		<span class="macro">assert!</span>(Authority::from_http_request(<span class="kw-2">&amp;</span>req).is_some());
 	}
 
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>authority_only_uri_works() {
-		<span class="kw">let </span>req = hyper::Request::builder().uri(<span class="string">"example.com"</span>).body(Body::empty()).unwrap();
+		<span class="kw">let </span>req = HttpRequest::builder().uri(<span class="string">"example.com"</span>).body(EmptyBody::new()).unwrap();
 		<span class="macro">assert!</span>(Authority::from_http_request(<span class="kw-2">&amp;</span>req).is_some());
 	}
 
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>authority_host_and_uri_works() {
-		<span class="kw">let </span>req = hyper::Request::builder()
+		<span class="kw">let </span>req = HttpRequest::builder()
 			.header(HOST, <span class="string">"example.com:9999"</span>)
 			.uri(<span class="string">"example.com:9999"</span>)
-			.body(Body::empty())
+			.body(EmptyBody::new())
 			.unwrap();
 		<span class="macro">assert!</span>(Authority::from_http_request(<span class="kw-2">&amp;</span>req).is_some());
 	}
@@ -458,13 +460,13 @@
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>authority_host_and_uri_mismatch() {
 		<span class="kw">let </span>req =
-			hyper::Request::builder().header(HOST, <span class="string">"example.com:9999"</span>).uri(<span class="string">"example.com"</span>).body(Body::empty()).unwrap();
+			HttpRequest::builder().header(HOST, <span class="string">"example.com:9999"</span>).uri(<span class="string">"example.com"</span>).body(EmptyBody::new()).unwrap();
 		<span class="macro">assert!</span>(Authority::from_http_request(<span class="kw-2">&amp;</span>req).is_none());
 	}
 
 	<span class="attr">#[test]
 	</span><span class="kw">fn </span>authority_missing_host_and_uri() {
-		<span class="kw">let </span>req = hyper::Request::builder().body(Body::empty()).unwrap();
+		<span class="kw">let </span>req = HttpRequest::builder().body(EmptyBody::new()).unwrap();
 		<span class="macro">assert!</span>(Authority::from_http_request(<span class="kw-2">&amp;</span>req).is_none());
 	}
 }

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/portable-atomic-1.6.0/src/imp/core_atomic.rs`."><title>core_atomic.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="portable_atomic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/portable-atomic-1.9.0/src/imp/core_atomic.rs`."><title>core_atomic.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="portable_atomic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -437,21 +437,14 @@
 <a href="#437" id="437">437</a>
 <a href="#438" id="438">438</a>
 <a href="#439" id="439">439</a>
-<a href="#440" id="440">440</a>
-<a href="#441" id="441">441</a>
-<a href="#442" id="442">442</a>
-<a href="#443" id="443">443</a>
-<a href="#444" id="444">444</a>
-<a href="#445" id="445">445</a>
-<a href="#446" id="446">446</a>
-<a href="#447" id="447">447</a>
-<a href="#448" id="448">448</a>
 </pre></div><pre class="rust"><code><span class="comment">// SPDX-License-Identifier: Apache-2.0 OR MIT
 
-// Wrap the standard library's atomic types in newtype.
-//
-// This is not a reexport, because we want to backport changes like
-// https://github.com/rust-lang/rust/pull/98383 to old compilers.
+/*
+Wrap the standard library's atomic types in newtype.
+
+This is not a reexport, because we want to backport changes like
+https://github.com/rust-lang/rust/pull/98383 to old compilers.
+*/
 
 </span><span class="kw">use </span>core::{cell::UnsafeCell, marker::PhantomData, sync::atomic::Ordering};
 
@@ -461,6 +454,7 @@
 // RefUnwindSafe when "linked to std", and that's behavior that our other atomic
 // implementations can't emulate, so use PhantomData&lt;NotRefUnwindSafe&gt; to match
 // conditions where our other atomic implementations implement RefUnwindSafe.
+//
 // If we do not do this, for example, downstream that is only tested on x86_64
 // may incorrectly assume that AtomicU64 always implements RefUnwindSafe even on
 // older rustc, and may be broken on platforms where std AtomicU64 is not available.
@@ -481,19 +475,12 @@
     }
     <span class="attr">#[inline]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_lock_free() -&gt; bool {
-        <span class="self">Self</span>::is_always_lock_free()
+        <span class="self">Self</span>::IS_ALWAYS_LOCK_FREE
     }
-    <span class="attr">#[inline]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const fn </span>is_always_lock_free() -&gt; bool {
-        <span class="bool-val">true
-    </span>}
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>IS_ALWAYS_LOCK_FREE: bool = <span class="bool-val">true</span>;
     <span class="attr">#[inline]
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut *mut </span>T {
         <span class="self">self</span>.inner.get_mut()
-    }
-    <span class="attr">#[inline]
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>into_inner(<span class="self">self</span>) -&gt; <span class="kw-2">*mut </span>T {
-        <span class="self">self</span>.inner.into_inner()
     }
     <span class="attr">#[inline]
     #[cfg_attr(
@@ -588,7 +575,7 @@
         <span class="attr">#[cfg(not(all(
             any(target_arch = <span class="string">"x86"</span>, target_arch = <span class="string">"x86_64"</span>),
             not(any(miri, portable_atomic_sanitize_thread)),
-            not(portable_atomic_no_asm),
+            any(not(portable_atomic_no_asm), portable_atomic_unstable_asm),
         )))]
         #[cfg_attr(
             portable_atomic_no_cfg_target_has_atomic,
@@ -606,24 +593,18 @@
             }
             <span class="attr">#[inline]
             </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_lock_free() -&gt; bool {
-                <span class="self">Self</span>::is_always_lock_free()
+                <span class="self">Self</span>::IS_ALWAYS_LOCK_FREE
             }
-            <span class="attr">#[inline]
-            </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const fn </span>is_always_lock_free() -&gt; bool {
-                <span class="comment">// ESP-IDF targets' 64-bit atomics are not lock-free.
-                // https://github.com/rust-lang/rust/pull/115577#issuecomment-1732259297
-                </span><span class="macro">cfg!</span>(not(all(
-                    any(target_arch = <span class="string">"riscv32"</span>, target_arch = <span class="string">"xtensa"</span>),
-                    target_os = <span class="string">"espidf"</span>,
-                ))) | (core::mem::size_of::&lt;<span class="macro-nonterminal">$int_type</span>&gt;() &lt; <span class="number">8</span>)
-            }
+            <span class="comment">// ESP-IDF targets' 64-bit atomics are not lock-free.
+            // https://github.com/rust-lang/rust/pull/115577#issuecomment-1732259297
+            </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>IS_ALWAYS_LOCK_FREE: bool = <span class="macro">cfg!</span>(not(all(
+                any(target_arch = <span class="string">"riscv32"</span>, target_arch = <span class="string">"xtensa"</span>),
+                target_os = <span class="string">"espidf"</span>,
+            ))) | (core::mem::size_of::&lt;<span class="macro-nonterminal">$int_type</span>&gt;()
+                &lt; <span class="number">8</span>);
             <span class="attr">#[inline]
             </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>get_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$int_type </span>{
                 <span class="self">self</span>.inner.get_mut()
-            }
-            <span class="attr">#[inline]
-            </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>into_inner(<span class="self">self</span>) -&gt; <span class="macro-nonterminal">$int_type </span>{
-                <span class="self">self</span>.inner.into_inner()
             }
             <span class="attr">#[inline]
             #[cfg_attr(
@@ -721,7 +702,7 @@
                 </span>{
                     <span class="attr">#[cfg(any(
                         all(
-                            target_arch = <span class="string">"aarch64"</span>,
+                            any(target_arch = <span class="string">"aarch64"</span>, target_arch = <span class="string">"arm64ec"</span>),
                             any(target_feature = <span class="string">"lse"</span>, portable_atomic_target_feature = <span class="string">"lse"</span>),
                         ),
                         all(
@@ -773,7 +754,7 @@
                 </span>{
                     <span class="attr">#[cfg(any(
                         all(
-                            target_arch = <span class="string">"aarch64"</span>,
+                            any(target_arch = <span class="string">"aarch64"</span>, target_arch = <span class="string">"arm64ec"</span>),
                             any(target_feature = <span class="string">"lse"</span>, portable_atomic_target_feature = <span class="string">"lse"</span>),
                         ),
                         all(
@@ -826,14 +807,15 @@
             <span class="attr">#[cfg(not(all(
                 any(target_arch = <span class="string">"x86"</span>, target_arch = <span class="string">"x86_64"</span>),
                 not(any(miri, portable_atomic_sanitize_thread)),
-                not(portable_atomic_no_asm),
+                any(not(portable_atomic_no_asm), portable_atomic_unstable_asm),
             )))]
             #[inline]
             #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces
             </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>not(<span class="kw-2">&amp;</span><span class="self">self</span>, order: Ordering) {
                 <span class="self">self</span>.fetch_not(order);
             }
-            <span class="attr">#[inline]
+            <span class="comment">// TODO: provide asm-based implementation on AArch64, Armv7, RISC-V, etc.
+            </span><span class="attr">#[inline]
             #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces
             </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>fetch_neg(<span class="kw-2">&amp;</span><span class="self">self</span>, order: Ordering) -&gt; <span class="macro-nonterminal">$int_type </span>{
                 <span class="self">self</span>.fetch_update_(order, <span class="macro-nonterminal">$int_type::wrapping_neg</span>)
@@ -841,7 +823,7 @@
             <span class="attr">#[cfg(not(all(
                 any(target_arch = <span class="string">"x86"</span>, target_arch = <span class="string">"x86_64"</span>),
                 not(any(miri, portable_atomic_sanitize_thread)),
-                not(portable_atomic_no_asm),
+                any(not(portable_atomic_no_asm), portable_atomic_unstable_asm),
             )))]
             #[inline]
             #[cfg_attr(miri, track_caller)] </span><span class="comment">// even without panics, this helps for Miri backtraces

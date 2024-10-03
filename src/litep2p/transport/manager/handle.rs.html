@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/litep2p-2515ad90543f141a/e03a602/src/transport/manager/handle.rs`."><title>handle.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litep2p-0.7.0/src/transport/manager/handle.rs`."><title>handle.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -631,6 +631,31 @@
 <a href="#631" id="631">631</a>
 <a href="#632" id="632">632</a>
 <a href="#633" id="633">633</a>
+<a href="#634" id="634">634</a>
+<a href="#635" id="635">635</a>
+<a href="#636" id="636">636</a>
+<a href="#637" id="637">637</a>
+<a href="#638" id="638">638</a>
+<a href="#639" id="639">639</a>
+<a href="#640" id="640">640</a>
+<a href="#641" id="641">641</a>
+<a href="#642" id="642">642</a>
+<a href="#643" id="643">643</a>
+<a href="#644" id="644">644</a>
+<a href="#645" id="645">645</a>
+<a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a>
+<a href="#651" id="651">651</a>
+<a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
+<a href="#656" id="656">656</a>
+<a href="#657" id="657">657</a>
+<a href="#658" id="658">658</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2023 litep2p developers
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -652,8 +677,9 @@
 // DEALINGS IN THE SOFTWARE.
 
 </span><span class="kw">use crate</span>::{
+    addresses::PublicAddresses,
     crypto::ed25519::Keypair,
-    error::{AddressError, Error},
+    error::ImmediateDialError,
     executor::Executor,
     protocol::ProtocolSet,
     transport::manager::{
@@ -710,6 +736,9 @@
 
     <span class="doccomment">/// Local listen addresess.
     </span>listen_addresses: Arc&lt;RwLock&lt;HashSet&lt;Multiaddr&gt;&gt;&gt;,
+
+    <span class="doccomment">/// Public addresses.
+    </span>public_addresses: PublicAddresses,
 }
 
 <span class="kw">impl </span>TransportManagerHandle {
@@ -720,19 +749,31 @@
         cmd_tx: Sender&lt;InnerTransportManagerCommand&gt;,
         supported_transport: HashSet&lt;SupportedTransport&gt;,
         listen_addresses: Arc&lt;RwLock&lt;HashSet&lt;Multiaddr&gt;&gt;&gt;,
+        public_addresses: PublicAddresses,
     ) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
             peers,
             cmd_tx,
             local_peer_id,
-            listen_addresses,
             supported_transport,
+            listen_addresses,
+            public_addresses,
         }
     }
 
     <span class="doccomment">/// Register new transport to [`TransportManagerHandle`].
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>register_transport(<span class="kw-2">&amp;mut </span><span class="self">self</span>, transport: SupportedTransport) {
         <span class="self">self</span>.supported_transport.insert(transport);
+    }
+
+    <span class="doccomment">/// Get the list of public addresses of the node.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>public_addresses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; PublicAddresses {
+        <span class="self">self</span>.public_addresses.clone()
+    }
+
+    <span class="doccomment">/// Get the list of listen addresses of the node.
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>listen_addresses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; HashSet&lt;Multiaddr&gt; {
+        <span class="self">self</span>.listen_addresses.read().clone()
     }
 
     <span class="doccomment">/// Check if `address` is supported by one of the enabled transports.
@@ -754,17 +795,19 @@
 
         <span class="kw">match </span>iter.next() {
             <span class="prelude-val">None </span>=&gt; <span class="bool-val">false</span>,
-            <span class="prelude-val">Some</span>(Protocol::Tcp(<span class="kw">_</span>)) =&gt; <span class="kw">match </span>(
-                iter.next(),
-                <span class="self">self</span>.supported_transport.contains(<span class="kw-2">&amp;</span>SupportedTransport::WebSocket),
-            ) {
-                (<span class="prelude-val">Some</span>(Protocol::Ws(<span class="kw">_</span>)), <span class="bool-val">true</span>) =&gt; <span class="bool-val">true</span>,
-                (<span class="prelude-val">Some</span>(Protocol::Wss(<span class="kw">_</span>)), <span class="bool-val">true</span>) =&gt; <span class="bool-val">true</span>,
-                (<span class="prelude-val">Some</span>(Protocol::P2p(<span class="kw">_</span>)), <span class="kw">_</span>) =&gt;
+            <span class="prelude-val">Some</span>(Protocol::Tcp(<span class="kw">_</span>)) =&gt; <span class="kw">match </span>iter.next() {
+                <span class="prelude-val">Some</span>(Protocol::P2p(<span class="kw">_</span>)) =&gt;
                     <span class="self">self</span>.supported_transport.contains(<span class="kw-2">&amp;</span>SupportedTransport::Tcp),
+                <span class="attr">#[cfg(feature = <span class="string">"websocket"</span>)]
+                </span><span class="prelude-val">Some</span>(Protocol::Ws(<span class="kw">_</span>)) =&gt;
+                    <span class="self">self</span>.supported_transport.contains(<span class="kw-2">&amp;</span>SupportedTransport::WebSocket),
+                <span class="attr">#[cfg(feature = <span class="string">"websocket"</span>)]
+                </span><span class="prelude-val">Some</span>(Protocol::Wss(<span class="kw">_</span>)) =&gt;
+                    <span class="self">self</span>.supported_transport.contains(<span class="kw-2">&amp;</span>SupportedTransport::WebSocket),
                 <span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
             },
-            <span class="prelude-val">Some</span>(Protocol::Udp(<span class="kw">_</span>)) =&gt; <span class="kw">match </span>(
+            <span class="attr">#[cfg(feature = <span class="string">"quic"</span>)]
+            </span><span class="prelude-val">Some</span>(Protocol::Udp(<span class="kw">_</span>)) =&gt; <span class="kw">match </span>(
                 iter.next(),
                 <span class="self">self</span>.supported_transport.contains(<span class="kw-2">&amp;</span>SupportedTransport::Quic),
             ) {
@@ -847,9 +890,9 @@
     <span class="doccomment">/// Dial peer using `PeerId`.
     ///
     /// Returns an error if the peer is unknown or the peer is already connected.
-    </span><span class="kw">pub fn </span>dial(<span class="kw-2">&amp;</span><span class="self">self</span>, peer: <span class="kw-2">&amp;</span>PeerId) -&gt; <span class="kw">crate</span>::Result&lt;()&gt; {
+    </span><span class="kw">pub fn </span>dial(<span class="kw-2">&amp;</span><span class="self">self</span>, peer: <span class="kw-2">&amp;</span>PeerId) -&gt; <span class="prelude-ty">Result</span>&lt;(), ImmediateDialError&gt; {
         <span class="kw">if </span>peer == <span class="kw-2">&amp;</span><span class="self">self</span>.local_peer_id {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::TriedToDialSelf);
+            <span class="kw">return </span><span class="prelude-val">Err</span>(ImmediateDialError::TriedToDialSelf);
         }
 
         {
@@ -857,14 +900,14 @@
                 <span class="prelude-val">Some</span>(PeerContext {
                     state: PeerState::Connected { .. },
                     ..
-                }) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::AlreadyConnected),
+                }) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(ImmediateDialError::AlreadyConnected),
                 <span class="prelude-val">Some</span>(PeerContext {
                     state: PeerState::Disconnected { dial_record },
                     addresses,
                     ..
                 }) =&gt; {
                     <span class="kw">if </span>addresses.is_empty() {
-                        <span class="kw">return </span><span class="prelude-val">Err</span>(Error::NoAddressAvailable(<span class="kw-2">*</span>peer));
+                        <span class="kw">return </span><span class="prelude-val">Err</span>(ImmediateDialError::NoAddressAvailable);
                     }
 
                     <span class="comment">// peer is already being dialed, don't dial again until the first dial concluded
@@ -882,31 +925,31 @@
                     state: PeerState::Dialing { .. } | PeerState::Opening { .. },
                     ..
                 }) =&gt; <span class="kw">return </span><span class="prelude-val">Ok</span>(()),
-                <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::PeerDoesntExist(<span class="kw-2">*</span>peer)),
+                <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(ImmediateDialError::NoAddressAvailable),
             }
         }
 
         <span class="self">self</span>.cmd_tx
             .try_send(InnerTransportManagerCommand::DialPeer { peer: <span class="kw-2">*</span>peer })
             .map_err(|error| <span class="kw">match </span>error {
-                TrySendError::Full(<span class="kw">_</span>) =&gt; Error::ChannelClogged,
-                TrySendError::Closed(<span class="kw">_</span>) =&gt; Error::EssentialTaskClosed,
+                TrySendError::Full(<span class="kw">_</span>) =&gt; ImmediateDialError::ChannelClogged,
+                TrySendError::Closed(<span class="kw">_</span>) =&gt; ImmediateDialError::TaskClosed,
             })
     }
 
     <span class="doccomment">/// Dial peer using `Multiaddr`.
     ///
     /// Returns an error if address it not valid.
-    </span><span class="kw">pub fn </span>dial_address(<span class="kw-2">&amp;</span><span class="self">self</span>, address: Multiaddr) -&gt; <span class="kw">crate</span>::Result&lt;()&gt; {
+    </span><span class="kw">pub fn </span>dial_address(<span class="kw-2">&amp;</span><span class="self">self</span>, address: Multiaddr) -&gt; <span class="prelude-ty">Result</span>&lt;(), ImmediateDialError&gt; {
         <span class="kw">if </span>!address.iter().any(|protocol| <span class="macro">std::matches!</span>(protocol, Protocol::P2p(<span class="kw">_</span>))) {
-            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::AddressError(AddressError::PeerIdMissing));
+            <span class="kw">return </span><span class="prelude-val">Err</span>(ImmediateDialError::PeerIdMissing);
         }
 
         <span class="self">self</span>.cmd_tx
             .try_send(InnerTransportManagerCommand::DialAddress { address })
             .map_err(|error| <span class="kw">match </span>error {
-                TrySendError::Full(<span class="kw">_</span>) =&gt; Error::ChannelClogged,
-                TrySendError::Closed(<span class="kw">_</span>) =&gt; Error::EssentialTaskClosed,
+                TrySendError::Full(<span class="kw">_</span>) =&gt; ImmediateDialError::ChannelClogged,
+                TrySendError::Closed(<span class="kw">_</span>) =&gt; ImmediateDialError::TaskClosed,
             })
     }
 }
@@ -918,7 +961,6 @@
     <span class="kw">pub </span>protocols: HashMap&lt;ProtocolName, ProtocolContext&gt;,
     <span class="kw">pub </span>next_connection_id: Arc&lt;AtomicUsize&gt;,
     <span class="kw">pub </span>next_substream_id: Arc&lt;AtomicUsize&gt;,
-    <span class="kw">pub </span>protocol_names: Vec&lt;ProtocolName&gt;,
     <span class="kw">pub </span>bandwidth_sink: BandwidthSink,
     <span class="kw">pub </span>executor: Arc&lt;<span class="kw">dyn </span>Executor&gt;,
 }
@@ -945,6 +987,7 @@
 </span><span class="kw">mod </span>tests {
     <span class="kw">use super</span>::<span class="kw-2">*</span>;
     <span class="kw">use </span>multihash::Multihash;
+    <span class="kw">use </span>parking_lot::lock_api::RwLock;
     <span class="kw">use </span>tokio::sync::mpsc::{channel, Receiver};
 
     <span class="kw">fn </span>make_transport_manager_handle() -&gt; (
@@ -953,22 +996,36 @@
     ) {
         <span class="kw">let </span>(cmd_tx, cmd_rx) = channel(<span class="number">64</span>);
 
+        <span class="kw">let </span>local_peer_id = PeerId::random();
         (
             TransportManagerHandle {
-                local_peer_id: PeerId::random(),
+                local_peer_id,
                 cmd_tx,
                 peers: Default::default(),
                 supported_transport: HashSet::new(),
                 listen_addresses: Default::default(),
+                public_addresses: PublicAddresses::new(local_peer_id),
             },
             cmd_rx,
         )
     }
 
     <span class="attr">#[tokio::test]
-    </span><span class="kw">async fn </span>tcp_and_websocket_supported() {
+    </span><span class="kw">async fn </span>tcp_supported() {
         <span class="kw">let </span>(<span class="kw-2">mut </span>handle, _rx) = make_transport_manager_handle();
         handle.supported_transport.insert(SupportedTransport::Tcp);
+
+        <span class="kw">let </span>address =
+            <span class="string">"/dns4/google.com/tcp/24928/p2p/12D3KooWKrUnV42yDR7G6DewmgHtFaVCJWLjQRi2G9t5eJD3BvTy"
+                </span>.parse()
+                .unwrap();
+        <span class="macro">assert!</span>(handle.supported_transport(<span class="kw-2">&amp;</span>address));
+    }
+
+    <span class="attr">#[cfg(feature = <span class="string">"websocket"</span>)]
+    #[tokio::test]
+    </span><span class="kw">async fn </span>websocket_supported() {
+        <span class="kw">let </span>(<span class="kw-2">mut </span>handle, _rx) = make_transport_manager_handle();
         handle.supported_transport.insert(SupportedTransport::WebSocket);
 
         <span class="kw">let </span>address =
@@ -1011,7 +1068,7 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>zero_addresses_added() {
         <span class="kw">let </span>(<span class="kw-2">mut </span>handle, _rx) = make_transport_manager_handle();
-        handle.supported_transport.insert(SupportedTransport::Quic);
+        handle.supported_transport.insert(SupportedTransport::Tcp);
 
         <span class="macro">assert!</span>(
             handle.add_known_address(
@@ -1021,9 +1078,6 @@
                         .with(Protocol::Ip4(std::net::Ipv4Addr::new(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)))
                         .with(Protocol::Udp(<span class="number">8888</span>))
                         .with(Protocol::Utp),
-                    Multiaddr::empty()
-                        .with(Protocol::Ip4(std::net::Ipv4Addr::new(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)))
-                        .with(Protocol::Tcp(<span class="number">8888</span>)),
                     Multiaddr::empty()
                         .with(Protocol::Ip4(std::net::Ipv4Addr::new(<span class="number">127</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)))
                         .with(Protocol::Tcp(<span class="number">8888</span>))
@@ -1072,7 +1126,7 @@
         };
 
         <span class="kw">match </span>handle.dial(<span class="kw-2">&amp;</span>peer) {
-            <span class="prelude-val">Err</span>(Error::AlreadyConnected) =&gt; {}
+            <span class="prelude-val">Err</span>(ImmediateDialError::AlreadyConnected) =&gt; {}
             <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"invalid return value"</span>),
         }
     }
@@ -1141,12 +1195,8 @@
             peer
         };
 
-        <span class="kw">match </span>handle.dial(<span class="kw-2">&amp;</span>peer) {
-            <span class="prelude-val">Err</span>(Error::NoAddressAvailable(failed_peer)) =&gt; {
-                <span class="macro">assert_eq!</span>(failed_peer, peer);
-            }
-            <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"invalid return value"</span>),
-        }
+        <span class="kw">let </span>err = handle.dial(<span class="kw-2">&amp;</span>peer).unwrap_err();
+        <span class="macro">assert!</span>(<span class="macro">matches!</span>(err, ImmediateDialError::NoAddressAvailable));
     }
 
     <span class="attr">#[tokio::test]
@@ -1199,10 +1249,9 @@
         <span class="kw">let </span>(<span class="kw-2">mut </span>handle, <span class="kw-2">mut </span>rx) = make_transport_manager_handle();
         handle.supported_transport.insert(SupportedTransport::Tcp);
 
-        <span class="kw">match </span>handle.dial(<span class="kw-2">&amp;</span>handle.local_peer_id) {
-            <span class="prelude-val">Err</span>(Error::TriedToDialSelf) =&gt; {}
-            <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"invalid return value"</span>),
-        }
+        <span class="kw">let </span>err = handle.dial(<span class="kw-2">&amp;</span>handle.local_peer_id).unwrap_err();
+        <span class="macro">assert_eq!</span>(err, ImmediateDialError::TriedToDialSelf);
+
         <span class="macro">assert!</span>(rx.try_recv().is_err());
     }
 
@@ -1210,21 +1259,22 @@
     </span><span class="kw">fn </span>is_local_address() {
         <span class="kw">let </span>(cmd_tx, _cmd_rx) = channel(<span class="number">64</span>);
 
+        <span class="kw">let </span>local_peer_id = PeerId::random();
+        <span class="kw">let </span>first_addr: Multiaddr = <span class="string">"/ip6/::1/tcp/8888"</span>.parse().expect(<span class="string">"valid multiaddress"</span>);
+        <span class="kw">let </span>second_addr: Multiaddr = <span class="string">"/ip4/127.0.0.1/tcp/8888"</span>.parse().expect(<span class="string">"valid multiaddress"</span>);
+
+        <span class="kw">let </span>listen_addresses = Arc::new(RwLock::new(
+            [first_addr.clone(), second_addr.clone()].iter().cloned().collect(),
+        ));
+        <span class="macro">println!</span>(<span class="string">"{:?}"</span>, listen_addresses);
+
         <span class="kw">let </span>handle = TransportManagerHandle {
-            local_peer_id: PeerId::random(),
+            local_peer_id,
             cmd_tx,
             peers: Default::default(),
             supported_transport: HashSet::new(),
-            listen_addresses: Arc::new(RwLock::new(HashSet::from_iter([
-                <span class="string">"/ip6/::1/tcp/8888"</span>.parse().expect(<span class="string">"valid multiaddress"</span>),
-                <span class="string">"/ip4/127.0.0.1/tcp/8888"</span>.parse().expect(<span class="string">"valid multiaddress"</span>),
-                <span class="string">"/ip6/::1/tcp/8888/p2p/12D3KooWT2ouvz5uMmCvHJGzAGRHiqDts5hzXR7NdoQ27pGdzp9Q"
-                    </span>.parse()
-                    .expect(<span class="string">"valid multiaddress"</span>),
-                <span class="string">"/ip4/127.0.0.1/tcp/8888/p2p/12D3KooWT2ouvz5uMmCvHJGzAGRHiqDts5hzXR7NdoQ27pGdzp9Q"
-                    </span>.parse()
-                    .expect(<span class="string">"valid multiaddress"</span>),
-            ]))),
+            listen_addresses,
+            public_addresses: PublicAddresses::new(local_peer_id),
         };
 
         <span class="comment">// local addresses

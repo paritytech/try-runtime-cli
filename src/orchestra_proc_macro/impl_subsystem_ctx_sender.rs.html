@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/orchestra-proc-macro-0.3.5/src/impl_subsystem_ctx_sender.rs`."><title>impl_subsystem_ctx_sender.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="orchestra_proc_macro" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/orchestra-proc-macro-0.4.0/src/impl_subsystem_ctx_sender.rs`."><title>impl_subsystem_ctx_sender.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="orchestra_proc_macro" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -713,6 +713,16 @@
 <a href="#713" id="713">713</a>
 <a href="#714" id="714">714</a>
 <a href="#715" id="715">715</a>
+<a href="#716" id="716">716</a>
+<a href="#717" id="717">717</a>
+<a href="#718" id="718">718</a>
+<a href="#719" id="719">719</a>
+<a href="#720" id="720">720</a>
+<a href="#721" id="721">721</a>
+<a href="#722" id="722">722</a>
+<a href="#723" id="723">723</a>
+<a href="#724" id="724">724</a>
+<a href="#725" id="725">725</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) 2022 Parity Technologies (UK) Ltd.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -993,21 +1003,31 @@
 			{
 				<span class="kw">async fn </span>send_message(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: OutgoingMessage)
 				{
-					<span class="self">self</span>.channels.send_and_log_error(
+					<span class="self">self</span>.send_message_with_priority::&lt;#support_crate ::NormalPriority&gt;(msg).<span class="kw">await</span>;
+				}
+
+				<span class="kw">async fn </span>send_message_with_priority&lt;P: #support_crate ::Priority&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: OutgoingMessage)
+				{
+					<span class="self">self</span>.channels.send_and_log_error::&lt;P&gt;(
 						<span class="self">self</span>.signals_received.load(),
 						&lt;#all_messages_wrapper <span class="kw">as </span>::std::convert::From&lt;<span class="kw">_</span>&gt;&gt; ::from (
 							&lt;#outgoing_wrapper <span class="kw">as </span>::std::convert::From&lt;<span class="kw">_</span>&gt;&gt; :: from ( msg )
-						)
+						),
 					).<span class="kw">await</span>;
 				}
 
 				<span class="kw">fn </span>try_send_message(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: OutgoingMessage) -&gt; ::std::result::Result&lt;(), #support_crate ::metered::TrySendError&lt;OutgoingMessage&gt;&gt;
 				{
-					<span class="self">self</span>.channels.try_send(
+					<span class="self">self</span>.try_send_message_with_priority::&lt;#support_crate ::NormalPriority&gt;(msg)
+				}
+
+				<span class="kw">fn </span>try_send_message_with_priority&lt;P: #support_crate ::Priority&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: OutgoingMessage) -&gt; ::std::result::Result&lt;(), #support_crate ::metered::TrySendError&lt;OutgoingMessage&gt;&gt;
+				{
+					<span class="self">self</span>.channels.try_send::&lt;P&gt;(
 						<span class="self">self</span>.signals_received.load(),
 						&lt;#all_messages_wrapper <span class="kw">as </span>::std::convert::From&lt;<span class="kw">_</span>&gt;&gt; ::from (
 							&lt;#outgoing_wrapper <span class="kw">as </span>::std::convert::From&lt;<span class="kw">_</span>&gt;&gt; :: from ( msg )
-						)
+						),
 					).map_err(|err| <span class="kw">match </span>err {
 								#support_crate ::metered::TrySendError::Full(inner) =&gt; #support_crate ::metered::TrySendError::Full(inner.try_into().expect(<span class="string">"we should be able to unwrap what we wrap, qed"</span>)),
 								#support_crate ::metered::TrySendError::Closed(inner) =&gt; #support_crate ::metered::TrySendError::Closed(inner.try_into().expect(<span class="string">"we should be able to unwrap what we wrap, qed"</span>)),

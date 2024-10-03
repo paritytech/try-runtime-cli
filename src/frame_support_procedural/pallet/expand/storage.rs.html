@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/frame/support/procedural/src/pallet/expand/storage.rs`."><title>storage.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/frame/support/procedural/src/pallet/expand/storage.rs`."><title>storage.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -917,6 +917,14 @@
 <a href="#917" id="917">917</a>
 <a href="#918" id="918">918</a>
 <a href="#919" id="919">919</a>
+<a href="#920" id="920">920</a>
+<a href="#921" id="921">921</a>
+<a href="#922" id="922">922</a>
+<a href="#923" id="923">923</a>
+<a href="#924" id="924">924</a>
+<a href="#925" id="925">925</a>
+<a href="#926" id="926">926</a>
+<a href="#927" id="927">927</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -981,7 +989,7 @@
 	<span class="kw">if let </span><span class="prelude-val">Some</span>(other_dup_err) = used_prefixes.insert(prefix.clone(), dup_err.clone()) {
 		<span class="kw">let </span><span class="kw-2">mut </span>err = dup_err;
 		err.combine(other_dup_err);
-		<span class="kw">return </span><span class="prelude-val">Err</span>(err)
+		<span class="kw">return </span><span class="prelude-val">Err</span>(err);
 	}
 
 	<span class="kw">if let </span>Metadata::CountedMap { .. } = storage_def.metadata {
@@ -998,7 +1006,7 @@
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(other_dup_err) = used_prefixes.insert(counter_prefix, counter_dup_err.clone()) {
 			<span class="kw">let </span><span class="kw-2">mut </span>err = counter_dup_err;
 			err.combine(other_dup_err);
-			<span class="kw">return </span><span class="prelude-val">Err</span>(err)
+			<span class="kw">return </span><span class="prelude-val">Err</span>(err);
 		}
 	}
 
@@ -1071,7 +1079,7 @@
 					variant_name: variant_name.clone(),
 					span: storage_def.attr_span,
 				});
-				<span class="kw">return </span><span class="macro">syn::parse_quote!</span>(#on_empty_ident)
+				<span class="kw">return </span><span class="macro">syn::parse_quote!</span>(#on_empty_ident);
 			}
 			<span class="macro">syn::parse_quote!</span>(#frame_support::traits::GetDefault)
 		};
@@ -1097,7 +1105,7 @@
 						with 1 type parameter, found `{}`"</span>,
 						query_type.to_token_stream().to_string()
 					);
-					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(query_type.span(), msg))
+					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(query_type.span(), msg));
 				}
 			}
 			<span class="prelude-val">Ok</span>(())
@@ -1321,14 +1329,14 @@
 		.filter_map(|storage_def| check_prefix_duplicates(storage_def, <span class="kw-2">&amp;mut </span>prefix_set).err());
 	<span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>final_error) = errors.next() {
 		errors.for_each(|error| final_error.combine(error));
-		<span class="kw">return </span>final_error.into_compile_error()
+		<span class="kw">return </span>final_error.into_compile_error();
 	}
 
 	<span class="kw">let </span>frame_support = <span class="kw-2">&amp;</span>def.frame_support;
 	<span class="kw">let </span>frame_system = <span class="kw-2">&amp;</span>def.frame_system;
 	<span class="kw">let </span>pallet_ident = <span class="kw-2">&amp;</span>def.pallet_struct.pallet;
-
-	<span class="kw">let </span>entries_builder = def.storages.iter().map(|storage| {
+	<span class="kw">let </span><span class="kw-2">mut </span>entries_builder = <span class="macro">vec!</span>[];
+	<span class="kw">for </span>storage <span class="kw">in </span>def.storages.iter() {
 		<span class="kw">let </span>no_docs = <span class="macro">vec!</span>[];
 		<span class="kw">let </span>docs = <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">"no-metadata-docs"</span>) { <span class="kw-2">&amp;</span>no_docs } <span class="kw">else </span>{ <span class="kw-2">&amp;</span>storage.docs };
 
@@ -1337,19 +1345,26 @@
 		<span class="kw">let </span>full_ident = <span class="macro">quote::quote_spanned!</span>(storage.attr_span =&gt; #ident&lt;#gen&gt; );
 
 		<span class="kw">let </span>cfg_attrs = <span class="kw-2">&amp;</span>storage.cfg_attrs;
-
-		<span class="macro">quote::quote_spanned!</span>(storage.attr_span =&gt;
+		<span class="kw">let </span>deprecation = <span class="kw">match </span><span class="kw">crate</span>::deprecation::get_deprecation(
+			<span class="kw-2">&amp;</span><span class="macro">quote::quote!</span> { #frame_support },
+			<span class="kw-2">&amp;</span>storage.attrs,
+		) {
+			<span class="prelude-val">Ok</span>(deprecation) =&gt; deprecation,
+			<span class="prelude-val">Err</span>(e) =&gt; <span class="kw">return </span>e.into_compile_error(),
+		};
+		entries_builder.push(<span class="macro">quote::quote_spanned!</span>(storage.attr_span =&gt;
 			#(#cfg_attrs)*
 			{
 				&lt;#full_ident <span class="kw">as </span>#frame_support::storage::StorageEntryMetadataBuilder&gt;::build_metadata(
-					#<span class="macro">frame_support::__private::sp_std::vec!</span>[
+					#deprecation,
+					#<span class="macro">frame_support::__private::vec!</span>[
 						#( #docs, )*
 					],
 					<span class="kw-2">&amp;mut </span>entries,
 				);
 			}
-		)
-	});
+		))
+	}
 
 	<span class="kw">let </span>getters = def.storages.iter().map(|storage| {
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(getter) = <span class="kw-2">&amp;</span>storage.getter {
@@ -1768,39 +1783,40 @@
 		storage_names.sort_by_cached_key(|ident| ident.to_string());
 
 		<span class="macro">quote::quote!</span>(
-			<span class="attr">#[cfg(feature = <span class="string">"try-runtime"</span>)]
-			</span><span class="kw">impl</span>&lt;#type_impl_gen&gt; #frame_support::traits::TryDecodeEntireStorage
-			<span class="kw">for </span>#pallet_ident&lt;#type_use_gen&gt; #completed_where_clause
-			{
-				<span class="kw">fn </span>try_decode_entire_state() -&gt; <span class="prelude-ty">Result</span>&lt;usize, #frame_support::__private::sp_std::vec::Vec&lt;#frame_support::traits::TryDecodeEntireStorageError&gt;&gt; {
-					<span class="kw">let </span>pallet_name = &lt;&lt;T <span class="kw">as </span>#frame_system::Config&gt;::PalletInfo	<span class="kw">as </span>#frame_support::traits::PalletInfo&gt;
-						::name::&lt;#pallet_ident&lt;#type_use_gen&gt;&gt;()
-						.expect(<span class="string">"Every active pallet has a name in the runtime; qed"</span>);
+			#<span class="macro">frame_support::try_runtime_enabled!</span> {
+				<span class="kw">impl</span>&lt;#type_impl_gen&gt; #frame_support::traits::TryDecodeEntireStorage
+				<span class="kw">for </span>#pallet_ident&lt;#type_use_gen&gt; #completed_where_clause
+				{
+					<span class="kw">fn </span>try_decode_entire_state() -&gt; <span class="prelude-ty">Result</span>&lt;usize, #frame_support::__private::Vec&lt;#frame_support::traits::TryDecodeEntireStorageError&gt;&gt; {
+						<span class="kw">let </span>pallet_name = &lt;&lt;T <span class="kw">as </span>#frame_system::Config&gt;::PalletInfo	<span class="kw">as </span>#frame_support::traits::PalletInfo&gt;
+							::name::&lt;#pallet_ident&lt;#type_use_gen&gt;&gt;()
+							.expect(<span class="string">"Every active pallet has a name in the runtime; qed"</span>);
 
-					#<span class="macro">frame_support::__private::log::debug!</span>(target: <span class="string">"runtime::try-decode-state"</span>, <span class="string">"trying to decode pallet: {pallet_name}"</span>);
+						#<span class="macro">frame_support::__private::log::debug!</span>(target: <span class="string">"runtime::try-decode-state"</span>, <span class="string">"trying to decode pallet: {pallet_name}"</span>);
 
-					<span class="comment">// NOTE: for now, we have to exclude storage items that are feature gated.
-					</span><span class="kw">let </span><span class="kw-2">mut </span>errors = #frame_support::__private::sp_std::vec::Vec::new();
-					<span class="kw">let </span><span class="kw-2">mut </span>decoded = <span class="number">0usize</span>;
+						<span class="comment">// NOTE: for now, we have to exclude storage items that are feature gated.
+						</span><span class="kw">let </span><span class="kw-2">mut </span>errors = #frame_support::__private::Vec::new();
+						<span class="kw">let </span><span class="kw-2">mut </span>decoded = <span class="number">0usize</span>;
 
-					#(
-						#<span class="macro">frame_support::__private::log::debug!</span>(target: <span class="string">"runtime::try-decode-state"</span>, <span class="string">"trying to decode storage: \
-						{pallet_name}::{}"</span>, <span class="macro">stringify!</span>(#storage_names));
+						#(
+							#<span class="macro">frame_support::__private::log::debug!</span>(target: <span class="string">"runtime::try-decode-state"</span>, <span class="string">"trying to decode storage: \
+							{pallet_name}::{}"</span>, <span class="macro">stringify!</span>(#storage_names));
 
-						<span class="kw">match </span>&lt;#storage_names <span class="kw">as </span>#frame_support::traits::TryDecodeEntireStorage&gt;::try_decode_entire_state() {
-							<span class="prelude-val">Ok</span>(count) =&gt; {
-								decoded += count;
-							},
-							<span class="prelude-val">Err</span>(err) =&gt; {
-								errors.extend(err);
-							},
+							<span class="kw">match </span>&lt;#storage_names <span class="kw">as </span>#frame_support::traits::TryDecodeEntireStorage&gt;::try_decode_entire_state() {
+								<span class="prelude-val">Ok</span>(count) =&gt; {
+									decoded += count;
+								},
+								<span class="prelude-val">Err</span>(err) =&gt; {
+									errors.extend(err);
+								},
+							}
+						)*
+
+						<span class="kw">if </span>errors.is_empty() {
+							<span class="prelude-val">Ok</span>(decoded)
+						} <span class="kw">else </span>{
+							<span class="prelude-val">Err</span>(errors)
 						}
-					)*
-
-					<span class="kw">if </span>errors.is_empty() {
-						<span class="prelude-val">Ok</span>(decoded)
-					} <span class="kw">else </span>{
-						<span class="prelude-val">Err</span>(errors)
 					}
 				}
 			}
@@ -1821,7 +1837,7 @@
 						.expect(<span class="string">"No name found for the pallet in the runtime! This usually means that the pallet wasn't added to `construct_runtime!`."</span>),
 					entries: {
 						<span class="attr">#[allow(unused_mut)]
-						</span><span class="kw">let </span><span class="kw-2">mut </span>entries = #<span class="macro">frame_support::__private::sp_std::vec!</span>[];
+						</span><span class="kw">let </span><span class="kw-2">mut </span>entries = #<span class="macro">frame_support::__private::vec!</span>[];
 						#( #entries_builder )*
 						entries
 					},

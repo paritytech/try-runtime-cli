@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Event","ProtocolSupport"],"struct":["Handler","RequestProtocol","ResponseProtocol"],"type":["RequestResponseHandler","RequestResponseHandlerEvent"]};

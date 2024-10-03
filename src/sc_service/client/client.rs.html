@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/service/src/client/client.rs`."><title>client.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_service" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/client/service/src/client/client.rs`."><title>client.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_service" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -2129,6 +2129,9 @@
 <a href="#2129" id="2129">2129</a>
 <a href="#2130" id="2130">2130</a>
 <a href="#2131" id="2131">2131</a>
+<a href="#2132" id="2132">2132</a>
+<a href="#2133" id="2133">2133</a>
+<a href="#2134" id="2134">2134</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -2149,7 +2152,10 @@
 
 </span><span class="doccomment">//! Substrate Client
 
-</span><span class="kw">use </span><span class="kw">super</span>::block_rules::{BlockRules, LookupResult <span class="kw">as </span>BlockLookupResult};
+</span><span class="kw">use super</span>::{
+	block_rules::{BlockRules, LookupResult <span class="kw">as </span>BlockLookupResult},
+	CodeProvider,
+};
 <span class="kw">use </span><span class="kw">crate</span>::client::notification_pinning::NotificationPinningWorker;
 <span class="kw">use </span>log::{debug, info, trace, warn};
 <span class="kw">use </span>parking_lot::{Mutex, RwLock};
@@ -2188,10 +2194,7 @@
 
 <span class="kw">use </span>sc_utils::mpsc::{tracing_unbounded, TracingUnboundedSender};
 <span class="kw">use </span>sp_core::{
-	storage::{
-		well_known_keys, ChildInfo, ChildType, PrefixedStorageKey, StorageChild, StorageData,
-		StorageKey,
-	},
+	storage::{ChildInfo, ChildType, PrefixedStorageKey, StorageChild, StorageData, StorageKey},
 	traits::{CallContext, SpawnNamed},
 };
 <span class="kw">use </span>sp_runtime::{
@@ -2246,6 +2249,7 @@
 	config: ClientConfig&lt;Block&gt;,
 	telemetry: <span class="prelude-ty">Option</span>&lt;TelemetryHandle&gt;,
 	unpin_worker_sender: TracingUnboundedSender&lt;UnpinWorkerMessage&lt;Block&gt;&gt;,
+	code_provider: CodeProvider&lt;Block, B, E&gt;,
 	_phantom: PhantomData&lt;RA&gt;,
 }
 
@@ -2541,6 +2545,7 @@
 			Block,
 			BlockImportOperation = &lt;B <span class="kw">as </span>backend::Backend&lt;Block&gt;&gt;::BlockImportOperation,
 		&gt;,
+		E: Clone,
 		B: <span class="lifetime">'static</span>,
 	{
 		<span class="kw">let </span>info = backend.blockchain().info();
@@ -2569,6 +2574,7 @@
 		);
 		<span class="kw">let </span>unpin_worker = NotificationPinningWorker::new(rx, backend.clone());
 		spawn_handle.spawn(<span class="string">"notification-pinning-worker"</span>, <span class="prelude-val">None</span>, Box::pin(unpin_worker.run()));
+		<span class="kw">let </span>code_provider = CodeProvider::new(<span class="kw-2">&amp;</span>config, executor.clone(), backend.clone())<span class="question-mark">?</span>;
 
 		<span class="prelude-val">Ok</span>(Client {
 			backend,
@@ -2584,6 +2590,7 @@
 			config,
 			telemetry,
 			unpin_worker_sender,
+			code_provider,
 			_phantom: Default::default(),
 		})
 	}
@@ -2606,13 +2613,10 @@
 	}
 
 	<span class="doccomment">/// Get the code at a given block.
+	///
+	/// This takes any potential substitutes into account, but ignores overrides.
 	</span><span class="kw">pub fn </span>code_at(<span class="kw-2">&amp;</span><span class="self">self</span>, hash: Block::Hash) -&gt; sp_blockchain::Result&lt;Vec&lt;u8&gt;&gt; {
-		<span class="prelude-val">Ok</span>(StorageProvider::storage(<span class="self">self</span>, hash, <span class="kw-2">&amp;</span>StorageKey(well_known_keys::CODE.to_vec()))<span class="question-mark">?
-			</span>.expect(
-				<span class="string">"None is returned if there's no value stored for the given key;\
-				':code' key is always defined; qed"</span>,
-			)
-			.<span class="number">0</span>)
+		<span class="self">self</span>.code_provider.code_at_ignoring_overrides(hash)
 	}
 
 	<span class="doccomment">/// Get the RuntimeVersion at a given block.
@@ -2643,6 +2647,7 @@
 			fork_choice,
 			intermediates,
 			import_existing,
+			create_gap,
 			..
 		} = import_block;
 
@@ -2666,6 +2671,8 @@
 		<span class="kw">let </span>height = (<span class="kw-2">*</span>import_headers.post().number()).saturated_into::&lt;u64&gt;();
 
 		<span class="kw-2">*</span><span class="self">self</span>.importing_block.write() = <span class="prelude-val">Some</span>(hash);
+
+		operation.op.set_create_gap(create_gap);
 
 		<span class="kw">let </span>result = <span class="self">self</span>.execute_and_import_block(
 			operation,
@@ -2734,9 +2741,8 @@
 		}
 
 		<span class="kw">let </span>info = <span class="self">self</span>.backend.blockchain().info();
-		<span class="kw">let </span>gap_block = info
-			.block_gap
-			.map_or(<span class="bool-val">false</span>, |(start, <span class="kw">_</span>)| <span class="kw-2">*</span>import_headers.post().number() == start);
+		<span class="kw">let </span>gap_block =
+			info.block_gap.map_or(<span class="bool-val">false</span>, |gap| <span class="kw-2">*</span>import_headers.post().number() == gap.start);
 
 		<span class="comment">// the block is lower than our last finalized block so it must revert
 		// finality, refusing import.
@@ -3884,7 +3890,7 @@
 	/// If you are not sure that there are no BlockImport objects provided by the consensus
 	/// algorithm, don't use this function.
 	</span><span class="kw">async fn </span>import_block(
-		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		<span class="kw-2">mut </span>import_block: BlockImportParams&lt;Block&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;ImportResult, <span class="self">Self</span>::Error&gt; {
 		<span class="kw">let </span>span = <span class="macro">tracing::span!</span>(tracing::Level::DEBUG, <span class="string">"import_block"</span>);
@@ -3910,7 +3916,7 @@
 
 	<span class="doccomment">/// Check block preconditions.
 	</span><span class="kw">async fn </span>check_block(
-		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		block: BlockCheckParams&lt;Block&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;ImportResult, <span class="self">Self</span>::Error&gt; {
 		<span class="kw">let </span>BlockCheckParams {
@@ -3984,18 +3990,18 @@
 {
 	<span class="kw">type </span>Error = ConsensusError;
 
-	<span class="kw">async fn </span>import_block(
-		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
-		import_block: BlockImportParams&lt;Block&gt;,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;ImportResult, <span class="self">Self</span>::Error&gt; {
-		(<span class="kw-2">&amp;*</span><span class="self">self</span>).import_block(import_block).<span class="kw">await
-	</span>}
-
 	<span class="kw">async fn </span>check_block(
-		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		block: BlockCheckParams&lt;Block&gt;,
 	) -&gt; <span class="prelude-ty">Result</span>&lt;ImportResult, <span class="self">Self</span>::Error&gt; {
-		(<span class="kw-2">&amp;*</span><span class="self">self</span>).check_block(block).<span class="kw">await
+		(<span class="kw-2">&amp;</span><span class="self">self</span>).check_block(block).<span class="kw">await
+	</span>}
+
+	<span class="kw">async fn </span>import_block(
+		<span class="kw-2">&amp;</span><span class="self">self</span>,
+		import_block: BlockImportParams&lt;Block&gt;,
+	) -&gt; <span class="prelude-ty">Result</span>&lt;ImportResult, <span class="self">Self</span>::Error&gt; {
+		(<span class="kw-2">&amp;</span><span class="self">self</span>).import_block(import_block).<span class="kw">await
 	</span>}
 }
 

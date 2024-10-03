@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-core-0.22.5/src/client/error.rs`."><title>error.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="jsonrpsee_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-core-0.24.5/src/client/error.rs`."><title>error.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="jsonrpsee_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -67,9 +67,6 @@
 <a href="#67" id="67">67</a>
 <a href="#68" id="68">68</a>
 <a href="#69" id="69">69</a>
-<a href="#70" id="70">70</a>
-<a href="#71" id="71">71</a>
-<a href="#72" id="72">72</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any
@@ -98,7 +95,7 @@
 
 </span><span class="doccomment">//! Error type for client(s).
 
-</span><span class="kw">use crate</span>::{params::EmptyBatchRequest, RegisterMethodError};
+</span><span class="kw">use crate</span>::{params::EmptyBatchRequest, BoxError, RegisterMethodError};
 <span class="kw">use </span>jsonrpsee_types::{ErrorObjectOwned, InvalidRequestId};
 <span class="kw">use </span>std::sync::Arc;
 
@@ -109,8 +106,8 @@
 	</span><span class="attr">#[error(<span class="string">"{0}"</span>)]
 	</span>Call(<span class="attr">#[from] </span>ErrorObjectOwned),
 	<span class="doccomment">/// Networking error or error on the low-level protocol layer.
-	</span><span class="attr">#[error(<span class="string">"{0}"</span>)]
-	</span>Transport(<span class="attr">#[source] </span>anyhow::Error),
+	</span><span class="attr">#[error(transparent)]
+	</span>Transport(BoxError),
 	<span class="doccomment">/// The background task has been terminated.
 	</span><span class="attr">#[error(<span class="string">"The background task closed {0}; restart required"</span>)]
 	</span>RestartNeeded(Arc&lt;Error&gt;),
@@ -121,14 +118,11 @@
 	</span><span class="attr">#[error(<span class="string">"Invalid subscription ID"</span>)]
 	</span>InvalidSubscriptionId,
 	<span class="doccomment">/// Invalid request ID.
-	</span><span class="attr">#[error(<span class="string">"{0}"</span>)]
+	</span><span class="attr">#[error(transparent)]
 	</span>InvalidRequestId(<span class="attr">#[from] </span>InvalidRequestId),
 	<span class="doccomment">/// Request timeout
 	</span><span class="attr">#[error(<span class="string">"Request timeout"</span>)]
 	</span>RequestTimeout,
-	<span class="doccomment">/// Max number of request slots exceeded.
-	</span><span class="attr">#[error(<span class="string">"Max concurrent requests exceeded"</span>)]
-	</span>MaxSlotsExceeded,
 	<span class="doccomment">/// Custom error.
 	</span><span class="attr">#[error(<span class="string">"Custom error: {0}"</span>)]
 	</span>Custom(String),
@@ -136,10 +130,10 @@
 	</span><span class="attr">#[error(<span class="string">"Not implemented"</span>)]
 	</span>HttpNotImplemented,
 	<span class="doccomment">/// Empty batch request.
-	</span><span class="attr">#[error(<span class="string">"{0}"</span>)]
+	</span><span class="attr">#[error(transparent)]
 	</span>EmptyBatchRequest(<span class="attr">#[from] </span>EmptyBatchRequest),
 	<span class="doccomment">/// The error returned when registering a method or subscription failed.
-	</span><span class="attr">#[error(<span class="string">"{0}"</span>)]
+	</span><span class="attr">#[error(transparent)]
 	</span>RegisterMethod(<span class="attr">#[from] </span>RegisterMethodError),
 }
 </code></pre></div></section></main></body></html>

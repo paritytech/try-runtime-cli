@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-core-0.22.5/src/server/rpc_module.rs`."><title>rpc_module.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="jsonrpsee_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-core-0.24.5/src/server/rpc_module.rs`."><title>rpc_module.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="jsonrpsee_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1034,6 +1034,27 @@
 <a href="#1034" id="1034">1034</a>
 <a href="#1035" id="1035">1035</a>
 <a href="#1036" id="1036">1036</a>
+<a href="#1037" id="1037">1037</a>
+<a href="#1038" id="1038">1038</a>
+<a href="#1039" id="1039">1039</a>
+<a href="#1040" id="1040">1040</a>
+<a href="#1041" id="1041">1041</a>
+<a href="#1042" id="1042">1042</a>
+<a href="#1043" id="1043">1043</a>
+<a href="#1044" id="1044">1044</a>
+<a href="#1045" id="1045">1045</a>
+<a href="#1046" id="1046">1046</a>
+<a href="#1047" id="1047">1047</a>
+<a href="#1048" id="1048">1048</a>
+<a href="#1049" id="1049">1049</a>
+<a href="#1050" id="1050">1050</a>
+<a href="#1051" id="1051">1051</a>
+<a href="#1052" id="1052">1052</a>
+<a href="#1053" id="1053">1053</a>
+<a href="#1054" id="1054">1054</a>
+<a href="#1055" id="1055">1055</a>
+<a href="#1056" id="1056">1056</a>
+<a href="#1057" id="1057">1057</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any
@@ -1078,6 +1099,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::server::{ResponsePayload, LOG_TARGET};
 <span class="kw">use </span><span class="kw">crate</span>::traits::ToRpcParams;
 <span class="kw">use </span>futures_util::{future::BoxFuture, FutureExt};
+<span class="kw">use </span>http::Extensions;
 <span class="kw">use </span>jsonrpsee_types::error::{ErrorCode, ErrorObject};
 <span class="kw">use </span>jsonrpsee_types::{
 	ErrorObjectOwned, Id, Params, Request, Response, ResponseSuccess, SubscriptionId <span class="kw">as </span>RpcSubscriptionId,
@@ -1092,24 +1114,36 @@
 /// implemented as a function pointer to a `Fn` function taking four arguments:
 /// the `id`, `params`, a channel the function uses to communicate the result (or error)
 /// back to `jsonrpsee`, and the connection ID (useful for the websocket transport).
-</span><span class="kw">pub type </span>SyncMethod = Arc&lt;<span class="kw">dyn </span>Send + Sync + Fn(Id, Params, MaxResponseSize) -&gt; MethodResponse&gt;;
+</span><span class="kw">pub type </span>SyncMethod = Arc&lt;<span class="kw">dyn </span>Send + Sync + Fn(Id, Params, MaxResponseSize, Extensions) -&gt; MethodResponse&gt;;
 <span class="doccomment">/// Similar to [`SyncMethod`], but represents an asynchronous handler.
-</span><span class="kw">pub type </span>AsyncMethod&lt;<span class="lifetime">'a</span>&gt; =
-	Arc&lt;<span class="kw">dyn </span>Send + Sync + Fn(Id&lt;<span class="lifetime">'a</span>&gt;, Params&lt;<span class="lifetime">'a</span>&gt;, ConnectionId, MaxResponseSize) -&gt; BoxFuture&lt;<span class="lifetime">'a</span>, MethodResponse&gt;&gt;;
+</span><span class="kw">pub type </span>AsyncMethod&lt;<span class="lifetime">'a</span>&gt; = Arc&lt;
+	<span class="kw">dyn </span>Send
+		+ Sync
+		+ Fn(Id&lt;<span class="lifetime">'a</span>&gt;, Params&lt;<span class="lifetime">'a</span>&gt;, ConnectionId, MaxResponseSize, Extensions) -&gt; BoxFuture&lt;<span class="lifetime">'a</span>, MethodResponse&gt;,
+&gt;;
 
-<span class="doccomment">/// Similar to [`AsyncMethod`], but represents an asynchronous handler with connection details.
-</span><span class="attr">#[doc(hidden)]
-</span><span class="kw">pub type </span>AsyncMethodWithDetails&lt;<span class="lifetime">'a</span>&gt; =
-	Arc&lt;<span class="kw">dyn </span>Send + Sync + Fn(Id&lt;<span class="lifetime">'a</span>&gt;, Params&lt;<span class="lifetime">'a</span>&gt;, ConnectionDetails, MaxResponseSize) -&gt; BoxFuture&lt;<span class="lifetime">'a</span>, MethodResponse&gt;&gt;;
 <span class="doccomment">/// Method callback for subscriptions.
 </span><span class="kw">pub type </span>SubscriptionMethod&lt;<span class="lifetime">'a</span>&gt; =
-	Arc&lt;<span class="kw">dyn </span>Send + Sync + Fn(Id, Params, MethodSink, SubscriptionState) -&gt; BoxFuture&lt;<span class="lifetime">'a</span>, MethodResponse&gt;&gt;;
+	Arc&lt;<span class="kw">dyn </span>Send + Sync + Fn(Id, Params, MethodSink, SubscriptionState, Extensions) -&gt; BoxFuture&lt;<span class="lifetime">'a</span>, MethodResponse&gt;&gt;;
 <span class="comment">// Method callback to unsubscribe.
-</span><span class="kw">type </span>UnsubscriptionMethod = Arc&lt;<span class="kw">dyn </span>Send + Sync + Fn(Id, Params, ConnectionId, MaxResponseSize) -&gt; MethodResponse&gt;;
+</span><span class="kw">type </span>UnsubscriptionMethod =
+	Arc&lt;<span class="kw">dyn </span>Send + Sync + Fn(Id, Params, ConnectionId, MaxResponseSize, Extensions) -&gt; MethodResponse&gt;;
 
-<span class="doccomment">/// Connection ID, used for stateful protocol such as WebSockets.
-/// For stateless protocols such as http it's unused, so feel free to set it some hardcoded value.
-</span><span class="kw">pub type </span>ConnectionId = usize;
+<span class="doccomment">/// Connection ID.
+</span><span class="attr">#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default, serde::Deserialize, serde::Serialize)]
+</span><span class="kw">pub struct </span>ConnectionId(<span class="kw">pub </span>usize);
+
+<span class="kw">impl </span>From&lt;u32&gt; <span class="kw">for </span>ConnectionId {
+	<span class="kw">fn </span>from(id: u32) -&gt; <span class="self">Self </span>{
+		<span class="self">Self</span>(id <span class="kw">as </span>usize)
+	}
+}
+
+<span class="kw">impl </span>From&lt;usize&gt; <span class="kw">for </span>ConnectionId {
+	<span class="kw">fn </span>from(id: usize) -&gt; <span class="self">Self </span>{
+		<span class="self">Self</span>(id)
+	}
+}
 
 <span class="doccomment">/// Max response size.
 </span><span class="kw">pub type </span>MaxResponseSize = usize;
@@ -1120,35 +1154,14 @@
 ///   - a [`mpsc::UnboundedReceiver&lt;String&gt;`] to receive future subscription results
 </span><span class="kw">pub type </span>RawRpcResponse = (String, mpsc::Receiver&lt;String&gt;);
 
-<span class="doccomment">/// The connection details exposed to the server methods.
-</span><span class="attr">#[derive(Debug, Clone)]
-#[allow(missing_copy_implementations)]
-#[doc(hidden)]
-</span><span class="kw">pub struct </span>ConnectionDetails {
-	id: ConnectionId,
-}
-
-<span class="kw">impl </span>ConnectionDetails {
-	<span class="doccomment">/// Construct a new [`ConnectionDetails`].
-	</span><span class="attr">#[doc(hidden)]
-	</span><span class="kw">pub fn </span>_new(id: ConnectionId) -&gt; ConnectionDetails {
-		<span class="self">Self </span>{ id }
-	}
-
-	<span class="doccomment">/// Get the connection ID.
-	</span><span class="kw">pub fn </span>id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ConnectionId {
-		<span class="self">self</span>.id
-	}
-}
-
 <span class="doccomment">/// The error that can occur when [`Methods::call`] or [`Methods::subscribe`] is invoked.
 </span><span class="attr">#[derive(thiserror::Error, Debug)]
 </span><span class="kw">pub enum </span>MethodsError {
 	<span class="doccomment">/// Failed to parse the call as valid JSON-RPC.
-	</span><span class="attr">#[error(<span class="string">"{0}"</span>)]
+	</span><span class="attr">#[error(transparent)]
 	</span>Parse(<span class="attr">#[from] </span>serde_json::Error),
 	<span class="doccomment">/// Specific JSON-RPC error.
-	</span><span class="attr">#[error(<span class="string">"{0}"</span>)]
+	</span><span class="attr">#[error(transparent)]
 	</span>JsonRpc(<span class="attr">#[from] </span>ErrorObjectOwned),
 	<span class="attr">#[error(<span class="string">"Invalid subscription ID: `{0}`"</span>)]
 	</span><span class="doccomment">/// Invalid subscription ID.
@@ -1193,9 +1206,6 @@
 	</span>Sync(SyncMethod),
 	<span class="doccomment">/// Asynchronous method handler.
 	</span>Async(AsyncMethod&lt;<span class="lifetime">'static</span>&gt;),
-	<span class="doccomment">/// Asynchronous method handler with details.
-	</span><span class="attr">#[doc(hidden)]
-	</span>AsyncWithDetails(AsyncMethodWithDetails&lt;<span class="lifetime">'static</span>&gt;),
 	<span class="doccomment">/// Subscription method handler.
 	</span>Subscription(SubscriptionMethod&lt;<span class="lifetime">'static</span>&gt;),
 	<span class="doccomment">/// Unsubscription method handler.
@@ -1249,7 +1259,6 @@
 	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
 		<span class="kw">match </span><span class="self">self </span>{
 			<span class="self">Self</span>::Async(<span class="kw">_</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">"Async"</span>),
-			<span class="self">Self</span>::AsyncWithDetails(<span class="kw">_</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">"AsyncWithDetails"</span>),
 			<span class="self">Self</span>::Sync(<span class="kw">_</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">"Sync"</span>),
 			<span class="self">Self</span>::Subscription(<span class="kw">_</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">"Subscription"</span>),
 			<span class="self">Self</span>::Unsubscription(<span class="kw">_</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">"Unsubscription"</span>),
@@ -1261,6 +1270,7 @@
 </span><span class="attr">#[derive(Default, Debug, Clone)]
 </span><span class="kw">pub struct </span>Methods {
 	callbacks: Arc&lt;FxHashMap&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, MethodCallback&gt;&gt;,
+	extensions: Extensions,
 }
 
 <span class="kw">impl </span>Methods {
@@ -1340,7 +1350,7 @@
 	///     use jsonrpsee::core::RpcResult;
 	///
 	///     let mut module = RpcModule::new(());
-	///     module.register_method::&lt;RpcResult&lt;u64&gt;, _&gt;("echo_call", |params, _| {
+	///     module.register_method::&lt;RpcResult&lt;u64&gt;, _&gt;("echo_call", |params, _, _| {
 	///         params.one::&lt;u64&gt;().map_err(Into::into)
 	///     }).unwrap();
 	///
@@ -1376,7 +1386,7 @@
 	///     use futures_util::StreamExt;
 	///
 	///     let mut module = RpcModule::new(());
-	///     module.register_subscription("hi", "hi", "goodbye", |_, pending, _| async {
+	///     module.register_subscription("hi", "hi", "goodbye", |_, pending, _, _| async {
 	///         let sink = pending.accept().await?;
 	///
 	///         // see comment above.
@@ -1414,20 +1424,25 @@
 		subscription_permit: SubscriptionPermit,
 	) -&gt; RawRpcResponse {
 		<span class="kw">let </span>(tx, <span class="kw-2">mut </span>rx) = mpsc::channel(buf_size);
-		<span class="kw">let </span>id = req.id.clone();
-		<span class="kw">let </span>params = Params::new(req.params.as_ref().map(|params| params.as_ref().get()));
+		<span class="comment">// The extensions is always empty when calling the method directly because decoding an JSON-RPC
+		// request doesn't have any extensions.
+		</span><span class="kw">let </span>Request { id, method, params, .. } = req;
+		<span class="kw">let </span>params = Params::new(params.as_ref().map(|params| params.as_ref().get()));
+		<span class="kw">let </span>max_response_size = usize::MAX;
+		<span class="kw">let </span>conn_id = ConnectionId(<span class="number">0</span>);
+		<span class="kw">let </span><span class="kw-2">mut </span>ext = <span class="self">self</span>.extensions.clone();
+		ext.insert(conn_id);
 
-		<span class="kw">let </span>response = <span class="kw">match </span><span class="self">self</span>.method(<span class="kw-2">&amp;</span>req.method) {
-			<span class="prelude-val">None </span>=&gt; MethodResponse::error(req.id, ErrorObject::from(ErrorCode::MethodNotFound)),
-			<span class="prelude-val">Some</span>(MethodCallback::Sync(cb)) =&gt; (cb)(id, params, usize::MAX),
-			<span class="prelude-val">Some</span>(MethodCallback::Async(cb)) =&gt; (cb)(id.into_owned(), params.into_owned(), <span class="number">0</span>, usize::MAX).<span class="kw">await</span>,
-			<span class="prelude-val">Some</span>(MethodCallback::AsyncWithDetails(cb)) =&gt; {
-				(cb)(id.into_owned(), params.into_owned(), ConnectionDetails::_new(<span class="number">0</span>), usize::MAX).<span class="kw">await
+		<span class="kw">let </span>response = <span class="kw">match </span><span class="self">self</span>.method(<span class="kw-2">&amp;</span>method) {
+			<span class="prelude-val">None </span>=&gt; MethodResponse::error(id, ErrorObject::from(ErrorCode::MethodNotFound)),
+			<span class="prelude-val">Some</span>(MethodCallback::Sync(cb)) =&gt; (cb)(id, params, max_response_size, ext),
+			<span class="prelude-val">Some</span>(MethodCallback::Async(cb)) =&gt; {
+				(cb)(id.into_owned(), params.into_owned(), conn_id, max_response_size, ext).<span class="kw">await
 			</span>}
 			<span class="prelude-val">Some</span>(MethodCallback::Subscription(cb)) =&gt; {
 				<span class="kw">let </span>conn_state =
-					SubscriptionState { conn_id: <span class="number">0</span>, id_provider: <span class="kw-2">&amp;</span>RandomIntegerIdProvider, subscription_permit };
-				<span class="kw">let </span>res = (cb)(id, params, MethodSink::new(tx.clone()), conn_state).<span class="kw">await</span>;
+					SubscriptionState { conn_id, id_provider: <span class="kw-2">&amp;</span>RandomIntegerIdProvider, subscription_permit };
+				<span class="kw">let </span>res = (cb)(id, params, MethodSink::new(tx.clone()), conn_state, ext).<span class="kw">await</span>;
 
 				<span class="comment">// This message is not used because it's used for metrics so we discard in other to
 				// not read once this is used for subscriptions.
@@ -1437,7 +1452,7 @@
 
 				res
 			}
-			<span class="prelude-val">Some</span>(MethodCallback::Unsubscription(cb)) =&gt; (cb)(id, params, <span class="number">0</span>, usize::MAX),
+			<span class="prelude-val">Some</span>(MethodCallback::Unsubscription(cb)) =&gt; (cb)(id, params, conn_id, max_response_size, ext),
 		};
 
 		<span class="kw">let </span>is_success = response.is_success();
@@ -1447,7 +1462,7 @@
 			n.notify(is_success);
 		}
 
-		<span class="macro">tracing::trace!</span>(target: LOG_TARGET, <span class="string">"[Methods::inner_call] Method: {}, response: {}"</span>, req.method, rp);
+		<span class="macro">tracing::trace!</span>(target: LOG_TARGET, <span class="string">"[Methods::inner_call] Method: {}, response: {}"</span>, method, rp);
 
 		(rp, rx)
 	}
@@ -1467,7 +1482,7 @@
 	///     use jsonrpsee::core::{EmptyServerParams, RpcResult};
 	///
 	///     let mut module = RpcModule::new(());
-	///     module.register_subscription("hi", "hi", "goodbye", |_, pending, _| async move {
+	///     module.register_subscription("hi", "hi", "goodbye", |_, pending, _, _| async move {
 	///         let sink = pending.accept().await?;
 	///         sink.send("one answer".into()).await?;
 	///         Ok(())
@@ -1514,6 +1529,43 @@
 	<span class="doccomment">/// Returns an `Iterator` with all the method names registered on this server.
 	</span><span class="kw">pub fn </span>method_names(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl </span>Iterator&lt;Item = <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt; + <span class="lifetime">'_ </span>{
 		<span class="self">self</span>.callbacks.keys().copied()
+	}
+
+	<span class="doccomment">/// Similar to [`Methods::extensions_mut`] but it's immutable.
+	</span><span class="kw">pub fn </span>extensions(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Extensions {
+		<span class="kw-2">&amp;</span><span class="self">self</span>.extensions
+	}
+
+	<span class="doccomment">/// Get a mutable reference to the extensions to add or remove data from
+	/// the extensions.
+	///
+	/// This only affects direct calls to the methods and subscriptions
+	/// and can be used for example to unit test the API without a server.
+	///
+	/// # Examples
+	///
+	/// ```
+	/// #[tokio::main]
+	/// async fn main() {
+	///     use jsonrpsee::{RpcModule, IntoResponse, Extensions};
+	///     use jsonrpsee::core::RpcResult;
+	///
+	///     let mut module = RpcModule::new(());
+	///     module.register_method::&lt;RpcResult&lt;u64&gt;, _&gt;("magic_multiply", |params, _, ext| {
+	///         let magic = ext.get::&lt;u64&gt;().copied().unwrap();
+	///         let val = params.one::&lt;u64&gt;()?;
+	///         Ok(val * magic)
+	///     }).unwrap();
+	///
+	///     // inject arbitrary data into the extensions.
+	///     module.extensions_mut().insert(33_u64);
+	///
+	///     let magic: u64 = module.call("magic_multiply", [1_u64]).await.unwrap();
+	///     assert_eq!(magic, 33);
+	/// }
+	/// ```
+	</span><span class="kw">pub fn </span>extensions_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>Extensions {
+		<span class="kw-2">&amp;mut </span><span class="self">self</span>.extensions
 	}
 }
 
@@ -1576,7 +1628,7 @@
 	/// use jsonrpsee_core::server::RpcModule;
 	///
 	/// let mut module = RpcModule::new(());
-	/// module.register_method("say_hello", |_params, _ctx| "lo").unwrap();
+	/// module.register_method("say_hello", |_params, _ctx, _| "lo").unwrap();
 	/// ```
 	</span><span class="kw">pub fn </span>register_method&lt;R, F&gt;(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
@@ -1586,16 +1638,24 @@
 	<span class="kw">where
 		</span>Context: Send + Sync + <span class="lifetime">'static</span>,
 		R: IntoResponse + <span class="lifetime">'static</span>,
-		F: Fn(Params, <span class="kw-2">&amp;</span>Context) -&gt; R + Send + Sync + <span class="lifetime">'static</span>,
+		F: Fn(Params, <span class="kw-2">&amp;</span>Context, <span class="kw-2">&amp;</span>Extensions) -&gt; R + Send + Sync + <span class="lifetime">'static</span>,
 	{
 		<span class="kw">let </span>ctx = <span class="self">self</span>.ctx.clone();
 		<span class="self">self</span>.methods.verify_and_insert(
 			method_name,
-			MethodCallback::Sync(Arc::new(<span class="kw">move </span>|id, params, max_response_size| {
-				<span class="kw">let </span>rp = callback(params, <span class="kw-2">&amp;*</span>ctx).into_response();
-				MethodResponse::response(id, rp, max_response_size)
+			MethodCallback::Sync(Arc::new(<span class="kw">move </span>|id, params, max_response_size, extensions| {
+				<span class="kw">let </span>rp = callback(params, <span class="kw-2">&amp;*</span>ctx, <span class="kw-2">&amp;</span>extensions).into_response();
+				MethodResponse::response(id, rp, max_response_size).with_extensions(extensions)
 			})),
 		)
+	}
+
+	<span class="doccomment">/// Removes the method if it exists.
+	///
+	/// Be aware that a subscription consist of two methods, `subscribe` and `unsubscribe` and
+	/// it's the caller responsibility to remove both `subscribe` and `unsubscribe` methods for subscriptions.
+	</span><span class="kw">pub fn </span>remove_method(<span class="kw-2">&amp;mut </span><span class="self">self</span>, method_name: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str) -&gt; <span class="prelude-ty">Option</span>&lt;MethodCallback&gt; {
+		<span class="self">self</span>.methods.mut_callbacks().remove(method_name)
 	}
 
 	<span class="doccomment">/// Register a new asynchronous RPC method, which computes the response with the given callback.
@@ -1606,7 +1666,7 @@
 	/// use jsonrpsee_core::server::RpcModule;
 	///
 	/// let mut module = RpcModule::new(());
-	/// module.register_async_method("say_hello", |_params, _ctx| async { "lo" }).unwrap();
+	/// module.register_async_method("say_hello", |_params, _ctx, _| async { "lo" }).unwrap();
 	///
 	/// ```
 	///
@@ -1618,18 +1678,20 @@
 	<span class="kw">where
 		</span>R: IntoResponse + <span class="lifetime">'static</span>,
 		Fut: Future&lt;Output = R&gt; + Send,
-		Fun: (Fn(Params&lt;<span class="lifetime">'static</span>&gt;, Arc&lt;Context&gt;) -&gt; Fut) + Clone + Send + Sync + <span class="lifetime">'static</span>,
+		Fun: (Fn(Params&lt;<span class="lifetime">'static</span>&gt;, Arc&lt;Context&gt;, Extensions) -&gt; Fut) + Clone + Send + Sync + <span class="lifetime">'static</span>,
 	{
 		<span class="kw">let </span>ctx = <span class="self">self</span>.ctx.clone();
 		<span class="self">self</span>.methods.verify_and_insert(
 			method_name,
-			MethodCallback::Async(Arc::new(<span class="kw">move </span>|id, params, <span class="kw">_</span>, max_response_size| {
+			MethodCallback::Async(Arc::new(<span class="kw">move </span>|id, params, <span class="kw">_</span>, max_response_size, extensions| {
 				<span class="kw">let </span>ctx = ctx.clone();
 				<span class="kw">let </span>callback = callback.clone();
 
-				<span class="kw">let </span>future = <span class="kw">async move </span>{
-					<span class="kw">let </span>rp = callback(params, ctx).<span class="kw">await</span>.into_response();
-					MethodResponse::response(id, rp, max_response_size)
+				<span class="comment">// NOTE: the extensions can't be mutated at this point so
+				// it's safe to clone it.
+				</span><span class="kw">let </span>future = <span class="kw">async move </span>{
+					<span class="kw">let </span>rp = callback(params, ctx, extensions.clone()).<span class="kw">await</span>.into_response();
+					MethodResponse::response(id, rp, max_response_size).with_extensions(extensions)
 				};
 				future.boxed()
 			})),
@@ -1647,24 +1709,29 @@
 	<span class="kw">where
 		</span>Context: Send + Sync + <span class="lifetime">'static</span>,
 		R: IntoResponse + <span class="lifetime">'static</span>,
-		F: Fn(Params, Arc&lt;Context&gt;) -&gt; R + Clone + Send + Sync + <span class="lifetime">'static</span>,
+		F: Fn(Params, Arc&lt;Context&gt;, Extensions) -&gt; R + Clone + Send + Sync + <span class="lifetime">'static</span>,
 	{
 		<span class="kw">let </span>ctx = <span class="self">self</span>.ctx.clone();
 		<span class="kw">let </span>callback = <span class="self">self</span>.methods.verify_and_insert(
 			method_name,
-			MethodCallback::Async(Arc::new(<span class="kw">move </span>|id, params, <span class="kw">_</span>, max_response_size| {
+			MethodCallback::Async(Arc::new(<span class="kw">move </span>|id, params, <span class="kw">_</span>, max_response_size, extensions| {
 				<span class="kw">let </span>ctx = ctx.clone();
 				<span class="kw">let </span>callback = callback.clone();
 
+				<span class="comment">// NOTE: the extensions can't be mutated at this point so
+				// it's safe to clone it.
+				</span><span class="kw">let </span>extensions2 = extensions.clone();
+
 				tokio::task::spawn_blocking(<span class="kw">move </span>|| {
-					<span class="kw">let </span>rp = callback(params, ctx).into_response();
-					MethodResponse::response(id, rp, max_response_size)
+					<span class="kw">let </span>rp = callback(params, ctx, extensions2.clone()).into_response();
+					MethodResponse::response(id, rp, max_response_size).with_extensions(extensions2)
 				})
 				.map(|result| <span class="kw">match </span>result {
 					<span class="prelude-val">Ok</span>(r) =&gt; r,
 					<span class="prelude-val">Err</span>(err) =&gt; {
 						<span class="macro">tracing::error!</span>(target: LOG_TARGET, <span class="string">"Join error for blocking RPC method: {:?}"</span>, err);
 						MethodResponse::error(Id::Null, ErrorObject::from(ErrorCode::InternalError))
+							.with_extensions(extensions)
 					}
 				})
 				.boxed()
@@ -1672,43 +1739,6 @@
 		)<span class="question-mark">?</span>;
 
 		<span class="prelude-val">Ok</span>(callback)
-	}
-
-	<span class="doccomment">/// Register a new raw RPC method, which computes the response with the given callback.
-	///
-	/// ## Examples
-	///
-	/// ```
-	/// use jsonrpsee_core::server::RpcModule;
-	///
-	/// let mut module = RpcModule::new(());
-	/// module.register_async_method_with_details("say_hello", |_params, _connection_details, _ctx| async { "lo" }).unwrap();
-	/// ```
-	</span><span class="attr">#[doc(hidden)]
-	</span><span class="kw">pub fn </span>register_async_method_with_details&lt;R, Fun, Fut&gt;(
-		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
-		method_name: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
-		callback: Fun,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;mut </span>MethodCallback, RegisterMethodError&gt;
-	<span class="kw">where
-		</span>R: IntoResponse + <span class="lifetime">'static</span>,
-		Fut: Future&lt;Output = R&gt; + Send,
-		Fun: (Fn(Params&lt;<span class="lifetime">'static</span>&gt;, ConnectionDetails, Arc&lt;Context&gt;) -&gt; Fut) + Clone + Send + Sync + <span class="lifetime">'static</span>,
-	{
-		<span class="kw">let </span>ctx = <span class="self">self</span>.ctx.clone();
-		<span class="self">self</span>.methods.verify_and_insert(
-			method_name,
-			MethodCallback::AsyncWithDetails(Arc::new(<span class="kw">move </span>|id, params, connection_details, max_response_size| {
-				<span class="kw">let </span>ctx = ctx.clone();
-				<span class="kw">let </span>callback = callback.clone();
-
-				<span class="kw">let </span>future = <span class="kw">async move </span>{
-					<span class="kw">let </span>rp = callback(params, connection_details, ctx).<span class="kw">await</span>.into_response();
-					MethodResponse::response(id, rp, max_response_size)
-				};
-				future.boxed()
-			})),
-		)
 	}
 
 	<span class="doccomment">/// Register a new publish/subscribe interface using JSON-RPC notifications.
@@ -1773,7 +1803,7 @@
 	/// use jsonrpsee_types::ErrorObjectOwned;
 	///
 	/// let mut ctx = RpcModule::new(99_usize);
-	/// ctx.register_subscription("sub", "notif_name", "unsub", |params, pending, ctx| async move {
+	/// ctx.register_subscription("sub", "notif_name", "unsub", |params, pending, ctx, _| async move {
 	///
 	///     let x = match params.one::&lt;usize&gt;() {
 	///         Ok(x) =&gt; x,
@@ -1814,7 +1844,11 @@
 	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;mut </span>MethodCallback, RegisterMethodError&gt;
 	<span class="kw">where
 		</span>Context: Send + Sync + <span class="lifetime">'static</span>,
-		F: (Fn(Params&lt;<span class="lifetime">'static</span>&gt;, PendingSubscriptionSink, Arc&lt;Context&gt;) -&gt; Fut) + Send + Sync + Clone + <span class="lifetime">'static</span>,
+		F: (Fn(Params&lt;<span class="lifetime">'static</span>&gt;, PendingSubscriptionSink, Arc&lt;Context&gt;, Extensions) -&gt; Fut)
+			+ Send
+			+ Sync
+			+ Clone
+			+ <span class="lifetime">'static</span>,
 		Fut: Future&lt;Output = R&gt; + Send + <span class="lifetime">'static</span>,
 		R: IntoSubscriptionCloseResponse + Send,
 	{
@@ -1825,7 +1859,7 @@
 		</span><span class="kw">let </span>callback = {
 			<span class="self">self</span>.methods.verify_and_insert(
 				subscribe_method_name,
-				MethodCallback::Subscription(Arc::new(<span class="kw">move </span>|id, params, method_sink, conn| {
+				MethodCallback::Subscription(Arc::new(<span class="kw">move </span>|id, params, method_sink, conn, extensions| {
 					<span class="kw">let </span>uniq_sub = SubscriptionKey { conn_id: conn.conn_id, sub_id: conn.id_provider.next_id() };
 
 					<span class="comment">// response to the subscription call.
@@ -1849,7 +1883,10 @@
 					// definition and not the as same when the subscription call has been completed.
 					//
 					// This runs until the subscription callback has completed.
-					</span><span class="kw">let </span>sub_fut = callback(params.into_owned(), sink, ctx.clone());
+					//
+					// NOTE: the extensions can't be mutated at this point so
+					// it's safe to clone it.
+					</span><span class="kw">let </span>sub_fut = callback(params.into_owned(), sink, ctx.clone(), extensions.clone());
 
 					tokio::spawn(<span class="kw">async move </span>{
 						<span class="comment">// This will wait for the subscription future to be resolved
@@ -1875,7 +1912,7 @@
 					<span class="kw">let </span>id = id.clone().into_owned();
 
 					Box::pin(<span class="kw">async move </span>{
-						<span class="kw">match </span>rx.<span class="kw">await </span>{
+						<span class="kw">let </span>rp = <span class="kw">match </span>rx.<span class="kw">await </span>{
 							<span class="prelude-val">Ok</span>(rp) =&gt; {
 								<span class="comment">// If the subscription was accepted then send a message
 								// to subscription task otherwise rely on the drop impl.
@@ -1885,7 +1922,9 @@
 								rp
 							}
 							<span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; MethodResponse::error(id, ErrorCode::InternalError),
-						}
+						};
+
+						rp.with_extensions(extensions)
 					})
 				})),
 			)<span class="question-mark">?
@@ -1909,7 +1948,7 @@
 	/// use jsonrpsee_types::ErrorObjectOwned;
 	///
 	/// let mut ctx = RpcModule::new(99_usize);
-	/// ctx.register_subscription_raw("sub", "notif_name", "unsub", |params, pending, ctx| {
+	/// ctx.register_subscription_raw("sub", "notif_name", "unsub", |params, pending, ctx, _| {
 	///
 	///     // The params are parsed outside the async block below to avoid cloning the bytes.
 	///     let val = match params.one::&lt;usize&gt;() {
@@ -1948,7 +1987,7 @@
 	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;mut </span>MethodCallback, RegisterMethodError&gt;
 	<span class="kw">where
 		</span>Context: Send + Sync + <span class="lifetime">'static</span>,
-		F: (Fn(Params, PendingSubscriptionSink, Arc&lt;Context&gt;) -&gt; R) + Send + Sync + Clone + <span class="lifetime">'static</span>,
+		F: (Fn(Params, PendingSubscriptionSink, Arc&lt;Context&gt;, <span class="kw-2">&amp;</span>Extensions) -&gt; R) + Send + Sync + Clone + <span class="lifetime">'static</span>,
 		R: IntoSubscriptionCloseResponse,
 	{
 		<span class="kw">let </span>subscribers = <span class="self">self</span>.verify_and_register_unsubscribe(subscribe_method_name, unsubscribe_method_name)<span class="question-mark">?</span>;
@@ -1958,7 +1997,7 @@
 		</span><span class="kw">let </span>callback = {
 			<span class="self">self</span>.methods.verify_and_insert(
 				subscribe_method_name,
-				MethodCallback::Subscription(Arc::new(<span class="kw">move </span>|id, params, method_sink, conn| {
+				MethodCallback::Subscription(Arc::new(<span class="kw">move </span>|id, params, method_sink, conn, extensions| {
 					<span class="kw">let </span>uniq_sub = SubscriptionKey { conn_id: conn.conn_id, sub_id: conn.id_provider.next_id() };
 
 					<span class="comment">// response to the subscription call.
@@ -1974,15 +2013,17 @@
 						permit: conn.subscription_permit,
 					};
 
-					callback(params, sink, ctx.clone());
+					callback(params, sink, ctx.clone(), <span class="kw-2">&amp;</span>extensions);
 
 					<span class="kw">let </span>id = id.clone().into_owned();
 
 					Box::pin(<span class="kw">async move </span>{
-						<span class="kw">match </span>rx.<span class="kw">await </span>{
+						<span class="kw">let </span>rp = <span class="kw">match </span>rx.<span class="kw">await </span>{
 							<span class="prelude-val">Ok</span>(rp) =&gt; rp,
 							<span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; MethodResponse::error(id, ErrorCode::InternalError),
-						}
+						};
+
+						rp.with_extensions(extensions)
 					})
 				})),
 			)<span class="question-mark">?
@@ -2012,7 +2053,7 @@
 			<span class="kw">let </span>subscribers = subscribers.clone();
 			<span class="self">self</span>.methods.mut_callbacks().insert(
 				unsubscribe_method_name,
-				MethodCallback::Unsubscription(Arc::new(<span class="kw">move </span>|id, params, conn_id, max_response_size| {
+				MethodCallback::Unsubscription(Arc::new(<span class="kw">move </span>|id, params, conn_id, max_response_size, extensions| {
 					<span class="kw">let </span>sub_id = <span class="kw">match </span>params.one::&lt;RpcSubscriptionId&gt;() {
 						<span class="prelude-val">Ok</span>(sub_id) =&gt; sub_id,
 						<span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
@@ -2024,7 +2065,8 @@
 								id
 							);
 
-							<span class="kw">return </span>MethodResponse::response(id, ResponsePayload::success(<span class="bool-val">false</span>), max_response_size);
+							<span class="kw">return </span>MethodResponse::response(id, ResponsePayload::success(<span class="bool-val">false</span>), max_response_size)
+								.with_extensions(extensions);
 						}
 					};
 

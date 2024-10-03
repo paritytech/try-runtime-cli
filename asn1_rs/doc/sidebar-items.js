@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["derive","recipes"]};
+window.SIDEBAR_ITEMS = {"mod":["debug","derive","recipes"]};

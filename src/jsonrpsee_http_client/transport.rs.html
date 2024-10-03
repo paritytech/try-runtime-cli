@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-http-client-0.22.5/src/transport.rs`."><title>transport.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jsonrpsee_http_client" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-http-client-0.24.5/src/transport.rs`."><title>transport.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jsonrpsee_http_client" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -442,6 +442,37 @@
 <a href="#442" id="442">442</a>
 <a href="#443" id="443">443</a>
 <a href="#444" id="444">444</a>
+<a href="#445" id="445">445</a>
+<a href="#446" id="446">446</a>
+<a href="#447" id="447">447</a>
+<a href="#448" id="448">448</a>
+<a href="#449" id="449">449</a>
+<a href="#450" id="450">450</a>
+<a href="#451" id="451">451</a>
+<a href="#452" id="452">452</a>
+<a href="#453" id="453">453</a>
+<a href="#454" id="454">454</a>
+<a href="#455" id="455">455</a>
+<a href="#456" id="456">456</a>
+<a href="#457" id="457">457</a>
+<a href="#458" id="458">458</a>
+<a href="#459" id="459">459</a>
+<a href="#460" id="460">460</a>
+<a href="#461" id="461">461</a>
+<a href="#462" id="462">462</a>
+<a href="#463" id="463">463</a>
+<a href="#464" id="464">464</a>
+<a href="#465" id="465">465</a>
+<a href="#466" id="466">466</a>
+<a href="#467" id="467">467</a>
+<a href="#468" id="468">468</a>
+<a href="#469" id="469">469</a>
+<a href="#470" id="470">470</a>
+<a href="#471" id="471">471</a>
+<a href="#472" id="472">472</a>
+<a href="#473" id="473">473</a>
+<a href="#474" id="474">474</a>
+<a href="#475" id="475">475</a>
 </pre></div><pre class="rust"><code><span class="comment">// Implementation note: hyper's API is not adapted to async/await at all, and there's
 // unfortunately a lot of boilerplate here that could be removed once/if it gets reworked.
 //
@@ -450,16 +481,18 @@
 // that we need to be guaranteed that hyper doesn't re-use an existing connection if we ever reset
 // the JSON-RPC request id to a value that might have already been used.
 
-</span><span class="kw">use </span>hyper::body::{Body, HttpBody};
-<span class="kw">use </span>hyper::client::{Client, HttpConnector};
+</span><span class="kw">use </span>base64::Engine;
+<span class="kw">use </span>hyper::body::Bytes;
 <span class="kw">use </span>hyper::http::{HeaderMap, HeaderValue};
-<span class="kw">use </span>jsonrpsee_core::client::CertificateStore;
+<span class="kw">use </span>hyper_util::client::legacy::connect::HttpConnector;
+<span class="kw">use </span>hyper_util::client::legacy::Client;
+<span class="kw">use </span>hyper_util::rt::TokioExecutor;
 <span class="kw">use </span>jsonrpsee_core::tracing::client::{rx_log_from_bytes, tx_log_from_str};
+<span class="kw">use </span>jsonrpsee_core::BoxError;
 <span class="kw">use </span>jsonrpsee_core::{
 	http_helpers::{<span class="self">self</span>, HttpError},
 	TEN_MB_SIZE_BYTES,
 };
-<span class="kw">use </span>std::error::Error <span class="kw">as </span>StdError;
 <span class="kw">use </span>std::future::Future;
 <span class="kw">use </span>std::pin::Pin;
 <span class="kw">use </span>std::task::{Context, Poll};
@@ -468,55 +501,60 @@
 <span class="kw">use </span>tower::{Layer, Service, ServiceExt};
 <span class="kw">use </span>url::Url;
 
+<span class="kw">use crate</span>::{HttpBody, HttpRequest, HttpResponse};
+
+<span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
+</span><span class="kw">use crate</span>::{CertificateStore, CustomCertStore};
+
 <span class="kw">const </span>CONTENT_TYPE_JSON: <span class="kw-2">&amp;</span>str = <span class="string">"application/json"</span>;
 
 <span class="doccomment">/// Wrapper over HTTP transport and connector.
 </span><span class="attr">#[derive(Debug)]
-</span><span class="kw">pub enum </span>HttpBackend&lt;B = Body&gt; {
+</span><span class="kw">pub enum </span>HttpBackend&lt;B = HttpBody&gt; {
 	<span class="doccomment">/// Hyper client with https connector.
-	</span><span class="attr">#[cfg(feature = <span class="string">"__tls"</span>)]
+	</span><span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
 	</span>Https(Client&lt;hyper_rustls::HttpsConnector&lt;HttpConnector&gt;, B&gt;),
 	<span class="doccomment">/// Hyper client with http connector.
 	</span>Http(Client&lt;HttpConnector, B&gt;),
 }
 
-<span class="kw">impl </span>Clone <span class="kw">for </span>HttpBackend {
+<span class="kw">impl</span>&lt;B&gt; Clone <span class="kw">for </span>HttpBackend&lt;B&gt; {
 	<span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
 		<span class="kw">match </span><span class="self">self </span>{
 			<span class="self">Self</span>::Http(inner) =&gt; <span class="self">Self</span>::Http(inner.clone()),
-			<span class="attr">#[cfg(feature = <span class="string">"__tls"</span>)]
+			<span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
 			</span><span class="self">Self</span>::Https(inner) =&gt; <span class="self">Self</span>::Https(inner.clone()),
 		}
 	}
 }
 
-<span class="kw">impl</span>&lt;B&gt; tower::Service&lt;hyper::Request&lt;B&gt;&gt; <span class="kw">for </span>HttpBackend&lt;B&gt;
+<span class="kw">impl</span>&lt;B&gt; tower::Service&lt;HttpRequest&lt;B&gt;&gt; <span class="kw">for </span>HttpBackend&lt;B&gt;
 <span class="kw">where
-	</span>B: HttpBody&lt;Error = hyper::Error&gt; + Send + <span class="lifetime">'static</span>,
+	</span>B: http_body::Body&lt;Data = Bytes&gt; + Send + Unpin + <span class="lifetime">'static</span>,
 	B::Data: Send,
-	B::Error: Into&lt;Box&lt;<span class="kw">dyn </span>StdError + Send + Sync&gt;&gt;,
+	B::Error: Into&lt;BoxError&gt;,
 {
-	<span class="kw">type </span>Response = hyper::Response&lt;Body&gt;;
+	<span class="kw">type </span>Response = HttpResponse&lt;hyper::body::Incoming&gt;;
 	<span class="kw">type </span>Error = Error;
 	<span class="kw">type </span>Future = Pin&lt;Box&lt;<span class="kw">dyn </span>Future&lt;Output = <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Response, <span class="self">Self</span>::Error&gt;&gt; + Send&gt;&gt;;
 
 	<span class="kw">fn </span>poll_ready(<span class="kw-2">&amp;mut </span><span class="self">self</span>, ctx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;(), <span class="self">Self</span>::Error&gt;&gt; {
 		<span class="kw">match </span><span class="self">self </span>{
 			<span class="self">Self</span>::Http(inner) =&gt; inner.poll_ready(ctx),
-			<span class="attr">#[cfg(feature = <span class="string">"__tls"</span>)]
+			<span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
 			</span><span class="self">Self</span>::Https(inner) =&gt; inner.poll_ready(ctx),
 		}
-		.map_err(|e| Error::Http(e.into()))
+		.map_err(|e| Error::Http(HttpError::Stream(e.into())))
 	}
 
-	<span class="kw">fn </span>call(<span class="kw-2">&amp;mut </span><span class="self">self</span>, req: hyper::Request&lt;B&gt;) -&gt; <span class="self">Self</span>::Future {
+	<span class="kw">fn </span>call(<span class="kw-2">&amp;mut </span><span class="self">self</span>, req: HttpRequest&lt;B&gt;) -&gt; <span class="self">Self</span>::Future {
 		<span class="kw">let </span>resp = <span class="kw">match </span><span class="self">self </span>{
 			<span class="self">Self</span>::Http(inner) =&gt; inner.call(req),
-			<span class="attr">#[cfg(feature = <span class="string">"__tls"</span>)]
+			<span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
 			</span><span class="self">Self</span>::Https(inner) =&gt; inner.call(req),
 		};
 
-		Box::pin(<span class="kw">async move </span>{ resp.<span class="kw">await</span>.map_err(|e| Error::Http(e.into())) })
+		Box::pin(<span class="kw">async move </span>{ resp.<span class="kw">await</span>.map_err(|e| Error::Http(HttpError::Stream(e.into()))) })
 	}
 }
 
@@ -524,21 +562,22 @@
 </span><span class="attr">#[derive(Debug)]
 </span><span class="kw">pub struct </span>HttpTransportClientBuilder&lt;L&gt; {
 	<span class="doccomment">/// Certificate store.
-	</span>certificate_store: CertificateStore,
+	</span><span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) certificate_store: CertificateStore,
 	<span class="doccomment">/// Configurable max request body size
-	</span>max_request_size: u32,
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) max_request_size: u32,
 	<span class="doccomment">/// Configurable max response body size
-	</span>max_response_size: u32,
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) max_response_size: u32,
 	<span class="doccomment">/// Max length for logging for requests and responses
 	///
 	/// Logs bigger than this limit will be truncated.
-	</span>max_log_length: u32,
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) max_log_length: u32,
 	<span class="doccomment">/// Custom headers to pass with every request.
-	</span>headers: HeaderMap,
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) headers: HeaderMap,
 	<span class="doccomment">/// Service builder
-	</span>service_builder: tower::ServiceBuilder&lt;L&gt;,
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) service_builder: tower::ServiceBuilder&lt;L&gt;,
 	<span class="doccomment">/// TCP_NODELAY
-	</span>tcp_no_delay: bool,
+	</span><span class="kw">pub</span>(<span class="kw">crate</span>) tcp_no_delay: bool,
 }
 
 <span class="kw">impl </span>Default <span class="kw">for </span>HttpTransportClientBuilder&lt;Identity&gt; {
@@ -551,7 +590,8 @@
 	<span class="doccomment">/// Create a new [`HttpTransportClientBuilder`].
 	</span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
 		<span class="self">Self </span>{
-			certificate_store: CertificateStore::Native,
+			<span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
+			</span>certificate_store: CertificateStore::Native,
 			max_request_size: TEN_MB_SIZE_BYTES,
 			max_response_size: TEN_MB_SIZE_BYTES,
 			max_log_length: <span class="number">1024</span>,
@@ -563,9 +603,10 @@
 }
 
 <span class="kw">impl</span>&lt;L&gt; HttpTransportClientBuilder&lt;L&gt; {
-	<span class="doccomment">/// Set the certificate store.
-	</span><span class="kw">pub fn </span>set_certification_store(<span class="kw-2">mut </span><span class="self">self</span>, cert_store: CertificateStore) -&gt; <span class="self">Self </span>{
-		<span class="self">self</span>.certificate_store = cert_store;
+	<span class="doccomment">/// See docs [`crate::HttpClientBuilder::with_custom_cert_store`] for more information.
+	</span><span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
+	</span><span class="kw">pub fn </span>with_custom_cert_store(<span class="kw-2">mut </span><span class="self">self</span>, cfg: CustomCertStore) -&gt; <span class="self">Self </span>{
+		<span class="self">self</span>.certificate_store = CertificateStore::Custom(cfg);
 		<span class="self">self
 	</span>}
 
@@ -608,7 +649,8 @@
 	<span class="doccomment">/// Configure a tower service.
 	</span><span class="kw">pub fn </span>set_service&lt;T&gt;(<span class="self">self</span>, service: tower::ServiceBuilder&lt;T&gt;) -&gt; HttpTransportClientBuilder&lt;T&gt; {
 		HttpTransportClientBuilder {
-			certificate_store: <span class="self">self</span>.certificate_store,
+			<span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
+			</span>certificate_store: <span class="self">self</span>.certificate_store,
 			headers: <span class="self">self</span>.headers,
 			max_log_length: <span class="self">self</span>.max_log_length,
 			max_request_size: <span class="self">self</span>.max_request_size,
@@ -621,14 +663,15 @@
 	<span class="doccomment">/// Build a [`HttpTransportClient`].
 	</span><span class="kw">pub fn </span>build&lt;S, B&gt;(<span class="self">self</span>, target: <span class="kw">impl </span>AsRef&lt;str&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;HttpTransportClient&lt;S&gt;, Error&gt;
 	<span class="kw">where
-		</span>L: Layer&lt;HttpBackend&lt;Body&gt;, Service = S&gt;,
-		S: Service&lt;hyper::Request&lt;Body&gt;, Response = hyper::Response&lt;B&gt;, Error = Error&gt; + Clone,
-		B: HttpBody + Send + <span class="lifetime">'static</span>,
+		</span>L: Layer&lt;HttpBackend, Service = S&gt;,
+		S: Service&lt;HttpRequest, Response = HttpResponse&lt;B&gt;, Error = Error&gt; + Clone,
+		B: http_body::Body&lt;Data = Bytes&gt; + Send + <span class="lifetime">'static</span>,
 		B::Data: Send,
-		B::Error: Into&lt;Box&lt;<span class="kw">dyn </span>StdError + Send + Sync&gt;&gt;,
+		B::Error: Into&lt;BoxError&gt;,
 	{
 		<span class="kw">let </span><span class="self">Self </span>{
-			certificate_store,
+			<span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
+			</span>certificate_store,
 			max_request_size,
 			max_response_size,
 			max_log_length,
@@ -637,6 +680,7 @@
 			tcp_no_delay,
 		} = <span class="self">self</span>;
 		<span class="kw">let </span><span class="kw-2">mut </span>url = Url::parse(target.as_ref()).map_err(|e| Error::Url(<span class="macro">format!</span>(<span class="string">"Invalid URL: {e}"</span>)))<span class="question-mark">?</span>;
+
 		<span class="kw">if </span>url.host_str().is_none() {
 			<span class="kw">return </span><span class="prelude-val">Err</span>(Error::Url(<span class="string">"Invalid host"</span>.into()));
 		}
@@ -646,36 +690,40 @@
 			<span class="string">"http" </span>=&gt; {
 				<span class="kw">let </span><span class="kw-2">mut </span>connector = HttpConnector::new();
 				connector.set_nodelay(tcp_no_delay);
-				HttpBackend::Http(Client::builder().build(connector))
+				HttpBackend::Http(Client::builder(TokioExecutor::new()).build(connector))
 			}
-			<span class="attr">#[cfg(feature = <span class="string">"__tls"</span>)]
+			<span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
 			</span><span class="string">"https" </span>=&gt; {
+				<span class="comment">// Make sure that the TLS provider is set. If not, set a default one.
+				// Otherwise, creating `tls` configuration may panic if there are multiple
+				// providers available due to `rustls` features (e.g. both `ring` and `aws-lc-rs`).
+				// Function returns an error if the provider is already installed, and we're fine with it.
+				</span><span class="kw">let _ </span>= rustls::crypto::ring::default_provider().install_default();
+
 				<span class="kw">let </span><span class="kw-2">mut </span>http_conn = HttpConnector::new();
 				http_conn.set_nodelay(tcp_no_delay);
 				http_conn.enforce_http(<span class="bool-val">false</span>);
 
 				<span class="kw">let </span>https_conn = <span class="kw">match </span>certificate_store {
-					<span class="attr">#[cfg(feature = <span class="string">"native-tls"</span>)]
-					</span>CertificateStore::Native =&gt; hyper_rustls::HttpsConnectorBuilder::new()
-						.with_native_roots()
+					CertificateStore::Native =&gt; hyper_rustls::HttpsConnectorBuilder::new()
+						.with_tls_config(rustls_platform_verifier::tls_config())
 						.https_or_http()
 						.enable_all_versions()
 						.wrap_connector(http_conn),
-					<span class="attr">#[cfg(feature = <span class="string">"webpki-tls"</span>)]
-					</span>CertificateStore::WebPki =&gt; hyper_rustls::HttpsConnectorBuilder::new()
-						.with_webpki_roots()
+
+					CertificateStore::Custom(tls_config) =&gt; hyper_rustls::HttpsConnectorBuilder::new()
+						.with_tls_config(tls_config)
 						.https_or_http()
 						.enable_all_versions()
 						.wrap_connector(http_conn),
-					<span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidCertficateStore),
 				};
 
-				HttpBackend::Https(Client::builder().build::&lt;<span class="kw">_</span>, hyper::Body&gt;(https_conn))
+				HttpBackend::Https(Client::builder(TokioExecutor::new()).build(https_conn))
 			}
 			<span class="kw">_ </span>=&gt; {
-				<span class="attr">#[cfg(feature = <span class="string">"__tls"</span>)]
+				<span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
 				</span><span class="kw">let </span>err = <span class="string">"URL scheme not supported, expects 'http' or 'https'"</span>;
-				<span class="attr">#[cfg(not(feature = <span class="string">"__tls"</span>))]
+				<span class="attr">#[cfg(not(feature = <span class="string">"tls"</span>))]
 				</span><span class="kw">let </span>err = <span class="string">"URL scheme not supported, expects 'http'"</span>;
 				<span class="kw">return </span><span class="prelude-val">Err</span>(Error::Url(err.into()));
 			}
@@ -690,6 +738,17 @@
 		<span class="kw">for </span>(key, value) <span class="kw">in </span>headers.into_iter() {
 			<span class="kw">if let </span><span class="prelude-val">Some</span>(key) = key {
 				cached_headers.insert(key, value);
+			}
+		}
+
+		<span class="kw">if let </span><span class="prelude-val">Some</span>(pwd) = url.password() {
+			<span class="kw">if </span>!cached_headers.contains_key(hyper::header::AUTHORIZATION) {
+				<span class="kw">let </span>digest = base64::engine::general_purpose::STANDARD.encode(<span class="macro">format!</span>(<span class="string">"{}:{pwd}"</span>, url.username()));
+				cached_headers.insert(
+					hyper::header::AUTHORIZATION,
+					HeaderValue::from_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"Basic {digest}"</span>))
+						.map_err(|<span class="kw">_</span>| Error::Url(<span class="string">"Header value `authorization basic user:pwd` invalid"</span>.into()))<span class="question-mark">?</span>,
+				);
 			}
 		}
 
@@ -725,20 +784,22 @@
 
 <span class="kw">impl</span>&lt;B, S&gt; HttpTransportClient&lt;S&gt;
 <span class="kw">where
-	</span>S: Service&lt;hyper::Request&lt;Body&gt;, Response = hyper::Response&lt;B&gt;, Error = Error&gt; + Clone,
-	B: HttpBody&lt;Error = hyper::Error&gt; + Send + <span class="lifetime">'static</span>,
+	</span>S: Service&lt;HttpRequest, Response = HttpResponse&lt;B&gt;, Error = Error&gt; + Clone,
+	B: http_body::Body&lt;Data = Bytes&gt; + Send + <span class="lifetime">'static</span>,
 	B::Data: Send,
+	B::Error: Into&lt;BoxError&gt;,
 {
-	<span class="kw">async fn </span>inner_send(<span class="kw-2">&amp;</span><span class="self">self</span>, body: String) -&gt; <span class="prelude-ty">Result</span>&lt;hyper::Response&lt;B&gt;, Error&gt; {
+	<span class="kw">async fn </span>inner_send(<span class="kw-2">&amp;</span><span class="self">self</span>, body: String) -&gt; <span class="prelude-ty">Result</span>&lt;HttpResponse&lt;B&gt;, Error&gt; {
 		<span class="kw">if </span>body.len() &gt; <span class="self">self</span>.max_request_size <span class="kw">as </span>usize {
 			<span class="kw">return </span><span class="prelude-val">Err</span>(Error::RequestTooLarge);
 		}
 
-		<span class="kw">let </span><span class="kw-2">mut </span>req = hyper::Request::post(<span class="kw-2">&amp;</span><span class="self">self</span>.target);
+		<span class="kw">let </span><span class="kw-2">mut </span>req = HttpRequest::post(<span class="kw-2">&amp;</span><span class="self">self</span>.target);
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(headers) = req.headers_mut() {
 			<span class="kw-2">*</span>headers = <span class="self">self</span>.headers.clone();
 		}
-		<span class="kw">let </span>req = req.body(From::from(body)).expect(<span class="string">"URI and request headers are valid; qed"</span>);
+
+		<span class="kw">let </span>req = req.body(body.into()).expect(<span class="string">"URI and request headers are valid; qed"</span>);
 		<span class="kw">let </span>response = <span class="self">self</span>.client.clone().ready().<span class="kw">await</span><span class="question-mark">?</span>.call(req).<span class="kw">await</span><span class="question-mark">?</span>;
 
 		<span class="kw">if </span>response.status().is_success() {
@@ -754,7 +815,8 @@
 
 		<span class="kw">let </span>response = <span class="self">self</span>.inner_send(body).<span class="kw">await</span><span class="question-mark">?</span>;
 		<span class="kw">let </span>(parts, body) = response.into_parts();
-		<span class="kw">let </span>(body, <span class="kw">_</span>) = http_helpers::read_body(<span class="kw-2">&amp;</span>parts.headers, body, <span class="self">self</span>.max_response_size).<span class="kw">await</span><span class="question-mark">?</span>;
+
+		<span class="kw">let </span>(body, _is_single) = http_helpers::read_body(<span class="kw-2">&amp;</span>parts.headers, body, <span class="self">self</span>.max_response_size).<span class="kw">await</span><span class="question-mark">?</span>;
 
 		rx_log_from_bytes(<span class="kw-2">&amp;</span>body, <span class="self">self</span>.max_log_length);
 
@@ -777,7 +839,7 @@
 	</span>Url(String),
 
 	<span class="doccomment">/// Error during the HTTP request, including networking errors and HTTP protocol errors.
-	</span><span class="attr">#[error(<span class="string">"{0}"</span>)]
+	</span><span class="attr">#[error(transparent)]
 	</span>Http(<span class="attr">#[from] </span>HttpError),
 
 	<span class="doccomment">/// Server returned a non-success status code.
@@ -806,14 +868,14 @@
 		<span class="macro">assert!</span>(<span class="macro">matches!</span>(err, Error::Url(<span class="kw">_</span>)));
 	}
 
-	<span class="attr">#[cfg(feature = <span class="string">"__tls"</span>)]
+	<span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
 	#[test]
 	</span><span class="kw">fn </span>https_works() {
 		<span class="kw">let </span>client = HttpTransportClientBuilder::new().build(<span class="string">"https://localhost"</span>).unwrap();
 		<span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>client.target, <span class="string">"https://localhost/"</span>);
 	}
 
-	<span class="attr">#[cfg(not(feature = <span class="string">"__tls"</span>))]
+	<span class="attr">#[cfg(not(feature = <span class="string">"tls"</span>))]
 	#[test]
 	</span><span class="kw">fn </span>https_fails_without_tls_feature() {
 		<span class="kw">let </span>err = HttpTransportClientBuilder::new().build(<span class="string">"https://localhost"</span>).unwrap_err();
@@ -853,7 +915,7 @@
 		<span class="macro">assert_eq!</span>(<span class="kw-2">&amp;</span>client.target, <span class="string">"http://127.0.0.1/"</span>);
 	}
 
-	<span class="attr">#[cfg(feature = <span class="string">"__tls"</span>)]
+	<span class="attr">#[cfg(feature = <span class="string">"tls"</span>)]
 	#[test]
 	</span><span class="kw">fn </span>https_custom_port_works() {
 		<span class="kw">let </span>client = HttpTransportClientBuilder::new().build(<span class="string">"https://localhost:9999"</span>).unwrap();

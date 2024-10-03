@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/litep2p-2515ad90543f141a/e03a602/src/transport/websocket/connection.rs`."><title>connection.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litep2p-0.7.0/src/transport/websocket/connection.rs`."><title>connection.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -571,6 +571,11 @@
 <a href="#571" id="571">571</a>
 <a href="#572" id="572">572</a>
 <a href="#573" id="573">573</a>
+<a href="#574" id="574">574</a>
+<a href="#575" id="575">575</a>
+<a href="#576" id="576">576</a>
+<a href="#577" id="577">577</a>
+<a href="#578" id="578">578</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2023 litep2p developers
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -597,7 +602,7 @@
         ed25519::Keypair,
         noise::{<span class="self">self</span>, NoiseSocket},
     },
-    error::Error,
+    error::{Error, NegotiationError, SubstreamError},
     multistream_select::{dialer_select_proto, listener_select_proto, Negotiated, Version},
     protocol::{Direction, Permit, ProtocolCommand, ProtocolSet},
     substream,
@@ -666,7 +671,7 @@
         </span>substream_id: <span class="prelude-ty">Option</span>&lt;SubstreamId&gt;,
 
         <span class="doccomment">/// Error.
-        </span>error: Error,
+        </span>error: SubstreamError,
     },
 }
 
@@ -768,13 +773,14 @@
         stream: S,
         role: <span class="kw-2">&amp;</span>Role,
         protocols: Vec&lt;<span class="kw-2">&amp;</span>str&gt;,
-    ) -&gt; <span class="kw">crate</span>::Result&lt;(Negotiated&lt;S&gt;, ProtocolName)&gt; {
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(Negotiated&lt;S&gt;, ProtocolName), NegotiationError&gt; {
         <span class="macro">tracing::trace!</span>(target: LOG_TARGET, <span class="question-mark">?</span>protocols, <span class="string">"negotiating protocols"</span>);
 
         <span class="kw">let </span>(protocol, socket) = <span class="kw">match </span>role {
-            Role::Dialer =&gt; dialer_select_proto(stream, protocols, Version::V1).<span class="kw">await</span><span class="question-mark">?</span>,
-            Role::Listener =&gt; listener_select_proto(stream, protocols).<span class="kw">await</span><span class="question-mark">?</span>,
-        };
+            Role::Dialer =&gt; dialer_select_proto(stream, protocols, Version::V1).<span class="kw">await</span>,
+            Role::Listener =&gt; listener_select_proto(stream, protocols).<span class="kw">await</span>,
+        }
+        .map_err(NegotiationError::MultistreamSelectError)<span class="question-mark">?</span>;
 
         <span class="macro">tracing::trace!</span>(target: LOG_TARGET, <span class="question-mark">?</span>protocol, <span class="string">"protocol negotiated"</span>);
 
@@ -792,7 +798,7 @@
         yamux_config: <span class="kw">crate</span>::yamux::Config,
         max_read_ahead_factor: usize,
         max_write_buffer_size: usize,
-    ) -&gt; <span class="kw">crate</span>::Result&lt;NegotiatedConnection&gt; {
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;NegotiatedConnection, NegotiationError&gt; {
         <span class="macro">tracing::trace!</span>(
             target: LOG_TARGET,
             <span class="question-mark">?</span>address,
@@ -824,11 +830,13 @@
         yamux_config: <span class="kw">crate</span>::yamux::Config,
         max_read_ahead_factor: usize,
         max_write_buffer_size: usize,
-    ) -&gt; <span class="kw">crate</span>::Result&lt;NegotiatedConnection&gt; {
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;NegotiatedConnection, NegotiationError&gt; {
         <span class="kw">let </span>stream = MaybeTlsStream::Plain(stream);
 
         <span class="self">Self</span>::negotiate_connection(
-            tokio_tungstenite::accept_async(stream).<span class="kw">await</span><span class="question-mark">?</span>,
+            tokio_tungstenite::accept_async(stream)
+                .<span class="kw">await
+                </span>.map_err(NegotiationError::WebSocket)<span class="question-mark">?</span>,
             <span class="prelude-val">None</span>,
             Role::Listener,
             address,
@@ -852,7 +860,7 @@
         yamux_config: <span class="kw">crate</span>::yamux::Config,
         max_read_ahead_factor: usize,
         max_write_buffer_size: usize,
-    ) -&gt; <span class="kw">crate</span>::Result&lt;NegotiatedConnection&gt; {
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;NegotiatedConnection, NegotiationError&gt; {
         <span class="macro">tracing::trace!</span>(
             target: LOG_TARGET,
             <span class="question-mark">?</span>connection_id,
@@ -883,12 +891,11 @@
 
         <span class="kw">if let </span><span class="prelude-val">Some</span>(dialed_peer) = dialed_peer {
             <span class="kw">if </span>peer != dialed_peer {
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::PeerIdMismatch(dialed_peer, peer));
+                <span class="kw">return </span><span class="prelude-val">Err</span>(NegotiationError::PeerIdMismatch(dialed_peer, peer));
             }
         }
 
         <span class="kw">let </span>stream: NoiseSocket&lt;BufferedStream&lt;<span class="kw">_</span>&gt;&gt; = stream;
-
         <span class="macro">tracing::trace!</span>(target: LOG_TARGET, <span class="string">"noise handshake done"</span>);
 
         <span class="comment">// negotiate `yamux`
@@ -920,7 +927,7 @@
         permit: Permit,
         substream_id: SubstreamId,
         protocols: Vec&lt;ProtocolName&gt;,
-    ) -&gt; <span class="kw">crate</span>::Result&lt;NegotiatedSubstream&gt; {
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;NegotiatedSubstream, NegotiationError&gt; {
         <span class="macro">tracing::trace!</span>(
             target: LOG_TARGET,
             <span class="question-mark">?</span>substream_id,
@@ -952,7 +959,7 @@
         substream_id: SubstreamId,
         protocol: ProtocolName,
         fallback_names: Vec&lt;ProtocolName&gt;,
-    ) -&gt; <span class="kw">crate</span>::Result&lt;NegotiatedSubstream&gt; {
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;NegotiatedSubstream, SubstreamError&gt; {
         <span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="question-mark">?</span>protocol, <span class="question-mark">?</span>substream_id, <span class="string">"open substream"</span>);
 
         <span class="kw">let </span>stream = <span class="kw">match </span>control.open_stream().<span class="kw">await </span>{
@@ -967,7 +974,10 @@
                     <span class="question-mark">?</span>error,
                     <span class="string">"failed to open substream"
                 </span>);
-                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::YamuxError(Direction::Outbound(substream_id), error));
+                <span class="kw">return </span><span class="prelude-val">Err</span>(SubstreamError::YamuxError(
+                    error,
+                    Direction::Outbound(substream_id),
+                ));
             }
         };
 
@@ -1014,7 +1024,7 @@
                                 <span class="prelude-val">Ok</span>(<span class="prelude-val">Err</span>(error)) =&gt; <span class="prelude-val">Err</span>(ConnectionError::FailedToNegotiate {
                                     protocol: <span class="prelude-val">None</span>,
                                     substream_id: <span class="prelude-val">None</span>,
-                                    error,
+                                    error: SubstreamError::NegotiationError(error),
                                 }),
                                 <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Err</span>(ConnectionError::Timeout {
                                     protocol: <span class="prelude-val">None</span>,
@@ -1054,7 +1064,7 @@
 
                             <span class="kw">let </span>(protocol, substream_id, error) = <span class="kw">match </span>error {
                                 ConnectionError::Timeout { protocol, substream_id } =&gt; {
-                                    (protocol, substream_id, Error::Timeout)
+                                    (protocol, substream_id, SubstreamError::NegotiationError(NegotiationError::Timeout))
                                 }
                                 ConnectionError::FailedToNegotiate { protocol, substream_id, error } =&gt; {
                                     (protocol, substream_id, error)

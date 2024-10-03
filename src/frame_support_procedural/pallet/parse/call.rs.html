@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/frame/support/procedural/src/pallet/parse/call.rs`."><title>call.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/frame/support/procedural/src/pallet/parse/call.rs`."><title>call.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -518,6 +518,8 @@
 	</span><span class="kw">pub </span>docs: Vec&lt;syn::Expr&gt;,
 	<span class="doccomment">/// The optional `weight` attribute on the `pallet::call`.
 	</span><span class="kw">pub </span>inherited_call_weight: <span class="prelude-ty">Option</span>&lt;InheritedCallWeightAttr&gt;,
+	<span class="doccomment">/// attributes
+	</span><span class="kw">pub </span>attrs: Vec&lt;syn::Attribute&gt;,
 }
 
 <span class="doccomment">/// The weight of a call.
@@ -556,6 +558,8 @@
 	</span><span class="kw">pub </span>cfg_attrs: Vec&lt;syn::Attribute&gt;,
 	<span class="doccomment">/// The optional `feeless_if` attribute on the `pallet::call`.
 	</span><span class="kw">pub </span>feeless_check: <span class="prelude-ty">Option</span>&lt;syn::ExprClosure&gt;,
+	<span class="doccomment">/// The return type of the call: `DispatchInfo` or `DispatchResultWithPostInfo`.
+	</span><span class="kw">pub </span>return_type: helper::CallReturnType,
 }
 
 <span class="doccomment">/// Attributes for functions in call impl block.
@@ -589,7 +593,7 @@
 			<span class="kw">let </span>index = call_index_content.parse::&lt;syn::LitInt&gt;()<span class="question-mark">?</span>;
 			<span class="kw">if </span>!index.suffix().is_empty() {
 				<span class="kw">let </span>msg = <span class="string">"Number literal must not have a suffix"</span>;
-				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(index.span(), msg))
+				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(index.span(), msg));
 			}
 			<span class="prelude-val">Ok</span>(FunctionAttr::CallIndex(index.base10_parse()<span class="question-mark">?</span>))
 		} <span class="kw">else if </span>lookahead.peek(keyword::feeless_if) {
@@ -665,9 +669,9 @@
 			</span>} <span class="kw">else </span>{
 				<span class="string">"Invalid type: expected `OriginFor&lt;T&gt;` or `T::RuntimeOrigin`"
 			</span>};
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty.span(), msg));
 		},
-	}
+	};
 }
 
 <span class="kw">impl </span>CallDef {
@@ -681,9 +685,8 @@
 		<span class="kw">let </span>item_impl = <span class="kw">if let </span>syn::Item::Impl(item) = item {
 			item
 		} <span class="kw">else </span>{
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), <span class="string">"Invalid pallet::call, expected item impl"</span>))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), <span class="string">"Invalid pallet::call, expected item impl"</span>));
 		};
-
 		<span class="kw">let </span>instances = <span class="macro">vec!</span>[
 			helper::check_impl_gen(<span class="kw-2">&amp;</span>item_impl.generics, item_impl.impl_token.span())<span class="question-mark">?</span>,
 			helper::check_pallet_struct_usage(<span class="kw-2">&amp;</span>item_impl.self_ty)<span class="question-mark">?</span>,
@@ -692,7 +695,7 @@
 		<span class="kw">if let </span><span class="prelude-val">Some</span>((<span class="kw">_</span>, <span class="kw">_</span>, for_)) = item_impl.trait_ {
 			<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, expected no trait ident as in \
 				`impl&lt;..&gt; Pallet&lt;..&gt; { .. }`"</span>;
-			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(for_.span(), msg))
+			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(for_.span(), msg));
 		}
 
 		<span class="kw">let </span><span class="kw-2">mut </span>methods = <span class="macro">vec!</span>[];
@@ -709,31 +712,25 @@
 						<span class="kw">_ </span>=&gt; method.vis.span(),
 					};
 
-					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(span, msg))
+					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(span, msg));
 				}
 
 				<span class="kw">match </span>method.sig.inputs.first() {
 					<span class="prelude-val">None </span>=&gt; {
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, must have at least origin arg"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg));
 					},
 					<span class="prelude-val">Some</span>(syn::FnArg::Receiver(<span class="kw">_</span>)) =&gt; {
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, first argument must be a typed argument, \
 							e.g. `origin: OriginFor&lt;T&gt;`"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg));
 					},
 					<span class="prelude-val">Some</span>(syn::FnArg::Typed(arg)) =&gt; {
 						check_dispatchable_first_arg_type(<span class="kw-2">&amp;</span>arg.ty, <span class="bool-val">false</span>)<span class="question-mark">?</span>;
 					},
 				}
 
-				<span class="kw">if let </span>syn::ReturnType::Type(<span class="kw">_</span>, type_) = <span class="kw-2">&amp;</span>method.sig.output {
-					helper::check_pallet_call_return_type(type_)<span class="question-mark">?</span>;
-				} <span class="kw">else </span>{
-					<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, require return type \
-						DispatchResultWithPostInfo"</span>;
-					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg))
-				}
+				<span class="kw">let </span>return_type = helper::check_pallet_call_return_type(<span class="kw-2">&amp;</span>method.sig)<span class="question-mark">?</span>;
 
 				<span class="kw">let </span>cfg_attrs: Vec&lt;syn::Attribute&gt; = helper::get_item_cfg_attrs(<span class="kw-2">&amp;</span>method.attrs);
 				<span class="kw">let </span><span class="kw-2">mut </span>call_idx_attrs = <span class="macro">vec!</span>[];
@@ -775,13 +772,13 @@
 					},
 					<span class="kw">_ </span>=&gt; {
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, too many weight attributes given"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg));
 					},
 				};
 
 				<span class="kw">if </span>call_idx_attrs.len() &gt; <span class="number">1 </span>{
 					<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, too many call_index attributes given"</span>;
-					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg))
+					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(method.sig.span(), msg));
 				}
 				<span class="kw">let </span>call_index = call_idx_attrs.pop().map(|attr| <span class="kw">match </span>attr {
 					FunctionAttr::CallIndex(idx) =&gt; idx,
@@ -806,7 +803,7 @@
 					);
 					<span class="kw">let </span><span class="kw-2">mut </span>err = syn::Error::new(used_fn.span(), <span class="kw-2">&amp;</span>msg);
 					err.combine(syn::Error::new(method.sig.ident.span(), msg));
-					<span class="kw">return </span><span class="prelude-val">Err</span>(err)
+					<span class="kw">return </span><span class="prelude-val">Err</span>(err);
 				}
 
 				<span class="kw">let </span><span class="kw-2">mut </span>args = <span class="macro">vec!</span>[];
@@ -822,14 +819,14 @@
 
 					<span class="kw">if </span>arg_attrs.len() &gt; <span class="number">1 </span>{
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, argument has too many attributes"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(arg.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(arg.span(), msg));
 					}
 
 					<span class="kw">let </span>arg_ident = <span class="kw">if let </span>syn::Pat::Ident(pat) = <span class="kw-2">&amp;*</span>arg.pat {
 						pat.ident.clone()
 					} <span class="kw">else </span>{
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, argument must be ident"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(arg.pat.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(arg.pat.span(), msg));
 					};
 
 					args.push((!arg_attrs.is_empty(), arg_ident, arg.ty.clone()));
@@ -839,7 +836,7 @@
 
 				<span class="kw">if </span>feeless_attrs.len() &gt; <span class="number">1 </span>{
 					<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, there can only be one feeless_if attribute"</span>;
-					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_attrs[<span class="number">1</span>].<span class="number">0</span>, msg))
+					<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_attrs[<span class="number">1</span>].<span class="number">0</span>, msg));
 				}
 				<span class="kw">let </span>feeless_check: <span class="prelude-ty">Option</span>&lt;ExprClosure&gt; =
 					feeless_attrs.pop().map(|(<span class="kw">_</span>, attr)| <span class="kw">match </span>attr {
@@ -851,13 +848,13 @@
 					<span class="kw">if </span>feeless_check.inputs.len() != args.len() + <span class="number">1 </span>{
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure must have same \
 							number of arguments as the dispatchable function"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.span(), msg));
 					}
 
 					<span class="kw">match </span>feeless_check.inputs.first() {
 						<span class="prelude-val">None </span>=&gt; {
 							<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure must have at least origin arg"</span>;
-							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.span(), msg))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.span(), msg));
 						},
 						<span class="prelude-val">Some</span>(syn::Pat::Type(arg)) =&gt; {
 							check_dispatchable_first_arg_type(<span class="kw-2">&amp;</span>arg.ty, <span class="bool-val">true</span>)<span class="question-mark">?</span>;
@@ -865,29 +862,30 @@
 						<span class="kw">_ </span>=&gt; {
 							<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure first argument must be a typed argument, \
 								e.g. `origin: OriginFor&lt;T&gt;`"</span>;
-							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.span(), msg))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.span(), msg));
 						},
 					}
 
 					<span class="kw">for </span>(feeless_arg, arg) <span class="kw">in </span>feeless_check.inputs.iter().skip(<span class="number">1</span>).zip(args.iter()) {
-						<span class="kw">let </span>feeless_arg_type =
-							<span class="kw">if let </span>syn::Pat::Type(syn::PatType { ty, .. }) = feeless_arg.clone() {
-								<span class="kw">if let </span>syn::Type::Reference(pat) = <span class="kw-2">*</span>ty {
-									pat.elem.clone()
-								} <span class="kw">else </span>{
-									<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure argument must be a reference"</span>;
-									<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty.span(), msg))
-								}
+						<span class="kw">let </span>feeless_arg_type = <span class="kw">if let </span>syn::Pat::Type(syn::PatType { ty, .. }) =
+							feeless_arg.clone()
+						{
+							<span class="kw">if let </span>syn::Type::Reference(pat) = <span class="kw-2">*</span>ty {
+								pat.elem.clone()
 							} <span class="kw">else </span>{
-								<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure argument must be a type ascription pattern"</span>;
-								<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_arg.span(), msg))
-							};
+								<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure argument must be a reference"</span>;
+								<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(ty.span(), msg));
+							}
+						} <span class="kw">else </span>{
+							<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure argument must be a type ascription pattern"</span>;
+							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_arg.span(), msg));
+						};
 
 						<span class="kw">if </span>feeless_arg_type != arg.<span class="number">2 </span>{
 							<span class="kw">let </span>msg =
 								<span class="string">"Invalid pallet::call, feeless_if closure argument must have \
 								a reference to the same type as the dispatchable function argument"</span>;
-							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_arg.span(), msg))
+							<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_arg.span(), msg));
 						}
 					}
 
@@ -900,7 +898,7 @@
 					};
 					<span class="kw">if </span>!valid_return {
 						<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, feeless_if closure must return `bool`"</span>;
-						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.output.span(), msg))
+						<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(feeless_check.output.span(), msg));
 					}
 				}
 
@@ -914,10 +912,11 @@
 					attrs: method.attrs.clone(),
 					cfg_attrs,
 					feeless_check,
+					return_type,
 				});
 			} <span class="kw">else </span>{
 				<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, only method accepted"</span>;
-				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), msg))
+				<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(item.span(), msg));
 			}
 		}
 
@@ -929,6 +928,7 @@
 			where_clause: item_impl.generics.where_clause.clone(),
 			docs: get_doc_literals(<span class="kw-2">&amp;</span>item_impl.attrs),
 			inherited_call_weight,
+			attrs: item_impl.attrs.clone(),
 		})
 	}
 }

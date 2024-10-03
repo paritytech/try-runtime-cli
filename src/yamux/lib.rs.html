@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/yamux-0.10.2/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="yamux" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/yamux-0.12.1/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="yamux" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -170,9 +170,6 @@
 <a href="#170" id="170">170</a>
 <a href="#171" id="171">171</a>
 <a href="#172" id="172">172</a>
-<a href="#173" id="173">173</a>
-<a href="#174" id="174">174</a>
-<a href="#175" id="175">175</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) 2018-2019 Parity Technologies (UK) Ltd.
 //
 // Licensed under the Apache License, Version 2.0 or MIT license, at your option.
@@ -188,12 +185,12 @@
 //! It multiplexes independent I/O streams over reliable, ordered connections,
 //! such as TCP/IP.
 //!
-//! The three primary objects, clients of this crate interact with, are:
+//! The two primary objects, clients of this crate interact with, are:
 //!
-//! - [`Connection`], which wraps the underlying I/O resource, e.g. a socket,
+//! - [`Connection`], which wraps the underlying I/O resource, e.g. a socket, and
+//!   provides methods for opening outbound or accepting inbound streams.
 //! - [`Stream`], which implements [`futures::io::AsyncRead`] and
-//!   [`futures::io::AsyncWrite`], and
-//! - [`Control`], to asynchronously control the [`Connection`].
+//!   [`futures::io::AsyncWrite`].
 //!
 //! [1]: https://github.com/hashicorp/yamux/blob/master/spec.md
 
@@ -202,23 +199,27 @@
 </span><span class="kw">mod </span>chunks;
 <span class="kw">mod </span>error;
 <span class="kw">mod </span>frame;
-<span class="kw">mod </span>pause;
-
-<span class="attr">#[cfg(test)]
-</span><span class="kw">mod </span>tests;
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>connection;
+<span class="kw">mod </span>tagged_stream;
 
-<span class="kw">pub use </span><span class="kw">crate</span>::connection::{into_stream, Connection, Control, Mode, Packet, Stream};
+<span class="kw">pub use </span><span class="kw">crate</span>::connection::{Connection, Mode, Packet, Stream};
 <span class="kw">pub use </span><span class="kw">crate</span>::error::ConnectionError;
 <span class="kw">pub use </span><span class="kw">crate</span>::frame::{
     header::{HeaderDecodeError, StreamId},
     FrameDecodeError,
 };
 
-<span class="kw">const </span>DEFAULT_CREDIT: u32 = <span class="number">256 </span>* <span class="number">1024</span>; <span class="comment">// as per yamux specification
+<span class="kw">pub const </span>DEFAULT_CREDIT: u32 = <span class="number">256 </span>* <span class="number">1024</span>; <span class="comment">// as per yamux specification
 
-</span><span class="doccomment">/// Default maximum number of bytes a Yamux data frame might carry as its
+</span><span class="kw">pub type </span><span class="prelude-ty">Result</span>&lt;T&gt; = std::result::Result&lt;T, ConnectionError&gt;;
+
+<span class="doccomment">/// The maximum number of streams we will open without an acknowledgement from the other peer.
+///
+/// This enables a very basic form of backpressure on the creation of streams.
+</span><span class="kw">const </span>MAX_ACK_BACKLOG: usize = <span class="number">256</span>;
+
+<span class="doccomment">/// Default maximum number of bytes a Yamux data frame might carry as its
 /// payload when being send. Larger Payloads will be split.
 ///
 /// The data frame payload size is not restricted by the yamux specification.
@@ -244,20 +245,13 @@
     /// data in its buffer which may reach its limit (see `set_max_buffer_size`).
     /// In this mode, window updates merely prevent head of line blocking but do not
     /// effectively exercise back pressure on senders.
+    </span><span class="attr">#[deprecated(note = <span class="string">"Use `WindowUpdateMode::OnRead` instead."</span>)]
     </span>OnReceive,
 
     <span class="doccomment">/// Send window updates only when data is read on the receiving end.
     ///
     /// This ensures that senders do not overwhelm receivers and keeps buffer usage
-    /// low. However, depending on the protocol, there is a risk of deadlock, namely
-    /// if both endpoints want to send data larger than the receivers window and they
-    /// do not read before finishing their writes. Use this mode only if you are sure
-    /// that this will never happen, i.e. if
-    ///
-    /// - Endpoints *A* and *B* never write at the same time, *or*
-    /// - Endpoints *A* and *B* write at most *n* frames concurrently such that the sum
-    ///   of the frame lengths is less or equal to the available credit of *A* and *B*
-    ///   respectively.
+    /// low.
     </span>OnRead,
 }
 

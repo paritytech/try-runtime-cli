@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-swarm-0.42.2/src/behaviour.rs`."><title>behaviour.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="libp2p_swarm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-swarm-0.43.7/src/behaviour.rs`."><title>behaviour.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="libp2p_swarm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -663,84 +663,6 @@
 <a href="#663" id="663">663</a>
 <a href="#664" id="664">664</a>
 <a href="#665" id="665">665</a>
-<a href="#666" id="666">666</a>
-<a href="#667" id="667">667</a>
-<a href="#668" id="668">668</a>
-<a href="#669" id="669">669</a>
-<a href="#670" id="670">670</a>
-<a href="#671" id="671">671</a>
-<a href="#672" id="672">672</a>
-<a href="#673" id="673">673</a>
-<a href="#674" id="674">674</a>
-<a href="#675" id="675">675</a>
-<a href="#676" id="676">676</a>
-<a href="#677" id="677">677</a>
-<a href="#678" id="678">678</a>
-<a href="#679" id="679">679</a>
-<a href="#680" id="680">680</a>
-<a href="#681" id="681">681</a>
-<a href="#682" id="682">682</a>
-<a href="#683" id="683">683</a>
-<a href="#684" id="684">684</a>
-<a href="#685" id="685">685</a>
-<a href="#686" id="686">686</a>
-<a href="#687" id="687">687</a>
-<a href="#688" id="688">688</a>
-<a href="#689" id="689">689</a>
-<a href="#690" id="690">690</a>
-<a href="#691" id="691">691</a>
-<a href="#692" id="692">692</a>
-<a href="#693" id="693">693</a>
-<a href="#694" id="694">694</a>
-<a href="#695" id="695">695</a>
-<a href="#696" id="696">696</a>
-<a href="#697" id="697">697</a>
-<a href="#698" id="698">698</a>
-<a href="#699" id="699">699</a>
-<a href="#700" id="700">700</a>
-<a href="#701" id="701">701</a>
-<a href="#702" id="702">702</a>
-<a href="#703" id="703">703</a>
-<a href="#704" id="704">704</a>
-<a href="#705" id="705">705</a>
-<a href="#706" id="706">706</a>
-<a href="#707" id="707">707</a>
-<a href="#708" id="708">708</a>
-<a href="#709" id="709">709</a>
-<a href="#710" id="710">710</a>
-<a href="#711" id="711">711</a>
-<a href="#712" id="712">712</a>
-<a href="#713" id="713">713</a>
-<a href="#714" id="714">714</a>
-<a href="#715" id="715">715</a>
-<a href="#716" id="716">716</a>
-<a href="#717" id="717">717</a>
-<a href="#718" id="718">718</a>
-<a href="#719" id="719">719</a>
-<a href="#720" id="720">720</a>
-<a href="#721" id="721">721</a>
-<a href="#722" id="722">722</a>
-<a href="#723" id="723">723</a>
-<a href="#724" id="724">724</a>
-<a href="#725" id="725">725</a>
-<a href="#726" id="726">726</a>
-<a href="#727" id="727">727</a>
-<a href="#728" id="728">728</a>
-<a href="#729" id="729">729</a>
-<a href="#730" id="730">730</a>
-<a href="#731" id="731">731</a>
-<a href="#732" id="732">732</a>
-<a href="#733" id="733">733</a>
-<a href="#734" id="734">734</a>
-<a href="#735" id="735">735</a>
-<a href="#736" id="736">736</a>
-<a href="#737" id="737">737</a>
-<a href="#738" id="738">738</a>
-<a href="#739" id="739">739</a>
-<a href="#740" id="740">740</a>
-<a href="#741" id="741">741</a>
-<a href="#742" id="742">742</a>
-<a href="#743" id="743">743</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -771,11 +693,10 @@
 
 <span class="kw">use </span><span class="kw">crate</span>::connection::ConnectionId;
 <span class="kw">use </span><span class="kw">crate</span>::dial_opts::DialOpts;
-<span class="attr">#[allow(deprecated)]
-</span><span class="kw">use </span><span class="kw">crate</span>::handler::IntoConnectionHandler;
+<span class="kw">use </span><span class="kw">crate</span>::listen_opts::ListenOpts;
 <span class="kw">use crate</span>::{
-    AddressRecord, AddressScore, ConnectionDenied, DialError, ListenError, THandler,
-    THandlerInEvent, THandlerOutEvent,
+    ConnectionDenied, ConnectionHandler, DialError, ListenError, THandler, THandlerInEvent,
+    THandlerOutEvent,
 };
 <span class="kw">use </span>libp2p_core::{transport::ListenerId, ConnectedPoint, Endpoint, Multiaddr};
 <span class="kw">use </span>libp2p_identity::PeerId;
@@ -820,18 +741,16 @@
 /// implementation for the custom `struct`. Each [`NetworkBehaviour`] trait method is simply
 /// delegated to each `struct` member in the order the `struct` is defined. For example for
 /// [`NetworkBehaviour::poll`] it will first poll the first `struct` member until it returns
-/// [`Poll::Pending`] before moving on to later members. For [`NetworkBehaviour::addresses_of_peer`]
-/// it will delegate to each `struct` member and return a concatenated array of all addresses
-/// returned by the struct members.
+/// [`Poll::Pending`] before moving on to later members.
 ///
-/// Events ([`NetworkBehaviour::OutEvent`]) returned by each `struct` member are wrapped in a new
+/// Events ([`NetworkBehaviour::ToSwarm`]) returned by each `struct` member are wrapped in a new
 /// `enum` event, with an `enum` variant for each `struct` member. Users can define this event
-/// `enum` themselves and provide the name to the derive macro via `#[behaviour(out_event =
-/// "MyCustomOutEvent")]`. If the user does not specify an `out_event`, the derive macro generates
+/// `enum` themselves and provide the name to the derive macro via `#[behaviour(to_swarm =
+/// "MyCustomOutEvent")]`. If the user does not specify an `to_swarm`, the derive macro generates
 /// the event definition itself, naming it `&lt;STRUCT_NAME&gt;Event`.
 ///
 /// The aforementioned conversion of each of the event types generated by the struct members to the
-/// custom `out_event` is handled by [`From`] implementations which the user needs to define in
+/// custom `to_swarm` is handled by [`From`] implementations which the user needs to define in
 /// addition to the event `enum` itself.
 ///
 /// ``` rust
@@ -839,7 +758,7 @@
 /// # use libp2p_ping as ping;
 /// # use libp2p_swarm_derive::NetworkBehaviour;
 /// #[derive(NetworkBehaviour)]
-/// #[behaviour(out_event = "Event")]
+/// #[behaviour(to_swarm = "Event")]
 /// # #[behaviour(prelude = "libp2p_swarm::derive_prelude")]
 /// struct MyBehaviour {
 ///   identify: identify::Behaviour,
@@ -865,36 +784,10 @@
 /// ```
 </span><span class="kw">pub trait </span>NetworkBehaviour: <span class="lifetime">'static </span>{
     <span class="doccomment">/// Handler for all the protocols the network behaviour supports.
-    </span><span class="attr">#[allow(deprecated)]
-    </span><span class="kw">type </span>ConnectionHandler: IntoConnectionHandler;
+    </span><span class="kw">type </span>ConnectionHandler: ConnectionHandler;
 
     <span class="doccomment">/// Event generated by the `NetworkBehaviour` and that the swarm will report back.
-    </span><span class="kw">type </span>OutEvent: Send + <span class="lifetime">'static</span>;
-
-    <span class="doccomment">/// Creates a new [`ConnectionHandler`](crate::ConnectionHandler) for a connection with a peer.
-    ///
-    /// Every time an incoming connection is opened, and every time another [`NetworkBehaviour`]
-    /// emitted a dial request, this method is called.
-    ///
-    /// The returned object is a handler for that specific connection, and will be moved to a
-    /// background task dedicated to that connection.
-    ///
-    /// The network behaviour (ie. the implementation of this trait) and the handlers it has spawned
-    /// (ie. the objects returned by `new_handler`) can communicate by passing messages. Messages
-    /// sent from the handler to the behaviour are invoked with
-    /// [`NetworkBehaviour::on_connection_handler_event`],
-    /// and the behaviour can send a message to the handler by making [`NetworkBehaviour::poll`]
-    /// return [`ToSwarm::NotifyHandler`].
-    ///
-    /// Note that the handler is returned to the [`NetworkBehaviour`] on connection failure and
-    /// connection closing.
-    </span><span class="attr">#[deprecated(
-        since = <span class="string">"0.42.0"</span>,
-        note = <span class="string">"Use one or more of `NetworkBehaviour::{handle_pending_inbound_connection,handle_established_inbound_connection,handle_pending_outbound_connection,handle_established_outbound_connection}` instead."
-    </span>)]
-    </span><span class="kw">fn </span>new_handler(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="self">Self</span>::ConnectionHandler {
-        <span class="macro">panic!</span>(<span class="string">"You must implement `handle_established_inbound_connection` and `handle_established_outbound_connection`."</span>)
-    }
+    </span><span class="kw">type </span>ToSwarm: Send + <span class="lifetime">'static</span>;
 
     <span class="doccomment">/// Callback that is invoked for every new inbound connection.
     ///
@@ -916,7 +809,7 @@
     /// This is invoked once another peer has successfully dialed us.
     ///
     /// At this point, we have verified their [`PeerId`] and we know, which particular [`Multiaddr`] succeeded in the dial.
-    /// In order to actually use this connection, this function must return a [`ConnectionHandler`](crate::ConnectionHandler).
+    /// In order to actually use this connection, this function must return a [`ConnectionHandler`].
     /// Returning an error will immediately close the connection.
     </span><span class="kw">fn </span>handle_established_inbound_connection(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
@@ -924,16 +817,7 @@
         peer: PeerId,
         local_addr: <span class="kw-2">&amp;</span>Multiaddr,
         remote_addr: <span class="kw-2">&amp;</span>Multiaddr,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;THandler&lt;<span class="self">Self</span>&gt;, ConnectionDenied&gt; {
-        <span class="attr">#[allow(deprecated)]
-        </span><span class="prelude-val">Ok</span>(<span class="self">self</span>.new_handler().into_handler(
-            <span class="kw-2">&amp;</span>peer,
-            <span class="kw-2">&amp;</span>ConnectedPoint::Listener {
-                local_addr: local_addr.clone(),
-                send_back_addr: remote_addr.clone(),
-            },
-        ))
-    }
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;THandler&lt;<span class="self">Self</span>&gt;, ConnectionDenied&gt;;
 
     <span class="doccomment">/// Callback that is invoked for every outbound connection attempt.
     ///
@@ -950,23 +834,18 @@
     </span><span class="kw">fn </span>handle_pending_outbound_connection(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         _connection_id: ConnectionId,
-        maybe_peer: <span class="prelude-ty">Option</span>&lt;PeerId&gt;,
+        _maybe_peer: <span class="prelude-ty">Option</span>&lt;PeerId&gt;,
         _addresses: <span class="kw-2">&amp;</span>[Multiaddr],
         _effective_role: Endpoint,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Multiaddr&gt;, ConnectionDenied&gt; {
-        <span class="attr">#[allow(deprecated)]
-        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(peer_id) = maybe_peer {
-            <span class="prelude-val">Ok</span>(<span class="self">self</span>.addresses_of_peer(<span class="kw-2">&amp;</span>peer_id))
-        } <span class="kw">else </span>{
-            <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[])
-        }
+        <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[])
     }
 
     <span class="doccomment">/// Callback that is invoked for every established outbound connection.
     ///
     /// This is invoked once we have successfully dialed a peer.
     /// At this point, we have verified their [`PeerId`] and we know, which particular [`Multiaddr`] succeeded in the dial.
-    /// In order to actually use this connection, this function must return a [`ConnectionHandler`](crate::ConnectionHandler).
+    /// In order to actually use this connection, this function must return a [`ConnectionHandler`].
     /// Returning an error will immediately close the connection.
     </span><span class="kw">fn </span>handle_established_outbound_connection(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
@@ -974,32 +853,12 @@
         peer: PeerId,
         addr: <span class="kw-2">&amp;</span>Multiaddr,
         role_override: Endpoint,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;THandler&lt;<span class="self">Self</span>&gt;, ConnectionDenied&gt; {
-        <span class="attr">#[allow(deprecated)]
-        </span><span class="prelude-val">Ok</span>(<span class="self">self</span>.new_handler().into_handler(
-            <span class="kw-2">&amp;</span>peer,
-            <span class="kw-2">&amp;</span>ConnectedPoint::Dialer {
-                address: addr.clone(),
-                role_override,
-            },
-        ))
-    }
-
-    <span class="doccomment">/// Addresses that this behaviour is aware of for this specific peer, and that may allow
-    /// reaching the peer.
-    ///
-    /// The addresses will be tried in the order returned by this function, which means that they
-    /// should be ordered by decreasing likelihood of reachability. In other words, the first
-    /// address should be the most likely to be reachable.
-    </span><span class="attr">#[deprecated(note = <span class="string">"Use `NetworkBehaviour::handle_pending_outbound_connection` instead."</span>)]
-    </span><span class="kw">fn </span>addresses_of_peer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span>PeerId) -&gt; Vec&lt;Multiaddr&gt; {
-        <span class="macro">vec!</span>[]
-    }
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;THandler&lt;<span class="self">Self</span>&gt;, ConnectionDenied&gt;;
 
     <span class="doccomment">/// Informs the behaviour about an event from the [`Swarm`](crate::Swarm).
     </span><span class="kw">fn </span>on_swarm_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>, event: FromSwarm&lt;<span class="self">Self</span>::ConnectionHandler&gt;);
 
-    <span class="doccomment">/// Informs the behaviour about an event generated by the [`ConnectionHandler`](crate::ConnectionHandler)
+    <span class="doccomment">/// Informs the behaviour about an event generated by the [`ConnectionHandler`]
     /// dedicated to the peer identified by `peer_id`. for the behaviour.
     ///
     /// The [`PeerId`] is guaranteed to be in a connected state. In other words,
@@ -1019,17 +878,13 @@
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         cx: <span class="kw-2">&amp;mut </span>Context&lt;<span class="lifetime">'_</span>&gt;,
         params: <span class="kw-2">&amp;mut </span><span class="kw">impl </span>PollParameters,
-    ) -&gt; Poll&lt;ToSwarm&lt;<span class="self">Self</span>::OutEvent, THandlerInEvent&lt;<span class="self">Self</span>&gt;&gt;&gt;;
+    ) -&gt; Poll&lt;ToSwarm&lt;<span class="self">Self</span>::ToSwarm, THandlerInEvent&lt;<span class="self">Self</span>&gt;&gt;&gt;;
 }
 
 <span class="doccomment">/// Parameters passed to `poll()`, that the `NetworkBehaviour` has access to.
 </span><span class="kw">pub trait </span>PollParameters {
     <span class="doccomment">/// Iterator returned by [`supported_protocols`](PollParameters::supported_protocols).
     </span><span class="kw">type </span>SupportedProtocolsIter: ExactSizeIterator&lt;Item = Vec&lt;u8&gt;&gt;;
-    <span class="doccomment">/// Iterator returned by [`listened_addresses`](PollParameters::listened_addresses).
-    </span><span class="kw">type </span>ListenedAddressesIter: ExactSizeIterator&lt;Item = Multiaddr&gt;;
-    <span class="doccomment">/// Iterator returned by [`external_addresses`](PollParameters::external_addresses).
-    </span><span class="kw">type </span>ExternalAddressesIter: ExactSizeIterator&lt;Item = AddressRecord&gt;;
 
     <span class="doccomment">/// Returns the list of protocol the behaviour supports when a remote negotiates a protocol on
     /// an inbound substream.
@@ -1037,32 +892,11 @@
     /// The iterator's elements are the ASCII names as reported on the wire.
     ///
     /// Note that the list is computed once at initialization and never refreshed.
+    </span><span class="attr">#[deprecated(
+        note = <span class="string">"Use `libp2p_swarm::SupportedProtocols` in your `ConnectionHandler` instead."
+    </span>)]
     </span><span class="kw">fn </span>supported_protocols(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>::SupportedProtocolsIter;
-
-    <span class="doccomment">/// Returns the list of the addresses we're listening on.
-    </span><span class="attr">#[deprecated(
-        since = <span class="string">"0.42.0"</span>,
-        note = <span class="string">"Use `libp2p_swarm::ListenAddresses` instead."
-    </span>)]
-    </span><span class="kw">fn </span>listened_addresses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>::ListenedAddressesIter;
-
-    <span class="doccomment">/// Returns the list of the addresses nodes can use to reach us.
-    </span><span class="attr">#[deprecated(
-        since = <span class="string">"0.42.0"</span>,
-        note = <span class="string">"Use `libp2p_swarm::ExternalAddresses` instead."
-    </span>)]
-    </span><span class="kw">fn </span>external_addresses(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span>::ExternalAddressesIter;
-
-    <span class="doccomment">/// Returns the peer id of the local node.
-    </span><span class="attr">#[deprecated(
-        since = <span class="string">"0.42.0"</span>,
-        note = <span class="string">"Pass the node's `PeerId` into the behaviour instead."
-    </span>)]
-    </span><span class="kw">fn </span>local_peer_id(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>PeerId;
 }
-
-<span class="attr">#[deprecated(note = <span class="string">"Use `ToSwarm` instead."</span>)]
-</span><span class="kw">pub type </span>NetworkBehaviourAction&lt;TOutEvent, TInEvent&gt; = ToSwarm&lt;TOutEvent, TInEvent&gt;;
 
 <span class="doccomment">/// A command issued from a [`NetworkBehaviour`] for the [`Swarm`].
 ///
@@ -1082,23 +916,29 @@
     /// This allows a [`NetworkBehaviour`] to identify a connection that resulted out of its own dial request.
     </span>Dial { opts: DialOpts },
 
+    <span class="doccomment">/// Instructs the [`Swarm`](crate::Swarm) to listen on the provided address.
+    </span>ListenOn { opts: ListenOpts },
+
+    <span class="doccomment">/// Instructs the [`Swarm`](crate::Swarm) to remove the listener.
+    </span>RemoveListener { id: ListenerId },
+
     <span class="doccomment">/// Instructs the `Swarm` to send an event to the handler dedicated to a
     /// connection with a peer.
     ///
-    /// If the `Swarm` is connected to the peer, the message is delivered to the
-    /// [`ConnectionHandler`](crate::ConnectionHandler) instance identified by the peer ID and connection ID.
+    /// If the `Swarm` is connected to the peer, the message is delivered to the [`ConnectionHandler`]
+    /// instance identified by the peer ID and connection ID.
     ///
     /// If the specified connection no longer exists, the event is silently dropped.
     ///
     /// Typically the connection ID given is the same as the one passed to
     /// [`NetworkBehaviour::on_connection_handler_event`], i.e. whenever the behaviour wishes to
     /// respond to a request on the same connection (and possibly the same
-    /// substream, as per the implementation of [`ConnectionHandler`](crate::ConnectionHandler)).
+    /// substream, as per the implementation of [`ConnectionHandler`]).
     ///
     /// Note that even if the peer is currently connected, connections can get closed
     /// at any time and thus the event may not reach a handler.
     </span>NotifyHandler {
-        <span class="doccomment">/// The peer for whom a [`ConnectionHandler`](crate::ConnectionHandler) should be notified.
+        <span class="doccomment">/// The peer for whom a [`ConnectionHandler`] should be notified.
         </span>peer_id: PeerId,
         <span class="doccomment">/// The options w.r.t. which connection handler to notify of the event.
         </span>handler: NotifyHandler,
@@ -1106,31 +946,38 @@
         </span>event: TInEvent,
     },
 
-    <span class="doccomment">/// Informs the `Swarm` about an address observed by a remote for
-    /// the local node by which the local node is supposedly publicly
-    /// reachable.
+    <span class="doccomment">/// Reports a new candidate for an external address to the [`Swarm`](crate::Swarm).
     ///
-    /// It is advisable to issue `ReportObservedAddr` actions at a fixed frequency
-    /// per node. This way address information will be more accurate over time
-    /// and individual outliers carry less weight.
-    </span>ReportObservedAddr {
-        <span class="doccomment">/// The observed address of the local node.
-        </span>address: Multiaddr,
-        <span class="doccomment">/// The score to associate with this observation, i.e.
-        /// an indicator for the trusworthiness of this address
-        /// relative to other observed addresses.
-        </span>score: AddressScore,
-    },
+    /// This address will be shared with all [`NetworkBehaviour`]s via [`FromSwarm::NewExternalAddrCandidate`].
+    ///
+    /// This address could come from a variety of sources:
+    /// - A protocol such as identify obtained it from a remote.
+    /// - The user provided it based on configuration.
+    /// - We made an educated guess based on one of our listen addresses.
+    /// - We established a new relay connection.
+    </span>NewExternalAddrCandidate(Multiaddr),
+
+    <span class="doccomment">/// Indicates to the [`Swarm`](crate::Swarm) that the provided address is confirmed to be externally reachable.
+    ///
+    /// This is intended to be issued in response to a [`FromSwarm::NewExternalAddrCandidate`] if we are indeed externally reachable on this address.
+    /// This address will be shared with all [`NetworkBehaviour`]s via [`FromSwarm::ExternalAddrConfirmed`].
+    </span>ExternalAddrConfirmed(Multiaddr),
+
+    <span class="doccomment">/// Indicates to the [`Swarm`](crate::Swarm) that we are no longer externally reachable under the provided address.
+    ///
+    /// This expires an address that was earlier confirmed via [`ToSwarm::ExternalAddrConfirmed`].
+    /// This address will be shared with all [`NetworkBehaviour`]s via [`FromSwarm::ExternalAddrExpired`].
+    </span>ExternalAddrExpired(Multiaddr),
 
     <span class="doccomment">/// Instructs the `Swarm` to initiate a graceful close of one or all connections
     /// with the given peer.
     ///
     /// Note: Closing a connection via
     /// [`ToSwarm::CloseConnection`] does not inform the
-    /// corresponding [`ConnectionHandler`](crate::ConnectionHandler).
-    /// Closing a connection via a [`ConnectionHandler`](crate::ConnectionHandler) can be done
-    /// either in a collaborative manner across [`ConnectionHandler`](crate::ConnectionHandler)s
-    /// with [`ConnectionHandler::connection_keep_alive`](crate::ConnectionHandler::connection_keep_alive) or directly with
+    /// corresponding [`ConnectionHandler`].
+    /// Closing a connection via a [`ConnectionHandler`] can be done
+    /// either in a collaborative manner across [`ConnectionHandler`]s
+    /// with [`ConnectionHandler::connection_keep_alive`] or directly with
     /// [`ConnectionHandlerEvent::Close`](crate::ConnectionHandlerEvent::Close).
     </span>CloseConnection {
         <span class="doccomment">/// The peer to disconnect.
@@ -1149,6 +996,8 @@
         <span class="kw">match </span><span class="self">self </span>{
             ToSwarm::GenerateEvent(e) =&gt; ToSwarm::GenerateEvent(e),
             ToSwarm::Dial { opts } =&gt; ToSwarm::Dial { opts },
+            ToSwarm::ListenOn { opts } =&gt; ToSwarm::ListenOn { opts },
+            ToSwarm::RemoveListener { id } =&gt; ToSwarm::RemoveListener { id },
             ToSwarm::NotifyHandler {
                 peer_id,
                 handler,
@@ -1158,9 +1007,6 @@
                 handler,
                 event: f(event),
             },
-            ToSwarm::ReportObservedAddr { address, score } =&gt; {
-                ToSwarm::ReportObservedAddr { address, score }
-            }
             ToSwarm::CloseConnection {
                 peer_id,
                 connection,
@@ -1168,6 +1014,9 @@
                 peer_id,
                 connection,
             },
+            ToSwarm::NewExternalAddrCandidate(addr) =&gt; ToSwarm::NewExternalAddrCandidate(addr),
+            ToSwarm::ExternalAddrConfirmed(addr) =&gt; ToSwarm::ExternalAddrConfirmed(addr),
+            ToSwarm::ExternalAddrExpired(addr) =&gt; ToSwarm::ExternalAddrExpired(addr),
         }
     }
 }
@@ -1178,6 +1027,8 @@
         <span class="kw">match </span><span class="self">self </span>{
             ToSwarm::GenerateEvent(e) =&gt; ToSwarm::GenerateEvent(f(e)),
             ToSwarm::Dial { opts } =&gt; ToSwarm::Dial { opts },
+            ToSwarm::ListenOn { opts } =&gt; ToSwarm::ListenOn { opts },
+            ToSwarm::RemoveListener { id } =&gt; ToSwarm::RemoveListener { id },
             ToSwarm::NotifyHandler {
                 peer_id,
                 handler,
@@ -1187,9 +1038,9 @@
                 handler,
                 event,
             },
-            ToSwarm::ReportObservedAddr { address, score } =&gt; {
-                ToSwarm::ReportObservedAddr { address, score }
-            }
+            ToSwarm::NewExternalAddrCandidate(addr) =&gt; ToSwarm::NewExternalAddrCandidate(addr),
+            ToSwarm::ExternalAddrConfirmed(addr) =&gt; ToSwarm::ExternalAddrConfirmed(addr),
+            ToSwarm::ExternalAddrExpired(addr) =&gt; ToSwarm::ExternalAddrExpired(addr),
             ToSwarm::CloseConnection {
                 peer_id,
                 connection,
@@ -1222,8 +1073,8 @@
 
 <span class="doccomment">/// Enumeration with the list of the possible events
 /// to pass to [`on_swarm_event`](NetworkBehaviour::on_swarm_event).
-</span><span class="attr">#[allow(deprecated)]
-</span><span class="kw">pub enum </span>FromSwarm&lt;<span class="lifetime">'a</span>, Handler: IntoConnectionHandler&gt; {
+</span><span class="attr">#[derive(Debug)]
+</span><span class="kw">pub enum </span>FromSwarm&lt;<span class="lifetime">'a</span>, Handler&gt; {
     <span class="doccomment">/// Informs the behaviour about a newly established connection to a peer.
     </span>ConnectionEstablished(ConnectionEstablished&lt;<span class="lifetime">'a</span>&gt;),
     <span class="doccomment">/// Informs the behaviour about a closed connection to a peer.
@@ -1256,14 +1107,16 @@
     </span>ListenerError(ListenerError&lt;<span class="lifetime">'a</span>&gt;),
     <span class="doccomment">/// Informs the behaviour that a listener closed.
     </span>ListenerClosed(ListenerClosed&lt;<span class="lifetime">'a</span>&gt;),
-    <span class="doccomment">/// Informs the behaviour that we have discovered a new external address for us.
-    </span>NewExternalAddr(NewExternalAddr&lt;<span class="lifetime">'a</span>&gt;),
-    <span class="doccomment">/// Informs the behaviour that an external address was removed.
-    </span>ExpiredExternalAddr(ExpiredExternalAddr&lt;<span class="lifetime">'a</span>&gt;),
+    <span class="doccomment">/// Informs the behaviour that we have discovered a new candidate for an external address for us.
+    </span>NewExternalAddrCandidate(NewExternalAddrCandidate&lt;<span class="lifetime">'a</span>&gt;),
+    <span class="doccomment">/// Informs the behaviour that an external address of the local node was confirmed.
+    </span>ExternalAddrConfirmed(ExternalAddrConfirmed&lt;<span class="lifetime">'a</span>&gt;),
+    <span class="doccomment">/// Informs the behaviour that an external address of the local node expired, i.e. is no-longer confirmed.
+    </span>ExternalAddrExpired(ExternalAddrExpired&lt;<span class="lifetime">'a</span>&gt;),
 }
 
 <span class="doccomment">/// [`FromSwarm`] variant that informs the behaviour about a newly established connection to a peer.
-</span><span class="attr">#[derive(Clone, Copy)]
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
 </span><span class="kw">pub struct </span>ConnectionEstablished&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>peer_id: PeerId,
     <span class="kw">pub </span>connection_id: ConnectionId,
@@ -1277,18 +1130,18 @@
 /// This event is always paired with an earlier
 /// [`FromSwarm::ConnectionEstablished`] with the same peer ID, connection ID
 /// and endpoint.
-</span><span class="attr">#[allow(deprecated)]
-</span><span class="kw">pub struct </span>ConnectionClosed&lt;<span class="lifetime">'a</span>, Handler: IntoConnectionHandler&gt; {
+</span><span class="attr">#[derive(Debug)]
+</span><span class="kw">pub struct </span>ConnectionClosed&lt;<span class="lifetime">'a</span>, Handler&gt; {
     <span class="kw">pub </span>peer_id: PeerId,
     <span class="kw">pub </span>connection_id: ConnectionId,
     <span class="kw">pub </span>endpoint: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>ConnectedPoint,
-    <span class="kw">pub </span>handler: &lt;Handler <span class="kw">as </span>IntoConnectionHandler&gt;::Handler,
+    <span class="kw">pub </span>handler: Handler,
     <span class="kw">pub </span>remaining_established: usize,
 }
 
 <span class="doccomment">/// [`FromSwarm`] variant that informs the behaviour that the [`ConnectedPoint`] of an existing
 /// connection has changed.
-</span><span class="attr">#[derive(Clone, Copy)]
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
 </span><span class="kw">pub struct </span>AddressChange&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>peer_id: PeerId,
     <span class="kw">pub </span>connection_id: ConnectionId,
@@ -1298,7 +1151,7 @@
 
 <span class="doccomment">/// [`FromSwarm`] variant that informs the behaviour that the dial to a known
 /// or unknown node failed.
-</span><span class="attr">#[derive(Clone, Copy)]
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
 </span><span class="kw">pub struct </span>DialFailure&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>peer_id: <span class="prelude-ty">Option</span>&lt;PeerId&gt;,
     <span class="kw">pub </span>error: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>DialError,
@@ -1310,7 +1163,7 @@
 ///
 /// This can include, for example, an error during the handshake of the encryption layer, or the
 /// connection unexpectedly closed.
-</span><span class="attr">#[derive(Clone, Copy)]
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
 </span><span class="kw">pub struct </span>ListenFailure&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>local_addr: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Multiaddr,
     <span class="kw">pub </span>send_back_addr: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Multiaddr,
@@ -1319,14 +1172,14 @@
 }
 
 <span class="doccomment">/// [`FromSwarm`] variant that informs the behaviour that a new listener was created.
-</span><span class="attr">#[derive(Clone, Copy)]
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
 </span><span class="kw">pub struct </span>NewListener {
     <span class="kw">pub </span>listener_id: ListenerId,
 }
 
 <span class="doccomment">/// [`FromSwarm`] variant that informs the behaviour
 /// that we have started listening on a new multiaddr.
-</span><span class="attr">#[derive(Clone, Copy)]
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
 </span><span class="kw">pub struct </span>NewListenAddr&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>listener_id: ListenerId,
     <span class="kw">pub </span>addr: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Multiaddr,
@@ -1335,63 +1188,57 @@
 <span class="doccomment">/// [`FromSwarm`] variant that informs the behaviour that a multiaddr
 /// we were listening on has expired,
 /// which means that we are no longer listening on it.
-</span><span class="attr">#[derive(Clone, Copy)]
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
 </span><span class="kw">pub struct </span>ExpiredListenAddr&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>listener_id: ListenerId,
     <span class="kw">pub </span>addr: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Multiaddr,
 }
 
 <span class="doccomment">/// [`FromSwarm`] variant that informs the behaviour that a listener experienced an error.
-</span><span class="attr">#[derive(Clone, Copy)]
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
 </span><span class="kw">pub struct </span>ListenerError&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>listener_id: ListenerId,
     <span class="kw">pub </span>err: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>(<span class="kw">dyn </span>std::error::Error + <span class="lifetime">'static</span>),
 }
 
 <span class="doccomment">/// [`FromSwarm`] variant that informs the behaviour that a listener closed.
-</span><span class="attr">#[derive(Clone, Copy)]
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
 </span><span class="kw">pub struct </span>ListenerClosed&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>listener_id: ListenerId,
     <span class="kw">pub </span>reason: <span class="prelude-ty">Result</span>&lt;(), <span class="kw-2">&amp;</span><span class="lifetime">'a </span>std::io::Error&gt;,
 }
 
-<span class="doccomment">/// [`FromSwarm`] variant that informs the behaviour
-/// that we have discovered a new external address for us.
-</span><span class="attr">#[derive(Clone, Copy)]
-</span><span class="kw">pub struct </span>NewExternalAddr&lt;<span class="lifetime">'a</span>&gt; {
+<span class="doccomment">/// [`FromSwarm`] variant that informs the behaviour about a new candidate for an external address for us.
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
+</span><span class="kw">pub struct </span>NewExternalAddrCandidate&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">pub </span>addr: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Multiaddr,
+}
+
+<span class="doccomment">/// [`FromSwarm`] variant that informs the behaviour that an external address was confirmed.
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
+</span><span class="kw">pub struct </span>ExternalAddrConfirmed&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>addr: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Multiaddr,
 }
 
 <span class="doccomment">/// [`FromSwarm`] variant that informs the behaviour that an external address was removed.
-</span><span class="attr">#[derive(Clone, Copy)]
-</span><span class="kw">pub struct </span>ExpiredExternalAddr&lt;<span class="lifetime">'a</span>&gt; {
+</span><span class="attr">#[derive(Debug, Clone, Copy)]
+</span><span class="kw">pub struct </span>ExternalAddrExpired&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">pub </span>addr: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Multiaddr,
 }
 
-<span class="attr">#[allow(deprecated)]
-</span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Handler: IntoConnectionHandler&gt; FromSwarm&lt;<span class="lifetime">'a</span>, Handler&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, Handler&gt; FromSwarm&lt;<span class="lifetime">'a</span>, Handler&gt; {
     <span class="kw">fn </span>map_handler&lt;NewHandler&gt;(
         <span class="self">self</span>,
-        map_handler: <span class="kw">impl </span>FnOnce(
-            &lt;Handler <span class="kw">as </span>IntoConnectionHandler&gt;::Handler,
-        ) -&gt; &lt;NewHandler <span class="kw">as </span>IntoConnectionHandler&gt;::Handler,
-    ) -&gt; FromSwarm&lt;<span class="lifetime">'a</span>, NewHandler&gt;
-    <span class="kw">where
-        </span>NewHandler: IntoConnectionHandler,
-    {
+        map_handler: <span class="kw">impl </span>FnOnce(Handler) -&gt; NewHandler,
+    ) -&gt; FromSwarm&lt;<span class="lifetime">'a</span>, NewHandler&gt; {
         <span class="self">self</span>.maybe_map_handler(|h| <span class="prelude-val">Some</span>(map_handler(h)))
             .expect(<span class="string">"To return Some as all closures return Some."</span>)
     }
 
     <span class="kw">fn </span>maybe_map_handler&lt;NewHandler&gt;(
         <span class="self">self</span>,
-        map_handler: <span class="kw">impl </span>FnOnce(
-            &lt;Handler <span class="kw">as </span>IntoConnectionHandler&gt;::Handler,
-        ) -&gt; <span class="prelude-ty">Option</span>&lt;&lt;NewHandler <span class="kw">as </span>IntoConnectionHandler&gt;::Handler&gt;,
-    ) -&gt; <span class="prelude-ty">Option</span>&lt;FromSwarm&lt;<span class="lifetime">'a</span>, NewHandler&gt;&gt;
-    <span class="kw">where
-        </span>NewHandler: IntoConnectionHandler,
-    {
+        map_handler: <span class="kw">impl </span>FnOnce(Handler) -&gt; <span class="prelude-ty">Option</span>&lt;NewHandler&gt;,
+    ) -&gt; <span class="prelude-ty">Option</span>&lt;FromSwarm&lt;<span class="lifetime">'a</span>, NewHandler&gt;&gt; {
         <span class="kw">match </span><span class="self">self </span>{
             FromSwarm::ConnectionClosed(ConnectionClosed {
                 peer_id,
@@ -1475,12 +1322,9 @@
                 listener_id,
                 reason,
             })),
-            FromSwarm::NewExternalAddr(NewExternalAddr { addr }) =&gt; {
-                <span class="prelude-val">Some</span>(FromSwarm::NewExternalAddr(NewExternalAddr { addr }))
-            }
-            FromSwarm::ExpiredExternalAddr(ExpiredExternalAddr { addr }) =&gt; {
-                <span class="prelude-val">Some</span>(FromSwarm::ExpiredExternalAddr(ExpiredExternalAddr { addr }))
-            }
+            FromSwarm::NewExternalAddrCandidate(e) =&gt; <span class="prelude-val">Some</span>(FromSwarm::NewExternalAddrCandidate(e)),
+            FromSwarm::ExternalAddrExpired(e) =&gt; <span class="prelude-val">Some</span>(FromSwarm::ExternalAddrExpired(e)),
+            FromSwarm::ExternalAddrConfirmed(e) =&gt; <span class="prelude-val">Some</span>(FromSwarm::ExternalAddrConfirmed(e)),
         }
     }
 }

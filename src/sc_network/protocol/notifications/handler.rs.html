@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/network/src/protocol/notifications/handler.rs`."><title>handler.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/client/network/src/protocol/notifications/handler.rs`."><title>handler.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1661,8 +1661,6 @@
 <a href="#1661" id="1661">1661</a>
 <a href="#1662" id="1662">1662</a>
 <a href="#1663" id="1663">1663</a>
-<a href="#1664" id="1664">1664</a>
-<a href="#1665" id="1665">1665</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -1738,10 +1736,9 @@
 	prelude::<span class="kw-2">*</span>,
 };
 <span class="kw">use </span>libp2p::{
-	core::ConnectedPoint,
 	swarm::{
-		handler::ConnectionEvent, ConnectionHandler, ConnectionHandlerEvent, KeepAlive,
-		NegotiatedSubstream, SubstreamProtocol,
+		handler::ConnectionEvent, ConnectionHandler, ConnectionHandlerEvent, KeepAlive, Stream,
+		SubstreamProtocol,
 	},
 	PeerId,
 };
@@ -1782,9 +1779,6 @@
 	<span class="doccomment">/// When the connection with the remote has been successfully established.
 	</span>when_connection_open: Instant,
 
-	<span class="doccomment">/// Whether we are the connection dialer or listener.
-	</span>endpoint: ConnectedPoint,
-
 	<span class="doccomment">/// Remote we are connected to.
 	</span>peer_id: PeerId,
 
@@ -1801,7 +1795,6 @@
 	<span class="doccomment">/// Creates new [`NotifsHandler`].
 	</span><span class="kw">pub fn </span>new(
 		peer_id: PeerId,
-		endpoint: ConnectedPoint,
 		protocols: Vec&lt;ProtocolConfig&gt;,
 		metrics: <span class="prelude-ty">Option</span>&lt;NotificationMetrics&gt;,
 	) -&gt; <span class="self">Self </span>{
@@ -1819,7 +1812,6 @@
 				})
 				.collect(),
 			peer_id,
-			endpoint,
 			when_connection_open: Instant::now(),
 			events_queue: VecDeque::with_capacity(<span class="number">16</span>),
 			metrics: metrics.map_or(<span class="prelude-val">None</span>, |metrics| <span class="prelude-val">Some</span>(Arc::new(metrics))),
@@ -1864,7 +1856,7 @@
 	/// emitted.
 	</span>OpenDesiredByRemote {
 		<span class="doccomment">/// Substream opened by the remote and that hasn't been accepted/rejected yet.
-		</span>in_substream: NotificationsInSubstream&lt;NegotiatedSubstream&gt;,
+		</span>in_substream: NotificationsInSubstream&lt;Stream&gt;,
 
 		<span class="doccomment">/// See [`State::Closed::pending_opening`].
 		</span>pending_opening: bool,
@@ -1877,7 +1869,7 @@
 	/// be emitted when transitioning to respectively [`State::Open`] or [`State::Closed`].
 	</span>Opening {
 		<span class="doccomment">/// Substream opened by the remote. If `Some`, has been accepted.
-		</span>in_substream: <span class="prelude-ty">Option</span>&lt;NotificationsInSubstream&lt;NegotiatedSubstream&gt;&gt;,
+		</span>in_substream: <span class="prelude-ty">Option</span>&lt;NotificationsInSubstream&lt;Stream&gt;&gt;,
 		<span class="doccomment">/// Is the connection inbound.
 		</span>inbound: bool,
 	},
@@ -1901,14 +1893,14 @@
 		/// Always `Some` on transition to [`State::Open`]. Switched to `None` only if the remote
 		/// closed the substream. If `None`, a [`NotifsHandlerOut::CloseDesired`] event has been
 		/// emitted.
-		</span>out_substream: <span class="prelude-ty">Option</span>&lt;NotificationsOutSubstream&lt;NegotiatedSubstream&gt;&gt;,
+		</span>out_substream: <span class="prelude-ty">Option</span>&lt;NotificationsOutSubstream&lt;Stream&gt;&gt;,
 
 		<span class="doccomment">/// Substream opened by the remote.
 		///
 		/// Contrary to the `out_substream` field, operations continue as normal even if the
 		/// substream has been closed by the remote. A `None` is treated the same way as if there
 		/// was an idle substream.
-		</span>in_substream: <span class="prelude-ty">Option</span>&lt;NotificationsInSubstream&lt;NegotiatedSubstream&gt;&gt;,
+		</span>in_substream: <span class="prelude-ty">Option</span>&lt;NotificationsInSubstream&lt;Stream&gt;&gt;,
 	},
 }
 
@@ -1946,8 +1938,6 @@
 		</span>protocol_index: usize,
 		<span class="doccomment">/// Name of the protocol that was actually negotiated, if the default one wasn't available.
 		</span>negotiated_fallback: <span class="prelude-ty">Option</span>&lt;ProtocolName&gt;,
-		<span class="doccomment">/// The endpoint of the connection that is open for custom protocols.
-		</span>endpoint: ConnectedPoint,
 		<span class="doccomment">/// Handshake that was sent to us.
 		/// This is normally a "Status" message, but this out of the concern of this code.
 		</span>received_handshake: Vec&lt;u8&gt;,
@@ -2146,8 +2136,8 @@
 }
 
 <span class="kw">impl </span>ConnectionHandler <span class="kw">for </span>NotifsHandler {
-	<span class="kw">type </span>InEvent = NotifsHandlerIn;
-	<span class="kw">type </span>OutEvent = NotifsHandlerOut;
+	<span class="kw">type </span>FromBehaviour = NotifsHandlerIn;
+	<span class="kw">type </span>ToBehaviour = NotifsHandlerOut;
 	<span class="kw">type </span>Error = NotifsHandlerError;
 	<span class="kw">type </span>InboundProtocol = UpgradeCollec&lt;NotificationsIn&gt;;
 	<span class="kw">type </span>OutboundProtocol = NotificationsOut;
@@ -2182,7 +2172,7 @@
 
 				<span class="kw">match </span>protocol_info.state {
 					State::Closed { pending_opening } =&gt; {
-						<span class="self">self</span>.events_queue.push_back(ConnectionHandlerEvent::Custom(
+						<span class="self">self</span>.events_queue.push_back(ConnectionHandlerEvent::NotifyBehaviour(
 							NotifsHandlerOut::OpenDesiredByRemote {
 								protocol_index,
 								handshake: in_substream_open.handshake,
@@ -2251,11 +2241,10 @@
 							in_substream: in_substream.take(),
 						};
 
-						<span class="self">self</span>.events_queue.push_back(ConnectionHandlerEvent::Custom(
+						<span class="self">self</span>.events_queue.push_back(ConnectionHandlerEvent::NotifyBehaviour(
 							NotifsHandlerOut::OpenResultOk {
 								protocol_index,
 								negotiated_fallback: new_open.negotiated_fallback,
-								endpoint: <span class="self">self</span>.endpoint.clone(),
 								received_handshake: new_open.handshake,
 								notifications_sink,
 								inbound,
@@ -2265,6 +2254,8 @@
 				}
 			},
 			ConnectionEvent::AddressChange(_address_change) =&gt; {},
+			ConnectionEvent::LocalProtocolsChange(<span class="kw">_</span>) =&gt; {},
+			ConnectionEvent::RemoteProtocolsChange(<span class="kw">_</span>) =&gt; {},
 			ConnectionEvent::DialUpgradeError(dial_upgrade_error) =&gt; <span class="kw">match </span><span class="self">self</span>.protocols
 				[dial_upgrade_error.info]
 				.state
@@ -2279,7 +2270,7 @@
 					<span class="self">self</span>.protocols[dial_upgrade_error.info].state =
 						State::Closed { pending_opening: <span class="bool-val">false </span>};
 
-					<span class="self">self</span>.events_queue.push_back(ConnectionHandlerEvent::Custom(
+					<span class="self">self</span>.events_queue.push_back(ConnectionHandlerEvent::NotifyBehaviour(
 						NotifsHandlerOut::OpenResultErr { protocol_index: dial_upgrade_error.info },
 					));
 				},
@@ -2366,7 +2357,7 @@
 						<span class="self">self</span>.protocols[protocol_index].state =
 							State::Closed { pending_opening: <span class="bool-val">true </span>};
 
-						<span class="self">self</span>.events_queue.push_back(ConnectionHandlerEvent::Custom(
+						<span class="self">self</span>.events_queue.push_back(ConnectionHandlerEvent::NotifyBehaviour(
 							NotifsHandlerOut::OpenResultErr { protocol_index },
 						));
 					},
@@ -2376,7 +2367,7 @@
 					State::Closed { .. } =&gt; {},
 				}
 
-				<span class="self">self</span>.events_queue.push_back(ConnectionHandlerEvent::Custom(
+				<span class="self">self</span>.events_queue.push_back(ConnectionHandlerEvent::NotifyBehaviour(
 					NotifsHandlerOut::CloseResult { protocol_index },
 				));
 			},
@@ -2391,17 +2382,19 @@
 
 		<span class="comment">// A grace period of `INITIAL_KEEPALIVE_TIME` must be given to leave time for the remote
 		// to express desire to open substreams.
+		</span><span class="attr">#[allow(deprecated)]
 		</span>KeepAlive::Until(<span class="self">self</span>.when_connection_open + INITIAL_KEEPALIVE_TIME)
 	}
 
-	<span class="kw">fn </span>poll(
+	<span class="attr">#[allow(deprecated)]
+	</span><span class="kw">fn </span>poll(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		cx: <span class="kw-2">&amp;mut </span>Context,
 	) -&gt; Poll&lt;
 		ConnectionHandlerEvent&lt;
 			<span class="self">Self</span>::OutboundProtocol,
 			<span class="self">Self</span>::OutboundOpenInfo,
-			<span class="self">Self</span>::OutEvent,
+			<span class="self">Self</span>::ToBehaviour,
 			<span class="self">Self</span>::Error,
 		&gt;,
 	&gt; {
@@ -2420,6 +2413,7 @@
 					<span class="comment">// Only proceed with `out_substream.poll_ready_unpin` if there is an element
 					// available in `notifications_sink_rx`. This avoids waking up the task when
 					// a substream is ready to send if there isn't actually something to send.
+					</span><span class="attr">#[allow(deprecated)]
 					</span><span class="kw">match </span>Pin::new(<span class="kw-2">&amp;mut *</span>notifications_sink_rx).as_mut().poll_peek(cx) {
 						Poll::Ready(<span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>NotificationsSinkMessage::ForceClose)) =&gt;
 							<span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::Close(
@@ -2473,7 +2467,7 @@
 						Poll::Ready(<span class="prelude-val">Err</span>(<span class="kw">_</span>)) =&gt; {
 							<span class="kw-2">*</span>out_substream = <span class="prelude-val">None</span>;
 							<span class="kw">let </span>event = NotifsHandlerOut::CloseDesired { protocol_index };
-							<span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::Custom(event))
+							<span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::NotifyBehaviour(event))
 						},
 					};
 				},
@@ -2495,11 +2489,14 @@
 				State::Opening { in_substream: <span class="prelude-val">None</span>, .. } =&gt; {},
 
 				State::Open { in_substream: in_substream @ <span class="prelude-val">Some</span>(<span class="kw">_</span>), .. } =&gt;
-					<span class="kw">match </span>Stream::poll_next(Pin::new(in_substream.as_mut().unwrap()), cx) {
+					<span class="kw">match </span>futures::prelude::stream::Stream::poll_next(
+						Pin::new(in_substream.as_mut().unwrap()),
+						cx,
+					) {
 						Poll::Pending =&gt; {},
 						Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(message))) =&gt; {
 							<span class="kw">let </span>event = NotifsHandlerOut::Notification { protocol_index, message };
-							<span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::Custom(event))
+							<span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::NotifyBehaviour(event))
 						},
 						Poll::Ready(<span class="prelude-val">None</span>) | Poll::Ready(<span class="prelude-val">Some</span>(<span class="prelude-val">Err</span>(<span class="kw">_</span>))) =&gt; <span class="kw-2">*</span>in_substream = <span class="prelude-val">None</span>,
 					},
@@ -2511,7 +2508,7 @@
 						Poll::Ready(<span class="prelude-val">Err</span>(<span class="kw">_</span>)) =&gt; {
 							<span class="self">self</span>.protocols[protocol_index].state =
 								State::Closed { pending_opening: <span class="kw-2">*</span>pending_opening };
-							<span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::Custom(
+							<span class="kw">return </span>Poll::Ready(ConnectionHandlerEvent::NotifyBehaviour(
 								NotifsHandlerOut::CloseDesired { protocol_index },
 							))
 						},
@@ -2545,8 +2542,7 @@
 	<span class="kw">use </span>asynchronous_codec::Framed;
 	<span class="kw">use </span>libp2p::{
 		core::muxing::SubstreamBox,
-		swarm::{handler, ConnectionHandlerUpgrErr},
-		Multiaddr,
+		swarm::handler::{<span class="self">self</span>, StreamUpgradeError},
 	};
 	<span class="kw">use </span>multistream_select::{dialer_select_proto, listener_select_proto, Negotiated, Version};
 	<span class="kw">use </span>std::{
@@ -2582,7 +2578,6 @@
 			<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 			peer: PeerId,
 			protocol_index: usize,
-			endpoint: ConnectedPoint,
 			received_handshake: Vec&lt;u8&gt;,
 		) -&gt; NotifsHandlerOut {
 			<span class="kw">let </span>(async_tx, async_rx) =
@@ -2611,7 +2606,6 @@
 			NotifsHandlerOut::OpenResultOk {
 				protocol_index,
 				negotiated_fallback: <span class="prelude-val">None</span>,
-				endpoint,
 				received_handshake,
 				notifications_sink,
 				inbound: <span class="bool-val">false</span>,
@@ -2637,6 +2631,7 @@
 			.<span class="kw">await
 		</span>}
 	}
+
 	<span class="kw">struct </span>MockSubstream {
 		<span class="kw">pub </span>rx: mpsc::Receiver&lt;Vec&lt;u8&gt;&gt;,
 		<span class="kw">pub </span>tx: mpsc::Sender&lt;Vec&lt;u8&gt;&gt;,
@@ -2656,18 +2651,35 @@
 		}
 
 		<span class="doccomment">/// Create new negotiated substream pair.
-		</span><span class="kw">pub async fn </span>negotiated() -&gt; (Negotiated&lt;SubstreamBox&gt;, Negotiated&lt;SubstreamBox&gt;) {
+		</span><span class="kw">pub async fn </span>negotiated() -&gt; (Stream, Stream) {
 			<span class="kw">let </span>(socket1, socket2) = <span class="self">Self</span>::new();
 			<span class="kw">let </span>socket1 = SubstreamBox::new(socket1);
 			<span class="kw">let </span>socket2 = SubstreamBox::new(socket2);
 
-			<span class="kw">let </span>protos = <span class="macro">vec!</span>[<span class="string">b"/echo/1.0.0"</span>, <span class="string">b"/echo/2.5.0"</span>];
+			<span class="kw">let </span>protos = <span class="macro">vec!</span>[<span class="string">"/echo/1.0.0"</span>, <span class="string">"/echo/2.5.0"</span>];
 			<span class="kw">let </span>(res1, res2) = <span class="macro">tokio::join!</span>(
 				dialer_select_proto(socket1, protos.clone(), Version::V1),
 				listener_select_proto(socket2, protos),
 			);
 
-			(res1.unwrap().<span class="number">1</span>, res2.unwrap().<span class="number">1</span>)
+			(<span class="self">Self</span>::stream_new(res1.unwrap().<span class="number">1</span>), <span class="self">Self</span>::stream_new(res2.unwrap().<span class="number">1</span>))
+		}
+
+		<span class="doccomment">/// Unsafe substitute for `Stream::new` private constructor.
+		</span><span class="kw">fn </span>stream_new(stream: Negotiated&lt;SubstreamBox&gt;) -&gt; Stream {
+			<span class="comment">// Static asserts to make sure this doesn't break.
+			</span><span class="kw">const _</span>: () = {
+				<span class="macro">assert!</span>(
+					core::mem::size_of::&lt;Stream&gt;() ==
+						core::mem::size_of::&lt;Negotiated&lt;SubstreamBox&gt;&gt;()
+				);
+				<span class="macro">assert!</span>(
+					core::mem::align_of::&lt;Stream&gt;() ==
+						core::mem::align_of::&lt;Negotiated&lt;SubstreamBox&gt;&gt;()
+				);
+			};
+
+			<span class="kw">unsafe </span>{ core::mem::transmute(stream) }
 		}
 	}
 
@@ -2749,10 +2761,6 @@
 		NotifsHandler {
 			protocols: <span class="macro">vec!</span>[proto],
 			when_connection_open: Instant::now(),
-			endpoint: ConnectedPoint::Listener {
-				local_addr: Multiaddr::empty(),
-				send_back_addr: Multiaddr::empty(),
-			},
 			peer_id: PeerId::random(),
 			events_queue: VecDeque::new(),
 			metrics: <span class="prelude-val">None</span>,
@@ -2770,7 +2778,6 @@
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -2797,7 +2804,6 @@
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -2830,7 +2836,6 @@
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -2864,7 +2869,6 @@
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -2904,7 +2908,6 @@
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -2955,7 +2958,6 @@
 		codec.set_max_len(usize::MAX);
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -2994,7 +2996,6 @@
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3054,7 +3055,6 @@
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3091,7 +3091,6 @@
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3137,7 +3136,6 @@
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3169,7 +3167,7 @@
 
 		<span class="comment">// inject dial failure to an already closed substream and verify outbound state is reset
 		</span>handler.on_connection_event(handler::ConnectionEvent::DialUpgradeError(
-			handler::DialUpgradeError { info: <span class="number">0</span>, error: ConnectionHandlerUpgrErr::Timeout },
+			handler::DialUpgradeError { info: <span class="number">0</span>, error: StreamUpgradeError::Timeout },
 		));
 		<span class="macro">assert!</span>(<span class="macro">std::matches!</span>(
 			handler.protocols[<span class="number">0</span>].state,
@@ -3186,7 +3184,6 @@
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3222,7 +3219,6 @@
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::NotSent,
@@ -3239,7 +3235,7 @@
 
 		<span class="comment">// inject dial failure to an already closed substream and verify outbound state is reset
 		</span>handler.on_connection_event(handler::ConnectionEvent::DialUpgradeError(
-			handler::DialUpgradeError { info: <span class="number">0</span>, error: ConnectionHandlerUpgrErr::Timeout },
+			handler::DialUpgradeError { info: <span class="number">0</span>, error: StreamUpgradeError::Timeout },
 		));
 		<span class="macro">assert!</span>(<span class="macro">std::matches!</span>(
 			handler.protocols[<span class="number">0</span>].state,
@@ -3275,7 +3271,8 @@
 		notifications_sink.send_sync_notification(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">9</span>]);
 		notifications_sink.send_sync_notification(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">0</span>]);
 
-		futures::future::poll_fn(|cx| {
+		<span class="attr">#[allow(deprecated)]
+		</span>futures::future::poll_fn(|cx| {
 			<span class="macro">assert!</span>(<span class="macro">std::matches!</span>(
 				handler.poll(cx),
 				Poll::Ready(ConnectionHandlerEvent::Close(
@@ -3296,7 +3293,6 @@
 
 		<span class="kw">let </span>notif_in = NotificationsInOpen {
 			handshake: <span class="string">b"hello, world"</span>.to_vec(),
-			negotiated_fallback: <span class="prelude-val">None</span>,
 			substream: NotificationsInSubstream::new(
 				Framed::new(io, codec),
 				NotificationsInSubstreamHandshake::PendingSend(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]),
@@ -3313,15 +3309,15 @@
 		futures::future::poll_fn(|cx| {
 			<span class="macro">assert!</span>(<span class="macro">std::matches!</span>(
 				handler.poll(cx),
-				Poll::Ready(ConnectionHandlerEvent::Custom(
+				Poll::Ready(ConnectionHandlerEvent::NotifyBehaviour(
 					NotifsHandlerOut::OpenDesiredByRemote { protocol_index: <span class="number">0</span>, .. },
 				))
 			));
 			<span class="macro">assert!</span>(<span class="macro">std::matches!</span>(
 				handler.poll(cx),
-				Poll::Ready(ConnectionHandlerEvent::Custom(NotifsHandlerOut::CloseDesired {
-					protocol_index: <span class="number">0
-				</span>},))
+				Poll::Ready(ConnectionHandlerEvent::NotifyBehaviour(
+					NotifsHandlerOut::CloseDesired { protocol_index: <span class="number">0 </span>},
+				))
 			));
 			Poll::Ready(())
 		})

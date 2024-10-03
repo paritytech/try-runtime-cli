@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Litep2pEvent"],"mod":["codec","config","crypto","error","executor","protocol","substream","transport","types","yamux"],"struct":["BandwidthSink","Litep2p","PeerId"],"type":["Result"]};
+window.SIDEBAR_ITEMS = {"enum":["Litep2pEvent"],"mod":["addresses","codec","config","crypto","error","executor","protocol","substream","transport","types","yamux"],"struct":["BandwidthSink","Litep2p","PeerId"],"type":["Result"]};

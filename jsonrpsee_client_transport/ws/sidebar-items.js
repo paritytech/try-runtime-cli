@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["EitherStream","Mode","WsError","WsHandshakeError"],"struct":["Header","HeaderMap","HeaderValue","InvalidUri","Receiver","Sender","Target","Uri","Url","WsTransportClientBuilder"],"trait":["AsyncRead","AsyncWrite"]};
+window.SIDEBAR_ITEMS = {"enum":["CertificateStore","EitherStream","Mode","WsError","WsHandshakeError"],"struct":["Header","HeaderMap","HeaderValue","InvalidUri","Receiver","Sender","Uri","Url","WsTransportClientBuilder"],"trait":["AsyncRead","AsyncWrite"],"type":["CustomCertStore"]};

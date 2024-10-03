@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["Config","Error","Incoming","LocalConfig","LocalIncoming","Muxer","WindowUpdateMode"],"type":["Yamux","YamuxConfig","YamuxError","YamuxLocalConfig","YamuxResult"]};
+window.SIDEBAR_ITEMS = {"struct":["Config","Error","Muxer","Stream","WindowUpdateMode"]};

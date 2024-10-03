@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.22.5/src/middleware/http/proxy_get_request.rs`."><title>proxy_get_request.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.24.5/src/middleware/http/proxy_get_request.rs`."><title>proxy_get_request.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -180,6 +180,20 @@
 <a href="#180" id="180">180</a>
 <a href="#181" id="181">181</a>
 <a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any
@@ -208,13 +222,16 @@
 
 </span><span class="doccomment">//! Middleware that proxies requests at a specified URI to internal
 //! RPC method calls.
-
 </span><span class="kw">use </span><span class="kw">crate</span>::transport::http;
+<span class="kw">use crate</span>::{HttpBody, HttpRequest, HttpResponse};
+
+<span class="kw">use </span>http_body_util::BodyExt;
+<span class="kw">use </span>hyper::body::Bytes;
 <span class="kw">use </span>hyper::header::{ACCEPT, CONTENT_TYPE};
 <span class="kw">use </span>hyper::http::HeaderValue;
-<span class="kw">use </span>hyper::{Body, Method, Request, Response, Uri};
+<span class="kw">use </span>hyper::{Method, Uri};
+<span class="kw">use </span>jsonrpsee_core::BoxError;
 <span class="kw">use </span>jsonrpsee_types::{Id, RequestSer};
-<span class="kw">use </span>std::error::Error;
 <span class="kw">use </span>std::future::Future;
 <span class="kw">use </span>std::pin::Pin;
 <span class="kw">use </span>std::sync::Arc;
@@ -291,15 +308,18 @@
 	}
 }
 
-<span class="kw">impl</span>&lt;S&gt; Service&lt;Request&lt;Body&gt;&gt; <span class="kw">for </span>ProxyGetRequest&lt;S&gt;
+<span class="kw">impl</span>&lt;S, B&gt; Service&lt;HttpRequest&lt;B&gt;&gt; <span class="kw">for </span>ProxyGetRequest&lt;S&gt;
 <span class="kw">where
-	</span>S: Service&lt;Request&lt;Body&gt;, Response = Response&lt;Body&gt;&gt;,
+	</span>S: Service&lt;HttpRequest, Response = HttpResponse&gt;,
 	S::Response: <span class="lifetime">'static</span>,
-	S::Error: Into&lt;Box&lt;<span class="kw">dyn </span>Error + Send + Sync&gt;&gt; + <span class="lifetime">'static</span>,
+	S::Error: Into&lt;BoxError&gt; + <span class="lifetime">'static</span>,
 	S::Future: Send + <span class="lifetime">'static</span>,
+	B: http_body::Body&lt;Data = Bytes&gt; + Send + <span class="lifetime">'static</span>,
+	B::Data: Send,
+	B::Error: Into&lt;BoxError&gt;,
 {
 	<span class="kw">type </span>Response = S::Response;
-	<span class="kw">type </span>Error = Box&lt;<span class="kw">dyn </span>Error + Send + Sync + <span class="lifetime">'static</span>&gt;;
+	<span class="kw">type </span>Error = BoxError;
 	<span class="kw">type </span>Future = Pin&lt;Box&lt;<span class="kw">dyn </span>Future&lt;Output = <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Response, <span class="self">Self</span>::Error&gt;&gt; + Send + <span class="lifetime">'static</span>&gt;&gt;;
 
 	<span class="attr">#[inline]
@@ -307,11 +327,11 @@
 		<span class="self">self</span>.inner.poll_ready(cx).map_err(Into::into)
 	}
 
-	<span class="kw">fn </span>call(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>req: Request&lt;Body&gt;) -&gt; <span class="self">Self</span>::Future {
+	<span class="kw">fn </span>call(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>req: HttpRequest&lt;B&gt;) -&gt; <span class="self">Self</span>::Future {
 		<span class="kw">let </span>modify = <span class="self">self</span>.path.as_ref() == req.uri() &amp;&amp; req.method() == Method::GET;
 
 		<span class="comment">// Proxy the request to the appropriate method call.
-		</span><span class="kw">if </span>modify {
+		</span><span class="kw">let </span>req = <span class="kw">if </span>modify {
 			<span class="comment">// RPC methods are accessed with `POST`.
 			</span><span class="kw-2">*</span>req.method_mut() = Method::POST;
 			<span class="comment">// Precautionary remove the URI.
@@ -322,12 +342,15 @@
 			req.headers_mut().insert(ACCEPT, HeaderValue::from_static(<span class="string">"application/json"</span>));
 
 			<span class="comment">// Adjust the body to reflect the method call.
-			</span><span class="kw">let </span>body = Body::from(
-				serde_json::to_string(<span class="kw-2">&amp;</span>RequestSer::borrowed(<span class="kw-2">&amp;</span>Id::Number(<span class="number">0</span>), <span class="kw-2">&amp;</span><span class="self">self</span>.method, <span class="prelude-val">None</span>))
-					.expect(<span class="string">"Valid request; qed"</span>),
-			);
-			req = req.map(|<span class="kw">_</span>| body);
-		}
+			</span><span class="kw">let </span>bytes = serde_json::to_vec(<span class="kw-2">&amp;</span>RequestSer::borrowed(<span class="kw-2">&amp;</span>Id::Number(<span class="number">0</span>), <span class="kw-2">&amp;</span><span class="self">self</span>.method, <span class="prelude-val">None</span>))
+				.expect(<span class="string">"Valid request; qed"</span>);
+
+			<span class="kw">let </span>body = HttpBody::from(bytes);
+
+			req.map(|<span class="kw">_</span>| body)
+		} <span class="kw">else </span>{
+			req.map(HttpBody::new)
+		};
 
 		<span class="comment">// Call the inner service and get a future that resolves to the response.
 		</span><span class="kw">let </span>fut = <span class="self">self</span>.inner.call(req);
@@ -341,8 +364,13 @@
 				<span class="kw">return </span><span class="prelude-val">Ok</span>(res);
 			}
 
-			<span class="kw">let </span>body = res.into_body();
-			<span class="kw">let </span>bytes = hyper::body::to_bytes(body).<span class="kw">await</span><span class="question-mark">?</span>;
+			<span class="kw">let </span><span class="kw-2">mut </span>body = http_body_util::BodyStream::new(res.into_body());
+			<span class="kw">let </span><span class="kw-2">mut </span>bytes = Vec::new();
+
+			<span class="kw">while let </span><span class="prelude-val">Some</span>(frame) = body.frame().<span class="kw">await </span>{
+				<span class="kw">let </span>data = frame<span class="question-mark">?</span>.into_data().map_err(|e| <span class="macro">format!</span>(<span class="string">"{e:?}"</span>))<span class="question-mark">?</span>;
+				bytes.extend(data);
+			}
 
 			<span class="attr">#[derive(serde::Deserialize, Debug)]
 			</span><span class="kw">struct </span>RpcPayload&lt;<span class="lifetime">'a</span>&gt; {

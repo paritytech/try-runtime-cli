@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustls-webpki-0.102.3/src/crl/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="webpki" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustls-webpki-0.102.8/src/crl/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="webpki" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -317,6 +317,53 @@
 <a href="#317" id="317">317</a>
 <a href="#318" id="318">318</a>
 <a href="#319" id="319">319</a>
+<a href="#320" id="320">320</a>
+<a href="#321" id="321">321</a>
+<a href="#322" id="322">322</a>
+<a href="#323" id="323">323</a>
+<a href="#324" id="324">324</a>
+<a href="#325" id="325">325</a>
+<a href="#326" id="326">326</a>
+<a href="#327" id="327">327</a>
+<a href="#328" id="328">328</a>
+<a href="#329" id="329">329</a>
+<a href="#330" id="330">330</a>
+<a href="#331" id="331">331</a>
+<a href="#332" id="332">332</a>
+<a href="#333" id="333">333</a>
+<a href="#334" id="334">334</a>
+<a href="#335" id="335">335</a>
+<a href="#336" id="336">336</a>
+<a href="#337" id="337">337</a>
+<a href="#338" id="338">338</a>
+<a href="#339" id="339">339</a>
+<a href="#340" id="340">340</a>
+<a href="#341" id="341">341</a>
+<a href="#342" id="342">342</a>
+<a href="#343" id="343">343</a>
+<a href="#344" id="344">344</a>
+<a href="#345" id="345">345</a>
+<a href="#346" id="346">346</a>
+<a href="#347" id="347">347</a>
+<a href="#348" id="348">348</a>
+<a href="#349" id="349">349</a>
+<a href="#350" id="350">350</a>
+<a href="#351" id="351">351</a>
+<a href="#352" id="352">352</a>
+<a href="#353" id="353">353</a>
+<a href="#354" id="354">354</a>
+<a href="#355" id="355">355</a>
+<a href="#356" id="356">356</a>
+<a href="#357" id="357">357</a>
+<a href="#358" id="358">358</a>
+<a href="#359" id="359">359</a>
+<a href="#360" id="360">360</a>
+<a href="#361" id="361">361</a>
+<a href="#362" id="362">362</a>
+<a href="#363" id="363">363</a>
+<a href="#364" id="364">364</a>
+<a href="#365" id="365">365</a>
+<a href="#366" id="366">366</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2023 Daniel McCarney.
 //
 // Permission to use, copy, modify, and/or distribute this software for any
@@ -331,7 +378,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-</span><span class="kw">use </span>pki_types::SignatureVerificationAlgorithm;
+</span><span class="kw">use </span>pki_types::{SignatureVerificationAlgorithm, UnixTime};
 
 <span class="kw">use </span><span class="kw">crate</span>::error::Error;
 <span class="kw">use </span><span class="kw">crate</span>::verify_cert::{Budget, PathNode, Role};
@@ -354,6 +401,8 @@
     depth: RevocationCheckDepth,
 
     status_policy: UnknownStatusPolicy,
+
+    expiration_policy: ExpirationPolicy,
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; RevocationOptionsBuilder&lt;<span class="lifetime">'a</span>&gt; {
@@ -369,6 +418,10 @@
     /// By default revocation checking will fail if the revocation status of a certificate cannot
     /// be determined. This can be customized using the
     /// [RevocationOptionsBuilder::with_status_policy] method.
+    ///
+    /// By default revocation checking will *not* fail if the verification time is beyond the time
+    /// in the CRL nextUpdate field. This can be customized using the
+    /// [RevocationOptionsBuilder::with_expiration_policy] method.
     </span><span class="kw">pub fn </span>new(crls: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[<span class="kw-2">&amp;</span><span class="lifetime">'a </span>CertRevocationList&lt;<span class="lifetime">'a</span>&gt;]) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, CrlsRequired&gt; {
         <span class="kw">if </span>crls.is_empty() {
             <span class="kw">return </span><span class="prelude-val">Err</span>(CrlsRequired(()));
@@ -378,6 +431,7 @@
             crls,
             depth: RevocationCheckDepth::Chain,
             status_policy: UnknownStatusPolicy::Deny,
+            expiration_policy: ExpirationPolicy::Ignore,
         })
     }
 
@@ -395,12 +449,19 @@
         <span class="self">self
     </span>}
 
+    <span class="doccomment">/// Customize whether the CRL nextUpdate field (i.e. expiration) is enforced.
+    </span><span class="kw">pub fn </span>with_expiration_policy(<span class="kw-2">mut </span><span class="self">self</span>, policy: ExpirationPolicy) -&gt; <span class="self">Self </span>{
+        <span class="self">self</span>.expiration_policy = policy;
+        <span class="self">self
+    </span>}
+
     <span class="doccomment">/// Construct a [RevocationOptions] instance based on the builder's configuration.
     </span><span class="kw">pub fn </span>build(<span class="self">self</span>) -&gt; RevocationOptions&lt;<span class="lifetime">'a</span>&gt; {
         RevocationOptions {
             crls: <span class="self">self</span>.crls,
             depth: <span class="self">self</span>.depth,
             status_policy: <span class="self">self</span>.status_policy,
+            expiration_policy: <span class="self">self</span>.expiration_policy,
         }
     }
 }
@@ -412,17 +473,20 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) crls: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[<span class="kw-2">&amp;</span><span class="lifetime">'a </span>CertRevocationList&lt;<span class="lifetime">'a</span>&gt;],
     <span class="kw">pub</span>(<span class="kw">crate</span>) depth: RevocationCheckDepth,
     <span class="kw">pub</span>(<span class="kw">crate</span>) status_policy: UnknownStatusPolicy,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) expiration_policy: ExpirationPolicy,
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; RevocationOptions&lt;<span class="lifetime">'a</span>&gt; {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>check(
+    <span class="attr">#[allow(clippy::too_many_arguments)]
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>check(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         path: <span class="kw-2">&amp;</span>PathNode&lt;<span class="lifetime">'_</span>&gt;,
-        issuer_subject: untrusted::Input,
-        issuer_spki: untrusted::Input,
-        issuer_ku: <span class="prelude-ty">Option</span>&lt;untrusted::Input&gt;,
+        issuer_subject: untrusted::Input&lt;<span class="lifetime">'_</span>&gt;,
+        issuer_spki: untrusted::Input&lt;<span class="lifetime">'_</span>&gt;,
+        issuer_ku: <span class="prelude-ty">Option</span>&lt;untrusted::Input&lt;<span class="lifetime">'_</span>&gt;&gt;,
         supported_sig_algs: <span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span><span class="kw">dyn </span>SignatureVerificationAlgorithm],
         budget: <span class="kw-2">&amp;mut </span>Budget,
+        time: UnixTime,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;CertNotRevoked&gt;, Error&gt; {
         <span class="macro">assert!</span>(public_values_eq(path.cert.issuer, issuer_subject));
 
@@ -454,6 +518,10 @@
         </span>crl.verify_signature(supported_sig_algs, issuer_spki, budget)
             .map_err(crl_signature_err)<span class="question-mark">?</span>;
 
+        <span class="kw">if </span><span class="self">self</span>.expiration_policy == ExpirationPolicy::Enforce {
+            crl.check_expiration(time)<span class="question-mark">?</span>;
+        }
+
         <span class="comment">// Verify that if the issuer has a KeyUsage bitstring it asserts cRLSign.
         </span>KeyUsageMode::CrlSign.check(issuer_ku)<span class="question-mark">?</span>;
 
@@ -483,7 +551,7 @@
 
 <span class="kw">impl </span>KeyUsageMode {
     <span class="comment">// https://www.rfc-editor.org/rfc/rfc5280#section-4.2.1.3
-    </span><span class="kw">fn </span>check(<span class="self">self</span>, input: <span class="prelude-ty">Option</span>&lt;untrusted::Input&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
+    </span><span class="kw">fn </span>check(<span class="self">self</span>, input: <span class="prelude-ty">Option</span>&lt;untrusted::Input&lt;<span class="lifetime">'_</span>&gt;&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), Error&gt; {
         <span class="kw">let </span>bit_string = <span class="kw">match </span>input {
             <span class="prelude-val">Some</span>(input) =&gt; {
                 der::expect_tag(<span class="kw-2">&amp;mut </span>untrusted::Reader::new(input), der::Tag::BitString)<span class="question-mark">?
@@ -537,6 +605,16 @@
     </span>Deny,
 }
 
+<span class="doccomment">/// Describes how to handle the nextUpdate field of the CRL (i.e. expiration).
+</span><span class="attr">#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+</span><span class="kw">pub enum </span>ExpirationPolicy {
+    <span class="doccomment">/// Enforce the verification time is before the time in the nextUpdate field.
+    /// Treats an expired CRL as an error condition yielding [Error::CrlExpired].
+    </span>Enforce,
+    <span class="doccomment">/// Ignore the CRL nextUpdate field.
+    </span>Ignore,
+}
+
 <span class="comment">// Zero-sized marker type representing positive assertion that revocation status was checked
 // for a certificate and the result was that the certificate is not revoked.
 </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>CertNotRevoked(());
@@ -574,7 +652,7 @@
 
         <span class="comment">// It should be possible to build a revocation options builder with defaults.
         </span><span class="kw">let </span>crl = <span class="macro">include_bytes!</span>(<span class="string">"../../tests/crls/crl.valid.der"</span>);
-        <span class="kw">let </span>crl: CertRevocationList = BorrowedCertRevocationList::from_der(<span class="kw-2">&amp;</span>crl[..])
+        <span class="kw">let </span>crl = BorrowedCertRevocationList::from_der(<span class="kw-2">&amp;</span>crl[..])
             .unwrap()
             .into();
         <span class="kw">let </span>crls = [<span class="kw-2">&amp;</span>crl];
@@ -588,6 +666,7 @@
         <span class="kw">let </span>opts = builder.build();
         <span class="macro">assert_eq!</span>(opts.depth, RevocationCheckDepth::Chain);
         <span class="macro">assert_eq!</span>(opts.status_policy, UnknownStatusPolicy::Deny);
+        <span class="macro">assert_eq!</span>(opts.expiration_policy, ExpirationPolicy::Ignore);
         <span class="macro">assert_eq!</span>(opts.crls.len(), <span class="number">1</span>);
 
         <span class="comment">// It should be possible to build a revocation options builder with custom depth.
@@ -597,6 +676,7 @@
             .build();
         <span class="macro">assert_eq!</span>(opts.depth, RevocationCheckDepth::EndEntity);
         <span class="macro">assert_eq!</span>(opts.status_policy, UnknownStatusPolicy::Deny);
+        <span class="macro">assert_eq!</span>(opts.expiration_policy, ExpirationPolicy::Ignore);
         <span class="macro">assert_eq!</span>(opts.crls.len(), <span class="number">1</span>);
 
         <span class="comment">// It should be possible to build a revocation options builder that allows unknown
@@ -607,6 +687,7 @@
             .build();
         <span class="macro">assert_eq!</span>(opts.depth, RevocationCheckDepth::Chain);
         <span class="macro">assert_eq!</span>(opts.status_policy, UnknownStatusPolicy::Allow);
+        <span class="macro">assert_eq!</span>(opts.expiration_policy, ExpirationPolicy::Ignore);
         <span class="macro">assert_eq!</span>(opts.crls.len(), <span class="number">1</span>);
 
         <span class="comment">// It should be possible to specify both depth and unknown status policy together.
@@ -617,6 +698,7 @@
             .build();
         <span class="macro">assert_eq!</span>(opts.depth, RevocationCheckDepth::EndEntity);
         <span class="macro">assert_eq!</span>(opts.status_policy, UnknownStatusPolicy::Allow);
+        <span class="macro">assert_eq!</span>(opts.expiration_policy, ExpirationPolicy::Ignore);
         <span class="macro">assert_eq!</span>(opts.crls.len(), <span class="number">1</span>);
 
         <span class="comment">// The same should be true for explicitly forbidding unknown status.
@@ -627,6 +709,18 @@
             .build();
         <span class="macro">assert_eq!</span>(opts.depth, RevocationCheckDepth::EndEntity);
         <span class="macro">assert_eq!</span>(opts.status_policy, UnknownStatusPolicy::Deny);
+        <span class="macro">assert_eq!</span>(opts.expiration_policy, ExpirationPolicy::Ignore);
+        <span class="macro">assert_eq!</span>(opts.crls.len(), <span class="number">1</span>);
+
+        <span class="comment">// It should be possible to build a revocation options builder that allows unknown
+        // revocation status.
+        </span><span class="kw">let </span>opts = RevocationOptionsBuilder::new(<span class="kw-2">&amp;</span>crls)
+            .unwrap()
+            .with_expiration_policy(ExpirationPolicy::Enforce)
+            .build();
+        <span class="macro">assert_eq!</span>(opts.depth, RevocationCheckDepth::Chain);
+        <span class="macro">assert_eq!</span>(opts.status_policy, UnknownStatusPolicy::Deny);
+        <span class="macro">assert_eq!</span>(opts.expiration_policy, ExpirationPolicy::Enforce);
         <span class="macro">assert_eq!</span>(opts.crls.len(), <span class="number">1</span>);
 
         <span class="comment">// Built revocation options should be debug and clone when alloc is enabled.

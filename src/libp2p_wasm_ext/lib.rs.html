@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-wasm-ext-0.39.0/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="libp2p_wasm_ext" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/libp2p-wasm-ext-0.40.0/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="libp2p_wasm_ext" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -650,6 +650,9 @@
 <a href="#650" id="650">650</a>
 <a href="#651" id="651">651</a>
 <a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -692,7 +695,7 @@
     transport::{ListenerId, TransportError, TransportEvent},
     Multiaddr, Transport,
 };
-<span class="kw">use </span>parity_send_wrapper::SendWrapper;
+<span class="kw">use </span>send_wrapper::SendWrapper;
 <span class="kw">use </span>std::{collections::VecDeque, error, fmt, io, mem, pin::Pin, task::Context, task::Poll};
 <span class="kw">use </span>wasm_bindgen::{prelude::<span class="kw-2">*</span>, JsCast};
 <span class="kw">use </span>wasm_bindgen_futures::JsFuture;
@@ -850,7 +853,11 @@
     <span class="kw">type </span>ListenerUpgrade = Ready&lt;<span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Output, <span class="self">Self</span>::Error&gt;&gt;;
     <span class="kw">type </span>Dial = Dial;
 
-    <span class="kw">fn </span>listen_on(<span class="kw-2">&amp;mut </span><span class="self">self</span>, addr: Multiaddr) -&gt; <span class="prelude-ty">Result</span>&lt;ListenerId, TransportError&lt;<span class="self">Self</span>::Error&gt;&gt; {
+    <span class="kw">fn </span>listen_on(
+        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+        listener_id: ListenerId,
+        addr: Multiaddr,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;(), TransportError&lt;<span class="self">Self</span>::Error&gt;&gt; {
         <span class="kw">let </span>iter = <span class="self">self</span>.inner.listen_on(<span class="kw-2">&amp;</span>addr.to_string()).map_err(|err| {
             <span class="kw">if </span>is_not_supported_error(<span class="kw-2">&amp;</span>err) {
                 TransportError::MultiaddrNotSupported(addr)
@@ -858,7 +865,6 @@
                 TransportError::Other(JsErr::from(err))
             }
         })<span class="question-mark">?</span>;
-        <span class="kw">let </span>listener_id = ListenerId::new();
         <span class="kw">let </span>listen = Listen {
             listener_id,
             iterator: SendWrapper::new(iter),
@@ -867,7 +873,7 @@
             is_closed: <span class="bool-val">false</span>,
         };
         <span class="self">self</span>.listeners.push(listen);
-        <span class="prelude-val">Ok</span>(listener_id)
+        <span class="prelude-val">Ok</span>(())
     }
 
     <span class="kw">fn </span>remove_listener(<span class="kw-2">&amp;mut </span><span class="self">self</span>, id: ListenerId) -&gt; bool {

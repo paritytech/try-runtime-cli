@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/der-parser-8.2.0/src/ber/ber.rs`."><title>ber.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="der_parser" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/der-parser-9.0.0/src/ber/ber.rs`."><title>ber.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="der_parser" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -948,9 +948,61 @@
 <a href="#948" id="948">948</a>
 <a href="#949" id="949">949</a>
 <a href="#950" id="950">950</a>
+<a href="#951" id="951">951</a>
+<a href="#952" id="952">952</a>
+<a href="#953" id="953">953</a>
+<a href="#954" id="954">954</a>
+<a href="#955" id="955">955</a>
+<a href="#956" id="956">956</a>
+<a href="#957" id="957">957</a>
+<a href="#958" id="958">958</a>
+<a href="#959" id="959">959</a>
+<a href="#960" id="960">960</a>
+<a href="#961" id="961">961</a>
+<a href="#962" id="962">962</a>
+<a href="#963" id="963">963</a>
+<a href="#964" id="964">964</a>
+<a href="#965" id="965">965</a>
+<a href="#966" id="966">966</a>
+<a href="#967" id="967">967</a>
+<a href="#968" id="968">968</a>
+<a href="#969" id="969">969</a>
+<a href="#970" id="970">970</a>
+<a href="#971" id="971">971</a>
+<a href="#972" id="972">972</a>
+<a href="#973" id="973">973</a>
+<a href="#974" id="974">974</a>
+<a href="#975" id="975">975</a>
+<a href="#976" id="976">976</a>
+<a href="#977" id="977">977</a>
+<a href="#978" id="978">978</a>
+<a href="#979" id="979">979</a>
+<a href="#980" id="980">980</a>
+<a href="#981" id="981">981</a>
+<a href="#982" id="982">982</a>
+<a href="#983" id="983">983</a>
+<a href="#984" id="984">984</a>
+<a href="#985" id="985">985</a>
+<a href="#986" id="986">986</a>
+<a href="#987" id="987">987</a>
+<a href="#988" id="988">988</a>
+<a href="#989" id="989">989</a>
+<a href="#990" id="990">990</a>
+<a href="#991" id="991">991</a>
+<a href="#992" id="992">992</a>
+<a href="#993" id="993">993</a>
+<a href="#994" id="994">994</a>
+<a href="#995" id="995">995</a>
+<a href="#996" id="996">996</a>
+<a href="#997" id="997">997</a>
+<a href="#998" id="998">998</a>
+<a href="#999" id="999">999</a>
+<a href="#1000" id="1000">1000</a>
 </pre></div><pre class="rust"><code><span class="kw">use super</span>::{Class, Header, Length, Tag};
+<span class="kw">use </span><span class="kw">crate</span>::ber::ber_read_element_content_as;
 <span class="kw">use </span><span class="kw">crate</span>::ber::bitstring_to_u64;
 <span class="kw">use </span><span class="kw">crate</span>::ber::integer::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::ber::MAX_RECURSION;
 <span class="kw">use </span><span class="kw">crate</span>::error::BerError;
 <span class="kw">use </span><span class="kw">crate</span>::oid::Oid;
 <span class="kw">use </span>alloc::borrow::ToOwned;
@@ -962,6 +1014,7 @@
 </span><span class="kw">use </span>bitvec::{order::Msb0, slice::BitSlice};
 <span class="kw">use </span>core::convert::AsRef;
 <span class="kw">use </span>core::convert::From;
+<span class="kw">use </span>core::convert::TryFrom;
 <span class="kw">use </span>core::ops::Index;
 
 <span class="doccomment">/// Representation of a BER-encoded (X.690) object
@@ -1667,6 +1720,40 @@
     }
 }
 
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; TryFrom&lt;Any&lt;<span class="lifetime">'a</span>&gt;&gt; <span class="kw">for </span>BerObject&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">type </span>Error = asn1_rs::Error;
+
+    <span class="kw">fn </span>try_from(any: Any&lt;<span class="lifetime">'a</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        <span class="kw">let </span>(header, data) = (any.header, any.data);
+        <span class="kw">let </span>(<span class="kw">_</span>, content) = ber_read_element_content_as(
+            data,
+            header.tag(),
+            header.length(),
+            header.constructed(),
+            MAX_RECURSION,
+        )<span class="question-mark">?</span>;
+        <span class="kw">let </span>obj = BerObject::from_header_and_content(header, content);
+        <span class="prelude-val">Ok</span>(obj)
+    }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, <span class="lifetime">'b</span>&gt; TryFrom&lt;<span class="kw-2">&amp;</span><span class="lifetime">'b </span>Any&lt;<span class="lifetime">'a</span>&gt;&gt; <span class="kw">for </span>BerObject&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">type </span>Error = asn1_rs::Error;
+
+    <span class="kw">fn </span>try_from(any: <span class="kw-2">&amp;</span><span class="lifetime">'b </span>Any&lt;<span class="lifetime">'a</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        <span class="kw">let </span>(header, data) = (any.header.clone(), any.data);
+        <span class="kw">let </span>(<span class="kw">_</span>, content) = ber_read_element_content_as(
+            data,
+            header.tag(),
+            header.length(),
+            header.constructed(),
+            MAX_RECURSION,
+        )<span class="question-mark">?</span>;
+        <span class="kw">let </span>obj = BerObject::from_header_and_content(header, content);
+        <span class="prelude-val">Ok</span>(obj)
+    }
+}
+
 <span class="comment">// This is a consuming iterator
 </span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; IntoIterator <span class="kw">for </span>BerObject&lt;<span class="lifetime">'a</span>&gt; {
     <span class="kw">type </span>Item = BerObject&lt;<span class="lifetime">'a</span>&gt;;
@@ -1793,8 +1880,21 @@
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
+    <span class="kw">use </span>asn1_rs::{Any, FromDer};
+    <span class="kw">use </span>core::convert::TryFrom;
+
     <span class="kw">use </span><span class="kw">crate</span>::ber::<span class="kw-2">*</span>;
     <span class="kw">use </span><span class="kw">crate</span>::oid::<span class="kw-2">*</span>;
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>ber_from_any() {
+        <span class="kw">let </span>bytes = <span class="kw-2">&amp;</span>[<span class="number">0x02</span>, <span class="number">0x03</span>, <span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x01</span>];
+
+        <span class="kw">let </span>(rem, any) = Any::from_der(bytes).expect(<span class="string">"parsing failed"</span>);
+        <span class="macro">assert!</span>(rem.is_empty());
+        <span class="kw">let </span>obj = BerObject::try_from(any).expect(<span class="string">"try_from(any) failed"</span>);
+        <span class="macro">assert_eq!</span>(obj.as_u32(), <span class="prelude-val">Ok</span>(<span class="number">0x10001_u32</span>));
+    }
 
     <span class="attr">#[test]
     </span><span class="kw">fn </span>test_der_as_u64() {

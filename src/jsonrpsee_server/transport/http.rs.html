@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.22.5/src/transport/http.rs`."><title>http.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/jsonrpsee-server-0.24.5/src/transport/http.rs`."><title>http.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -191,20 +191,23 @@
 <a href="#191" id="191">191</a>
 <a href="#192" id="192">192</a>
 <a href="#193" id="193">193</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span>http::Method;
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+</pre></div><pre class="rust"><code><span class="kw">use crate</span>::{
+	middleware::rpc::{RpcService, RpcServiceBuilder, RpcServiceCfg, RpcServiceT},
+	server::{handle_rpc_call, ServerConfig},
+	BatchRequestConfig, ConnectionState, HttpRequest, HttpResponse, LOG_TARGET,
+};
+<span class="kw">use </span>http::Method;
+<span class="kw">use </span>hyper::body::{Body, Bytes};
 <span class="kw">use </span>jsonrpsee_core::{
 	http_helpers::{read_body, HttpError},
 	server::Methods,
-};
-
-<span class="kw">use crate</span>::{
-	middleware::rpc::{RpcService, RpcServiceBuilder, RpcServiceCfg, RpcServiceT},
-	server::{handle_rpc_call, ServerConfig},
-	BatchRequestConfig, ConnectionState, LOG_TARGET,
+	BoxError,
 };
 
 <span class="doccomment">/// Checks that content type of received request is valid for JSON-RPC.
-</span><span class="kw">pub fn </span>content_type_is_json(request: <span class="kw-2">&amp;</span>hyper::Request&lt;hyper::Body&gt;) -&gt; bool {
+</span><span class="kw">pub fn </span>content_type_is_json&lt;T: Body&gt;(request: <span class="kw-2">&amp;</span>HttpRequest&lt;T&gt;) -&gt; bool {
 	is_json(request.headers().get(hyper::header::CONTENT_TYPE))
 }
 
@@ -223,15 +226,18 @@
 <span class="doccomment">/// Make JSON-RPC HTTP call with a [`RpcServiceBuilder`]
 ///
 /// Fails if the HTTP request was a malformed JSON-RPC request.
-</span><span class="kw">pub async fn </span>call_with_service_builder&lt;L&gt;(
-	request: hyper::Request&lt;hyper::Body&gt;,
+</span><span class="kw">pub async fn </span>call_with_service_builder&lt;L, B&gt;(
+	request: HttpRequest&lt;B&gt;,
 	server_cfg: ServerConfig,
 	conn: ConnectionState,
 	methods: <span class="kw">impl </span>Into&lt;Methods&gt;,
 	rpc_service: RpcServiceBuilder&lt;L&gt;,
-) -&gt; hyper::Response&lt;hyper::Body&gt;
+) -&gt; HttpResponse
 <span class="kw">where
-	</span>L: <span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; tower::Layer&lt;RpcService&gt;,
+	</span>B: http_body::Body&lt;Data = Bytes&gt; + Send + <span class="lifetime">'static</span>,
+	B::Data: Send,
+	B::Error: Into&lt;BoxError&gt;,
+	L: <span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; tower::Layer&lt;RpcService&gt;,
 	&lt;L <span class="kw">as </span>tower::Layer&lt;RpcService&gt;&gt;::Service: Send + Sync + <span class="lifetime">'static</span>,
 	<span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; &lt;L <span class="kw">as </span>tower::Layer&lt;RpcService&gt;&gt;::Service: RpcServiceT&lt;<span class="lifetime">'a</span>&gt;,
 {
@@ -240,7 +246,7 @@
 	<span class="kw">let </span>rpc_service = rpc_service.service(RpcService::new(
 		methods.into(),
 		max_response_body_size <span class="kw">as </span>usize,
-		conn.conn_id <span class="kw">as </span>usize,
+		conn.conn_id.into(),
 		RpcServiceCfg::OnlyCalls,
 	));
 
@@ -256,15 +262,18 @@
 <span class="doccomment">/// Make JSON-RPC HTTP call with a service [`RpcServiceT`]
 ///
 /// Fails if the HTTP request was a malformed JSON-RPC request.
-</span><span class="kw">pub async fn </span>call_with_service&lt;S&gt;(
-	request: hyper::Request&lt;hyper::Body&gt;,
+</span><span class="kw">pub async fn </span>call_with_service&lt;S, B&gt;(
+	request: HttpRequest&lt;B&gt;,
 	batch_config: BatchRequestConfig,
 	max_request_size: u32,
 	rpc_service: S,
 	max_response_size: u32,
-) -&gt; hyper::Response&lt;hyper::Body&gt;
+) -&gt; HttpResponse
 <span class="kw">where
-	for</span>&lt;<span class="lifetime">'a</span>&gt; S: RpcServiceT&lt;<span class="lifetime">'a</span>&gt; + Send,
+	</span>B: http_body::Body&lt;Data = Bytes&gt; + Send + <span class="lifetime">'static</span>,
+	B::Data: Send,
+	B::Error: Into&lt;BoxError&gt;,
+	<span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; S: RpcServiceT&lt;<span class="lifetime">'a</span>&gt; + Send,
 {
 	<span class="comment">// Only the `POST` method is allowed.
 	</span><span class="kw">match </span><span class="kw-2">*</span>request.method() {
@@ -281,7 +290,8 @@
 				}
 			};
 
-			<span class="kw">let </span>rp = handle_rpc_call(<span class="kw-2">&amp;</span>body, is_single, batch_config, max_response_size, <span class="kw-2">&amp;</span>rpc_service).<span class="kw">await</span>;
+			<span class="kw">let </span>rp = handle_rpc_call(<span class="kw-2">&amp;</span>body, is_single, batch_config, max_response_size, <span class="kw-2">&amp;</span>rpc_service, parts.extensions)
+				.<span class="kw">await</span>;
 
 			<span class="comment">// If the response is empty it means that it was a notification or empty batch.
 			// For HTTP these are just ACK:ed with a empty body.
@@ -298,11 +308,13 @@
 	<span class="kw">use </span>jsonrpsee_types::error::{reject_too_big_request, ErrorCode};
 	<span class="kw">use </span>jsonrpsee_types::{ErrorObjectOwned, Id, Response, ResponsePayload};
 
+	<span class="kw">use crate</span>::{HttpBody, HttpResponse};
+
 	<span class="kw">const </span>JSON: <span class="kw-2">&amp;</span>str = <span class="string">"application/json; charset=utf-8"</span>;
 	<span class="kw">const </span>TEXT: <span class="kw-2">&amp;</span>str = <span class="string">"text/plain"</span>;
 
 	<span class="doccomment">/// Create a response for json internal error.
-	</span><span class="kw">pub fn </span>internal_error() -&gt; hyper::Response&lt;hyper::Body&gt; {
+	</span><span class="kw">pub fn </span>internal_error() -&gt; HttpResponse {
 		<span class="kw">let </span>err = ResponsePayload::&lt;()&gt;::error(ErrorObjectOwned::from(ErrorCode::InternalError));
 		<span class="kw">let </span>rp = Response::new(err, Id::Null);
 		<span class="kw">let </span>error = serde_json::to_string(<span class="kw-2">&amp;</span>rp).expect(<span class="string">"built from known-good data; qed"</span>);
@@ -311,21 +323,21 @@
 	}
 
 	<span class="doccomment">/// Create a text/plain response for not allowed hosts.
-	</span><span class="kw">pub fn </span>host_not_allowed() -&gt; hyper::Response&lt;hyper::Body&gt; {
-		from_template(hyper::StatusCode::FORBIDDEN, <span class="string">"Provided Host header is not whitelisted.\n"</span>.to_owned(), TEXT)
+	</span><span class="kw">pub fn </span>host_not_allowed() -&gt; HttpResponse {
+		from_template(hyper::StatusCode::FORBIDDEN, <span class="string">"Provided Host header is not whitelisted.\n"</span>, TEXT)
 	}
 
 	<span class="doccomment">/// Create a text/plain response for disallowed method used.
-	</span><span class="kw">pub fn </span>method_not_allowed() -&gt; hyper::Response&lt;hyper::Body&gt; {
+	</span><span class="kw">pub fn </span>method_not_allowed() -&gt; HttpResponse {
 		from_template(
 			hyper::StatusCode::METHOD_NOT_ALLOWED,
-			<span class="string">"Used HTTP Method is not allowed. POST or OPTIONS is required\n"</span>.to_owned(),
+			<span class="string">"Used HTTP Method is not allowed. POST is required\n"</span>,
 			TEXT,
 		)
 	}
 
 	<span class="doccomment">/// Create a json response for oversized requests (413)
-	</span><span class="kw">pub fn </span>too_large(limit: u32) -&gt; hyper::Response&lt;hyper::Body&gt; {
+	</span><span class="kw">pub fn </span>too_large(limit: u32) -&gt; HttpResponse {
 		<span class="kw">let </span>err = ResponsePayload::&lt;()&gt;::error(reject_too_big_request(limit));
 		<span class="kw">let </span>rp = Response::new(err, Id::Null);
 		<span class="kw">let </span>error = serde_json::to_string(<span class="kw-2">&amp;</span>rp).expect(<span class="string">"JSON serialization infallible; qed"</span>);
@@ -334,7 +346,7 @@
 	}
 
 	<span class="doccomment">/// Create a json response for empty or malformed requests (400)
-	</span><span class="kw">pub fn </span>malformed() -&gt; hyper::Response&lt;hyper::Body&gt; {
+	</span><span class="kw">pub fn </span>malformed() -&gt; HttpResponse {
 		<span class="kw">let </span>rp = Response::new(ResponsePayload::&lt;()&gt;::error(ErrorCode::ParseError), Id::Null);
 		<span class="kw">let </span>error = serde_json::to_string(<span class="kw-2">&amp;</span>rp).expect(<span class="string">"JSON serialization infallible; qed"</span>);
 
@@ -342,12 +354,8 @@
 	}
 
 	<span class="doccomment">/// Create a response body.
-	</span><span class="kw">fn </span>from_template&lt;S: Into&lt;hyper::Body&gt;&gt;(
-		status: hyper::StatusCode,
-		body: S,
-		content_type: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str,
-	) -&gt; hyper::Response&lt;hyper::Body&gt; {
-		hyper::Response::builder()
+	</span><span class="kw">fn </span>from_template(status: hyper::StatusCode, body: <span class="kw">impl </span>Into&lt;HttpBody&gt;, content_type: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str) -&gt; HttpResponse {
+		HttpResponse::builder()
 			.status(status)
 			.header(<span class="string">"content-type"</span>, hyper::header::HeaderValue::from_static(content_type))
 			.body(body.into())
@@ -357,31 +365,27 @@
 	}
 
 	<span class="doccomment">/// Create a valid JSON response.
-	</span><span class="kw">pub fn </span>ok_response(body: String) -&gt; hyper::Response&lt;hyper::Body&gt; {
+	</span><span class="kw">pub fn </span>ok_response(body: <span class="kw">impl </span>Into&lt;HttpBody&gt;) -&gt; HttpResponse {
 		from_template(hyper::StatusCode::OK, body, JSON)
 	}
 
 	<span class="doccomment">/// Create a response for unsupported content type.
-	</span><span class="kw">pub fn </span>unsupported_content_type() -&gt; hyper::Response&lt;hyper::Body&gt; {
+	</span><span class="kw">pub fn </span>unsupported_content_type() -&gt; HttpResponse {
 		from_template(
 			hyper::StatusCode::UNSUPPORTED_MEDIA_TYPE,
-			<span class="string">"Supplied content type is not allowed. Content-Type: application/json is required\n"</span>.to_owned(),
+			<span class="string">"Supplied content type is not allowed. Content-Type: application/json is required\n"</span>,
 			TEXT,
 		)
 	}
 
 	<span class="doccomment">/// Create a response for when the server is busy and can't accept more requests.
-	</span><span class="kw">pub fn </span>too_many_requests() -&gt; hyper::Response&lt;hyper::Body&gt; {
-		from_template(
-			hyper::StatusCode::TOO_MANY_REQUESTS,
-			<span class="string">"Too many connections. Please try again later."</span>.to_owned(),
-			TEXT,
-		)
+	</span><span class="kw">pub fn </span>too_many_requests() -&gt; HttpResponse {
+		from_template(hyper::StatusCode::TOO_MANY_REQUESTS, <span class="string">"Too many connections. Please try again later."</span>, TEXT)
 	}
 
 	<span class="doccomment">/// Create a response for when the server denied the request.
-	</span><span class="kw">pub fn </span>denied() -&gt; hyper::Response&lt;hyper::Body&gt; {
-		from_template(hyper::StatusCode::FORBIDDEN, <span class="string">""</span>.to_owned(), TEXT)
+	</span><span class="kw">pub fn </span>denied() -&gt; HttpResponse {
+		from_template(hyper::StatusCode::FORBIDDEN, HttpBody::default(), TEXT)
 	}
 }
 </code></pre></div></section></main></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/polkadot/statement-table/src/generic.rs`."><title>generic.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkadot_statement_table" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/polkadot/statement-table/src/generic.rs`."><title>generic.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkadot_statement_table" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -985,7 +985,6 @@
 <a href="#985" id="985">985</a>
 <a href="#986" id="986">986</a>
 <a href="#987" id="987">987</a>
-<a href="#988" id="988">988</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 // This file is part of Polkadot.
 
@@ -1018,12 +1017,12 @@
 	hash::Hash,
 };
 
-<span class="kw">use </span>primitives::{
+<span class="kw">use </span>polkadot_primitives::{
 	effective_minimum_backing_votes, ValidatorSignature,
 	ValidityAttestation <span class="kw">as </span>PrimitiveValidityAttestation,
 };
 
-<span class="kw">use </span>parity_scale_codec::{Decode, Encode};
+<span class="kw">use </span>codec::{Decode, Encode};
 <span class="kw">const </span>LOG_TARGET: <span class="kw-2">&amp;</span>str = <span class="string">"parachain::statement-table"</span>;
 
 <span class="doccomment">/// Context for the statement table.
@@ -1233,7 +1232,8 @@
 	</span><span class="kw">pub fn </span>attested(
 		<span class="kw-2">&amp;</span><span class="self">self</span>,
 		validity_threshold: usize,
-	) -&gt; <span class="prelude-ty">Option</span>&lt;AttestedCandidate&lt;Ctx::GroupId, Ctx::Candidate, Ctx::AuthorityId, Ctx::Signature&gt;&gt; {
+	) -&gt; <span class="prelude-ty">Option</span>&lt;AttestedCandidate&lt;Ctx::GroupId, Ctx::Candidate, Ctx::AuthorityId, Ctx::Signature&gt;&gt;
+	{
 		<span class="kw">let </span>valid_votes = <span class="self">self</span>.validity_votes.len();
 		<span class="kw">if </span>valid_votes &lt; validity_threshold {
 			<span class="kw">return </span><span class="prelude-val">None
@@ -1309,7 +1309,8 @@
 		digest: <span class="kw-2">&amp;</span>Ctx::Digest,
 		context: <span class="kw-2">&amp;</span>Ctx,
 		minimum_backing_votes: u32,
-	) -&gt; <span class="prelude-ty">Option</span>&lt;AttestedCandidate&lt;Ctx::GroupId, Ctx::Candidate, Ctx::AuthorityId, Ctx::Signature&gt;&gt; {
+	) -&gt; <span class="prelude-ty">Option</span>&lt;AttestedCandidate&lt;Ctx::GroupId, Ctx::Candidate, Ctx::AuthorityId, Ctx::Signature&gt;&gt;
+	{
 		<span class="self">self</span>.candidate_votes.get(digest).and_then(|data| {
 			<span class="kw">let </span>v_threshold = context.get_group_size(<span class="kw-2">&amp;</span>data.group_id).map_or(usize::MAX, |len| {
 				effective_minimum_backing_votes(len, minimum_backing_votes)
@@ -1465,10 +1466,7 @@
 		</span><span class="kw">if </span>!context.is_member_of(<span class="kw-2">&amp;</span>from, <span class="kw-2">&amp;</span>votes.group_id) {
 			<span class="kw">let </span>sig = <span class="kw">match </span>vote {
 				ValidityVote::Valid(s) =&gt; s,
-				ValidityVote::Issued(<span class="kw">_</span>) =&gt; <span class="macro">panic!</span>(
-					<span class="string">"implicit issuance vote only cast from `import_candidate` after \
-							checking group membership of issuer; qed"
-				</span>),
+				ValidityVote::Issued(s) =&gt; s,
 			};
 
 			<span class="kw">return </span><span class="prelude-val">Err</span>(Misbehavior::UnauthorizedStatement(UnauthorizedStatement {

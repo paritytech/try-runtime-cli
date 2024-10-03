@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["Entry","InsertResult","NodeStatus"],"struct":["AbsentEntry","AppliedPending","Distance","EntryRefView","EntryView","KBucketRef","KBucketsTable","Key","KeyBytes","Node","NodeRefView","PendingEntry","PresentEntry"]};

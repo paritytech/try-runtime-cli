@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/simple-dns-0.5.7/src/dns/rdata/opt.rs`."><title>opt.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="simple_dns" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/simple-dns-0.7.1/src/dns/rdata/opt.rs`."><title>opt.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="simple_dns" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -239,8 +239,10 @@
 <a href="#239" id="239">239</a>
 <a href="#240" id="240">240</a>
 <a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
 </pre></div><pre class="rust"><code><span class="kw">use crate</span>::{
-    dns::{header::Header, PacketPart},
+    dns::{header::Header, WireFormat},
     RCODE,
 };
 <span class="kw">use </span>std::borrow::Cow;
@@ -273,42 +275,44 @@
     <span class="kw">const </span>TYPE_CODE: u16 = <span class="number">41</span>;
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; PacketPart&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span>OPT&lt;<span class="lifetime">'a</span>&gt; {
-    <span class="kw">fn </span>parse(data: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], <span class="kw-2">mut </span>position: usize) -&gt; <span class="kw">crate</span>::Result&lt;<span class="self">Self</span>&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; WireFormat&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span>OPT&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">fn </span>parse(data: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], position: <span class="kw-2">&amp;mut </span>usize) -&gt; <span class="kw">crate</span>::Result&lt;<span class="self">Self</span>&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
     {
-        <span class="kw">if </span>position &lt; <span class="number">8 </span>{
+        <span class="kw">if </span><span class="kw-2">*</span>position + <span class="number">10 </span>&gt; data.len() {
             <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="kw">crate</span>::SimpleDnsError::InsufficientData);
         }
 
         <span class="comment">// udp packet size comes from CLASS
-        </span><span class="kw">let </span>udp_packet_size = u16::from_be_bytes(data[position - <span class="number">8</span>..position - <span class="number">6</span>].try_into()<span class="question-mark">?</span>);
+        </span><span class="kw">let </span>udp_packet_size = u16::from_be_bytes(data[<span class="kw-2">*</span>position + <span class="number">2</span>..<span class="kw-2">*</span>position + <span class="number">4</span>].try_into()<span class="question-mark">?</span>);
         <span class="comment">// version comes from ttl
-        </span><span class="kw">let </span>ttl = u32::from_be_bytes(data[position - <span class="number">6</span>..position - <span class="number">2</span>].try_into()<span class="question-mark">?</span>);
+        </span><span class="kw">let </span>ttl = u32::from_be_bytes(data[<span class="kw-2">*</span>position + <span class="number">4</span>..<span class="kw-2">*</span>position + <span class="number">8</span>].try_into()<span class="question-mark">?</span>);
         <span class="kw">let </span>version = ((ttl &amp; masks::VERSION_MASK) &gt;&gt; masks::VERSION_MASK.trailing_zeros()) <span class="kw">as </span>u8;
 
+        <span class="kw-2">*</span>position += <span class="number">10</span>;
+
         <span class="kw">let </span><span class="kw-2">mut </span>opt_codes = Vec::new();
-        <span class="kw">while </span>position &lt; data.len() {
-            <span class="kw">if </span>position + <span class="number">4 </span>&gt; data.len() {
+        <span class="kw">while </span><span class="kw-2">*</span>position &lt; data.len() {
+            <span class="kw">if </span><span class="kw-2">*</span>position + <span class="number">4 </span>&gt; data.len() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="kw">crate</span>::SimpleDnsError::InsufficientData);
             }
 
-            <span class="kw">let </span>code = u16::from_be_bytes(data[position..position + <span class="number">2</span>].try_into()<span class="question-mark">?</span>);
-            <span class="kw">let </span>length = u16::from_be_bytes(data[position + <span class="number">2</span>..position + <span class="number">4</span>].try_into()<span class="question-mark">?</span>) <span class="kw">as </span>usize;
+            <span class="kw">let </span>code = u16::from_be_bytes(data[<span class="kw-2">*</span>position..<span class="kw-2">*</span>position + <span class="number">2</span>].try_into()<span class="question-mark">?</span>);
+            <span class="kw">let </span>length =
+                u16::from_be_bytes(data[<span class="kw-2">*</span>position + <span class="number">2</span>..<span class="kw-2">*</span>position + <span class="number">4</span>].try_into()<span class="question-mark">?</span>) <span class="kw">as </span>usize;
 
-            <span class="kw">if </span>position + <span class="number">4 </span>+ length &gt; data.len() {
+            <span class="kw">if </span><span class="kw-2">*</span>position + <span class="number">4 </span>+ length &gt; data.len() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="kw">crate</span>::SimpleDnsError::InsufficientData);
             }
 
-            <span class="kw">let </span>inner_data = Cow::Borrowed(<span class="kw-2">&amp;</span>data[position + <span class="number">4</span>..position + <span class="number">4 </span>+ length]);
-
+            <span class="kw">let </span>inner_data = Cow::Borrowed(<span class="kw-2">&amp;</span>data[<span class="kw-2">*</span>position + <span class="number">4</span>..<span class="kw-2">*</span>position + <span class="number">4 </span>+ length]);
             opt_codes.push(OPTCode {
                 code,
                 data: inner_data,
             });
 
-            position += <span class="number">4 </span>+ length;
+            <span class="kw-2">*</span>position += <span class="number">4 </span>+ length;
         }
 
         <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
@@ -402,7 +406,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>data = Vec::new();
         <span class="macro">assert!</span>(opt_rr.write_to(<span class="kw-2">&amp;mut </span>data).is_ok());
 
-        <span class="kw">let </span>opt = <span class="kw">match </span>ResourceRecord::parse(<span class="kw-2">&amp;</span>data, <span class="number">0</span>)
+        <span class="kw">let </span>opt = <span class="kw">match </span>ResourceRecord::parse(<span class="kw-2">&amp;</span>data, <span class="kw-2">&amp;mut </span><span class="number">0</span>)
             .expect(<span class="string">"failed to parse"</span>)
             .rdata
         {
@@ -446,7 +450,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>data = Vec::new();
         <span class="macro">assert!</span>(opt_rr.write_to(<span class="kw-2">&amp;mut </span>data).is_ok());
 
-        <span class="kw">let </span><span class="kw-2">mut </span>opt = <span class="kw">match </span>ResourceRecord::parse(<span class="kw-2">&amp;</span>data, <span class="number">0</span>)
+        <span class="kw">let </span><span class="kw-2">mut </span>opt = <span class="kw">match </span>ResourceRecord::parse(<span class="kw-2">&amp;</span>data, <span class="kw-2">&amp;mut </span><span class="number">0</span>)
             .expect(<span class="string">"failed to parse"</span>)
             .rdata
         {

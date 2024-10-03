@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["ConnectionError","FrameDecodeError","HeaderDecodeError","Mode","WindowUpdateMode"],"fn":["into_stream"],"struct":["Config","Connection","Control","Packet","Stream","StreamId"]};
+window.SIDEBAR_ITEMS = {"constant":["DEFAULT_CREDIT"],"enum":["ConnectionError","FrameDecodeError","HeaderDecodeError","Mode","WindowUpdateMode"],"struct":["Config","Connection","Packet","Stream","StreamId"],"type":["Result"]};

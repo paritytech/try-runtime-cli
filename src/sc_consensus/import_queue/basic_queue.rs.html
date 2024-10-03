@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/consensus/common/src/import_queue/basic_queue.rs`."><title>basic_queue.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_consensus" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/client/consensus/common/src/import_queue/basic_queue.rs`."><title>basic_queue.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_consensus" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -682,10 +682,6 @@
 <a href="#682" id="682">682</a>
 <a href="#683" id="683">683</a>
 <a href="#684" id="684">684</a>
-<a href="#685" id="685">685</a>
-<a href="#686" id="686">686</a>
-<a href="#687" id="687">687</a>
-<a href="#688" id="688">688</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -707,7 +703,6 @@
 	prelude::<span class="kw-2">*</span>,
 	task::{Context, Poll},
 };
-<span class="kw">use </span>futures_timer::Delay;
 <span class="kw">use </span>log::{debug, trace};
 <span class="kw">use </span>prometheus_endpoint::Registry;
 <span class="kw">use </span>sc_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
@@ -716,14 +711,14 @@
 	traits::{Block <span class="kw">as </span>BlockT, Header <span class="kw">as </span>HeaderT, NumberFor},
 	Justification, Justifications,
 };
-<span class="kw">use </span>std::{pin::Pin, time::Duration};
+<span class="kw">use </span>std::pin::Pin;
 
 <span class="kw">use crate</span>::{
 	import_queue::{
 		buffered_link::{<span class="self">self</span>, BufferedLinkReceiver, BufferedLinkSender},
-		import_single_block_metered, BlockImportError, BlockImportStatus, BoxBlockImport,
-		BoxJustificationImport, ImportQueue, ImportQueueService, IncomingBlock, Link,
-		RuntimeOrigin, Verifier, LOG_TARGET,
+		import_single_block_metered, verify_single_block_metered, BlockImportError,
+		BlockImportStatus, BoxBlockImport, BoxJustificationImport, ImportQueue, ImportQueueService,
+		IncomingBlock, Link, RuntimeOrigin, SingleBlockVerificationOutcome, Verifier, LOG_TARGET,
 	},
 	metrics::Metrics,
 };
@@ -749,13 +744,16 @@
 	<span class="doccomment">/// Instantiate a new basic queue, with given verifier.
 	///
 	/// This creates a background task, and calls `on_start` on the justification importer.
-	</span><span class="kw">pub fn </span>new&lt;V: <span class="lifetime">'static </span>+ Verifier&lt;B&gt;&gt;(
+	</span><span class="kw">pub fn </span>new&lt;V&gt;(
 		verifier: V,
 		block_import: BoxBlockImport&lt;B&gt;,
 		justification_import: <span class="prelude-ty">Option</span>&lt;BoxJustificationImport&lt;B&gt;&gt;,
 		spawner: <span class="kw-2">&amp;</span><span class="kw">impl </span>sp_core::traits::SpawnEssentialNamed,
 		prometheus_registry: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Registry&gt;,
-	) -&gt; <span class="self">Self </span>{
+	) -&gt; <span class="self">Self
+	</span><span class="kw">where
+		</span>V: Verifier&lt;B&gt; + <span class="lifetime">'static</span>,
+	{
 		<span class="kw">let </span>(result_sender, result_port) = buffered_link::buffered_link(<span class="number">100_000</span>);
 
 		<span class="kw">let </span>metrics = prometheus_registry.and_then(|r| {
@@ -908,11 +906,10 @@
 /// Returns when `block_import` ended.
 </span><span class="kw">async fn </span>block_import_process&lt;B: BlockT&gt;(
 	<span class="kw-2">mut </span>block_import: BoxBlockImport&lt;B&gt;,
-	<span class="kw-2">mut </span>verifier: <span class="kw">impl </span>Verifier&lt;B&gt;,
+	verifier: <span class="kw">impl </span>Verifier&lt;B&gt;,
 	<span class="kw-2">mut </span>result_sender: BufferedLinkSender&lt;B&gt;,
 	<span class="kw-2">mut </span>block_import_receiver: TracingUnboundedReceiver&lt;worker_messages::ImportBlocks&lt;B&gt;&gt;,
 	metrics: <span class="prelude-ty">Option</span>&lt;Metrics&gt;,
-	delay_between_blocks: Duration,
 ) {
 	<span class="kw">loop </span>{
 		<span class="kw">let </span>worker_messages::ImportBlocks(origin, blocks) = <span class="kw">match </span>block_import_receiver.next().<span class="kw">await
@@ -927,15 +924,8 @@
 			</span>},
 		};
 
-		<span class="kw">let </span>res = import_many_blocks(
-			<span class="kw-2">&amp;mut </span>block_import,
-			origin,
-			blocks,
-			<span class="kw-2">&amp;mut </span>verifier,
-			delay_between_blocks,
-			metrics.clone(),
-		)
-		.<span class="kw">await</span>;
+		<span class="kw">let </span>res =
+			import_many_blocks(<span class="kw-2">&amp;mut </span>block_import, origin, blocks, <span class="kw-2">&amp;</span>verifier, metrics.clone()).<span class="kw">await</span>;
 
 		result_sender.blocks_processed(res.imported, res.block_count, res.results);
 	}
@@ -948,7 +938,7 @@
 }
 
 <span class="kw">impl</span>&lt;B: BlockT&gt; BlockImportWorker&lt;B&gt; {
-	<span class="kw">fn </span>new&lt;V: <span class="lifetime">'static </span>+ Verifier&lt;B&gt;&gt;(
+	<span class="kw">fn </span>new&lt;V&gt;(
 		result_sender: BufferedLinkSender&lt;B&gt;,
 		verifier: V,
 		block_import: BoxBlockImport&lt;B&gt;,
@@ -958,18 +948,19 @@
 		<span class="kw">impl </span>Future&lt;Output = ()&gt; + Send,
 		TracingUnboundedSender&lt;worker_messages::ImportJustification&lt;B&gt;&gt;,
 		TracingUnboundedSender&lt;worker_messages::ImportBlocks&lt;B&gt;&gt;,
-	) {
+	)
+	<span class="kw">where
+		</span>V: Verifier&lt;B&gt; + <span class="lifetime">'static</span>,
+	{
 		<span class="kw">use </span>worker_messages::<span class="kw-2">*</span>;
 
 		<span class="kw">let </span>(justification_sender, <span class="kw-2">mut </span>justification_port) =
 			tracing_unbounded(<span class="string">"mpsc_import_queue_worker_justification"</span>, <span class="number">100_000</span>);
 
-		<span class="kw">let </span>(block_import_sender, block_import_port) =
+		<span class="kw">let </span>(block_import_sender, block_import_receiver) =
 			tracing_unbounded(<span class="string">"mpsc_import_queue_worker_blocks"</span>, <span class="number">100_000</span>);
 
 		<span class="kw">let </span><span class="kw-2">mut </span>worker = BlockImportWorker { result_sender, justification_import, metrics };
-
-		<span class="kw">let </span>delay_between_blocks = Duration::default();
 
 		<span class="kw">let </span>future = <span class="kw">async move </span>{
 			<span class="comment">// Let's initialize `justification_import`
@@ -983,9 +974,8 @@
 				block_import,
 				verifier,
 				worker.result_sender.clone(),
-				block_import_port,
+				block_import_receiver,
 				worker.metrics.clone(),
-				delay_between_blocks,
 			);
 			<span class="macro">futures::pin_mut!</span>(block_import_process);
 
@@ -1081,8 +1071,7 @@
 	import_handle: <span class="kw-2">&amp;mut </span>BoxBlockImport&lt;B&gt;,
 	blocks_origin: BlockOrigin,
 	blocks: Vec&lt;IncomingBlock&lt;B&gt;&gt;,
-	verifier: <span class="kw-2">&amp;mut </span>V,
-	delay_between_blocks: Duration,
+	verifier: <span class="kw-2">&amp;</span>V,
 	metrics: <span class="prelude-ty">Option</span>&lt;Metrics&gt;,
 ) -&gt; ImportManyBlocksResult&lt;B&gt; {
 	<span class="kw">let </span>count = blocks.len();
@@ -1119,16 +1108,23 @@
 		<span class="kw">let </span>import_result = <span class="kw">if </span>has_error {
 			<span class="prelude-val">Err</span>(BlockImportError::Cancelled)
 		} <span class="kw">else </span>{
-			<span class="comment">// The actual import.
-			</span>import_single_block_metered(
+			<span class="kw">let </span>verification_fut = verify_single_block_metered(
 				import_handle,
 				blocks_origin,
 				block,
 				verifier,
-				metrics.clone(),
-			)
-			.<span class="kw">await
-		</span>};
+				metrics.as_ref(),
+			);
+			<span class="kw">match </span>verification_fut.<span class="kw">await </span>{
+				<span class="prelude-val">Ok</span>(SingleBlockVerificationOutcome::Imported(import_status)) =&gt; <span class="prelude-val">Ok</span>(import_status),
+				<span class="prelude-val">Ok</span>(SingleBlockVerificationOutcome::Verified(import_parameters)) =&gt; {
+					<span class="comment">// The actual import.
+					</span>import_single_block_metered(import_handle, import_parameters, metrics.as_ref())
+						.<span class="kw">await
+				</span>},
+				<span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(e),
+			}
+		};
 
 		<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = metrics.as_ref() {
 			metrics.report_import::&lt;B&gt;(<span class="kw-2">&amp;</span>import_result);
@@ -1148,12 +1144,8 @@
 
 		results.push((import_result, block_hash));
 
-		<span class="kw">if </span>delay_between_blocks != Duration::default() &amp;&amp; !has_error {
-			Delay::new(delay_between_blocks).<span class="kw">await</span>;
-		} <span class="kw">else </span>{
-			Yield::new().<span class="kw">await
-		</span>}
-	}
+		Yield::new().<span class="kw">await
+	</span>}
 }
 
 <span class="doccomment">/// A future that will always `yield` on the first call of `poll` but schedules the
@@ -1198,7 +1190,7 @@
 	<span class="attr">#[async_trait::async_trait]
 	</span><span class="kw">impl </span>Verifier&lt;Block&gt; <span class="kw">for </span>() {
 		<span class="kw">async fn </span>verify(
-			<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+			<span class="kw-2">&amp;</span><span class="self">self</span>,
 			block: BlockImportParams&lt;Block&gt;,
 		) -&gt; <span class="prelude-ty">Result</span>&lt;BlockImportParams&lt;Block&gt;, String&gt; {
 			<span class="prelude-val">Ok</span>(BlockImportParams::new(block.origin, block.header))
@@ -1210,14 +1202,14 @@
 		<span class="kw">type </span>Error = sp_consensus::Error;
 
 		<span class="kw">async fn </span>check_block(
-			<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+			<span class="kw-2">&amp;</span><span class="self">self</span>,
 			_block: BlockCheckParams&lt;Block&gt;,
 		) -&gt; <span class="prelude-ty">Result</span>&lt;ImportResult, <span class="self">Self</span>::Error&gt; {
 			<span class="prelude-val">Ok</span>(ImportResult::imported(<span class="bool-val">false</span>))
 		}
 
 		<span class="kw">async fn </span>import_block(
-			<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+			<span class="kw-2">&amp;</span><span class="self">self</span>,
 			_block: BlockImportParams&lt;Block&gt;,
 		) -&gt; <span class="prelude-ty">Result</span>&lt;ImportResult, <span class="self">Self</span>::Error&gt; {
 			<span class="prelude-val">Ok</span>(ImportResult::imported(<span class="bool-val">true</span>))

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/simple-dns-0.5.7/src/dns/packet.rs`."><title>packet.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="simple_dns" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/simple-dns-0.7.1/src/dns/packet.rs`."><title>packet.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="simple_dns" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -279,15 +279,16 @@
 <a href="#279" id="279">279</a>
 <a href="#280" id="280">280</a>
 <a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::{
     collections::HashMap,
     io::{Cursor, Seek, Write},
-    usize,
 };
 
 <span class="kw">use crate</span>::{header_buffer, rdata::OPT, RCODE};
 
-<span class="kw">use super</span>::{Header, PacketFlag, PacketPart, Question, ResourceRecord, OPCODE};
+<span class="kw">use super</span>::{Header, PacketFlag, Question, ResourceRecord, WireFormat, OPCODE};
 
 <span class="doccomment">/// Represents a DNS message packet
 ///
@@ -303,7 +304,7 @@
     <span class="doccomment">/// Name servers section
     </span><span class="kw">pub </span>name_servers: Vec&lt;ResourceRecord&lt;<span class="lifetime">'a</span>&gt;&gt;,
     <span class="doccomment">/// Aditional records section.  
-    /// DO NOT use this field to add OPT record, use [`opt_mut`] instead
+    /// DO NOT use this field to add OPT record, use [`Packet::opt_mut`] instead
     </span><span class="kw">pub </span>additional_records: Vec&lt;ResourceRecord&lt;<span class="lifetime">'a</span>&gt;&gt;,
 }
 
@@ -335,6 +336,11 @@
         <span class="self">self</span>.header.id
     }
 
+    <span class="doccomment">/// Set packet id
+    </span><span class="kw">pub fn </span>set_id(<span class="kw-2">&amp;mut </span><span class="self">self</span>, id: u16) {
+        <span class="self">self</span>.header.id = id;
+    }
+
     <span class="doccomment">/// Set flags in the packet
     </span><span class="kw">pub fn </span>set_flags(<span class="kw-2">&amp;mut </span><span class="self">self</span>, flags: PacketFlag) {
         <span class="self">self</span>.header.set_flags(flags);
@@ -357,7 +363,7 @@
 
     <span class="doccomment">/// Get a mutable reference for  this packet [RCODE] information
     /// Warning, if the [RCODE] value is greater than 15 (4 bits), you MUST provide an [OPT]
-    /// resource record through the [opt_mut] function
+    /// resource record through the [Packet::opt_mut] function
     </span><span class="kw">pub fn </span>rcode_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>RCODE {
         <span class="kw-2">&amp;mut </span><span class="self">self</span>.header.response_code
     }
@@ -416,7 +422,7 @@
         })
     }
 
-    <span class="kw">fn </span>parse_section&lt;T: PacketPart&lt;<span class="lifetime">'a</span>&gt;&gt;(
+    <span class="kw">fn </span>parse_section&lt;T: WireFormat&lt;<span class="lifetime">'a</span>&gt;&gt;(
         data: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8],
         offset: <span class="kw-2">&amp;mut </span>usize,
         items_count: u16,
@@ -424,9 +430,7 @@
         <span class="kw">let </span><span class="kw-2">mut </span>section_items = Vec::with_capacity(items_count <span class="kw">as </span>usize);
 
         <span class="kw">for _ in </span><span class="number">0</span>..items_count {
-            <span class="kw">let </span>item = T::parse(data, <span class="kw-2">*</span>offset)<span class="question-mark">?</span>;
-            <span class="kw-2">*</span>offset += item.len();
-            section_items.push(item);
+            section_items.push(T::parse(data, offset)<span class="question-mark">?</span>);
         }
 
         <span class="prelude-val">Ok</span>(section_items)

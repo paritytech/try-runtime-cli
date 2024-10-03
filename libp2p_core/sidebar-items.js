@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["address_translation"],"mod":["connection","either","identity","muxing","peer_record","signed_envelope","transport","upgrade"],"struct":["DecodeError","Multiaddr"],"type":["Negotiated","ParseError","PeerId","PublicKey"]};
+window.SIDEBAR_ITEMS = {"fn":["address_translation"],"mod":["connection","either","muxing","peer_record","signed_envelope","transport","upgrade"],"struct":["DecodeError","Multiaddr"],"type":["Negotiated"]};

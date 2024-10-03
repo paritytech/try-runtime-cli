@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/litep2p-2515ad90543f141a/e03a602/src/multistream_select/protocol.rs`."><title>protocol.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litep2p-0.7.0/src/multistream_select/protocol.rs`."><title>protocol.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -468,15 +468,6 @@
 <a href="#468" id="468">468</a>
 <a href="#469" id="469">469</a>
 <a href="#470" id="470">470</a>
-<a href="#471" id="471">471</a>
-<a href="#472" id="472">472</a>
-<a href="#473" id="473">473</a>
-<a href="#474" id="474">474</a>
-<a href="#475" id="475">475</a>
-<a href="#476" id="476">476</a>
-<a href="#477" id="477">477</a>
-<a href="#478" id="478">478</a>
-<a href="#479" id="479">479</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2017 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -901,24 +892,35 @@
 }
 
 <span class="doccomment">/// A protocol error.
-</span><span class="attr">#[derive(Debug)]
+</span><span class="attr">#[derive(Debug, thiserror::Error)]
 </span><span class="kw">pub enum </span>ProtocolError {
     <span class="doccomment">/// I/O error.
-    </span>IoError(io::Error),
+    </span><span class="attr">#[error(<span class="string">"I/O error: `{0}`"</span>)]
+    </span>IoError(<span class="attr">#[from] </span>io::Error),
 
     <span class="doccomment">/// Received an invalid message from the remote.
+    </span><span class="attr">#[error(<span class="string">"Received an invalid message from the remote."</span>)]
     </span>InvalidMessage,
 
     <span class="doccomment">/// A protocol (name) is invalid.
+    </span><span class="attr">#[error(<span class="string">"A protocol (name) is invalid."</span>)]
     </span>InvalidProtocol,
 
     <span class="doccomment">/// Too many protocols have been returned by the remote.
+    </span><span class="attr">#[error(<span class="string">"Too many protocols have been returned by the remote."</span>)]
     </span>TooManyProtocols,
+
+    <span class="doccomment">/// The protocol is not supported.
+    </span><span class="attr">#[error(<span class="string">"The protocol is not supported."</span>)]
+    </span>ProtocolNotSupported,
 }
 
-<span class="kw">impl </span>From&lt;io::Error&gt; <span class="kw">for </span>ProtocolError {
-    <span class="kw">fn </span>from(err: io::Error) -&gt; ProtocolError {
-        ProtocolError::IoError(err)
+<span class="kw">impl </span>PartialEq <span class="kw">for </span>ProtocolError {
+    <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; bool {
+        <span class="kw">match </span>(<span class="self">self</span>, other) {
+            (ProtocolError::IoError(lhs), ProtocolError::IoError(rhs)) =&gt; lhs.kind() == rhs.kind(),
+            <span class="kw">_ </span>=&gt; std::mem::discriminant(<span class="self">self</span>) == std::mem::discriminant(other),
+        }
     }
 }
 
@@ -934,26 +936,6 @@
 <span class="kw">impl </span>From&lt;uvi::decode::Error&gt; <span class="kw">for </span>ProtocolError {
     <span class="kw">fn </span>from(err: uvi::decode::Error) -&gt; ProtocolError {
         <span class="self">Self</span>::from(io::Error::new(io::ErrorKind::InvalidData, err.to_string()))
-    }
-}
-
-<span class="kw">impl </span>Error <span class="kw">for </span>ProtocolError {
-    <span class="kw">fn </span>source(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>(<span class="kw">dyn </span>Error + <span class="lifetime">'static</span>)&gt; {
-        <span class="kw">match </span><span class="kw-2">*</span><span class="self">self </span>{
-            ProtocolError::IoError(<span class="kw-2">ref </span>err) =&gt; <span class="prelude-val">Some</span>(err),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
-        }
-    }
-}
-
-<span class="kw">impl </span>fmt::Display <span class="kw">for </span>ProtocolError {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), fmt::Error&gt; {
-        <span class="kw">match </span><span class="self">self </span>{
-            ProtocolError::IoError(e) =&gt; <span class="macro">write!</span>(fmt, <span class="string">"I/O error: {e}"</span>),
-            ProtocolError::InvalidMessage =&gt; <span class="macro">write!</span>(fmt, <span class="string">"Received an invalid message."</span>),
-            ProtocolError::InvalidProtocol =&gt; <span class="macro">write!</span>(fmt, <span class="string">"A protocol (name) is invalid."</span>),
-            ProtocolError::TooManyProtocols =&gt; <span class="macro">write!</span>(fmt, <span class="string">"Too many protocols received."</span>),
-        }
     }
 }
 </code></pre></div></section></main></body></html>

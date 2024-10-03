@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"struct":["MediaEgressStats","MediaIngressStats","PeerStats","RemoteEgressStats","RemoteIngressStats"]};

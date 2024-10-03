@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["ReportBlock","Rtcp","SdesType"],"struct":["Descriptions","Dlrr","ExtendedReport","Fir","FirEntry","Goodbye","Nack","NackEntry","Pli","ReceiverReport","ReceptionReport","ReportList","Rrtr","Sdes","SenderInfo","SenderReport","Twcc"]};

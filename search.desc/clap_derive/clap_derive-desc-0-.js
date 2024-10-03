@@ -1,1 +1,1 @@
-searchState.loadedDescShard("clap_derive", 0, "clap_derive\nGenerates the <code>Args</code> impl.\nGenerates the <code>Parser</code> implementation.\nGenerates the <code>Subcommand</code> impl.\nGenerates the <code>ValueEnum</code> impl.")
+searchState.loadedDescShard("clap_derive", 0, "<code>clap_derive</code>\nGenerates the <code>Args</code> impl.\nGenerates the <code>Parser</code> implementation.\nGenerates the <code>Subcommand</code> impl.\nGenerates the <code>ValueEnum</code> impl.")

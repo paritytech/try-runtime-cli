@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/thread_local-1.1.7/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="thread_local" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/thread_local-1.1.8/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="thread_local" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -644,6 +644,43 @@
 <a href="#644" id="644">644</a>
 <a href="#645" id="645">645</a>
 <a href="#646" id="646">646</a>
+<a href="#647" id="647">647</a>
+<a href="#648" id="648">648</a>
+<a href="#649" id="649">649</a>
+<a href="#650" id="650">650</a>
+<a href="#651" id="651">651</a>
+<a href="#652" id="652">652</a>
+<a href="#653" id="653">653</a>
+<a href="#654" id="654">654</a>
+<a href="#655" id="655">655</a>
+<a href="#656" id="656">656</a>
+<a href="#657" id="657">657</a>
+<a href="#658" id="658">658</a>
+<a href="#659" id="659">659</a>
+<a href="#660" id="660">660</a>
+<a href="#661" id="661">661</a>
+<a href="#662" id="662">662</a>
+<a href="#663" id="663">663</a>
+<a href="#664" id="664">664</a>
+<a href="#665" id="665">665</a>
+<a href="#666" id="666">666</a>
+<a href="#667" id="667">667</a>
+<a href="#668" id="668">668</a>
+<a href="#669" id="669">669</a>
+<a href="#670" id="670">670</a>
+<a href="#671" id="671">671</a>
+<a href="#672" id="672">672</a>
+<a href="#673" id="673">673</a>
+<a href="#674" id="674">674</a>
+<a href="#675" id="675">675</a>
+<a href="#676" id="676">676</a>
+<a href="#677" id="677">677</a>
+<a href="#678" id="678">678</a>
+<a href="#679" id="679">679</a>
+<a href="#680" id="680">680</a>
+<a href="#681" id="681">681</a>
+<a href="#682" id="682">682</a>
+<a href="#683" id="683">683</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2017 Amanieu d'Antras
 //
 // Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
@@ -740,13 +777,14 @@
 </span><span class="kw">const </span>POINTER_WIDTH: u8 = <span class="number">64</span>;
 
 <span class="doccomment">/// The total number of buckets stored in each thread local.
-</span><span class="kw">const </span>BUCKETS: usize = (POINTER_WIDTH + <span class="number">1</span>) <span class="kw">as </span>usize;
+/// All buckets combined can hold up to `usize::MAX - 1` entries.
+</span><span class="kw">const </span>BUCKETS: usize = (POINTER_WIDTH - <span class="number">1</span>) <span class="kw">as </span>usize;
 
 <span class="doccomment">/// Thread-local variable wrapper
 ///
 /// See the [module-level documentation](index.html) for more.
 </span><span class="kw">pub struct </span>ThreadLocal&lt;T: Send&gt; {
-    <span class="doccomment">/// The buckets in the thread local. The nth bucket contains `2^(n-1)`
+    <span class="doccomment">/// The buckets in the thread local. The nth bucket contains `2^n`
     /// elements. Each bucket is lazily allocated.
     </span>buckets: [AtomicPtr&lt;Entry&lt;T&gt;&gt;; BUCKETS],
 
@@ -781,16 +819,11 @@
 
 <span class="kw">impl</span>&lt;T: Send&gt; Drop <span class="kw">for </span>ThreadLocal&lt;T&gt; {
     <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="kw">let </span><span class="kw-2">mut </span>bucket_size = <span class="number">1</span>;
-
         <span class="comment">// Free each non-null bucket
         </span><span class="kw">for </span>(i, bucket) <span class="kw">in </span><span class="self">self</span>.buckets.iter_mut().enumerate() {
             <span class="kw">let </span>bucket_ptr = <span class="kw-2">*</span>bucket.get_mut();
 
-            <span class="kw">let </span>this_bucket_size = bucket_size;
-            <span class="kw">if </span>i != <span class="number">0 </span>{
-                bucket_size &lt;&lt;= <span class="number">1</span>;
-            }
+            <span class="kw">let </span>this_bucket_size = <span class="number">1 </span>&lt;&lt; i;
 
             <span class="kw">if </span>bucket_ptr.is_null() {
                 <span class="kw">continue</span>;
@@ -803,30 +836,26 @@
 
 <span class="kw">impl</span>&lt;T: Send&gt; ThreadLocal&lt;T&gt; {
     <span class="doccomment">/// Creates a new empty `ThreadLocal`.
-    </span><span class="kw">pub fn </span>new() -&gt; ThreadLocal&lt;T&gt; {
-        <span class="self">Self</span>::with_capacity(<span class="number">2</span>)
+    </span><span class="kw">pub const fn </span>new() -&gt; ThreadLocal&lt;T&gt; {
+        <span class="kw">let </span>buckets = [ptr::null_mut::&lt;Entry&lt;T&gt;&gt;(); BUCKETS];
+        <span class="self">Self </span>{
+            buckets: <span class="kw">unsafe </span>{ mem::transmute(buckets) },
+            values: AtomicUsize::new(<span class="number">0</span>),
+        }
     }
 
     <span class="doccomment">/// Creates a new `ThreadLocal` with an initial capacity. If less than the capacity threads
     /// access the thread local it will never reallocate. The capacity may be rounded up to the
     /// nearest power of two.
     </span><span class="kw">pub fn </span>with_capacity(capacity: usize) -&gt; ThreadLocal&lt;T&gt; {
-        <span class="kw">let </span>allocated_buckets = capacity
-            .checked_sub(<span class="number">1</span>)
-            .map(|c| usize::from(POINTER_WIDTH) - (c.leading_zeros() <span class="kw">as </span>usize) + <span class="number">1</span>)
-            .unwrap_or(<span class="number">0</span>);
+        <span class="kw">let </span>allocated_buckets = usize::from(POINTER_WIDTH) - (capacity.leading_zeros() <span class="kw">as </span>usize);
 
         <span class="kw">let </span><span class="kw-2">mut </span>buckets = [ptr::null_mut(); BUCKETS];
-        <span class="kw">let </span><span class="kw-2">mut </span>bucket_size = <span class="number">1</span>;
         <span class="kw">for </span>(i, bucket) <span class="kw">in </span>buckets[..allocated_buckets].iter_mut().enumerate() {
-            <span class="kw-2">*</span>bucket = allocate_bucket::&lt;T&gt;(bucket_size);
-
-            <span class="kw">if </span>i != <span class="number">0 </span>{
-                bucket_size &lt;&lt;= <span class="number">1</span>;
-            }
+            <span class="kw-2">*</span>bucket = allocate_bucket::&lt;T&gt;(<span class="number">1 </span>&lt;&lt; i);
         }
 
-        ThreadLocal {
+        <span class="self">Self </span>{
             <span class="comment">// Safety: AtomicPtr has the same representation as a pointer and arrays have the same
             // representation as a sequence of their inner type.
             </span>buckets: <span class="kw">unsafe </span>{ mem::transmute(buckets) },
@@ -863,7 +892,7 @@
             <span class="kw">return </span><span class="prelude-val">Ok</span>(val);
         }
 
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.insert(create()<span class="question-mark">?</span>))
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.insert(thread, create()<span class="question-mark">?</span>))
     }
 
     <span class="kw">fn </span>get_inner(<span class="kw-2">&amp;</span><span class="self">self</span>, thread: Thread) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>T&gt; {
@@ -874,8 +903,7 @@
         }
         <span class="kw">unsafe </span>{
             <span class="kw">let </span>entry = <span class="kw-2">&amp;*</span>bucket_ptr.add(thread.index);
-            <span class="comment">// Read without atomic operations as only this thread can set the value.
-            </span><span class="kw">if </span>(<span class="kw-2">&amp;</span>entry.present <span class="kw">as </span><span class="kw-2">*const </span><span class="kw">_ as </span><span class="kw-2">*const </span>bool).read() {
+            <span class="kw">if </span>entry.present.load(Ordering::Relaxed) {
                 <span class="prelude-val">Some</span>(<span class="kw-2">&amp;*</span>(<span class="kw-2">&amp;*</span>entry.value.get()).as_ptr())
             } <span class="kw">else </span>{
                 <span class="prelude-val">None
@@ -884,8 +912,7 @@
     }
 
     <span class="attr">#[cold]
-    </span><span class="kw">fn </span>insert(<span class="kw-2">&amp;</span><span class="self">self</span>, data: T) -&gt; <span class="kw-2">&amp;</span>T {
-        <span class="kw">let </span>thread = thread_id::get();
+    </span><span class="kw">fn </span>insert(<span class="kw-2">&amp;</span><span class="self">self</span>, thread: Thread, data: T) -&gt; <span class="kw-2">&amp;</span>T {
         <span class="kw">let </span>bucket_atomic_ptr = <span class="kw">unsafe </span>{ <span class="self">self</span>.buckets.get_unchecked(thread.bucket) };
         <span class="kw">let </span>bucket_ptr: <span class="kw-2">*const </span><span class="kw">_ </span>= bucket_atomic_ptr.load(Ordering::Acquire);
 
@@ -1074,9 +1101,7 @@
 
     <span class="attr">#[inline]
     </span><span class="kw">fn </span>next_bucket(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-        <span class="kw">if </span><span class="self">self</span>.bucket != <span class="number">0 </span>{
-            <span class="self">self</span>.bucket_size &lt;&lt;= <span class="number">1</span>;
-        }
+        <span class="self">self</span>.bucket_size &lt;&lt;= <span class="number">1</span>;
         <span class="self">self</span>.bucket += <span class="number">1</span>;
         <span class="self">self</span>.index = <span class="number">0</span>;
     }
@@ -1181,7 +1206,8 @@
 
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>tests {
-    <span class="kw">use </span><span class="kw">super</span>::ThreadLocal;
+    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+
     <span class="kw">use </span>std::cell::RefCell;
     <span class="kw">use </span>std::sync::atomic::AtomicUsize;
     <span class="kw">use </span>std::sync::atomic::Ordering::Relaxed;
@@ -1267,6 +1293,28 @@
     }
 
     <span class="attr">#[test]
+    </span><span class="kw">fn </span>miri_iter_soundness_check() {
+        <span class="kw">let </span>tls = Arc::new(ThreadLocal::new());
+        <span class="kw">let </span>_local = tls.get_or(|| Box::new(<span class="number">1</span>));
+
+        <span class="kw">let </span>tls2 = tls.clone();
+        <span class="kw">let </span>join_1 = thread::spawn(<span class="kw">move </span>|| {
+            <span class="kw">let </span>_tls = tls2.get_or(|| Box::new(<span class="number">2</span>));
+            <span class="kw">let </span>iter = tls2.iter();
+            <span class="kw">for </span>item <span class="kw">in </span>iter {
+                <span class="macro">println!</span>(<span class="string">"{:?}"</span>, item);
+            }
+        });
+
+        <span class="kw">let </span>iter = tls.iter();
+        <span class="kw">for </span>item <span class="kw">in </span>iter {
+            <span class="macro">println!</span>(<span class="string">"{:?}"</span>, item);
+        }
+
+        join_1.join().ok();
+    }
+
+    <span class="attr">#[test]
     </span><span class="kw">fn </span>test_drop() {
         <span class="kw">let </span>local = ThreadLocal::new();
         <span class="kw">struct </span>Dropped(Arc&lt;AtomicUsize&gt;);
@@ -1279,6 +1327,32 @@
         <span class="kw">let </span>dropped = Arc::new(AtomicUsize::new(<span class="number">0</span>));
         local.get_or(|| Dropped(dropped.clone()));
         <span class="macro">assert_eq!</span>(dropped.load(Relaxed), <span class="number">0</span>);
+        drop(local);
+        <span class="macro">assert_eq!</span>(dropped.load(Relaxed), <span class="number">1</span>);
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_earlyreturn_buckets() {
+        <span class="kw">struct </span>Dropped(Arc&lt;AtomicUsize&gt;);
+        <span class="kw">impl </span>Drop <span class="kw">for </span>Dropped {
+            <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+                <span class="self">self</span>.<span class="number">0</span>.fetch_add(<span class="number">1</span>, Relaxed);
+            }
+        }
+        <span class="kw">let </span>dropped = Arc::new(AtomicUsize::new(<span class="number">0</span>));
+
+        <span class="comment">// We use a high `id` here to guarantee that a lazily allocated bucket somewhere in the middle is used.
+        // Neither iteration nor `Drop` must early-return on `null` buckets that are used for lower `buckets`.
+        </span><span class="kw">let </span>thread = Thread::new(<span class="number">1234</span>);
+        <span class="macro">assert!</span>(thread.bucket &gt; <span class="number">1</span>);
+
+        <span class="kw">let </span><span class="kw-2">mut </span>local = ThreadLocal::new();
+        local.insert(thread, Dropped(dropped.clone()));
+
+        <span class="kw">let </span>item = local.iter().next().unwrap();
+        <span class="macro">assert_eq!</span>(item.<span class="number">0</span>.load(Relaxed), <span class="number">0</span>);
+        <span class="kw">let </span>item = local.iter_mut().next().unwrap();
+        <span class="macro">assert_eq!</span>(item.<span class="number">0</span>.load(Relaxed), <span class="number">0</span>);
         drop(local);
         <span class="macro">assert_eq!</span>(dropped.load(Relaxed), <span class="number">1</span>);
     }

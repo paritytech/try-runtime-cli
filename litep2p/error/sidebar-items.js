@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["AddressError","DialError","Error","NegotiationError","NotificationError","ParseError","SubstreamError"]};
+window.SIDEBAR_ITEMS = {"enum":["AddressError","DialError","DnsError","Error","ImmediateDialError","NegotiationError","NotificationError","ParseError","SubstreamError"]};

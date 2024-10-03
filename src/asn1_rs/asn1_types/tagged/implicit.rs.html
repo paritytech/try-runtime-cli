@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/asn1-rs-0.5.2/src/asn1_types/tagged/implicit.rs`."><title>implicit.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="asn1_rs" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/asn1-rs-0.6.2/src/asn1_types/tagged/implicit.rs`."><title>implicit.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="asn1_rs" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -361,7 +361,7 @@
         };
         <span class="kw">match </span>T::try_from(any) {
             <span class="prelude-val">Ok</span>(inner) =&gt; <span class="prelude-val">Ok</span>((rem, TaggedValue::implicit(inner))),
-            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(nom::Err::Error(e)),
+            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(Err::Error(e)),
         }
     }
 }
@@ -397,7 +397,7 @@
         <span class="kw">let </span>inner_len = <span class="self">self</span>.inner.write_der_content(<span class="kw-2">&amp;mut </span>v)<span class="question-mark">?</span>;
         <span class="comment">// XXX X.690 section 8.14.3: if implicing tagging was used [...]:
         // XXX a) the encoding shall be constructed if the base encoding is constructed, and shall be primitive otherwise
-        </span><span class="kw">let </span>constructed = <span class="macro">matches!</span>(TAG, <span class="number">16 </span>| <span class="number">17</span>);
+        </span><span class="kw">let </span>constructed = <span class="macro">matches!</span>(<span class="self">self</span>.inner.tag(), Tag::Sequence | Tag::Set);
         <span class="kw">let </span>header = Header::new(class, constructed, <span class="self">self</span>.tag(), Length::Definite(inner_len));
         <span class="kw">let </span>sz = header.write_der_header(writer)<span class="question-mark">?</span>;
         <span class="kw">let </span>sz = sz + writer.write(<span class="kw-2">&amp;</span>v)<span class="question-mark">?</span>;
@@ -411,13 +411,13 @@
         <span class="kw">let </span>inner_len = <span class="self">self</span>.inner.write_der_content(<span class="kw-2">&amp;mut </span>sink)<span class="question-mark">?</span>;
         <span class="comment">// XXX X.690 section 8.14.3: if implicing tagging was used [...]:
         // XXX a) the encoding shall be constructed if the base encoding is constructed, and shall be primitive otherwise
-        </span><span class="kw">let </span>constructed = <span class="macro">matches!</span>(TAG, <span class="number">16 </span>| <span class="number">17</span>);
+        </span><span class="kw">let </span>constructed = <span class="macro">matches!</span>(<span class="self">self</span>.inner.tag(), Tag::Sequence | Tag::Set);
         <span class="kw">let </span>header = Header::new(class, constructed, <span class="self">self</span>.tag(), Length::Definite(inner_len));
         header.write_der_header(writer).map_err(Into::into)
     }
 
     <span class="kw">fn </span>write_der_content(<span class="kw-2">&amp;</span><span class="self">self</span>, writer: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>std::io::Write) -&gt; SerializeResult&lt;usize&gt; {
-        <span class="self">self</span>.inner.write_der(writer)
+        <span class="self">self</span>.inner.write_der_content(writer)
     }
 }
 
@@ -469,7 +469,7 @@
                 };
                 <span class="prelude-val">Ok</span>((rem, tagged_value))
             }
-            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(nom::Err::Error(e)),
+            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(Err::Error(e)),
         }
     }
 }
@@ -504,7 +504,7 @@
             },
             data,
         };
-        T::check_constraints(<span class="kw-2">&amp;</span>any).map_err(|e| nom::Err::Error(e.into()))<span class="question-mark">?</span>;
+        T::check_constraints(<span class="kw-2">&amp;</span>any).map_err(|e| Err::Error(e.into()))<span class="question-mark">?</span>;
         <span class="kw">match </span>T::try_from(any) {
             <span class="prelude-val">Ok</span>(t) =&gt; {
                 <span class="kw">let </span>tagged_value = TaggedParser {
@@ -515,7 +515,7 @@
                 };
                 <span class="prelude-val">Ok</span>((rem, tagged_value))
             }
-            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(nom::Err::Error(e)),
+            <span class="prelude-val">Err</span>(e) =&gt; <span class="prelude-val">Err</span>(Err::Error(e)),
         }
     }
 }

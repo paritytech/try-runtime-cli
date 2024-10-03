@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/litep2p-2515ad90543f141a/e03a602/src/crypto/noise/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/litep2p-0.7.0/src/crypto/noise/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -795,11 +795,6 @@
 <a href="#795" id="795">795</a>
 <a href="#796" id="796">796</a>
 <a href="#797" id="797">797</a>
-<a href="#798" id="798">798</a>
-<a href="#799" id="799">799</a>
-<a href="#800" id="800">800</a>
-<a href="#801" id="801">801</a>
-<a href="#802" id="802">802</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2019 Parity Technologies (UK) Ltd.
 // Copyright 2023 litep2p developers
 //
@@ -826,7 +821,8 @@
 </span><span class="kw">use crate</span>::{
     config::Role,
     crypto::{ed25519::Keypair, PublicKey},
-    error, PeerId,
+    error::{NegotiationError, ParseError},
+    PeerId,
 };
 
 <span class="kw">use </span>bytes::{Buf, Bytes, BytesMut};
@@ -905,7 +901,7 @@
         keypair: snow::Keypair,
         id_keys: <span class="kw-2">&amp;</span>Keypair,
         role: Role,
-    ) -&gt; <span class="self">Self </span>{
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, NegotiationError&gt; {
         <span class="kw">let </span>noise_payload = handshake_schema::NoiseHandshakePayload {
             identity_key: <span class="prelude-val">Some</span>(PublicKey::Ed25519(id_keys.public()).to_protobuf_encoding()),
             identity_sig: <span class="prelude-val">Some</span>(
@@ -915,112 +911,104 @@
         };
 
         <span class="kw">let </span><span class="kw-2">mut </span>payload = Vec::with_capacity(noise_payload.encoded_len());
-        noise_payload.encode(<span class="kw-2">&amp;mut </span>payload).expect(<span class="string">"Vec&lt;u8&gt; to provide needed capacity"</span>);
+        noise_payload.encode(<span class="kw-2">&amp;mut </span>payload).map_err(ParseError::from)<span class="question-mark">?</span>;
 
-        <span class="self">Self </span>{
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
             noise: NoiseState::Handshake(noise),
             keypair,
             payload,
             role,
-        }
+        })
     }
 
-    <span class="comment">// fn new(role: Role) -&gt; Self {
-    </span><span class="kw">pub fn </span>new(keypair: <span class="kw-2">&amp;</span>Keypair, role: Role) -&gt; <span class="self">Self </span>{
+    <span class="kw">pub fn </span>new(keypair: <span class="kw-2">&amp;</span>Keypair, role: Role) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, NegotiationError&gt; {
         <span class="macro">tracing::trace!</span>(target: LOG_TARGET, <span class="question-mark">?</span>role, <span class="string">"create new noise configuration"</span>);
 
-        <span class="comment">// let builder: Builder&lt;'_&gt; =
-        //     Builder::new(NOISE_PARAMETERS.parse().expect("valid Noise pattern"));
-        </span><span class="kw">let </span>builder: Builder&lt;<span class="lifetime">'_</span>&gt; = Builder::with_resolver(
-            NOISE_PARAMETERS.parse().expect(<span class="string">"valid Noise pattern"</span>),
+        <span class="kw">let </span>builder: Builder&lt;<span class="lifetime">'_</span>&gt; = Builder::with_resolver(
+            NOISE_PARAMETERS.parse().expect(<span class="string">"qed; Valid noise pattern"</span>),
             Box::new(protocol::Resolver),
         );
 
-        <span class="kw">let </span>dh_keypair = builder.generate_keypair().expect(<span class="string">"keypair generation to succeed"</span>);
+        <span class="kw">let </span>dh_keypair = builder.generate_keypair()<span class="question-mark">?</span>;
         <span class="kw">let </span>static_key = <span class="kw-2">&amp;</span>dh_keypair.private;
 
         <span class="kw">let </span>noise = <span class="kw">match </span>role {
-            Role::Dialer =&gt; builder
-                .local_private_key(static_key)
-                .build_initiator()
-                .expect(<span class="string">"initialization to succeed"</span>),
-            Role::Listener =&gt; builder
-                .local_private_key(static_key)
-                .build_responder()
-                .expect(<span class="string">"initialization to succeed"</span>),
+            Role::Dialer =&gt; builder.local_private_key(static_key).build_initiator()<span class="question-mark">?</span>,
+            Role::Listener =&gt; builder.local_private_key(static_key).build_responder()<span class="question-mark">?</span>,
         };
 
         <span class="self">Self</span>::assemble(noise, dh_keypair, keypair, role)
     }
 
     <span class="doccomment">/// Create new [`NoiseContext`] with prologue.
-    </span><span class="kw">pub fn </span>with_prologue(id_keys: <span class="kw-2">&amp;</span>Keypair, prologue: Vec&lt;u8&gt;) -&gt; <span class="self">Self </span>{
+    </span><span class="attr">#[cfg(feature = <span class="string">"webrtc"</span>)]
+    </span><span class="kw">pub fn </span>with_prologue(id_keys: <span class="kw-2">&amp;</span>Keypair, prologue: Vec&lt;u8&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, NegotiationError&gt; {
         <span class="kw">let </span>noise: Builder&lt;<span class="lifetime">'_</span>&gt; = Builder::with_resolver(
-            NOISE_PARAMETERS.parse().expect(<span class="string">"valid Noise pattern"</span>),
+            NOISE_PARAMETERS.parse().expect(<span class="string">"qed; Valid noise pattern"</span>),
             Box::new(protocol::Resolver),
         );
 
-        <span class="comment">// let noise = snow::Builder::new(NOISE_PARAMETERS.parse().expect("valid Noise patterns"));
-        </span><span class="kw">let </span>keypair = noise.generate_keypair().unwrap();
+        <span class="kw">let </span>keypair = noise.generate_keypair()<span class="question-mark">?</span>;
 
         <span class="kw">let </span>noise = noise
             .local_private_key(<span class="kw-2">&amp;</span>keypair.private)
             .prologue(<span class="kw-2">&amp;</span>prologue)
-            .build_initiator()
-            .expect(<span class="string">"to succeed"</span>);
+            .build_initiator()<span class="question-mark">?</span>;
 
         <span class="self">Self</span>::assemble(noise, keypair, id_keys, Role::Dialer)
     }
 
     <span class="doccomment">/// Get remote public key from the received Noise payload.
-    </span><span class="comment">// TODO: refactor
-    </span><span class="kw">pub fn </span>get_remote_public_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, reply: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="kw">crate</span>::Result&lt;PublicKey&gt; {
-        <span class="kw">if </span>reply.len() &lt;= <span class="number">2 </span>{
-            <span class="kw">return </span><span class="prelude-val">Err</span>(error::Error::InvalidData);
-        }
+    </span><span class="attr">#[cfg(feature = <span class="string">"webrtc"</span>)]
+    </span><span class="kw">pub fn </span>get_remote_public_key(<span class="kw-2">&amp;mut </span><span class="self">self</span>, reply: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;PublicKey, NegotiationError&gt; {
+        <span class="kw">let </span>(len_slice, reply) = reply.split_at(<span class="number">2</span>);
+        <span class="kw">let </span>len = u16::from_be_bytes(
+            len_slice
+                .try_into()
+                .map_err(|<span class="kw">_</span>| NegotiationError::ParseError(ParseError::InvalidPublicKey))<span class="question-mark">?</span>,
+        ) <span class="kw">as </span>usize;
 
-        <span class="comment">// TODO: no unwraps
-        </span><span class="kw">let </span>size: <span class="prelude-ty">Result</span>&lt;[u8; <span class="number">2</span>], <span class="kw">_</span>&gt; = reply[<span class="number">0</span>..<span class="number">2</span>].try_into();
-        <span class="kw">let </span>_size = u16::from_be_bytes(size.unwrap());
-
-        <span class="comment">// TODO: buffer size
-        </span><span class="kw">let </span><span class="kw-2">mut </span>inner = <span class="macro">vec!</span>[<span class="number">0u8</span>; <span class="number">1024</span>];
+        <span class="kw">let </span><span class="kw-2">mut </span>buffer = <span class="macro">vec!</span>[<span class="number">0u8</span>; len];
 
         <span class="kw">let </span>NoiseState::Handshake(<span class="kw-2">ref mut </span>noise) = <span class="self">self</span>.noise <span class="kw">else </span>{
-            <span class="macro">panic!</span>(<span class="string">"invalid state to read the second handshake message"</span>);
+            <span class="macro">tracing::error!</span>(target: LOG_TARGET, <span class="string">"invalid state to read the second handshake message"</span>);
+            <span class="macro">debug_assert!</span>(<span class="bool-val">false</span>);
+            <span class="kw">return </span><span class="prelude-val">Err</span>(NegotiationError::StateMismatch);
         };
 
-        <span class="kw">let </span>res = noise.read_message(<span class="kw-2">&amp;</span>reply[<span class="number">2</span>..], <span class="kw-2">&amp;mut </span>inner)<span class="question-mark">?</span>;
-        inner.truncate(res);
+        <span class="kw">let </span>res = noise.read_message(reply, <span class="kw-2">&amp;mut </span>buffer)<span class="question-mark">?</span>;
+        buffer.truncate(res);
 
-        <span class="kw">let </span>payload = handshake_schema::NoiseHandshakePayload::decode(inner.as_slice())<span class="question-mark">?</span>;
+        <span class="kw">let </span>payload = handshake_schema::NoiseHandshakePayload::decode(buffer.as_slice())
+            .map_err(|err| NegotiationError::ParseError(err.into()))<span class="question-mark">?</span>;
 
-        PublicKey::from_protobuf_encoding(<span class="kw-2">&amp;</span>payload.identity_key.ok_or(
-            error::Error::NegotiationError(error::NegotiationError::PeerIdMissing),
-        )<span class="question-mark">?</span>)
+        <span class="kw">let </span>identity = payload.identity_key.ok_or(NegotiationError::PeerIdMissing)<span class="question-mark">?</span>;
+        PublicKey::from_protobuf_encoding(<span class="kw-2">&amp;</span>identity).map_err(|err| err.into())
     }
 
     <span class="doccomment">/// Get first message.
     ///
     /// Listener only sends one message (the payload)
-    </span><span class="kw">pub fn </span>first_message(<span class="kw-2">&amp;mut </span><span class="self">self</span>, role: Role) -&gt; Vec&lt;u8&gt; {
+    </span><span class="kw">pub fn </span>first_message(<span class="kw-2">&amp;mut </span><span class="self">self</span>, role: Role) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;u8&gt;, NegotiationError&gt; {
         <span class="kw">match </span>role {
             Role::Dialer =&gt; {
                 <span class="macro">tracing::trace!</span>(target: LOG_TARGET, <span class="string">"get noise dialer first message"</span>);
 
                 <span class="kw">let </span>NoiseState::Handshake(<span class="kw-2">ref mut </span>noise) = <span class="self">self</span>.noise <span class="kw">else </span>{
-                    <span class="macro">panic!</span>(<span class="string">"invalid state to read the second handshake message"</span>);
+                    <span class="macro">tracing::error!</span>(target: LOG_TARGET, <span class="string">"invalid state to read the first handshake message"</span>);
+                    <span class="macro">debug_assert!</span>(<span class="bool-val">false</span>);
+                    <span class="kw">return </span><span class="prelude-val">Err</span>(NegotiationError::StateMismatch);
                 };
 
                 <span class="kw">let </span><span class="kw-2">mut </span>buffer = <span class="macro">vec!</span>[<span class="number">0u8</span>; <span class="number">256</span>];
-                <span class="kw">let </span>nwritten = noise.write_message(<span class="kw-2">&amp;</span>[], <span class="kw-2">&amp;mut </span>buffer).expect(<span class="string">"to succeed"</span>);
+                <span class="kw">let </span>nwritten = noise.write_message(<span class="kw-2">&amp;</span>[], <span class="kw-2">&amp;mut </span>buffer)<span class="question-mark">?</span>;
                 buffer.truncate(nwritten);
 
                 <span class="kw">let </span>size = nwritten <span class="kw">as </span>u16;
                 <span class="kw">let </span><span class="kw-2">mut </span>size = size.to_be_bytes().to_vec();
                 size.append(<span class="kw-2">&amp;mut </span>buffer);
 
-                size
+                <span class="prelude-val">Ok</span>(size)
             }
             Role::Listener =&gt; <span class="self">self</span>.second_message(),
         }
@@ -1029,29 +1017,31 @@
     <span class="doccomment">/// Get second message.
     ///
     /// Only the dialer sends the second message.
-    </span><span class="kw">pub fn </span>second_message(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; Vec&lt;u8&gt; {
+    </span><span class="kw">pub fn </span>second_message(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;u8&gt;, NegotiationError&gt; {
         <span class="macro">tracing::trace!</span>(target: LOG_TARGET, <span class="string">"get noise paylod message"</span>);
 
         <span class="kw">let </span>NoiseState::Handshake(<span class="kw-2">ref mut </span>noise) = <span class="self">self</span>.noise <span class="kw">else </span>{
-            <span class="macro">panic!</span>(<span class="string">"invalid state to read the second handshake message"</span>);
+            <span class="macro">tracing::error!</span>(target: LOG_TARGET, <span class="string">"invalid state to read the first handshake message"</span>);
+            <span class="macro">debug_assert!</span>(<span class="bool-val">false</span>);
+            <span class="kw">return </span><span class="prelude-val">Err</span>(NegotiationError::StateMismatch);
         };
 
         <span class="kw">let </span><span class="kw-2">mut </span>buffer = <span class="macro">vec!</span>[<span class="number">0u8</span>; <span class="number">2048</span>];
-        <span class="kw">let </span>nwritten = noise.write_message(<span class="kw-2">&amp;</span><span class="self">self</span>.payload, <span class="kw-2">&amp;mut </span>buffer).expect(<span class="string">"to succeed"</span>);
+        <span class="kw">let </span>nwritten = noise.write_message(<span class="kw-2">&amp;</span><span class="self">self</span>.payload, <span class="kw-2">&amp;mut </span>buffer)<span class="question-mark">?</span>;
         buffer.truncate(nwritten);
 
         <span class="kw">let </span>size = nwritten <span class="kw">as </span>u16;
         <span class="kw">let </span><span class="kw-2">mut </span>size = size.to_be_bytes().to_vec();
         size.append(<span class="kw-2">&amp;mut </span>buffer);
 
-        size
+        <span class="prelude-val">Ok</span>(size)
     }
 
     <span class="doccomment">/// Read handshake message.
     </span><span class="kw">async fn </span>read_handshake_message&lt;T: AsyncRead + AsyncWrite + Unpin&gt;(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         io: <span class="kw-2">&amp;mut </span>T,
-    ) -&gt; <span class="kw">crate</span>::Result&lt;Bytes&gt; {
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;Bytes, NegotiationError&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>size = BytesMut::zeroed(<span class="number">2</span>);
         io.read_exact(<span class="kw-2">&amp;mut </span>size).<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">let </span>size = size.get_u16();
@@ -1063,7 +1053,9 @@
         out.resize(message.len() + <span class="number">200</span>, <span class="number">0u8</span>); <span class="comment">// TODO: correct overhead
 
         </span><span class="kw">let </span>NoiseState::Handshake(<span class="kw-2">ref mut </span>noise) = <span class="self">self</span>.noise <span class="kw">else </span>{
-            <span class="macro">panic!</span>(<span class="string">"invalid state to read handshake message"</span>);
+            <span class="macro">tracing::error!</span>(target: LOG_TARGET, <span class="string">"invalid state to read handshake message"</span>);
+            <span class="macro">debug_assert!</span>(<span class="bool-val">false</span>);
+            <span class="kw">return </span><span class="prelude-val">Err</span>(NegotiationError::StateMismatch);
         };
 
         <span class="kw">let </span>nread = noise.read_message(<span class="kw-2">&amp;</span>message, <span class="kw-2">&amp;mut </span>out)<span class="question-mark">?</span>;
@@ -1087,18 +1079,18 @@
     }
 
     <span class="doccomment">/// Convert Noise into transport mode.
-    </span><span class="kw">fn </span>into_transport(<span class="self">self</span>) -&gt; NoiseContext {
+    </span><span class="kw">fn </span>into_transport(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;NoiseContext, NegotiationError&gt; {
         <span class="kw">let </span>transport = <span class="kw">match </span><span class="self">self</span>.noise {
-            NoiseState::Handshake(noise) =&gt; noise.into_transport_mode().unwrap(),
-            NoiseState::Transport(<span class="kw">_</span>) =&gt; <span class="macro">panic!</span>(<span class="string">"invalid state"</span>),
+            NoiseState::Handshake(noise) =&gt; noise.into_transport_mode()<span class="question-mark">?</span>,
+            NoiseState::Transport(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(NegotiationError::StateMismatch),
         };
 
-        NoiseContext {
+        <span class="prelude-val">Ok</span>(NoiseContext {
             keypair: <span class="self">self</span>.keypair,
             payload: <span class="self">self</span>.payload,
             role: <span class="self">self</span>.role,
             noise: NoiseState::Transport(transport),
-        }
+        })
     }
 }
 
@@ -1283,7 +1275,6 @@
                             max_size = <span class="question-mark">?</span>NOISE_EXTRA_ENCRYPT_SPACE,
                             <span class="string">"invalid frame size"</span>,
                         );
-                        <span class="macro">println!</span>(<span class="string">"invalid frame size"</span>);
                         <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Err</span>(io::ErrorKind::InvalidData.into()));
                     }
 
@@ -1391,7 +1382,6 @@
                     encrypted_size,
                 } =&gt; {
                     <span class="kw">let </span><span class="prelude-val">Some</span>(chunk) = chunks.next() <span class="kw">else </span>{
-                        <span class="macro">println!</span>(<span class="string">"no chunk"</span>);
                         <span class="kw">break</span>;
                     };
 
@@ -1464,15 +1454,15 @@
 }
 
 <span class="doccomment">/// Try to parse `PeerId` from received `NoiseHandshakePayload`
-</span><span class="kw">fn </span>parse_peer_id(buf: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="kw">crate</span>::Result&lt;PeerId&gt; {
+</span><span class="kw">fn </span>parse_peer_id(buf: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="prelude-ty">Result</span>&lt;PeerId, NegotiationError&gt; {
     <span class="kw">match </span>handshake_schema::NoiseHandshakePayload::decode(buf) {
         <span class="prelude-val">Ok</span>(payload) =&gt; {
-            <span class="kw">let </span>public_key = PublicKey::from_protobuf_encoding(<span class="kw-2">&amp;</span>payload.identity_key.ok_or(
-                error::Error::NegotiationError(error::NegotiationError::PeerIdMissing),
-            )<span class="question-mark">?</span>)<span class="question-mark">?</span>;
+            <span class="kw">let </span>identity = payload.identity_key.ok_or(NegotiationError::PeerIdMissing)<span class="question-mark">?</span>;
+
+            <span class="kw">let </span>public_key = PublicKey::from_protobuf_encoding(<span class="kw-2">&amp;</span>identity)<span class="question-mark">?</span>;
             <span class="prelude-val">Ok</span>(PeerId::from_public_key(<span class="kw-2">&amp;</span>public_key))
         }
-        <span class="prelude-val">Err</span>(err) =&gt; <span class="prelude-val">Err</span>(From::from(err)),
+        <span class="prelude-val">Err</span>(err) =&gt; <span class="prelude-val">Err</span>(ParseError::from(err).into()),
     }
 }
 
@@ -1483,14 +1473,14 @@
     role: Role,
     max_read_ahead_factor: usize,
     max_write_buffer_size: usize,
-) -&gt; <span class="kw">crate</span>::Result&lt;(NoiseSocket&lt;S&gt;, PeerId)&gt; {
+) -&gt; <span class="prelude-ty">Result</span>&lt;(NoiseSocket&lt;S&gt;, PeerId), NegotiationError&gt; {
     <span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="question-mark">?</span>role, <span class="string">"start noise handshake"</span>);
 
-    <span class="kw">let </span><span class="kw-2">mut </span>noise = NoiseContext::new(keypair, role);
+    <span class="kw">let </span><span class="kw-2">mut </span>noise = NoiseContext::new(keypair, role)<span class="question-mark">?</span>;
     <span class="kw">let </span>peer = <span class="kw">match </span>role {
         Role::Dialer =&gt; {
             <span class="comment">// write initial message
-            </span><span class="kw">let </span>first_message = noise.first_message(Role::Dialer);
+            </span><span class="kw">let </span>first_message = noise.first_message(Role::Dialer)<span class="question-mark">?</span>;
             <span class="kw">let _ </span>= io.write(<span class="kw-2">&amp;</span>first_message).<span class="kw">await</span><span class="question-mark">?</span>;
             io.flush().<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -1498,7 +1488,7 @@
             </span><span class="kw">let </span>message = noise.read_handshake_message(<span class="kw-2">&amp;mut </span>io).<span class="kw">await</span><span class="question-mark">?</span>;
 
             <span class="comment">// send the final message which contains local peer id
-            </span><span class="kw">let </span>second_message = noise.second_message();
+            </span><span class="kw">let </span>second_message = noise.second_message()<span class="question-mark">?</span>;
             <span class="kw">let _ </span>= io.write(<span class="kw-2">&amp;</span>second_message).<span class="kw">await</span><span class="question-mark">?</span>;
             io.flush().<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -1509,7 +1499,7 @@
             </span><span class="kw">let _ </span>= noise.read_handshake_message(<span class="kw-2">&amp;mut </span>io).<span class="kw">await</span><span class="question-mark">?</span>;
 
             <span class="comment">// send local peer id.
-            </span><span class="kw">let </span>second_message = noise.second_message();
+            </span><span class="kw">let </span>second_message = noise.second_message()<span class="question-mark">?</span>;
             <span class="kw">let _ </span>= io.write(<span class="kw-2">&amp;</span>second_message).<span class="kw">await</span><span class="question-mark">?</span>;
             io.flush().<span class="kw">await</span><span class="question-mark">?</span>;
 
@@ -1522,7 +1512,7 @@
     <span class="prelude-val">Ok</span>((
         NoiseSocket::new(
             io,
-            noise.into_transport(),
+            noise.into_transport()<span class="question-mark">?</span>,
             max_read_ahead_factor,
             max_write_buffer_size,
         ),
@@ -1597,7 +1587,7 @@
     <span class="attr">#[test]
     </span><span class="kw">fn </span>invalid_peer_id_schema() {
         <span class="kw">match </span>parse_peer_id(<span class="kw-2">&amp;</span><span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]).unwrap_err() {
-            <span class="kw">crate</span>::Error::ParseError(<span class="kw">_</span>) =&gt; {}
+            NegotiationError::ParseError(<span class="kw">_</span>) =&gt; {}
             <span class="kw">_ </span>=&gt; <span class="macro">panic!</span>(<span class="string">"invalid error"</span>),
         }
     }

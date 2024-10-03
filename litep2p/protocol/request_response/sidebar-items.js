@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["DialOptions","RequestResponseError","RequestResponseEvent"],"struct":["Config","ConfigBuilder","RequestResponseHandle"]};
+window.SIDEBAR_ITEMS = {"enum":["DialOptions","RejectReason","RequestResponseError","RequestResponseEvent"],"struct":["Config","ConfigBuilder","RequestResponseHandle"]};

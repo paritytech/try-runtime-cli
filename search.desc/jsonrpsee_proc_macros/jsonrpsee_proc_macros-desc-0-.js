@@ -1,1 +1,1 @@
-searchState.loadedDescShard("jsonrpsee_proc_macros", 0, "Main RPC macro.")
+searchState.loadedDescShard("jsonrpsee_proc_macros", 0, "jsonrpsee-proc-macros\nMain RPC macro.")

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/asn1-rs-0.5.2/src/asn1_types/set/btreeset.rs`."><title>btreeset.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="asn1_rs" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/asn1-rs-0.6.2/src/asn1_types/set/btreeset.rs`."><title>btreeset.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="asn1_rs" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -122,9 +122,29 @@
 <a href="#122" id="122">122</a>
 <a href="#123" id="123">123</a>
 <a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
 </pre></div><pre class="rust"><code><span class="kw">use crate</span>::<span class="kw-2">*</span>;
 <span class="kw">use </span>alloc::collections::BTreeSet;
-<span class="kw">use </span>core::convert::TryFrom;
+<span class="kw">use </span>core::{convert::TryFrom, fmt::Debug};
+
+<span class="kw">use </span><span class="self">self</span>::debug::{trace, trace_generic};
 
 <span class="kw">impl</span>&lt;T&gt; Tagged <span class="kw">for </span>BTreeSet&lt;T&gt; {
     <span class="kw">const </span>TAG: Tag = Tag::Set;
@@ -138,10 +158,18 @@
     <span class="kw">type </span>Error = Error;
 
     <span class="kw">fn </span>try_from(any: Any&lt;<span class="lifetime">'a</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>&gt; {
-        any.tag().assert_eq(<span class="self">Self</span>::TAG)<span class="question-mark">?</span>;
-        any.header.assert_constructed()<span class="question-mark">?</span>;
-        <span class="kw">let </span>items = SetIterator::&lt;T, BerParser&gt;::new(any.data).collect::&lt;<span class="prelude-ty">Result</span>&lt;BTreeSet&lt;T&gt;&gt;&gt;()<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(items)
+        trace_generic(
+            core::any::type_name::&lt;<span class="self">Self</span>&gt;(),
+            <span class="string">"BTreeSet::from_der"</span>,
+            |any| {
+                any.tag().assert_eq(<span class="self">Self</span>::TAG)<span class="question-mark">?</span>;
+                any.header.assert_constructed()<span class="question-mark">?</span>;
+                <span class="kw">let </span>items =
+                    SetIterator::&lt;T, BerParser&gt;::new(any.data).collect::&lt;<span class="prelude-ty">Result</span>&lt;BTreeSet&lt;T&gt;&gt;&gt;()<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>(items)
+            },
+            any,
+        )
     }
 }
 
@@ -165,20 +193,28 @@
 <span class="kw">where
     </span>T: FromDer&lt;<span class="lifetime">'a</span>, E&gt;,
     T: Ord,
-    E: From&lt;Error&gt;,
+    E: From&lt;Error&gt; + Debug,
 {
     <span class="kw">fn </span>from_der(bytes: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; ParseResult&lt;<span class="lifetime">'a</span>, <span class="self">Self</span>, E&gt; {
-        <span class="kw">let </span>(rem, any) = Any::from_der(bytes).map_err(Err::convert)<span class="question-mark">?</span>;
-        any.tag()
-            .assert_eq(<span class="self">Self</span>::TAG)
-            .map_err(|e| nom::Err::Error(e.into()))<span class="question-mark">?</span>;
-        any.header
-            .assert_constructed()
-            .map_err(|e| nom::Err::Error(e.into()))<span class="question-mark">?</span>;
-        <span class="kw">let </span>items = SetIterator::&lt;T, DerParser, E&gt;::new(any.data)
-            .collect::&lt;<span class="prelude-ty">Result</span>&lt;BTreeSet&lt;T&gt;, E&gt;&gt;()
-            .map_err(nom::Err::Error)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>((rem, items))
+        trace_generic(
+            core::any::type_name::&lt;<span class="self">Self</span>&gt;(),
+            <span class="string">"BTreeSet::from_der"</span>,
+            |bytes| {
+                <span class="kw">let </span>(rem, any) = trace(core::any::type_name::&lt;<span class="self">Self</span>&gt;(), Any::from_der, bytes)
+                    .map_err(Err::convert)<span class="question-mark">?</span>;
+                any.tag()
+                    .assert_eq(<span class="self">Self</span>::TAG)
+                    .map_err(|e| Err::Error(e.into()))<span class="question-mark">?</span>;
+                any.header
+                    .assert_constructed()
+                    .map_err(|e| Err::Error(e.into()))<span class="question-mark">?</span>;
+                <span class="kw">let </span>items = SetIterator::&lt;T, DerParser, E&gt;::new(any.data)
+                    .collect::&lt;<span class="prelude-ty">Result</span>&lt;BTreeSet&lt;T&gt;, E&gt;&gt;()
+                    .map_err(Err::Error)<span class="question-mark">?</span>;
+                <span class="prelude-val">Ok</span>((rem, items))
+            },
+            bytes,
+        )
     }
 }
 

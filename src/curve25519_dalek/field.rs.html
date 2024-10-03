@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/curve25519-dalek-4.1.1/src/field.rs`."><title>field.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="curve25519_dalek" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/curve25519-dalek-4.1.3/src/field.rs`."><title>field.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="curve25519_dalek" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -493,18 +493,6 @@
 <a href="#493" id="493">493</a>
 <a href="#494" id="494">494</a>
 <a href="#495" id="495">495</a>
-<a href="#496" id="496">496</a>
-<a href="#497" id="497">497</a>
-<a href="#498" id="498">498</a>
-<a href="#499" id="499">499</a>
-<a href="#500" id="500">500</a>
-<a href="#501" id="501">501</a>
-<a href="#502" id="502">502</a>
-<a href="#503" id="503">503</a>
-<a href="#504" id="504">504</a>
-<a href="#505" id="505">505</a>
-<a href="#506" id="506">506</a>
-<a href="#507" id="507">507</a>
 </pre></div><pre class="rust"><code><span class="comment">// -*- mode: rust; -*-
 //
 // This file is part of curve25519-dalek.
@@ -532,9 +520,7 @@
 
 </span><span class="attr">#![allow(unused_qualifications)]
 
-</span><span class="kw">use </span>core::cmp::{Eq, PartialEq};
-
-<span class="kw">use </span>cfg_if::cfg_if;
+</span><span class="kw">use </span>cfg_if::cfg_if;
 
 <span class="kw">use </span>subtle::Choice;
 <span class="kw">use </span>subtle::ConditionallyNegatable;
@@ -546,11 +532,6 @@
 
 <span class="macro">cfg_if!</span> {
     <span class="kw">if </span><span class="attr">#[cfg(curve25519_dalek_backend = <span class="string">"fiat"</span>)] </span>{
-        <span class="attr">#[cfg(curve25519_dalek_bits = <span class="string">"32"</span>)]
-        </span><span class="kw">pub use </span>backend::serial::fiat_u32::field::<span class="kw-2">*</span>;
-        <span class="attr">#[cfg(curve25519_dalek_bits = <span class="string">"64"</span>)]
-        </span><span class="kw">pub use </span>backend::serial::fiat_u64::field::<span class="kw-2">*</span>;
-
         <span class="doccomment">/// A `FieldElement` represents an element of the field
         /// \\( \mathbb Z / (2\^{255} - 19)\\).
         ///
@@ -559,7 +540,7 @@
         ///
         /// Using formally-verified field arithmetic from fiat-crypto.
         </span><span class="attr">#[cfg(curve25519_dalek_bits = <span class="string">"32"</span>)]
-        </span><span class="kw">pub type </span>FieldElement = backend::serial::fiat_u32::field::FieldElement2625;
+        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>FieldElement = backend::serial::fiat_u32::field::FieldElement2625;
 
         <span class="doccomment">/// A `FieldElement` represents an element of the field
         /// \\( \mathbb Z / (2\^{255} - 19)\\).
@@ -569,25 +550,21 @@
         ///
         /// Using formally-verified field arithmetic from fiat-crypto.
         </span><span class="attr">#[cfg(curve25519_dalek_bits = <span class="string">"64"</span>)]
-        </span><span class="kw">pub type </span>FieldElement = backend::serial::fiat_u64::field::FieldElement51;
+        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>FieldElement = backend::serial::fiat_u64::field::FieldElement51;
     } <span class="kw">else if </span><span class="attr">#[cfg(curve25519_dalek_bits = <span class="string">"64"</span>)] </span>{
-        <span class="kw">pub use </span><span class="kw">crate</span>::backend::serial::u64::field::<span class="kw-2">*</span>;
-
         <span class="doccomment">/// A `FieldElement` represents an element of the field
         /// \\( \mathbb Z / (2\^{255} - 19)\\).
         ///
         /// The `FieldElement` type is an alias for one of the platform-specific
         /// implementations.
-        </span><span class="kw">pub type </span>FieldElement = backend::serial::u64::field::FieldElement51;
+        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>FieldElement = backend::serial::u64::field::FieldElement51;
     } <span class="kw">else </span>{
-        <span class="kw">pub use </span>backend::serial::u32::field::<span class="kw-2">*</span>;
-
         <span class="doccomment">/// A `FieldElement` represents an element of the field
         /// \\( \mathbb Z / (2\^{255} - 19)\\).
         ///
         /// The `FieldElement` type is an alias for one of the platform-specific
         /// implementations.
-        </span><span class="kw">pub type </span>FieldElement = backend::serial::u32::field::FieldElement2625;
+        </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>FieldElement = backend::serial::u32::field::FieldElement2625;
     }
 }
 
@@ -616,7 +593,7 @@
     /// # Return
     ///
     /// If negative, return `Choice(1)`.  Otherwise, return `Choice(0)`.
-    </span><span class="kw">pub fn </span>is_negative(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Choice {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_negative(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Choice {
         <span class="kw">let </span>bytes = <span class="self">self</span>.as_bytes();
         (bytes[<span class="number">0</span>] &amp; <span class="number">1</span>).into()
     }
@@ -626,7 +603,7 @@
     /// # Return
     ///
     /// If zero, return `Choice(1)`.  Otherwise, return `Choice(0)`.
-    </span><span class="kw">pub fn </span>is_zero(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Choice {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_zero(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Choice {
         <span class="kw">let </span>zero = [<span class="number">0u8</span>; <span class="number">32</span>];
         <span class="kw">let </span>bytes = <span class="self">self</span>.as_bytes();
 
@@ -672,11 +649,11 @@
         </span>(t19, t3)
     }
 
-    <span class="doccomment">/// Given a slice of public `FieldElements`, replace each with its inverse.
+    <span class="doccomment">/// Given a slice of pub(crate)lic `FieldElements`, replace each with its inverse.
     ///
     /// When an input `FieldElement` is zero, its value is unchanged.
     </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
-    </span><span class="kw">pub fn </span>batch_invert(inputs: <span class="kw-2">&amp;mut </span>[FieldElement]) {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>batch_invert(inputs: <span class="kw-2">&amp;mut </span>[FieldElement]) {
         <span class="comment">// Montgomery’s Trick and Fast Implementation of Masked AES
         // Genelle, Prouff and Quisquater
         // Section 3.2
@@ -721,7 +698,7 @@
     /// This function returns zero on input zero.
     </span><span class="attr">#[rustfmt::skip] </span><span class="comment">// keep alignment of explanatory comments
     </span><span class="attr">#[allow(clippy::let_and_return)]
-    </span><span class="kw">pub fn </span>invert(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; FieldElement {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>invert(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; FieldElement {
         <span class="comment">// The bits of p-2 = 2^255 -19 -2 are 11010111111...11.
         //
         //                                 nonzero bits of exponent
@@ -758,7 +735,7 @@
     /// - `(Choice(0), zero)        ` if `v` is zero and `u` is nonzero;
     /// - `(Choice(0), +sqrt(i*u/v))` if `u/v` is nonsquare (so `i*u/v` is square).
     ///
-    </span><span class="kw">pub fn </span>sqrt_ratio_i(u: <span class="kw-2">&amp;</span>FieldElement, v: <span class="kw-2">&amp;</span>FieldElement) -&gt; (Choice, FieldElement) {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>sqrt_ratio_i(u: <span class="kw-2">&amp;</span>FieldElement, v: <span class="kw-2">&amp;</span>FieldElement) -&gt; (Choice, FieldElement) {
         <span class="comment">// Using the same trick as in ed25519 decoding, we merge the
         // inversion, the square root, and the square test as follows.
         //
@@ -818,7 +795,7 @@
     /// - `(Choice(0), zero)           ` if `self` is zero;
     /// - `(Choice(0), +sqrt(i/self))  ` if `self` is a nonzero nonsquare;
     ///
-    </span><span class="kw">pub fn </span>invsqrt(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (Choice, FieldElement) {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>invsqrt(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; (Choice, FieldElement) {
         FieldElement::sqrt_ratio_i(<span class="kw-2">&amp;</span>FieldElement::ONE, <span class="self">self</span>)
     }
 }
@@ -826,7 +803,6 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>test {
     <span class="kw">use </span><span class="kw">crate</span>::field::<span class="kw-2">*</span>;
-    <span class="kw">use </span>subtle::ConditionallyNegatable;
 
     <span class="doccomment">/// Random element a of GF(2^255-19), from Sage
     /// a = 1070314506888354081329385823235218444233221\

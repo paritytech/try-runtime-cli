@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/multistream-select-0.12.1/src/protocol.rs`."><title>protocol.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="multistream_select" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/multistream-select-0.13.0/src/protocol.rs`."><title>protocol.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="multistream_select" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -496,6 +496,20 @@
 <a href="#496" id="496">496</a>
 <a href="#497" id="497">497</a>
 <a href="#498" id="498">498</a>
+<a href="#499" id="499">499</a>
+<a href="#500" id="500">500</a>
+<a href="#501" id="501">501</a>
+<a href="#502" id="502">502</a>
+<a href="#503" id="503">503</a>
+<a href="#504" id="504">504</a>
+<a href="#505" id="505">505</a>
+<a href="#506" id="506">506</a>
+<a href="#507" id="507">507</a>
+<a href="#508" id="508">508</a>
+<a href="#509" id="509">509</a>
+<a href="#510" id="510">510</a>
+<a href="#511" id="511">511</a>
+<a href="#512" id="512">512</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright 2017 Parity Technologies (UK) Ltd.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -551,7 +565,7 @@
 ///
 /// Every [`Version`] has a corresponding header line.
 </span><span class="attr">#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-</span><span class="kw">pub enum </span>HeaderLine {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>HeaderLine {
     <span class="doccomment">/// The `/multistream/1.0.0` header line.
     </span>V1,
 }
@@ -566,10 +580,9 @@
 
 <span class="doccomment">/// A protocol (name) exchanged during protocol negotiation.
 </span><span class="attr">#[derive(Clone, Debug, PartialEq, Eq)]
-</span><span class="kw">pub struct </span>Protocol(Bytes);
-
-<span class="kw">impl </span>AsRef&lt;[u8]&gt; <span class="kw">for </span>Protocol {
-    <span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>Protocol(String);
+<span class="kw">impl </span>AsRef&lt;str&gt; <span class="kw">for </span>Protocol {
+    <span class="kw">fn </span>as_ref(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
         <span class="self">self</span>.<span class="number">0</span>.as_ref()
     }
 }
@@ -581,7 +594,10 @@
         <span class="kw">if </span>!value.as_ref().starts_with(<span class="string">b"/"</span>) {
             <span class="kw">return </span><span class="prelude-val">Err</span>(ProtocolError::InvalidProtocol);
         }
-        <span class="prelude-val">Ok</span>(Protocol(value))
+        <span class="kw">let </span>protocol_as_string =
+            String::from_utf8(value.to_vec()).map_err(|<span class="kw">_</span>| ProtocolError::InvalidProtocol)<span class="question-mark">?</span>;
+
+        <span class="prelude-val">Ok</span>(Protocol(protocol_as_string))
     }
 }
 
@@ -593,9 +609,21 @@
     }
 }
 
+<span class="kw">impl </span>TryFrom&lt;<span class="kw-2">&amp;</span>str&gt; <span class="kw">for </span>Protocol {
+    <span class="kw">type </span>Error = ProtocolError;
+
+    <span class="kw">fn </span>try_from(value: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+        <span class="kw">if </span>!value.starts_with(<span class="string">'/'</span>) {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(ProtocolError::InvalidProtocol);
+        }
+
+        <span class="prelude-val">Ok</span>(Protocol(value.to_owned()))
+    }
+}
+
 <span class="kw">impl </span>fmt::Display <span class="kw">for </span>Protocol {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">"{}"</span>, String::from_utf8_lossy(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span>))
+        <span class="macro">write!</span>(f, <span class="string">"{}"</span>, <span class="self">self</span>.<span class="number">0</span>)
     }
 }
 
@@ -604,7 +632,7 @@
 /// Multistream-select protocol messages are exchanged with the goal
 /// of agreeing on a application-layer protocol to use on an I/O stream.
 </span><span class="attr">#[derive(Debug, Clone, PartialEq, Eq)]
-</span><span class="kw">pub enum </span>Message {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">enum </span>Message {
     <span class="doccomment">/// A header message identifies the multistream-select protocol
     /// that the sender wishes to speak.
     </span>Header(HeaderLine),
@@ -621,7 +649,7 @@
 
 <span class="kw">impl </span>Message {
     <span class="doccomment">/// Encodes a `Message` into its byte representation.
-    </span><span class="kw">pub fn </span>encode(<span class="kw-2">&amp;</span><span class="self">self</span>, dest: <span class="kw-2">&amp;mut </span>BytesMut) -&gt; <span class="prelude-ty">Result</span>&lt;(), ProtocolError&gt; {
+    </span><span class="kw">fn </span>encode(<span class="kw-2">&amp;</span><span class="self">self</span>, dest: <span class="kw-2">&amp;mut </span>BytesMut) -&gt; <span class="prelude-ty">Result</span>&lt;(), ProtocolError&gt; {
         <span class="kw">match </span><span class="self">self </span>{
             Message::Header(HeaderLine::V1) =&gt; {
                 dest.reserve(MSG_MULTISTREAM_1_0.len());
@@ -629,7 +657,7 @@
                 <span class="prelude-val">Ok</span>(())
             }
             Message::Protocol(p) =&gt; {
-                <span class="kw">let </span>len = p.<span class="number">0</span>.as_ref().len() + <span class="number">1</span>; <span class="comment">// + 1 for \n
+                <span class="kw">let </span>len = p.as_ref().len() + <span class="number">1</span>; <span class="comment">// + 1 for \n
                 </span>dest.reserve(len);
                 dest.put(p.<span class="number">0</span>.as_ref());
                 dest.put_u8(<span class="string">b'\n'</span>);
@@ -644,7 +672,7 @@
                 <span class="kw">let </span><span class="kw-2">mut </span>buf = uvi::encode::usize_buffer();
                 <span class="kw">let </span><span class="kw-2">mut </span>encoded = Vec::with_capacity(ps.len());
                 <span class="kw">for </span>p <span class="kw">in </span>ps {
-                    encoded.extend(uvi::encode::usize(p.<span class="number">0</span>.as_ref().len() + <span class="number">1</span>, <span class="kw-2">&amp;mut </span>buf)); <span class="comment">// +1 for '\n'
+                    encoded.extend(uvi::encode::usize(p.as_ref().len() + <span class="number">1</span>, <span class="kw-2">&amp;mut </span>buf)); <span class="comment">// +1 for '\n'
                     </span>encoded.extend_from_slice(p.<span class="number">0</span>.as_ref());
                     encoded.push(<span class="string">b'\n'</span>)
                 }
@@ -662,7 +690,7 @@
     }
 
     <span class="doccomment">/// Decodes a `Message` from its byte representation.
-    </span><span class="kw">pub fn </span>decode(<span class="kw-2">mut </span>msg: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;Message, ProtocolError&gt; {
+    </span><span class="kw">fn </span>decode(<span class="kw-2">mut </span>msg: Bytes) -&gt; <span class="prelude-ty">Result</span>&lt;Message, ProtocolError&gt; {
         <span class="kw">if </span>msg == MSG_MULTISTREAM_1_0 {
             <span class="kw">return </span><span class="prelude-val">Ok</span>(Message::Header(HeaderLine::V1));
         }
@@ -718,14 +746,14 @@
 
 <span class="doccomment">/// A `MessageIO` implements a [`Stream`] and [`Sink`] of [`Message`]s.
 </span><span class="attr">#[pin_project::pin_project]
-</span><span class="kw">pub struct </span>MessageIO&lt;R&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>MessageIO&lt;R&gt; {
     <span class="attr">#[pin]
     </span>inner: LengthDelimited&lt;R&gt;,
 }
 
 <span class="kw">impl</span>&lt;R&gt; MessageIO&lt;R&gt; {
     <span class="doccomment">/// Constructs a new `MessageIO` resource wrapping the given I/O stream.
-    </span><span class="kw">pub fn </span>new(inner: R) -&gt; MessageIO&lt;R&gt;
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(inner: R) -&gt; MessageIO&lt;R&gt;
     <span class="kw">where
         </span>R: AsyncRead + AsyncWrite,
     {
@@ -741,7 +769,7 @@
     /// This is typically done if further negotiation messages are expected to be
     /// received but no more messages are written, allowing the writing of
     /// follow-up protocol data to commence.
-    </span><span class="kw">pub fn </span>into_reader(<span class="self">self</span>) -&gt; MessageReader&lt;R&gt; {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>into_reader(<span class="self">self</span>) -&gt; MessageReader&lt;R&gt; {
         MessageReader {
             inner: <span class="self">self</span>.inner.into_reader(),
         }
@@ -756,7 +784,7 @@
     /// has not yet been flushed. The read buffer is guaranteed to be empty whenever
     /// `MessageIO::poll` returned a message. The write buffer is guaranteed to be empty
     /// when the sink has been flushed.
-    </span><span class="kw">pub fn </span>into_inner(<span class="self">self</span>) -&gt; R {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>into_inner(<span class="self">self</span>) -&gt; R {
         <span class="self">self</span>.inner.into_inner()
     }
 }
@@ -809,7 +837,7 @@
 /// I/O resource combined with direct `AsyncWrite` access.
 </span><span class="attr">#[pin_project::pin_project]
 #[derive(Debug)]
-</span><span class="kw">pub struct </span>MessageReader&lt;R&gt; {
+</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>MessageReader&lt;R&gt; {
     <span class="attr">#[pin]
     </span>inner: LengthDelimitedReader&lt;R&gt;,
 }
@@ -826,7 +854,7 @@
     /// outgoing frame has not yet been flushed. The read buffer is guaranteed to
     /// be empty whenever `MessageReader::poll` returned a message. The write
     /// buffer is guaranteed to be empty whenever the sink has been flushed.
-    </span><span class="kw">pub fn </span>into_inner(<span class="self">self</span>) -&gt; R {
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>into_inner(<span class="self">self</span>) -&gt; R {
         <span class="self">self</span>.inner.into_inner()
     }
 }
@@ -941,7 +969,7 @@
 <span class="kw">impl </span>fmt::Display <span class="kw">for </span>ProtocolError {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), fmt::Error&gt; {
         <span class="kw">match </span><span class="self">self </span>{
-            ProtocolError::IoError(e) =&gt; <span class="macro">write!</span>(fmt, <span class="string">"I/O error: {}"</span>, e),
+            ProtocolError::IoError(e) =&gt; <span class="macro">write!</span>(fmt, <span class="string">"I/O error: {e}"</span>),
             ProtocolError::InvalidMessage =&gt; <span class="macro">write!</span>(fmt, <span class="string">"Received an invalid message."</span>),
             ProtocolError::InvalidProtocol =&gt; <span class="macro">write!</span>(fmt, <span class="string">"A protocol (name) is invalid."</span>),
             ProtocolError::TooManyProtocols =&gt; <span class="macro">write!</span>(fmt, <span class="string">"Too many protocols received."</span>),
@@ -963,7 +991,7 @@
                 .filter(|<span class="kw-2">&amp;</span>c| c.is_ascii_alphanumeric())
                 .take(n)
                 .collect();
-            Protocol(Bytes::from(<span class="macro">format!</span>(<span class="string">"/{}"</span>, p)))
+            Protocol(<span class="macro">format!</span>(<span class="string">"/{p}"</span>))
         }
     }
 
@@ -985,10 +1013,10 @@
         <span class="kw">fn </span>prop(msg: Message) {
             <span class="kw">let </span><span class="kw-2">mut </span>buf = BytesMut::new();
             msg.encode(<span class="kw-2">&amp;mut </span>buf)
-                .unwrap_or_else(|<span class="kw">_</span>| <span class="macro">panic!</span>(<span class="string">"Encoding message failed: {:?}"</span>, msg));
+                .unwrap_or_else(|<span class="kw">_</span>| <span class="macro">panic!</span>(<span class="string">"Encoding message failed: {msg:?}"</span>));
             <span class="kw">match </span>Message::decode(buf.freeze()) {
                 <span class="prelude-val">Ok</span>(m) =&gt; <span class="macro">assert_eq!</span>(m, msg),
-                <span class="prelude-val">Err</span>(e) =&gt; <span class="macro">panic!</span>(<span class="string">"Decoding failed: {:?}"</span>, e),
+                <span class="prelude-val">Err</span>(e) =&gt; <span class="macro">panic!</span>(<span class="string">"Decoding failed: {e:?}"</span>),
             }
         }
         quickcheck(prop <span class="kw">as fn</span>(<span class="kw">_</span>))

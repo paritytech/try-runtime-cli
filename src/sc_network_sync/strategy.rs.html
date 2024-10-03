@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/289f5bb/substrate/client/network/sync/src/strategy.rs`."><title>strategy.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network_sync" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-cff69157b985ed76/8279d10/substrate/client/network/sync/src/strategy.rs`."><title>strategy.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network_sync" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -659,6 +659,13 @@
 <a href="#659" id="659">659</a>
 <a href="#660" id="660">660</a>
 <a href="#661" id="661">661</a>
+<a href="#662" id="662">662</a>
+<a href="#663" id="663">663</a>
+<a href="#664" id="664">664</a>
+<a href="#665" id="665">665</a>
+<a href="#666" id="666">666</a>
+<a href="#667" id="667">667</a>
+<a href="#668" id="668">668</a>
 </pre></div><pre class="rust"><code><span class="comment">// This file is part of Substrate.
 
 // Copyright (C) Parity Technologies (UK) Ltd.
@@ -677,23 +684,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see &lt;https://www.gnu.org/licenses/&gt;.
 
-</span><span class="doccomment">//! [`SyncingStrategy`] is a proxy between [`crate::engine::SyncingEngine`]
+</span><span class="doccomment">//! [`PolkadotSyncingStrategy`] is a proxy between [`crate::engine::SyncingEngine`]
 //! and specific syncing algorithms.
 
 </span><span class="kw">pub mod </span>chain_sync;
+<span class="kw">mod </span>disconnected_peers;
 <span class="kw">mod </span>state;
 <span class="kw">pub mod </span>state_sync;
 <span class="kw">pub mod </span>warp;
 
 <span class="kw">use crate</span>::{
+	block_request_handler::MAX_BLOCKS_IN_RESPONSE,
 	types::{BadPeer, OpaqueStateRequest, OpaqueStateResponse, SyncStatus},
 	LOG_TARGET,
 };
-<span class="kw">use </span>chain_sync::{ChainSync, ChainSyncAction, ChainSyncMode};
-<span class="kw">use </span>log::{debug, error, info, warn};
+<span class="kw">use </span>chain_sync::{ChainSync, ChainSyncMode};
+<span class="kw">use </span>log::{debug, error, info};
 <span class="kw">use </span>prometheus_endpoint::Registry;
 <span class="kw">use </span>sc_client_api::{BlockBackend, ProofProvider};
 <span class="kw">use </span>sc_consensus::{BlockImportError, BlockImportStatus, IncomingBlock};
+<span class="kw">use </span>sc_network::ProtocolName;
 <span class="kw">use </span>sc_network_common::sync::{
 	message::{BlockAnnounce, BlockData, BlockRequest},
 	SyncMode,
@@ -719,6 +729,108 @@
 	}
 }
 
+<span class="doccomment">/// Syncing strategy for syncing engine to use
+</span><span class="kw">pub trait </span>SyncingStrategy&lt;B: BlockT&gt;: Send
+<span class="kw">where
+	</span>B: BlockT,
+{
+	<span class="doccomment">/// Notify syncing state machine that a new sync peer has connected.
+	</span><span class="kw">fn </span>add_peer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer_id: PeerId, best_hash: B::Hash, best_number: NumberFor&lt;B&gt;);
+
+	<span class="doccomment">/// Notify that a sync peer has disconnected.
+	</span><span class="kw">fn </span>remove_peer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer_id: <span class="kw-2">&amp;</span>PeerId);
+
+	<span class="doccomment">/// Submit a validated block announcement.
+	///
+	/// Returns new best hash &amp; best number of the peer if they are updated.
+	</span><span class="attr">#[must_use]
+	</span><span class="kw">fn </span>on_validated_block_announce(
+		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+		is_best: bool,
+		peer_id: PeerId,
+		announce: <span class="kw-2">&amp;</span>BlockAnnounce&lt;B::Header&gt;,
+	) -&gt; <span class="prelude-ty">Option</span>&lt;(B::Hash, NumberFor&lt;B&gt;)&gt;;
+
+	<span class="doccomment">/// Configure an explicit fork sync request in case external code has detected that there is a
+	/// stale fork missing.
+	///
+	/// Note that this function should not be used for recent blocks.
+	/// Sync should be able to download all the recent forks normally.
+	///
+	/// Passing empty `peers` set effectively removes the sync request.
+	</span><span class="kw">fn </span>set_sync_fork_request(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peers: Vec&lt;PeerId&gt;, hash: <span class="kw-2">&amp;</span>B::Hash, number: NumberFor&lt;B&gt;);
+
+	<span class="doccomment">/// Request extra justification.
+	</span><span class="kw">fn </span>request_justification(<span class="kw-2">&amp;mut </span><span class="self">self</span>, hash: <span class="kw-2">&amp;</span>B::Hash, number: NumberFor&lt;B&gt;);
+
+	<span class="doccomment">/// Clear extra justification requests.
+	</span><span class="kw">fn </span>clear_justification_requests(<span class="kw-2">&amp;mut </span><span class="self">self</span>);
+
+	<span class="doccomment">/// Report a justification import (successful or not).
+	</span><span class="kw">fn </span>on_justification_import(<span class="kw-2">&amp;mut </span><span class="self">self</span>, hash: B::Hash, number: NumberFor&lt;B&gt;, success: bool);
+
+	<span class="doccomment">/// Process block response.
+	</span><span class="kw">fn </span>on_block_response(
+		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+		peer_id: PeerId,
+		key: StrategyKey,
+		request: BlockRequest&lt;B&gt;,
+		blocks: Vec&lt;BlockData&lt;B&gt;&gt;,
+	);
+
+	<span class="doccomment">/// Process state response.
+	</span><span class="kw">fn </span>on_state_response(
+		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+		peer_id: PeerId,
+		key: StrategyKey,
+		response: OpaqueStateResponse,
+	);
+
+	<span class="doccomment">/// Process warp proof response.
+	</span><span class="kw">fn </span>on_warp_proof_response(
+		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+		peer_id: <span class="kw-2">&amp;</span>PeerId,
+		key: StrategyKey,
+		response: EncodedProof,
+	);
+
+	<span class="doccomment">/// A batch of blocks that have been processed, with or without errors.
+	///
+	/// Call this when a batch of blocks that have been processed by the import queue, with or
+	/// without errors.
+	</span><span class="kw">fn </span>on_blocks_processed(
+		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+		imported: usize,
+		count: usize,
+		results: Vec&lt;(<span class="prelude-ty">Result</span>&lt;BlockImportStatus&lt;NumberFor&lt;B&gt;&gt;, BlockImportError&gt;, B::Hash)&gt;,
+	);
+
+	<span class="doccomment">/// Notify a syncing strategy that a block has been finalized.
+	</span><span class="kw">fn </span>on_block_finalized(<span class="kw-2">&amp;mut </span><span class="self">self</span>, hash: <span class="kw-2">&amp;</span>B::Hash, number: NumberFor&lt;B&gt;);
+
+	<span class="doccomment">/// Inform sync about a new best imported block.
+	</span><span class="kw">fn </span>update_chain_info(<span class="kw-2">&amp;mut </span><span class="self">self</span>, best_hash: <span class="kw-2">&amp;</span>B::Hash, best_number: NumberFor&lt;B&gt;);
+
+	<span class="comment">// Are we in major sync mode?
+	</span><span class="kw">fn </span>is_major_syncing(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool;
+
+	<span class="doccomment">/// Get the number of peers known to the syncing strategy.
+	</span><span class="kw">fn </span>num_peers(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize;
+
+	<span class="doccomment">/// Returns the current sync status.
+	</span><span class="kw">fn </span>status(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SyncStatus&lt;B&gt;;
+
+	<span class="doccomment">/// Get the total number of downloaded blocks.
+	</span><span class="kw">fn </span>num_downloaded_blocks(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize;
+
+	<span class="doccomment">/// Get an estimate of the number of parallel sync requests.
+	</span><span class="kw">fn </span>num_sync_requests(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize;
+
+	<span class="doccomment">/// Get actions that should be performed by the owner on the strategy's behalf
+	</span><span class="attr">#[must_use]
+	</span><span class="kw">fn </span>actions(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;SyncingAction&lt;B&gt;&gt;, ClientError&gt;;
+}
+
 <span class="doccomment">/// Syncing configuration containing data for all strategies.
 </span><span class="attr">#[derive(Clone, Debug)]
 </span><span class="kw">pub struct </span>SyncingConfig {
@@ -730,6 +842,8 @@
 	</span><span class="kw">pub </span>max_blocks_per_request: u32,
 	<span class="doccomment">/// Prometheus metrics registry.
 	</span><span class="kw">pub </span>metrics_registry: <span class="prelude-ty">Option</span>&lt;Registry&gt;,
+	<span class="doccomment">/// Protocol name used to send out state requests
+	</span><span class="kw">pub </span>state_request_protocol_name: ProtocolName,
 }
 
 <span class="doccomment">/// The key identifying a specific strategy for responses routing.
@@ -748,9 +862,19 @@
 	<span class="doccomment">/// Send block request to peer. Always implies dropping a stale block request to the same peer.
 	</span>SendBlockRequest { peer_id: PeerId, key: StrategyKey, request: BlockRequest&lt;B&gt; },
 	<span class="doccomment">/// Send state request to peer.
-	</span>SendStateRequest { peer_id: PeerId, key: StrategyKey, request: OpaqueStateRequest },
+	</span>SendStateRequest {
+		peer_id: PeerId,
+		key: StrategyKey,
+		protocol_name: ProtocolName,
+		request: OpaqueStateRequest,
+	},
 	<span class="doccomment">/// Send warp proof request to peer.
-	</span>SendWarpProofRequest { peer_id: PeerId, key: StrategyKey, request: WarpProofRequest&lt;B&gt; },
+	</span>SendWarpProofRequest {
+		peer_id: PeerId,
+		key: StrategyKey,
+		protocol_name: ProtocolName,
+		request: WarpProofRequest&lt;B&gt;,
+	},
 	<span class="doccomment">/// Drop stale request.
 	</span>CancelRequest { peer_id: PeerId, key: StrategyKey },
 	<span class="doccomment">/// Peer misbehaved. Disconnect, report it and cancel any requests to it.
@@ -764,7 +888,7 @@
 		number: NumberFor&lt;B&gt;,
 		justifications: Justifications,
 	},
-	<span class="doccomment">/// Strategy finished. Nothing to do, this is handled by `SyncingStrategy`.
+	<span class="doccomment">/// Strategy finished. Nothing to do, this is handled by `PolkadotSyncingStrategy`.
 	</span>Finished,
 }
 
@@ -777,8 +901,13 @@
 <span class="kw">impl</span>&lt;B: BlockT&gt; From&lt;WarpSyncAction&lt;B&gt;&gt; <span class="kw">for </span>SyncingAction&lt;B&gt; {
 	<span class="kw">fn </span>from(action: WarpSyncAction&lt;B&gt;) -&gt; <span class="self">Self </span>{
 		<span class="kw">match </span>action {
-			WarpSyncAction::SendWarpProofRequest { peer_id, request } =&gt;
-				SyncingAction::SendWarpProofRequest { peer_id, key: StrategyKey::Warp, request },
+			WarpSyncAction::SendWarpProofRequest { peer_id, protocol_name, request } =&gt;
+				SyncingAction::SendWarpProofRequest {
+					peer_id,
+					key: StrategyKey::Warp,
+					protocol_name,
+					request,
+				},
 			WarpSyncAction::SendBlockRequest { peer_id, request } =&gt;
 				SyncingAction::SendBlockRequest { peer_id, key: StrategyKey::Warp, request },
 			WarpSyncAction::DropPeer(bad_peer) =&gt; SyncingAction::DropPeer(bad_peer),
@@ -790,8 +919,13 @@
 <span class="kw">impl</span>&lt;B: BlockT&gt; From&lt;StateStrategyAction&lt;B&gt;&gt; <span class="kw">for </span>SyncingAction&lt;B&gt; {
 	<span class="kw">fn </span>from(action: StateStrategyAction&lt;B&gt;) -&gt; <span class="self">Self </span>{
 		<span class="kw">match </span>action {
-			StateStrategyAction::SendStateRequest { peer_id, request } =&gt;
-				SyncingAction::SendStateRequest { peer_id, key: StrategyKey::State, request },
+			StateStrategyAction::SendStateRequest { peer_id, protocol_name, request } =&gt;
+				SyncingAction::SendStateRequest {
+					peer_id,
+					key: StrategyKey::State,
+					protocol_name,
+					request,
+				},
 			StateStrategyAction::DropPeer(bad_peer) =&gt; SyncingAction::DropPeer(bad_peer),
 			StateStrategyAction::ImportBlocks { origin, blocks } =&gt;
 				SyncingAction::ImportBlocks { origin, blocks },
@@ -800,26 +934,8 @@
 	}
 }
 
-<span class="kw">impl</span>&lt;B: BlockT&gt; From&lt;ChainSyncAction&lt;B&gt;&gt; <span class="kw">for </span>SyncingAction&lt;B&gt; {
-	<span class="kw">fn </span>from(action: ChainSyncAction&lt;B&gt;) -&gt; <span class="self">Self </span>{
-		<span class="kw">match </span>action {
-			ChainSyncAction::SendBlockRequest { peer_id, request } =&gt;
-				SyncingAction::SendBlockRequest { peer_id, key: StrategyKey::ChainSync, request },
-			ChainSyncAction::SendStateRequest { peer_id, request } =&gt;
-				SyncingAction::SendStateRequest { peer_id, key: StrategyKey::ChainSync, request },
-			ChainSyncAction::CancelRequest { peer_id } =&gt;
-				SyncingAction::CancelRequest { peer_id, key: StrategyKey::ChainSync },
-			ChainSyncAction::DropPeer(bad_peer) =&gt; SyncingAction::DropPeer(bad_peer),
-			ChainSyncAction::ImportBlocks { origin, blocks } =&gt;
-				SyncingAction::ImportBlocks { origin, blocks },
-			ChainSyncAction::ImportJustifications { peer_id, hash, number, justifications } =&gt;
-				SyncingAction::ImportJustifications { peer_id, hash, number, justifications },
-		}
-	}
-}
-
-<span class="doccomment">/// Proxy to specific syncing strategies.
-</span><span class="kw">pub struct </span>SyncingStrategy&lt;B: BlockT, Client&gt; {
+<span class="doccomment">/// Proxy to specific syncing strategies used in Polkadot.
+</span><span class="kw">pub struct </span>PolkadotSyncingStrategy&lt;B: BlockT, Client&gt; {
 	<span class="doccomment">/// Initial syncing configuration.
 	</span>config: SyncingConfig,
 	<span class="doccomment">/// Client used by syncing strategies.
@@ -831,11 +947,11 @@
 	<span class="doccomment">/// `ChainSync` strategy.`
 	</span>chain_sync: <span class="prelude-ty">Option</span>&lt;ChainSync&lt;B, Client&gt;&gt;,
 	<span class="doccomment">/// Connected peers and their best blocks used to seed a new strategy when switching to it in
-	/// [`SyncingStrategy::proceed_to_next`].
+	/// `PolkadotSyncingStrategy::proceed_to_next`.
 	</span>peer_best_blocks: HashMap&lt;PeerId, (B::Hash, NumberFor&lt;B&gt;)&gt;,
 }
 
-<span class="kw">impl</span>&lt;B: BlockT, Client&gt; SyncingStrategy&lt;B, Client&gt;
+<span class="kw">impl</span>&lt;B: BlockT, Client&gt; SyncingStrategy&lt;B&gt; <span class="kw">for </span>PolkadotSyncingStrategy&lt;B, Client&gt;
 <span class="kw">where
 	</span>B: BlockT,
 	Client: HeaderBackend&lt;B&gt;
@@ -846,46 +962,7 @@
 		+ Sync
 		+ <span class="lifetime">'static</span>,
 {
-	<span class="doccomment">/// Initialize a new syncing strategy.
-	</span><span class="kw">pub fn </span>new(
-		config: SyncingConfig,
-		client: Arc&lt;Client&gt;,
-		warp_sync_config: <span class="prelude-ty">Option</span>&lt;WarpSyncConfig&lt;B&gt;&gt;,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ClientError&gt; {
-		<span class="kw">if let </span>SyncMode::Warp = config.mode {
-			<span class="kw">let </span>warp_sync_config = warp_sync_config
-				.expect(<span class="string">"Warp sync configuration must be supplied in warp sync mode."</span>);
-			<span class="kw">let </span>warp_sync = WarpSync::new(client.clone(), warp_sync_config);
-			<span class="prelude-val">Ok</span>(<span class="self">Self </span>{
-				config,
-				client,
-				warp: <span class="prelude-val">Some</span>(warp_sync),
-				state: <span class="prelude-val">None</span>,
-				chain_sync: <span class="prelude-val">None</span>,
-				peer_best_blocks: Default::default(),
-			})
-		} <span class="kw">else </span>{
-			<span class="kw">let </span>chain_sync = ChainSync::new(
-				chain_sync_mode(config.mode),
-				client.clone(),
-				config.max_parallel_downloads,
-				config.max_blocks_per_request,
-				config.metrics_registry.clone(),
-				std::iter::empty(),
-			)<span class="question-mark">?</span>;
-			<span class="prelude-val">Ok</span>(<span class="self">Self </span>{
-				config,
-				client,
-				warp: <span class="prelude-val">None</span>,
-				state: <span class="prelude-val">None</span>,
-				chain_sync: <span class="prelude-val">Some</span>(chain_sync),
-				peer_best_blocks: Default::default(),
-			})
-		}
-	}
-
-	<span class="doccomment">/// Notify that a new peer has connected.
-	</span><span class="kw">pub fn </span>add_peer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer_id: PeerId, best_hash: B::Hash, best_number: NumberFor&lt;B&gt;) {
+	<span class="kw">fn </span>add_peer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer_id: PeerId, best_hash: B::Hash, best_number: NumberFor&lt;B&gt;) {
 		<span class="self">self</span>.peer_best_blocks.insert(peer_id, (best_hash, best_number));
 
 		<span class="self">self</span>.warp.as_mut().map(|s| s.add_peer(peer_id, best_hash, best_number));
@@ -893,8 +970,7 @@
 		<span class="self">self</span>.chain_sync.as_mut().map(|s| s.add_peer(peer_id, best_hash, best_number));
 	}
 
-	<span class="doccomment">/// Notify that a peer has disconnected.
-	</span><span class="kw">pub fn </span>remove_peer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer_id: <span class="kw-2">&amp;</span>PeerId) {
+	<span class="kw">fn </span>remove_peer(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer_id: <span class="kw-2">&amp;</span>PeerId) {
 		<span class="self">self</span>.warp.as_mut().map(|s| s.remove_peer(peer_id));
 		<span class="self">self</span>.state.as_mut().map(|s| s.remove_peer(peer_id));
 		<span class="self">self</span>.chain_sync.as_mut().map(|s| s.remove_peer(peer_id));
@@ -902,10 +978,7 @@
 		<span class="self">self</span>.peer_best_blocks.remove(peer_id);
 	}
 
-	<span class="doccomment">/// Submit a validated block announcement.
-	///
-	/// Returns new best hash &amp; best number of the peer if they are updated.
-	</span><span class="kw">pub fn </span>on_validated_block_announce(
+	<span class="kw">fn </span>on_validated_block_announce(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		is_best: bool,
 		peer_id: PeerId,
@@ -938,46 +1011,35 @@
 		new_best
 	}
 
-	<span class="doccomment">/// Configure an explicit fork sync request in case external code has detected that there is a
-	/// stale fork missing.
-	</span><span class="kw">pub fn </span>set_sync_fork_request(
-		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
-		peers: Vec&lt;PeerId&gt;,
-		hash: <span class="kw-2">&amp;</span>B::Hash,
-		number: NumberFor&lt;B&gt;,
-	) {
+	<span class="kw">fn </span>set_sync_fork_request(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peers: Vec&lt;PeerId&gt;, hash: <span class="kw-2">&amp;</span>B::Hash, number: NumberFor&lt;B&gt;) {
 		<span class="comment">// Fork requests are only handled by `ChainSync`.
 		</span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>chain_sync) = <span class="self">self</span>.chain_sync {
 			chain_sync.set_sync_fork_request(peers.clone(), hash, number);
 		}
 	}
 
-	<span class="doccomment">/// Request extra justification.
-	</span><span class="kw">pub fn </span>request_justification(<span class="kw-2">&amp;mut </span><span class="self">self</span>, hash: <span class="kw-2">&amp;</span>B::Hash, number: NumberFor&lt;B&gt;) {
+	<span class="kw">fn </span>request_justification(<span class="kw-2">&amp;mut </span><span class="self">self</span>, hash: <span class="kw-2">&amp;</span>B::Hash, number: NumberFor&lt;B&gt;) {
 		<span class="comment">// Justifications can only be requested via `ChainSync`.
 		</span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>chain_sync) = <span class="self">self</span>.chain_sync {
 			chain_sync.request_justification(hash, number);
 		}
 	}
 
-	<span class="doccomment">/// Clear extra justification requests.
-	</span><span class="kw">pub fn </span>clear_justification_requests(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+	<span class="kw">fn </span>clear_justification_requests(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
 		<span class="comment">// Justification requests can only be cleared by `ChainSync`.
 		</span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>chain_sync) = <span class="self">self</span>.chain_sync {
 			chain_sync.clear_justification_requests();
 		}
 	}
 
-	<span class="doccomment">/// Report a justification import (successful or not).
-	</span><span class="kw">pub fn </span>on_justification_import(<span class="kw-2">&amp;mut </span><span class="self">self</span>, hash: B::Hash, number: NumberFor&lt;B&gt;, success: bool) {
+	<span class="kw">fn </span>on_justification_import(<span class="kw-2">&amp;mut </span><span class="self">self</span>, hash: B::Hash, number: NumberFor&lt;B&gt;, success: bool) {
 		<span class="comment">// Only `ChainSync` is interested in justification import.
 		</span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>chain_sync) = <span class="self">self</span>.chain_sync {
 			chain_sync.on_justification_import(hash, number, success);
 		}
 	}
 
-	<span class="doccomment">/// Process block response.
-	</span><span class="kw">pub fn </span>on_block_response(
+	<span class="kw">fn </span>on_block_response(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		peer_id: PeerId,
 		key: StrategyKey,
@@ -989,7 +1051,7 @@
 		} <span class="kw">else if let </span>(StrategyKey::ChainSync, <span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>chain_sync)) =
 			(key, <span class="kw-2">&amp;mut </span><span class="self">self</span>.chain_sync)
 		{
-			chain_sync.on_block_response(peer_id, request, blocks);
+			chain_sync.on_block_response(peer_id, key, request, blocks);
 		} <span class="kw">else </span>{
 			<span class="macro">error!</span>(
 				target: LOG_TARGET,
@@ -1000,8 +1062,7 @@
 		}
 	}
 
-	<span class="doccomment">/// Process state response.
-	</span><span class="kw">pub fn </span>on_state_response(
+	<span class="kw">fn </span>on_state_response(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		peer_id: PeerId,
 		key: StrategyKey,
@@ -1012,7 +1073,7 @@
 		} <span class="kw">else if let </span>(StrategyKey::ChainSync, <span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>chain_sync)) =
 			(key, <span class="kw-2">&amp;mut </span><span class="self">self</span>.chain_sync)
 		{
-			chain_sync.on_state_response(peer_id, response);
+			chain_sync.on_state_response(peer_id, key, response);
 		} <span class="kw">else </span>{
 			<span class="macro">error!</span>(
 				target: LOG_TARGET,
@@ -1023,8 +1084,7 @@
 		}
 	}
 
-	<span class="doccomment">/// Process warp proof response.
-	</span><span class="kw">pub fn </span>on_warp_proof_response(
+	<span class="kw">fn </span>on_warp_proof_response(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		peer_id: <span class="kw-2">&amp;</span>PeerId,
 		key: StrategyKey,
@@ -1042,8 +1102,7 @@
 		}
 	}
 
-	<span class="doccomment">/// A batch of blocks have been processed, with or without errors.
-	</span><span class="kw">pub fn </span>on_blocks_processed(
+	<span class="kw">fn </span>on_blocks_processed(
 		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
 		imported: usize,
 		count: usize,
@@ -1057,24 +1116,21 @@
 		}
 	}
 
-	<span class="doccomment">/// Notify a syncing strategy that a block has been finalized.
-	</span><span class="kw">pub fn </span>on_block_finalized(<span class="kw-2">&amp;mut </span><span class="self">self</span>, hash: <span class="kw-2">&amp;</span>B::Hash, number: NumberFor&lt;B&gt;) {
+	<span class="kw">fn </span>on_block_finalized(<span class="kw-2">&amp;mut </span><span class="self">self</span>, hash: <span class="kw-2">&amp;</span>B::Hash, number: NumberFor&lt;B&gt;) {
 		<span class="comment">// Only `ChainSync` is interested in block finalization notifications.
 		</span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>chain_sync) = <span class="self">self</span>.chain_sync {
 			chain_sync.on_block_finalized(hash, number);
 		}
 	}
 
-	<span class="doccomment">/// Inform sync about a new best imported block.
-	</span><span class="kw">pub fn </span>update_chain_info(<span class="kw-2">&amp;mut </span><span class="self">self</span>, best_hash: <span class="kw-2">&amp;</span>B::Hash, best_number: NumberFor&lt;B&gt;) {
+	<span class="kw">fn </span>update_chain_info(<span class="kw-2">&amp;mut </span><span class="self">self</span>, best_hash: <span class="kw-2">&amp;</span>B::Hash, best_number: NumberFor&lt;B&gt;) {
 		<span class="comment">// This is relevant to `ChainSync` only.
 		</span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>chain_sync) = <span class="self">self</span>.chain_sync {
 			chain_sync.update_chain_info(best_hash, best_number);
 		}
 	}
 
-	<span class="comment">// Are we in major sync mode?
-	</span><span class="kw">pub fn </span>is_major_syncing(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+	<span class="kw">fn </span>is_major_syncing(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
 		<span class="self">self</span>.warp.is_some() ||
 			<span class="self">self</span>.state.is_some() ||
 			<span class="kw">match </span><span class="self">self</span>.chain_sync {
@@ -1083,13 +1139,11 @@
 			}
 	}
 
-	<span class="doccomment">/// Get the number of peers known to the syncing strategy.
-	</span><span class="kw">pub fn </span>num_peers(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+	<span class="kw">fn </span>num_peers(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
 		<span class="self">self</span>.peer_best_blocks.len()
 	}
 
-	<span class="doccomment">/// Returns the current sync status.
-	</span><span class="kw">pub fn </span>status(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SyncStatus&lt;B&gt; {
+	<span class="kw">fn </span>status(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SyncStatus&lt;B&gt; {
 		<span class="comment">// This function presumes that strategies are executed serially and must be refactored
 		// once we have parallel strategies.
 		</span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>warp) = <span class="self">self</span>.warp {
@@ -1103,61 +1157,17 @@
 		}
 	}
 
-	<span class="doccomment">/// Get the total number of downloaded blocks.
-	</span><span class="kw">pub fn </span>num_downloaded_blocks(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+	<span class="kw">fn </span>num_downloaded_blocks(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
 		<span class="self">self</span>.chain_sync
 			.as_ref()
 			.map_or(<span class="number">0</span>, |chain_sync| chain_sync.num_downloaded_blocks())
 	}
 
-	<span class="doccomment">/// Get an estimate of the number of parallel sync requests.
-	</span><span class="kw">pub fn </span>num_sync_requests(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+	<span class="kw">fn </span>num_sync_requests(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
 		<span class="self">self</span>.chain_sync.as_ref().map_or(<span class="number">0</span>, |chain_sync| chain_sync.num_sync_requests())
 	}
 
-	<span class="doccomment">/// Report Prometheus metrics
-	</span><span class="kw">pub fn </span>report_metrics(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-		<span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>chain_sync) = <span class="self">self</span>.chain_sync {
-			chain_sync.report_metrics();
-		}
-	}
-
-	<span class="doccomment">/// Let `WarpSync` know about target block header
-	</span><span class="kw">pub fn </span>set_warp_sync_target_block_header(
-		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
-		target_header: B::Header,
-	) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
-		<span class="kw">match </span><span class="self">self</span>.config.mode {
-			SyncMode::Warp =&gt; <span class="kw">match </span><span class="self">self</span>.warp {
-				<span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>warp) =&gt; {
-					warp.set_target_block(target_header);
-					<span class="prelude-val">Ok</span>(())
-				},
-				<span class="prelude-val">None </span>=&gt; {
-					<span class="comment">// As mode is set to warp sync, but no warp sync strategy is active, this means
-					// that warp sync has already finished / was skipped.
-					</span><span class="macro">warn!</span>(
-						target: LOG_TARGET,
-						<span class="string">"Discarding warp sync target, as warp sync was seemingly skipped due \
-						 to node being (partially) synced."</span>,
-					);
-					<span class="prelude-val">Ok</span>(())
-				},
-			},
-			<span class="kw">_ </span>=&gt; {
-				<span class="macro">error!</span>(
-					target: LOG_TARGET,
-					<span class="string">"Cannot set warp sync target block: not in warp sync mode."
-				</span>);
-				<span class="macro">debug_assert!</span>(<span class="bool-val">false</span>);
-				<span class="prelude-val">Err</span>(())
-			},
-		}
-	}
-
-	<span class="doccomment">/// Get actions that should be performed by the owner on the strategy's behalf
-	</span><span class="attr">#[must_use]
-	</span><span class="kw">pub fn </span>actions(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;SyncingAction&lt;B&gt;&gt;, ClientError&gt; {
+	<span class="kw">fn </span>actions(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;SyncingAction&lt;B&gt;&gt;, ClientError&gt; {
 		<span class="comment">// This function presumes that strategies are executed serially and must be refactored once
 		// we have parallel strategies.
 		</span><span class="kw">let </span>actions: Vec&lt;<span class="kw">_</span>&gt; = <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>warp) = <span class="self">self</span>.warp {
@@ -1165,8 +1175,8 @@
 		} <span class="kw">else if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>state) = <span class="self">self</span>.state {
 			state.actions().map(Into::into).collect()
 		} <span class="kw">else if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>chain_sync) = <span class="self">self</span>.chain_sync {
-			chain_sync.actions().map(Into::into).collect()
-		} <span class="kw">else </span>{
+			chain_sync.actions()<span class="question-mark">?
+		</span>} <span class="kw">else </span>{
 			<span class="macro">unreachable!</span>(<span class="string">"At least one syncing strategy is always active; qed"</span>)
 		};
 
@@ -1175,6 +1185,67 @@
 		}
 
 		<span class="prelude-val">Ok</span>(actions)
+	}
+}
+
+<span class="kw">impl</span>&lt;B: BlockT, Client&gt; PolkadotSyncingStrategy&lt;B, Client&gt;
+<span class="kw">where
+	</span>B: BlockT,
+	Client: HeaderBackend&lt;B&gt;
+		+ BlockBackend&lt;B&gt;
+		+ HeaderMetadata&lt;B, Error = sp_blockchain::Error&gt;
+		+ ProofProvider&lt;B&gt;
+		+ Send
+		+ Sync
+		+ <span class="lifetime">'static</span>,
+{
+	<span class="doccomment">/// Initialize a new syncing strategy.
+	</span><span class="kw">pub fn </span>new(
+		<span class="kw-2">mut </span>config: SyncingConfig,
+		client: Arc&lt;Client&gt;,
+		warp_sync_config: <span class="prelude-ty">Option</span>&lt;WarpSyncConfig&lt;B&gt;&gt;,
+		warp_sync_protocol_name: <span class="prelude-ty">Option</span>&lt;ProtocolName&gt;,
+	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ClientError&gt; {
+		<span class="kw">if </span>config.max_blocks_per_request &gt; MAX_BLOCKS_IN_RESPONSE <span class="kw">as </span>u32 {
+			<span class="macro">info!</span>(
+				target: LOG_TARGET,
+				<span class="string">"clamping maximum blocks per request to {MAX_BLOCKS_IN_RESPONSE}"</span>,
+			);
+			config.max_blocks_per_request = MAX_BLOCKS_IN_RESPONSE <span class="kw">as </span>u32;
+		}
+
+		<span class="kw">if let </span>SyncMode::Warp = config.mode {
+			<span class="kw">let </span>warp_sync_config = warp_sync_config
+				.expect(<span class="string">"Warp sync configuration must be supplied in warp sync mode."</span>);
+			<span class="kw">let </span>warp_sync =
+				WarpSync::new(client.clone(), warp_sync_config, warp_sync_protocol_name);
+			<span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+				config,
+				client,
+				warp: <span class="prelude-val">Some</span>(warp_sync),
+				state: <span class="prelude-val">None</span>,
+				chain_sync: <span class="prelude-val">None</span>,
+				peer_best_blocks: Default::default(),
+			})
+		} <span class="kw">else </span>{
+			<span class="kw">let </span>chain_sync = ChainSync::new(
+				chain_sync_mode(config.mode),
+				client.clone(),
+				config.max_parallel_downloads,
+				config.max_blocks_per_request,
+				config.state_request_protocol_name.clone(),
+				config.metrics_registry.as_ref(),
+				std::iter::empty(),
+			)<span class="question-mark">?</span>;
+			<span class="prelude-val">Ok</span>(<span class="self">Self </span>{
+				config,
+				client,
+				warp: <span class="prelude-val">None</span>,
+				state: <span class="prelude-val">None</span>,
+				chain_sync: <span class="prelude-val">Some</span>(chain_sync),
+				peer_best_blocks: Default::default(),
+			})
+		}
 	}
 
 	<span class="doccomment">/// Proceed with the next strategy if the active one finished.
@@ -1196,6 +1267,7 @@
 						<span class="self">self</span>.peer_best_blocks
 							.iter()
 							.map(|(peer_id, (<span class="kw">_</span>, best_number))| (<span class="kw-2">*</span>peer_id, <span class="kw-2">*</span>best_number)),
+						<span class="self">self</span>.config.state_request_protocol_name.clone(),
 					);
 
 					<span class="self">self</span>.warp = <span class="prelude-val">None</span>;
@@ -1212,7 +1284,8 @@
 						<span class="self">self</span>.client.clone(),
 						<span class="self">self</span>.config.max_parallel_downloads,
 						<span class="self">self</span>.config.max_blocks_per_request,
-						<span class="self">self</span>.config.metrics_registry.clone(),
+						<span class="self">self</span>.config.state_request_protocol_name.clone(),
+						<span class="self">self</span>.config.metrics_registry.as_ref(),
 						<span class="self">self</span>.peer_best_blocks.iter().map(|(peer_id, (best_hash, best_number))| {
 							(<span class="kw-2">*</span>peer_id, <span class="kw-2">*</span>best_hash, <span class="kw-2">*</span>best_number)
 						}),
@@ -1240,7 +1313,8 @@
 				<span class="self">self</span>.client.clone(),
 				<span class="self">self</span>.config.max_parallel_downloads,
 				<span class="self">self</span>.config.max_blocks_per_request,
-				<span class="self">self</span>.config.metrics_registry.clone(),
+				<span class="self">self</span>.config.state_request_protocol_name.clone(),
+				<span class="self">self</span>.config.metrics_registry.as_ref(),
 				<span class="self">self</span>.peer_best_blocks.iter().map(|(peer_id, (best_hash, best_number))| {
 					(<span class="kw-2">*</span>peer_id, <span class="kw-2">*</span>best_hash, <span class="kw-2">*</span>best_number)
 				}),
@@ -1258,66 +1332,6 @@
 		} <span class="kw">else </span>{
 			<span class="macro">unreachable!</span>(<span class="string">"Only warp &amp; state strategies can finish; qed"</span>)
 		}
-	}
-}
-
-<span class="attr">#[cfg(test)]
-</span><span class="kw">mod </span>test {
-	<span class="kw">use super</span>::<span class="kw-2">*</span>;
-	<span class="kw">use </span>futures::executor::block_on;
-	<span class="kw">use </span>sc_block_builder::BlockBuilderBuilder;
-	<span class="kw">use </span>substrate_test_runtime_client::{
-		ClientBlockImportExt, ClientExt, DefaultTestClientBuilderExt, TestClientBuilder,
-		TestClientBuilderExt,
-	};
-
-	<span class="doccomment">/// Regression test for crash when starting already synced parachain node with `--sync=warp`.
-	/// We must remove this after setting of warp sync target block is moved to initialization of
-	/// `SyncingEngine` (issue https://github.com/paritytech/polkadot-sdk/issues/3537).
-	</span><span class="attr">#[test]
-	</span><span class="kw">fn </span>set_target_block_finished_warp_sync() {
-		<span class="comment">// Populate database with finalized state.
-		</span><span class="kw">let </span><span class="kw-2">mut </span>client = Arc::new(TestClientBuilder::new().build());
-		<span class="kw">let </span>block = BlockBuilderBuilder::new(<span class="kw-2">&amp;*</span>client)
-			.on_parent_block(client.chain_info().best_hash)
-			.with_parent_block_number(client.chain_info().best_number)
-			.build()
-			.unwrap()
-			.build()
-			.unwrap()
-			.block;
-		block_on(client.import(BlockOrigin::Own, block.clone())).unwrap();
-		<span class="kw">let </span>just = (<span class="kw-2">*</span><span class="string">b"TEST"</span>, Vec::new());
-		client.finalize_block(block.hash(), <span class="prelude-val">Some</span>(just)).unwrap();
-		<span class="kw">let </span>target_block = BlockBuilderBuilder::new(<span class="kw-2">&amp;*</span>client)
-			.on_parent_block(client.chain_info().best_hash)
-			.with_parent_block_number(client.chain_info().best_number)
-			.build()
-			.unwrap()
-			.build()
-			.unwrap()
-			.block;
-
-		<span class="comment">// Initialize syncing strategy.
-		</span><span class="kw">let </span>config = SyncingConfig {
-			mode: SyncMode::Warp,
-			max_parallel_downloads: <span class="number">3</span>,
-			max_blocks_per_request: <span class="number">64</span>,
-			metrics_registry: <span class="prelude-val">None</span>,
-		};
-		<span class="kw">let </span><span class="kw-2">mut </span>strategy =
-			SyncingStrategy::new(config, client, <span class="prelude-val">Some</span>(WarpSyncConfig::WaitForTarget)).unwrap();
-
-		<span class="comment">// Warp sync instantly finishes as we have finalized state in DB.
-		</span><span class="kw">let </span>actions = strategy.actions().unwrap();
-		<span class="macro">assert_eq!</span>(actions.len(), <span class="number">1</span>);
-		<span class="macro">assert!</span>(<span class="macro">matches!</span>(actions[<span class="number">0</span>], SyncingAction::Finished));
-		<span class="macro">assert!</span>(strategy.warp.is_none());
-
-		<span class="comment">// Try setting the target block. We mustn't crash.
-		</span>strategy
-			.set_warp_sync_target_block_header(target_block.header().clone())
-			.unwrap();
 	}
 }
 </code></pre></div></section></main></body></html>

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Endpoint"],"mod":["quic","tcp","webrtc","websocket"]};
+window.SIDEBAR_ITEMS = {"enum":["ConnectionLimitsError","Endpoint"],"mod":["tcp","websocket"],"struct":["ConnectionLimitsConfig"]};

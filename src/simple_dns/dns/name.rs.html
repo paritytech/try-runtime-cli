@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/simple-dns-0.5.7/src/dns/name.rs`."><title>name.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="simple_dns" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/simple-dns-0.7.1/src/dns/name.rs`."><title>name.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-c5d6553a23f1e5a6.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="simple_dns" data-themes="" data-resource-suffix="" data-rustdoc-version="1.81.0 (eeb90cda1 2024-09-04)" data-channel="1.81.0" data-search-js="search-d234aafac6c221dd.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-d2fab2bf619172d3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-df360f571f6edeae.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -641,15 +641,6 @@
 <a href="#641" id="641">641</a>
 <a href="#642" id="642">642</a>
 <a href="#643" id="643">643</a>
-<a href="#644" id="644">644</a>
-<a href="#645" id="645">645</a>
-<a href="#646" id="646">646</a>
-<a href="#647" id="647">647</a>
-<a href="#648" id="648">648</a>
-<a href="#649" id="649">649</a>
-<a href="#650" id="650">650</a>
-<a href="#651" id="651">651</a>
-<a href="#652" id="652">652</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>std::{
     borrow::Cow,
     collections::HashMap,
@@ -658,7 +649,7 @@
     hash::Hash,
 };
 
-<span class="kw">use super</span>::{PacketPart, MAX_LABEL_LENGTH, MAX_NAME_LENGTH};
+<span class="kw">use super</span>::{WireFormat, MAX_LABEL_LENGTH, MAX_NAME_LENGTH};
 
 <span class="kw">const </span>POINTER_MASK: u8 = <span class="number">0b1100_0000</span>;
 <span class="kw">const </span>POINTER_MASK_U16: u16 = <span class="number">0b1100_0000_0000_0000</span>;
@@ -673,24 +664,18 @@
 </span><span class="attr">#[derive(Eq, Clone)]
 </span><span class="kw">pub struct </span>Name&lt;<span class="lifetime">'a</span>&gt; {
     labels: Vec&lt;Label&lt;<span class="lifetime">'a</span>&gt;&gt;,
-    total_size: usize,
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; Name&lt;<span class="lifetime">'a</span>&gt; {
     <span class="doccomment">/// Creates a new validated Name
     </span><span class="kw">pub fn </span>new(name: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str) -&gt; <span class="kw">crate</span>::Result&lt;<span class="self">Self</span>&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>total_size = <span class="number">1</span>;
-
         <span class="kw">let </span>labels = NameSpliter::new(name.as_bytes())
-            .map(|label| {
-                total_size += label.len() + <span class="number">1</span>;
-                Label::new(label)
-            })
+            .map(Label::new)
             .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;Label&gt;, <span class="kw">_</span>&gt;&gt;()<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>name = <span class="self">Self </span>{ labels, total_size };
+        <span class="kw">let </span>name = <span class="self">Self </span>{ labels };
 
-        <span class="kw">if </span>name.total_size &gt; MAX_NAME_LENGTH {
+        <span class="kw">if </span>name.len() &gt; MAX_NAME_LENGTH {
             <span class="prelude-val">Err</span>(<span class="kw">crate</span>::SimpleDnsError::InvalidServiceName)
         } <span class="kw">else </span>{
             <span class="prelude-val">Ok</span>(name)
@@ -699,16 +684,11 @@
 
     <span class="doccomment">/// Create a new Name without checking for size limits
     </span><span class="kw">pub fn </span>new_unchecked(name: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>str) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span><span class="kw-2">mut </span>total_size = <span class="number">1</span>;
-
         <span class="kw">let </span>labels = NameSpliter::new(name.as_bytes())
-            .map(|label| {
-                total_size += label.len() + <span class="number">1</span>;
-                Label::new_unchecked(label)
-            })
+            .map(Label::new_unchecked)
             .collect();
 
-        <span class="self">Self </span>{ labels, total_size }
+        <span class="self">Self </span>{ labels }
     }
 
     <span class="doccomment">/// Verify if name ends with .local.
@@ -751,12 +731,8 @@
     </span><span class="kw">pub fn </span>without(<span class="kw-2">&amp;</span><span class="self">self</span>, domain: <span class="kw-2">&amp;</span>Name) -&gt; <span class="prelude-ty">Option</span>&lt;Name&gt; {
         <span class="kw">if </span><span class="self">self</span>.is_subdomain_of(domain) {
             <span class="kw">let </span>labels = <span class="self">self</span>.labels[..<span class="self">self</span>.labels.len() - domain.labels.len()].to_vec();
-            <span class="kw">let </span><span class="kw-2">mut </span>total_size = <span class="number">1</span>;
-            <span class="kw">for </span>label <span class="kw">in </span>labels.iter() {
-                total_size += label.len() + <span class="number">1</span>;
-            }
 
-            <span class="prelude-val">Some</span>(Name { labels, total_size })
+            <span class="prelude-val">Some</span>(Name { labels })
         } <span class="kw">else </span>{
             <span class="prelude-val">None
         </span>}
@@ -766,7 +742,6 @@
     </span><span class="kw">pub fn </span>into_owned&lt;<span class="lifetime">'b</span>&gt;(<span class="self">self</span>) -&gt; Name&lt;<span class="lifetime">'b</span>&gt; {
         Name {
             labels: <span class="self">self</span>.labels.into_iter().map(|l| l.into_owned()).collect(),
-            total_size: <span class="self">self</span>.total_size,
         }
     }
 
@@ -811,73 +786,72 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; PacketPart&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span>Name&lt;<span class="lifetime">'a</span>&gt; {
-    <span class="kw">fn </span>parse(data: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], initial_position: usize) -&gt; <span class="kw">crate</span>::Result&lt;<span class="self">Self</span>&gt;
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; WireFormat&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span>Name&lt;<span class="lifetime">'a</span>&gt; {
+    <span class="kw">fn </span>parse(data: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8], position: <span class="kw-2">&amp;mut </span>usize) -&gt; <span class="kw">crate</span>::Result&lt;<span class="self">Self</span>&gt;
     <span class="kw">where
         </span><span class="self">Self</span>: Sized,
     {
-        <span class="kw">let </span><span class="kw-2">mut </span>total_size = <span class="number">1</span>;
-        <span class="kw">let </span><span class="kw-2">mut </span>is_compressed = <span class="bool-val">false</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>following_compression_pointer = <span class="bool-val">false</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>labels = Vec::new();
 
-        <span class="kw">let </span><span class="kw-2">mut </span>position = initial_position;
+        <span class="kw">let </span><span class="kw-2">mut </span>pointer_position = <span class="kw-2">*</span>position;
 
         <span class="comment">// avoid invalid data caused oom
         </span><span class="kw">let </span><span class="kw-2">mut </span>name_size = <span class="number">0usize</span>;
 
         <span class="kw">loop </span>{
-            <span class="kw">if </span>position &gt;= data.len() {
+            <span class="kw">if </span><span class="kw-2">*</span>position &gt;= data.len() {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="kw">crate</span>::SimpleDnsError::InsufficientData);
             }
 
             <span class="comment">// domain name max size is 255
-            </span><span class="kw">if </span>name_size &gt; MAX_NAME_LENGTH {
+            </span><span class="kw">if </span>name_size &gt;= MAX_NAME_LENGTH {
                 <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="kw">crate</span>::SimpleDnsError::InvalidDnsPacket);
             }
 
-            <span class="kw">match </span>data[position] {
+            <span class="kw">match </span>data[pointer_position] {
                 <span class="number">0 </span>=&gt; {
+                    <span class="kw-2">*</span>position += <span class="number">1</span>;
                     <span class="kw">break</span>;
                 }
                 len <span class="kw">if </span>len &amp; POINTER_MASK == POINTER_MASK =&gt; {
-                    <span class="comment">//compression
-                    </span><span class="kw">if </span>!is_compressed {
-                        total_size += <span class="number">1</span>;
+                    <span class="kw">if </span>!following_compression_pointer {
+                        <span class="kw-2">*</span>position += <span class="number">1</span>;
                     }
-                    is_compressed = <span class="bool-val">true</span>;
 
-                    <span class="kw">if </span>position + <span class="number">2 </span>&gt; data.len() {
+                    following_compression_pointer = <span class="bool-val">true</span>;
+                    <span class="kw">if </span>pointer_position + <span class="number">2 </span>&gt; data.len() {
                         <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="kw">crate</span>::SimpleDnsError::InsufficientData);
                     }
 
                     <span class="comment">// avoid pointer forward (RFC 1035)
-                    </span><span class="kw">let </span>pointer = (u16::from_be_bytes(data[position..position + <span class="number">2</span>].try_into()<span class="question-mark">?</span>)
-                        &amp; !POINTER_MASK_U16) <span class="kw">as </span>usize;
-                    <span class="kw">if </span>pointer &gt;= position {
+                    </span><span class="kw">let </span>pointer = (u16::from_be_bytes(
+                        data[pointer_position..pointer_position + <span class="number">2</span>].try_into()<span class="question-mark">?</span>,
+                    ) &amp; !POINTER_MASK_U16) <span class="kw">as </span>usize;
+                    <span class="kw">if </span>pointer &gt;= pointer_position {
                         <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="kw">crate</span>::SimpleDnsError::InvalidDnsPacket);
                     }
-                    position = pointer;
+                    pointer_position = pointer;
                 }
                 len =&gt; {
                     name_size += <span class="number">1 </span>+ len <span class="kw">as </span>usize;
-
-                    <span class="kw">let </span>p = position + <span class="number">1</span>;
-                    <span class="kw">let </span>e = p + len <span class="kw">as </span>usize;
-
-                    <span class="kw">if </span>e &gt; data.len() {
+                    <span class="kw">if </span>pointer_position + <span class="number">1 </span>+ len <span class="kw">as </span>usize &gt; data.len() {
                         <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="kw">crate</span>::SimpleDnsError::InsufficientData);
                     }
 
-                    labels.push(Label::new(<span class="kw-2">&amp;</span>data[p..e])<span class="question-mark">?</span>);
-                    <span class="kw">if </span>!is_compressed {
-                        total_size += <span class="number">1 </span>+ len <span class="kw">as </span>usize;
+                    labels.push(Label::new(
+                        <span class="kw-2">&amp;</span>data[pointer_position + <span class="number">1</span>..pointer_position + <span class="number">1 </span>+ len <span class="kw">as </span>usize],
+                    )<span class="question-mark">?</span>);
+
+                    <span class="kw">if </span>!following_compression_pointer {
+                        <span class="kw-2">*</span>position += len <span class="kw">as </span>usize + <span class="number">1</span>;
                     }
-                    position = e;
+                    pointer_position += len <span class="kw">as </span>usize + <span class="number">1</span>;
                 }
             }
         }
 
-        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{ labels, total_size })
+        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{ labels })
     }
 
     <span class="kw">fn </span>write_to&lt;T: std::io::Write&gt;(<span class="kw-2">&amp;</span><span class="self">self</span>, out: <span class="kw-2">&amp;mut </span>T) -&gt; <span class="kw">crate</span>::Result&lt;()&gt; {
@@ -893,8 +867,13 @@
     }
 
     <span class="kw">fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-        <span class="self">self</span>.total_size
-    }
+        <span class="self">self</span>.labels
+            .iter()
+            .map(|label| label.len() + <span class="number">1</span>)
+            .sum::&lt;usize&gt;()
+            + <span class="number">1
+        </span><span class="comment">// self.total_size
+    </span>}
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; TryFrom&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>str&gt; <span class="kw">for </span>Name&lt;<span class="lifetime">'a</span>&gt; {
@@ -923,7 +902,7 @@
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>std::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; std::fmt::Result {
         f.debug_tuple(<span class="string">"Name"</span>)
             .field(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"{}"</span>, <span class="self">self</span>))
-            .field(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.total_size))
+            .field(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"{}"</span>, <span class="self">self</span>.len()))
             .finish()
     }
 }
@@ -1077,10 +1056,11 @@
     </span><span class="kw">fn </span>parse_without_compression() {
         <span class="kw">let </span>data =
             <span class="string">b"\x00\x00\x00\x01F\x03ISI\x04ARPA\x00\x03FOO\x01F\x03ISI\x04ARPA\x00\x04ARPA\x00"</span>;
-        <span class="kw">let </span>name = Name::parse(data, <span class="number">3</span>).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">3</span>;
+        <span class="kw">let </span>name = Name::parse(data, <span class="kw-2">&amp;mut </span>position).unwrap();
         <span class="macro">assert_eq!</span>(<span class="string">"F.ISI.ARPA"</span>, name.to_string());
 
-        <span class="kw">let </span>name = Name::parse(data, <span class="number">3 </span>+ name.len()).unwrap();
+        <span class="kw">let </span>name = Name::parse(data, <span class="kw-2">&amp;mut </span>position).unwrap();
         <span class="macro">assert_eq!</span>(<span class="string">"FOO.F.ISI.ARPA"</span>, name.to_string());
     }
 
@@ -1089,19 +1069,16 @@
         <span class="kw">let </span>data = <span class="string">b"\x00\x00\x00\x01F\x03ISI\x04ARPA\x00\x03FOO\xc0\x03\x03BAR\xc0\x03\x07INVALID\xc0\x1b"</span>;
         <span class="kw">let </span><span class="kw-2">mut </span>offset = <span class="number">3usize</span>;
 
-        <span class="kw">let </span>name = Name::parse(data, offset).unwrap();
+        <span class="kw">let </span>name = Name::parse(data, <span class="kw-2">&amp;mut </span>offset).unwrap();
         <span class="macro">assert_eq!</span>(<span class="string">"F.ISI.ARPA"</span>, name.to_string());
 
-        offset += name.len();
-        <span class="kw">let </span>name = Name::parse(data, offset).unwrap();
+        <span class="kw">let </span>name = Name::parse(data, <span class="kw-2">&amp;mut </span>offset).unwrap();
         <span class="macro">assert_eq!</span>(<span class="string">"FOO.F.ISI.ARPA"</span>, name.to_string());
 
-        offset += name.len();
-        <span class="kw">let </span>name = Name::parse(data, offset).unwrap();
+        <span class="kw">let </span>name = Name::parse(data, <span class="kw-2">&amp;mut </span>offset).unwrap();
         <span class="macro">assert_eq!</span>(<span class="string">"BAR.F.ISI.ARPA"</span>, name.to_string());
 
-        offset += name.len();
-        <span class="macro">assert!</span>(Name::parse(data, offset).is_err());
+        <span class="macro">assert!</span>(Name::parse(data, <span class="kw-2">&amp;mut </span>offset).is_err());
     }
 
     <span class="attr">#[test]
@@ -1171,13 +1148,14 @@
         <span class="kw">let </span>expected = <span class="string">b"\x03ISI\x04ARPA\x00\x01F\xc0\x00\x03FOO\xc0\x0a\x03BAR\xc0\x0a"</span>;
         <span class="macro">assert_eq!</span>(expected[..], buf.get_ref()[..]);
 
-        <span class="kw">let </span>first = Name::parse(buf.get_ref(), <span class="number">0</span>).unwrap();
+        <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">0</span>;
+        <span class="kw">let </span>first = Name::parse(buf.get_ref(), <span class="kw-2">&amp;mut </span>position).unwrap();
         <span class="macro">assert_eq!</span>(<span class="string">"ISI.ARPA"</span>, first.to_string());
-        <span class="kw">let </span>second = Name::parse(buf.get_ref(), first.len()).unwrap();
+        <span class="kw">let </span>second = Name::parse(buf.get_ref(), <span class="kw-2">&amp;mut </span>position).unwrap();
         <span class="macro">assert_eq!</span>(<span class="string">"F.ISI.ARPA"</span>, second.to_string());
-        <span class="kw">let </span>third = Name::parse(buf.get_ref(), first.len() + second.len()).unwrap();
+        <span class="kw">let </span>third = Name::parse(buf.get_ref(), <span class="kw-2">&amp;mut </span>position).unwrap();
         <span class="macro">assert_eq!</span>(<span class="string">"FOO.F.ISI.ARPA"</span>, third.to_string());
-        <span class="kw">let </span>fourth = Name::parse(buf.get_ref(), first.len() + second.len() + third.len()).unwrap();
+        <span class="kw">let </span>fourth = Name::parse(buf.get_ref(), <span class="kw-2">&amp;mut </span>position).unwrap();
         <span class="macro">assert_eq!</span>(<span class="string">"BAR.F.ISI.ARPA"</span>, fourth.to_string());
     }
 
@@ -1212,8 +1190,12 @@
         <span class="macro">assert_ne!</span>(Name::new(<span class="string">"example.com.org"</span>)<span class="question-mark">?</span>, Name::new(<span class="string">"example.com"</span>)<span class="question-mark">?</span>);
 
         <span class="kw">let </span>data = <span class="string">b"\x00\x00\x00\x01F\x03ISI\x04ARPA\x00\x03FOO\xc0\x03\x03BAR\xc0\x03"</span>;
-        <span class="macro">assert_eq!</span>(Name::new(<span class="string">"F.ISI.ARPA"</span>)<span class="question-mark">?</span>, Name::parse(data, <span class="number">3</span>)<span class="question-mark">?</span>);
-        <span class="macro">assert_eq!</span>(Name::new(<span class="string">"FOO.F.ISI.ARPA"</span>)<span class="question-mark">?</span>, Name::parse(data, <span class="number">15</span>)<span class="question-mark">?</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>position = <span class="number">3</span>;
+        <span class="macro">assert_eq!</span>(Name::new(<span class="string">"F.ISI.ARPA"</span>)<span class="question-mark">?</span>, Name::parse(data, <span class="kw-2">&amp;mut </span>position)<span class="question-mark">?</span>);
+        <span class="macro">assert_eq!</span>(
+            Name::new(<span class="string">"FOO.F.ISI.ARPA"</span>)<span class="question-mark">?</span>,
+            Name::parse(data, <span class="kw-2">&amp;mut </span>position)<span class="question-mark">?
+        </span>);
         <span class="prelude-val">Ok</span>(())
     }
 
@@ -1225,7 +1207,7 @@
 
         <span class="macro">assert_eq!</span>(<span class="number">8</span>, bytes.get_ref().len());
         <span class="macro">assert_eq!</span>(bytes.get_ref().len(), name_one.len());
-        <span class="macro">assert_eq!</span>(<span class="number">8</span>, Name::parse(bytes.get_ref(), <span class="number">0</span>)<span class="question-mark">?</span>.len());
+        <span class="macro">assert_eq!</span>(<span class="number">8</span>, Name::parse(bytes.get_ref(), <span class="kw-2">&amp;mut </span><span class="number">0</span>)<span class="question-mark">?</span>.len());
 
         <span class="kw">let </span><span class="kw-2">mut </span>name_refs = HashMap::new();
         <span class="kw">let </span><span class="kw-2">mut </span>bytes = Cursor::new(Vec::new());
@@ -1242,12 +1224,12 @@
 
         <span class="macro">assert_eq!</span>(
             get_hash(<span class="kw-2">&amp;</span>Name::new(<span class="string">"F.ISI.ARPA"</span>)<span class="question-mark">?</span>),
-            get_hash(<span class="kw-2">&amp;</span>Name::parse(data, <span class="number">3</span>)<span class="question-mark">?</span>)
+            get_hash(<span class="kw-2">&amp;</span>Name::parse(data, <span class="kw-2">&amp;mut </span><span class="number">3</span>)<span class="question-mark">?</span>)
         );
 
         <span class="macro">assert_eq!</span>(
             get_hash(<span class="kw-2">&amp;</span>Name::new(<span class="string">"FOO.F.ISI.ARPA"</span>)<span class="question-mark">?</span>),
-            get_hash(<span class="kw-2">&amp;</span>Name::parse(data, <span class="number">15</span>)<span class="question-mark">?</span>)
+            get_hash(<span class="kw-2">&amp;</span>Name::parse(data, <span class="kw-2">&amp;mut </span><span class="number">15</span>)<span class="question-mark">?</span>)
         );
 
         <span class="prelude-val">Ok</span>(())

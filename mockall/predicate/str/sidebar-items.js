@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["contains","diff","ends_with","is_empty","is_match","starts_with"]};
+window.SIDEBAR_ITEMS = {"fn":["contains","ends_with","is_empty","starts_with"]};
