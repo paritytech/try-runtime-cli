@@ -318,8 +318,8 @@ where
 
         log::info!(
             "Storage root before: 0x{}, after: 0x{}",
-            hex::encode(&root_before),
-            hex::encode(&root_after),
+            hex::encode(root_before),
+            hex::encode(root_after),
         );
 
         if root_before == root_after {
@@ -450,7 +450,7 @@ fn collect_storage_changes_as_hex<Block: BlockT>(
                 HexDisplay::from(key).to_string(),
                 entry.clone().value().map_or_else(
                     || "<deleted>".to_string(),
-                    |v| hex::encode(v),
+                    hex::encode,
                 ),
             )
         })
