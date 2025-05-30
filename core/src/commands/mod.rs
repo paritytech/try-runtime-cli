@@ -17,7 +17,7 @@
 
 use std::{fmt::Debug, str::FromStr, sync::Arc, time::Duration};
 
-use cumulus_primitives_core::ValidationParams;
+use cumulus_primitives_core::{ValidationParams};
 use frame_remote_externalities::{Mode, OfflineConfig, OnlineConfig};
 use polkadot_node_primitives::{BlockData, PoV};
 use polkadot_primitives::HeadData;
@@ -203,7 +203,7 @@ impl Action {
                 assert!(shared.export_proof.is_some(), "export proof should be set");
 
                 // all that happens on the parachain
-                let (para_block, proof) = {
+                let parachain_block_data = {
                     let remote_ext = frame_remote_externalities::Builder::<Block>::default()
                         .mode(Mode::OfflineOrElseOnline(
                             OfflineConfig {
@@ -233,7 +233,7 @@ impl Action {
                         parent_header,
                         provider_variant,
                         frame_try_runtime::TryStateSelect::None,
-                        shared.export_proof.clone(),
+                        shared.export_proof.clone().map(|p| p.join("_rc")),
                     )
                     .await?;
 
