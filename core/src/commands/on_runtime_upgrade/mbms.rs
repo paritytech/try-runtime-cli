@@ -76,19 +76,20 @@ where
         // This actually runs the MBMs block by block:
         loop {
             let _quiet = LogLevelGuard::new(log::LevelFilter::Info);
-            let (next_block_building_info, next_header, mode, _proof) = mine_block::<Block, HostFns>(
-                inner_ext.clone(),
-                &executor,
-                parent_block_building_info,
-                parent_header.clone(),
-                provider_variant,
-                frame_try_runtime::TryStateSelect::None,
-				self.shared.export_proof.clone(),
-            )
-            .await?;
+            let (next_block_building_info, next_block, mode, _proof) =
+                mine_block::<Block, HostFns>(
+                    inner_ext.clone(),
+                    &executor,
+                    parent_block_building_info,
+                    parent_header.clone(),
+                    provider_variant,
+                    frame_try_runtime::TryStateSelect::None,
+                    self.shared.export_proof.clone(),
+                )
+                .await?;
 
             parent_block_building_info = Some(next_block_building_info);
-            parent_header = next_header;
+            parent_header = next_block.header().clone();
             // The first block does not yet have the MBMs enabled.
             let first_is_free = n == 0;
 

@@ -17,14 +17,15 @@
 
 use std::{fmt::Debug, str::FromStr, sync::Arc, time::Duration};
 
-use cumulus_primitives_core::{ValidationParams};
+use cumulus_primitives_core::ValidationParams;
 use frame_remote_externalities::{Mode, OfflineConfig, OnlineConfig};
+use on_runtime_upgrade::analyse_pov;
 use polkadot_node_primitives::{BlockData, PoV};
 use polkadot_primitives::HeadData;
 use sc_executor::sp_wasm_interface::HostFunctions;
 use sp_core::H256;
 use sp_runtime::{
-    traits::{Block as BlockT, NumberFor},
+    traits::{Block as BlockT, HashingFor, Header, NumberFor},
     DeserializeOwned,
 };
 use sp_state_machine::TestExternalities;
@@ -207,11 +208,11 @@ impl Action {
                     let remote_ext = frame_remote_externalities::Builder::<Block>::default()
                         .mode(Mode::OfflineOrElseOnline(
                             OfflineConfig {
-                                state_snapshot: "wah".to_string().into(),
+                                state_snapshot: "wah.snap".to_string().into(),
                             },
                             OnlineConfig {
                                 at: None,
-                                state_snapshot: Some("wah".to_string().into()),
+                                state_snapshot: Some("wah.snap".to_string().into()),
                                 transport: "wss://sys.ibp.network/westmint".to_string().into(),
                                 child_trie: false,
                                 ..Default::default()
@@ -225,20 +226,31 @@ impl Action {
                     let parent_header = remote_ext.header.clone();
                     let provider_variant = ProviderVariant::Smart(Duration::from_millis(6000));
 
+                    log::info!("creating new para block on parent header: number = {:?}, state-root = {:?}", parent_header.number(), parent_header.state_root());
+
                     // build a next block and record its proof
-                    let (_, _, _, proof) = mine_block::<Block, HostFns>(
-                        ext,
+					let pre_root = ext.lock().await.backend.root().clone();
+                    let (_, block, _, proof) = mine_block::<Block, HostFns>(
+                        Arc::clone(&ext),
                         &executor,
                         None,
-                        parent_header,
+                        parent_header.clone(),
                         provider_variant,
                         frame_try_runtime::TryStateSelect::None,
-                        shared.export_proof.clone().map(|p| p.join("_rc")),
+                        shared.export_proof.clone(),
                     )
                     .await?;
 
-                    // TODO put encoded block here.
-                    ((), proof)
+                    let post_root = ext.lock().await.backend.root().clone();
+                    let _ = analyse_pov::<HashingFor<Block>>(proof.clone(), pre_root.clone());
+                    let _ = analyse_pov::<HashingFor<Block>>(proof.clone(), post_root.clone());
+                    let proof = proof
+                        .into_compact_proof::<HashingFor<Block>>(pre_root)
+                        .unwrap();
+                    cumulus_primitives_core::ParachainBlockData::V0 {
+                        block: [block],
+                        proof,
+                    }
                 };
 
                 // all that happens on the relay chain
@@ -253,11 +265,11 @@ impl Action {
                 let ext = frame_remote_externalities::Builder::<Block>::default()
                     .mode(Mode::OfflineOrElseOnline(
                         OfflineConfig {
-                            state_snapshot: "wes".to_string().into(),
+                            state_snapshot: "wes.snap".to_string().into(),
                         },
                         OnlineConfig {
                             at: None,
-                            state_snapshot: Some("wes".to_string().into()),
+                            state_snapshot: Some("wes.snap".to_string().into()),
                             transport: "wss://sys.ibp.network/westend".to_string().into(),
                             child_trie: false,
                             hashed_keys: vec![b":code".to_vec()],

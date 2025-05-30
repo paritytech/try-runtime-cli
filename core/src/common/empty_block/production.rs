@@ -34,7 +34,7 @@ pub async fn mine_block<Block, HostFns: HostFunctions>(
     maybe_export_proof: Option<PathBuf>,
 ) -> Result<(
     (InherentData, Digest),
-    Block::Header,
+    Block,
     Option<ExtrinsicInclusionMode>,
     StorageProof,
 )>
@@ -48,7 +48,7 @@ where
     // We are saving state before we overwrite it while producing new block.
     let mut ext_guard = ext_mutex.lock().await;
     let ext = ext_guard.deref_mut();
-    let backend = ext.as_backend();
+    let backend_backup = ext.as_backend();
     drop(ext_guard);
 
     log::info!(
@@ -76,8 +76,11 @@ where
     let mut ext_guard = ext_mutex.lock().await;
     let ext = ext_guard.deref_mut();
 
+	log::info!("root after producing block: {:?}", ext.backend.root());
+
     // And now we restore previous state.
-    ext.backend = backend;
+    ext.backend = backend_backup;
+	log::info!("root after restoring: {:?}", ext.backend.root());
 
     pre_apply_inherents::<Block>(ext);
     let state_root_check = true;
@@ -110,14 +113,14 @@ where
         .await?
     };
 
-    log::info!("Executed the new block");
+	log::info!("root after executing: {:?}", ext.backend.root());
 
-    Ok((
-        new_block_building_info,
-        next_block.header().clone(),
-        mode,
-        proof,
-    ))
+    log::info!("Executed the new block. Post header: number = {:?}, state root = {:?}",
+		next_block.header().number(),
+		next_block.header().state_root()
+	);
+
+    Ok((new_block_building_info, next_block, mode, proof))
 }
 
 /// Produces next block containing only inherents.

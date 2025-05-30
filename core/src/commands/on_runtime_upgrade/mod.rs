@@ -341,7 +341,7 @@ where
     }
 }
 
-enum WeightSafety {
+pub(crate) enum WeightSafety {
     ProbablySafe,
     PotentiallyUnsafe,
 }
@@ -353,7 +353,7 @@ const DEFAULT_MAX_POV_SIZE: ByteSize = ByteSize::mb(5);
 const DEFAULT_WARNING_THRESHOLD: f32 = 0.8;
 
 /// Analyse the given ref_times and return if there is a potential weight safety issue.
-fn analyse_pov<H>(proof: StorageProof, pre_root: H::Out) -> WeightSafety
+pub(crate) fn analyse_pov<H>(proof: StorageProof, pre_root: H::Out) -> WeightSafety
 where
     H: Hasher,
 {
