@@ -15,16 +15,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::{fmt::Debug, str::FromStr};
+use std::{fmt::Debug, str::FromStr, sync::Arc, time::Duration};
 
+use cumulus_primitives_core::ValidationParams;
+use frame_remote_externalities::{Mode, OfflineConfig, OnlineConfig};
+use polkadot_node_primitives::{BlockData, PoV};
+use polkadot_primitives::HeadData;
 use sc_executor::sp_wasm_interface::HostFunctions;
 use sp_core::H256;
 use sp_runtime::{
     traits::{Block as BlockT, NumberFor},
     DeserializeOwned,
 };
+use sp_state_machine::TestExternalities;
+use tokio::sync::Mutex;
 
-use crate::common::shared_parameters::SharedParams;
+use crate::common::{
+    self,
+    empty_block::{inherents::providers::ProviderVariant, production::mine_block},
+    shared_parameters::{Runtime, SharedParams},
+};
 
 pub mod create_snapshot;
 pub mod execute_block;
@@ -134,6 +144,9 @@ pub enum Action {
     ///
     /// See [`TryRuntime`] and [`fast_forward::Command`] for more information.
     FastForward(fast_forward::Command),
+
+    AuthorAndImportBlock,
+    AuthorAndValidateParaBlock,
 }
 
 impl Action {
@@ -172,6 +185,90 @@ impl Action {
             }
             Action::FastForward(cmd) => {
                 fast_forward::run::<Block, HostFns>(shared.clone(), cmd.clone()).await
+            }
+            Action::AuthorAndImportBlock => {
+                // to implement https://github.com/paritytech-secops/bugbounty_reports/issues/10#issuecomment-2903860788
+                // author a block using a wasm, import a block, and then assert that it yields the
+                // same state root + outcome.
+                todo!();
+            }
+            Action::AuthorAndValidateParaBlock => {
+                // RUST_LOG=runtime=debug,try_runtime_core=trace,remote-ext=info cargo rr --
+                // --runtime existing --export-proof proof.json author-and-validate-para-block
+                assert_eq!(
+                    shared.runtime,
+                    Runtime::Existing,
+                    "runtime should be existing so we get it from the live chain"
+                );
+                assert!(shared.export_proof.is_some(), "export proof should be set");
+
+                // all that happens on the parachain
+                let (para_block, proof) = {
+                    let remote_ext = frame_remote_externalities::Builder::<Block>::default()
+                        .mode(Mode::OfflineOrElseOnline(
+                            OfflineConfig {
+                                state_snapshot: "wah".to_string().into(),
+                            },
+                            OnlineConfig {
+                                at: None,
+                                state_snapshot: Some("wah".to_string().into()),
+                                transport: "wss://sys.ibp.network/westmint".to_string().into(),
+                                child_trie: false,
+                                ..Default::default()
+                            },
+                        ))
+                        .build()
+                        .await?;
+
+                    let executor = common::state::build_executor::<HostFns>(&shared);
+                    let ext = Arc::new(Mutex::new(remote_ext.inner_ext));
+                    let parent_header = remote_ext.header.clone();
+                    let provider_variant = ProviderVariant::Smart(Duration::from_millis(6000));
+
+                    // build a next block and record its proof
+                    let (_, _, _, proof) = mine_block::<Block, HostFns>(
+                        ext,
+                        &executor,
+                        None,
+                        parent_header,
+                        provider_variant,
+                        frame_try_runtime::TryStateSelect::None,
+                        shared.export_proof.clone(),
+                    )
+                    .await?;
+
+                    // TODO put encoded block here.
+                    ((), proof)
+                };
+
+                // all that happens on the relay chain
+                let vp = ValidationParams {
+                    block_data: BlockData(Default::default()),
+                    relay_parent_number: 1000,
+                    relay_parent_storage_root: H256::default(),
+                    parent_head: HeadData(Default::default()),
+                };
+
+                // relay state -- it would just have the code, so we can pass it to our executor
+                let ext = frame_remote_externalities::Builder::<Block>::default()
+                    .mode(Mode::OfflineOrElseOnline(
+                        OfflineConfig {
+                            state_snapshot: "wes".to_string().into(),
+                        },
+                        OnlineConfig {
+                            at: None,
+                            state_snapshot: Some("wes".to_string().into()),
+                            transport: "wss://sys.ibp.network/westend".to_string().into(),
+                            child_trie: false,
+                            hashed_keys: vec![b":code".to_vec()],
+                            ..Default::default()
+                        },
+                    ))
+                    .build()
+                    .await?;
+                let executor = common::state::build_executor::<HostFns>(&shared);
+
+                Ok(())
             }
         }
     }

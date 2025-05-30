@@ -76,13 +76,14 @@ where
         // This actually runs the MBMs block by block:
         loop {
             let _quiet = LogLevelGuard::new(log::LevelFilter::Info);
-            let (next_block_building_info, next_header, mode) = mine_block::<Block, HostFns>(
+            let (next_block_building_info, next_header, mode, _proof) = mine_block::<Block, HostFns>(
                 inner_ext.clone(),
                 &executor,
                 parent_block_building_info,
                 parent_header.clone(),
                 provider_variant,
                 frame_try_runtime::TryStateSelect::None,
+				self.shared.export_proof.clone(),
             )
             .await?;
 

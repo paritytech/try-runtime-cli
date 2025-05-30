@@ -1,8 +1,9 @@
-use std::{ops::DerefMut, str::FromStr, sync::Arc};
+use std::{ops::DerefMut, path::PathBuf, str::FromStr, sync::Arc};
 
 use parity_scale_codec::{Decode, Encode};
 use sc_cli::Result;
 use sc_executor::{HostFunctions, WasmExecutor};
+use sp_api::StorageProof;
 use sp_core::H256;
 use sp_inherents::InherentData;
 use sp_runtime::{
@@ -16,8 +17,9 @@ use tokio::sync::Mutex;
 use super::inherents::{pre_apply::pre_apply_inherents, providers::InherentProvider};
 use crate::{
     common::{
-        empty_block::inherents::providers::ProviderVariant, misc_logging::LogLevelGuard,
-        state::state_machine_call,
+        empty_block::inherents::providers::ProviderVariant,
+        misc_logging::LogLevelGuard,
+        state::{state_machine_call, state_machine_call_with_proof},
     },
     full_extensions,
 };
@@ -29,10 +31,12 @@ pub async fn mine_block<Block, HostFns: HostFunctions>(
     parent_header: Block::Header,
     provider_variant: ProviderVariant,
     try_state: frame_try_runtime::TryStateSelect,
+    maybe_export_proof: Option<PathBuf>,
 ) -> Result<(
     (InherentData, Digest),
     Block::Header,
     Option<ExtrinsicInclusionMode>,
+    StorageProof,
 )>
 where
     Block: BlockT<Hash = H256> + DeserializeOwned,
@@ -85,17 +89,35 @@ where
         try_state.clone(),
     )
         .encode();
-    //call::<(), Block, _>(ext, executor, "TryRuntime_execute_block", &payload).await?;
 
-    if try_state == frame_try_runtime::TryStateSelect::None {
-        call::<(), Block, _>(ext, executor, "Core_execute_block", &next_block.encode()).await?;
+    let (_, proof) = if try_state == frame_try_runtime::TryStateSelect::None {
+        call::<(), Block, _>(
+            ext,
+            executor,
+            "Core_execute_block",
+            &next_block.encode(),
+            maybe_export_proof,
+        )
+        .await?
     } else {
-        call::<(), Block, _>(ext, executor, "TryRuntime_execute_block", &payload).await?;
-    }
+        call::<(), Block, _>(
+            ext,
+            executor,
+            "TryRuntime_execute_block",
+            &payload,
+            maybe_export_proof,
+        )
+        .await?
+    };
 
     log::info!("Executed the new block");
 
-    Ok((new_block_building_info, next_block.header().clone(), mode))
+    Ok((
+        new_block_building_info,
+        next_block.header().clone(),
+        mode,
+        proof,
+    ))
 }
 
 /// Produces next block containing only inherents.
@@ -149,16 +171,24 @@ where
     let ext = ext_guard.deref_mut();
     // Only RA API version 5 supports returning a mode, so need to check.
     let mode = if core_version::<Block, HostFns>(ext, executor)? >= 5 {
-        let mode = call::<ExtrinsicInclusionMode, Block, _>(
+        let (mode, _proof) = call::<ExtrinsicInclusionMode, Block, _>(
             ext,
             executor,
             "Core_initialize_block",
             &header.encode(),
+            None,
         )
         .await?;
         Some(mode)
     } else {
-        call::<(), Block, _>(ext, executor, "Core_initialize_block", &header.encode()).await?;
+        let _ = call::<(), Block, _>(
+            ext,
+            executor,
+            "Core_initialize_block",
+            &header.encode(),
+            None,
+        )
+        .await?;
         None
     };
 
@@ -170,7 +200,14 @@ where
     )?;
 
     for xt in &extrinsics {
-        call::<(), Block, _>(ext, executor, "BlockBuilder_apply_extrinsic", &xt.encode()).await?;
+        let _ = call::<(), Block, _>(
+            ext,
+            executor,
+            "BlockBuilder_apply_extrinsic",
+            &xt.encode(),
+            None,
+        )
+        .await?;
     }
 
     let header = dry_call::<Block::Header, Block, _>(
@@ -180,7 +217,14 @@ where
         &[0u8; 0],
     )?;
 
-    call::<(), Block, _>(ext, executor, "BlockBuilder_finalize_block", &[0u8; 0]).await?;
+    let _ = call::<(), Block, _>(
+        ext,
+        executor,
+        "BlockBuilder_finalize_block",
+        &[0u8; 0],
+        None,
+    )
+    .await?;
     ext.commit_all().unwrap();
     drop(ext_guard);
 
@@ -197,24 +241,35 @@ async fn call<T: Decode, Block: BlockT, HostFns: HostFunctions>(
     executor: &WasmExecutor<HostFns>,
     method: &'static str,
     data: &[u8],
-) -> Result<T> {
-    let (mut changes, result) = state_machine_call::<Block, HostFns>(
+    maybe_export_proof: Option<PathBuf>,
+) -> Result<(T, StorageProof)> {
+    log::debug!(
+        "calling method: {}, maybe_export_proof: {:?}",
+        method,
+        maybe_export_proof
+    );
+    let mut overlayed_changes = Default::default();
+    let (proof, result) = state_machine_call_with_proof::<Block, HostFns>(
         externalities,
+        &mut overlayed_changes,
         executor,
         method,
         data,
         full_extensions(executor.clone()),
+        maybe_export_proof,
     )?;
 
-    let storage_changes =
-        changes.drain_storage_changes(&externalities.backend, externalities.state_version)?;
+    let storage_changes = overlayed_changes
+        .drain_storage_changes(&externalities.backend, externalities.state_version)?;
 
     externalities.backend.apply_transaction(
         storage_changes.transaction_storage_root,
         storage_changes.transaction,
     );
 
-    T::decode(&mut &*result).map_err(|e| sc_cli::Error::Input(format!("{:?}", e)))
+    T::decode(&mut &*result)
+        .map(|r| (r, proof))
+        .map_err(|e| sc_cli::Error::Input(format!("{:?}", e)))
 }
 
 pub fn core_version<Block: BlockT, HostFns: HostFunctions>(

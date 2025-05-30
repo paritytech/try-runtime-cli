@@ -83,7 +83,7 @@ pub struct SharedParams {
     pub overwrite_state_version: Option<StateVersion>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub enum Runtime {
     /// Use the given path to the wasm binary file.
     ///

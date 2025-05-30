@@ -106,13 +106,14 @@ where
     let provider_variant = ProviderVariant::Smart(Duration::from_millis(command.blocktime));
 
     for _ in 1..=command.n_blocks {
-        let (next_block_building_info, next_header, _) = mine_block::<Block, HostFns>(
+        let (next_block_building_info, next_header, _, _proof) = mine_block::<Block, HostFns>(
             inner_ext.clone(),
             &executor,
             parent_block_building_info,
             parent_header.clone(),
             provider_variant,
             command.try_state.clone(),
+			shared.export_proof.clone(),
         )
         .await?;
 
