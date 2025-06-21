@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { os: ubuntu-latest, target: x86_64-unknown-linux-musl }
+          - { os: ubicloud-standard-2, target: x86_64-unknown-linux-musl }
           - { os: macos-latest, target: x86_64-apple-darwin }
 
     runs-on: ${{ matrix.platform.os }}
@@ -37,11 +37,11 @@ jobs:
         run: rustup target add x86_64-apple-darwin
 
       - name: Add musl target
-        if: matrix.platform.os == 'ubuntu-latest'
+        if: matrix.platform.os == 'ubicloud-standard-2'
         run: rustup target add x86_64-unknown-linux-musl
 
       - name: Install deps for musl build
-        if: matrix.platform.os == 'ubuntu-latest'
+        if: matrix.platform.os == 'ubicloud-standard-2'
         run: |
           sudo apt-get update
           sudo apt-get install -y musl-tools clang build-essential curl llvm-dev libclang-dev linux-headers-generic libsnappy-dev liblz4-dev libzstd-dev libgflags-dev zlib1g-dev libbz2-dev

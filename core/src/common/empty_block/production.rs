@@ -65,8 +65,8 @@ where
     drop(muffle);
 
     log::info!(
-        "Produced a new block ({})",
-        array_bytes::bytes2hex("0x", next_block.header().hash())
+        "Produced a new block (0x{})",
+        hex::encode(next_block.header().hash())
     );
 
     let mut ext_guard = ext_mutex.lock().await;
