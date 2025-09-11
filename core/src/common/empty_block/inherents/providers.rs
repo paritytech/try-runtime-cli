@@ -38,6 +38,34 @@ use tokio::sync::Mutex;
 use crate::common::empty_block::inherents::custom_idps;
 
 const RELAYCHAIN_BLOCKTIME_MS: u64 = 6000u64;
+
+// TODO(khssnv): adding the definition instead of a dependency because of a transitive dependency issue.
+//
+// ```console
+// $ cargo build
+//     Blocking waiting for file lock on package cache
+//     Updating git repository `https://github.com/QuantumFusion-network/qf-solochain.git`
+//     Updating git repository `https://github.com/paritytech/polkadot-sdk.git`
+//     Updating crates.io index
+// error: failed to select a version for `scale-info`.
+//     ... required by package `sp-api v36.0.1 (https://github.com/paritytech/polkadot-sdk.git?tag=polkadot-stable2503-6#598feddb)`
+//     ... which satisfies git dependency `sp-api` of package `qfp-consensus-spin v0.1.0 (https://github.com/QuantumFusion-network/qf-solochain.git#6b1b28b8)`
+//     ... which satisfies git dependency `qfp-consensus-spin` of package `try-runtime-core v0.8.0 (/home/khassanov/Workspace/github.com/khssnv/try-runtime-cli/core)`
+//     ... which satisfies path dependency `try-runtime-core` (locked to 0.8.0) of package `try-runtime-cli v0.8.0 (/home/khassanov/Workspace/github.com/khssnv/try-runtime-cli/cli)`
+// versions that meet the requirements `^2.11.6` are: 2.11.6
+//
+// all possible versions conflict with previously selected packages.
+//
+//   previously selected package `scale-info v2.11.3`
+//     ... which satisfies dependency `scale-info = "^2.11.1"` (locked to 2.11.3) of package `frame-support v28.0.0 (https://github.com/paritytech/polkadot-sdk?rev=8279d1046cca51a317dec15df5a9b29240545163#8279d104)`
+//     ... which satisfies git dependency `frame-support` (locked to 28.0.0) of package `try-runtime-cli v0.8.0 (/home/khassanov/Workspace/github.com/khssnv/try-runtime-cli/cli)`
+//
+// failed to select a version for `scale-info` which could resolve this conflict
+// ```
+//
+// See also:
+//     - Original definition to use as a dependency: https://github.com/QuantumFusion-network/qf-solochain/blob/6b1b28b81832190df31cca914f72cc7ee7585753/primitives/consensus-spin/src/lib.rs#L57.
+//     - Upstream issue on a lack of support for custom consensus engine IDs: [No digest item for a custom consensus engine #116](https://github.com/paritytech/try-runtime-cli/issues/116).
 const SPIN_ENGINE_ID: ConsensusEngineId = *b"spin";
 
 /// Trait for providing the inherent data and digest items for block construction.
