@@ -28,7 +28,7 @@ use sp_consensus_babe::{
 use sp_inherents::InherentData;
 use sp_runtime::{
     traits::{Block as BlockT, HashingFor},
-    Digest, DigestItem,
+    ConsensusEngineId, Digest, DigestItem,
 };
 use sp_state_machine::TestExternalities;
 use sp_std::prelude::*;
@@ -38,6 +38,7 @@ use tokio::sync::Mutex;
 use crate::common::empty_block::inherents::custom_idps;
 
 const RELAYCHAIN_BLOCKTIME_MS: u64 = 6000u64;
+const SPIN_ENGINE_ID: ConsensusEngineId = *b"spin";
 
 /// Trait for providing the inherent data and digest items for block construction.
 pub trait InherentProvider<B: BlockT> {
@@ -135,6 +136,7 @@ impl<B: BlockT> InherentProvider<B> for SmartInherentProvider {
                 .encode(),
             ),
             DigestItem::PreRuntime(AURA_ENGINE_ID, slot.encode()),
+            DigestItem::PreRuntime(SPIN_ENGINE_ID, slot.encode()),
         ];
 
         Ok((
