@@ -20,6 +20,7 @@
 
 use std::{ops::DerefMut, sync::Arc};
 
+use cumulus_primitives_core::relay_chain::UpgradeGoAhead;
 use parity_scale_codec::{Decode, Encode};
 use polkadot_primitives::{BlockNumber, HeadData};
 use sp_consensus_babe::SlotDuration;
@@ -119,6 +120,7 @@ impl<B: BlockT> sp_inherents::InherentDataProvider for InherentDataProvider<B> {
             raw_horizontal_messages: Default::default(),
             additional_key_values: Some(additional_key_values),
             para_id: para_id.into(),
+            upgrade_go_ahead: Some(UpgradeGoAhead::GoAhead),
         }
         .provide_inherent_data(inherent_data)
         .await
