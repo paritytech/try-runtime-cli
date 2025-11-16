@@ -1,1 +1,0 @@
-searchState.loadedDescShard("base_x", 0, "base_x\nDecode an input vector using the given alphabet.\nEncode an input vector using the given alphabet.\nReturns the argument unchanged.\nCalls <code>U::from(self)</code>.")

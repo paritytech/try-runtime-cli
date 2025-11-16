@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"macro":["pin"],"struct":["Pin"]};
+window.SIDEBAR_ITEMS = {"macro":["pin"],"struct":["Pin","UnsafePinned"],"trait":["PinCoerceUnsized"]};

@@ -1,1 +1,0 @@
-searchState.loadedDescShard("similar_asserts", 0, "<code>similar-asserts</code> is a crate that enhances the default …\nA console printable diff.\nAsserts that two expressions are equal to each other …\nReturns the argument unchanged.\nCreates a diff from two strings.\nCalls <code>U::from(self)</code>.")

@@ -1,1 +1,0 @@
-searchState.loadedDescShard("impl_trait_for_tuples", 0, "  \nSee crate documentation.")

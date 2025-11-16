@@ -1,1 +1,0 @@
-searchState.loadedDescShard("wasmtime_jit_icache_coherence", 0, "This crate provides utilities for instruction cache …\nFlushes the instruction cache for a region of memory.\nFlushes instructions in the processor pipeline")

@@ -1,1 +1,0 @@
-searchState.loadedDescShard("dirs_sys", 0, "")

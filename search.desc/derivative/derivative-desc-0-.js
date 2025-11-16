@@ -1,1 +1,0 @@
-searchState.loadedDescShard("derivative", 0, "")

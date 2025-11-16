@@ -1,1 +1,0 @@
-searchState.loadedDescShard("option_ext", 0, "Extension trait providing additional methods for <code>Option</code>.\nReturns <code>true</code> if the option is a <code>Some</code> value containing the …\nReturns the result from applying the function to the …\nReturns the result from applying the function to the …")

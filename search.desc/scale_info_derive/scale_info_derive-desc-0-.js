@@ -1,1 +1,0 @@
-searchState.loadedDescShard("scale_info_derive", 0, "")

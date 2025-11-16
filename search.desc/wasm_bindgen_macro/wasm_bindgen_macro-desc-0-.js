@@ -1,1 +1,0 @@
-searchState.loadedDescShard("wasm_bindgen_macro", 0, "This macro takes a JS module as input and returns a URL …")

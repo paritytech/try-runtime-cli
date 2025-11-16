@@ -1,1 +1,0 @@
-searchState.loadedDescShard("data_encoding_macro_internal", 0, "Internal library for data-encoding-macro")

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["CStr","CString","FromBytesUntilNulError","FromBytesWithNulError","FromVecWithNulError","IntoStringError","NulError"]};
+window.SIDEBAR_ITEMS = {"enum":["FromBytesWithNulError"],"struct":["CStr","CString","FromBytesUntilNulError","FromVecWithNulError","IntoStringError","NulError"]};

@@ -1,1 +1,0 @@
-searchState.loadedDescShard("wasm_bindgen_shared", 0, "")

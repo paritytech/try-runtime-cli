@@ -1,1 +1,0 @@
-searchState.loadedDescShard("hmac_drbg", 0, "Returns the argument unchanged.\nCalls <code>U::from(self)</code>.")

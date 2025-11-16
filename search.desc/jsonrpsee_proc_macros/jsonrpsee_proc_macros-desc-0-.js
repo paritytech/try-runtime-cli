@@ -1,1 +1,0 @@
-searchState.loadedDescShard("jsonrpsee_proc_macros", 0, "jsonrpsee-proc-macros\nMain RPC macro.")

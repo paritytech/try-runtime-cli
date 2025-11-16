@@ -1,3 +1,9 @@
-(function() {var implementors = {
-"jsonrpsee_client_transport":[["impl&lt;T&gt; <a class=\"trait\" href=\"jsonrpsee_core/client/trait.TransportSenderT.html\" title=\"trait jsonrpsee_core::client::TransportSenderT\">TransportSenderT</a> for <a class=\"struct\" href=\"jsonrpsee_client_transport/ws/struct.Sender.html\" title=\"struct jsonrpsee_client_transport::ws::Sender\">Sender</a>&lt;T&gt;<div class=\"where\">where\n    T: <a class=\"trait\" href=\"futures_io/if_std/trait.AsyncRead.html\" title=\"trait futures_io::if_std::AsyncRead\">AsyncRead</a> + <a class=\"trait\" href=\"futures_io/if_std/trait.AsyncWrite.html\" title=\"trait futures_io::if_std::AsyncWrite\">AsyncWrite</a> + <a class=\"trait\" href=\"https://doc.rust-lang.org/1.81.0/core/marker/trait.Unpin.html\" title=\"trait core::marker::Unpin\">Unpin</a> + <a class=\"trait\" href=\"jsonrpsee_core/client/trait.MaybeSend.html\" title=\"trait jsonrpsee_core::client::MaybeSend\">MaybeSend</a> + 'static,</div>"]]
-};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
+(function() {
+    var implementors = Object.fromEntries([["jsonrpsee_client_transport",[["impl&lt;T&gt; <a class=\"trait\" href=\"jsonrpsee_core/client/trait.TransportSenderT.html\" title=\"trait jsonrpsee_core::client::TransportSenderT\">TransportSenderT</a> for <a class=\"struct\" href=\"jsonrpsee_client_transport/ws/struct.Sender.html\" title=\"struct jsonrpsee_client_transport::ws::Sender\">Sender</a>&lt;T&gt;<div class=\"where\">where\n    T: <a class=\"trait\" href=\"futures_io/if_std/trait.AsyncRead.html\" title=\"trait futures_io::if_std::AsyncRead\">AsyncRead</a> + <a class=\"trait\" href=\"futures_io/if_std/trait.AsyncWrite.html\" title=\"trait futures_io::if_std::AsyncWrite\">AsyncWrite</a> + <a class=\"trait\" href=\"https://doc.rust-lang.org/1.91.1/core/marker/trait.Unpin.html\" title=\"trait core::marker::Unpin\">Unpin</a> + <a class=\"trait\" href=\"jsonrpsee_core/client/trait.MaybeSend.html\" title=\"trait jsonrpsee_core::client::MaybeSend\">MaybeSend</a> + 'static,</div>"]]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":57,"fragment_lengths":[949]}

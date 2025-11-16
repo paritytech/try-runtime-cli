@@ -1,4 +1,9 @@
-(function() {var implementors = {
-"frame_support":[],
-"frame_system":[["impl&lt;T: <a class=\"trait\" href=\"frame_system/pallet/trait.Config.html\" title=\"trait frame_system::pallet::Config\">Config</a>&gt; <a class=\"trait\" href=\"frame_support/traits/hooks/trait.OnGenesis.html\" title=\"trait frame_support::traits::hooks::OnGenesis\">OnGenesis</a> for <a class=\"struct\" href=\"frame_system/pallet/struct.Pallet.html\" title=\"struct frame_system::pallet::Pallet\">Pallet</a>&lt;T&gt;"]]
-};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
+(function() {
+    var implementors = Object.fromEntries([["frame_support",[]],["frame_system",[["impl&lt;T: <a class=\"trait\" href=\"frame_system/pallet/trait.Config.html\" title=\"trait frame_system::pallet::Config\">Config</a>&gt; <a class=\"trait\" href=\"frame_support/traits/hooks/trait.OnGenesis.html\" title=\"trait frame_support::traits::hooks::OnGenesis\">OnGenesis</a> for <a class=\"struct\" href=\"frame_system/pallet/struct.Pallet.html\" title=\"struct frame_system::pallet::Pallet\">Pallet</a>&lt;T&gt;"]]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":57,"fragment_lengths":[20,444]}
