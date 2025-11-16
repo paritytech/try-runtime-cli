@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hickory-proto-0.24.1/src/rr/record_data.rs`."><title>record_data.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="hickory_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">hickory_proto/rr/</div>record_data.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2015-2023 Benjamin Fry &lt;benjaminfry@me.com&gt;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hickory-proto-0.24.4/src/rr/record_data.rs`."><title>record_data.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="hickory_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">hickory_proto/rr/</div>record_data.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2015-2023 Benjamin Fry &lt;benjaminfry@me.com&gt;
 <a href=#2 id=2 data-nosnippet>2</a>//
 <a href=#3 id=3 data-nosnippet>3</a>// Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
 <a href=#4 id=4 data-nosnippet>4</a>// https://apache.org/licenses/LICENSE-2.0&gt; or the MIT license &lt;LICENSE-MIT or
@@ -132,7 +132,7 @@
 <a href=#132 id=132 data-nosnippet>132</a>    /// +----------------+----------------+.....+----------------+
 <a href=#133 id=133 data-nosnippet>133</a>    /// | Value byte 0   | Value byte 1   |.....| Value byte m-1 |
 <a href=#134 id=134 data-nosnippet>134</a>    /// +----------------+----------------+.....+----------------+
-<a href=#135 id=135 data-nosnippet>135</a>
+<a href=#135 id=135 data-nosnippet>135</a>    ///
 <a href=#136 id=136 data-nosnippet>136</a>    /// Where n is the length specified in the Tag length field and m is the
 <a href=#137 id=137 data-nosnippet>137</a>    /// remaining octets in the Value field (m = d - n - 2) where d is the
 <a href=#138 id=138 data-nosnippet>138</a>    /// length of the RDATA section.
@@ -1115,11 +1115,11 @@
 <a href=#1115 id=1115 data-nosnippet>1115</a>                RData::SOA(SOA::new(
 <a href=#1116 id=1116 data-nosnippet>1116</a>                    Name::from_str(<span class="string">"www.example.com"</span>).unwrap(),
 <a href=#1117 id=1117 data-nosnippet>1117</a>                    Name::from_str(<span class="string">"xxx.example.com"</span>).unwrap(),
-<a href=#1118 id=1118 data-nosnippet>1118</a>                    u32::max_value(),
+<a href=#1118 id=1118 data-nosnippet>1118</a>                    u32::MAX,
 <a href=#1119 id=1119 data-nosnippet>1119</a>                    -<span class="number">1</span>,
 <a href=#1120 id=1120 data-nosnippet>1120</a>                    -<span class="number">1</span>,
 <a href=#1121 id=1121 data-nosnippet>1121</a>                    -<span class="number">1</span>,
-<a href=#1122 id=1122 data-nosnippet>1122</a>                    u32::max_value(),
+<a href=#1122 id=1122 data-nosnippet>1122</a>                    u32::MAX,
 <a href=#1123 id=1123 data-nosnippet>1123</a>                )),
 <a href=#1124 id=1124 data-nosnippet>1124</a>                <span class="macro">vec!</span>[
 <a href=#1125 id=1125 data-nosnippet>1125</a>                    <span class="number">3</span>, <span class="string">b'w'</span>, <span class="string">b'w'</span>, <span class="string">b'w'</span>, <span class="number">7</span>, <span class="string">b'e'</span>, <span class="string">b'x'</span>, <span class="string">b'a'</span>, <span class="string">b'm'</span>, <span class="string">b'p'</span>, <span class="string">b'l'</span>, <span class="string">b'e'</span>, <span class="number">3</span>, <span class="string">b'c'</span>,
@@ -1182,11 +1182,11 @@
 <a href=#1182 id=1182 data-nosnippet>1182</a>            RData::SOA(SOA::new(
 <a href=#1183 id=1183 data-nosnippet>1183</a>                Name::from_str(<span class="string">"www.example.com"</span>).unwrap(),
 <a href=#1184 id=1184 data-nosnippet>1184</a>                Name::from_str(<span class="string">"xxx.example.com"</span>).unwrap(),
-<a href=#1185 id=1185 data-nosnippet>1185</a>                u32::max_value(),
+<a href=#1185 id=1185 data-nosnippet>1185</a>                u32::MAX,
 <a href=#1186 id=1186 data-nosnippet>1186</a>                -<span class="number">1</span>,
 <a href=#1187 id=1187 data-nosnippet>1187</a>                -<span class="number">1</span>,
 <a href=#1188 id=1188 data-nosnippet>1188</a>                -<span class="number">1</span>,
-<a href=#1189 id=1189 data-nosnippet>1189</a>                u32::max_value(),
+<a href=#1189 id=1189 data-nosnippet>1189</a>                u32::MAX,
 <a href=#1190 id=1190 data-nosnippet>1190</a>            )),
 <a href=#1191 id=1191 data-nosnippet>1191</a>            RData::TXT(TXT::new(<span class="macro">vec!</span>[
 <a href=#1192 id=1192 data-nosnippet>1192</a>                <span class="string">"abcdef"</span>.to_string(),
@@ -1203,11 +1203,11 @@
 <a href=#1203 id=1203 data-nosnippet>1203</a>            RData::SOA(SOA::new(
 <a href=#1204 id=1204 data-nosnippet>1204</a>                Name::from_str(<span class="string">"www.example.com"</span>).unwrap(),
 <a href=#1205 id=1205 data-nosnippet>1205</a>                Name::from_str(<span class="string">"xxx.example.com"</span>).unwrap(),
-<a href=#1206 id=1206 data-nosnippet>1206</a>                u32::max_value(),
+<a href=#1206 id=1206 data-nosnippet>1206</a>                u32::MAX,
 <a href=#1207 id=1207 data-nosnippet>1207</a>                -<span class="number">1</span>,
 <a href=#1208 id=1208 data-nosnippet>1208</a>                -<span class="number">1</span>,
 <a href=#1209 id=1209 data-nosnippet>1209</a>                -<span class="number">1</span>,
-<a href=#1210 id=1210 data-nosnippet>1210</a>                u32::max_value(),
+<a href=#1210 id=1210 data-nosnippet>1210</a>                u32::MAX,
 <a href=#1211 id=1211 data-nosnippet>1211</a>            )),
 <a href=#1212 id=1212 data-nosnippet>1212</a>            RData::TXT(TXT::new(<span class="macro">vec!</span>[
 <a href=#1213 id=1213 data-nosnippet>1213</a>                <span class="string">"abcdef"</span>.to_string(),
