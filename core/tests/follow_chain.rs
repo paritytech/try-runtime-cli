@@ -35,6 +35,9 @@ async fn follow_chain_works() {
             "--no-hardware-benchmarks",
             "--dev",
             format!("--rpc-port={}", port).as_str(),
+            "--no-telemetry",
+            "--no-prometheus",
+            "--rpc-max-response-size=1000", // Allow large RPC responses for snapshot creation
         ]) {
             Ok(_) => {}
             Err(e) => {
@@ -43,7 +46,7 @@ async fn follow_chain_works() {
         }
     });
     // Wait some time to ensure the node is warmed up.
-    std::thread::sleep(Duration::from_secs(90));
+    std::thread::sleep(Duration::from_secs(180));
 
     common::run_with_timeout(Duration::from_secs(60), async move {
         fn start_follow(ws_url: &str) -> tokio::process::Child {
