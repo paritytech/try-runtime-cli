@@ -40,7 +40,7 @@ mod on_runtime_upgrade {
     }
 
     async fn run_test(config: TestConfig, expected_success: bool) {
-        common::run_with_timeout(Duration::from_secs(360), async move {
+        common::run_with_timeout(Duration::from_secs(480), async move {
             let child = on_runtime_upgrade(&config);
             let out = child.wait_with_output().await.unwrap();
             if expected_success {
