@@ -33,7 +33,11 @@ async fn execute_block_works() {
         match common::start_node_inline(vec![
             "--no-hardware-benchmarks",
             "--dev",
+            "--tmp",
             format!("--rpc-port={}", port).as_str(),
+            "--no-telemetry",
+            "--no-prometheus",
+            "--rpc-max-response-size=1000", // Allow large RPC responses
         ]) {
             Ok(_) => {}
             Err(e) => {
@@ -42,7 +46,7 @@ async fn execute_block_works() {
         }
     });
     // Wait some time to ensure the node is warmed up.
-    std::thread::sleep(Duration::from_secs(90));
+    std::thread::sleep(Duration::from_secs(180));
 
     // Test passing --at
     common::run_with_timeout(Duration::from_secs(60), async move {
