@@ -42,7 +42,11 @@ async fn create_snapshot_works() {
         match common::start_node_inline(vec![
             "--no-hardware-benchmarks",
             "--dev",
+            "--tmp",
             format!("--rpc-port={}", port).as_str(),
+            "--no-telemetry",
+            "--no-prometheus",
+            "--rpc-max-response-size=1000", // Allow large RPC responses for snapshot creation
         ]) {
             Ok(_) => {}
             Err(e) => {
@@ -51,7 +55,7 @@ async fn create_snapshot_works() {
         }
     });
     // Wait some time to ensure the node is warmed up.
-    std::thread::sleep(Duration::from_secs(90));
+    std::thread::sleep(Duration::from_secs(180));
 
     // Run the command with tokio
     let temp_dir = tempfile::Builder::new()
