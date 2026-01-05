@@ -58,6 +58,17 @@ pub fn get_last_relay_chain_block_number<B: BlockT>(
         })
 }
 
+/// Check if `PendingValidationCode` is set in storage.
+pub fn has_pending_validation_code<B: BlockT>(ext: &mut TestExternalities<HashingFor<B>>) -> bool {
+    let pending_validation_code_key = [
+        twox_128(b"ParachainSystem"),
+        twox_128(b"PendingValidationCode"),
+    ]
+    .concat();
+
+    ext.execute_with(|| sp_io::storage::exists(&pending_validation_code_key))
+}
+
 /// Provides parachain-system pallet inherents.
 pub struct InherentDataProvider<B: BlockT> {
     pub timestamp: sp_timestamp::Timestamp,
@@ -108,6 +119,16 @@ impl<B: BlockT> sp_inherents::InherentDataProvider for InherentDataProvider<B> {
             ),
         ];
 
+        // Check if `PendingValidationCode` exists in storage before setting `GoAhead`.
+        // The parachain-system pallet panics if `GoAhead` is provided without a pending validation code.
+        // See: https://github.com/paritytech/polkadot-sdk/blob/master/cumulus/pallets/parachain-system/src/lib.rs#L667
+        let has_pending = has_pending_validation_code::<B>(ext);
+        let upgrade_go_ahead = if has_pending {
+            Some(UpgradeGoAhead::GoAhead)
+        } else {
+            None
+        };
+
         cumulus_client_parachain_inherent::MockValidationDataInherentDataProvider {
             current_para_block: Default::default(),
             current_para_block_head: Default::default(),
@@ -120,7 +141,7 @@ impl<B: BlockT> sp_inherents::InherentDataProvider for InherentDataProvider<B> {
             raw_horizontal_messages: Default::default(),
             additional_key_values: Some(additional_key_values),
             para_id: para_id.into(),
-            upgrade_go_ahead: Some(UpgradeGoAhead::GoAhead),
+            upgrade_go_ahead,
         }
         .provide_inherent_data(inherent_data)
         .await
