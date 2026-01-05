@@ -175,6 +175,7 @@ where
     /// Check that the migrations are idempotent.
     ///
     /// Expects the overlayed changes from the first execution of the migrations.
+    #[allow(clippy::result_large_err)]
     fn check_idempotency(
         &self,
         ext: &mut RemoteExternalities<Block>,
@@ -252,6 +253,7 @@ where
     }
 
     /// Check that the migrations don't use more weights than a block.
+    #[allow(clippy::result_large_err)]
     fn check_weight(&self, ext: &RemoteExternalities<Block>) -> sc_cli::Result<bool> {
         if self.command.no_weight_warnings {
             log::info!("ℹ Skipping weight safety check");
@@ -300,6 +302,7 @@ where
     }
 
     /// Whether any storage was changed.
+    #[allow(clippy::result_large_err)]
     fn changed(
         &self,
         ext: &RemoteExternalities<Block>,

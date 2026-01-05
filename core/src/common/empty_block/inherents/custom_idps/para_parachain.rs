@@ -120,8 +120,8 @@ impl<B: BlockT> sp_inherents::InherentDataProvider for InherentDataProvider<B> {
         ];
 
         // Check if `PendingValidationCode` exists in storage before setting `GoAhead`.
-        // The parachain-system pallet panics if `GoAhead` is provided without a pending validation code.
-        // See: https://github.com/paritytech/polkadot-sdk/blob/master/cumulus/pallets/parachain-system/src/lib.rs#L667
+        // The parachain-system pallet panics if `GoAhead` is provided without a pending validation
+        // code. See: https://github.com/paritytech/polkadot-sdk/blob/master/cumulus/pallets/parachain-system/src/lib.rs#L667
         let has_pending = has_pending_validation_code::<B>(ext);
         let upgrade_go_ahead = if has_pending {
             Some(UpgradeGoAhead::GoAhead)

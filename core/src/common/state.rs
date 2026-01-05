@@ -89,6 +89,7 @@ pub struct LiveState {
 
 impl LiveState {
     /// Return the `at` block hash as a `Hash`, if it exists.
+    #[allow(clippy::result_large_err)]
     pub fn at<Block: BlockT>(&self) -> sc_cli::Result<Option<<Block>::Hash>>
     where
         <Block::Hash as FromStr>::Err: Debug,
@@ -365,6 +366,7 @@ fn ensure_try_runtime<Block: BlockT, HostFns: HostFunctions>(
 
 /// Execute the given `method` and `data` on top of `ext`, returning the results (encoded) and the
 /// state `changes`.
+#[allow(clippy::result_large_err)]
 pub(crate) fn state_machine_call<Block: BlockT, HostFns: HostFunctions>(
     ext: &TestExternalities<HashingFor<Block>>,
     executor: &WasmExecutor<HostFns>,
@@ -394,6 +396,7 @@ pub(crate) fn state_machine_call<Block: BlockT, HostFns: HostFunctions>(
 /// information.
 ///
 /// Make sure [`LOG_TARGET`] is enabled in logging.
+#[allow(clippy::result_large_err)]
 pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunctions>(
     ext: &TestExternalities<HashingFor<Block>>,
     storage_overlay: &mut OverlayedChanges<HashingFor<Block>>,

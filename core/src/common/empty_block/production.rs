@@ -217,6 +217,7 @@ async fn call<T: Decode, Block: BlockT, HostFns: HostFunctions>(
     T::decode(&mut &*result).map_err(|e| sc_cli::Error::Input(format!("{:?}", e)))
 }
 
+#[allow(clippy::result_large_err)]
 pub fn core_version<Block: BlockT, HostFns: HostFunctions>(
     externalities: &TestExternalities<HashingFor<Block>>,
     executor: &WasmExecutor<HostFns>,
@@ -224,6 +225,7 @@ pub fn core_version<Block: BlockT, HostFns: HostFunctions>(
     dry_call::<u32, Block, HostFns>(externalities, executor, "Core_version", &[])
 }
 
+#[allow(clippy::result_large_err)]
 /// Call `method` with `data` and return the result. `externalities` will not change.
 fn dry_call<T: Decode, Block: BlockT, HostFns: HostFunctions>(
     externalities: &TestExternalities<HashingFor<Block>>,

@@ -38,6 +38,7 @@ pub mod common;
 pub(crate) const LOG_TARGET: &str = "try-runtime::cli";
 
 /// Get the hash type of the generic `Block` from a `hash_str`.
+#[allow(clippy::result_large_err)]
 pub(crate) fn hash_of<Block: BlockT>(hash_str: &str) -> sc_cli::Result<Block::Hash>
 where
     <Block::Hash as FromStr>::Err: Debug,
