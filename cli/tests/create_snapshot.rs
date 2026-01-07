@@ -22,7 +22,7 @@ use std::{
     time::Duration,
 };
 
-use assert_cmd::cargo::cargo_bin;
+use assert_cmd::cargo_bin;
 use frame_remote_externalities::{Builder, Mode, OfflineConfig, SnapshotConfig};
 use sp_runtime::{
     generic::{Block, Header},
@@ -70,7 +70,7 @@ async fn create_snapshot_works() {
             snap_file: &PathBuf,
             at: sp_core::H256,
         ) -> tokio::process::Child {
-            Command::new(cargo_bin("try-runtime"))
+            Command::new(cargo_bin!("try-runtime"))
                 .stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())
                 .arg("--runtime=existing")

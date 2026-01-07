@@ -19,7 +19,7 @@
 
 use std::time::Duration;
 
-use assert_cmd::cargo::cargo_bin;
+use assert_cmd::cargo_bin;
 use regex::Regex;
 use substrate_cli_test_utils as common;
 use tokio::process::Command;
@@ -53,7 +53,7 @@ async fn execute_block_works() {
         let ws_url = format!("ws://localhost:{}", port);
 
         fn execute_block(ws_url: &str, at: sp_core::H256) -> tokio::process::Child {
-            Command::new(cargo_bin("try-runtime"))
+            Command::new(cargo_bin!("try-runtime"))
                 .stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())
                 .arg("--runtime=existing")
@@ -95,7 +95,7 @@ async fn execute_block_works() {
         let ws_url = format!("ws://localhost:{}", port);
 
         fn execute_block(ws_url: &str) -> tokio::process::Child {
-            Command::new(cargo_bin("try-runtime"))
+            Command::new(cargo_bin!("try-runtime"))
                 .stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())
                 .arg("--runtime=existing")

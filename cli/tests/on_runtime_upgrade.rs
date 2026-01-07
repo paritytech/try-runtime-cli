@@ -3,7 +3,7 @@
 mod on_runtime_upgrade {
     use std::{path::PathBuf, time::Duration};
 
-    use assert_cmd::cargo::cargo_bin;
+    use assert_cmd::cargo_bin;
     use substrate_cli_test_utils as common;
     use tokio::process::Command;
 
@@ -53,7 +53,7 @@ mod on_runtime_upgrade {
     }
 
     fn on_runtime_upgrade(config: &TestConfig) -> tokio::process::Child {
-        let path = cargo_bin("try-runtime");
+        let path = cargo_bin!("try-runtime");
         assert!(
             path.exists(),
             "try-runtime binary not found at path: {}",
