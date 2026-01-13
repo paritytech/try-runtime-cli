@@ -1,5 +1,6 @@
 use std::{ops::DerefMut, str::FromStr, sync::Arc};
 
+use array_bytes::Hexify;
 use parity_scale_codec::{Decode, Encode};
 use sc_cli::Result;
 use sc_executor::{HostFunctions, WasmExecutor};
@@ -66,7 +67,7 @@ where
 
     log::info!(
         "Produced a new block ({})",
-        array_bytes::bytes2hex("0x", next_block.header().hash())
+        next_block.header().hash().as_bytes().hexify_prefixed()
     );
 
     let mut ext_guard = ext_mutex.lock().await;

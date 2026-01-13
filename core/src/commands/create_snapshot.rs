@@ -23,6 +23,7 @@ use substrate_rpc_client::{ws_client, StateApi};
 
 use crate::{
     common::{
+        parse,
         shared_parameters,
         state::{build_executor, LiveState, RuntimeChecks, State},
     },
@@ -62,10 +63,12 @@ where
     let path = match snapshot_path {
         Some(path) => path,
         None => {
-            let rpc = ws_client(&command.from.uri).await.unwrap();
+            let rpc = ws_client(&parse::to_ws_uri(&command.from.uri))
+                .await
+                .map_err(|e| format!("failed to build ws client: {e:?}"))?;
             let remote_spec = StateApi::<Block::Hash>::runtime_version(&rpc, None)
                 .await
-                .unwrap();
+                .map_err(|e| format!("failed to fetch runtime version: {e:?}"))?;
             let path_str = format!(
                 "{}-{}@{}.snap",
                 remote_spec.spec_name.to_lowercase(),

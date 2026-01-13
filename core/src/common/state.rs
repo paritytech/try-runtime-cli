@@ -113,7 +113,7 @@ impl LiveState {
 
         // Get the block number requested by the user, or the current block number if they
         // didn't specify one.
-        let rpc = ws_client(&self.uri).await?;
+        let rpc = ws_client(&parse::to_ws_uri(&self.uri)).await?;
         let previous_hash = ChainApi::<(), Block::Hash, Block::Header, ()>::header(&rpc, at)
             .await
             .map_err(rpc_err_handler)
@@ -205,7 +205,7 @@ impl State {
                     .collect::<Result<Vec<_>, _>>()?;
                 Builder::<Block>::new().mode(Mode::Online(OnlineConfig {
                     at,
-                    transport: uri.to_owned().into(),
+                    transport: parse::to_http_uri(uri).into(),
                     state_snapshot,
                     pallets: pallet.clone(),
                     child_trie: *child_tree,

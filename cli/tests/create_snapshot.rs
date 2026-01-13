@@ -35,7 +35,8 @@ use tokio::process::Command;
 #[tokio::test]
 async fn create_snapshot_works() {
     let port = 45789;
-    let ws_url = format!("ws://localhost:{}", port);
+    let ws_uri = format!("ws://localhost:{}", port);
+    let http_uri = format!("http://localhost:{}", port);
 
     // Spawn a dev node.
     let _ = std::thread::spawn(move || {
@@ -66,7 +67,7 @@ async fn create_snapshot_works() {
 
     common::run_with_timeout(Duration::from_secs(60), async move {
         fn create_snapshot(
-            ws_url: &str,
+            uri: &str,
             snap_file: &PathBuf,
             at: sp_core::H256,
         ) -> tokio::process::Child {
@@ -74,7 +75,7 @@ async fn create_snapshot_works() {
                 .stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())
                 .arg("--runtime=existing")
-                .args(["create-snapshot", format!("--uri={}", ws_url).as_str()])
+                .args(["create-snapshot", format!("--uri={}", uri).as_str()])
                 .arg(snap_file)
                 .args(["--at", format!("{:?}", at).as_str()])
                 .kill_on_drop(true)
@@ -82,13 +83,19 @@ async fn create_snapshot_works() {
                 .unwrap()
         }
         let block_number = 2;
-        let block_hash = common::block_hash(block_number, &ws_url).await.unwrap();
+        let block_hash = common::block_hash(block_number, &ws_uri).await.unwrap();
 
         // Try to create a snapshot.
-        let child = create_snapshot(&ws_url, &snap_file_path, block_hash);
+        let child = create_snapshot(&http_uri, &snap_file_path, block_hash);
         let out = child.wait_with_output().await.unwrap();
-
-        assert!(out.status.success());
+        assert!(
+            out.status.success(),
+            "try-runtime exited unsuccessfully: status={:?}, code={:?}\n\nstdout:\n{}\n\nstderr:\n{}",
+            out.status,
+            out.status.code(),
+            String::from_utf8_lossy(&out.stdout),
+            String::from_utf8_lossy(&out.stderr),
+        );
 
         let snapshot_is_on_disk = Path::new(&snap_file_path).exists();
         assert!(snapshot_is_on_disk, "Snapshot was not written to disk");

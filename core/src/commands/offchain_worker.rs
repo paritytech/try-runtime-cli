@@ -76,7 +76,7 @@ where
 {
     let executor = build_executor(&shared);
     let block_ws_uri = command.header_ws_uri();
-    let rpc = ws_client(&block_ws_uri).await?;
+    let rpc = ws_client(&parse::to_ws_uri(&block_ws_uri)).await?;
 
     let live_state = match command.state {
         State::Live(live_state) => live_state,

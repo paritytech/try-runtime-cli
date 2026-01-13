@@ -27,7 +27,8 @@ use tokio::process::Command;
 #[tokio::test]
 async fn follow_chain_works() {
     let port = 45789;
-    let ws_url = format!("ws://localhost:{}", port);
+    let ws_uri = format!("ws://localhost:{}", port);
+    let http_uri = format!("http://localhost:{}", port);
 
     // Spawn a dev node.
     let _ = std::thread::spawn(move || {
@@ -49,19 +50,19 @@ async fn follow_chain_works() {
     std::thread::sleep(Duration::from_secs(180));
 
     common::run_with_timeout(Duration::from_secs(60), async move {
-        fn start_follow(ws_url: &str) -> tokio::process::Child {
+        fn start_follow(uri: &str) -> tokio::process::Child {
             Command::new(cargo_bin!("try-runtime"))
                 .stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())
                 .arg("--runtime=existing")
-                .args(["follow-chain", format!("--uri={}", ws_url).as_str()])
+                .args(["follow-chain", format!("--uri={}", uri).as_str()])
                 .kill_on_drop(true)
                 .spawn()
                 .unwrap()
         }
 
         // Kick off the follow-chain process and wait for it to process at least 3 blocks.
-        let mut follow = start_follow(&ws_url);
+        let mut follow = start_follow(&http_uri);
         let re = Regex::new(r".*executed block ([3-9]|[1-9]\d+).*").unwrap();
         let matched =
             common::wait_for_stream_pattern_match(follow.stderr.take().unwrap(), re).await;

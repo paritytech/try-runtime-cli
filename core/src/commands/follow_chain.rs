@@ -73,7 +73,7 @@ pub struct Command {
 async fn start_subscribing<Header: DeserializeOwned + Serialize + Send + Sync + 'static>(
     url: &str,
 ) -> sc_cli::Result<(WsClient, Subscription<Header>)> {
-    let client = ws_client(url)
+    let client = ws_client(&parse::to_ws_uri(url))
         .await
         .map_err(|e| sc_cli::Error::Application(e.into()))?;
 

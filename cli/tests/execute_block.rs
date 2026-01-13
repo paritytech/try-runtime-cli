@@ -50,15 +50,15 @@ async fn execute_block_works() {
 
     // Test passing --at
     common::run_with_timeout(Duration::from_secs(60), async move {
-        let ws_url = format!("ws://localhost:{}", port);
+        let ws_uri = format!("ws://localhost:{}", port);
 
-        fn execute_block(ws_url: &str, at: sp_core::H256) -> tokio::process::Child {
+        fn execute_block(uri: &str, at: sp_core::H256) -> tokio::process::Child {
             Command::new(cargo_bin!("try-runtime"))
                 .stdout(std::process::Stdio::piped())
                 .stderr(std::process::Stdio::piped())
                 .arg("--runtime=existing")
                 .args(["execute-block"])
-                .args(["live", format!("--uri={}", ws_url).as_str()])
+                .args(["live", format!("--uri={}", uri).as_str()])
                 .args(["--at", format!("{:?}", at).as_str()])
                 .kill_on_drop(true)
                 .spawn()
@@ -66,10 +66,10 @@ async fn execute_block_works() {
         }
 
         let block_number = 3;
-        let block_hash = common::block_hash(block_number, &ws_url).await.unwrap();
+        let block_hash = common::block_hash(block_number, &ws_uri).await.unwrap();
 
         // Try to execute the block.
-        let mut block_execution = execute_block(&ws_url, block_hash);
+        let mut block_execution = execute_block(&ws_uri, block_hash);
 
         // The execute-block command is actually executing the next block.
         let expected_output = format!(r#".*Block #{} successfully executed"#, block_number);
@@ -92,7 +92,7 @@ async fn execute_block_works() {
 
     // Test not passing --at
     common::run_with_timeout(Duration::from_secs(60), async move {
-        let ws_url = format!("ws://localhost:{}", port);
+        let ws_uri = format!("ws://localhost:{}", port);
 
         fn execute_block(ws_url: &str) -> tokio::process::Child {
             Command::new(cargo_bin!("try-runtime"))
@@ -107,7 +107,7 @@ async fn execute_block_works() {
         }
 
         // Try to execute the block.
-        let mut block_execution = execute_block(&ws_url);
+        let mut block_execution = execute_block(&ws_uri);
         let expected_output = r".*Block #(\d+) successfully executed";
         let re = Regex::new(expected_output).unwrap();
         let matched =

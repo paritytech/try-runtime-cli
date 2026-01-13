@@ -96,7 +96,7 @@ where
 {
     let executor = build_executor::<HostFns>(&shared);
     let block_ws_uri = command.block_ws_uri();
-    let rpc = ws_client(&block_ws_uri).await?;
+    let rpc = ws_client(&crate::common::parse::to_ws_uri(&block_ws_uri)).await?;
 
     let live_state = match command.state {
         State::Live(live_state) => {

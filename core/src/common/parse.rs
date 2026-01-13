@@ -35,12 +35,42 @@ pub(crate) fn hash(block_hash: &str) -> Result<String, String> {
 }
 
 pub(crate) fn url(s: &str) -> Result<String, &'static str> {
-    if s.starts_with("ws://") || s.starts_with("wss://") {
+    if s.starts_with("ws://")
+        || s.starts_with("wss://")
+        || s.starts_with("http://")
+        || s.starts_with("https://")
+    {
         // could use Url crate as well, but lets keep it simple for now.
         Ok(s.to_string())
     } else {
-        Err("not a valid WS(S) url: must start with 'ws://' or 'wss://'")
+        Err("not a valid URL: must start with 'ws://', 'wss://', 'http://' or 'https://'")
     }
+}
+
+/// Convert an input URI into a WS URI suitable for `ws_client`.
+///
+/// If the input is HTTP(S), it will be converted to WS(S). Otherwise returned unchanged.
+pub(crate) fn to_ws_uri(uri: &str) -> String {
+    if let Some(rest) = uri.strip_prefix("http://") {
+        return format!("ws://{rest}");
+    }
+    if let Some(rest) = uri.strip_prefix("https://") {
+        return format!("wss://{rest}");
+    }
+    uri.to_string()
+}
+
+/// Convert an input URI into an HTTP URI suitable for `frame_remote_externalities` online transport.
+///
+/// If the input is WS(S), it will be converted to HTTP(S). Otherwise returned unchanged.
+pub(crate) fn to_http_uri(uri: &str) -> String {
+    if let Some(rest) = uri.strip_prefix("ws://") {
+        return format!("http://{rest}");
+    }
+    if let Some(rest) = uri.strip_prefix("wss://") {
+        return format!("https://{rest}");
+    }
+    uri.to_string()
 }
 
 pub(crate) fn state_version(s: &str) -> Result<StateVersion, &'static str> {
