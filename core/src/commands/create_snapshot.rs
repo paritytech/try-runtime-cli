@@ -23,8 +23,7 @@ use substrate_rpc_client::{ws_client, StateApi};
 
 use crate::{
     common::{
-        parse,
-        shared_parameters,
+        parse, shared_parameters,
         state::{build_executor, LiveState, RuntimeChecks, State},
     },
     SharedParams, LOG_TARGET,
