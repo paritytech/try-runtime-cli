@@ -60,7 +60,8 @@ pub(crate) fn to_ws_uri(uri: &str) -> String {
     uri.to_string()
 }
 
-/// Convert an input URI into an HTTP URI suitable for `frame_remote_externalities` online transport.
+/// Convert an input URI into an HTTP URI suitable for `frame_remote_externalities` online
+/// transport.
 ///
 /// If the input is WS(S), it will be converted to HTTP(S). Otherwise returned unchanged.
 pub(crate) fn to_http_uri(uri: &str) -> String {
