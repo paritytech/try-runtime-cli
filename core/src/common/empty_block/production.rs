@@ -117,8 +117,6 @@ where
     NumberFor<Block>: FromStr,
     <NumberFor<Block> as FromStr>::Err: Debug,
 {
-    // Query the relay parent offset from the runtime API.
-    // This is needed for parachains that use a non-zero relay parent offset.
     let rp_offset = {
         let ext_guard = ext_mutex.lock().await;
         relay_parent_offset::<Block, HostFns>(&ext_guard, executor)
