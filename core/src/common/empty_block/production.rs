@@ -242,7 +242,6 @@ pub fn relay_parent_offset<Block: BlockT, HostFns: HostFunctions>(
         &[],
     )
     .unwrap_or_else(|_| {
-        log::debug!("RelayParentOffsetApi_relay_parent_offset not available, defaulting to 0");
         0
     })
 }
