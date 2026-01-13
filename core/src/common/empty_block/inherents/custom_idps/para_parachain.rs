@@ -63,6 +63,7 @@ pub struct InherentDataProvider<B: BlockT> {
     pub blocktime_millis: u64,
     pub parent_header: B::Header,
     pub ext_mutex: Arc<Mutex<TestExternalities<HashingFor<B>>>>,
+    pub relay_parent_offset: u32,
 }
 
 #[async_trait::async_trait]
@@ -108,17 +109,13 @@ impl<B: BlockT> sp_inherents::InherentDataProvider for InherentDataProvider<B> {
         ];
 
         cumulus_client_parachain_inherent::MockValidationDataInherentDataProvider {
-            current_para_block: Default::default(),
-            current_para_block_head: Default::default(),
             relay_offset: last_relay_chain_block_number + 1u32,
-            relay_blocks_per_para_block: Default::default(),
-            para_blocks_per_relay_epoch: Default::default(),
+            relay_parent_offset: self.relay_parent_offset,
             relay_randomness_config: (),
             xcm_config: cumulus_client_parachain_inherent::MockXcmConfig::default(),
-            raw_downward_messages: Default::default(),
-            raw_horizontal_messages: Default::default(),
             additional_key_values: Some(additional_key_values),
             para_id: para_id.into(),
+            ..Default::default()
         }
         .provide_inherent_data(inherent_data)
         .await

@@ -117,12 +117,20 @@ where
     NumberFor<Block>: FromStr,
     <NumberFor<Block> as FromStr>::Err: Debug,
 {
+    // Query the relay parent offset from the runtime API.
+    // This is needed for parachains that use a non-zero relay parent offset.
+    let rp_offset = {
+        let ext_guard = ext_mutex.lock().await;
+        relay_parent_offset::<Block, HostFns>(&ext_guard, executor)
+    };
+
     let (inherent_data_provider, pre_digest) =
         <ProviderVariant as InherentProvider<Block>>::get_inherent_providers_and_pre_digest(
             &chain,
             previous_block_building_info,
             parent_header.clone(),
             ext_mutex.clone(),
+            rp_offset,
         )?;
 
     let mut ext_guard = ext_mutex.lock().await;
@@ -222,6 +230,23 @@ pub fn core_version<Block: BlockT, HostFns: HostFunctions>(
     executor: &WasmExecutor<HostFns>,
 ) -> Result<u32> {
     dry_call::<u32, Block, HostFns>(externalities, executor, "Core_version", &[])
+}
+
+/// Query the relay parent offset from the runtime.
+pub fn relay_parent_offset<Block: BlockT, HostFns: HostFunctions>(
+    externalities: &TestExternalities<HashingFor<Block>>,
+    executor: &WasmExecutor<HostFns>,
+) -> u32 {
+    dry_call::<u32, Block, HostFns>(
+        externalities,
+        executor,
+        "RelayParentOffsetApi_relay_parent_offset",
+        &[],
+    )
+    .unwrap_or_else(|_| {
+        log::debug!("RelayParentOffsetApi_relay_parent_offset not available, defaulting to 0");
+        0
+    })
 }
 
 /// Call `method` with `data` and return the result. `externalities` will not change.

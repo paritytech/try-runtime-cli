@@ -48,6 +48,7 @@ pub trait InherentProvider<B: BlockT> {
         maybe_parent_info: Option<(InherentData, Digest)>,
         parent_header: B::Header,
         ext: Arc<Mutex<TestExternalities<HashingFor<B>>>>,
+        relay_parent_offset: u32,
     ) -> InherentProviderResult<Self::Err>;
 }
 
@@ -76,12 +77,13 @@ impl<B: BlockT> InherentProvider<B> for ProviderVariant {
         maybe_parent_info: Option<(InherentData, Digest)>,
         parent_header: B::Header,
         ext: Arc<Mutex<TestExternalities<HashingFor<B>>>>,
+        relay_parent_offset: u32,
     ) -> InherentProviderResult<Self::Err> {
         match *self {
             ProviderVariant::Smart(blocktime) => {
                 <SmartInherentProvider as InherentProvider<B>>::get_inherent_providers_and_pre_digest(&SmartInherentProvider {
                      blocktime,
-                 }, maybe_parent_info, parent_header, ext)
+                 }, maybe_parent_info, parent_header, ext, relay_parent_offset)
             }
         }
     }
@@ -107,6 +109,7 @@ impl<B: BlockT> InherentProvider<B> for SmartInherentProvider {
         maybe_parent_info: Option<(InherentData, Digest)>,
         parent_header: B::Header,
         ext: Arc<Mutex<TestExternalities<HashingFor<B>>>>,
+        relay_parent_offset: u32,
     ) -> InherentProviderResult<Self::Err> {
         let timestamp_idp = custom_idps::timestamp::InherentDataProvider {
             blocktime_millis: self.blocktime.as_millis() as u64,
@@ -117,6 +120,7 @@ impl<B: BlockT> InherentProvider<B> for SmartInherentProvider {
             parent_header: parent_header.clone(),
             timestamp: timestamp_idp.timestamp(),
             ext_mutex: ext,
+            relay_parent_offset,
         };
         let relay_parachain_data_idp =
             custom_idps::relay_parachains::InherentDataProvider::<B>::new(parent_header);
