@@ -241,9 +241,7 @@ pub fn relay_parent_offset<Block: BlockT, HostFns: HostFunctions>(
         "RelayParentOffsetApi_relay_parent_offset",
         &[],
     )
-    .unwrap_or_else(|_| {
-        0
-    })
+    .unwrap_or(0)
 }
 
 /// Call `method` with `data` and return the result. `externalities` will not change.
