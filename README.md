@@ -182,7 +182,7 @@ cargo build --features try-runtime --release && cp target/release/substrate .
 try-runtime \
     --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
     on-runtime-upgrade \
-    # if you'd like pre_upgrade & post_upgrade checks to run
+    # Passing this flag will skip multi-block-migration checks and only run pre_upgrade/post_upgrade checks.
     --disable-mbm-checks \
     live --uri ws://localhost:9999
 ```
