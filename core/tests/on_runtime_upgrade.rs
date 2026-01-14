@@ -1,5 +1,6 @@
 #![cfg(unix)]
 
+#[allow(deprecated)]
 mod on_runtime_upgrade {
     use std::{path::PathBuf, time::Duration};
 
