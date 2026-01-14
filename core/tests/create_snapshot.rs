@@ -16,6 +16,7 @@
 // limitations under the License.
 
 #![cfg(unix)]
+#![allow(deprecated)]
 
 use std::{
     path::{Path, PathBuf},
