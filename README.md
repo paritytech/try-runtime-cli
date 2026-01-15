@@ -135,6 +135,10 @@ after the migration. [`OnRuntimeUpgrade::pre_upgrade`] returns a [`Vec<u8>`] tha
 arbitrary encoded data (usually some pre-upgrade state) which will be passed to
 [`OnRuntimeUpgrade::pre_upgrade`] after upgrading and used for post checking.
 
+**Note on Multi-Block Migrations (MBM):** If the runtime uses MBMs, the standard 
+`pre_upgrade` and `post_upgrade` checks might be skipped by the executive. To 
+force these hooks to run synchronously for testing, use the `--disable-mbm-checks` flag.
+
 ### [`VersionedMigration`]
 
 It is strongly suggested to use [`VersionedMigration`] when writing custom migrations for
