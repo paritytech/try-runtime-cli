@@ -41,10 +41,13 @@ use crate::{
     RefTimeInfo, SharedParams, LOG_TARGET,
 };
 
-/// Configuration for [`run`].
+/// Configuration for the `on_runtime_upgrade` command.
+///
+/// The parameters below control the behavior of runtime upgrade checks e.g. whether to disable
+/// weight warnings, whether to run multi-block migration checks.
 #[derive(Debug, Clone, clap::Parser)]
 pub struct Command {
-    /// The state type to use.
+    /// The source of the blockchain state to use when running the `on-runtime-upgrade` command.
     #[command(subcommand)]
     pub state: State,
 
@@ -66,7 +69,7 @@ pub struct Command {
     )]
     pub checks: UpgradeCheckSelect,
 
-    /// Whether to disable weight warnings, useful if the runtime is for a relay chain.
+    /// Whether to disable weight warnings. Useful if a relay chain's runtime is being tested.
     #[clap(long, default_value = "false", default_missing_value = "true")]
     pub no_weight_warnings: bool,
 
@@ -75,7 +78,7 @@ pub struct Command {
     #[clap(long, default_value = "false", default_missing_value = "true")]
     pub disable_spec_version_check: bool,
 
-    /// Whether to disable migration idempotency checks
+    /// Whether to disable migration idempotency checks.
     #[clap(long, default_value = "false", default_missing_value = "true")]
     pub disable_idempotency_checks: bool,
 
@@ -84,18 +87,18 @@ pub struct Command {
     #[clap(long, default_value = "false", default_missing_value = "true")]
     pub print_storage_diff: bool,
 
-    /// Whether or multi-block migrations should be executed to completion after single block
+    /// Whether or not multi-block migrations should be executed to completion after single-block
     /// migratons are completed.
     #[clap(long, default_value = "false", default_missing_value = "true")]
     pub disable_mbm_checks: bool,
 
-    /// The maximum duration we expect all MBMs combined to take.
+    /// The maximum duration that all MBMs combined are expected to take.
     ///
-    /// This value is just here to ensure that the CLI won't run forever in case of a buggy MBM.
+    /// This value ensures the CLI won't run indefinitely in case of a buggy MBM.
     #[clap(long, default_value = "600")]
     pub mbm_max_blocks: u32,
 
-    /// The chain blocktime in milliseconds.
+    /// The chain blocktime, in milliseconds.
     #[arg(long)]
     pub blocktime: u64,
 }
