@@ -65,8 +65,9 @@ pub struct SharedParams {
 	)]
     pub wasmtime_instantiation_strategy: WasmtimeInstantiationStrategy,
 
-    /// The number of 64KB pages to allocate for Wasm execution. Defaults to
-    /// [`sc_service::Configuration.default_heap_pages`].
+    /// The number of 64KB pages to allocate for Wasm execution.
+    ///
+    /// Defaults to `sc_service::Configuration::default_heap_pages`.
     #[arg(long)]
     pub heap_pages: Option<u64>,
 

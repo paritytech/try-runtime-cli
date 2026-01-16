@@ -295,7 +295,7 @@
 //! [`Action::OffchainWorker`]: try_runtime_core::commands::Action::OffchainWorker
 //! [`Action::CreateSnapshot`]: try_runtime_core::commands::Action::CreateSnapshot
 //! [`Action::FastForward`]: try_runtime_core::commands::Action::FastForward
-//! [`SharedParams`]: try_runtime_core::shared_parameters::SharedParams
+//! [`SharedParams`]: try_runtime_core::common::shared_parameters::SharedParams
 //! [`SharedParams::runtime`]: try_runtime_core::common::shared_parameters::SharedParams::runtime
 //! [`SharedParams::overwrite_state_version`]: try_runtime_core::common::shared_parameters::SharedParams::overwrite_state_version
 
