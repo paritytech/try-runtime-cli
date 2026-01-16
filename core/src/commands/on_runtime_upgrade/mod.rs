@@ -43,8 +43,8 @@ use crate::{
 
 /// Configuration for the `on_runtime_upgrade` command.
 ///
-/// The parameters below control the behavior of runtime upgrade checks e.g. whether to disable weight warnings,
-/// whether to run multi-block migration checks.
+/// The parameters below control the behavior of runtime upgrade checks e.g. whether to disable
+/// weight warnings, whether to run multi-block migration checks.
 #[derive(Debug, Clone, clap::Parser)]
 pub struct Command {
     /// The source of the blockchain state to use when running the `on-runtime-upgrade` command.
