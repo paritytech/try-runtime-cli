@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["PublicKey"],"mod":["ed25519"]};
+window.SIDEBAR_ITEMS = {"enum":["PublicKey","RemotePublicKey"],"mod":["ed25519","rsa"]};

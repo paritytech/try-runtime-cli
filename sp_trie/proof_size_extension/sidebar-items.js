@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["ProofSizeExt"]};
+window.SIDEBAR_ITEMS = {"struct":["ProofSizeExt","RecordedProofSizeEstimations","RecordingProofSizeProvider","ReplayProofSizeProvider"]};

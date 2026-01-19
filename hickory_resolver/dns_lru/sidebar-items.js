@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["DnsLru","TtlConfig"]};
+window.SIDEBAR_ITEMS = {"struct":["DnsLru","TtlBounds","TtlConfig"]};

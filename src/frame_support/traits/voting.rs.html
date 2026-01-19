@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/8279d10/substrate/frame/support/src/traits/voting.rs`."><title>voting.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support/traits/</div>voting.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/0c70641/substrate/frame/support/src/traits/voting.rs`."><title>voting.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support/traits/</div>voting.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -19,7 +19,7 @@
 <a href=#19 id=19 data-nosnippet>19</a>//! votes.
 <a href=#20 id=20 data-nosnippet>20</a>
 <a href=#21 id=21 data-nosnippet>21</a></span><span class="kw">use </span><span class="kw">crate</span>::dispatch::Parameter;
-<a href=#22 id=22 data-nosnippet>22</a><span class="kw">use </span>alloc::vec::Vec;
+<a href=#22 id=22 data-nosnippet>22</a><span class="kw">use </span>alloc::{vec, vec::Vec};
 <a href=#23 id=23 data-nosnippet>23</a><span class="kw">use </span>codec::{HasCompact, MaxEncodedLen};
 <a href=#24 id=24 data-nosnippet>24</a><span class="kw">use </span>sp_arithmetic::Perbill;
 <a href=#25 id=25 data-nosnippet>25</a><span class="kw">use </span>sp_runtime::{traits::Member, DispatchError};
@@ -125,4 +125,50 @@
 <a href=#125 id=125 data-nosnippet>125</a>	</span><span class="kw">fn </span>max_ongoing() -&gt; (<span class="self">Self</span>::Class, u32) {
 <a href=#126 id=126 data-nosnippet>126</a>		(<span class="self">Self</span>::classes().into_iter().next().expect(<span class="string">"Always one class"</span>), u32::max_value())
 <a href=#127 id=127 data-nosnippet>127</a>	}
-<a href=#128 id=128 data-nosnippet>128</a>}</code></pre></div></section></main></body></html>
+<a href=#128 id=128 data-nosnippet>128</a>}
+<a href=#129 id=129 data-nosnippet>129</a>
+<a href=#130 id=130 data-nosnippet>130</a><span class="doccomment">/// NoOp polling is required if pallet-referenda functionality not needed.
+<a href=#131 id=131 data-nosnippet>131</a></span><span class="kw">pub struct </span>NoOpPoll&lt;Moment&gt;(core::marker::PhantomData&lt;Moment&gt;);
+<a href=#132 id=132 data-nosnippet>132</a><span class="kw">impl</span>&lt;Tally, Moment&gt; Polling&lt;Tally&gt; <span class="kw">for </span>NoOpPoll&lt;Moment&gt; {
+<a href=#133 id=133 data-nosnippet>133</a>	<span class="kw">type </span>Index = u8;
+<a href=#134 id=134 data-nosnippet>134</a>	<span class="kw">type </span>Votes = u32;
+<a href=#135 id=135 data-nosnippet>135</a>	<span class="kw">type </span>Class = u16;
+<a href=#136 id=136 data-nosnippet>136</a>	<span class="kw">type </span>Moment = Moment;
+<a href=#137 id=137 data-nosnippet>137</a>
+<a href=#138 id=138 data-nosnippet>138</a>	<span class="kw">fn </span>classes() -&gt; Vec&lt;<span class="self">Self</span>::Class&gt; {
+<a href=#139 id=139 data-nosnippet>139</a>		<span class="macro">vec!</span>[]
+<a href=#140 id=140 data-nosnippet>140</a>	}
+<a href=#141 id=141 data-nosnippet>141</a>
+<a href=#142 id=142 data-nosnippet>142</a>	<span class="kw">fn </span>as_ongoing(_index: <span class="self">Self</span>::Index) -&gt; <span class="prelude-ty">Option</span>&lt;(Tally, <span class="self">Self</span>::Class)&gt; {
+<a href=#143 id=143 data-nosnippet>143</a>		<span class="prelude-val">None
+<a href=#144 id=144 data-nosnippet>144</a>	</span>}
+<a href=#145 id=145 data-nosnippet>145</a>
+<a href=#146 id=146 data-nosnippet>146</a>	<span class="kw">fn </span>access_poll&lt;R&gt;(
+<a href=#147 id=147 data-nosnippet>147</a>		_index: <span class="self">Self</span>::Index,
+<a href=#148 id=148 data-nosnippet>148</a>		f: <span class="kw">impl </span>FnOnce(PollStatus&lt;<span class="kw-2">&amp;mut </span>Tally, <span class="self">Self</span>::Moment, <span class="self">Self</span>::Class&gt;) -&gt; R,
+<a href=#149 id=149 data-nosnippet>149</a>	) -&gt; R {
+<a href=#150 id=150 data-nosnippet>150</a>		f(PollStatus::None)
+<a href=#151 id=151 data-nosnippet>151</a>	}
+<a href=#152 id=152 data-nosnippet>152</a>
+<a href=#153 id=153 data-nosnippet>153</a>	<span class="kw">fn </span>try_access_poll&lt;R&gt;(
+<a href=#154 id=154 data-nosnippet>154</a>		_index: <span class="self">Self</span>::Index,
+<a href=#155 id=155 data-nosnippet>155</a>		f: <span class="kw">impl </span>FnOnce(PollStatus&lt;<span class="kw-2">&amp;mut </span>Tally, <span class="self">Self</span>::Moment, <span class="self">Self</span>::Class&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;R, DispatchError&gt;,
+<a href=#156 id=156 data-nosnippet>156</a>	) -&gt; <span class="prelude-ty">Result</span>&lt;R, DispatchError&gt; {
+<a href=#157 id=157 data-nosnippet>157</a>		f(PollStatus::None)
+<a href=#158 id=158 data-nosnippet>158</a>	}
+<a href=#159 id=159 data-nosnippet>159</a>
+<a href=#160 id=160 data-nosnippet>160</a>	<span class="attr">#[cfg(feature = <span class="string">"runtime-benchmarks"</span>)]
+<a href=#161 id=161 data-nosnippet>161</a>	</span><span class="kw">fn </span>create_ongoing(_class: <span class="self">Self</span>::Class) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Index, ()&gt; {
+<a href=#162 id=162 data-nosnippet>162</a>		<span class="prelude-val">Err</span>(())
+<a href=#163 id=163 data-nosnippet>163</a>	}
+<a href=#164 id=164 data-nosnippet>164</a>
+<a href=#165 id=165 data-nosnippet>165</a>	<span class="attr">#[cfg(feature = <span class="string">"runtime-benchmarks"</span>)]
+<a href=#166 id=166 data-nosnippet>166</a>	</span><span class="kw">fn </span>end_ongoing(_index: <span class="self">Self</span>::Index, _approved: bool) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
+<a href=#167 id=167 data-nosnippet>167</a>		<span class="prelude-val">Err</span>(())
+<a href=#168 id=168 data-nosnippet>168</a>	}
+<a href=#169 id=169 data-nosnippet>169</a>
+<a href=#170 id=170 data-nosnippet>170</a>	<span class="attr">#[cfg(feature = <span class="string">"runtime-benchmarks"</span>)]
+<a href=#171 id=171 data-nosnippet>171</a>	</span><span class="kw">fn </span>max_ongoing() -&gt; (<span class="self">Self</span>::Class, u32) {
+<a href=#172 id=172 data-nosnippet>172</a>		(<span class="number">0</span>, <span class="number">0</span>)
+<a href=#173 id=173 data-nosnippet>173</a>	}
+<a href=#174 id=174 data-nosnippet>174</a>}</code></pre></div></section></main></body></html>

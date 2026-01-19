@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/8279d10/substrate/client/consensus/common/src/import_queue/buffered_link.rs`."><title>buffered_link.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_consensus" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_consensus/import_queue/</div>buffered_link.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/0c70641/substrate/client/consensus/common/src/import_queue/buffered_link.rs`."><title>buffered_link.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_consensus" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_consensus/import_queue/</div>buffered_link.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -27,18 +27,18 @@
 <a href=#27 id=27 data-nosnippet>27</a>//! # use sc_consensus::import_queue::buffered_link::buffered_link;
 <a href=#28 id=28 data-nosnippet>28</a>//! # use sp_test_primitives::Block;
 <a href=#29 id=29 data-nosnippet>29</a>//! # struct DummyLink; impl Link&lt;Block&gt; for DummyLink {}
-<a href=#30 id=30 data-nosnippet>30</a>//! # let mut my_link = DummyLink;
+<a href=#30 id=30 data-nosnippet>30</a>//! # let my_link = DummyLink;
 <a href=#31 id=31 data-nosnippet>31</a>//! let (mut tx, mut rx) = buffered_link::&lt;Block&gt;(100_000);
 <a href=#32 id=32 data-nosnippet>32</a>//! tx.blocks_processed(0, 0, vec![]);
 <a href=#33 id=33 data-nosnippet>33</a>//!
 <a href=#34 id=34 data-nosnippet>34</a>//! // Calls `my_link.blocks_processed(0, 0, vec![])` when polled.
 <a href=#35 id=35 data-nosnippet>35</a>//! let _fut = futures::future::poll_fn(move |cx| {
-<a href=#36 id=36 data-nosnippet>36</a>//! 	rx.poll_actions(cx, &amp;mut my_link);
+<a href=#36 id=36 data-nosnippet>36</a>//! 	rx.poll_actions(cx, &amp;my_link).unwrap();
 <a href=#37 id=37 data-nosnippet>37</a>//! 	std::task::Poll::Pending::&lt;()&gt;
 <a href=#38 id=38 data-nosnippet>38</a>//! });
 <a href=#39 id=39 data-nosnippet>39</a>//! ```
 <a href=#40 id=40 data-nosnippet>40</a>
-<a href=#41 id=41 data-nosnippet>41</a></span><span class="kw">use </span><span class="kw">crate</span>::import_queue::{Link, RuntimeOrigin};
+<a href=#41 id=41 data-nosnippet>41</a></span><span class="kw">use </span><span class="kw">crate</span>::import_queue::{JustificationImportResult, Link, RuntimeOrigin};
 <a href=#42 id=42 data-nosnippet>42</a><span class="kw">use </span>futures::prelude::<span class="kw-2">*</span>;
 <a href=#43 id=43 data-nosnippet>43</a><span class="kw">use </span>sc_utils::mpsc::{tracing_unbounded, TracingUnboundedReceiver, TracingUnboundedSender};
 <a href=#44 id=44 data-nosnippet>44</a><span class="kw">use </span>sp_runtime::traits::{Block <span class="kw">as </span>BlockT, NumberFor};
@@ -84,13 +84,13 @@
 <a href=#84 id=84 data-nosnippet>84</a><span class="doccomment">/// Internal buffered message.
 <a href=#85 id=85 data-nosnippet>85</a></span><span class="kw">pub enum </span>BlockImportWorkerMsg&lt;B: BlockT&gt; {
 <a href=#86 id=86 data-nosnippet>86</a>	BlocksProcessed(usize, usize, Vec&lt;(BlockImportResult&lt;B&gt;, B::Hash)&gt;),
-<a href=#87 id=87 data-nosnippet>87</a>	JustificationImported(RuntimeOrigin, B::Hash, NumberFor&lt;B&gt;, bool),
+<a href=#87 id=87 data-nosnippet>87</a>	JustificationImported(RuntimeOrigin, B::Hash, NumberFor&lt;B&gt;, JustificationImportResult),
 <a href=#88 id=88 data-nosnippet>88</a>	RequestJustification(B::Hash, NumberFor&lt;B&gt;),
 <a href=#89 id=89 data-nosnippet>89</a>}
 <a href=#90 id=90 data-nosnippet>90</a>
 <a href=#91 id=91 data-nosnippet>91</a><span class="kw">impl</span>&lt;B: BlockT&gt; Link&lt;B&gt; <span class="kw">for </span>BufferedLinkSender&lt;B&gt; {
 <a href=#92 id=92 data-nosnippet>92</a>	<span class="kw">fn </span>blocks_processed(
-<a href=#93 id=93 data-nosnippet>93</a>		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#93 id=93 data-nosnippet>93</a>		<span class="kw-2">&amp;</span><span class="self">self</span>,
 <a href=#94 id=94 data-nosnippet>94</a>		imported: usize,
 <a href=#95 id=95 data-nosnippet>95</a>		count: usize,
 <a href=#96 id=96 data-nosnippet>96</a>		results: Vec&lt;(BlockImportResult&lt;B&gt;, B::Hash)&gt;,
@@ -101,17 +101,17 @@
 <a href=#101 id=101 data-nosnippet>101</a>	}
 <a href=#102 id=102 data-nosnippet>102</a>
 <a href=#103 id=103 data-nosnippet>103</a>	<span class="kw">fn </span>justification_imported(
-<a href=#104 id=104 data-nosnippet>104</a>		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#104 id=104 data-nosnippet>104</a>		<span class="kw-2">&amp;</span><span class="self">self</span>,
 <a href=#105 id=105 data-nosnippet>105</a>		who: RuntimeOrigin,
 <a href=#106 id=106 data-nosnippet>106</a>		hash: <span class="kw-2">&amp;</span>B::Hash,
 <a href=#107 id=107 data-nosnippet>107</a>		number: NumberFor&lt;B&gt;,
-<a href=#108 id=108 data-nosnippet>108</a>		success: bool,
+<a href=#108 id=108 data-nosnippet>108</a>		import_result: JustificationImportResult,
 <a href=#109 id=109 data-nosnippet>109</a>	) {
-<a href=#110 id=110 data-nosnippet>110</a>		<span class="kw">let </span>msg = BlockImportWorkerMsg::JustificationImported(who, <span class="kw-2">*</span>hash, number, success);
+<a href=#110 id=110 data-nosnippet>110</a>		<span class="kw">let </span>msg = BlockImportWorkerMsg::JustificationImported(who, <span class="kw-2">*</span>hash, number, import_result);
 <a href=#111 id=111 data-nosnippet>111</a>		<span class="kw">let _ </span>= <span class="self">self</span>.tx.unbounded_send(msg);
 <a href=#112 id=112 data-nosnippet>112</a>	}
 <a href=#113 id=113 data-nosnippet>113</a>
-<a href=#114 id=114 data-nosnippet>114</a>	<span class="kw">fn </span>request_justification(<span class="kw-2">&amp;mut </span><span class="self">self</span>, hash: <span class="kw-2">&amp;</span>B::Hash, number: NumberFor&lt;B&gt;) {
+<a href=#114 id=114 data-nosnippet>114</a>	<span class="kw">fn </span>request_justification(<span class="kw-2">&amp;</span><span class="self">self</span>, hash: <span class="kw-2">&amp;</span>B::Hash, number: NumberFor&lt;B&gt;) {
 <a href=#115 id=115 data-nosnippet>115</a>		<span class="kw">let _ </span>= <span class="self">self
 <a href=#116 id=116 data-nosnippet>116</a>			</span>.tx
 <a href=#117 id=117 data-nosnippet>117</a>			.unbounded_send(BlockImportWorkerMsg::RequestJustification(<span class="kw-2">*</span>hash, number));
@@ -125,12 +125,12 @@
 <a href=#125 id=125 data-nosnippet>125</a>
 <a href=#126 id=126 data-nosnippet>126</a><span class="kw">impl</span>&lt;B: BlockT&gt; BufferedLinkReceiver&lt;B&gt; {
 <a href=#127 id=127 data-nosnippet>127</a>	<span class="doccomment">/// Send action for the synchronization to perform.
-<a href=#128 id=128 data-nosnippet>128</a>	</span><span class="kw">pub fn </span>send_actions(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: BlockImportWorkerMsg&lt;B&gt;, link: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Link&lt;B&gt;) {
+<a href=#128 id=128 data-nosnippet>128</a>	</span><span class="kw">pub fn </span>send_actions(<span class="kw-2">&amp;mut </span><span class="self">self</span>, msg: BlockImportWorkerMsg&lt;B&gt;, link: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Link&lt;B&gt;) {
 <a href=#129 id=129 data-nosnippet>129</a>		<span class="kw">match </span>msg {
 <a href=#130 id=130 data-nosnippet>130</a>			BlockImportWorkerMsg::BlocksProcessed(imported, count, results) =&gt;
 <a href=#131 id=131 data-nosnippet>131</a>				link.blocks_processed(imported, count, results),
-<a href=#132 id=132 data-nosnippet>132</a>			BlockImportWorkerMsg::JustificationImported(who, hash, number, success) =&gt;
-<a href=#133 id=133 data-nosnippet>133</a>				link.justification_imported(who, <span class="kw-2">&amp;</span>hash, number, success),
+<a href=#132 id=132 data-nosnippet>132</a>			BlockImportWorkerMsg::JustificationImported(who, hash, number, import_result) =&gt;
+<a href=#133 id=133 data-nosnippet>133</a>				link.justification_imported(who, <span class="kw-2">&amp;</span>hash, number, import_result),
 <a href=#134 id=134 data-nosnippet>134</a>			BlockImportWorkerMsg::RequestJustification(hash, number) =&gt;
 <a href=#135 id=135 data-nosnippet>135</a>				link.request_justification(<span class="kw-2">&amp;</span>hash, number),
 <a href=#136 id=136 data-nosnippet>136</a>		}
@@ -144,7 +144,7 @@
 <a href=#144 id=144 data-nosnippet>144</a>	/// it is as if this method always returned `Poll::Pending`.
 <a href=#145 id=145 data-nosnippet>145</a>	///
 <a href=#146 id=146 data-nosnippet>146</a>	/// Returns an error if the corresponding [`BufferedLinkSender`] has been closed.
-<a href=#147 id=147 data-nosnippet>147</a>	</span><span class="kw">pub fn </span>poll_actions(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context, link: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Link&lt;B&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
+<a href=#147 id=147 data-nosnippet>147</a>	</span><span class="kw">pub fn </span>poll_actions(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cx: <span class="kw-2">&amp;mut </span>Context, link: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Link&lt;B&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
 <a href=#148 id=148 data-nosnippet>148</a>		<span class="kw">loop </span>{
 <a href=#149 id=149 data-nosnippet>149</a>			<span class="kw">let </span>msg = <span class="kw">match </span>Stream::poll_next(Pin::new(<span class="kw-2">&amp;mut </span><span class="self">self</span>.rx), cx) {
 <a href=#150 id=150 data-nosnippet>150</a>				Poll::Ready(<span class="prelude-val">Some</span>(msg)) =&gt; msg,
@@ -152,12 +152,12 @@
 <a href=#152 id=152 data-nosnippet>152</a>				Poll::Pending =&gt; <span class="kw">break </span><span class="prelude-val">Ok</span>(()),
 <a href=#153 id=153 data-nosnippet>153</a>			};
 <a href=#154 id=154 data-nosnippet>154</a>
-<a href=#155 id=155 data-nosnippet>155</a>			<span class="self">self</span>.send_actions(msg, <span class="kw-2">&amp;mut *</span>link);
+<a href=#155 id=155 data-nosnippet>155</a>			<span class="self">self</span>.send_actions(msg, link);
 <a href=#156 id=156 data-nosnippet>156</a>		}
 <a href=#157 id=157 data-nosnippet>157</a>	}
 <a href=#158 id=158 data-nosnippet>158</a>
 <a href=#159 id=159 data-nosnippet>159</a>	<span class="doccomment">/// Poll next element from import queue and send the corresponding action command over the link.
-<a href=#160 id=160 data-nosnippet>160</a>	</span><span class="kw">pub async fn </span>next_action(<span class="kw-2">&amp;mut </span><span class="self">self</span>, link: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>Link&lt;B&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
+<a href=#160 id=160 data-nosnippet>160</a>	</span><span class="kw">pub async fn </span>next_action(<span class="kw-2">&amp;mut </span><span class="self">self</span>, link: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Link&lt;B&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), ()&gt; {
 <a href=#161 id=161 data-nosnippet>161</a>		<span class="kw">if let </span><span class="prelude-val">Some</span>(msg) = <span class="self">self</span>.rx.next().<span class="kw">await </span>{
 <a href=#162 id=162 data-nosnippet>162</a>			<span class="self">self</span>.send_actions(msg, link);
 <a href=#163 id=163 data-nosnippet>163</a>			<span class="kw">return </span><span class="prelude-val">Ok</span>(())

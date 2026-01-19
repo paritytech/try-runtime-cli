@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Allows defining	view functions on a pallet."><title>view_functions in frame_support::pallet_macros - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc attr"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">view_functions</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../frame_support/index.html">frame_<wbr>support</a><span class="version">28.0.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">view_<wbr>functions</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#syntax" title="Syntax">Syntax</a></li><li><a href="#example" title="Example">Example</a></li><li><a href="#usage-and-implementation-details" title="Usage and implementation details">Usage and implementation details</a></li></ul></section><div id="rustdoc-modnav"><h2><a href="index.html">In frame_<wbr>support::<wbr>pallet_<wbr>macros</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../index.html">frame_support</a>::<wbr><a href="index.html">pallet_macros</a></div><h1>Attribute Macro <span class="attr">view_<wbr>functions</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../src/frame_support_procedural/lib.rs.html#1060">Source</a> </span></div><pre class="rust item-decl"><code>#[view_functions]</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Allows defining	view functions on a pallet.</p>
+<p>A pallet view function is a read-only function providing access to the state of the
+pallet from both outside and inside the runtime. It should provide a <em>stable</em> interface
+for querying the state of the pallet, avoiding direct storage access and upgrading
+along with the runtime.</p>
+<h3 id="syntax"><a class="doc-anchor" href="#syntax">§</a>Syntax</h3>
+<p>View functions methods must be read-only and always return some output. A
+<code>view_functions</code> impl block only allows methods to be defined inside of
+it.</p>
+<h3 id="example"><a class="doc-anchor" href="#example">§</a>Example</h3>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="attr">#[frame_support::pallet]
+</span><span class="kw">pub mod </span>pallet {
+	<span class="kw">use </span>frame_support::pallet_prelude::<span class="kw-2">*</span>;
+
+ 	<span class="attr">#[pallet::config]
+ 	</span><span class="kw">pub trait </span>Config: frame_system::Config {}
+
+ 	<span class="attr">#[pallet::pallet]
+ 	</span><span class="kw">pub struct </span>Pallet&lt;T&gt;(<span class="kw">_</span>);
+
+    <span class="attr">#[pallet::storage]
+	</span><span class="kw">pub type </span>SomeMap&lt;T: Config&gt; = StorageMap&lt;<span class="kw">_</span>, Twox64Concat, u32, u32, OptionQuery&gt;;
+
+    <span class="attr">#[pallet::view_functions]
+    </span><span class="kw">impl</span>&lt;T: Config&gt; Pallet&lt;T&gt; {
+		<span class="doccomment">/// Retrieve a map storage value by key.
+        </span><span class="kw">pub fn </span>get_value_with_arg(key: u32) -&gt; <span class="prelude-ty">Option</span>&lt;u32&gt; {
+			SomeMap::&lt;T&gt;::get(key)
+		}
+    }
+}</code></pre></div><h3 id="usage-and-implementation-details"><a class="doc-anchor" href="#usage-and-implementation-details">§</a>Usage and implementation details</h3>
+<p>To allow outside access to pallet view functions, you need to add a runtime API that
+accepts view function queries and dispatches them to the right pallet. You can do that
+by implementing the
+<a href="../view_functions/runtime_api/trait.RuntimeViewFunction.html" title="trait frame_support::view_functions::runtime_api::RuntimeViewFunction"><code>RuntimeViewFunction</code></a>
+trait for the runtime inside an <a href="../../sp_api_proc_macro/macro.impl_runtime_apis.html" title="macro sp_api_proc_macro::impl_runtime_apis"><code>impl_runtime_apis!</code></a>
+block.</p>
+<p>The <code>RuntimeViewFunction</code> trait implements a hashing-based dispatching mechanism to
+dispatch view functions to the right method in the right pallet based on their IDs. A
+view function ID depends both on its pallet and on its method signature, so it remains
+stable as long as those two elements are not modified. In general, pallet view
+functions should expose a <em>stable</em> interface and changes to the method signature are
+strongly discouraged. For more details on the dispatching mechanism, see the
+<a href="../view_functions/trait.DispatchViewFunction.html" title="trait frame_support::view_functions::DispatchViewFunction"><code>DispatchViewFunction</code></a> trait.</p>
+<hr />
+<p>Documentation for this macro can be found at
+<code>frame_support::pallet_macros::view_functions</code>.</p>
+</div></details></section></div></main></body></html>

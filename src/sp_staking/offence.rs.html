@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/8279d10/substrate/primitives/staking/src/offence.rs`."><title>offence.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_staking" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sp_staking/</div>offence.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/0c70641/substrate/primitives/staking/src/offence.rs`."><title>offence.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_staking" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sp_staking/</div>offence.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -19,7 +19,7 @@
 <a href=#19 id=19 data-nosnippet>19</a>//! that use staking.
 <a href=#20 id=20 data-nosnippet>20</a>
 <a href=#21 id=21 data-nosnippet>21</a></span><span class="kw">use </span>alloc::vec::Vec;
-<a href=#22 id=22 data-nosnippet>22</a><span class="kw">use </span>codec::{Decode, Encode};
+<a href=#22 id=22 data-nosnippet>22</a><span class="kw">use </span>codec::{Decode, Encode, MaxEncodedLen};
 <a href=#23 id=23 data-nosnippet>23</a><span class="kw">use </span>sp_core::Get;
 <a href=#24 id=24 data-nosnippet>24</a><span class="kw">use </span>sp_runtime::{transaction_validity::TransactionValidityError, DispatchError, Perbill};
 <a href=#25 id=25 data-nosnippet>25</a>
@@ -87,7 +87,7 @@
 <a href=#87 id=87 data-nosnippet>87</a>}
 <a href=#88 id=88 data-nosnippet>88</a>
 <a href=#89 id=89 data-nosnippet>89</a><span class="doccomment">/// Errors that may happen on offence reports.
-<a href=#90 id=90 data-nosnippet>90</a></span><span class="attr">#[derive(PartialEq, sp_runtime::RuntimeDebug)]
+<a href=#90 id=90 data-nosnippet>90</a></span><span class="attr">#[derive(PartialEq, Debug)]
 <a href=#91 id=91 data-nosnippet>91</a></span><span class="kw">pub enum </span>OffenceError {
 <a href=#92 id=92 data-nosnippet>92</a>	<span class="doccomment">/// The report has already been submitted.
 <a href=#93 id=93 data-nosnippet>93</a>	</span>DuplicateReport,
@@ -169,7 +169,7 @@
 <a href=#169 id=169 data-nosnippet>169</a>}
 <a href=#170 id=170 data-nosnippet>170</a>
 <a href=#171 id=171 data-nosnippet>171</a><span class="doccomment">/// A details about an offending authority for a particular kind of offence.
-<a href=#172 id=172 data-nosnippet>172</a></span><span class="attr">#[derive(Clone, PartialEq, Eq, Encode, Decode, sp_runtime::RuntimeDebug, scale_info::TypeInfo)]
+<a href=#172 id=172 data-nosnippet>172</a></span><span class="attr">#[derive(Clone, PartialEq, Eq, Encode, Decode, Debug, scale_info::TypeInfo)]
 <a href=#173 id=173 data-nosnippet>173</a></span><span class="kw">pub struct </span>OffenceDetails&lt;Reporter, Offender&gt; {
 <a href=#174 id=174 data-nosnippet>174</a>	<span class="doccomment">/// The offending authority id
 <a href=#175 id=175 data-nosnippet>175</a>	</span><span class="kw">pub </span>offender: Offender,
@@ -241,4 +241,57 @@
 <a href=#241 id=241 data-nosnippet>241</a>	<span class="kw">fn </span>process_evidence(_reporter: Reporter, _evidence: Evidence) -&gt; <span class="prelude-ty">Result</span>&lt;(), DispatchError&gt; {
 <a href=#242 id=242 data-nosnippet>242</a>		<span class="prelude-val">Ok</span>(())
 <a href=#243 id=243 data-nosnippet>243</a>	}
-<a href=#244 id=244 data-nosnippet>244</a>}</code></pre></div></section></main></body></html>
+<a href=#244 id=244 data-nosnippet>244</a>}
+<a href=#245 id=245 data-nosnippet>245</a>
+<a href=#246 id=246 data-nosnippet>246</a><span class="doccomment">/// Wrapper type representing the severity of an offence.
+<a href=#247 id=247 data-nosnippet>247</a>///
+<a href=#248 id=248 data-nosnippet>248</a>/// As of now the only meaningful value taken into account
+<a href=#249 id=249 data-nosnippet>249</a>/// when deciding the severity of an offence is the associated
+<a href=#250 id=250 data-nosnippet>250</a>/// slash amount `Perbill`.
+<a href=#251 id=251 data-nosnippet>251</a>///
+<a href=#252 id=252 data-nosnippet>252</a>/// For instance used for the purposes of distinguishing who should be
+<a href=#253 id=253 data-nosnippet>253</a>/// prioritized for disablement.
+<a href=#254 id=254 data-nosnippet>254</a></span><span class="attr">#[derive(
+<a href=#255 id=255 data-nosnippet>255</a>	Clone,
+<a href=#256 id=256 data-nosnippet>256</a>	Copy,
+<a href=#257 id=257 data-nosnippet>257</a>	PartialEq,
+<a href=#258 id=258 data-nosnippet>258</a>	Eq,
+<a href=#259 id=259 data-nosnippet>259</a>	Encode,
+<a href=#260 id=260 data-nosnippet>260</a>	Decode,
+<a href=#261 id=261 data-nosnippet>261</a>	MaxEncodedLen,
+<a href=#262 id=262 data-nosnippet>262</a>	core::fmt::Debug,
+<a href=#263 id=263 data-nosnippet>263</a>	scale_info::TypeInfo,
+<a href=#264 id=264 data-nosnippet>264</a>)]
+<a href=#265 id=265 data-nosnippet>265</a></span><span class="kw">pub struct </span>OffenceSeverity(<span class="kw">pub </span>Perbill);
+<a href=#266 id=266 data-nosnippet>266</a>
+<a href=#267 id=267 data-nosnippet>267</a><span class="kw">impl </span>OffenceSeverity {
+<a href=#268 id=268 data-nosnippet>268</a>	<span class="doccomment">/// Returns the maximum severity.
+<a href=#269 id=269 data-nosnippet>269</a>	</span><span class="kw">pub fn </span>max_severity() -&gt; <span class="self">Self </span>{
+<a href=#270 id=270 data-nosnippet>270</a>		<span class="self">Self</span>(Perbill::from_percent(<span class="number">100</span>))
+<a href=#271 id=271 data-nosnippet>271</a>	}
+<a href=#272 id=272 data-nosnippet>272</a>
+<a href=#273 id=273 data-nosnippet>273</a>	<span class="doccomment">/// Returns the minimum severity.
+<a href=#274 id=274 data-nosnippet>274</a>	</span><span class="kw">pub fn </span>min_severity() -&gt; <span class="self">Self </span>{
+<a href=#275 id=275 data-nosnippet>275</a>		<span class="self">Self</span>(Perbill::from_percent(<span class="number">0</span>))
+<a href=#276 id=276 data-nosnippet>276</a>	}
+<a href=#277 id=277 data-nosnippet>277</a>}
+<a href=#278 id=278 data-nosnippet>278</a>
+<a href=#279 id=279 data-nosnippet>279</a><span class="kw">impl </span>Default <span class="kw">for </span>OffenceSeverity {
+<a href=#280 id=280 data-nosnippet>280</a>	<span class="doccomment">/// Default is the maximum severity.
+<a href=#281 id=281 data-nosnippet>281</a>	/// When severity is unclear it is best to assume the worst.
+<a href=#282 id=282 data-nosnippet>282</a>	</span><span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+<a href=#283 id=283 data-nosnippet>283</a>		<span class="self">Self</span>::max_severity()
+<a href=#284 id=284 data-nosnippet>284</a>	}
+<a href=#285 id=285 data-nosnippet>285</a>}
+<a href=#286 id=286 data-nosnippet>286</a>
+<a href=#287 id=287 data-nosnippet>287</a><span class="kw">impl </span>PartialOrd <span class="kw">for </span>OffenceSeverity {
+<a href=#288 id=288 data-nosnippet>288</a>	<span class="kw">fn </span>partial_cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;core::cmp::Ordering&gt; {
+<a href=#289 id=289 data-nosnippet>289</a>		<span class="self">self</span>.<span class="number">0</span>.partial_cmp(<span class="kw-2">&amp;</span>other.<span class="number">0</span>)
+<a href=#290 id=290 data-nosnippet>290</a>	}
+<a href=#291 id=291 data-nosnippet>291</a>}
+<a href=#292 id=292 data-nosnippet>292</a>
+<a href=#293 id=293 data-nosnippet>293</a><span class="kw">impl </span>Ord <span class="kw">for </span>OffenceSeverity {
+<a href=#294 id=294 data-nosnippet>294</a>	<span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; core::cmp::Ordering {
+<a href=#295 id=295 data-nosnippet>295</a>		<span class="self">self</span>.<span class="number">0</span>.cmp(<span class="kw-2">&amp;</span>other.<span class="number">0</span>)
+<a href=#296 id=296 data-nosnippet>296</a>	}
+<a href=#297 id=297 data-nosnippet>297</a>}</code></pre></div></section></main></body></html>

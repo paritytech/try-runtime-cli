@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Reloc"],"struct":["CodeInfo","StackMap"],"type":["Addend","CodeOffset"]};
+window.SIDEBAR_ITEMS = {"enum":["Reloc"],"struct":["CodeInfo"],"type":["Addend","CodeOffset"]};

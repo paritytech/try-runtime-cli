@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hickory-proto-0.24.4/src/rr/rdata/srv.rs`."><title>srv.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="hickory_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">hickory_proto/rr/rdata/</div>srv.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2015-2023 Benjamin Fry &lt;benjaminfry@me.com&gt;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hickory-proto-0.25.2/src/rr/rdata/srv.rs`."><title>srv.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="hickory_proto" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">hickory_proto/rr/rdata/</div>srv.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2015-2023 Benjamin Fry &lt;benjaminfry@me.com&gt;
 <a href=#2 id=2 data-nosnippet>2</a>//
 <a href=#3 id=3 data-nosnippet>3</a>// Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
 <a href=#4 id=4 data-nosnippet>4</a>// https://apache.org/licenses/LICENSE-2.0&gt; or the MIT license &lt;LICENSE-MIT or
@@ -6,14 +6,14 @@
 <a href=#6 id=6 data-nosnippet>6</a>// copied, modified, or distributed except according to those terms.
 <a href=#7 id=7 data-nosnippet>7</a>
 <a href=#8 id=8 data-nosnippet>8</a></span><span class="doccomment">//! service records for identify port mapping for specific services on a host
-<a href=#9 id=9 data-nosnippet>9</a></span><span class="kw">use </span>std::fmt;
+<a href=#9 id=9 data-nosnippet>9</a></span><span class="kw">use </span>core::fmt;
 <a href=#10 id=10 data-nosnippet>10</a>
-<a href=#11 id=11 data-nosnippet>11</a><span class="attr">#[cfg(feature = <span class="string">"serde-config"</span>)]
+<a href=#11 id=11 data-nosnippet>11</a><span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
 <a href=#12 id=12 data-nosnippet>12</a></span><span class="kw">use </span>serde::{Deserialize, Serialize};
 <a href=#13 id=13 data-nosnippet>13</a>
 <a href=#14 id=14 data-nosnippet>14</a><span class="kw">use crate</span>::{
 <a href=#15 id=15 data-nosnippet>15</a>    error::ProtoResult,
-<a href=#16 id=16 data-nosnippet>16</a>    rr::{domain::Name, RData, RecordData, RecordType},
+<a href=#16 id=16 data-nosnippet>16</a>    rr::{RData, RecordData, RecordType, domain::Name},
 <a href=#17 id=17 data-nosnippet>17</a>    serialize::binary::{BinDecodable, BinDecoder, BinEncodable, BinEncoder},
 <a href=#18 id=18 data-nosnippet>18</a>};
 <a href=#19 id=19 data-nosnippet>19</a>
@@ -77,7 +77,7 @@
 <a href=#77 id=77 data-nosnippet>77</a>/// Class.
 <a href=#78 id=78 data-nosnippet>78</a>///
 <a href=#79 id=79 data-nosnippet>79</a>/// ```
-<a href=#80 id=80 data-nosnippet>80</a></span><span class="attr">#[cfg_attr(feature = <span class="string">"serde-config"</span>, derive(Deserialize, Serialize))]
+<a href=#80 id=80 data-nosnippet>80</a></span><span class="attr">#[cfg_attr(feature = <span class="string">"serde"</span>, derive(Deserialize, Serialize))]
 <a href=#81 id=81 data-nosnippet>81</a>#[derive(Debug, PartialEq, Eq, Hash, Clone)]
 <a href=#82 id=82 data-nosnippet>82</a></span><span class="kw">pub struct </span>SRV {
 <a href=#83 id=83 data-nosnippet>83</a>    priority: u16,
@@ -92,7 +92,7 @@
 <a href=#92 id=92 data-nosnippet>92</a>    /// # Arguments
 <a href=#93 id=93 data-nosnippet>93</a>    ///
 <a href=#94 id=94 data-nosnippet>94</a>    /// * `priority` - lower values have a higher priority and clients will attempt to use these
-<a href=#95 id=95 data-nosnippet>95</a>    ///                first.
+<a href=#95 id=95 data-nosnippet>95</a>    ///   first.
 <a href=#96 id=96 data-nosnippet>96</a>    /// * `weight` - for servers with the same priority, higher weights will be chosen more often.
 <a href=#97 id=97 data-nosnippet>97</a>    /// * `port` - the socket port number on which the service is listening.
 <a href=#98 id=98 data-nosnippet>98</a>    /// * `target` - like CNAME, this is the target domain name to which the service is associated.
@@ -287,24 +287,29 @@
 <a href=#287 id=287 data-nosnippet>287</a></span><span class="kw">mod </span>tests {
 <a href=#288 id=288 data-nosnippet>288</a>    <span class="attr">#![allow(clippy::dbg_macro, clippy::print_stdout)]
 <a href=#289 id=289 data-nosnippet>289</a>
-<a href=#290 id=290 data-nosnippet>290</a>    </span><span class="kw">use super</span>::<span class="kw-2">*</span>;
-<a href=#291 id=291 data-nosnippet>291</a>
-<a href=#292 id=292 data-nosnippet>292</a>    <span class="attr">#[test]
-<a href=#293 id=293 data-nosnippet>293</a>    </span><span class="kw">fn </span>test() {
-<a href=#294 id=294 data-nosnippet>294</a>        <span class="kw">use </span>std::str::FromStr;
+<a href=#290 id=290 data-nosnippet>290</a>    </span><span class="kw">use </span>alloc::vec::Vec;
+<a href=#291 id=291 data-nosnippet>291</a>    <span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
+<a href=#292 id=292 data-nosnippet>292</a>    </span><span class="kw">use </span>std::println;
+<a href=#293 id=293 data-nosnippet>293</a>
+<a href=#294 id=294 data-nosnippet>294</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#295 id=295 data-nosnippet>295</a>
-<a href=#296 id=296 data-nosnippet>296</a>        <span class="kw">let </span>rdata = SRV::new(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, Name::from_str(<span class="string">"_dns._tcp.example.com"</span>).unwrap());
-<a href=#297 id=297 data-nosnippet>297</a>
-<a href=#298 id=298 data-nosnippet>298</a>        <span class="kw">let </span><span class="kw-2">mut </span>bytes = Vec::new();
-<a href=#299 id=299 data-nosnippet>299</a>        <span class="kw">let </span><span class="kw-2">mut </span>encoder: BinEncoder&lt;<span class="lifetime">'_</span>&gt; = BinEncoder::new(<span class="kw-2">&amp;mut </span>bytes);
-<a href=#300 id=300 data-nosnippet>300</a>        <span class="macro">assert!</span>(rdata.emit(<span class="kw-2">&amp;mut </span>encoder).is_ok());
-<a href=#301 id=301 data-nosnippet>301</a>        <span class="kw">let </span>bytes = encoder.into_bytes();
-<a href=#302 id=302 data-nosnippet>302</a>
-<a href=#303 id=303 data-nosnippet>303</a>        <span class="macro">println!</span>(<span class="string">"bytes: {bytes:?}"</span>);
-<a href=#304 id=304 data-nosnippet>304</a>
-<a href=#305 id=305 data-nosnippet>305</a>        <span class="kw">let </span><span class="kw-2">mut </span>decoder: BinDecoder&lt;<span class="lifetime">'_</span>&gt; = BinDecoder::new(bytes);
+<a href=#296 id=296 data-nosnippet>296</a>    <span class="attr">#[test]
+<a href=#297 id=297 data-nosnippet>297</a>    </span><span class="kw">fn </span>test() {
+<a href=#298 id=298 data-nosnippet>298</a>        <span class="kw">use </span>core::str::FromStr;
+<a href=#299 id=299 data-nosnippet>299</a>
+<a href=#300 id=300 data-nosnippet>300</a>        <span class="kw">let </span>rdata = SRV::new(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, Name::from_str(<span class="string">"_dns._tcp.example.com."</span>).unwrap());
+<a href=#301 id=301 data-nosnippet>301</a>
+<a href=#302 id=302 data-nosnippet>302</a>        <span class="kw">let </span><span class="kw-2">mut </span>bytes = Vec::new();
+<a href=#303 id=303 data-nosnippet>303</a>        <span class="kw">let </span><span class="kw-2">mut </span>encoder: BinEncoder&lt;<span class="lifetime">'_</span>&gt; = BinEncoder::new(<span class="kw-2">&amp;mut </span>bytes);
+<a href=#304 id=304 data-nosnippet>304</a>        <span class="macro">assert!</span>(rdata.emit(<span class="kw-2">&amp;mut </span>encoder).is_ok());
+<a href=#305 id=305 data-nosnippet>305</a>        <span class="kw">let </span>bytes = encoder.into_bytes();
 <a href=#306 id=306 data-nosnippet>306</a>
-<a href=#307 id=307 data-nosnippet>307</a>        <span class="kw">let </span>read_rdata = SRV::read(<span class="kw-2">&amp;mut </span>decoder).expect(<span class="string">"Decoding error"</span>);
-<a href=#308 id=308 data-nosnippet>308</a>        <span class="macro">assert_eq!</span>(rdata, read_rdata);
-<a href=#309 id=309 data-nosnippet>309</a>    }
-<a href=#310 id=310 data-nosnippet>310</a>}</code></pre></div></section></main></body></html>
+<a href=#307 id=307 data-nosnippet>307</a>        <span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
+<a href=#308 id=308 data-nosnippet>308</a>        </span><span class="macro">println!</span>(<span class="string">"bytes: {bytes:?}"</span>);
+<a href=#309 id=309 data-nosnippet>309</a>
+<a href=#310 id=310 data-nosnippet>310</a>        <span class="kw">let </span><span class="kw-2">mut </span>decoder: BinDecoder&lt;<span class="lifetime">'_</span>&gt; = BinDecoder::new(bytes);
+<a href=#311 id=311 data-nosnippet>311</a>
+<a href=#312 id=312 data-nosnippet>312</a>        <span class="kw">let </span>read_rdata = SRV::read(<span class="kw-2">&amp;mut </span>decoder).expect(<span class="string">"Decoding error"</span>);
+<a href=#313 id=313 data-nosnippet>313</a>        <span class="macro">assert_eq!</span>(rdata, read_rdata);
+<a href=#314 id=314 data-nosnippet>314</a>    }
+<a href=#315 id=315 data-nosnippet>315</a>}</code></pre></div></section></main></body></html>

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["get_last_relay_chain_block_number","get_para_id"],"struct":["InherentDataProvider"]};
+window.SIDEBAR_ITEMS = {"fn":["get_para_id"],"struct":["InherentDataProvider"]};

@@ -1,0 +1,9 @@
+(function() {
+    var implementors = Object.fromEntries([["cranelift_assembler_x64",[]],["cranelift_codegen",[["impl <a class=\"trait\" href=\"cranelift_assembler_x64/api/trait.AsReg.html\" title=\"trait cranelift_assembler_x64::api::AsReg\">AsReg</a> for <a class=\"struct\" href=\"cranelift_codegen/isa/x64/args/struct.Gpr.html\" title=\"struct cranelift_codegen::isa::x64::args::Gpr\">Gpr</a>"],["impl <a class=\"trait\" href=\"cranelift_assembler_x64/api/trait.AsReg.html\" title=\"trait cranelift_assembler_x64::api::AsReg\">AsReg</a> for <a class=\"struct\" href=\"cranelift_codegen/isa/x64/args/struct.Xmm.html\" title=\"struct cranelift_codegen::isa::x64::args::Xmm\">Xmm</a>"],["impl <a class=\"trait\" href=\"cranelift_assembler_x64/api/trait.AsReg.html\" title=\"trait cranelift_assembler_x64::api::AsReg\">AsReg</a> for <a class=\"struct\" href=\"cranelift_codegen/isa/x64/external/struct.PairedGpr.html\" title=\"struct cranelift_codegen::isa::x64::external::PairedGpr\">PairedGpr</a>"],["impl <a class=\"trait\" href=\"cranelift_assembler_x64/api/trait.AsReg.html\" title=\"trait cranelift_assembler_x64::api::AsReg\">AsReg</a> for <a class=\"struct\" href=\"cranelift_codegen/isa/x64/external/struct.PairedXmm.html\" title=\"struct cranelift_codegen::isa::x64::external::PairedXmm\">PairedXmm</a>"],["impl&lt;R: <a class=\"trait\" href=\"cranelift_assembler_x64/api/trait.AsReg.html\" title=\"trait cranelift_assembler_x64::api::AsReg\">AsReg</a>&gt; <a class=\"trait\" href=\"cranelift_assembler_x64/api/trait.AsReg.html\" title=\"trait cranelift_assembler_x64::api::AsReg\">AsReg</a> for <a class=\"struct\" href=\"cranelift_codegen/struct.Writable.html\" title=\"struct cranelift_codegen::Writable\">Writable</a>&lt;R&gt;"]]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":57,"fragment_lengths":[30,1656]}

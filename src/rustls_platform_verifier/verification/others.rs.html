@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustls-platform-verifier-0.3.4/src/verification/others.rs`."><title>others.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rustls_platform_verifier" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rustls_platform_verifier/verification/</div>others.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">super</span>::log_server_cert;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustls-platform-verifier-0.5.3/src/verification/others.rs`."><title>others.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rustls_platform_verifier" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rustls_platform_verifier/verification/</div>others.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">super</span>::log_server_cert;
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span>once_cell::sync::OnceCell;
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span>rustls::client::danger::{HandshakeSignatureValid, ServerCertVerified, ServerCertVerifier};
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span>rustls::client::WebPkiServerVerifier;
@@ -54,190 +54,184 @@
 <a href=#54 id=54 data-nosnippet>54</a>    /// WebPKI, using root certificates provided by the platform and augmented by
 <a href=#55 id=55 data-nosnippet>55</a>    /// the provided extra root certificates.
 <a href=#56 id=56 data-nosnippet>56</a>    </span><span class="kw">pub fn </span>new_with_extra_roots(
-<a href=#57 id=57 data-nosnippet>57</a>        roots: <span class="kw">impl </span>IntoIterator&lt;Item = pki_types::TrustAnchor&lt;<span class="lifetime">'static</span>&gt;&gt;,
-<a href=#58 id=58 data-nosnippet>58</a>    ) -&gt; <span class="self">Self </span>{
-<a href=#59 id=59 data-nosnippet>59</a>        <span class="self">Self </span>{
+<a href=#57 id=57 data-nosnippet>57</a>        roots: <span class="kw">impl </span>IntoIterator&lt;Item = pki_types::CertificateDer&lt;<span class="lifetime">'static</span>&gt;&gt;,
+<a href=#58 id=58 data-nosnippet>58</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, TlsError&gt; {
+<a href=#59 id=59 data-nosnippet>59</a>        <span class="prelude-val">Ok</span>(<span class="self">Self </span>{
 <a href=#60 id=60 data-nosnippet>60</a>            inner: OnceCell::new(),
-<a href=#61 id=61 data-nosnippet>61</a>            extra_roots: roots.into_iter().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;().into(),
-<a href=#62 id=62 data-nosnippet>62</a>            <span class="attr">#[cfg(any(test, feature = <span class="string">"ffi-testing"</span>, feature = <span class="string">"dbg"</span>))]
-<a href=#63 id=63 data-nosnippet>63</a>            </span>test_only_root_ca_override: <span class="prelude-val">None</span>,
-<a href=#64 id=64 data-nosnippet>64</a>            crypto_provider: OnceCell::new(),
-<a href=#65 id=65 data-nosnippet>65</a>        }
-<a href=#66 id=66 data-nosnippet>66</a>    }
-<a href=#67 id=67 data-nosnippet>67</a>
-<a href=#68 id=68 data-nosnippet>68</a>    <span class="doccomment">/// Creates a test-only TLS certificate verifier which trusts our fake root CA cert.
-<a href=#69 id=69 data-nosnippet>69</a>    </span><span class="attr">#[cfg(any(test, feature = <span class="string">"ffi-testing"</span>, feature = <span class="string">"dbg"</span>))]
-<a href=#70 id=70 data-nosnippet>70</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new_with_fake_root(root: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="self">Self </span>{
-<a href=#71 id=71 data-nosnippet>71</a>        <span class="self">Self </span>{
-<a href=#72 id=72 data-nosnippet>72</a>            inner: OnceCell::new(),
-<a href=#73 id=73 data-nosnippet>73</a>            extra_roots: Vec::new().into(),
-<a href=#74 id=74 data-nosnippet>74</a>            test_only_root_ca_override: <span class="prelude-val">Some</span>(root.into()),
-<a href=#75 id=75 data-nosnippet>75</a>            crypto_provider: OnceCell::new(),
-<a href=#76 id=76 data-nosnippet>76</a>        }
-<a href=#77 id=77 data-nosnippet>77</a>    }
-<a href=#78 id=78 data-nosnippet>78</a>
-<a href=#79 id=79 data-nosnippet>79</a>    <span class="kw">fn </span>get_or_init_verifier(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>Arc&lt;WebPkiServerVerifier&gt;, TlsError&gt; {
-<a href=#80 id=80 data-nosnippet>80</a>        <span class="self">self</span>.inner.get_or_try_init(|| <span class="self">self</span>.init_verifier())
-<a href=#81 id=81 data-nosnippet>81</a>    }
-<a href=#82 id=82 data-nosnippet>82</a>
-<a href=#83 id=83 data-nosnippet>83</a>    <span class="comment">// Attempt to load CA root certificates present on system, fallback to WebPKI roots if error
-<a href=#84 id=84 data-nosnippet>84</a>    </span><span class="kw">fn </span>init_verifier(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Arc&lt;WebPkiServerVerifier&gt;, TlsError&gt; {
-<a href=#85 id=85 data-nosnippet>85</a>        <span class="kw">let </span><span class="kw-2">mut </span>root_store = rustls::RootCertStore::empty();
-<a href=#86 id=86 data-nosnippet>86</a>
-<a href=#87 id=87 data-nosnippet>87</a>        <span class="comment">// For testing only: load fake root cert, instead of native/WebPKI roots
-<a href=#88 id=88 data-nosnippet>88</a>        </span><span class="attr">#[cfg(any(test, feature = <span class="string">"ffi-testing"</span>, feature = <span class="string">"dbg"</span>))]
-<a href=#89 id=89 data-nosnippet>89</a>        </span>{
-<a href=#90 id=90 data-nosnippet>90</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(test_root) = <span class="kw-2">&amp;</span><span class="self">self</span>.test_only_root_ca_override {
-<a href=#91 id=91 data-nosnippet>91</a>                <span class="kw">let </span>(added, ignored) =
-<a href=#92 id=92 data-nosnippet>92</a>                    root_store.add_parsable_certificates([pki_types::CertificateDer::from(
-<a href=#93 id=93 data-nosnippet>93</a>                        test_root.as_ref(),
-<a href=#94 id=94 data-nosnippet>94</a>                    )]);
-<a href=#95 id=95 data-nosnippet>95</a>                <span class="kw">if </span>(added != <span class="number">1</span>) || (ignored != <span class="number">0</span>) {
-<a href=#96 id=96 data-nosnippet>96</a>                    <span class="macro">panic!</span>(<span class="string">"Failed to insert fake, test-only root trust anchor"</span>);
-<a href=#97 id=97 data-nosnippet>97</a>                }
-<a href=#98 id=98 data-nosnippet>98</a>                <span class="kw">return </span><span class="prelude-val">Ok</span>(WebPkiServerVerifier::builder_with_provider(
-<a href=#99 id=99 data-nosnippet>99</a>                    root_store.into(),
-<a href=#100 id=100 data-nosnippet>100</a>                    Arc::clone(<span class="self">self</span>.get_provider()),
-<a href=#101 id=101 data-nosnippet>101</a>                )
-<a href=#102 id=102 data-nosnippet>102</a>                .build()
-<a href=#103 id=103 data-nosnippet>103</a>                .unwrap());
-<a href=#104 id=104 data-nosnippet>104</a>            }
-<a href=#105 id=105 data-nosnippet>105</a>        }
-<a href=#106 id=106 data-nosnippet>106</a>
-<a href=#107 id=107 data-nosnippet>107</a>        <span class="comment">// Safety: There's no way for the mutex to be locked multiple times, so this is
-<a href=#108 id=108 data-nosnippet>108</a>        // an infallible operation.
-<a href=#109 id=109 data-nosnippet>109</a>        </span><span class="kw">let </span><span class="kw-2">mut </span>extra_roots = <span class="self">self</span>.extra_roots.try_lock().unwrap();
-<a href=#110 id=110 data-nosnippet>110</a>        <span class="kw">if </span>!extra_roots.is_empty() {
-<a href=#111 id=111 data-nosnippet>111</a>            <span class="kw">let </span>count = extra_roots.len();
-<a href=#112 id=112 data-nosnippet>112</a>            root_store.extend(extra_roots.drain(..));
-<a href=#113 id=113 data-nosnippet>113</a>            <span class="macro">log::debug!</span>(
-<a href=#114 id=114 data-nosnippet>114</a>                <span class="string">"Loaded {count} extra CA certificates in addition to possible system roots"</span>,
-<a href=#115 id=115 data-nosnippet>115</a>            );
-<a href=#116 id=116 data-nosnippet>116</a>        }
-<a href=#117 id=117 data-nosnippet>117</a>
-<a href=#118 id=118 data-nosnippet>118</a>        <span class="attr">#[cfg(all(
-<a href=#119 id=119 data-nosnippet>119</a>            unix,
-<a href=#120 id=120 data-nosnippet>120</a>            not(target_os = <span class="string">"android"</span>),
-<a href=#121 id=121 data-nosnippet>121</a>            not(target_os = <span class="string">"macos"</span>),
-<a href=#122 id=122 data-nosnippet>122</a>            not(target_os = <span class="string">"ios"</span>),
-<a href=#123 id=123 data-nosnippet>123</a>            not(target_os = <span class="string">"tvos"</span>),
-<a href=#124 id=124 data-nosnippet>124</a>            not(target_arch = <span class="string">"wasm32"</span>),
-<a href=#125 id=125 data-nosnippet>125</a>        ))]
-<a href=#126 id=126 data-nosnippet>126</a>        </span><span class="kw">match </span>rustls_native_certs::load_native_certs() {
-<a href=#127 id=127 data-nosnippet>127</a>            <span class="prelude-val">Ok</span>(certs) =&gt; {
-<a href=#128 id=128 data-nosnippet>128</a>                <span class="kw">let </span>(added, ignored) = root_store.add_parsable_certificates(certs);
-<a href=#129 id=129 data-nosnippet>129</a>
-<a href=#130 id=130 data-nosnippet>130</a>                <span class="kw">if </span>ignored != <span class="number">0 </span>{
-<a href=#131 id=131 data-nosnippet>131</a>                    <span class="macro">log::warn!</span>(<span class="string">"Some CA root certificates were ignored due to errors"</span>);
-<a href=#132 id=132 data-nosnippet>132</a>                }
-<a href=#133 id=133 data-nosnippet>133</a>
-<a href=#134 id=134 data-nosnippet>134</a>                <span class="kw">if </span>root_store.is_empty() {
-<a href=#135 id=135 data-nosnippet>135</a>                    <span class="macro">log::error!</span>(<span class="string">"No CA certificates were loaded from the system"</span>);
-<a href=#136 id=136 data-nosnippet>136</a>                } <span class="kw">else </span>{
-<a href=#137 id=137 data-nosnippet>137</a>                    <span class="macro">log::debug!</span>(<span class="string">"Loaded {added} CA certificates from the system"</span>);
-<a href=#138 id=138 data-nosnippet>138</a>                }
+<a href=#61 id=61 data-nosnippet>61</a>            extra_roots: roots
+<a href=#62 id=62 data-nosnippet>62</a>                .into_iter()
+<a href=#63 id=63 data-nosnippet>63</a>                .flat_map(|root| {
+<a href=#64 id=64 data-nosnippet>64</a>                    webpki::anchor_from_trusted_cert(<span class="kw-2">&amp;</span>root).map(|anchor| anchor.to_owned())
+<a href=#65 id=65 data-nosnippet>65</a>                })
+<a href=#66 id=66 data-nosnippet>66</a>                .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
+<a href=#67 id=67 data-nosnippet>67</a>                .into(),
+<a href=#68 id=68 data-nosnippet>68</a>            <span class="attr">#[cfg(any(test, feature = <span class="string">"ffi-testing"</span>, feature = <span class="string">"dbg"</span>))]
+<a href=#69 id=69 data-nosnippet>69</a>            </span>test_only_root_ca_override: <span class="prelude-val">None</span>,
+<a href=#70 id=70 data-nosnippet>70</a>            crypto_provider: OnceCell::new(),
+<a href=#71 id=71 data-nosnippet>71</a>        })
+<a href=#72 id=72 data-nosnippet>72</a>    }
+<a href=#73 id=73 data-nosnippet>73</a>
+<a href=#74 id=74 data-nosnippet>74</a>    <span class="doccomment">/// Creates a test-only TLS certificate verifier which trusts our fake root CA cert.
+<a href=#75 id=75 data-nosnippet>75</a>    </span><span class="attr">#[cfg(any(test, feature = <span class="string">"ffi-testing"</span>, feature = <span class="string">"dbg"</span>))]
+<a href=#76 id=76 data-nosnippet>76</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new_with_fake_root(root: <span class="kw-2">&amp;</span>[u8]) -&gt; <span class="self">Self </span>{
+<a href=#77 id=77 data-nosnippet>77</a>        <span class="self">Self </span>{
+<a href=#78 id=78 data-nosnippet>78</a>            inner: OnceCell::new(),
+<a href=#79 id=79 data-nosnippet>79</a>            extra_roots: Vec::new().into(),
+<a href=#80 id=80 data-nosnippet>80</a>            test_only_root_ca_override: <span class="prelude-val">Some</span>(root.into()),
+<a href=#81 id=81 data-nosnippet>81</a>            crypto_provider: OnceCell::new(),
+<a href=#82 id=82 data-nosnippet>82</a>        }
+<a href=#83 id=83 data-nosnippet>83</a>    }
+<a href=#84 id=84 data-nosnippet>84</a>
+<a href=#85 id=85 data-nosnippet>85</a>    <span class="kw">fn </span>get_or_init_verifier(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>Arc&lt;WebPkiServerVerifier&gt;, TlsError&gt; {
+<a href=#86 id=86 data-nosnippet>86</a>        <span class="self">self</span>.inner.get_or_try_init(|| <span class="self">self</span>.init_verifier())
+<a href=#87 id=87 data-nosnippet>87</a>    }
+<a href=#88 id=88 data-nosnippet>88</a>
+<a href=#89 id=89 data-nosnippet>89</a>    <span class="comment">// Attempt to load CA root certificates present on system, fallback to WebPKI roots if error
+<a href=#90 id=90 data-nosnippet>90</a>    </span><span class="kw">fn </span>init_verifier(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;Arc&lt;WebPkiServerVerifier&gt;, TlsError&gt; {
+<a href=#91 id=91 data-nosnippet>91</a>        <span class="kw">let </span><span class="kw-2">mut </span>root_store = rustls::RootCertStore::empty();
+<a href=#92 id=92 data-nosnippet>92</a>
+<a href=#93 id=93 data-nosnippet>93</a>        <span class="comment">// For testing only: load fake root cert, instead of native/WebPKI roots
+<a href=#94 id=94 data-nosnippet>94</a>        </span><span class="attr">#[cfg(any(test, feature = <span class="string">"ffi-testing"</span>, feature = <span class="string">"dbg"</span>))]
+<a href=#95 id=95 data-nosnippet>95</a>        </span>{
+<a href=#96 id=96 data-nosnippet>96</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(test_root) = <span class="kw-2">&amp;</span><span class="self">self</span>.test_only_root_ca_override {
+<a href=#97 id=97 data-nosnippet>97</a>                <span class="kw">let </span>(added, ignored) =
+<a href=#98 id=98 data-nosnippet>98</a>                    root_store.add_parsable_certificates([pki_types::CertificateDer::from(
+<a href=#99 id=99 data-nosnippet>99</a>                        test_root.as_ref(),
+<a href=#100 id=100 data-nosnippet>100</a>                    )]);
+<a href=#101 id=101 data-nosnippet>101</a>                <span class="kw">if </span>(added != <span class="number">1</span>) || (ignored != <span class="number">0</span>) {
+<a href=#102 id=102 data-nosnippet>102</a>                    <span class="macro">panic!</span>(<span class="string">"Failed to insert fake, test-only root trust anchor"</span>);
+<a href=#103 id=103 data-nosnippet>103</a>                }
+<a href=#104 id=104 data-nosnippet>104</a>                <span class="kw">return </span><span class="prelude-val">Ok</span>(WebPkiServerVerifier::builder_with_provider(
+<a href=#105 id=105 data-nosnippet>105</a>                    root_store.into(),
+<a href=#106 id=106 data-nosnippet>106</a>                    Arc::clone(<span class="self">self</span>.get_provider()),
+<a href=#107 id=107 data-nosnippet>107</a>                )
+<a href=#108 id=108 data-nosnippet>108</a>                .build()
+<a href=#109 id=109 data-nosnippet>109</a>                .unwrap());
+<a href=#110 id=110 data-nosnippet>110</a>            }
+<a href=#111 id=111 data-nosnippet>111</a>        }
+<a href=#112 id=112 data-nosnippet>112</a>
+<a href=#113 id=113 data-nosnippet>113</a>        <span class="comment">// Safety: There's no way for the mutex to be locked multiple times, so this is
+<a href=#114 id=114 data-nosnippet>114</a>        // an infallible operation.
+<a href=#115 id=115 data-nosnippet>115</a>        </span><span class="kw">let </span><span class="kw-2">mut </span>extra_roots = <span class="self">self</span>.extra_roots.try_lock().unwrap();
+<a href=#116 id=116 data-nosnippet>116</a>        <span class="kw">if </span>!extra_roots.is_empty() {
+<a href=#117 id=117 data-nosnippet>117</a>            <span class="kw">let </span>count = extra_roots.len();
+<a href=#118 id=118 data-nosnippet>118</a>            root_store.extend(extra_roots.drain(..));
+<a href=#119 id=119 data-nosnippet>119</a>            <span class="macro">log::debug!</span>(
+<a href=#120 id=120 data-nosnippet>120</a>                <span class="string">"Loaded {count} extra CA certificates in addition to possible system roots"</span>,
+<a href=#121 id=121 data-nosnippet>121</a>            );
+<a href=#122 id=122 data-nosnippet>122</a>        }
+<a href=#123 id=123 data-nosnippet>123</a>
+<a href=#124 id=124 data-nosnippet>124</a>        <span class="attr">#[cfg(all(
+<a href=#125 id=125 data-nosnippet>125</a>            unix,
+<a href=#126 id=126 data-nosnippet>126</a>            not(target_os = <span class="string">"android"</span>),
+<a href=#127 id=127 data-nosnippet>127</a>            not(target_vendor = <span class="string">"apple"</span>),
+<a href=#128 id=128 data-nosnippet>128</a>            not(target_arch = <span class="string">"wasm32"</span>),
+<a href=#129 id=129 data-nosnippet>129</a>        ))]
+<a href=#130 id=130 data-nosnippet>130</a>        </span>{
+<a href=#131 id=131 data-nosnippet>131</a>            <span class="kw">let </span>result = rustls_native_certs::load_native_certs();
+<a href=#132 id=132 data-nosnippet>132</a>            <span class="kw">let </span>(added, ignored) = root_store.add_parsable_certificates(result.certs);
+<a href=#133 id=133 data-nosnippet>133</a>            <span class="kw">if </span>ignored != <span class="number">0 </span>{
+<a href=#134 id=134 data-nosnippet>134</a>                <span class="macro">log::warn!</span>(<span class="string">"Some CA root certificates were ignored due to errors"</span>);
+<a href=#135 id=135 data-nosnippet>135</a>            }
+<a href=#136 id=136 data-nosnippet>136</a>
+<a href=#137 id=137 data-nosnippet>137</a>            <span class="kw">for </span>error <span class="kw">in </span>result.errors {
+<a href=#138 id=138 data-nosnippet>138</a>                <span class="macro">log::warn!</span>(<span class="string">"Error loading CA root certificate: {error}"</span>);
 <a href=#139 id=139 data-nosnippet>139</a>            }
-<a href=#140 id=140 data-nosnippet>140</a>            <span class="prelude-val">Err</span>(err) =&gt; {
-<a href=#141 id=141 data-nosnippet>141</a>                <span class="comment">// This only contains a path to a system directory:
-<a href=#142 id=142 data-nosnippet>142</a>                // https://github.com/rustls/rustls-native-certs/blob/bc13b9a6bfc2e1eec881597055ca49accddd972a/src/lib.rs#L91-L94
-<a href=#143 id=143 data-nosnippet>143</a>                </span><span class="kw">const </span>MSG: <span class="kw-2">&amp;</span>str = <span class="string">"failed to load system root certificates: "</span>;
-<a href=#144 id=144 data-nosnippet>144</a>
-<a href=#145 id=145 data-nosnippet>145</a>                <span class="comment">// Don't return an error if this fails when other roots have already been loaded via
-<a href=#146 id=146 data-nosnippet>146</a>                // `new_with_extra_roots`. It leads to extra failure cases where connections would otherwise still work.
-<a href=#147 id=147 data-nosnippet>147</a>                </span><span class="kw">if </span>root_store.is_empty() {
-<a href=#148 id=148 data-nosnippet>148</a>                    <span class="kw">return </span><span class="prelude-val">Err</span>(rustls::Error::General(<span class="macro">format!</span>(<span class="string">"{MSG}{err}"</span>)));
-<a href=#149 id=149 data-nosnippet>149</a>                } <span class="kw">else </span>{
-<a href=#150 id=150 data-nosnippet>150</a>                    <span class="macro">log::error!</span>(<span class="string">"{MSG}{err}"</span>);
-<a href=#151 id=151 data-nosnippet>151</a>                }
-<a href=#152 id=152 data-nosnippet>152</a>            }
-<a href=#153 id=153 data-nosnippet>153</a>        };
-<a href=#154 id=154 data-nosnippet>154</a>
-<a href=#155 id=155 data-nosnippet>155</a>        <span class="attr">#[cfg(target_arch = <span class="string">"wasm32"</span>)]
-<a href=#156 id=156 data-nosnippet>156</a>        </span>{
-<a href=#157 id=157 data-nosnippet>157</a>            root_store.add_trust_anchors(webpki_roots::TLS_SERVER_ROOTS.iter().map(|root| {
-<a href=#158 id=158 data-nosnippet>158</a>                rustls::OwnedTrustAnchor::from_subject_spki_name_constraints(
-<a href=#159 id=159 data-nosnippet>159</a>                    root.subject,
-<a href=#160 id=160 data-nosnippet>160</a>                    root.spki,
-<a href=#161 id=161 data-nosnippet>161</a>                    root.name_constraints,
-<a href=#162 id=162 data-nosnippet>162</a>                )
-<a href=#163 id=163 data-nosnippet>163</a>            }));
-<a href=#164 id=164 data-nosnippet>164</a>        };
-<a href=#165 id=165 data-nosnippet>165</a>
-<a href=#166 id=166 data-nosnippet>166</a>        WebPkiServerVerifier::builder_with_provider(
-<a href=#167 id=167 data-nosnippet>167</a>            root_store.into(),
-<a href=#168 id=168 data-nosnippet>168</a>            Arc::clone(<span class="self">self</span>.get_provider()),
-<a href=#169 id=169 data-nosnippet>169</a>        )
-<a href=#170 id=170 data-nosnippet>170</a>        .build()
-<a href=#171 id=171 data-nosnippet>171</a>        .map_err(|e| TlsError::Other(OtherError(Arc::new(e))))
-<a href=#172 id=172 data-nosnippet>172</a>    }
-<a href=#173 id=173 data-nosnippet>173</a>}
-<a href=#174 id=174 data-nosnippet>174</a>
-<a href=#175 id=175 data-nosnippet>175</a><span class="kw">impl </span>ServerCertVerifier <span class="kw">for </span>Verifier {
-<a href=#176 id=176 data-nosnippet>176</a>    <span class="kw">fn </span>verify_server_cert(
-<a href=#177 id=177 data-nosnippet>177</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#178 id=178 data-nosnippet>178</a>        end_entity: <span class="kw-2">&amp;</span>pki_types::CertificateDer&lt;<span class="lifetime">'_</span>&gt;,
-<a href=#179 id=179 data-nosnippet>179</a>        intermediates: <span class="kw-2">&amp;</span>[pki_types::CertificateDer&lt;<span class="lifetime">'_</span>&gt;],
-<a href=#180 id=180 data-nosnippet>180</a>        server_name: <span class="kw-2">&amp;</span>pki_types::ServerName,
-<a href=#181 id=181 data-nosnippet>181</a>        ocsp_response: <span class="kw-2">&amp;</span>[u8],
-<a href=#182 id=182 data-nosnippet>182</a>        now: pki_types::UnixTime,
-<a href=#183 id=183 data-nosnippet>183</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;ServerCertVerified, TlsError&gt; {
-<a href=#184 id=184 data-nosnippet>184</a>        log_server_cert(end_entity);
-<a href=#185 id=185 data-nosnippet>185</a>
-<a href=#186 id=186 data-nosnippet>186</a>        <span class="self">self</span>.get_or_init_verifier()<span class="question-mark">?
-<a href=#187 id=187 data-nosnippet>187</a>            </span>.verify_server_cert(end_entity, intermediates, server_name, ocsp_response, now)
-<a href=#188 id=188 data-nosnippet>188</a>            .map_err(map_webpki_errors)
-<a href=#189 id=189 data-nosnippet>189</a>            <span class="comment">// This only contains information from the system or other public
-<a href=#190 id=190 data-nosnippet>190</a>            // bits of the TLS handshake, so it can't leak anything.
-<a href=#191 id=191 data-nosnippet>191</a>            </span>.map_err(|e| {
-<a href=#192 id=192 data-nosnippet>192</a>                <span class="macro">log::error!</span>(<span class="string">"failed to verify TLS certificate: {}"</span>, e);
-<a href=#193 id=193 data-nosnippet>193</a>                e
-<a href=#194 id=194 data-nosnippet>194</a>            })
-<a href=#195 id=195 data-nosnippet>195</a>    }
-<a href=#196 id=196 data-nosnippet>196</a>
-<a href=#197 id=197 data-nosnippet>197</a>    <span class="kw">fn </span>verify_tls12_signature(
-<a href=#198 id=198 data-nosnippet>198</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#199 id=199 data-nosnippet>199</a>        message: <span class="kw-2">&amp;</span>[u8],
-<a href=#200 id=200 data-nosnippet>200</a>        cert: <span class="kw-2">&amp;</span>pki_types::CertificateDer&lt;<span class="lifetime">'_</span>&gt;,
-<a href=#201 id=201 data-nosnippet>201</a>        dss: <span class="kw-2">&amp;</span>DigitallySignedStruct,
-<a href=#202 id=202 data-nosnippet>202</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;HandshakeSignatureValid, TlsError&gt; {
-<a href=#203 id=203 data-nosnippet>203</a>        <span class="self">self</span>.get_or_init_verifier()<span class="question-mark">?
-<a href=#204 id=204 data-nosnippet>204</a>            </span>.verify_tls12_signature(message, cert, dss)
-<a href=#205 id=205 data-nosnippet>205</a>    }
-<a href=#206 id=206 data-nosnippet>206</a>
-<a href=#207 id=207 data-nosnippet>207</a>    <span class="kw">fn </span>verify_tls13_signature(
-<a href=#208 id=208 data-nosnippet>208</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#209 id=209 data-nosnippet>209</a>        message: <span class="kw-2">&amp;</span>[u8],
-<a href=#210 id=210 data-nosnippet>210</a>        cert: <span class="kw-2">&amp;</span>pki_types::CertificateDer&lt;<span class="lifetime">'_</span>&gt;,
-<a href=#211 id=211 data-nosnippet>211</a>        dss: <span class="kw-2">&amp;</span>DigitallySignedStruct,
-<a href=#212 id=212 data-nosnippet>212</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;HandshakeSignatureValid, TlsError&gt; {
-<a href=#213 id=213 data-nosnippet>213</a>        <span class="self">self</span>.get_or_init_verifier()<span class="question-mark">?
-<a href=#214 id=214 data-nosnippet>214</a>            </span>.verify_tls13_signature(message, cert, dss)
-<a href=#215 id=215 data-nosnippet>215</a>    }
-<a href=#216 id=216 data-nosnippet>216</a>
-<a href=#217 id=217 data-nosnippet>217</a>    <span class="kw">fn </span>supported_verify_schemes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;SignatureScheme&gt; {
-<a href=#218 id=218 data-nosnippet>218</a>        <span class="kw">match </span><span class="self">self</span>.get_or_init_verifier() {
-<a href=#219 id=219 data-nosnippet>219</a>            <span class="prelude-val">Ok</span>(v) =&gt; v.supported_verify_schemes(),
-<a href=#220 id=220 data-nosnippet>220</a>            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; Vec::default(),
-<a href=#221 id=221 data-nosnippet>221</a>        }
-<a href=#222 id=222 data-nosnippet>222</a>    }
-<a href=#223 id=223 data-nosnippet>223</a>}
-<a href=#224 id=224 data-nosnippet>224</a>
-<a href=#225 id=225 data-nosnippet>225</a><span class="kw">impl </span>Default <span class="kw">for </span>Verifier {
-<a href=#226 id=226 data-nosnippet>226</a>    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
-<a href=#227 id=227 data-nosnippet>227</a>        <span class="self">Self</span>::new()
-<a href=#228 id=228 data-nosnippet>228</a>    }
-<a href=#229 id=229 data-nosnippet>229</a>}
-<a href=#230 id=230 data-nosnippet>230</a>
-<a href=#231 id=231 data-nosnippet>231</a><span class="kw">fn </span>map_webpki_errors(err: TlsError) -&gt; TlsError {
-<a href=#232 id=232 data-nosnippet>232</a>    <span class="kw">if let </span>TlsError::InvalidCertificate(CertificateError::Other(other_err)) = <span class="kw-2">&amp;</span>err {
-<a href=#233 id=233 data-nosnippet>233</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(webpki::Error::RequiredEkuNotFound) =
-<a href=#234 id=234 data-nosnippet>234</a>            other_err.<span class="number">0</span>.downcast_ref::&lt;webpki::Error&gt;()
-<a href=#235 id=235 data-nosnippet>235</a>        {
-<a href=#236 id=236 data-nosnippet>236</a>            <span class="kw">return </span>TlsError::InvalidCertificate(CertificateError::Other(OtherError(Arc::new(
-<a href=#237 id=237 data-nosnippet>237</a>                <span class="kw">super</span>::EkuError,
-<a href=#238 id=238 data-nosnippet>238</a>            ))));
-<a href=#239 id=239 data-nosnippet>239</a>        }
-<a href=#240 id=240 data-nosnippet>240</a>    }
-<a href=#241 id=241 data-nosnippet>241</a>
-<a href=#242 id=242 data-nosnippet>242</a>    err
-<a href=#243 id=243 data-nosnippet>243</a>}</code></pre></div></section></main></body></html>
+<a href=#140 id=140 data-nosnippet>140</a>
+<a href=#141 id=141 data-nosnippet>141</a>            <span class="comment">// Don't return an error if this fails when other roots have already been loaded via
+<a href=#142 id=142 data-nosnippet>142</a>            // `new_with_extra_roots`. It leads to extra failure cases where connections would otherwise still work.
+<a href=#143 id=143 data-nosnippet>143</a>            </span><span class="kw">if </span>root_store.is_empty() {
+<a href=#144 id=144 data-nosnippet>144</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(rustls::Error::General(
+<a href=#145 id=145 data-nosnippet>145</a>                    <span class="string">"No CA certificates were loaded from the system"</span>.to_owned(),
+<a href=#146 id=146 data-nosnippet>146</a>                ));
+<a href=#147 id=147 data-nosnippet>147</a>            } <span class="kw">else </span>{
+<a href=#148 id=148 data-nosnippet>148</a>                <span class="macro">log::debug!</span>(<span class="string">"Loaded {added} CA certificates from the system"</span>);
+<a href=#149 id=149 data-nosnippet>149</a>            }
+<a href=#150 id=150 data-nosnippet>150</a>        }
+<a href=#151 id=151 data-nosnippet>151</a>
+<a href=#152 id=152 data-nosnippet>152</a>        <span class="attr">#[cfg(target_arch = <span class="string">"wasm32"</span>)]
+<a href=#153 id=153 data-nosnippet>153</a>        </span>{
+<a href=#154 id=154 data-nosnippet>154</a>            root_store.add_parsable_certificates(
+<a href=#155 id=155 data-nosnippet>155</a>                webpki_root_certs::TLS_SERVER_ROOT_CERTS.iter().cloned(),
+<a href=#156 id=156 data-nosnippet>156</a>            );
+<a href=#157 id=157 data-nosnippet>157</a>        };
+<a href=#158 id=158 data-nosnippet>158</a>
+<a href=#159 id=159 data-nosnippet>159</a>        WebPkiServerVerifier::builder_with_provider(
+<a href=#160 id=160 data-nosnippet>160</a>            root_store.into(),
+<a href=#161 id=161 data-nosnippet>161</a>            Arc::clone(<span class="self">self</span>.get_provider()),
+<a href=#162 id=162 data-nosnippet>162</a>        )
+<a href=#163 id=163 data-nosnippet>163</a>        .build()
+<a href=#164 id=164 data-nosnippet>164</a>        .map_err(|e| TlsError::Other(OtherError(Arc::new(e))))
+<a href=#165 id=165 data-nosnippet>165</a>    }
+<a href=#166 id=166 data-nosnippet>166</a>}
+<a href=#167 id=167 data-nosnippet>167</a>
+<a href=#168 id=168 data-nosnippet>168</a><span class="kw">impl </span>ServerCertVerifier <span class="kw">for </span>Verifier {
+<a href=#169 id=169 data-nosnippet>169</a>    <span class="kw">fn </span>verify_server_cert(
+<a href=#170 id=170 data-nosnippet>170</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#171 id=171 data-nosnippet>171</a>        end_entity: <span class="kw-2">&amp;</span>pki_types::CertificateDer&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#172 id=172 data-nosnippet>172</a>        intermediates: <span class="kw-2">&amp;</span>[pki_types::CertificateDer&lt;<span class="lifetime">'_</span>&gt;],
+<a href=#173 id=173 data-nosnippet>173</a>        server_name: <span class="kw-2">&amp;</span>pki_types::ServerName,
+<a href=#174 id=174 data-nosnippet>174</a>        ocsp_response: <span class="kw-2">&amp;</span>[u8],
+<a href=#175 id=175 data-nosnippet>175</a>        now: pki_types::UnixTime,
+<a href=#176 id=176 data-nosnippet>176</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;ServerCertVerified, TlsError&gt; {
+<a href=#177 id=177 data-nosnippet>177</a>        log_server_cert(end_entity);
+<a href=#178 id=178 data-nosnippet>178</a>
+<a href=#179 id=179 data-nosnippet>179</a>        <span class="self">self</span>.get_or_init_verifier()<span class="question-mark">?
+<a href=#180 id=180 data-nosnippet>180</a>            </span>.verify_server_cert(end_entity, intermediates, server_name, ocsp_response, now)
+<a href=#181 id=181 data-nosnippet>181</a>            .map_err(map_webpki_errors)
+<a href=#182 id=182 data-nosnippet>182</a>            <span class="comment">// This only contains information from the system or other public
+<a href=#183 id=183 data-nosnippet>183</a>            // bits of the TLS handshake, so it can't leak anything.
+<a href=#184 id=184 data-nosnippet>184</a>            </span>.map_err(|e| {
+<a href=#185 id=185 data-nosnippet>185</a>                <span class="macro">log::error!</span>(<span class="string">"failed to verify TLS certificate: {}"</span>, e);
+<a href=#186 id=186 data-nosnippet>186</a>                e
+<a href=#187 id=187 data-nosnippet>187</a>            })
+<a href=#188 id=188 data-nosnippet>188</a>    }
+<a href=#189 id=189 data-nosnippet>189</a>
+<a href=#190 id=190 data-nosnippet>190</a>    <span class="kw">fn </span>verify_tls12_signature(
+<a href=#191 id=191 data-nosnippet>191</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#192 id=192 data-nosnippet>192</a>        message: <span class="kw-2">&amp;</span>[u8],
+<a href=#193 id=193 data-nosnippet>193</a>        cert: <span class="kw-2">&amp;</span>pki_types::CertificateDer&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#194 id=194 data-nosnippet>194</a>        dss: <span class="kw-2">&amp;</span>DigitallySignedStruct,
+<a href=#195 id=195 data-nosnippet>195</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;HandshakeSignatureValid, TlsError&gt; {
+<a href=#196 id=196 data-nosnippet>196</a>        <span class="self">self</span>.get_or_init_verifier()<span class="question-mark">?
+<a href=#197 id=197 data-nosnippet>197</a>            </span>.verify_tls12_signature(message, cert, dss)
+<a href=#198 id=198 data-nosnippet>198</a>    }
+<a href=#199 id=199 data-nosnippet>199</a>
+<a href=#200 id=200 data-nosnippet>200</a>    <span class="kw">fn </span>verify_tls13_signature(
+<a href=#201 id=201 data-nosnippet>201</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#202 id=202 data-nosnippet>202</a>        message: <span class="kw-2">&amp;</span>[u8],
+<a href=#203 id=203 data-nosnippet>203</a>        cert: <span class="kw-2">&amp;</span>pki_types::CertificateDer&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#204 id=204 data-nosnippet>204</a>        dss: <span class="kw-2">&amp;</span>DigitallySignedStruct,
+<a href=#205 id=205 data-nosnippet>205</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;HandshakeSignatureValid, TlsError&gt; {
+<a href=#206 id=206 data-nosnippet>206</a>        <span class="self">self</span>.get_or_init_verifier()<span class="question-mark">?
+<a href=#207 id=207 data-nosnippet>207</a>            </span>.verify_tls13_signature(message, cert, dss)
+<a href=#208 id=208 data-nosnippet>208</a>    }
+<a href=#209 id=209 data-nosnippet>209</a>
+<a href=#210 id=210 data-nosnippet>210</a>    <span class="kw">fn </span>supported_verify_schemes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;SignatureScheme&gt; {
+<a href=#211 id=211 data-nosnippet>211</a>        <span class="comment">// XXX: Don't go through `self.verifier` here: It introduces extra failure
+<a href=#212 id=212 data-nosnippet>212</a>        // cases and is strictly unneeded because `get_provider` is the same provider and
+<a href=#213 id=213 data-nosnippet>213</a>        // set of algorithms passed into the wrapped `WebPkiServerVerifier`. Given this,
+<a href=#214 id=214 data-nosnippet>214</a>        // the list of schemes are identical.
+<a href=#215 id=215 data-nosnippet>215</a>        </span><span class="self">self</span>.get_provider()
+<a href=#216 id=216 data-nosnippet>216</a>            .signature_verification_algorithms
+<a href=#217 id=217 data-nosnippet>217</a>            .supported_schemes()
+<a href=#218 id=218 data-nosnippet>218</a>    }
+<a href=#219 id=219 data-nosnippet>219</a>}
+<a href=#220 id=220 data-nosnippet>220</a>
+<a href=#221 id=221 data-nosnippet>221</a><span class="kw">impl </span>Default <span class="kw">for </span>Verifier {
+<a href=#222 id=222 data-nosnippet>222</a>    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+<a href=#223 id=223 data-nosnippet>223</a>        <span class="self">Self</span>::new()
+<a href=#224 id=224 data-nosnippet>224</a>    }
+<a href=#225 id=225 data-nosnippet>225</a>}
+<a href=#226 id=226 data-nosnippet>226</a>
+<a href=#227 id=227 data-nosnippet>227</a><span class="kw">fn </span>map_webpki_errors(err: TlsError) -&gt; TlsError {
+<a href=#228 id=228 data-nosnippet>228</a>    <span class="kw">match </span><span class="kw-2">&amp;</span>err {
+<a href=#229 id=229 data-nosnippet>229</a>        TlsError::InvalidCertificate(CertificateError::InvalidPurpose)
+<a href=#230 id=230 data-nosnippet>230</a>        | TlsError::InvalidCertificate(CertificateError::InvalidPurposeContext { .. }) =&gt; {
+<a href=#231 id=231 data-nosnippet>231</a>            TlsError::InvalidCertificate(CertificateError::Other(OtherError(Arc::new(
+<a href=#232 id=232 data-nosnippet>232</a>                <span class="kw">super</span>::EkuError,
+<a href=#233 id=233 data-nosnippet>233</a>            ))))
+<a href=#234 id=234 data-nosnippet>234</a>        }
+<a href=#235 id=235 data-nosnippet>235</a>        <span class="kw">_ </span>=&gt; err,
+<a href=#236 id=236 data-nosnippet>236</a>    }
+<a href=#237 id=237 data-nosnippet>237</a>}</code></pre></div></section></main></body></html>

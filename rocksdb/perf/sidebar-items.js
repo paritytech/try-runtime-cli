@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["PerfMetric","PerfStatsLevel"],"fn":["get_memory_usage_stats","set_perf_stats"],"struct":["MemoryUsageStats","PerfContext"]};
+window.SIDEBAR_ITEMS = {"enum":["PerfMetric","PerfStatsLevel"],"fn":["get_memory_usage_stats","set_perf_stats"],"struct":["MemoryUsage","MemoryUsageBuilder","MemoryUsageStats","PerfContext"]};

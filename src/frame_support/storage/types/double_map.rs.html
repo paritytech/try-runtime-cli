@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/8279d10/substrate/frame/support/src/storage/types/double_map.rs`."><title>double_map.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/types/</div>double_map.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/0c70641/substrate/frame/support/src/storage/types/double_map.rs`."><title>double_map.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/types/</div>double_map.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -734,7 +734,7 @@
 <a href=#734 id=734 data-nosnippet>734</a>	MaxValues: Get&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;&gt;,
 <a href=#735 id=735 data-nosnippet>735</a>{
 <a href=#736 id=736 data-nosnippet>736</a>	<span class="kw">fn </span>build_metadata(
-<a href=#737 id=737 data-nosnippet>737</a>		deprecation_status: sp_metadata_ir::DeprecationStatusIR,
+<a href=#737 id=737 data-nosnippet>737</a>		deprecation_status: sp_metadata_ir::ItemDeprecationInfoIR,
 <a href=#738 id=738 data-nosnippet>738</a>		docs: Vec&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;,
 <a href=#739 id=739 data-nosnippet>739</a>		entries: <span class="kw-2">&amp;mut </span>Vec&lt;StorageEntryMetadataIR&gt;,
 <a href=#740 id=740 data-nosnippet>740</a>	) {
@@ -992,12 +992,12 @@
 <a href=#992 id=992 data-nosnippet>992</a>
 <a href=#993 id=993 data-nosnippet>993</a>			<span class="kw">let </span><span class="kw-2">mut </span>entries = <span class="macro">vec!</span>[];
 <a href=#994 id=994 data-nosnippet>994</a>			A::build_metadata(
-<a href=#995 id=995 data-nosnippet>995</a>				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#995 id=995 data-nosnippet>995</a>				sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#996 id=996 data-nosnippet>996</a>				<span class="macro">vec!</span>[],
 <a href=#997 id=997 data-nosnippet>997</a>				<span class="kw-2">&amp;mut </span>entries,
 <a href=#998 id=998 data-nosnippet>998</a>			);
 <a href=#999 id=999 data-nosnippet>999</a>			AValueQueryWithAnOnEmpty::build_metadata(
-<a href=#1000 id=1000 data-nosnippet>1000</a>				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#1000 id=1000 data-nosnippet>1000</a>				sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1001 id=1001 data-nosnippet>1001</a>				<span class="macro">vec!</span>[],
 <a href=#1002 id=1002 data-nosnippet>1002</a>				<span class="kw-2">&amp;mut </span>entries,
 <a href=#1003 id=1003 data-nosnippet>1003</a>			);
@@ -1017,7 +1017,7 @@
 <a href=#1017 id=1017 data-nosnippet>1017</a>						},
 <a href=#1018 id=1018 data-nosnippet>1018</a>						default: <span class="prelude-ty">Option</span>::&lt;u32&gt;::None.encode(),
 <a href=#1019 id=1019 data-nosnippet>1019</a>						docs: <span class="macro">vec!</span>[],
-<a href=#1020 id=1020 data-nosnippet>1020</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated
+<a href=#1020 id=1020 data-nosnippet>1020</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated
 <a href=#1021 id=1021 data-nosnippet>1021</a>					},
 <a href=#1022 id=1022 data-nosnippet>1022</a>					StorageEntryMetadataIR {
 <a href=#1023 id=1023 data-nosnippet>1023</a>						name: <span class="string">"foo"</span>,
@@ -1032,7 +1032,7 @@
 <a href=#1032 id=1032 data-nosnippet>1032</a>						},
 <a href=#1033 id=1033 data-nosnippet>1033</a>						default: <span class="number">97u32</span>.encode(),
 <a href=#1034 id=1034 data-nosnippet>1034</a>						docs: <span class="macro">vec!</span>[],
-<a href=#1035 id=1035 data-nosnippet>1035</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated
+<a href=#1035 id=1035 data-nosnippet>1035</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated
 <a href=#1036 id=1036 data-nosnippet>1036</a>					}
 <a href=#1037 id=1037 data-nosnippet>1037</a>				]
 <a href=#1038 id=1038 data-nosnippet>1038</a>			);

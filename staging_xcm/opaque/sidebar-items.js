@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["latest","lts","v2","v3","v4"],"type":["VersionedXcm"]};
+window.SIDEBAR_ITEMS = {"mod":["latest","lts","v3","v4","v5"],"type":["VersionedXcm"]};

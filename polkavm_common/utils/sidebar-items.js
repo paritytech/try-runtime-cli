@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["align_to_next_page_u32","align_to_next_page_u64","align_to_next_page_usize","byte_slice_init","slice_assume_init_mut"],"struct":["CowBytes","Gas"],"trait":["Access","AsUninitSliceMut"]};
+window.SIDEBAR_ITEMS = {"enum":["Bitness","ParsedImmediate"],"fn":["align_to_next_page_u32","align_to_next_page_u64","align_to_next_page_usize","byte_slice_init","parse_imm","parse_immediate","parse_reg","parse_slice","slice_assume_init_mut"],"struct":["ArcBytes","B32","B64"],"trait":["AsUninitSliceMut","BitnessT","GasVisitorT"]};

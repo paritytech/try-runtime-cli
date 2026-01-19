@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/8279d10/substrate/client/network/transactions/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network_transactions" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_network_transactions/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/0c70641/substrate/client/network/transactions/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network_transactions" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_network_transactions/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -462,75 +462,77 @@
 <a href=#462 id=462 data-nosnippet>462</a>		<span class="kw">if let </span><span class="prelude-val">Some</span>(transaction) = <span class="self">self</span>.transaction_pool.transaction(hash) {
 <a href=#463 id=463 data-nosnippet>463</a>			<span class="kw">let </span>propagated_to = <span class="self">self</span>.do_propagate_transactions(<span class="kw-2">&amp;</span>[(hash.clone(), transaction)]);
 <a href=#464 id=464 data-nosnippet>464</a>			<span class="self">self</span>.transaction_pool.on_broadcasted(propagated_to);
-<a href=#465 id=465 data-nosnippet>465</a>		}
-<a href=#466 id=466 data-nosnippet>466</a>	}
-<a href=#467 id=467 data-nosnippet>467</a>
-<a href=#468 id=468 data-nosnippet>468</a>	<span class="kw">fn </span>do_propagate_transactions(
-<a href=#469 id=469 data-nosnippet>469</a>		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
-<a href=#470 id=470 data-nosnippet>470</a>		transactions: <span class="kw-2">&amp;</span>[(H, B::Extrinsic)],
-<a href=#471 id=471 data-nosnippet>471</a>	) -&gt; HashMap&lt;H, Vec&lt;String&gt;&gt; {
-<a href=#472 id=472 data-nosnippet>472</a>		<span class="kw">let </span><span class="kw-2">mut </span>propagated_to = HashMap::&lt;<span class="kw">_</span>, Vec&lt;<span class="kw">_</span>&gt;&gt;::new();
-<a href=#473 id=473 data-nosnippet>473</a>		<span class="kw">let </span><span class="kw-2">mut </span>propagated_transactions = <span class="number">0</span>;
-<a href=#474 id=474 data-nosnippet>474</a>
-<a href=#475 id=475 data-nosnippet>475</a>		<span class="kw">for </span>(who, peer) <span class="kw">in </span><span class="self">self</span>.peers.iter_mut() {
-<a href=#476 id=476 data-nosnippet>476</a>			<span class="comment">// never send transactions to the light node
-<a href=#477 id=477 data-nosnippet>477</a>			</span><span class="kw">if </span><span class="macro">matches!</span>(peer.role, ObservedRole::Light) {
-<a href=#478 id=478 data-nosnippet>478</a>				<span class="kw">continue
-<a href=#479 id=479 data-nosnippet>479</a>			</span>}
-<a href=#480 id=480 data-nosnippet>480</a>
-<a href=#481 id=481 data-nosnippet>481</a>			<span class="kw">let </span>(hashes, to_send): (Vec&lt;<span class="kw">_</span>&gt;, Vec&lt;<span class="kw">_</span>&gt;) = transactions
-<a href=#482 id=482 data-nosnippet>482</a>				.iter()
-<a href=#483 id=483 data-nosnippet>483</a>				.filter(|(hash, <span class="kw">_</span>)| peer.known_transactions.insert(hash.clone()))
-<a href=#484 id=484 data-nosnippet>484</a>				.cloned()
-<a href=#485 id=485 data-nosnippet>485</a>				.unzip();
-<a href=#486 id=486 data-nosnippet>486</a>
-<a href=#487 id=487 data-nosnippet>487</a>			propagated_transactions += hashes.len();
+<a href=#465 id=465 data-nosnippet>465</a>		} <span class="kw">else </span>{
+<a href=#466 id=466 data-nosnippet>466</a>			<span class="macro">debug!</span>(target: <span class="string">"sync"</span>, <span class="string">"Propagating transaction failure [{:?}]"</span>, hash);
+<a href=#467 id=467 data-nosnippet>467</a>		}
+<a href=#468 id=468 data-nosnippet>468</a>	}
+<a href=#469 id=469 data-nosnippet>469</a>
+<a href=#470 id=470 data-nosnippet>470</a>	<span class="kw">fn </span>do_propagate_transactions(
+<a href=#471 id=471 data-nosnippet>471</a>		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#472 id=472 data-nosnippet>472</a>		transactions: <span class="kw-2">&amp;</span>[(H, Arc&lt;B::Extrinsic&gt;)],
+<a href=#473 id=473 data-nosnippet>473</a>	) -&gt; HashMap&lt;H, Vec&lt;String&gt;&gt; {
+<a href=#474 id=474 data-nosnippet>474</a>		<span class="kw">let </span><span class="kw-2">mut </span>propagated_to = HashMap::&lt;<span class="kw">_</span>, Vec&lt;<span class="kw">_</span>&gt;&gt;::new();
+<a href=#475 id=475 data-nosnippet>475</a>		<span class="kw">let </span><span class="kw-2">mut </span>propagated_transactions = <span class="number">0</span>;
+<a href=#476 id=476 data-nosnippet>476</a>
+<a href=#477 id=477 data-nosnippet>477</a>		<span class="kw">for </span>(who, peer) <span class="kw">in </span><span class="self">self</span>.peers.iter_mut() {
+<a href=#478 id=478 data-nosnippet>478</a>			<span class="comment">// never send transactions to the light node
+<a href=#479 id=479 data-nosnippet>479</a>			</span><span class="kw">if </span><span class="macro">matches!</span>(peer.role, ObservedRole::Light) {
+<a href=#480 id=480 data-nosnippet>480</a>				<span class="kw">continue
+<a href=#481 id=481 data-nosnippet>481</a>			</span>}
+<a href=#482 id=482 data-nosnippet>482</a>
+<a href=#483 id=483 data-nosnippet>483</a>			<span class="kw">let </span>(hashes, to_send): (Vec&lt;<span class="kw">_</span>&gt;, Transactions&lt;<span class="kw">_</span>&gt;) = transactions
+<a href=#484 id=484 data-nosnippet>484</a>				.iter()
+<a href=#485 id=485 data-nosnippet>485</a>				.filter(|(hash, <span class="kw">_</span>)| peer.known_transactions.insert(hash.clone()))
+<a href=#486 id=486 data-nosnippet>486</a>				.cloned()
+<a href=#487 id=487 data-nosnippet>487</a>				.unzip();
 <a href=#488 id=488 data-nosnippet>488</a>
-<a href=#489 id=489 data-nosnippet>489</a>			<span class="kw">if </span>!to_send.is_empty() {
-<a href=#490 id=490 data-nosnippet>490</a>				<span class="kw">for </span>hash <span class="kw">in </span>hashes {
-<a href=#491 id=491 data-nosnippet>491</a>					propagated_to.entry(hash).or_default().push(who.to_base58());
-<a href=#492 id=492 data-nosnippet>492</a>				}
-<a href=#493 id=493 data-nosnippet>493</a>				<span class="macro">trace!</span>(target: <span class="string">"sync"</span>, <span class="string">"Sending {} transactions to {}"</span>, to_send.len(), who);
-<a href=#494 id=494 data-nosnippet>494</a>				<span class="comment">// Historically, the format of a notification of the transactions protocol
-<a href=#495 id=495 data-nosnippet>495</a>				// consisted in a (SCALE-encoded) `Vec&lt;Transaction&gt;`.
-<a href=#496 id=496 data-nosnippet>496</a>				// After RFC 56, the format was modified in a backwards-compatible way to be
-<a href=#497 id=497 data-nosnippet>497</a>				// a (SCALE-encoded) tuple `(Compact(1), Transaction)`, which is the same encoding
-<a href=#498 id=498 data-nosnippet>498</a>				// as a `Vec` of length one. This is no coincidence, as the change was
-<a href=#499 id=499 data-nosnippet>499</a>				// intentionally done in a backwards-compatible way.
-<a href=#500 id=500 data-nosnippet>500</a>				// In other words, the `Vec` that is sent below **must** always have only a single
-<a href=#501 id=501 data-nosnippet>501</a>				// element in it.
-<a href=#502 id=502 data-nosnippet>502</a>				// See &lt;https://github.com/polkadot-fellows/RFCs/blob/main/text/0056-one-transaction-per-notification.md&gt;
-<a href=#503 id=503 data-nosnippet>503</a>				</span><span class="kw">for </span>to_send <span class="kw">in </span>to_send {
-<a href=#504 id=504 data-nosnippet>504</a>					<span class="kw">let _ </span>= <span class="self">self
-<a href=#505 id=505 data-nosnippet>505</a>						</span>.notification_service
-<a href=#506 id=506 data-nosnippet>506</a>						.send_sync_notification(who, <span class="macro">vec!</span>[to_send].encode());
-<a href=#507 id=507 data-nosnippet>507</a>				}
-<a href=#508 id=508 data-nosnippet>508</a>			}
-<a href=#509 id=509 data-nosnippet>509</a>		}
-<a href=#510 id=510 data-nosnippet>510</a>
-<a href=#511 id=511 data-nosnippet>511</a>		<span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>metrics) = <span class="self">self</span>.metrics {
-<a href=#512 id=512 data-nosnippet>512</a>			metrics.propagated_transactions.inc_by(propagated_transactions <span class="kw">as _</span>)
-<a href=#513 id=513 data-nosnippet>513</a>		}
-<a href=#514 id=514 data-nosnippet>514</a>
-<a href=#515 id=515 data-nosnippet>515</a>		propagated_to
-<a href=#516 id=516 data-nosnippet>516</a>	}
-<a href=#517 id=517 data-nosnippet>517</a>
-<a href=#518 id=518 data-nosnippet>518</a>	<span class="doccomment">/// Call when we must propagate ready transactions to peers.
-<a href=#519 id=519 data-nosnippet>519</a>	</span><span class="kw">fn </span>propagate_transactions(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-<a href=#520 id=520 data-nosnippet>520</a>		<span class="comment">// Accept transactions only when node is not major syncing
-<a href=#521 id=521 data-nosnippet>521</a>		</span><span class="kw">if </span><span class="self">self</span>.sync.is_major_syncing() {
-<a href=#522 id=522 data-nosnippet>522</a>			<span class="kw">return
-<a href=#523 id=523 data-nosnippet>523</a>		</span>}
-<a href=#524 id=524 data-nosnippet>524</a>
-<a href=#525 id=525 data-nosnippet>525</a>		<span class="kw">let </span>transactions = <span class="self">self</span>.transaction_pool.transactions();
+<a href=#489 id=489 data-nosnippet>489</a>			propagated_transactions += hashes.len();
+<a href=#490 id=490 data-nosnippet>490</a>
+<a href=#491 id=491 data-nosnippet>491</a>			<span class="kw">if </span>!to_send.is_empty() {
+<a href=#492 id=492 data-nosnippet>492</a>				<span class="kw">for </span>hash <span class="kw">in </span>hashes {
+<a href=#493 id=493 data-nosnippet>493</a>					propagated_to.entry(hash).or_default().push(who.to_base58());
+<a href=#494 id=494 data-nosnippet>494</a>				}
+<a href=#495 id=495 data-nosnippet>495</a>				<span class="macro">trace!</span>(target: <span class="string">"sync"</span>, <span class="string">"Sending {} transactions to {}"</span>, to_send.len(), who);
+<a href=#496 id=496 data-nosnippet>496</a>				<span class="comment">// Historically, the format of a notification of the transactions protocol
+<a href=#497 id=497 data-nosnippet>497</a>				// consisted in a (SCALE-encoded) `Vec&lt;Transaction&gt;`.
+<a href=#498 id=498 data-nosnippet>498</a>				// After RFC 56, the format was modified in a backwards-compatible way to be
+<a href=#499 id=499 data-nosnippet>499</a>				// a (SCALE-encoded) tuple `(Compact(1), Transaction)`, which is the same encoding
+<a href=#500 id=500 data-nosnippet>500</a>				// as a `Vec` of length one. This is no coincidence, as the change was
+<a href=#501 id=501 data-nosnippet>501</a>				// intentionally done in a backwards-compatible way.
+<a href=#502 id=502 data-nosnippet>502</a>				// In other words, the `Vec` that is sent below **must** always have only a single
+<a href=#503 id=503 data-nosnippet>503</a>				// element in it.
+<a href=#504 id=504 data-nosnippet>504</a>				// See &lt;https://github.com/polkadot-fellows/RFCs/blob/main/text/0056-one-transaction-per-notification.md&gt;
+<a href=#505 id=505 data-nosnippet>505</a>				</span><span class="kw">for </span>to_send <span class="kw">in </span>to_send {
+<a href=#506 id=506 data-nosnippet>506</a>					<span class="kw">let _ </span>= <span class="self">self
+<a href=#507 id=507 data-nosnippet>507</a>						</span>.notification_service
+<a href=#508 id=508 data-nosnippet>508</a>						.send_sync_notification(who, <span class="macro">vec!</span>[to_send].encode());
+<a href=#509 id=509 data-nosnippet>509</a>				}
+<a href=#510 id=510 data-nosnippet>510</a>			}
+<a href=#511 id=511 data-nosnippet>511</a>		}
+<a href=#512 id=512 data-nosnippet>512</a>
+<a href=#513 id=513 data-nosnippet>513</a>		<span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>metrics) = <span class="self">self</span>.metrics {
+<a href=#514 id=514 data-nosnippet>514</a>			metrics.propagated_transactions.inc_by(propagated_transactions <span class="kw">as _</span>)
+<a href=#515 id=515 data-nosnippet>515</a>		}
+<a href=#516 id=516 data-nosnippet>516</a>
+<a href=#517 id=517 data-nosnippet>517</a>		propagated_to
+<a href=#518 id=518 data-nosnippet>518</a>	}
+<a href=#519 id=519 data-nosnippet>519</a>
+<a href=#520 id=520 data-nosnippet>520</a>	<span class="doccomment">/// Call when we must propagate ready transactions to peers.
+<a href=#521 id=521 data-nosnippet>521</a>	</span><span class="kw">fn </span>propagate_transactions(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+<a href=#522 id=522 data-nosnippet>522</a>		<span class="comment">// Accept transactions only when node is not major syncing
+<a href=#523 id=523 data-nosnippet>523</a>		</span><span class="kw">if </span><span class="self">self</span>.sync.is_major_syncing() {
+<a href=#524 id=524 data-nosnippet>524</a>			<span class="kw">return
+<a href=#525 id=525 data-nosnippet>525</a>		</span>}
 <a href=#526 id=526 data-nosnippet>526</a>
-<a href=#527 id=527 data-nosnippet>527</a>		<span class="kw">if </span>transactions.is_empty() {
-<a href=#528 id=528 data-nosnippet>528</a>			<span class="kw">return
-<a href=#529 id=529 data-nosnippet>529</a>		</span>}
-<a href=#530 id=530 data-nosnippet>530</a>
-<a href=#531 id=531 data-nosnippet>531</a>		<span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">"Propagating transactions"</span>);
+<a href=#527 id=527 data-nosnippet>527</a>		<span class="kw">let </span>transactions = <span class="self">self</span>.transaction_pool.transactions();
+<a href=#528 id=528 data-nosnippet>528</a>
+<a href=#529 id=529 data-nosnippet>529</a>		<span class="kw">if </span>transactions.is_empty() {
+<a href=#530 id=530 data-nosnippet>530</a>			<span class="kw">return
+<a href=#531 id=531 data-nosnippet>531</a>		</span>}
 <a href=#532 id=532 data-nosnippet>532</a>
-<a href=#533 id=533 data-nosnippet>533</a>		<span class="kw">let </span>propagated_to = <span class="self">self</span>.do_propagate_transactions(<span class="kw-2">&amp;</span>transactions);
-<a href=#534 id=534 data-nosnippet>534</a>		<span class="self">self</span>.transaction_pool.on_broadcasted(propagated_to);
-<a href=#535 id=535 data-nosnippet>535</a>	}
-<a href=#536 id=536 data-nosnippet>536</a>}</code></pre></div></section></main></body></html>
+<a href=#533 id=533 data-nosnippet>533</a>		<span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">"Propagating transactions"</span>);
+<a href=#534 id=534 data-nosnippet>534</a>
+<a href=#535 id=535 data-nosnippet>535</a>		<span class="kw">let </span>propagated_to = <span class="self">self</span>.do_propagate_transactions(<span class="kw-2">&amp;</span>transactions);
+<a href=#536 id=536 data-nosnippet>536</a>		<span class="self">self</span>.transaction_pool.on_broadcasted(propagated_to);
+<a href=#537 id=537 data-nosnippet>537</a>	}
+<a href=#538 id=538 data-nosnippet>538</a>}</code></pre></div></section></main></body></html>

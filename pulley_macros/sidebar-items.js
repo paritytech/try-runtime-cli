@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"attr":["interp_disable_if_cfg"]};

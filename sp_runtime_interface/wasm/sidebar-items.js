@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["WrappedFFIValue"],"struct":["ExchangeableFunction","RestoreImplementation"],"trait":["FromFFIValue","IntoFFIValue"]};
+window.SIDEBAR_ITEMS = {"struct":["ExchangeableFunction","RestoreImplementation"],"trait":["FromFFIValue","IntoFFIValue"]};

@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustix-1.1.3/src/thread/setns.rs`."><title>setns.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rustix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rustix/thread/</div>setns.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Thread-specific namespace functions.
+<a href=#2 id=2 data-nosnippet>2</a>//!
+<a href=#3 id=3 data-nosnippet>3</a>//! # Safety
+<a href=#4 id=4 data-nosnippet>4</a>//!
+<a href=#5 id=5 data-nosnippet>5</a>//! The `unshare` function can cause threads to use different file descriptor tables.
+<a href=#6 id=6 data-nosnippet>6</a></span><span class="attr">#![allow(unsafe_code)]
+<a href=#7 id=7 data-nosnippet>7</a>
+<a href=#8 id=8 data-nosnippet>8</a></span><span class="kw">use </span>bitflags::bitflags;
+<a href=#9 id=9 data-nosnippet>9</a><span class="kw">use </span>linux_raw_sys::general::{
+<a href=#10 id=10 data-nosnippet>10</a>    CLONE_FILES, CLONE_FS, CLONE_NEWCGROUP, CLONE_NEWIPC, CLONE_NEWNET, CLONE_NEWNS, CLONE_NEWPID,
+<a href=#11 id=11 data-nosnippet>11</a>    CLONE_NEWTIME, CLONE_NEWUSER, CLONE_NEWUTS, CLONE_SYSVSEM,
+<a href=#12 id=12 data-nosnippet>12</a>};
+<a href=#13 id=13 data-nosnippet>13</a>
+<a href=#14 id=14 data-nosnippet>14</a><span class="kw">use </span><span class="kw">crate</span>::backend::c::c_int;
+<a href=#15 id=15 data-nosnippet>15</a><span class="kw">use </span><span class="kw">crate</span>::backend::thread::syscalls;
+<a href=#16 id=16 data-nosnippet>16</a><span class="kw">use </span><span class="kw">crate</span>::fd::BorrowedFd;
+<a href=#17 id=17 data-nosnippet>17</a><span class="kw">use </span><span class="kw">crate</span>::io;
+<a href=#18 id=18 data-nosnippet>18</a>
+<a href=#19 id=19 data-nosnippet>19</a><span class="macro">bitflags!</span> {
+<a href=#20 id=20 data-nosnippet>20</a>    <span class="doccomment">/// Thread name space type.
+<a href=#21 id=21 data-nosnippet>21</a>    </span><span class="attr">#[repr(transparent)]
+<a href=#22 id=22 data-nosnippet>22</a>    #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
+<a href=#23 id=23 data-nosnippet>23</a>    </span><span class="kw">pub struct </span>ThreadNameSpaceType: u32 {
+<a href=#24 id=24 data-nosnippet>24</a>        <span class="doccomment">/// Time name space.
+<a href=#25 id=25 data-nosnippet>25</a>        </span><span class="kw">const </span>TIME = CLONE_NEWTIME;
+<a href=#26 id=26 data-nosnippet>26</a>        <span class="doccomment">/// Mount name space.
+<a href=#27 id=27 data-nosnippet>27</a>        </span><span class="kw">const </span>MOUNT = CLONE_NEWNS;
+<a href=#28 id=28 data-nosnippet>28</a>        <span class="doccomment">/// Control group (CGroup) name space.
+<a href=#29 id=29 data-nosnippet>29</a>        </span><span class="kw">const </span>CONTROL_GROUP = CLONE_NEWCGROUP;
+<a href=#30 id=30 data-nosnippet>30</a>        <span class="doccomment">/// `Host name` and `NIS domain name` (UTS) name space.
+<a href=#31 id=31 data-nosnippet>31</a>        </span><span class="kw">const </span>HOST_NAME_AND_NIS_DOMAIN_NAME = CLONE_NEWUTS;
+<a href=#32 id=32 data-nosnippet>32</a>        <span class="doccomment">/// Inter-process communication (IPC) name space.
+<a href=#33 id=33 data-nosnippet>33</a>        </span><span class="kw">const </span>INTER_PROCESS_COMMUNICATION = CLONE_NEWIPC;
+<a href=#34 id=34 data-nosnippet>34</a>        <span class="doccomment">/// User name space.
+<a href=#35 id=35 data-nosnippet>35</a>        </span><span class="kw">const </span>USER = CLONE_NEWUSER;
+<a href=#36 id=36 data-nosnippet>36</a>        <span class="doccomment">/// Process ID name space.
+<a href=#37 id=37 data-nosnippet>37</a>        </span><span class="kw">const </span>PROCESS_ID = CLONE_NEWPID;
+<a href=#38 id=38 data-nosnippet>38</a>        <span class="doccomment">/// Network name space.
+<a href=#39 id=39 data-nosnippet>39</a>        </span><span class="kw">const </span>NETWORK = CLONE_NEWNET;
+<a href=#40 id=40 data-nosnippet>40</a>
+<a href=#41 id=41 data-nosnippet>41</a>        <span class="doccomment">/// &lt;https://docs.rs/bitflags/*/bitflags/#externally-defined-flags&gt;
+<a href=#42 id=42 data-nosnippet>42</a>        </span><span class="kw">const _ </span>= !<span class="number">0</span>;
+<a href=#43 id=43 data-nosnippet>43</a>    }
+<a href=#44 id=44 data-nosnippet>44</a>}
+<a href=#45 id=45 data-nosnippet>45</a>
+<a href=#46 id=46 data-nosnippet>46</a><span class="doccomment">/// Type of name space referred to by a link.
+<a href=#47 id=47 data-nosnippet>47</a></span><span class="attr">#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+<a href=#48 id=48 data-nosnippet>48</a>#[repr(u32)]
+<a href=#49 id=49 data-nosnippet>49</a></span><span class="kw">pub enum </span>LinkNameSpaceType {
+<a href=#50 id=50 data-nosnippet>50</a>    <span class="doccomment">/// Time name space.
+<a href=#51 id=51 data-nosnippet>51</a>    </span>Time = CLONE_NEWTIME,
+<a href=#52 id=52 data-nosnippet>52</a>    <span class="doccomment">/// Mount name space.
+<a href=#53 id=53 data-nosnippet>53</a>    </span>Mount = CLONE_NEWNS,
+<a href=#54 id=54 data-nosnippet>54</a>    <span class="doccomment">/// Control group (CGroup) name space.
+<a href=#55 id=55 data-nosnippet>55</a>    </span>ControlGroup = CLONE_NEWCGROUP,
+<a href=#56 id=56 data-nosnippet>56</a>    <span class="doccomment">/// `Host name` and `NIS domain name` (UTS) name space.
+<a href=#57 id=57 data-nosnippet>57</a>    </span>HostNameAndNISDomainName = CLONE_NEWUTS,
+<a href=#58 id=58 data-nosnippet>58</a>    <span class="doccomment">/// Inter-process communication (IPC) name space.
+<a href=#59 id=59 data-nosnippet>59</a>    </span>InterProcessCommunication = CLONE_NEWIPC,
+<a href=#60 id=60 data-nosnippet>60</a>    <span class="doccomment">/// User name space.
+<a href=#61 id=61 data-nosnippet>61</a>    </span>User = CLONE_NEWUSER,
+<a href=#62 id=62 data-nosnippet>62</a>    <span class="doccomment">/// Process ID name space.
+<a href=#63 id=63 data-nosnippet>63</a>    </span>ProcessID = CLONE_NEWPID,
+<a href=#64 id=64 data-nosnippet>64</a>    <span class="doccomment">/// Network name space.
+<a href=#65 id=65 data-nosnippet>65</a>    </span>Network = CLONE_NEWNET,
+<a href=#66 id=66 data-nosnippet>66</a>}
+<a href=#67 id=67 data-nosnippet>67</a>
+<a href=#68 id=68 data-nosnippet>68</a><span class="macro">bitflags!</span> {
+<a href=#69 id=69 data-nosnippet>69</a>    <span class="doccomment">/// `CLONE_*` for use with [`unshare`].
+<a href=#70 id=70 data-nosnippet>70</a>    </span><span class="attr">#[repr(transparent)]
+<a href=#71 id=71 data-nosnippet>71</a>    #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
+<a href=#72 id=72 data-nosnippet>72</a>    </span><span class="kw">pub struct </span>UnshareFlags: u32 {
+<a href=#73 id=73 data-nosnippet>73</a>        <span class="doccomment">/// `CLONE_FILES`
+<a href=#74 id=74 data-nosnippet>74</a>        </span><span class="kw">const </span>FILES = CLONE_FILES;
+<a href=#75 id=75 data-nosnippet>75</a>        <span class="doccomment">/// `CLONE_FS`
+<a href=#76 id=76 data-nosnippet>76</a>        </span><span class="kw">const </span>FS = CLONE_FS;
+<a href=#77 id=77 data-nosnippet>77</a>        <span class="doccomment">/// `CLONE_NEWCGROUP`
+<a href=#78 id=78 data-nosnippet>78</a>        </span><span class="kw">const </span>NEWCGROUP = CLONE_NEWCGROUP;
+<a href=#79 id=79 data-nosnippet>79</a>        <span class="doccomment">/// `CLONE_NEWIPC`
+<a href=#80 id=80 data-nosnippet>80</a>        </span><span class="kw">const </span>NEWIPC = CLONE_NEWIPC;
+<a href=#81 id=81 data-nosnippet>81</a>        <span class="doccomment">/// `CLONE_NEWNET`
+<a href=#82 id=82 data-nosnippet>82</a>        </span><span class="kw">const </span>NEWNET = CLONE_NEWNET;
+<a href=#83 id=83 data-nosnippet>83</a>        <span class="doccomment">/// `CLONE_NEWNS`
+<a href=#84 id=84 data-nosnippet>84</a>        </span><span class="kw">const </span>NEWNS = CLONE_NEWNS;
+<a href=#85 id=85 data-nosnippet>85</a>        <span class="doccomment">/// `CLONE_NEWPID`
+<a href=#86 id=86 data-nosnippet>86</a>        </span><span class="kw">const </span>NEWPID = CLONE_NEWPID;
+<a href=#87 id=87 data-nosnippet>87</a>        <span class="doccomment">/// `CLONE_NEWTIME`
+<a href=#88 id=88 data-nosnippet>88</a>        </span><span class="kw">const </span>NEWTIME = CLONE_NEWTIME;
+<a href=#89 id=89 data-nosnippet>89</a>        <span class="doccomment">/// `CLONE_NEWUSER`
+<a href=#90 id=90 data-nosnippet>90</a>        </span><span class="kw">const </span>NEWUSER = CLONE_NEWUSER;
+<a href=#91 id=91 data-nosnippet>91</a>        <span class="doccomment">/// `CLONE_NEWUTS`
+<a href=#92 id=92 data-nosnippet>92</a>        </span><span class="kw">const </span>NEWUTS = CLONE_NEWUTS;
+<a href=#93 id=93 data-nosnippet>93</a>        <span class="doccomment">/// `CLONE_SYSVSEM`
+<a href=#94 id=94 data-nosnippet>94</a>        </span><span class="kw">const </span>SYSVSEM = CLONE_SYSVSEM;
+<a href=#95 id=95 data-nosnippet>95</a>
+<a href=#96 id=96 data-nosnippet>96</a>        <span class="doccomment">/// &lt;https://docs.rs/bitflags/*/bitflags/#externally-defined-flags&gt;
+<a href=#97 id=97 data-nosnippet>97</a>        </span><span class="kw">const _ </span>= !<span class="number">0</span>;
+<a href=#98 id=98 data-nosnippet>98</a>    }
+<a href=#99 id=99 data-nosnippet>99</a>}
+<a href=#100 id=100 data-nosnippet>100</a>
+<a href=#101 id=101 data-nosnippet>101</a><span class="doccomment">/// Reassociate the calling thread with the namespace associated with link
+<a href=#102 id=102 data-nosnippet>102</a>/// referred to by `fd`.
+<a href=#103 id=103 data-nosnippet>103</a>///
+<a href=#104 id=104 data-nosnippet>104</a>/// `fd` must refer to one of the magic links in a `/proc/[pid]/ns/` directory,
+<a href=#105 id=105 data-nosnippet>105</a>/// or a bind mount to such a link.
+<a href=#106 id=106 data-nosnippet>106</a>///
+<a href=#107 id=107 data-nosnippet>107</a>/// # References
+<a href=#108 id=108 data-nosnippet>108</a>///  - [Linux]
+<a href=#109 id=109 data-nosnippet>109</a>///
+<a href=#110 id=110 data-nosnippet>110</a>/// [Linux]: https://man7.org/linux/man-pages/man2/setns.2.html
+<a href=#111 id=111 data-nosnippet>111</a></span><span class="attr">#[doc(alias = <span class="string">"setns"</span>)]
+<a href=#112 id=112 data-nosnippet>112</a></span><span class="kw">pub fn </span>move_into_link_name_space(
+<a href=#113 id=113 data-nosnippet>113</a>    fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#114 id=114 data-nosnippet>114</a>    allowed_type: <span class="prelude-ty">Option</span>&lt;LinkNameSpaceType&gt;,
+<a href=#115 id=115 data-nosnippet>115</a>) -&gt; io::Result&lt;()&gt; {
+<a href=#116 id=116 data-nosnippet>116</a>    <span class="kw">let </span>allowed_type = allowed_type.map_or(<span class="number">0</span>, |t| t <span class="kw">as </span>c_int);
+<a href=#117 id=117 data-nosnippet>117</a>    syscalls::setns(fd, allowed_type).map(|_r| ())
+<a href=#118 id=118 data-nosnippet>118</a>}
+<a href=#119 id=119 data-nosnippet>119</a>
+<a href=#120 id=120 data-nosnippet>120</a><span class="doccomment">/// Atomically move the calling thread into one or more of the same namespaces
+<a href=#121 id=121 data-nosnippet>121</a>/// as the thread referred to by `fd`.
+<a href=#122 id=122 data-nosnippet>122</a>///
+<a href=#123 id=123 data-nosnippet>123</a>/// `fd` must refer to a thread ID. See: `pidfd_open` and `clone`.
+<a href=#124 id=124 data-nosnippet>124</a>///
+<a href=#125 id=125 data-nosnippet>125</a>/// # References
+<a href=#126 id=126 data-nosnippet>126</a>///  - [Linux]
+<a href=#127 id=127 data-nosnippet>127</a>///
+<a href=#128 id=128 data-nosnippet>128</a>/// [Linux]: https://man7.org/linux/man-pages/man2/setns.2.html
+<a href=#129 id=129 data-nosnippet>129</a></span><span class="attr">#[doc(alias = <span class="string">"setns"</span>)]
+<a href=#130 id=130 data-nosnippet>130</a></span><span class="kw">pub fn </span>move_into_thread_name_spaces(
+<a href=#131 id=131 data-nosnippet>131</a>    fd: BorrowedFd&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#132 id=132 data-nosnippet>132</a>    allowed_types: ThreadNameSpaceType,
+<a href=#133 id=133 data-nosnippet>133</a>) -&gt; io::Result&lt;()&gt; {
+<a href=#134 id=134 data-nosnippet>134</a>    syscalls::setns(fd, allowed_types.bits() <span class="kw">as </span>c_int).map(|_r| ())
+<a href=#135 id=135 data-nosnippet>135</a>}
+<a href=#136 id=136 data-nosnippet>136</a>
+<a href=#137 id=137 data-nosnippet>137</a><span class="doccomment">/// `unshare(flags)`—Deprecated in favor of [`unshare_unsafe`].
+<a href=#138 id=138 data-nosnippet>138</a>///
+<a href=#139 id=139 data-nosnippet>139</a>/// This function should be unsafe; see the safety comment on `unshare_unsafe`.
+<a href=#140 id=140 data-nosnippet>140</a></span><span class="attr">#[deprecated(since = <span class="string">"1.1.0"</span>, note = <span class="string">"Use `unshare_unsafe`"</span>)]
+<a href=#141 id=141 data-nosnippet>141</a></span><span class="kw">pub fn </span>unshare(flags: UnshareFlags) -&gt; io::Result&lt;()&gt; {
+<a href=#142 id=142 data-nosnippet>142</a>    <span class="comment">// SAFETY: This is not actually safe. This function is deprecated and users
+<a href=#143 id=143 data-nosnippet>143</a>    // should use `unshare_unsafe` instead.
+<a href=#144 id=144 data-nosnippet>144</a>    </span><span class="kw">unsafe </span>{ syscalls::unshare(flags) }
+<a href=#145 id=145 data-nosnippet>145</a>}
+<a href=#146 id=146 data-nosnippet>146</a>
+<a href=#147 id=147 data-nosnippet>147</a><span class="doccomment">/// `unshare(flags)`—Disassociate parts of the current thread's execution
+<a href=#148 id=148 data-nosnippet>148</a>/// context with other threads.
+<a href=#149 id=149 data-nosnippet>149</a>///
+<a href=#150 id=150 data-nosnippet>150</a>/// # Safety
+<a href=#151 id=151 data-nosnippet>151</a>///
+<a href=#152 id=152 data-nosnippet>152</a>/// When using `UnshareFlags::FILES`, this function can cause one thread to be
+<a href=#153 id=153 data-nosnippet>153</a>/// unable to use file descriptors created on a different thread. Callers must
+<a href=#154 id=154 data-nosnippet>154</a>/// ensure that threads never observe file descriptors from unshared tables.
+<a href=#155 id=155 data-nosnippet>155</a>///
+<a href=#156 id=156 data-nosnippet>156</a>/// # References
+<a href=#157 id=157 data-nosnippet>157</a>///  - [Linux]
+<a href=#158 id=158 data-nosnippet>158</a>///
+<a href=#159 id=159 data-nosnippet>159</a>/// [Linux]: https://man7.org/linux/man-pages/man2/unshare.2.html
+<a href=#160 id=160 data-nosnippet>160</a></span><span class="kw">pub unsafe fn </span>unshare_unsafe(flags: UnshareFlags) -&gt; io::Result&lt;()&gt; {
+<a href=#161 id=161 data-nosnippet>161</a>    syscalls::unshare(flags)
+<a href=#162 id=162 data-nosnippet>162</a>}</code></pre></div></section></main></body></html>

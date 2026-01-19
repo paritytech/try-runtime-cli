@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Calls the given macro with each opcode."><title>for_each_op in pulley_interpreter - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="pulley_interpreter" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../static.files/storage-e2aeef58.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc macro"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">for_each_op</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../pulley_interpreter/index.html">pulley_<wbr>interpreter</a><span class="version">35.0.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">for_<wbr>each_<wbr>op</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#instruction-guidelines" title="Instruction Guidelines">Instruction Guidelines</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate pulley_<wbr>interpreter</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="index.html">pulley_interpreter</a></div><h1>Macro <span class="macro">for_<wbr>each_<wbr>op</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/pulley_interpreter/lib.rs.html#86-616">Source</a> </span></div><pre class="rust item-decl"><code>macro_rules! for_each_op {
+    ( $macro:ident ) =&gt; { ... };
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Calls the given macro with each opcode.</p>
+<h2 id="instruction-guidelines"><a class="doc-anchor" href="#instruction-guidelines">§</a>Instruction Guidelines</h2>
+<p>We’re inventing an instruction set here which naturally brings a whole set
+of design questions. Note that this is explicitly intended to be only ever
+used for Pulley where there are a different set of design constraints than
+other instruction sets (e.g. general-purpose CPU ISAs). Some examples of
+constraints for Pulley are:</p>
+<ul>
+<li>Instructions must be portable to many architectures.</li>
+<li>The Pulley ISA is mostly target-independent as the compilation target is
+currently only parameterized on pointer width and endianness.</li>
+<li>Pulley instructions should be balance of time-to-decode and code size. For
+example super fancy bit-packing tricks might be tough to decode in
+software but might be worthwhile if it’s quite common and greatly reduces
+the size of bytecode. There’s not a hard-and-fast answer here, but a
+balance to be made.</li>
+<li>Many “macro ops” are present to reduce the size of compiled bytecode so
+there is a wide set of duplicate functionality between opcodes (and this
+is expected).</li>
+</ul>
+<p>Given all this it’s also useful to have a set of guidelines used to name and
+develop Pulley instructions. As of the time of this writing it’s still
+pretty early days for Pulley so some of these guidelines may change over
+time. Additionally instructions don’t necessarily all follow these
+conventions and that may also change over time. With that in mind, here’s a
+rough set of guidelines:</p>
+<ul>
+<li>
+<p>Most instructions are prefixed with <code>x</code>, <code>f</code>, or <code>v</code>, indicating which
+type of register they’re operating on. (e.g. <code>xadd32</code> operates on the <code>x</code>
+integer registers and <code>fadd32</code> operates on the <code>f</code> float registers).</p>
+</li>
+<li>
+<p>Most instructions are suffixed or otherwise contain the bit width they’re
+operating on. For example <code>xadd32</code> is a 32-bit addition.</p>
+</li>
+<li>
+<p>If an instruction operates on signed or unsigned data (such as division
+and remainder), then the instruction is suffixed with <code>_s</code> or <code>_u</code>.</p>
+</li>
+<li>
+<p>Instructions operate on either 32 or 64-bit parts of a register.
+Instructions modifying only 32-bits of a register always modify the “low”
+part of a register and leave the upper part unmodified. This is intended
+to help 32-bit platforms where if most operations are 32-bit there’s no
+need for extra instructions to sign or zero extend and modify the upper
+half of the register.</p>
+</li>
+<li>
+<p>Binops use <code>BinaryOperands&lt;T&gt;</code> for the destination and argument registers.</p>
+</li>
+<li>
+<p>Instructions operating on memory contain a few pieces of information:</p>
+<div class="example-wrap"><pre class="language-text"><code>xload16le_u32_o32
+│└─┬┘└┤└┤ └┬┘ └┬┘
+│  │  │ │  │   ▼
+│  │  │ │  │   addressing mode
+│  │  │ │  ▼
+│  │  │ │  width of register modified + sign-extension (optional)
+│  │  │ ▼
+│  │  │ endianness of the operation (le/be)
+│  │  ▼
+│  │  bit-width of the operation
+│  ▼
+│  what&#39;s happening (load/store)
+▼
+register being operated on (x/f/z)</code></pre></div></li>
+</ul>
+<p>More guidelines might get added here over time, and if you have any
+questions feel free to raise them and we can try to add them here as well!</p>
+</div></details></section></div></main></body></html>

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":["FromFFIValue","IntoFFIValue","IntoPreallocatedFFIValue"]};
+window.SIDEBAR_ITEMS = {"trait":["FromFFIValue","IntoFFIValue"]};

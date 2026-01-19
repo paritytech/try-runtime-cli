@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["RrsetRecords"],"mod":["dns_class","domain","rdata","record_data","record_type","resource","type_bit_map"],"struct":["LowerName","RecordSet","RrKey"],"trait":["IntoRecordSet","RecordData"]};

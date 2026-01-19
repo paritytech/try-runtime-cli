@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rocksdb-0.21.0/src/compaction_filter.rs`."><title>compaction_filter.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rocksdb" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rocksdb/</div>compaction_filter.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2020 Tyler Neely
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rocksdb-0.24.0/src/compaction_filter.rs`."><title>compaction_filter.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rocksdb" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rocksdb/</div>compaction_filter.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2020 Tyler Neely
 <a href=#2 id=2 data-nosnippet>2</a>//
 <a href=#3 id=3 data-nosnippet>3</a>// Licensed under the Apache License, Version 2.0 (the "License");
 <a href=#4 id=4 data-nosnippet>4</a>// you may not use this file except in compliance with the License.
@@ -100,14 +100,14 @@
 <a href=#100 id=100 data-nosnippet>100</a><span class="kw">where
 <a href=#101 id=101 data-nosnippet>101</a>    </span>F: CompactionFilter,
 <a href=#102 id=102 data-nosnippet>102</a>{
-<a href=#103 id=103 data-nosnippet>103</a>    drop(Box::from_raw(raw_cb <span class="kw">as </span><span class="kw-2">*mut </span>F));
+<a href=#103 id=103 data-nosnippet>103</a>    drop(<span class="kw">unsafe </span>{ Box::from_raw(raw_cb <span class="kw">as </span><span class="kw-2">*mut </span>F) });
 <a href=#104 id=104 data-nosnippet>104</a>}
 <a href=#105 id=105 data-nosnippet>105</a>
 <a href=#106 id=106 data-nosnippet>106</a><span class="kw">pub unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>name_callback&lt;F&gt;(raw_cb: <span class="kw-2">*mut </span>c_void) -&gt; <span class="kw-2">*const </span>c_char
 <a href=#107 id=107 data-nosnippet>107</a><span class="kw">where
 <a href=#108 id=108 data-nosnippet>108</a>    </span>F: CompactionFilter,
 <a href=#109 id=109 data-nosnippet>109</a>{
-<a href=#110 id=110 data-nosnippet>110</a>    <span class="kw">let </span>cb = <span class="kw-2">&amp;*</span>(raw_cb <span class="kw">as </span><span class="kw-2">*mut </span>F);
+<a href=#110 id=110 data-nosnippet>110</a>    <span class="kw">let </span>cb = <span class="kw">unsafe </span>{ <span class="kw-2">&amp;*</span>(raw_cb <span class="kw">as </span><span class="kw-2">*mut </span>F) };
 <a href=#111 id=111 data-nosnippet>111</a>    cb.name().as_ptr()
 <a href=#112 id=112 data-nosnippet>112</a>}
 <a href=#113 id=113 data-nosnippet>113</a>
@@ -127,17 +127,17 @@
 <a href=#127 id=127 data-nosnippet>127</a>{
 <a href=#128 id=128 data-nosnippet>128</a>    <span class="kw">use </span><span class="self">self</span>::Decision::{Change, Keep, Remove};
 <a href=#129 id=129 data-nosnippet>129</a>
-<a href=#130 id=130 data-nosnippet>130</a>    <span class="kw">let </span>cb = <span class="kw-2">&amp;mut *</span>(raw_cb <span class="kw">as </span><span class="kw-2">*mut </span>F);
-<a href=#131 id=131 data-nosnippet>131</a>    <span class="kw">let </span>key = slice::from_raw_parts(raw_key <span class="kw">as </span><span class="kw-2">*const </span>u8, key_length);
-<a href=#132 id=132 data-nosnippet>132</a>    <span class="kw">let </span>oldval = slice::from_raw_parts(existing_value <span class="kw">as </span><span class="kw-2">*const </span>u8, value_length);
+<a href=#130 id=130 data-nosnippet>130</a>    <span class="kw">let </span>cb = <span class="kw">unsafe </span>{ <span class="kw-2">&amp;mut *</span>(raw_cb <span class="kw">as </span><span class="kw-2">*mut </span>F) };
+<a href=#131 id=131 data-nosnippet>131</a>    <span class="kw">let </span>key = <span class="kw">unsafe </span>{ slice::from_raw_parts(raw_key <span class="kw">as </span><span class="kw-2">*const </span>u8, key_length) };
+<a href=#132 id=132 data-nosnippet>132</a>    <span class="kw">let </span>oldval = <span class="kw">unsafe </span>{ slice::from_raw_parts(existing_value <span class="kw">as </span><span class="kw-2">*const </span>u8, value_length) };
 <a href=#133 id=133 data-nosnippet>133</a>    <span class="kw">let </span>result = cb.filter(level <span class="kw">as </span>u32, key, oldval);
 <a href=#134 id=134 data-nosnippet>134</a>    <span class="kw">match </span>result {
 <a href=#135 id=135 data-nosnippet>135</a>        Keep =&gt; <span class="number">0</span>,
 <a href=#136 id=136 data-nosnippet>136</a>        Remove =&gt; <span class="number">1</span>,
 <a href=#137 id=137 data-nosnippet>137</a>        Change(newval) =&gt; {
-<a href=#138 id=138 data-nosnippet>138</a>            <span class="kw-2">*</span>new_value = newval.as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_char;
-<a href=#139 id=139 data-nosnippet>139</a>            <span class="kw-2">*</span>new_value_length = newval.len() <span class="kw">as </span>size_t;
-<a href=#140 id=140 data-nosnippet>140</a>            <span class="kw-2">*</span>value_changed = <span class="number">1_u8</span>;
+<a href=#138 id=138 data-nosnippet>138</a>            <span class="kw">unsafe </span>{ <span class="kw-2">*</span>new_value = newval.as_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>c_char };
+<a href=#139 id=139 data-nosnippet>139</a>            <span class="kw">unsafe </span>{ <span class="kw-2">*</span>new_value_length = newval.len() <span class="kw">as </span>size_t };
+<a href=#140 id=140 data-nosnippet>140</a>            <span class="kw">unsafe </span>{ <span class="kw-2">*</span>value_changed = <span class="number">1_u8 </span>};
 <a href=#141 id=141 data-nosnippet>141</a>            <span class="number">0
 <a href=#142 id=142 data-nosnippet>142</a>        </span>}
 <a href=#143 id=143 data-nosnippet>143</a>    }
@@ -158,20 +158,24 @@
 <a href=#158 id=158 data-nosnippet>158</a></span><span class="kw">fn </span>compaction_filter_test() {
 <a href=#159 id=159 data-nosnippet>159</a>    <span class="kw">use crate</span>::{Options, DB};
 <a href=#160 id=160 data-nosnippet>160</a>
-<a href=#161 id=161 data-nosnippet>161</a>    <span class="kw">let </span>path = <span class="string">"_rust_rocksdb_filter_test"</span>;
-<a href=#162 id=162 data-nosnippet>162</a>    <span class="kw">let </span><span class="kw-2">mut </span>opts = Options::default();
-<a href=#163 id=163 data-nosnippet>163</a>    opts.create_if_missing(<span class="bool-val">true</span>);
-<a href=#164 id=164 data-nosnippet>164</a>    opts.set_compaction_filter(<span class="string">"test"</span>, test_filter);
-<a href=#165 id=165 data-nosnippet>165</a>    {
-<a href=#166 id=166 data-nosnippet>166</a>        <span class="kw">let </span>db = DB::open(<span class="kw-2">&amp;</span>opts, path).unwrap();
-<a href=#167 id=167 data-nosnippet>167</a>        <span class="kw">let </span>_r = db.put(<span class="string">b"k1"</span>, <span class="string">b"a"</span>);
-<a href=#168 id=168 data-nosnippet>168</a>        <span class="kw">let </span>_r = db.put(<span class="string">b"_k"</span>, <span class="string">b"b"</span>);
-<a href=#169 id=169 data-nosnippet>169</a>        <span class="kw">let </span>_r = db.put(<span class="string">b"%k"</span>, <span class="string">b"c"</span>);
-<a href=#170 id=170 data-nosnippet>170</a>        db.compact_range(<span class="prelude-val">None</span>::&lt;<span class="kw-2">&amp;</span>[u8]&gt;, <span class="prelude-val">None</span>::&lt;<span class="kw-2">&amp;</span>[u8]&gt;);
-<a href=#171 id=171 data-nosnippet>171</a>        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;*</span>db.get(<span class="string">b"k1"</span>).unwrap().unwrap(), <span class="string">b"a"</span>);
-<a href=#172 id=172 data-nosnippet>172</a>        <span class="macro">assert!</span>(db.get(<span class="string">b"_k"</span>).unwrap().is_none());
-<a href=#173 id=173 data-nosnippet>173</a>        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;*</span>db.get(<span class="string">b"%k"</span>).unwrap().unwrap(), <span class="string">b"secret"</span>);
-<a href=#174 id=174 data-nosnippet>174</a>    }
-<a href=#175 id=175 data-nosnippet>175</a>    <span class="kw">let </span>result = DB::destroy(<span class="kw-2">&amp;</span>opts, path);
-<a href=#176 id=176 data-nosnippet>176</a>    <span class="macro">assert!</span>(result.is_ok());
-<a href=#177 id=177 data-nosnippet>177</a>}</code></pre></div></section></main></body></html>
+<a href=#161 id=161 data-nosnippet>161</a>    <span class="kw">let </span>tempdir = tempfile::Builder::new()
+<a href=#162 id=162 data-nosnippet>162</a>        .prefix(<span class="string">"_rust_rocksdb_filter_test"</span>)
+<a href=#163 id=163 data-nosnippet>163</a>        .tempdir()
+<a href=#164 id=164 data-nosnippet>164</a>        .expect(<span class="string">"Failed to create temporary path for the _rust_rocksdb_filter_test"</span>);
+<a href=#165 id=165 data-nosnippet>165</a>    <span class="kw">let </span>path = tempdir.path();
+<a href=#166 id=166 data-nosnippet>166</a>    <span class="kw">let </span><span class="kw-2">mut </span>opts = Options::default();
+<a href=#167 id=167 data-nosnippet>167</a>    opts.create_if_missing(<span class="bool-val">true</span>);
+<a href=#168 id=168 data-nosnippet>168</a>    opts.set_compaction_filter(<span class="string">"test"</span>, test_filter);
+<a href=#169 id=169 data-nosnippet>169</a>    {
+<a href=#170 id=170 data-nosnippet>170</a>        <span class="kw">let </span>db = DB::open(<span class="kw-2">&amp;</span>opts, path).unwrap();
+<a href=#171 id=171 data-nosnippet>171</a>        <span class="kw">let </span>_r = db.put(<span class="string">b"k1"</span>, <span class="string">b"a"</span>);
+<a href=#172 id=172 data-nosnippet>172</a>        <span class="kw">let </span>_r = db.put(<span class="string">b"_k"</span>, <span class="string">b"b"</span>);
+<a href=#173 id=173 data-nosnippet>173</a>        <span class="kw">let </span>_r = db.put(<span class="string">b"%k"</span>, <span class="string">b"c"</span>);
+<a href=#174 id=174 data-nosnippet>174</a>        db.compact_range(<span class="prelude-val">None</span>::&lt;<span class="kw-2">&amp;</span>[u8]&gt;, <span class="prelude-val">None</span>::&lt;<span class="kw-2">&amp;</span>[u8]&gt;);
+<a href=#175 id=175 data-nosnippet>175</a>        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;*</span>db.get(<span class="string">b"k1"</span>).unwrap().unwrap(), <span class="string">b"a"</span>);
+<a href=#176 id=176 data-nosnippet>176</a>        <span class="macro">assert!</span>(db.get(<span class="string">b"_k"</span>).unwrap().is_none());
+<a href=#177 id=177 data-nosnippet>177</a>        <span class="macro">assert_eq!</span>(<span class="kw-2">&amp;*</span>db.get(<span class="string">b"%k"</span>).unwrap().unwrap(), <span class="string">b"secret"</span>);
+<a href=#178 id=178 data-nosnippet>178</a>    }
+<a href=#179 id=179 data-nosnippet>179</a>    <span class="kw">let </span>result = DB::destroy(<span class="kw-2">&amp;</span>opts, path);
+<a href=#180 id=180 data-nosnippet>180</a>    <span class="macro">assert!</span>(result.is_ok());
+<a href=#181 id=181 data-nosnippet>181</a>}</code></pre></div></section></main></body></html>

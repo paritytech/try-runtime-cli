@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["conn"]};
+window.SIDEBAR_ITEMS = {"mod":["conn","graceful"]};

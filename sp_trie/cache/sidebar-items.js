@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["CacheSize","LocalNodeCacheLimiter","LocalTrieCache","LocalValueCacheLimiter","SharedTrieCache","TrieCache"]};
+window.SIDEBAR_ITEMS = {"struct":["CacheSize","LocalNodeCacheConfig","LocalNodeCacheLimiter","LocalTrieCache","LocalValueCacheConfig","LocalValueCacheLimiter","SharedTrieCache","TrieCache"]};

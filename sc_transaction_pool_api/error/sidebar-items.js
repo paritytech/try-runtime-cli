@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Error"],"trait":["IntoPoolError"],"type":["Result"]};
+window.SIDEBAR_ITEMS = {"enum":["Error"],"trait":["IntoMetricsLabel","IntoPoolError"],"type":["Result"]};

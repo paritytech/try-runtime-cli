@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"trait":["Balanced","Inspect","Mutate","Unbalanced"]};
+window.SIDEBAR_ITEMS = {"trait":["Balanced","DoneSlash","Inspect","Mutate","Unbalanced"]};

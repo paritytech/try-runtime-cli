@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["core_version","mine_block","produce_next_block"]};
+window.SIDEBAR_ITEMS = {"fn":["core_version","mine_block","produce_next_block","relay_parent_offset"]};

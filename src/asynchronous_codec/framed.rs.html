@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/asynchronous-codec-0.6.2/src/framed.rs`."><title>framed.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="asynchronous_codec" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">asynchronous_codec/</div>framed.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">super</span>::framed_read::{framed_read_2, FramedRead2};
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/asynchronous-codec-0.7.0/src/framed.rs`."><title>framed.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="asynchronous_codec" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">asynchronous_codec/</div>framed.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">super</span>::framed_read::{framed_read_2, FramedRead2};
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span><span class="kw">super</span>::framed_write::{framed_write_2, FramedWrite2};
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span><span class="kw">super</span>::fuse::Fuse;
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use super</span>::{Decoder, Encoder};
@@ -163,7 +163,7 @@
 <a href=#163 id=163 data-nosnippet>163</a>    }
 <a href=#164 id=164 data-nosnippet>164</a>}
 <a href=#165 id=165 data-nosnippet>165</a>
-<a href=#166 id=166 data-nosnippet>166</a><span class="kw">impl</span>&lt;T, U&gt; Sink&lt;U::Item&gt; <span class="kw">for </span>Framed&lt;T, U&gt;
+<a href=#166 id=166 data-nosnippet>166</a><span class="kw">impl</span>&lt;T, U&gt; Sink&lt;U::Item&lt;<span class="lifetime">'_</span>&gt;&gt; <span class="kw">for </span>Framed&lt;T, U&gt;
 <a href=#167 id=167 data-nosnippet>167</a><span class="kw">where
 <a href=#168 id=168 data-nosnippet>168</a>    </span>T: AsyncWrite + Unpin,
 <a href=#169 id=169 data-nosnippet>169</a>    U: Encoder,
@@ -173,7 +173,7 @@
 <a href=#173 id=173 data-nosnippet>173</a>    <span class="kw">fn </span>poll_ready(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;(), <span class="self">Self</span>::Error&gt;&gt; {
 <a href=#174 id=174 data-nosnippet>174</a>        <span class="self">self</span>.project().inner.poll_ready(cx)
 <a href=#175 id=175 data-nosnippet>175</a>    }
-<a href=#176 id=176 data-nosnippet>176</a>    <span class="kw">fn </span>start_send(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, item: U::Item) -&gt; <span class="prelude-ty">Result</span>&lt;(), <span class="self">Self</span>::Error&gt; {
+<a href=#176 id=176 data-nosnippet>176</a>    <span class="kw">fn </span>start_send(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, item: U::Item&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), <span class="self">Self</span>::Error&gt; {
 <a href=#177 id=177 data-nosnippet>177</a>        <span class="self">self</span>.project().inner.start_send(item)
 <a href=#178 id=178 data-nosnippet>178</a>    }
 <a href=#179 id=179 data-nosnippet>179</a>    <span class="kw">fn </span>poll_flush(<span class="self">self</span>: Pin&lt;<span class="kw-2">&amp;mut </span><span class="self">Self</span>&gt;, cx: <span class="kw-2">&amp;mut </span>Context) -&gt; Poll&lt;<span class="prelude-ty">Result</span>&lt;(), <span class="self">Self</span>::Error&gt;&gt; {
@@ -204,15 +204,14 @@
 <a href=#204 id=204 data-nosnippet>204</a>    <span class="doccomment">/// Changes the codec used in this `FramedParts`.
 <a href=#205 id=205 data-nosnippet>205</a>    </span><span class="kw">pub fn </span>map_codec&lt;V, F&gt;(<span class="self">self</span>, f: F) -&gt; FramedParts&lt;T, V&gt;
 <a href=#206 id=206 data-nosnippet>206</a>    <span class="kw">where
-<a href=#207 id=207 data-nosnippet>207</a>        </span>V: Encoder + Decoder,
-<a href=#208 id=208 data-nosnippet>208</a>        F: FnOnce(U) -&gt; V,
-<a href=#209 id=209 data-nosnippet>209</a>    {
-<a href=#210 id=210 data-nosnippet>210</a>        FramedParts {
-<a href=#211 id=211 data-nosnippet>211</a>            io: <span class="self">self</span>.io,
-<a href=#212 id=212 data-nosnippet>212</a>            codec: f(<span class="self">self</span>.codec),
-<a href=#213 id=213 data-nosnippet>213</a>            read_buffer: <span class="self">self</span>.read_buffer,
-<a href=#214 id=214 data-nosnippet>214</a>            write_buffer: <span class="self">self</span>.write_buffer,
-<a href=#215 id=215 data-nosnippet>215</a>            _priv: (),
-<a href=#216 id=216 data-nosnippet>216</a>        }
-<a href=#217 id=217 data-nosnippet>217</a>    }
-<a href=#218 id=218 data-nosnippet>218</a>}</code></pre></div></section></main></body></html>
+<a href=#207 id=207 data-nosnippet>207</a>        </span>F: FnOnce(U) -&gt; V,
+<a href=#208 id=208 data-nosnippet>208</a>    {
+<a href=#209 id=209 data-nosnippet>209</a>        FramedParts {
+<a href=#210 id=210 data-nosnippet>210</a>            io: <span class="self">self</span>.io,
+<a href=#211 id=211 data-nosnippet>211</a>            codec: f(<span class="self">self</span>.codec),
+<a href=#212 id=212 data-nosnippet>212</a>            read_buffer: <span class="self">self</span>.read_buffer,
+<a href=#213 id=213 data-nosnippet>213</a>            write_buffer: <span class="self">self</span>.write_buffer,
+<a href=#214 id=214 data-nosnippet>214</a>            _priv: (),
+<a href=#215 id=215 data-nosnippet>215</a>        }
+<a href=#216 id=216 data-nosnippet>216</a>    }
+<a href=#217 id=217 data-nosnippet>217</a>}</code></pre></div></section></main></body></html>

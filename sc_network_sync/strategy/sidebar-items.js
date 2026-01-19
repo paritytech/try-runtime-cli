@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["StrategyKey","SyncingAction"],"mod":["chain_sync","state_sync","warp"],"struct":["PolkadotSyncingStrategy","SyncingConfig"],"trait":["SyncingStrategy"]};
+window.SIDEBAR_ITEMS = {"enum":["SyncingAction"],"mod":["chain_sync","polkadot","state","state_sync","warp"],"struct":["StrategyKey"],"trait":["SyncingStrategy"]};

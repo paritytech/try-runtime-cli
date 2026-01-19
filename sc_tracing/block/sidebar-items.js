@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Error"],"struct":["BlockExecutor"],"type":["TraceBlockResult"]};
+window.SIDEBAR_ITEMS = {"enum":["Error"],"struct":["BlockExecutor"],"trait":["TracingExecuteBlock"],"type":["TraceBlockResult"]};

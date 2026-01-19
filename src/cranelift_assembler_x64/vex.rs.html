@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cranelift-assembler-x64-0.122.0/src/vex.rs`."><title>vex.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cranelift_assembler_x64" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">cranelift_assembler_x64/</div>vex.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Encoding logic for VEX instructions.
+<a href=#2 id=2 data-nosnippet>2</a>
+<a href=#3 id=3 data-nosnippet>3</a></span><span class="kw">use </span><span class="kw">crate</span>::api::CodeSink;
+<a href=#4 id=4 data-nosnippet>4</a>
+<a href=#5 id=5 data-nosnippet>5</a><span class="doccomment">/// Construct and emit the VEX prefix bytes.
+<a href=#6 id=6 data-nosnippet>6</a></span><span class="kw">pub enum </span>VexPrefix {
+<a href=#7 id=7 data-nosnippet>7</a>    TwoByte(u8),
+<a href=#8 id=8 data-nosnippet>8</a>    ThreeByte(u8, u8),
+<a href=#9 id=9 data-nosnippet>9</a>}
+<a href=#10 id=10 data-nosnippet>10</a>
+<a href=#11 id=11 data-nosnippet>11</a><span class="doccomment">/// The VEX prefix only ever uses the top bit (bit 3--the fourth bit) of any
+<a href=#12 id=12 data-nosnippet>12</a>/// HW-encoded register.
+<a href=#13 id=13 data-nosnippet>13</a></span><span class="attr">#[inline(always)]
+<a href=#14 id=14 data-nosnippet>14</a></span><span class="kw">fn </span>invert_top_bit(enc: u8) -&gt; u8 {
+<a href=#15 id=15 data-nosnippet>15</a>    (!(enc &gt;&gt; <span class="number">3</span>)) &amp; <span class="number">1
+<a href=#16 id=16 data-nosnippet>16</a></span>}
+<a href=#17 id=17 data-nosnippet>17</a>
+<a href=#18 id=18 data-nosnippet>18</a><span class="kw">fn </span>use_2byte_prefix(x: u8, b: u8, w: bool, mmmmm: u8) -&gt; bool {
+<a href=#19 id=19 data-nosnippet>19</a>    <span class="comment">// These bits are only represented on the 3 byte prefix, so their presence
+<a href=#20 id=20 data-nosnippet>20</a>    // implies the use of the 3 byte prefix
+<a href=#21 id=21 data-nosnippet>21</a>    </span>b == <span class="number">1 </span>&amp;&amp; x == <span class="number">1 </span>&amp;&amp;
+<a href=#22 id=22 data-nosnippet>22</a>    <span class="comment">// The presence of W1 in the opcode column implies the opcode must be
+<a href=#23 id=23 data-nosnippet>23</a>    // encoded using the 3-byte form of the VEX prefix.
+<a href=#24 id=24 data-nosnippet>24</a>    </span>w == <span class="bool-val">false </span>&amp;&amp;
+<a href=#25 id=25 data-nosnippet>25</a>    <span class="comment">// The presence of 0F3A and 0F38 in the opcode column implies that
+<a href=#26 id=26 data-nosnippet>26</a>    // opcode can only be encoded by the three-byte form of VEX.
+<a href=#27 id=27 data-nosnippet>27</a>    </span>!(mmmmm == <span class="number">0b10 </span>|| mmmmm == <span class="number">0b11</span>)
+<a href=#28 id=28 data-nosnippet>28</a>}
+<a href=#29 id=29 data-nosnippet>29</a>
+<a href=#30 id=30 data-nosnippet>30</a><span class="kw">impl </span>VexPrefix {
+<a href=#31 id=31 data-nosnippet>31</a>    <span class="doccomment">/// Construct the [`VexPrefix`] for a ternary instruction.
+<a href=#32 id=32 data-nosnippet>32</a>    ///
+<a href=#33 id=33 data-nosnippet>33</a>    /// Used with a single register operand:
+<a href=#34 id=34 data-nosnippet>34</a>    /// - `reg` and `vvvv` hold HW-encoded registers.
+<a href=#35 id=35 data-nosnippet>35</a>    /// - `b` and `x` hold the (optional) HW-encoded registers for the `rm`
+<a href=#36 id=36 data-nosnippet>36</a>    ///   operand.
+<a href=#37 id=37 data-nosnippet>37</a>    /// - the other fields (`l`, `pp`, `mmmmm`, `w`) correspond directly to
+<a href=#38 id=38 data-nosnippet>38</a>    ///   fields in the VEX prefix.
+<a href=#39 id=39 data-nosnippet>39</a>    </span><span class="attr">#[inline]
+<a href=#40 id=40 data-nosnippet>40</a>    #[must_use]
+<a href=#41 id=41 data-nosnippet>41</a>    </span><span class="kw">pub fn </span>three_op(
+<a href=#42 id=42 data-nosnippet>42</a>        reg: u8,
+<a href=#43 id=43 data-nosnippet>43</a>        vvvv: u8,
+<a href=#44 id=44 data-nosnippet>44</a>        (b, x): (<span class="prelude-ty">Option</span>&lt;u8&gt;, <span class="prelude-ty">Option</span>&lt;u8&gt;),
+<a href=#45 id=45 data-nosnippet>45</a>        l: u8,
+<a href=#46 id=46 data-nosnippet>46</a>        pp: u8,
+<a href=#47 id=47 data-nosnippet>47</a>        mmmmm: u8,
+<a href=#48 id=48 data-nosnippet>48</a>        w: bool,
+<a href=#49 id=49 data-nosnippet>49</a>    ) -&gt; <span class="self">Self </span>{
+<a href=#50 id=50 data-nosnippet>50</a>        <span class="kw">let </span>r = invert_top_bit(reg);
+<a href=#51 id=51 data-nosnippet>51</a>        <span class="kw">let </span>b = invert_top_bit(b.unwrap_or(<span class="number">0</span>));
+<a href=#52 id=52 data-nosnippet>52</a>        <span class="kw">let </span>x = invert_top_bit(x.unwrap_or(<span class="number">0</span>));
+<a href=#53 id=53 data-nosnippet>53</a>
+<a href=#54 id=54 data-nosnippet>54</a>        <span class="kw">if </span>use_2byte_prefix(x, b, w, mmmmm) {
+<a href=#55 id=55 data-nosnippet>55</a>            <span class="comment">// 2-byte VEX prefix.
+<a href=#56 id=56 data-nosnippet>56</a>            //
+<a href=#57 id=57 data-nosnippet>57</a>            // +-----+ +-------------------+
+<a href=#58 id=58 data-nosnippet>58</a>            // | C5h | | R | vvvv | L | pp |
+<a href=#59 id=59 data-nosnippet>59</a>            // +-----+ +-------------------+
+<a href=#60 id=60 data-nosnippet>60</a>            </span><span class="macro">debug_assert!</span>(vvvv &lt;= <span class="number">0b1111</span>);
+<a href=#61 id=61 data-nosnippet>61</a>            <span class="macro">debug_assert!</span>(l &lt;= <span class="number">0b1</span>);
+<a href=#62 id=62 data-nosnippet>62</a>            <span class="macro">debug_assert!</span>(pp &lt;= <span class="number">0b11</span>);
+<a href=#63 id=63 data-nosnippet>63</a>            <span class="kw">let </span>last_byte = r &lt;&lt; <span class="number">7 </span>| (!vvvv &amp; <span class="number">0b1111</span>) &lt;&lt; <span class="number">3 </span>| (l &amp; <span class="number">0b1</span>) &lt;&lt; <span class="number">2 </span>| (pp &amp; <span class="number">0b11</span>);
+<a href=#64 id=64 data-nosnippet>64</a>
+<a href=#65 id=65 data-nosnippet>65</a>            <span class="self">Self</span>::TwoByte(last_byte)
+<a href=#66 id=66 data-nosnippet>66</a>        } <span class="kw">else </span>{
+<a href=#67 id=67 data-nosnippet>67</a>            <span class="comment">// 3-byte VEX prefix.
+<a href=#68 id=68 data-nosnippet>68</a>            //
+<a href=#69 id=69 data-nosnippet>69</a>            // +-----+ +--------------+ +-------------------+
+<a href=#70 id=70 data-nosnippet>70</a>            // | C4h | | RXB | m-mmmm | | W | vvvv | L | pp |
+<a href=#71 id=71 data-nosnippet>71</a>            // +-----+ +--------------+ +-------------------+
+<a href=#72 id=72 data-nosnippet>72</a>            </span><span class="macro">debug_assert!</span>(mmmmm &gt;= <span class="number">0b01 </span>&amp;&amp; mmmmm &lt;= <span class="number">0b11</span>);
+<a href=#73 id=73 data-nosnippet>73</a>            <span class="kw">let </span>second_byte = r &lt;&lt; <span class="number">7 </span>| x &lt;&lt; <span class="number">6 </span>| b &lt;&lt; <span class="number">5 </span>| mmmmm;
+<a href=#74 id=74 data-nosnippet>74</a>
+<a href=#75 id=75 data-nosnippet>75</a>            <span class="macro">debug_assert!</span>(vvvv &lt;= <span class="number">0b1111</span>);
+<a href=#76 id=76 data-nosnippet>76</a>            <span class="macro">debug_assert!</span>(l &lt;= <span class="number">0b1</span>);
+<a href=#77 id=77 data-nosnippet>77</a>            <span class="macro">debug_assert!</span>(pp &lt;= <span class="number">0b11</span>);
+<a href=#78 id=78 data-nosnippet>78</a>            <span class="kw">let </span>last_byte = (w <span class="kw">as </span>u8) &lt;&lt; <span class="number">7 </span>| (!vvvv &amp; <span class="number">0b1111</span>) &lt;&lt; <span class="number">3 </span>| (l &amp; <span class="number">0b1</span>) &lt;&lt; <span class="number">2 </span>| (pp &amp; <span class="number">0b11</span>);
+<a href=#79 id=79 data-nosnippet>79</a>
+<a href=#80 id=80 data-nosnippet>80</a>            <span class="self">Self</span>::ThreeByte(second_byte, last_byte)
+<a href=#81 id=81 data-nosnippet>81</a>        }
+<a href=#82 id=82 data-nosnippet>82</a>    }
+<a href=#83 id=83 data-nosnippet>83</a>
+<a href=#84 id=84 data-nosnippet>84</a>    <span class="doccomment">/// Construct the [`VexPrefix`] for a binary instruction.
+<a href=#85 id=85 data-nosnippet>85</a>    ///
+<a href=#86 id=86 data-nosnippet>86</a>    /// This simply but conveniently reuses [`VexPrefix::three_op`] with a
+<a href=#87 id=87 data-nosnippet>87</a>    /// `vvvv` value of `0`.
+<a href=#88 id=88 data-nosnippet>88</a>    </span><span class="attr">#[inline]
+<a href=#89 id=89 data-nosnippet>89</a>    #[must_use]
+<a href=#90 id=90 data-nosnippet>90</a>    </span><span class="kw">pub fn </span>two_op(
+<a href=#91 id=91 data-nosnippet>91</a>        reg: u8,
+<a href=#92 id=92 data-nosnippet>92</a>        (b, x): (<span class="prelude-ty">Option</span>&lt;u8&gt;, <span class="prelude-ty">Option</span>&lt;u8&gt;),
+<a href=#93 id=93 data-nosnippet>93</a>        l: u8,
+<a href=#94 id=94 data-nosnippet>94</a>        pp: u8,
+<a href=#95 id=95 data-nosnippet>95</a>        mmmmm: u8,
+<a href=#96 id=96 data-nosnippet>96</a>        w: bool,
+<a href=#97 id=97 data-nosnippet>97</a>    ) -&gt; <span class="self">Self </span>{
+<a href=#98 id=98 data-nosnippet>98</a>        <span class="self">Self</span>::three_op(reg, <span class="number">0</span>, (b, x), l, pp, mmmmm, w)
+<a href=#99 id=99 data-nosnippet>99</a>    }
+<a href=#100 id=100 data-nosnippet>100</a>
+<a href=#101 id=101 data-nosnippet>101</a>    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>encode(<span class="kw-2">&amp;</span><span class="self">self</span>, sink: <span class="kw-2">&amp;mut </span><span class="kw">impl </span>CodeSink) {
+<a href=#102 id=102 data-nosnippet>102</a>        <span class="kw">match </span><span class="self">self </span>{
+<a href=#103 id=103 data-nosnippet>103</a>            VexPrefix::TwoByte(last_byte) =&gt; {
+<a href=#104 id=104 data-nosnippet>104</a>                sink.put1(<span class="number">0xC5</span>);
+<a href=#105 id=105 data-nosnippet>105</a>                sink.put1(<span class="kw-2">*</span>last_byte);
+<a href=#106 id=106 data-nosnippet>106</a>            }
+<a href=#107 id=107 data-nosnippet>107</a>            VexPrefix::ThreeByte(second_byte, last_byte) =&gt; {
+<a href=#108 id=108 data-nosnippet>108</a>                sink.put1(<span class="number">0xC4</span>);
+<a href=#109 id=109 data-nosnippet>109</a>                sink.put1(<span class="kw-2">*</span>second_byte);
+<a href=#110 id=110 data-nosnippet>110</a>                sink.put1(<span class="kw-2">*</span>last_byte);
+<a href=#111 id=111 data-nosnippet>111</a>            }
+<a href=#112 id=112 data-nosnippet>112</a>        }
+<a href=#113 id=113 data-nosnippet>113</a>    }
+<a href=#114 id=114 data-nosnippet>114</a>}</code></pre></div></section></main></body></html>

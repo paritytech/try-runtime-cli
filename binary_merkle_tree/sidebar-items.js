@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Leaf"],"fn":["merkle_proof","merkle_root","verify_proof"],"struct":["MerkleProof"]};
+window.SIDEBAR_ITEMS = {"enum":["Leaf"],"fn":["merkle_proof","merkle_proof_raw","merkle_root","merkle_root_raw","verify_proof"],"struct":["MerkleProof"]};

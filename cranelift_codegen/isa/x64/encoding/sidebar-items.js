@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":["evex","rex","vex"],"trait":["ByteSink"]};

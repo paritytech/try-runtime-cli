@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/8279d10/substrate/client/network/src/protocol.rs`."><title>protocol.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_network/</div>protocol.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/0c70641/substrate/client/network/src/protocol.rs`."><title>protocol.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_network/</div>protocol.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -22,108 +22,108 @@
 <a href=#22 id=22 data-nosnippet>22</a>	protocol_controller::{<span class="self">self</span>, SetId},
 <a href=#23 id=23 data-nosnippet>23</a>	service::{metrics::NotificationMetrics, traits::Direction},
 <a href=#24 id=24 data-nosnippet>24</a>	types::ProtocolName,
-<a href=#25 id=25 data-nosnippet>25</a>	MAX_RESPONSE_SIZE,
-<a href=#26 id=26 data-nosnippet>26</a>};
-<a href=#27 id=27 data-nosnippet>27</a>
-<a href=#28 id=28 data-nosnippet>28</a><span class="kw">use </span>codec::Encode;
-<a href=#29 id=29 data-nosnippet>29</a><span class="kw">use </span>libp2p::{
-<a href=#30 id=30 data-nosnippet>30</a>	core::Endpoint,
-<a href=#31 id=31 data-nosnippet>31</a>	swarm::{
-<a href=#32 id=32 data-nosnippet>32</a>		behaviour::FromSwarm, ConnectionDenied, ConnectionId, NetworkBehaviour, PollParameters,
-<a href=#33 id=33 data-nosnippet>33</a>		THandler, THandlerInEvent, THandlerOutEvent, ToSwarm,
-<a href=#34 id=34 data-nosnippet>34</a>	},
-<a href=#35 id=35 data-nosnippet>35</a>	Multiaddr, PeerId,
-<a href=#36 id=36 data-nosnippet>36</a>};
-<a href=#37 id=37 data-nosnippet>37</a><span class="kw">use </span>log::warn;
-<a href=#38 id=38 data-nosnippet>38</a>
-<a href=#39 id=39 data-nosnippet>39</a><span class="kw">use </span>codec::DecodeAll;
-<a href=#40 id=40 data-nosnippet>40</a><span class="kw">use </span>sc_network_common::role::Roles;
-<a href=#41 id=41 data-nosnippet>41</a><span class="kw">use </span>sc_utils::mpsc::TracingUnboundedReceiver;
-<a href=#42 id=42 data-nosnippet>42</a><span class="kw">use </span>sp_runtime::traits::Block <span class="kw">as </span>BlockT;
-<a href=#43 id=43 data-nosnippet>43</a>
-<a href=#44 id=44 data-nosnippet>44</a><span class="kw">use </span>std::{collections::HashSet, iter, sync::Arc, task::Poll};
-<a href=#45 id=45 data-nosnippet>45</a>
-<a href=#46 id=46 data-nosnippet>46</a><span class="kw">use </span>notifications::{Notifications, NotificationsOut};
-<a href=#47 id=47 data-nosnippet>47</a>
-<a href=#48 id=48 data-nosnippet>48</a><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>notifications::ProtocolHandle;
-<a href=#49 id=49 data-nosnippet>49</a>
-<a href=#50 id=50 data-nosnippet>50</a><span class="kw">pub use </span>notifications::{
-<a href=#51 id=51 data-nosnippet>51</a>	notification_service, NotificationsSink, NotifsHandlerError, ProtocolHandlePair, Ready,
-<a href=#52 id=52 data-nosnippet>52</a>};
-<a href=#53 id=53 data-nosnippet>53</a>
-<a href=#54 id=54 data-nosnippet>54</a><span class="kw">mod </span>notifications;
-<a href=#55 id=55 data-nosnippet>55</a>
-<a href=#56 id=56 data-nosnippet>56</a><span class="kw">pub mod </span>message;
+<a href=#25 id=25 data-nosnippet>25</a>};
+<a href=#26 id=26 data-nosnippet>26</a>
+<a href=#27 id=27 data-nosnippet>27</a><span class="kw">use </span>codec::Encode;
+<a href=#28 id=28 data-nosnippet>28</a><span class="kw">use </span>libp2p::{
+<a href=#29 id=29 data-nosnippet>29</a>	core::{transport::PortUse, Endpoint},
+<a href=#30 id=30 data-nosnippet>30</a>	swarm::{
+<a href=#31 id=31 data-nosnippet>31</a>		behaviour::FromSwarm, ConnectionDenied, ConnectionId, NetworkBehaviour, THandler,
+<a href=#32 id=32 data-nosnippet>32</a>		THandlerInEvent, THandlerOutEvent, ToSwarm,
+<a href=#33 id=33 data-nosnippet>33</a>	},
+<a href=#34 id=34 data-nosnippet>34</a>	Multiaddr, PeerId,
+<a href=#35 id=35 data-nosnippet>35</a>};
+<a href=#36 id=36 data-nosnippet>36</a><span class="kw">use </span>log::{debug, warn};
+<a href=#37 id=37 data-nosnippet>37</a>
+<a href=#38 id=38 data-nosnippet>38</a><span class="kw">use </span>codec::DecodeAll;
+<a href=#39 id=39 data-nosnippet>39</a><span class="kw">use </span>sc_network_common::{role::Roles, types::ReputationChange};
+<a href=#40 id=40 data-nosnippet>40</a><span class="kw">use </span>sc_utils::mpsc::TracingUnboundedReceiver;
+<a href=#41 id=41 data-nosnippet>41</a><span class="kw">use </span>sp_runtime::traits::Block <span class="kw">as </span>BlockT;
+<a href=#42 id=42 data-nosnippet>42</a>
+<a href=#43 id=43 data-nosnippet>43</a><span class="kw">use </span>std::{collections::HashSet, iter, sync::Arc, task::Poll};
+<a href=#44 id=44 data-nosnippet>44</a>
+<a href=#45 id=45 data-nosnippet>45</a><span class="kw">use </span>notifications::{Notifications, NotificationsOut};
+<a href=#46 id=46 data-nosnippet>46</a>
+<a href=#47 id=47 data-nosnippet>47</a><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>notifications::ProtocolHandle;
+<a href=#48 id=48 data-nosnippet>48</a>
+<a href=#49 id=49 data-nosnippet>49</a><span class="kw">pub use </span>notifications::{notification_service, NotificationsSink, ProtocolHandlePair, Ready};
+<a href=#50 id=50 data-nosnippet>50</a>
+<a href=#51 id=51 data-nosnippet>51</a><span class="kw">mod </span>notifications;
+<a href=#52 id=52 data-nosnippet>52</a>
+<a href=#53 id=53 data-nosnippet>53</a><span class="kw">pub mod </span>message;
+<a href=#54 id=54 data-nosnippet>54</a>
+<a href=#55 id=55 data-nosnippet>55</a><span class="comment">// Log target for this file.
+<a href=#56 id=56 data-nosnippet>56</a></span><span class="kw">const </span>LOG_TARGET: <span class="kw-2">&amp;</span>str = <span class="string">"sub-libp2p"</span>;
 <a href=#57 id=57 data-nosnippet>57</a>
-<a href=#58 id=58 data-nosnippet>58</a><span class="doccomment">/// Maximum size used for notifications in the block announce and transaction protocols.
-<a href=#59 id=59 data-nosnippet>59</a></span><span class="comment">// Must be equal to `max(MAX_BLOCK_ANNOUNCE_SIZE, MAX_TRANSACTIONS_SIZE)`.
-<a href=#60 id=60 data-nosnippet>60</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const </span>BLOCK_ANNOUNCES_TRANSACTIONS_SUBSTREAM_SIZE: u64 = MAX_RESPONSE_SIZE;
-<a href=#61 id=61 data-nosnippet>61</a>
-<a href=#62 id=62 data-nosnippet>62</a><span class="doccomment">/// Identifier of the peerset for the block announces protocol.
-<a href=#63 id=63 data-nosnippet>63</a></span><span class="kw">const </span>HARDCODED_PEERSETS_SYNC: SetId = SetId::from(<span class="number">0</span>);
-<a href=#64 id=64 data-nosnippet>64</a>
-<a href=#65 id=65 data-nosnippet>65</a><span class="comment">// Lock must always be taken in order declared here.
-<a href=#66 id=66 data-nosnippet>66</a></span><span class="kw">pub struct </span>Protocol&lt;B: BlockT&gt; {
-<a href=#67 id=67 data-nosnippet>67</a>	<span class="doccomment">/// Handles opening the unique substream and sending and receiving raw messages.
-<a href=#68 id=68 data-nosnippet>68</a>	</span>behaviour: Notifications,
-<a href=#69 id=69 data-nosnippet>69</a>	<span class="doccomment">/// List of notifications protocols that have been registered.
-<a href=#70 id=70 data-nosnippet>70</a>	</span>notification_protocols: Vec&lt;ProtocolName&gt;,
-<a href=#71 id=71 data-nosnippet>71</a>	<span class="doccomment">/// Handle to `PeerStore`.
-<a href=#72 id=72 data-nosnippet>72</a>	</span>peer_store_handle: Arc&lt;<span class="kw">dyn </span>PeerStoreProvider&gt;,
-<a href=#73 id=73 data-nosnippet>73</a>	<span class="doccomment">/// Streams for peers whose handshake couldn't be determined.
-<a href=#74 id=74 data-nosnippet>74</a>	</span>bad_handshake_streams: HashSet&lt;PeerId&gt;,
-<a href=#75 id=75 data-nosnippet>75</a>	sync_handle: ProtocolHandle,
-<a href=#76 id=76 data-nosnippet>76</a>	_marker: std::marker::PhantomData&lt;B&gt;,
-<a href=#77 id=77 data-nosnippet>77</a>}
-<a href=#78 id=78 data-nosnippet>78</a>
-<a href=#79 id=79 data-nosnippet>79</a><span class="kw">impl</span>&lt;B: BlockT&gt; Protocol&lt;B&gt; {
-<a href=#80 id=80 data-nosnippet>80</a>	<span class="doccomment">/// Create a new instance.
-<a href=#81 id=81 data-nosnippet>81</a>	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(
-<a href=#82 id=82 data-nosnippet>82</a>		roles: Roles,
-<a href=#83 id=83 data-nosnippet>83</a>		notification_metrics: NotificationMetrics,
-<a href=#84 id=84 data-nosnippet>84</a>		notification_protocols: Vec&lt;config::NonDefaultSetConfig&gt;,
-<a href=#85 id=85 data-nosnippet>85</a>		block_announces_protocol: config::NonDefaultSetConfig,
-<a href=#86 id=86 data-nosnippet>86</a>		peer_store_handle: Arc&lt;<span class="kw">dyn </span>PeerStoreProvider&gt;,
-<a href=#87 id=87 data-nosnippet>87</a>		protocol_controller_handles: Vec&lt;protocol_controller::ProtocolHandle&gt;,
-<a href=#88 id=88 data-nosnippet>88</a>		from_protocol_controllers: TracingUnboundedReceiver&lt;protocol_controller::Message&gt;,
-<a href=#89 id=89 data-nosnippet>89</a>	) -&gt; error::Result&lt;(<span class="self">Self</span>, Vec&lt;ProtocolHandle&gt;)&gt; {
-<a href=#90 id=90 data-nosnippet>90</a>		<span class="kw">let </span>(behaviour, notification_protocols, handles) = {
-<a href=#91 id=91 data-nosnippet>91</a>			<span class="kw">let </span>installed_protocols = iter::once(block_announces_protocol.protocol_name().clone())
-<a href=#92 id=92 data-nosnippet>92</a>				.chain(notification_protocols.iter().map(|p| p.protocol_name().clone()))
-<a href=#93 id=93 data-nosnippet>93</a>				.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
-<a href=#94 id=94 data-nosnippet>94</a>
-<a href=#95 id=95 data-nosnippet>95</a>			<span class="comment">// NOTE: Block announcement protocol is still very much hardcoded into
-<a href=#96 id=96 data-nosnippet>96</a>			// `Protocol`. 	This protocol must be the first notification protocol given to
-<a href=#97 id=97 data-nosnippet>97</a>			// `Notifications`
-<a href=#98 id=98 data-nosnippet>98</a>			</span><span class="kw">let </span>(protocol_configs, <span class="kw-2">mut </span>handles): (Vec&lt;<span class="kw">_</span>&gt;, Vec&lt;<span class="kw">_</span>&gt;) = iter::once({
-<a href=#99 id=99 data-nosnippet>99</a>				<span class="kw">let </span>config = notifications::ProtocolConfig {
-<a href=#100 id=100 data-nosnippet>100</a>					name: block_announces_protocol.protocol_name().clone(),
-<a href=#101 id=101 data-nosnippet>101</a>					fallback_names: block_announces_protocol.fallback_names().cloned().collect(),
-<a href=#102 id=102 data-nosnippet>102</a>					handshake: block_announces_protocol.handshake().as_ref().unwrap().to_vec(),
-<a href=#103 id=103 data-nosnippet>103</a>					max_notification_size: block_announces_protocol.max_notification_size(),
-<a href=#104 id=104 data-nosnippet>104</a>				};
-<a href=#105 id=105 data-nosnippet>105</a>
-<a href=#106 id=106 data-nosnippet>106</a>				<span class="kw">let </span>(handle, command_stream) =
-<a href=#107 id=107 data-nosnippet>107</a>					block_announces_protocol.take_protocol_handle().split();
-<a href=#108 id=108 data-nosnippet>108</a>
-<a href=#109 id=109 data-nosnippet>109</a>				((config, handle.clone(), command_stream), handle)
-<a href=#110 id=110 data-nosnippet>110</a>			})
-<a href=#111 id=111 data-nosnippet>111</a>			.chain(notification_protocols.into_iter().map(|s| {
-<a href=#112 id=112 data-nosnippet>112</a>				<span class="kw">let </span>config = notifications::ProtocolConfig {
-<a href=#113 id=113 data-nosnippet>113</a>					name: s.protocol_name().clone(),
-<a href=#114 id=114 data-nosnippet>114</a>					fallback_names: s.fallback_names().cloned().collect(),
-<a href=#115 id=115 data-nosnippet>115</a>					handshake: s.handshake().as_ref().map_or(roles.encode(), |h| (<span class="kw-2">*</span>h).to_vec()),
-<a href=#116 id=116 data-nosnippet>116</a>					max_notification_size: s.max_notification_size(),
-<a href=#117 id=117 data-nosnippet>117</a>				};
-<a href=#118 id=118 data-nosnippet>118</a>
-<a href=#119 id=119 data-nosnippet>119</a>				<span class="kw">let </span>(handle, command_stream) = s.take_protocol_handle().split();
+<a href=#58 id=58 data-nosnippet>58</a><span class="doccomment">/// Identifier of the peerset for the block announces protocol.
+<a href=#59 id=59 data-nosnippet>59</a></span><span class="kw">const </span>HARDCODED_PEERSETS_SYNC: SetId = SetId::from(<span class="number">0</span>);
+<a href=#60 id=60 data-nosnippet>60</a>
+<a href=#61 id=61 data-nosnippet>61</a><span class="comment">// Lock must always be taken in order declared here.
+<a href=#62 id=62 data-nosnippet>62</a></span><span class="kw">pub struct </span>Protocol&lt;B: BlockT&gt; {
+<a href=#63 id=63 data-nosnippet>63</a>	<span class="doccomment">/// Handles opening the unique substream and sending and receiving raw messages.
+<a href=#64 id=64 data-nosnippet>64</a>	</span>behaviour: Notifications,
+<a href=#65 id=65 data-nosnippet>65</a>	<span class="doccomment">/// List of notifications protocols that have been registered.
+<a href=#66 id=66 data-nosnippet>66</a>	</span>notification_protocols: Vec&lt;ProtocolName&gt;,
+<a href=#67 id=67 data-nosnippet>67</a>	<span class="doccomment">/// Handle to `PeerStore`.
+<a href=#68 id=68 data-nosnippet>68</a>	</span>peer_store_handle: Arc&lt;<span class="kw">dyn </span>PeerStoreProvider&gt;,
+<a href=#69 id=69 data-nosnippet>69</a>	<span class="doccomment">/// Streams for peers whose handshake couldn't be determined.
+<a href=#70 id=70 data-nosnippet>70</a>	</span>bad_handshake_streams: HashSet&lt;PeerId&gt;,
+<a href=#71 id=71 data-nosnippet>71</a>	sync_handle: ProtocolHandle,
+<a href=#72 id=72 data-nosnippet>72</a>	_marker: std::marker::PhantomData&lt;B&gt;,
+<a href=#73 id=73 data-nosnippet>73</a>}
+<a href=#74 id=74 data-nosnippet>74</a>
+<a href=#75 id=75 data-nosnippet>75</a><span class="kw">impl</span>&lt;B: BlockT&gt; Protocol&lt;B&gt; {
+<a href=#76 id=76 data-nosnippet>76</a>	<span class="doccomment">/// Create a new instance.
+<a href=#77 id=77 data-nosnippet>77</a>	</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>new(
+<a href=#78 id=78 data-nosnippet>78</a>		roles: Roles,
+<a href=#79 id=79 data-nosnippet>79</a>		notification_metrics: NotificationMetrics,
+<a href=#80 id=80 data-nosnippet>80</a>		notification_protocols: Vec&lt;config::NonDefaultSetConfig&gt;,
+<a href=#81 id=81 data-nosnippet>81</a>		block_announces_protocol: config::NonDefaultSetConfig,
+<a href=#82 id=82 data-nosnippet>82</a>		peer_store_handle: Arc&lt;<span class="kw">dyn </span>PeerStoreProvider&gt;,
+<a href=#83 id=83 data-nosnippet>83</a>		protocol_controller_handles: Vec&lt;protocol_controller::ProtocolHandle&gt;,
+<a href=#84 id=84 data-nosnippet>84</a>		from_protocol_controllers: TracingUnboundedReceiver&lt;protocol_controller::Message&gt;,
+<a href=#85 id=85 data-nosnippet>85</a>	) -&gt; error::Result&lt;(<span class="self">Self</span>, Vec&lt;ProtocolHandle&gt;)&gt; {
+<a href=#86 id=86 data-nosnippet>86</a>		<span class="kw">let </span>(behaviour, notification_protocols, handles) = {
+<a href=#87 id=87 data-nosnippet>87</a>			<span class="kw">let </span>installed_protocols = iter::once(block_announces_protocol.protocol_name().clone())
+<a href=#88 id=88 data-nosnippet>88</a>				.chain(notification_protocols.iter().map(|p| p.protocol_name().clone()))
+<a href=#89 id=89 data-nosnippet>89</a>				.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+<a href=#90 id=90 data-nosnippet>90</a>
+<a href=#91 id=91 data-nosnippet>91</a>			<span class="comment">// NOTE: Block announcement protocol is still very much hardcoded into
+<a href=#92 id=92 data-nosnippet>92</a>			// `Protocol`. 	This protocol must be the first notification protocol given to
+<a href=#93 id=93 data-nosnippet>93</a>			// `Notifications`
+<a href=#94 id=94 data-nosnippet>94</a>			</span><span class="kw">let </span>(protocol_configs, <span class="kw-2">mut </span>handles): (Vec&lt;<span class="kw">_</span>&gt;, Vec&lt;<span class="kw">_</span>&gt;) = iter::once({
+<a href=#95 id=95 data-nosnippet>95</a>				<span class="kw">let </span>config = notifications::ProtocolConfig {
+<a href=#96 id=96 data-nosnippet>96</a>					name: block_announces_protocol.protocol_name().clone(),
+<a href=#97 id=97 data-nosnippet>97</a>					fallback_names: block_announces_protocol.fallback_names().cloned().collect(),
+<a href=#98 id=98 data-nosnippet>98</a>					handshake: block_announces_protocol.handshake().as_ref().unwrap().to_vec(),
+<a href=#99 id=99 data-nosnippet>99</a>					max_notification_size: block_announces_protocol.max_notification_size(),
+<a href=#100 id=100 data-nosnippet>100</a>				};
+<a href=#101 id=101 data-nosnippet>101</a>
+<a href=#102 id=102 data-nosnippet>102</a>				<span class="kw">let </span>(handle, command_stream) =
+<a href=#103 id=103 data-nosnippet>103</a>					block_announces_protocol.take_protocol_handle().split();
+<a href=#104 id=104 data-nosnippet>104</a>
+<a href=#105 id=105 data-nosnippet>105</a>				((config, handle.clone(), command_stream), handle)
+<a href=#106 id=106 data-nosnippet>106</a>			})
+<a href=#107 id=107 data-nosnippet>107</a>			.chain(notification_protocols.into_iter().map(|s| {
+<a href=#108 id=108 data-nosnippet>108</a>				<span class="kw">let </span>config = notifications::ProtocolConfig {
+<a href=#109 id=109 data-nosnippet>109</a>					name: s.protocol_name().clone(),
+<a href=#110 id=110 data-nosnippet>110</a>					fallback_names: s.fallback_names().cloned().collect(),
+<a href=#111 id=111 data-nosnippet>111</a>					handshake: s.handshake().as_ref().map_or(roles.encode(), |h| (<span class="kw-2">*</span>h).to_vec()),
+<a href=#112 id=112 data-nosnippet>112</a>					max_notification_size: s.max_notification_size(),
+<a href=#113 id=113 data-nosnippet>113</a>				};
+<a href=#114 id=114 data-nosnippet>114</a>
+<a href=#115 id=115 data-nosnippet>115</a>				<span class="kw">let </span>(handle, command_stream) = s.take_protocol_handle().split();
+<a href=#116 id=116 data-nosnippet>116</a>
+<a href=#117 id=117 data-nosnippet>117</a>				((config, handle.clone(), command_stream), handle)
+<a href=#118 id=118 data-nosnippet>118</a>			}))
+<a href=#119 id=119 data-nosnippet>119</a>			.unzip();
 <a href=#120 id=120 data-nosnippet>120</a>
-<a href=#121 id=121 data-nosnippet>121</a>				((config, handle.clone(), command_stream), handle)
-<a href=#122 id=122 data-nosnippet>122</a>			}))
-<a href=#123 id=123 data-nosnippet>123</a>			.unzip();
+<a href=#121 id=121 data-nosnippet>121</a>			handles.iter_mut().for_each(|handle| {
+<a href=#122 id=122 data-nosnippet>122</a>				handle.set_metrics(notification_metrics.clone());
+<a href=#123 id=123 data-nosnippet>123</a>			});
 <a href=#124 id=124 data-nosnippet>124</a>
-<a href=#125 id=125 data-nosnippet>125</a>			handles.iter_mut().for_each(|handle| {
-<a href=#126 id=126 data-nosnippet>126</a>				handle.set_metrics(notification_metrics.clone());
+<a href=#125 id=125 data-nosnippet>125</a>			protocol_configs.iter().enumerate().for_each(|(i, (p, <span class="kw">_</span>, <span class="kw">_</span>))| {
+<a href=#126 id=126 data-nosnippet>126</a>				<span class="macro">debug!</span>(target: LOG_TARGET, <span class="string">"Notifications protocol {:?}: {}"</span>, SetId::from(i), p.name);
 <a href=#127 id=127 data-nosnippet>127</a>			});
 <a href=#128 id=128 data-nosnippet>128</a>
 <a href=#129 id=129 data-nosnippet>129</a>			(
@@ -166,7 +166,7 @@
 <a href=#166 id=166 data-nosnippet>166</a>		{
 <a href=#167 id=167 data-nosnippet>167</a>			<span class="self">self</span>.behaviour.disconnect_peer(peer_id, SetId::from(position));
 <a href=#168 id=168 data-nosnippet>168</a>		} <span class="kw">else </span>{
-<a href=#169 id=169 data-nosnippet>169</a>			<span class="macro">warn!</span>(target: <span class="string">"sub-libp2p"</span>, <span class="string">"disconnect_peer() with invalid protocol name"</span>)
+<a href=#169 id=169 data-nosnippet>169</a>			<span class="macro">warn!</span>(target: LOG_TARGET, <span class="string">"disconnect_peer() with invalid protocol name"</span>)
 <a href=#170 id=170 data-nosnippet>170</a>		}
 <a href=#171 id=171 data-nosnippet>171</a>	}
 <a href=#172 id=172 data-nosnippet>172</a>
@@ -250,149 +250,161 @@
 <a href=#250 id=250 data-nosnippet>250</a>		peer: PeerId,
 <a href=#251 id=251 data-nosnippet>251</a>		addr: <span class="kw-2">&amp;</span>Multiaddr,
 <a href=#252 id=252 data-nosnippet>252</a>		role_override: Endpoint,
-<a href=#253 id=253 data-nosnippet>253</a>	) -&gt; <span class="prelude-ty">Result</span>&lt;THandler&lt;<span class="self">Self</span>&gt;, ConnectionDenied&gt; {
-<a href=#254 id=254 data-nosnippet>254</a>		<span class="self">self</span>.behaviour.handle_established_outbound_connection(
-<a href=#255 id=255 data-nosnippet>255</a>			connection_id,
-<a href=#256 id=256 data-nosnippet>256</a>			peer,
-<a href=#257 id=257 data-nosnippet>257</a>			addr,
-<a href=#258 id=258 data-nosnippet>258</a>			role_override,
-<a href=#259 id=259 data-nosnippet>259</a>		)
-<a href=#260 id=260 data-nosnippet>260</a>	}
-<a href=#261 id=261 data-nosnippet>261</a>
-<a href=#262 id=262 data-nosnippet>262</a>	<span class="kw">fn </span>handle_pending_outbound_connection(
-<a href=#263 id=263 data-nosnippet>263</a>		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
-<a href=#264 id=264 data-nosnippet>264</a>		_connection_id: ConnectionId,
-<a href=#265 id=265 data-nosnippet>265</a>		_maybe_peer: <span class="prelude-ty">Option</span>&lt;PeerId&gt;,
-<a href=#266 id=266 data-nosnippet>266</a>		_addresses: <span class="kw-2">&amp;</span>[Multiaddr],
-<a href=#267 id=267 data-nosnippet>267</a>		_effective_role: Endpoint,
-<a href=#268 id=268 data-nosnippet>268</a>	) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Multiaddr&gt;, ConnectionDenied&gt; {
-<a href=#269 id=269 data-nosnippet>269</a>		<span class="comment">// Only `Discovery::handle_pending_outbound_connection` must be returning addresses to
-<a href=#270 id=270 data-nosnippet>270</a>		// ensure that we don't return unwanted addresses.
-<a href=#271 id=271 data-nosnippet>271</a>		</span><span class="prelude-val">Ok</span>(Vec::new())
-<a href=#272 id=272 data-nosnippet>272</a>	}
-<a href=#273 id=273 data-nosnippet>273</a>
-<a href=#274 id=274 data-nosnippet>274</a>	<span class="kw">fn </span>on_swarm_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>, event: FromSwarm&lt;<span class="self">Self</span>::ConnectionHandler&gt;) {
-<a href=#275 id=275 data-nosnippet>275</a>		<span class="self">self</span>.behaviour.on_swarm_event(event);
-<a href=#276 id=276 data-nosnippet>276</a>	}
-<a href=#277 id=277 data-nosnippet>277</a>
-<a href=#278 id=278 data-nosnippet>278</a>	<span class="kw">fn </span>on_connection_handler_event(
-<a href=#279 id=279 data-nosnippet>279</a>		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
-<a href=#280 id=280 data-nosnippet>280</a>		peer_id: PeerId,
-<a href=#281 id=281 data-nosnippet>281</a>		connection_id: ConnectionId,
-<a href=#282 id=282 data-nosnippet>282</a>		event: THandlerOutEvent&lt;<span class="self">Self</span>&gt;,
-<a href=#283 id=283 data-nosnippet>283</a>	) {
-<a href=#284 id=284 data-nosnippet>284</a>		<span class="self">self</span>.behaviour.on_connection_handler_event(peer_id, connection_id, event);
-<a href=#285 id=285 data-nosnippet>285</a>	}
-<a href=#286 id=286 data-nosnippet>286</a>
-<a href=#287 id=287 data-nosnippet>287</a>	<span class="kw">fn </span>poll(
-<a href=#288 id=288 data-nosnippet>288</a>		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
-<a href=#289 id=289 data-nosnippet>289</a>		cx: <span class="kw-2">&amp;mut </span>std::task::Context,
-<a href=#290 id=290 data-nosnippet>290</a>		params: <span class="kw-2">&amp;mut </span><span class="kw">impl </span>PollParameters,
-<a href=#291 id=291 data-nosnippet>291</a>	) -&gt; Poll&lt;ToSwarm&lt;<span class="self">Self</span>::ToSwarm, THandlerInEvent&lt;<span class="self">Self</span>&gt;&gt;&gt; {
-<a href=#292 id=292 data-nosnippet>292</a>		<span class="kw">let </span>event = <span class="kw">match </span><span class="self">self</span>.behaviour.poll(cx, params) {
-<a href=#293 id=293 data-nosnippet>293</a>			Poll::Pending =&gt; <span class="kw">return </span>Poll::Pending,
-<a href=#294 id=294 data-nosnippet>294</a>			Poll::Ready(ToSwarm::GenerateEvent(ev)) =&gt; ev,
-<a href=#295 id=295 data-nosnippet>295</a>			Poll::Ready(ToSwarm::Dial { opts }) =&gt; <span class="kw">return </span>Poll::Ready(ToSwarm::Dial { opts }),
-<a href=#296 id=296 data-nosnippet>296</a>			Poll::Ready(ToSwarm::NotifyHandler { peer_id, handler, event }) =&gt;
-<a href=#297 id=297 data-nosnippet>297</a>				<span class="kw">return </span>Poll::Ready(ToSwarm::NotifyHandler { peer_id, handler, event }),
-<a href=#298 id=298 data-nosnippet>298</a>			Poll::Ready(ToSwarm::CloseConnection { peer_id, connection }) =&gt;
-<a href=#299 id=299 data-nosnippet>299</a>				<span class="kw">return </span>Poll::Ready(ToSwarm::CloseConnection { peer_id, connection }),
-<a href=#300 id=300 data-nosnippet>300</a>			Poll::Ready(ToSwarm::NewExternalAddrCandidate(observed)) =&gt;
-<a href=#301 id=301 data-nosnippet>301</a>				<span class="kw">return </span>Poll::Ready(ToSwarm::NewExternalAddrCandidate(observed)),
-<a href=#302 id=302 data-nosnippet>302</a>			Poll::Ready(ToSwarm::ExternalAddrConfirmed(addr)) =&gt;
-<a href=#303 id=303 data-nosnippet>303</a>				<span class="kw">return </span>Poll::Ready(ToSwarm::ExternalAddrConfirmed(addr)),
-<a href=#304 id=304 data-nosnippet>304</a>			Poll::Ready(ToSwarm::ExternalAddrExpired(addr)) =&gt;
-<a href=#305 id=305 data-nosnippet>305</a>				<span class="kw">return </span>Poll::Ready(ToSwarm::ExternalAddrExpired(addr)),
-<a href=#306 id=306 data-nosnippet>306</a>			Poll::Ready(ToSwarm::ListenOn { opts }) =&gt;
-<a href=#307 id=307 data-nosnippet>307</a>				<span class="kw">return </span>Poll::Ready(ToSwarm::ListenOn { opts }),
-<a href=#308 id=308 data-nosnippet>308</a>			Poll::Ready(ToSwarm::RemoveListener { id }) =&gt;
-<a href=#309 id=309 data-nosnippet>309</a>				<span class="kw">return </span>Poll::Ready(ToSwarm::RemoveListener { id }),
-<a href=#310 id=310 data-nosnippet>310</a>		};
-<a href=#311 id=311 data-nosnippet>311</a>
-<a href=#312 id=312 data-nosnippet>312</a>		<span class="kw">let </span>outcome = <span class="kw">match </span>event {
-<a href=#313 id=313 data-nosnippet>313</a>			NotificationsOut::CustomProtocolOpen {
-<a href=#314 id=314 data-nosnippet>314</a>				peer_id,
-<a href=#315 id=315 data-nosnippet>315</a>				set_id,
-<a href=#316 id=316 data-nosnippet>316</a>				direction,
-<a href=#317 id=317 data-nosnippet>317</a>				received_handshake,
-<a href=#318 id=318 data-nosnippet>318</a>				notifications_sink,
-<a href=#319 id=319 data-nosnippet>319</a>				negotiated_fallback,
-<a href=#320 id=320 data-nosnippet>320</a>				..
-<a href=#321 id=321 data-nosnippet>321</a>			} =&gt;
-<a href=#322 id=322 data-nosnippet>322</a>				<span class="kw">if </span>set_id == HARDCODED_PEERSETS_SYNC {
-<a href=#323 id=323 data-nosnippet>323</a>					<span class="kw">let _ </span>= <span class="self">self</span>.sync_handle.report_substream_opened(
-<a href=#324 id=324 data-nosnippet>324</a>						peer_id,
-<a href=#325 id=325 data-nosnippet>325</a>						direction,
-<a href=#326 id=326 data-nosnippet>326</a>						received_handshake,
-<a href=#327 id=327 data-nosnippet>327</a>						negotiated_fallback,
-<a href=#328 id=328 data-nosnippet>328</a>						notifications_sink,
-<a href=#329 id=329 data-nosnippet>329</a>					);
-<a href=#330 id=330 data-nosnippet>330</a>					<span class="prelude-val">None
-<a href=#331 id=331 data-nosnippet>331</a>				</span>} <span class="kw">else </span>{
-<a href=#332 id=332 data-nosnippet>332</a>					<span class="kw">match </span><span class="self">self</span>.role_available(<span class="kw-2">&amp;</span>peer_id, <span class="kw-2">&amp;</span>received_handshake) {
-<a href=#333 id=333 data-nosnippet>333</a>						<span class="bool-val">true </span>=&gt; <span class="prelude-val">Some</span>(CustomMessageOutcome::NotificationStreamOpened {
-<a href=#334 id=334 data-nosnippet>334</a>							remote: peer_id,
-<a href=#335 id=335 data-nosnippet>335</a>							set_id,
-<a href=#336 id=336 data-nosnippet>336</a>							direction,
-<a href=#337 id=337 data-nosnippet>337</a>							negotiated_fallback,
-<a href=#338 id=338 data-nosnippet>338</a>							received_handshake,
-<a href=#339 id=339 data-nosnippet>339</a>							notifications_sink,
-<a href=#340 id=340 data-nosnippet>340</a>						}),
-<a href=#341 id=341 data-nosnippet>341</a>						<span class="bool-val">false </span>=&gt; {
-<a href=#342 id=342 data-nosnippet>342</a>							<span class="self">self</span>.bad_handshake_streams.insert(peer_id);
-<a href=#343 id=343 data-nosnippet>343</a>							<span class="prelude-val">None
-<a href=#344 id=344 data-nosnippet>344</a>						</span>},
-<a href=#345 id=345 data-nosnippet>345</a>					}
-<a href=#346 id=346 data-nosnippet>346</a>				},
-<a href=#347 id=347 data-nosnippet>347</a>			NotificationsOut::CustomProtocolReplaced { peer_id, notifications_sink, set_id } =&gt;
-<a href=#348 id=348 data-nosnippet>348</a>				<span class="kw">if </span>set_id == HARDCODED_PEERSETS_SYNC {
-<a href=#349 id=349 data-nosnippet>349</a>					<span class="kw">let _ </span>= <span class="self">self
-<a href=#350 id=350 data-nosnippet>350</a>						</span>.sync_handle
-<a href=#351 id=351 data-nosnippet>351</a>						.report_notification_sink_replaced(peer_id, notifications_sink);
-<a href=#352 id=352 data-nosnippet>352</a>					<span class="prelude-val">None
-<a href=#353 id=353 data-nosnippet>353</a>				</span>} <span class="kw">else </span>{
-<a href=#354 id=354 data-nosnippet>354</a>					(!<span class="self">self</span>.bad_handshake_streams.contains(<span class="kw-2">&amp;</span>peer_id)).then_some(
-<a href=#355 id=355 data-nosnippet>355</a>						CustomMessageOutcome::NotificationStreamReplaced {
-<a href=#356 id=356 data-nosnippet>356</a>							remote: peer_id,
-<a href=#357 id=357 data-nosnippet>357</a>							set_id,
-<a href=#358 id=358 data-nosnippet>358</a>							notifications_sink,
-<a href=#359 id=359 data-nosnippet>359</a>						},
+<a href=#253 id=253 data-nosnippet>253</a>		port_use: PortUse,
+<a href=#254 id=254 data-nosnippet>254</a>	) -&gt; <span class="prelude-ty">Result</span>&lt;THandler&lt;<span class="self">Self</span>&gt;, ConnectionDenied&gt; {
+<a href=#255 id=255 data-nosnippet>255</a>		<span class="self">self</span>.behaviour.handle_established_outbound_connection(
+<a href=#256 id=256 data-nosnippet>256</a>			connection_id,
+<a href=#257 id=257 data-nosnippet>257</a>			peer,
+<a href=#258 id=258 data-nosnippet>258</a>			addr,
+<a href=#259 id=259 data-nosnippet>259</a>			role_override,
+<a href=#260 id=260 data-nosnippet>260</a>			port_use,
+<a href=#261 id=261 data-nosnippet>261</a>		)
+<a href=#262 id=262 data-nosnippet>262</a>	}
+<a href=#263 id=263 data-nosnippet>263</a>
+<a href=#264 id=264 data-nosnippet>264</a>	<span class="kw">fn </span>handle_pending_outbound_connection(
+<a href=#265 id=265 data-nosnippet>265</a>		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#266 id=266 data-nosnippet>266</a>		_connection_id: ConnectionId,
+<a href=#267 id=267 data-nosnippet>267</a>		_maybe_peer: <span class="prelude-ty">Option</span>&lt;PeerId&gt;,
+<a href=#268 id=268 data-nosnippet>268</a>		_addresses: <span class="kw-2">&amp;</span>[Multiaddr],
+<a href=#269 id=269 data-nosnippet>269</a>		_effective_role: Endpoint,
+<a href=#270 id=270 data-nosnippet>270</a>	) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Multiaddr&gt;, ConnectionDenied&gt; {
+<a href=#271 id=271 data-nosnippet>271</a>		<span class="comment">// Only `Discovery::handle_pending_outbound_connection` must be returning addresses to
+<a href=#272 id=272 data-nosnippet>272</a>		// ensure that we don't return unwanted addresses.
+<a href=#273 id=273 data-nosnippet>273</a>		</span><span class="prelude-val">Ok</span>(Vec::new())
+<a href=#274 id=274 data-nosnippet>274</a>	}
+<a href=#275 id=275 data-nosnippet>275</a>
+<a href=#276 id=276 data-nosnippet>276</a>	<span class="kw">fn </span>on_swarm_event(<span class="kw-2">&amp;mut </span><span class="self">self</span>, event: FromSwarm) {
+<a href=#277 id=277 data-nosnippet>277</a>		<span class="self">self</span>.behaviour.on_swarm_event(event);
+<a href=#278 id=278 data-nosnippet>278</a>	}
+<a href=#279 id=279 data-nosnippet>279</a>
+<a href=#280 id=280 data-nosnippet>280</a>	<span class="kw">fn </span>on_connection_handler_event(
+<a href=#281 id=281 data-nosnippet>281</a>		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#282 id=282 data-nosnippet>282</a>		peer_id: PeerId,
+<a href=#283 id=283 data-nosnippet>283</a>		connection_id: ConnectionId,
+<a href=#284 id=284 data-nosnippet>284</a>		event: THandlerOutEvent&lt;<span class="self">Self</span>&gt;,
+<a href=#285 id=285 data-nosnippet>285</a>	) {
+<a href=#286 id=286 data-nosnippet>286</a>		<span class="self">self</span>.behaviour.on_connection_handler_event(peer_id, connection_id, event);
+<a href=#287 id=287 data-nosnippet>287</a>	}
+<a href=#288 id=288 data-nosnippet>288</a>
+<a href=#289 id=289 data-nosnippet>289</a>	<span class="kw">fn </span>poll(
+<a href=#290 id=290 data-nosnippet>290</a>		<span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#291 id=291 data-nosnippet>291</a>		cx: <span class="kw-2">&amp;mut </span>std::task::Context,
+<a href=#292 id=292 data-nosnippet>292</a>	) -&gt; Poll&lt;ToSwarm&lt;<span class="self">Self</span>::ToSwarm, THandlerInEvent&lt;<span class="self">Self</span>&gt;&gt;&gt; {
+<a href=#293 id=293 data-nosnippet>293</a>		<span class="kw">let </span>event = <span class="kw">match </span><span class="self">self</span>.behaviour.poll(cx) {
+<a href=#294 id=294 data-nosnippet>294</a>			Poll::Pending =&gt; <span class="kw">return </span>Poll::Pending,
+<a href=#295 id=295 data-nosnippet>295</a>			Poll::Ready(ToSwarm::GenerateEvent(ev)) =&gt; ev,
+<a href=#296 id=296 data-nosnippet>296</a>			Poll::Ready(event) =&gt; {
+<a href=#297 id=297 data-nosnippet>297</a>				<span class="kw">return </span>Poll::Ready(event.map_out(|<span class="kw">_</span>| {
+<a href=#298 id=298 data-nosnippet>298</a>					<span class="macro">unreachable!</span>(<span class="string">"`GenerateEvent` is handled in a branch above; qed"</span>)
+<a href=#299 id=299 data-nosnippet>299</a>				}));
+<a href=#300 id=300 data-nosnippet>300</a>			},
+<a href=#301 id=301 data-nosnippet>301</a>		};
+<a href=#302 id=302 data-nosnippet>302</a>
+<a href=#303 id=303 data-nosnippet>303</a>		<span class="kw">let </span>outcome = <span class="kw">match </span>event {
+<a href=#304 id=304 data-nosnippet>304</a>			NotificationsOut::CustomProtocolOpen {
+<a href=#305 id=305 data-nosnippet>305</a>				peer_id,
+<a href=#306 id=306 data-nosnippet>306</a>				set_id,
+<a href=#307 id=307 data-nosnippet>307</a>				direction,
+<a href=#308 id=308 data-nosnippet>308</a>				received_handshake,
+<a href=#309 id=309 data-nosnippet>309</a>				notifications_sink,
+<a href=#310 id=310 data-nosnippet>310</a>				negotiated_fallback,
+<a href=#311 id=311 data-nosnippet>311</a>				..
+<a href=#312 id=312 data-nosnippet>312</a>			} =&gt;
+<a href=#313 id=313 data-nosnippet>313</a>				<span class="kw">if </span>set_id == HARDCODED_PEERSETS_SYNC {
+<a href=#314 id=314 data-nosnippet>314</a>					<span class="kw">let _ </span>= <span class="self">self</span>.sync_handle.report_substream_opened(
+<a href=#315 id=315 data-nosnippet>315</a>						peer_id,
+<a href=#316 id=316 data-nosnippet>316</a>						direction,
+<a href=#317 id=317 data-nosnippet>317</a>						received_handshake,
+<a href=#318 id=318 data-nosnippet>318</a>						negotiated_fallback,
+<a href=#319 id=319 data-nosnippet>319</a>						notifications_sink,
+<a href=#320 id=320 data-nosnippet>320</a>					);
+<a href=#321 id=321 data-nosnippet>321</a>					<span class="prelude-val">None
+<a href=#322 id=322 data-nosnippet>322</a>				</span>} <span class="kw">else </span>{
+<a href=#323 id=323 data-nosnippet>323</a>					<span class="kw">match </span><span class="self">self</span>.role_available(<span class="kw-2">&amp;</span>peer_id, <span class="kw-2">&amp;</span>received_handshake) {
+<a href=#324 id=324 data-nosnippet>324</a>						<span class="bool-val">true </span>=&gt; <span class="prelude-val">Some</span>(CustomMessageOutcome::NotificationStreamOpened {
+<a href=#325 id=325 data-nosnippet>325</a>							remote: peer_id,
+<a href=#326 id=326 data-nosnippet>326</a>							set_id,
+<a href=#327 id=327 data-nosnippet>327</a>							direction,
+<a href=#328 id=328 data-nosnippet>328</a>							negotiated_fallback,
+<a href=#329 id=329 data-nosnippet>329</a>							received_handshake,
+<a href=#330 id=330 data-nosnippet>330</a>							notifications_sink,
+<a href=#331 id=331 data-nosnippet>331</a>						}),
+<a href=#332 id=332 data-nosnippet>332</a>						<span class="bool-val">false </span>=&gt; {
+<a href=#333 id=333 data-nosnippet>333</a>							<span class="self">self</span>.bad_handshake_streams.insert(peer_id);
+<a href=#334 id=334 data-nosnippet>334</a>							<span class="prelude-val">None
+<a href=#335 id=335 data-nosnippet>335</a>						</span>},
+<a href=#336 id=336 data-nosnippet>336</a>					}
+<a href=#337 id=337 data-nosnippet>337</a>				},
+<a href=#338 id=338 data-nosnippet>338</a>			NotificationsOut::CustomProtocolReplaced { peer_id, notifications_sink, set_id } =&gt;
+<a href=#339 id=339 data-nosnippet>339</a>				<span class="kw">if </span>set_id == HARDCODED_PEERSETS_SYNC {
+<a href=#340 id=340 data-nosnippet>340</a>					<span class="kw">let _ </span>= <span class="self">self
+<a href=#341 id=341 data-nosnippet>341</a>						</span>.sync_handle
+<a href=#342 id=342 data-nosnippet>342</a>						.report_notification_sink_replaced(peer_id, notifications_sink);
+<a href=#343 id=343 data-nosnippet>343</a>					<span class="prelude-val">None
+<a href=#344 id=344 data-nosnippet>344</a>				</span>} <span class="kw">else </span>{
+<a href=#345 id=345 data-nosnippet>345</a>					(!<span class="self">self</span>.bad_handshake_streams.contains(<span class="kw-2">&amp;</span>peer_id)).then_some(
+<a href=#346 id=346 data-nosnippet>346</a>						CustomMessageOutcome::NotificationStreamReplaced {
+<a href=#347 id=347 data-nosnippet>347</a>							remote: peer_id,
+<a href=#348 id=348 data-nosnippet>348</a>							set_id,
+<a href=#349 id=349 data-nosnippet>349</a>							notifications_sink,
+<a href=#350 id=350 data-nosnippet>350</a>						},
+<a href=#351 id=351 data-nosnippet>351</a>					)
+<a href=#352 id=352 data-nosnippet>352</a>				},
+<a href=#353 id=353 data-nosnippet>353</a>			NotificationsOut::CustomProtocolClosed { peer_id, set_id } =&gt; {
+<a href=#354 id=354 data-nosnippet>354</a>				<span class="kw">if </span>set_id == HARDCODED_PEERSETS_SYNC {
+<a href=#355 id=355 data-nosnippet>355</a>					<span class="kw">let _ </span>= <span class="self">self</span>.sync_handle.report_substream_closed(peer_id);
+<a href=#356 id=356 data-nosnippet>356</a>					<span class="prelude-val">None
+<a href=#357 id=357 data-nosnippet>357</a>				</span>} <span class="kw">else </span>{
+<a href=#358 id=358 data-nosnippet>358</a>					(!<span class="self">self</span>.bad_handshake_streams.remove(<span class="kw-2">&amp;</span>peer_id)).then_some(
+<a href=#359 id=359 data-nosnippet>359</a>						CustomMessageOutcome::NotificationStreamClosed { remote: peer_id, set_id },
 <a href=#360 id=360 data-nosnippet>360</a>					)
-<a href=#361 id=361 data-nosnippet>361</a>				},
-<a href=#362 id=362 data-nosnippet>362</a>			NotificationsOut::CustomProtocolClosed { peer_id, set_id } =&gt; {
-<a href=#363 id=363 data-nosnippet>363</a>				<span class="kw">if </span>set_id == HARDCODED_PEERSETS_SYNC {
-<a href=#364 id=364 data-nosnippet>364</a>					<span class="kw">let _ </span>= <span class="self">self</span>.sync_handle.report_substream_closed(peer_id);
-<a href=#365 id=365 data-nosnippet>365</a>					<span class="prelude-val">None
-<a href=#366 id=366 data-nosnippet>366</a>				</span>} <span class="kw">else </span>{
-<a href=#367 id=367 data-nosnippet>367</a>					(!<span class="self">self</span>.bad_handshake_streams.remove(<span class="kw-2">&amp;</span>peer_id)).then_some(
-<a href=#368 id=368 data-nosnippet>368</a>						CustomMessageOutcome::NotificationStreamClosed { remote: peer_id, set_id },
-<a href=#369 id=369 data-nosnippet>369</a>					)
-<a href=#370 id=370 data-nosnippet>370</a>				}
-<a href=#371 id=371 data-nosnippet>371</a>			},
-<a href=#372 id=372 data-nosnippet>372</a>			NotificationsOut::Notification { peer_id, set_id, message } =&gt; {
-<a href=#373 id=373 data-nosnippet>373</a>				<span class="kw">if </span>set_id == HARDCODED_PEERSETS_SYNC {
-<a href=#374 id=374 data-nosnippet>374</a>					<span class="kw">let _ </span>= <span class="self">self
-<a href=#375 id=375 data-nosnippet>375</a>						</span>.sync_handle
-<a href=#376 id=376 data-nosnippet>376</a>						.report_notification_received(peer_id, message.freeze().into());
-<a href=#377 id=377 data-nosnippet>377</a>					<span class="prelude-val">None
-<a href=#378 id=378 data-nosnippet>378</a>				</span>} <span class="kw">else </span>{
-<a href=#379 id=379 data-nosnippet>379</a>					(!<span class="self">self</span>.bad_handshake_streams.contains(<span class="kw-2">&amp;</span>peer_id)).then_some(
-<a href=#380 id=380 data-nosnippet>380</a>						CustomMessageOutcome::NotificationsReceived {
-<a href=#381 id=381 data-nosnippet>381</a>							remote: peer_id,
-<a href=#382 id=382 data-nosnippet>382</a>							set_id,
-<a href=#383 id=383 data-nosnippet>383</a>							notification: message.freeze().into(),
-<a href=#384 id=384 data-nosnippet>384</a>						},
-<a href=#385 id=385 data-nosnippet>385</a>					)
-<a href=#386 id=386 data-nosnippet>386</a>				}
-<a href=#387 id=387 data-nosnippet>387</a>			},
-<a href=#388 id=388 data-nosnippet>388</a>		};
-<a href=#389 id=389 data-nosnippet>389</a>
-<a href=#390 id=390 data-nosnippet>390</a>		<span class="kw">match </span>outcome {
-<a href=#391 id=391 data-nosnippet>391</a>			<span class="prelude-val">Some</span>(event) =&gt; Poll::Ready(ToSwarm::GenerateEvent(event)),
-<a href=#392 id=392 data-nosnippet>392</a>			<span class="prelude-val">None </span>=&gt; {
-<a href=#393 id=393 data-nosnippet>393</a>				cx.waker().wake_by_ref();
-<a href=#394 id=394 data-nosnippet>394</a>				Poll::Pending
-<a href=#395 id=395 data-nosnippet>395</a>			},
-<a href=#396 id=396 data-nosnippet>396</a>		}
-<a href=#397 id=397 data-nosnippet>397</a>	}
-<a href=#398 id=398 data-nosnippet>398</a>}</code></pre></div></section></main></body></html>
+<a href=#361 id=361 data-nosnippet>361</a>				}
+<a href=#362 id=362 data-nosnippet>362</a>			},
+<a href=#363 id=363 data-nosnippet>363</a>			NotificationsOut::Notification { peer_id, set_id, message } =&gt; {
+<a href=#364 id=364 data-nosnippet>364</a>				<span class="kw">if </span>set_id == HARDCODED_PEERSETS_SYNC {
+<a href=#365 id=365 data-nosnippet>365</a>					<span class="kw">let _ </span>= <span class="self">self
+<a href=#366 id=366 data-nosnippet>366</a>						</span>.sync_handle
+<a href=#367 id=367 data-nosnippet>367</a>						.report_notification_received(peer_id, message.freeze().into());
+<a href=#368 id=368 data-nosnippet>368</a>					<span class="prelude-val">None
+<a href=#369 id=369 data-nosnippet>369</a>				</span>} <span class="kw">else </span>{
+<a href=#370 id=370 data-nosnippet>370</a>					(!<span class="self">self</span>.bad_handshake_streams.contains(<span class="kw-2">&amp;</span>peer_id)).then_some(
+<a href=#371 id=371 data-nosnippet>371</a>						CustomMessageOutcome::NotificationsReceived {
+<a href=#372 id=372 data-nosnippet>372</a>							remote: peer_id,
+<a href=#373 id=373 data-nosnippet>373</a>							set_id,
+<a href=#374 id=374 data-nosnippet>374</a>							notification: message.freeze().into(),
+<a href=#375 id=375 data-nosnippet>375</a>						},
+<a href=#376 id=376 data-nosnippet>376</a>					)
+<a href=#377 id=377 data-nosnippet>377</a>				}
+<a href=#378 id=378 data-nosnippet>378</a>			},
+<a href=#379 id=379 data-nosnippet>379</a>
+<a href=#380 id=380 data-nosnippet>380</a>			NotificationsOut::ProtocolMisbehavior { peer_id, set_id } =&gt; {
+<a href=#381 id=381 data-nosnippet>381</a>				<span class="kw">let </span>index: usize = set_id.into();
+<a href=#382 id=382 data-nosnippet>382</a>				<span class="kw">let </span>protocol_name = <span class="self">self</span>.notification_protocols.get(index);
+<a href=#383 id=383 data-nosnippet>383</a>
+<a href=#384 id=384 data-nosnippet>384</a>				<span class="macro">debug!</span>(
+<a href=#385 id=385 data-nosnippet>385</a>					target: LOG_TARGET,
+<a href=#386 id=386 data-nosnippet>386</a>					<span class="string">"Received unexpected data on outbound notification stream from peer {:?} on protocol {:?}"</span>,
+<a href=#387 id=387 data-nosnippet>387</a>					peer_id,
+<a href=#388 id=388 data-nosnippet>388</a>					protocol_name
+<a href=#389 id=389 data-nosnippet>389</a>				);
+<a href=#390 id=390 data-nosnippet>390</a>
+<a href=#391 id=391 data-nosnippet>391</a>				<span class="self">self</span>.peer_store_handle.report_peer(
+<a href=#392 id=392 data-nosnippet>392</a>					peer_id.into(),
+<a href=#393 id=393 data-nosnippet>393</a>					ReputationChange::new_fatal(
+<a href=#394 id=394 data-nosnippet>394</a>						<span class="string">"Received unexpected data on outbound notification stream"</span>,
+<a href=#395 id=395 data-nosnippet>395</a>					),
+<a href=#396 id=396 data-nosnippet>396</a>				);
+<a href=#397 id=397 data-nosnippet>397</a>
+<a href=#398 id=398 data-nosnippet>398</a>				<span class="prelude-val">None
+<a href=#399 id=399 data-nosnippet>399</a>			</span>},
+<a href=#400 id=400 data-nosnippet>400</a>		};
+<a href=#401 id=401 data-nosnippet>401</a>
+<a href=#402 id=402 data-nosnippet>402</a>		<span class="kw">match </span>outcome {
+<a href=#403 id=403 data-nosnippet>403</a>			<span class="prelude-val">Some</span>(event) =&gt; Poll::Ready(ToSwarm::GenerateEvent(event)),
+<a href=#404 id=404 data-nosnippet>404</a>			<span class="prelude-val">None </span>=&gt; {
+<a href=#405 id=405 data-nosnippet>405</a>				cx.waker().wake_by_ref();
+<a href=#406 id=406 data-nosnippet>406</a>				Poll::Pending
+<a href=#407 id=407 data-nosnippet>407</a>			},
+<a href=#408 id=408 data-nosnippet>408</a>		}
+<a href=#409 id=409 data-nosnippet>409</a>	}
+<a href=#410 id=410 data-nosnippet>410</a>}</code></pre></div></section></main></body></html>

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["VERSION"],"struct":["FunctionBuilder","FunctionBuilderContext","Switch","Variable"]};
+window.SIDEBAR_ITEMS = {"constant":["VERSION"],"struct":["FuncInstBuilder","FunctionBuilder","FunctionBuilderContext","Switch","Variable"]};

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-core-0.3.30/src/task/__internal/atomic_waker.rs`."><title>atomic_waker.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="futures_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">futures_core/task/__internal/</div>atomic_waker.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>core::cell::UnsafeCell;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-core-0.3.31/src/task/__internal/atomic_waker.rs`."><title>atomic_waker.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="futures_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">futures_core/task/__internal/</div>atomic_waker.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>core::cell::UnsafeCell;
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span>core::fmt;
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span>core::task::Waker;
 <a href=#4 id=4 data-nosnippet>4</a>
@@ -206,216 +206,217 @@
 <a href=#206 id=206 data-nosnippet>206</a>    <span class="doccomment">/// Create an `AtomicWaker`.
 <a href=#207 id=207 data-nosnippet>207</a>    </span><span class="kw">pub const fn </span>new() -&gt; <span class="self">Self </span>{
 <a href=#208 id=208 data-nosnippet>208</a>        <span class="comment">// Make sure that task is Sync
-<a href=#209 id=209 data-nosnippet>209</a>        </span><span class="kw">trait </span>AssertSync: Sync {}
-<a href=#210 id=210 data-nosnippet>210</a>        <span class="kw">impl </span>AssertSync <span class="kw">for </span>Waker {}
-<a href=#211 id=211 data-nosnippet>211</a>
-<a href=#212 id=212 data-nosnippet>212</a>        <span class="self">Self </span>{ state: AtomicUsize::new(WAITING), waker: UnsafeCell::new(<span class="prelude-val">None</span>) }
-<a href=#213 id=213 data-nosnippet>213</a>    }
-<a href=#214 id=214 data-nosnippet>214</a>
-<a href=#215 id=215 data-nosnippet>215</a>    <span class="doccomment">/// Registers the waker to be notified on calls to `wake`.
-<a href=#216 id=216 data-nosnippet>216</a>    ///
-<a href=#217 id=217 data-nosnippet>217</a>    /// The new task will take place of any previous tasks that were registered
-<a href=#218 id=218 data-nosnippet>218</a>    /// by previous calls to `register`. Any calls to `wake` that happen after
-<a href=#219 id=219 data-nosnippet>219</a>    /// a call to `register` (as defined by the memory ordering rules), will
-<a href=#220 id=220 data-nosnippet>220</a>    /// notify the `register` caller's task and deregister the waker from future
-<a href=#221 id=221 data-nosnippet>221</a>    /// notifications. Because of this, callers should ensure `register` gets
-<a href=#222 id=222 data-nosnippet>222</a>    /// invoked with a new `Waker` **each** time they require a wakeup.
-<a href=#223 id=223 data-nosnippet>223</a>    ///
-<a href=#224 id=224 data-nosnippet>224</a>    /// It is safe to call `register` with multiple other threads concurrently
-<a href=#225 id=225 data-nosnippet>225</a>    /// calling `wake`. This will result in the `register` caller's current
-<a href=#226 id=226 data-nosnippet>226</a>    /// task being notified once.
-<a href=#227 id=227 data-nosnippet>227</a>    ///
-<a href=#228 id=228 data-nosnippet>228</a>    /// This function is safe to call concurrently, but this is generally a bad
-<a href=#229 id=229 data-nosnippet>229</a>    /// idea. Concurrent calls to `register` will attempt to register different
-<a href=#230 id=230 data-nosnippet>230</a>    /// tasks to be notified. One of the callers will win and have its task set,
-<a href=#231 id=231 data-nosnippet>231</a>    /// but there is no guarantee as to which caller will succeed.
-<a href=#232 id=232 data-nosnippet>232</a>    ///
-<a href=#233 id=233 data-nosnippet>233</a>    /// # Examples
-<a href=#234 id=234 data-nosnippet>234</a>    ///
-<a href=#235 id=235 data-nosnippet>235</a>    /// Here is how `register` is used when implementing a flag.
-<a href=#236 id=236 data-nosnippet>236</a>    ///
-<a href=#237 id=237 data-nosnippet>237</a>    /// ```
-<a href=#238 id=238 data-nosnippet>238</a>    /// use futures::future::Future;
-<a href=#239 id=239 data-nosnippet>239</a>    /// use futures::task::{Context, Poll, AtomicWaker};
-<a href=#240 id=240 data-nosnippet>240</a>    /// use std::sync::atomic::AtomicBool;
-<a href=#241 id=241 data-nosnippet>241</a>    /// use std::sync::atomic::Ordering::Relaxed;
-<a href=#242 id=242 data-nosnippet>242</a>    /// use std::pin::Pin;
-<a href=#243 id=243 data-nosnippet>243</a>    ///
-<a href=#244 id=244 data-nosnippet>244</a>    /// struct Flag {
-<a href=#245 id=245 data-nosnippet>245</a>    ///     waker: AtomicWaker,
-<a href=#246 id=246 data-nosnippet>246</a>    ///     set: AtomicBool,
-<a href=#247 id=247 data-nosnippet>247</a>    /// }
-<a href=#248 id=248 data-nosnippet>248</a>    ///
-<a href=#249 id=249 data-nosnippet>249</a>    /// impl Future for Flag {
-<a href=#250 id=250 data-nosnippet>250</a>    ///     type Output = ();
-<a href=#251 id=251 data-nosnippet>251</a>    ///
-<a href=#252 id=252 data-nosnippet>252</a>    ///     fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;()&gt; {
-<a href=#253 id=253 data-nosnippet>253</a>    ///         // Register **before** checking `set` to avoid a race condition
-<a href=#254 id=254 data-nosnippet>254</a>    ///         // that would result in lost notifications.
-<a href=#255 id=255 data-nosnippet>255</a>    ///         self.waker.register(cx.waker());
-<a href=#256 id=256 data-nosnippet>256</a>    ///
-<a href=#257 id=257 data-nosnippet>257</a>    ///         if self.set.load(Relaxed) {
-<a href=#258 id=258 data-nosnippet>258</a>    ///             Poll::Ready(())
-<a href=#259 id=259 data-nosnippet>259</a>    ///         } else {
-<a href=#260 id=260 data-nosnippet>260</a>    ///             Poll::Pending
-<a href=#261 id=261 data-nosnippet>261</a>    ///         }
-<a href=#262 id=262 data-nosnippet>262</a>    ///     }
-<a href=#263 id=263 data-nosnippet>263</a>    /// }
-<a href=#264 id=264 data-nosnippet>264</a>    /// ```
-<a href=#265 id=265 data-nosnippet>265</a>    </span><span class="kw">pub fn </span>register(<span class="kw-2">&amp;</span><span class="self">self</span>, waker: <span class="kw-2">&amp;</span>Waker) {
-<a href=#266 id=266 data-nosnippet>266</a>        <span class="kw">match </span><span class="self">self
-<a href=#267 id=267 data-nosnippet>267</a>            </span>.state
-<a href=#268 id=268 data-nosnippet>268</a>            .compare_exchange(WAITING, REGISTERING, Acquire, Acquire)
-<a href=#269 id=269 data-nosnippet>269</a>            .unwrap_or_else(|x| x)
-<a href=#270 id=270 data-nosnippet>270</a>        {
-<a href=#271 id=271 data-nosnippet>271</a>            WAITING =&gt; {
-<a href=#272 id=272 data-nosnippet>272</a>                <span class="kw">unsafe </span>{
-<a href=#273 id=273 data-nosnippet>273</a>                    <span class="comment">// Locked acquired, update the waker cell
-<a href=#274 id=274 data-nosnippet>274</a>
-<a href=#275 id=275 data-nosnippet>275</a>                    // Avoid cloning the waker if the old waker will awaken the same task.
-<a href=#276 id=276 data-nosnippet>276</a>                    </span><span class="kw">match </span><span class="kw-2">&amp;*</span><span class="self">self</span>.waker.get() {
-<a href=#277 id=277 data-nosnippet>277</a>                        <span class="prelude-val">Some</span>(old_waker) <span class="kw">if </span>old_waker.will_wake(waker) =&gt; (),
-<a href=#278 id=278 data-nosnippet>278</a>                        <span class="kw">_ </span>=&gt; <span class="kw-2">*</span><span class="self">self</span>.waker.get() = <span class="prelude-val">Some</span>(waker.clone()),
-<a href=#279 id=279 data-nosnippet>279</a>                    }
-<a href=#280 id=280 data-nosnippet>280</a>
-<a href=#281 id=281 data-nosnippet>281</a>                    <span class="comment">// Release the lock. If the state transitioned to include
-<a href=#282 id=282 data-nosnippet>282</a>                    // the `WAKING` bit, this means that at least one wake has
-<a href=#283 id=283 data-nosnippet>283</a>                    // been called concurrently.
-<a href=#284 id=284 data-nosnippet>284</a>                    //
-<a href=#285 id=285 data-nosnippet>285</a>                    // Start by assuming that the state is `REGISTERING` as this
-<a href=#286 id=286 data-nosnippet>286</a>                    // is what we just set it to. If this holds, we know that no
-<a href=#287 id=287 data-nosnippet>287</a>                    // other writes were performed in the meantime, so there is
-<a href=#288 id=288 data-nosnippet>288</a>                    // nothing to acquire, only release. In case of concurrent
-<a href=#289 id=289 data-nosnippet>289</a>                    // wakers, we need to acquire their releases, so success needs
-<a href=#290 id=290 data-nosnippet>290</a>                    // to do both.
-<a href=#291 id=291 data-nosnippet>291</a>                    </span><span class="kw">let </span>res = <span class="self">self</span>.state.compare_exchange(REGISTERING, WAITING, AcqRel, Acquire);
-<a href=#292 id=292 data-nosnippet>292</a>
-<a href=#293 id=293 data-nosnippet>293</a>                    <span class="kw">match </span>res {
-<a href=#294 id=294 data-nosnippet>294</a>                        <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {
-<a href=#295 id=295 data-nosnippet>295</a>                            <span class="comment">// memory ordering: acquired self.state during CAS
-<a href=#296 id=296 data-nosnippet>296</a>                            // - if previous wakes went through it syncs with
-<a href=#297 id=297 data-nosnippet>297</a>                            //   their final release (`fetch_and`)
-<a href=#298 id=298 data-nosnippet>298</a>                            // - if there was no previous wake the next wake
-<a href=#299 id=299 data-nosnippet>299</a>                            //   will wake us, no sync needed.
-<a href=#300 id=300 data-nosnippet>300</a>                        </span>}
-<a href=#301 id=301 data-nosnippet>301</a>                        <span class="prelude-val">Err</span>(actual) =&gt; {
-<a href=#302 id=302 data-nosnippet>302</a>                            <span class="comment">// This branch can only be reached if at least one
-<a href=#303 id=303 data-nosnippet>303</a>                            // concurrent thread called `wake`. In this
-<a href=#304 id=304 data-nosnippet>304</a>                            // case, `actual` **must** be `REGISTERING |
-<a href=#305 id=305 data-nosnippet>305</a>                            // `WAKING`.
-<a href=#306 id=306 data-nosnippet>306</a>                            </span><span class="macro">debug_assert_eq!</span>(actual, REGISTERING | WAKING);
-<a href=#307 id=307 data-nosnippet>307</a>
-<a href=#308 id=308 data-nosnippet>308</a>                            <span class="comment">// Take the waker to wake once the atomic operation has
-<a href=#309 id=309 data-nosnippet>309</a>                            // completed.
-<a href=#310 id=310 data-nosnippet>310</a>                            </span><span class="kw">let </span>waker = (<span class="kw-2">*</span><span class="self">self</span>.waker.get()).take().unwrap();
-<a href=#311 id=311 data-nosnippet>311</a>
-<a href=#312 id=312 data-nosnippet>312</a>                            <span class="comment">// We need to return to WAITING state (clear our lock and
-<a href=#313 id=313 data-nosnippet>313</a>                            // concurrent WAKING flag). This needs to acquire all
-<a href=#314 id=314 data-nosnippet>314</a>                            // WAKING fetch_or releases and it needs to release our
-<a href=#315 id=315 data-nosnippet>315</a>                            // update to self.waker, so we need a `swap` operation.
-<a href=#316 id=316 data-nosnippet>316</a>                            </span><span class="self">self</span>.state.swap(WAITING, AcqRel);
-<a href=#317 id=317 data-nosnippet>317</a>
-<a href=#318 id=318 data-nosnippet>318</a>                            <span class="comment">// memory ordering: we acquired the state for all
-<a href=#319 id=319 data-nosnippet>319</a>                            // concurrent wakes, but future wakes might still
-<a href=#320 id=320 data-nosnippet>320</a>                            // need to wake us in case we can't make progress
-<a href=#321 id=321 data-nosnippet>321</a>                            // from the pending wakes.
-<a href=#322 id=322 data-nosnippet>322</a>                            //
-<a href=#323 id=323 data-nosnippet>323</a>                            // So we simply schedule to come back later (we could
-<a href=#324 id=324 data-nosnippet>324</a>                            // also simply leave the registration in place above).
-<a href=#325 id=325 data-nosnippet>325</a>                            </span>waker.wake();
-<a href=#326 id=326 data-nosnippet>326</a>                        }
-<a href=#327 id=327 data-nosnippet>327</a>                    }
-<a href=#328 id=328 data-nosnippet>328</a>                }
-<a href=#329 id=329 data-nosnippet>329</a>            }
-<a href=#330 id=330 data-nosnippet>330</a>            WAKING =&gt; {
-<a href=#331 id=331 data-nosnippet>331</a>                <span class="comment">// Currently in the process of waking the task, i.e.,
-<a href=#332 id=332 data-nosnippet>332</a>                // `wake` is currently being called on the old task handle.
-<a href=#333 id=333 data-nosnippet>333</a>                //
-<a href=#334 id=334 data-nosnippet>334</a>                // memory ordering: we acquired the state for all
-<a href=#335 id=335 data-nosnippet>335</a>                // concurrent wakes, but future wakes might still
-<a href=#336 id=336 data-nosnippet>336</a>                // need to wake us in case we can't make progress
-<a href=#337 id=337 data-nosnippet>337</a>                // from the pending wakes.
-<a href=#338 id=338 data-nosnippet>338</a>                //
-<a href=#339 id=339 data-nosnippet>339</a>                // So we simply schedule to come back later (we
-<a href=#340 id=340 data-nosnippet>340</a>                // could also spin here trying to acquire the lock
-<a href=#341 id=341 data-nosnippet>341</a>                // to register).
-<a href=#342 id=342 data-nosnippet>342</a>                </span>waker.wake_by_ref();
-<a href=#343 id=343 data-nosnippet>343</a>            }
-<a href=#344 id=344 data-nosnippet>344</a>            state =&gt; {
-<a href=#345 id=345 data-nosnippet>345</a>                <span class="comment">// In this case, a concurrent thread is holding the
-<a href=#346 id=346 data-nosnippet>346</a>                // "registering" lock. This probably indicates a bug in the
-<a href=#347 id=347 data-nosnippet>347</a>                // caller's code as racing to call `register` doesn't make much
-<a href=#348 id=348 data-nosnippet>348</a>                // sense.
-<a href=#349 id=349 data-nosnippet>349</a>                //
-<a href=#350 id=350 data-nosnippet>350</a>                // memory ordering: don't care. a concurrent register() is going
-<a href=#351 id=351 data-nosnippet>351</a>                // to succeed and provide proper memory ordering.
-<a href=#352 id=352 data-nosnippet>352</a>                //
-<a href=#353 id=353 data-nosnippet>353</a>                // We just want to maintain memory safety. It is ok to drop the
-<a href=#354 id=354 data-nosnippet>354</a>                // call to `register`.
-<a href=#355 id=355 data-nosnippet>355</a>                </span><span class="macro">debug_assert!</span>(state == REGISTERING || state == REGISTERING | WAKING);
-<a href=#356 id=356 data-nosnippet>356</a>            }
-<a href=#357 id=357 data-nosnippet>357</a>        }
-<a href=#358 id=358 data-nosnippet>358</a>    }
-<a href=#359 id=359 data-nosnippet>359</a>
-<a href=#360 id=360 data-nosnippet>360</a>    <span class="doccomment">/// Calls `wake` on the last `Waker` passed to `register`.
-<a href=#361 id=361 data-nosnippet>361</a>    ///
-<a href=#362 id=362 data-nosnippet>362</a>    /// If `register` has not been called yet, then this does nothing.
-<a href=#363 id=363 data-nosnippet>363</a>    </span><span class="kw">pub fn </span>wake(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-<a href=#364 id=364 data-nosnippet>364</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(waker) = <span class="self">self</span>.take() {
-<a href=#365 id=365 data-nosnippet>365</a>            waker.wake();
-<a href=#366 id=366 data-nosnippet>366</a>        }
-<a href=#367 id=367 data-nosnippet>367</a>    }
-<a href=#368 id=368 data-nosnippet>368</a>
-<a href=#369 id=369 data-nosnippet>369</a>    <span class="doccomment">/// Returns the last `Waker` passed to `register`, so that the user can wake it.
-<a href=#370 id=370 data-nosnippet>370</a>    ///
+<a href=#209 id=209 data-nosnippet>209</a>        </span><span class="attr">#[allow(dead_code)]
+<a href=#210 id=210 data-nosnippet>210</a>        </span><span class="kw">trait </span>AssertSync: Sync {}
+<a href=#211 id=211 data-nosnippet>211</a>        <span class="kw">impl </span>AssertSync <span class="kw">for </span>Waker {}
+<a href=#212 id=212 data-nosnippet>212</a>
+<a href=#213 id=213 data-nosnippet>213</a>        <span class="self">Self </span>{ state: AtomicUsize::new(WAITING), waker: UnsafeCell::new(<span class="prelude-val">None</span>) }
+<a href=#214 id=214 data-nosnippet>214</a>    }
+<a href=#215 id=215 data-nosnippet>215</a>
+<a href=#216 id=216 data-nosnippet>216</a>    <span class="doccomment">/// Registers the waker to be notified on calls to `wake`.
+<a href=#217 id=217 data-nosnippet>217</a>    ///
+<a href=#218 id=218 data-nosnippet>218</a>    /// The new task will take place of any previous tasks that were registered
+<a href=#219 id=219 data-nosnippet>219</a>    /// by previous calls to `register`. Any calls to `wake` that happen after
+<a href=#220 id=220 data-nosnippet>220</a>    /// a call to `register` (as defined by the memory ordering rules), will
+<a href=#221 id=221 data-nosnippet>221</a>    /// notify the `register` caller's task and deregister the waker from future
+<a href=#222 id=222 data-nosnippet>222</a>    /// notifications. Because of this, callers should ensure `register` gets
+<a href=#223 id=223 data-nosnippet>223</a>    /// invoked with a new `Waker` **each** time they require a wakeup.
+<a href=#224 id=224 data-nosnippet>224</a>    ///
+<a href=#225 id=225 data-nosnippet>225</a>    /// It is safe to call `register` with multiple other threads concurrently
+<a href=#226 id=226 data-nosnippet>226</a>    /// calling `wake`. This will result in the `register` caller's current
+<a href=#227 id=227 data-nosnippet>227</a>    /// task being notified once.
+<a href=#228 id=228 data-nosnippet>228</a>    ///
+<a href=#229 id=229 data-nosnippet>229</a>    /// This function is safe to call concurrently, but this is generally a bad
+<a href=#230 id=230 data-nosnippet>230</a>    /// idea. Concurrent calls to `register` will attempt to register different
+<a href=#231 id=231 data-nosnippet>231</a>    /// tasks to be notified. One of the callers will win and have its task set,
+<a href=#232 id=232 data-nosnippet>232</a>    /// but there is no guarantee as to which caller will succeed.
+<a href=#233 id=233 data-nosnippet>233</a>    ///
+<a href=#234 id=234 data-nosnippet>234</a>    /// # Examples
+<a href=#235 id=235 data-nosnippet>235</a>    ///
+<a href=#236 id=236 data-nosnippet>236</a>    /// Here is how `register` is used when implementing a flag.
+<a href=#237 id=237 data-nosnippet>237</a>    ///
+<a href=#238 id=238 data-nosnippet>238</a>    /// ```
+<a href=#239 id=239 data-nosnippet>239</a>    /// use futures::future::Future;
+<a href=#240 id=240 data-nosnippet>240</a>    /// use futures::task::{Context, Poll, AtomicWaker};
+<a href=#241 id=241 data-nosnippet>241</a>    /// use std::sync::atomic::AtomicBool;
+<a href=#242 id=242 data-nosnippet>242</a>    /// use std::sync::atomic::Ordering::Relaxed;
+<a href=#243 id=243 data-nosnippet>243</a>    /// use std::pin::Pin;
+<a href=#244 id=244 data-nosnippet>244</a>    ///
+<a href=#245 id=245 data-nosnippet>245</a>    /// struct Flag {
+<a href=#246 id=246 data-nosnippet>246</a>    ///     waker: AtomicWaker,
+<a href=#247 id=247 data-nosnippet>247</a>    ///     set: AtomicBool,
+<a href=#248 id=248 data-nosnippet>248</a>    /// }
+<a href=#249 id=249 data-nosnippet>249</a>    ///
+<a href=#250 id=250 data-nosnippet>250</a>    /// impl Future for Flag {
+<a href=#251 id=251 data-nosnippet>251</a>    ///     type Output = ();
+<a href=#252 id=252 data-nosnippet>252</a>    ///
+<a href=#253 id=253 data-nosnippet>253</a>    ///     fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;()&gt; {
+<a href=#254 id=254 data-nosnippet>254</a>    ///         // Register **before** checking `set` to avoid a race condition
+<a href=#255 id=255 data-nosnippet>255</a>    ///         // that would result in lost notifications.
+<a href=#256 id=256 data-nosnippet>256</a>    ///         self.waker.register(cx.waker());
+<a href=#257 id=257 data-nosnippet>257</a>    ///
+<a href=#258 id=258 data-nosnippet>258</a>    ///         if self.set.load(Relaxed) {
+<a href=#259 id=259 data-nosnippet>259</a>    ///             Poll::Ready(())
+<a href=#260 id=260 data-nosnippet>260</a>    ///         } else {
+<a href=#261 id=261 data-nosnippet>261</a>    ///             Poll::Pending
+<a href=#262 id=262 data-nosnippet>262</a>    ///         }
+<a href=#263 id=263 data-nosnippet>263</a>    ///     }
+<a href=#264 id=264 data-nosnippet>264</a>    /// }
+<a href=#265 id=265 data-nosnippet>265</a>    /// ```
+<a href=#266 id=266 data-nosnippet>266</a>    </span><span class="kw">pub fn </span>register(<span class="kw-2">&amp;</span><span class="self">self</span>, waker: <span class="kw-2">&amp;</span>Waker) {
+<a href=#267 id=267 data-nosnippet>267</a>        <span class="kw">match </span><span class="self">self
+<a href=#268 id=268 data-nosnippet>268</a>            </span>.state
+<a href=#269 id=269 data-nosnippet>269</a>            .compare_exchange(WAITING, REGISTERING, Acquire, Acquire)
+<a href=#270 id=270 data-nosnippet>270</a>            .unwrap_or_else(|x| x)
+<a href=#271 id=271 data-nosnippet>271</a>        {
+<a href=#272 id=272 data-nosnippet>272</a>            WAITING =&gt; {
+<a href=#273 id=273 data-nosnippet>273</a>                <span class="kw">unsafe </span>{
+<a href=#274 id=274 data-nosnippet>274</a>                    <span class="comment">// Locked acquired, update the waker cell
+<a href=#275 id=275 data-nosnippet>275</a>
+<a href=#276 id=276 data-nosnippet>276</a>                    // Avoid cloning the waker if the old waker will awaken the same task.
+<a href=#277 id=277 data-nosnippet>277</a>                    </span><span class="kw">match </span><span class="kw-2">&amp;*</span><span class="self">self</span>.waker.get() {
+<a href=#278 id=278 data-nosnippet>278</a>                        <span class="prelude-val">Some</span>(old_waker) <span class="kw">if </span>old_waker.will_wake(waker) =&gt; (),
+<a href=#279 id=279 data-nosnippet>279</a>                        <span class="kw">_ </span>=&gt; <span class="kw-2">*</span><span class="self">self</span>.waker.get() = <span class="prelude-val">Some</span>(waker.clone()),
+<a href=#280 id=280 data-nosnippet>280</a>                    }
+<a href=#281 id=281 data-nosnippet>281</a>
+<a href=#282 id=282 data-nosnippet>282</a>                    <span class="comment">// Release the lock. If the state transitioned to include
+<a href=#283 id=283 data-nosnippet>283</a>                    // the `WAKING` bit, this means that at least one wake has
+<a href=#284 id=284 data-nosnippet>284</a>                    // been called concurrently.
+<a href=#285 id=285 data-nosnippet>285</a>                    //
+<a href=#286 id=286 data-nosnippet>286</a>                    // Start by assuming that the state is `REGISTERING` as this
+<a href=#287 id=287 data-nosnippet>287</a>                    // is what we just set it to. If this holds, we know that no
+<a href=#288 id=288 data-nosnippet>288</a>                    // other writes were performed in the meantime, so there is
+<a href=#289 id=289 data-nosnippet>289</a>                    // nothing to acquire, only release. In case of concurrent
+<a href=#290 id=290 data-nosnippet>290</a>                    // wakers, we need to acquire their releases, so success needs
+<a href=#291 id=291 data-nosnippet>291</a>                    // to do both.
+<a href=#292 id=292 data-nosnippet>292</a>                    </span><span class="kw">let </span>res = <span class="self">self</span>.state.compare_exchange(REGISTERING, WAITING, AcqRel, Acquire);
+<a href=#293 id=293 data-nosnippet>293</a>
+<a href=#294 id=294 data-nosnippet>294</a>                    <span class="kw">match </span>res {
+<a href=#295 id=295 data-nosnippet>295</a>                        <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {
+<a href=#296 id=296 data-nosnippet>296</a>                            <span class="comment">// memory ordering: acquired self.state during CAS
+<a href=#297 id=297 data-nosnippet>297</a>                            // - if previous wakes went through it syncs with
+<a href=#298 id=298 data-nosnippet>298</a>                            //   their final release (`fetch_and`)
+<a href=#299 id=299 data-nosnippet>299</a>                            // - if there was no previous wake the next wake
+<a href=#300 id=300 data-nosnippet>300</a>                            //   will wake us, no sync needed.
+<a href=#301 id=301 data-nosnippet>301</a>                        </span>}
+<a href=#302 id=302 data-nosnippet>302</a>                        <span class="prelude-val">Err</span>(actual) =&gt; {
+<a href=#303 id=303 data-nosnippet>303</a>                            <span class="comment">// This branch can only be reached if at least one
+<a href=#304 id=304 data-nosnippet>304</a>                            // concurrent thread called `wake`. In this
+<a href=#305 id=305 data-nosnippet>305</a>                            // case, `actual` **must** be `REGISTERING |
+<a href=#306 id=306 data-nosnippet>306</a>                            // `WAKING`.
+<a href=#307 id=307 data-nosnippet>307</a>                            </span><span class="macro">debug_assert_eq!</span>(actual, REGISTERING | WAKING);
+<a href=#308 id=308 data-nosnippet>308</a>
+<a href=#309 id=309 data-nosnippet>309</a>                            <span class="comment">// Take the waker to wake once the atomic operation has
+<a href=#310 id=310 data-nosnippet>310</a>                            // completed.
+<a href=#311 id=311 data-nosnippet>311</a>                            </span><span class="kw">let </span>waker = (<span class="kw-2">*</span><span class="self">self</span>.waker.get()).take().unwrap();
+<a href=#312 id=312 data-nosnippet>312</a>
+<a href=#313 id=313 data-nosnippet>313</a>                            <span class="comment">// We need to return to WAITING state (clear our lock and
+<a href=#314 id=314 data-nosnippet>314</a>                            // concurrent WAKING flag). This needs to acquire all
+<a href=#315 id=315 data-nosnippet>315</a>                            // WAKING fetch_or releases and it needs to release our
+<a href=#316 id=316 data-nosnippet>316</a>                            // update to self.waker, so we need a `swap` operation.
+<a href=#317 id=317 data-nosnippet>317</a>                            </span><span class="self">self</span>.state.swap(WAITING, AcqRel);
+<a href=#318 id=318 data-nosnippet>318</a>
+<a href=#319 id=319 data-nosnippet>319</a>                            <span class="comment">// memory ordering: we acquired the state for all
+<a href=#320 id=320 data-nosnippet>320</a>                            // concurrent wakes, but future wakes might still
+<a href=#321 id=321 data-nosnippet>321</a>                            // need to wake us in case we can't make progress
+<a href=#322 id=322 data-nosnippet>322</a>                            // from the pending wakes.
+<a href=#323 id=323 data-nosnippet>323</a>                            //
+<a href=#324 id=324 data-nosnippet>324</a>                            // So we simply schedule to come back later (we could
+<a href=#325 id=325 data-nosnippet>325</a>                            // also simply leave the registration in place above).
+<a href=#326 id=326 data-nosnippet>326</a>                            </span>waker.wake();
+<a href=#327 id=327 data-nosnippet>327</a>                        }
+<a href=#328 id=328 data-nosnippet>328</a>                    }
+<a href=#329 id=329 data-nosnippet>329</a>                }
+<a href=#330 id=330 data-nosnippet>330</a>            }
+<a href=#331 id=331 data-nosnippet>331</a>            WAKING =&gt; {
+<a href=#332 id=332 data-nosnippet>332</a>                <span class="comment">// Currently in the process of waking the task, i.e.,
+<a href=#333 id=333 data-nosnippet>333</a>                // `wake` is currently being called on the old task handle.
+<a href=#334 id=334 data-nosnippet>334</a>                //
+<a href=#335 id=335 data-nosnippet>335</a>                // memory ordering: we acquired the state for all
+<a href=#336 id=336 data-nosnippet>336</a>                // concurrent wakes, but future wakes might still
+<a href=#337 id=337 data-nosnippet>337</a>                // need to wake us in case we can't make progress
+<a href=#338 id=338 data-nosnippet>338</a>                // from the pending wakes.
+<a href=#339 id=339 data-nosnippet>339</a>                //
+<a href=#340 id=340 data-nosnippet>340</a>                // So we simply schedule to come back later (we
+<a href=#341 id=341 data-nosnippet>341</a>                // could also spin here trying to acquire the lock
+<a href=#342 id=342 data-nosnippet>342</a>                // to register).
+<a href=#343 id=343 data-nosnippet>343</a>                </span>waker.wake_by_ref();
+<a href=#344 id=344 data-nosnippet>344</a>            }
+<a href=#345 id=345 data-nosnippet>345</a>            state =&gt; {
+<a href=#346 id=346 data-nosnippet>346</a>                <span class="comment">// In this case, a concurrent thread is holding the
+<a href=#347 id=347 data-nosnippet>347</a>                // "registering" lock. This probably indicates a bug in the
+<a href=#348 id=348 data-nosnippet>348</a>                // caller's code as racing to call `register` doesn't make much
+<a href=#349 id=349 data-nosnippet>349</a>                // sense.
+<a href=#350 id=350 data-nosnippet>350</a>                //
+<a href=#351 id=351 data-nosnippet>351</a>                // memory ordering: don't care. a concurrent register() is going
+<a href=#352 id=352 data-nosnippet>352</a>                // to succeed and provide proper memory ordering.
+<a href=#353 id=353 data-nosnippet>353</a>                //
+<a href=#354 id=354 data-nosnippet>354</a>                // We just want to maintain memory safety. It is ok to drop the
+<a href=#355 id=355 data-nosnippet>355</a>                // call to `register`.
+<a href=#356 id=356 data-nosnippet>356</a>                </span><span class="macro">debug_assert!</span>(state == REGISTERING || state == REGISTERING | WAKING);
+<a href=#357 id=357 data-nosnippet>357</a>            }
+<a href=#358 id=358 data-nosnippet>358</a>        }
+<a href=#359 id=359 data-nosnippet>359</a>    }
+<a href=#360 id=360 data-nosnippet>360</a>
+<a href=#361 id=361 data-nosnippet>361</a>    <span class="doccomment">/// Calls `wake` on the last `Waker` passed to `register`.
+<a href=#362 id=362 data-nosnippet>362</a>    ///
+<a href=#363 id=363 data-nosnippet>363</a>    /// If `register` has not been called yet, then this does nothing.
+<a href=#364 id=364 data-nosnippet>364</a>    </span><span class="kw">pub fn </span>wake(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+<a href=#365 id=365 data-nosnippet>365</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(waker) = <span class="self">self</span>.take() {
+<a href=#366 id=366 data-nosnippet>366</a>            waker.wake();
+<a href=#367 id=367 data-nosnippet>367</a>        }
+<a href=#368 id=368 data-nosnippet>368</a>    }
+<a href=#369 id=369 data-nosnippet>369</a>
+<a href=#370 id=370 data-nosnippet>370</a>    <span class="doccomment">/// Returns the last `Waker` passed to `register`, so that the user can wake it.
 <a href=#371 id=371 data-nosnippet>371</a>    ///
-<a href=#372 id=372 data-nosnippet>372</a>    /// Sometimes, just waking the AtomicWaker is not fine grained enough. This allows the user
-<a href=#373 id=373 data-nosnippet>373</a>    /// to take the waker and then wake it separately, rather than performing both steps in one
-<a href=#374 id=374 data-nosnippet>374</a>    /// atomic action.
-<a href=#375 id=375 data-nosnippet>375</a>    ///
-<a href=#376 id=376 data-nosnippet>376</a>    /// If a waker has not been registered, this returns `None`.
-<a href=#377 id=377 data-nosnippet>377</a>    </span><span class="kw">pub fn </span>take(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Waker&gt; {
-<a href=#378 id=378 data-nosnippet>378</a>        <span class="comment">// AcqRel ordering is used in order to acquire the value of the `task`
-<a href=#379 id=379 data-nosnippet>379</a>        // cell as well as to establish a `release` ordering with whatever
-<a href=#380 id=380 data-nosnippet>380</a>        // memory the `AtomicWaker` is associated with.
-<a href=#381 id=381 data-nosnippet>381</a>        </span><span class="kw">match </span><span class="self">self</span>.state.fetch_or(WAKING, AcqRel) {
-<a href=#382 id=382 data-nosnippet>382</a>            WAITING =&gt; {
-<a href=#383 id=383 data-nosnippet>383</a>                <span class="comment">// The waking lock has been acquired.
-<a href=#384 id=384 data-nosnippet>384</a>                </span><span class="kw">let </span>waker = <span class="kw">unsafe </span>{ (<span class="kw-2">*</span><span class="self">self</span>.waker.get()).take() };
-<a href=#385 id=385 data-nosnippet>385</a>
-<a href=#386 id=386 data-nosnippet>386</a>                <span class="comment">// Release the lock
-<a href=#387 id=387 data-nosnippet>387</a>                </span><span class="self">self</span>.state.fetch_and(!WAKING, Release);
-<a href=#388 id=388 data-nosnippet>388</a>
-<a href=#389 id=389 data-nosnippet>389</a>                waker
-<a href=#390 id=390 data-nosnippet>390</a>            }
-<a href=#391 id=391 data-nosnippet>391</a>            state =&gt; {
-<a href=#392 id=392 data-nosnippet>392</a>                <span class="comment">// There is a concurrent thread currently updating the
-<a href=#393 id=393 data-nosnippet>393</a>                // associated task.
-<a href=#394 id=394 data-nosnippet>394</a>                //
-<a href=#395 id=395 data-nosnippet>395</a>                // Nothing more to do as the `WAKING` bit has been set. It
-<a href=#396 id=396 data-nosnippet>396</a>                // doesn't matter if there are concurrent registering threads or
-<a href=#397 id=397 data-nosnippet>397</a>                // not.
-<a href=#398 id=398 data-nosnippet>398</a>                //
-<a href=#399 id=399 data-nosnippet>399</a>                </span><span class="macro">debug_assert!</span>(
-<a href=#400 id=400 data-nosnippet>400</a>                    state == REGISTERING || state == REGISTERING | WAKING || state == WAKING
-<a href=#401 id=401 data-nosnippet>401</a>                );
-<a href=#402 id=402 data-nosnippet>402</a>                <span class="prelude-val">None
-<a href=#403 id=403 data-nosnippet>403</a>            </span>}
-<a href=#404 id=404 data-nosnippet>404</a>        }
-<a href=#405 id=405 data-nosnippet>405</a>    }
-<a href=#406 id=406 data-nosnippet>406</a>}
-<a href=#407 id=407 data-nosnippet>407</a>
-<a href=#408 id=408 data-nosnippet>408</a><span class="kw">impl </span>Default <span class="kw">for </span>AtomicWaker {
-<a href=#409 id=409 data-nosnippet>409</a>    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
-<a href=#410 id=410 data-nosnippet>410</a>        <span class="self">Self</span>::new()
-<a href=#411 id=411 data-nosnippet>411</a>    }
-<a href=#412 id=412 data-nosnippet>412</a>}
-<a href=#413 id=413 data-nosnippet>413</a>
-<a href=#414 id=414 data-nosnippet>414</a><span class="kw">impl </span>fmt::Debug <span class="kw">for </span>AtomicWaker {
-<a href=#415 id=415 data-nosnippet>415</a>    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
-<a href=#416 id=416 data-nosnippet>416</a>        <span class="macro">write!</span>(f, <span class="string">"AtomicWaker"</span>)
-<a href=#417 id=417 data-nosnippet>417</a>    }
-<a href=#418 id=418 data-nosnippet>418</a>}
-<a href=#419 id=419 data-nosnippet>419</a>
-<a href=#420 id=420 data-nosnippet>420</a><span class="kw">unsafe impl </span>Send <span class="kw">for </span>AtomicWaker {}
-<a href=#421 id=421 data-nosnippet>421</a><span class="kw">unsafe impl </span>Sync <span class="kw">for </span>AtomicWaker {}</code></pre></div></section></main></body></html>
+<a href=#372 id=372 data-nosnippet>372</a>    ///
+<a href=#373 id=373 data-nosnippet>373</a>    /// Sometimes, just waking the AtomicWaker is not fine grained enough. This allows the user
+<a href=#374 id=374 data-nosnippet>374</a>    /// to take the waker and then wake it separately, rather than performing both steps in one
+<a href=#375 id=375 data-nosnippet>375</a>    /// atomic action.
+<a href=#376 id=376 data-nosnippet>376</a>    ///
+<a href=#377 id=377 data-nosnippet>377</a>    /// If a waker has not been registered, this returns `None`.
+<a href=#378 id=378 data-nosnippet>378</a>    </span><span class="kw">pub fn </span>take(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Waker&gt; {
+<a href=#379 id=379 data-nosnippet>379</a>        <span class="comment">// AcqRel ordering is used in order to acquire the value of the `task`
+<a href=#380 id=380 data-nosnippet>380</a>        // cell as well as to establish a `release` ordering with whatever
+<a href=#381 id=381 data-nosnippet>381</a>        // memory the `AtomicWaker` is associated with.
+<a href=#382 id=382 data-nosnippet>382</a>        </span><span class="kw">match </span><span class="self">self</span>.state.fetch_or(WAKING, AcqRel) {
+<a href=#383 id=383 data-nosnippet>383</a>            WAITING =&gt; {
+<a href=#384 id=384 data-nosnippet>384</a>                <span class="comment">// The waking lock has been acquired.
+<a href=#385 id=385 data-nosnippet>385</a>                </span><span class="kw">let </span>waker = <span class="kw">unsafe </span>{ (<span class="kw-2">*</span><span class="self">self</span>.waker.get()).take() };
+<a href=#386 id=386 data-nosnippet>386</a>
+<a href=#387 id=387 data-nosnippet>387</a>                <span class="comment">// Release the lock
+<a href=#388 id=388 data-nosnippet>388</a>                </span><span class="self">self</span>.state.fetch_and(!WAKING, Release);
+<a href=#389 id=389 data-nosnippet>389</a>
+<a href=#390 id=390 data-nosnippet>390</a>                waker
+<a href=#391 id=391 data-nosnippet>391</a>            }
+<a href=#392 id=392 data-nosnippet>392</a>            state =&gt; {
+<a href=#393 id=393 data-nosnippet>393</a>                <span class="comment">// There is a concurrent thread currently updating the
+<a href=#394 id=394 data-nosnippet>394</a>                // associated task.
+<a href=#395 id=395 data-nosnippet>395</a>                //
+<a href=#396 id=396 data-nosnippet>396</a>                // Nothing more to do as the `WAKING` bit has been set. It
+<a href=#397 id=397 data-nosnippet>397</a>                // doesn't matter if there are concurrent registering threads or
+<a href=#398 id=398 data-nosnippet>398</a>                // not.
+<a href=#399 id=399 data-nosnippet>399</a>                //
+<a href=#400 id=400 data-nosnippet>400</a>                </span><span class="macro">debug_assert!</span>(
+<a href=#401 id=401 data-nosnippet>401</a>                    state == REGISTERING || state == REGISTERING | WAKING || state == WAKING
+<a href=#402 id=402 data-nosnippet>402</a>                );
+<a href=#403 id=403 data-nosnippet>403</a>                <span class="prelude-val">None
+<a href=#404 id=404 data-nosnippet>404</a>            </span>}
+<a href=#405 id=405 data-nosnippet>405</a>        }
+<a href=#406 id=406 data-nosnippet>406</a>    }
+<a href=#407 id=407 data-nosnippet>407</a>}
+<a href=#408 id=408 data-nosnippet>408</a>
+<a href=#409 id=409 data-nosnippet>409</a><span class="kw">impl </span>Default <span class="kw">for </span>AtomicWaker {
+<a href=#410 id=410 data-nosnippet>410</a>    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+<a href=#411 id=411 data-nosnippet>411</a>        <span class="self">Self</span>::new()
+<a href=#412 id=412 data-nosnippet>412</a>    }
+<a href=#413 id=413 data-nosnippet>413</a>}
+<a href=#414 id=414 data-nosnippet>414</a>
+<a href=#415 id=415 data-nosnippet>415</a><span class="kw">impl </span>fmt::Debug <span class="kw">for </span>AtomicWaker {
+<a href=#416 id=416 data-nosnippet>416</a>    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; fmt::Result {
+<a href=#417 id=417 data-nosnippet>417</a>        <span class="macro">write!</span>(f, <span class="string">"AtomicWaker"</span>)
+<a href=#418 id=418 data-nosnippet>418</a>    }
+<a href=#419 id=419 data-nosnippet>419</a>}
+<a href=#420 id=420 data-nosnippet>420</a>
+<a href=#421 id=421 data-nosnippet>421</a><span class="kw">unsafe impl </span>Send <span class="kw">for </span>AtomicWaker {}
+<a href=#422 id=422 data-nosnippet>422</a><span class="kw">unsafe impl </span>Sync <span class="kw">for </span>AtomicWaker {}</code></pre></div></section></main></body></html>

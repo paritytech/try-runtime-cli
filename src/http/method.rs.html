@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/http-1.1.0/src/method.rs`."><title>method.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="http" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">http/</div>method.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! The HTTP request method
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/http-1.4.0/src/method.rs`."><title>method.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="http" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">http/</div>method.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! The HTTP request method
 <a href=#2 id=2 data-nosnippet>2</a>//!
 <a href=#3 id=3 data-nosnippet>3</a>//! This module contains HTTP-method related structs and errors and such. The
 <a href=#4 id=4 data-nosnippet>4</a>//! main type of this module, `Method`, is also reexported at the root of the
@@ -123,7 +123,7 @@
 <a href=#123 id=123 data-nosnippet>123</a>                <span class="kw">_ </span>=&gt; Method::extension_inline(src),
 <a href=#124 id=124 data-nosnippet>124</a>            },
 <a href=#125 id=125 data-nosnippet>125</a>            <span class="kw">_ </span>=&gt; {
-<a href=#126 id=126 data-nosnippet>126</a>                <span class="kw">if </span>src.len() &lt; InlineExtension::MAX {
+<a href=#126 id=126 data-nosnippet>126</a>                <span class="kw">if </span>src.len() &lt;= InlineExtension::MAX {
 <a href=#127 id=127 data-nosnippet>127</a>                    Method::extension_inline(src)
 <a href=#128 id=128 data-nosnippet>128</a>                } <span class="kw">else </span>{
 <a href=#129 id=129 data-nosnippet>129</a>                    <span class="kw">let </span>allocated = AllocatedExtension::new(src)<span class="question-mark">?</span>;
@@ -356,7 +356,7 @@
 <a href=#356 id=356 data-nosnippet>356</a>        }
 <a href=#357 id=357 data-nosnippet>357</a>    }
 <a href=#358 id=358 data-nosnippet>358</a>
-<a href=#359 id=359 data-nosnippet>359</a>    <span class="comment">// From the HTTP spec section 5.1.1, the HTTP method is case-sensitive and can
+<a href=#359 id=359 data-nosnippet>359</a>    <span class="comment">// From the RFC 9110 HTTP Semantics, section 9.1, the HTTP method is case-sensitive and can
 <a href=#360 id=360 data-nosnippet>360</a>    // contain the following characters:
 <a href=#361 id=361 data-nosnippet>361</a>    //
 <a href=#362 id=362 data-nosnippet>362</a>    // ```
@@ -366,7 +366,7 @@
 <a href=#366 id=366 data-nosnippet>366</a>    //     "^" / "_" / "`" / "|" / "~" / DIGIT / ALPHA
 <a href=#367 id=367 data-nosnippet>367</a>    // ```
 <a href=#368 id=368 data-nosnippet>368</a>    //
-<a href=#369 id=369 data-nosnippet>369</a>    // https://www.w3.org/Protocols/HTTP/1.1/draft-ietf-http-v11-spec-01#Method
+<a href=#369 id=369 data-nosnippet>369</a>    // https://datatracker.ietf.org/doc/html/rfc9110#section-9.1
 <a href=#370 id=370 data-nosnippet>370</a>    //
 <a href=#371 id=371 data-nosnippet>371</a>    // Note that this definition means that any &amp;[u8] that consists solely of valid
 <a href=#372 id=372 data-nosnippet>372</a>    // characters is also valid UTF-8 because the valid method characters are a
@@ -377,7 +377,7 @@
 <a href=#377 id=377 data-nosnippet>377</a>        </span><span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="comment">//   x
 <a href=#378 id=378 data-nosnippet>378</a>        </span><span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="comment">//  1x
 <a href=#379 id=379 data-nosnippet>379</a>        </span><span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="comment">//  2x
-<a href=#380 id=380 data-nosnippet>380</a>        </span><span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>,  <span class="string">b'!'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="comment">//  3x
+<a href=#380 id=380 data-nosnippet>380</a>        </span><span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>,  <span class="string">b'!'</span>, <span class="string">b'\0'</span>,  <span class="string">b'#'</span>,  <span class="string">b'$'</span>,  <span class="string">b'%'</span>,  <span class="string">b'&amp;'</span>, <span class="string">b'\''</span>, <span class="comment">//  3x
 <a href=#381 id=381 data-nosnippet>381</a>        </span><span class="string">b'\0'</span>, <span class="string">b'\0'</span>,  <span class="string">b'*'</span>,  <span class="string">b'+'</span>, <span class="string">b'\0'</span>,  <span class="string">b'-'</span>,  <span class="string">b'.'</span>, <span class="string">b'\0'</span>,  <span class="string">b'0'</span>,  <span class="string">b'1'</span>, <span class="comment">//  4x
 <a href=#382 id=382 data-nosnippet>382</a>         </span><span class="string">b'2'</span>,  <span class="string">b'3'</span>,  <span class="string">b'4'</span>,  <span class="string">b'5'</span>,  <span class="string">b'6'</span>,  <span class="string">b'7'</span>,  <span class="string">b'8'</span>,  <span class="string">b'9'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="comment">//  5x
 <a href=#383 id=383 data-nosnippet>383</a>        </span><span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>, <span class="string">b'\0'</span>,  <span class="string">b'A'</span>,  <span class="string">b'B'</span>,  <span class="string">b'C'</span>,  <span class="string">b'D'</span>,  <span class="string">b'E'</span>, <span class="comment">//  6x
@@ -465,5 +465,36 @@
 <a href=#465 id=465 data-nosnippet>465</a>
 <a href=#466 id=466 data-nosnippet>466</a>        <span class="kw">let </span>long_method = <span class="string">"This_is_a_very_long_method.It_is_valid_but_unlikely."</span>;
 <a href=#467 id=467 data-nosnippet>467</a>        <span class="macro">assert_eq!</span>(Method::from_str(long_method).unwrap(), long_method);
-<a href=#468 id=468 data-nosnippet>468</a>    }
-<a href=#469 id=469 data-nosnippet>469</a>}</code></pre></div></section></main></body></html>
+<a href=#468 id=468 data-nosnippet>468</a>
+<a href=#469 id=469 data-nosnippet>469</a>        <span class="kw">let </span>longest_inline_method = [<span class="string">b'A'</span>; InlineExtension::MAX];
+<a href=#470 id=470 data-nosnippet>470</a>        <span class="macro">assert_eq!</span>(
+<a href=#471 id=471 data-nosnippet>471</a>            Method::from_bytes(<span class="kw-2">&amp;</span>longest_inline_method).unwrap(),
+<a href=#472 id=472 data-nosnippet>472</a>            Method(ExtensionInline(
+<a href=#473 id=473 data-nosnippet>473</a>                InlineExtension::new(<span class="kw-2">&amp;</span>longest_inline_method).unwrap()
+<a href=#474 id=474 data-nosnippet>474</a>            ))
+<a href=#475 id=475 data-nosnippet>475</a>        );
+<a href=#476 id=476 data-nosnippet>476</a>        <span class="kw">let </span>shortest_allocated_method = [<span class="string">b'A'</span>; InlineExtension::MAX + <span class="number">1</span>];
+<a href=#477 id=477 data-nosnippet>477</a>        <span class="macro">assert_eq!</span>(
+<a href=#478 id=478 data-nosnippet>478</a>            Method::from_bytes(<span class="kw-2">&amp;</span>shortest_allocated_method).unwrap(),
+<a href=#479 id=479 data-nosnippet>479</a>            Method(ExtensionAllocated(
+<a href=#480 id=480 data-nosnippet>480</a>                AllocatedExtension::new(<span class="kw-2">&amp;</span>shortest_allocated_method).unwrap()
+<a href=#481 id=481 data-nosnippet>481</a>            ))
+<a href=#482 id=482 data-nosnippet>482</a>        );
+<a href=#483 id=483 data-nosnippet>483</a>    }
+<a href=#484 id=484 data-nosnippet>484</a>
+<a href=#485 id=485 data-nosnippet>485</a>    <span class="attr">#[test]
+<a href=#486 id=486 data-nosnippet>486</a>    </span><span class="kw">fn </span>test_extension_method_chars() {
+<a href=#487 id=487 data-nosnippet>487</a>        <span class="kw">const </span>VALID_METHOD_CHARS: <span class="kw-2">&amp;</span>str =
+<a href=#488 id=488 data-nosnippet>488</a>            <span class="string">"!#$%&amp;'*+-.^_`|~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"</span>;
+<a href=#489 id=489 data-nosnippet>489</a>
+<a href=#490 id=490 data-nosnippet>490</a>        <span class="kw">for </span>c <span class="kw">in </span>VALID_METHOD_CHARS.chars() {
+<a href=#491 id=491 data-nosnippet>491</a>            <span class="kw">let </span>c = c.to_string();
+<a href=#492 id=492 data-nosnippet>492</a>
+<a href=#493 id=493 data-nosnippet>493</a>            <span class="macro">assert_eq!</span>(
+<a href=#494 id=494 data-nosnippet>494</a>                Method::from_str(<span class="kw-2">&amp;</span>c).unwrap(),
+<a href=#495 id=495 data-nosnippet>495</a>                c.as_str(),
+<a href=#496 id=496 data-nosnippet>496</a>                <span class="string">"testing {c} is a valid method character"
+<a href=#497 id=497 data-nosnippet>497</a>            </span>);
+<a href=#498 id=498 data-nosnippet>498</a>        }
+<a href=#499 id=499 data-nosnippet>499</a>    }
+<a href=#500 id=500 data-nosnippet>500</a>}</code></pre></div></section></main></body></html>

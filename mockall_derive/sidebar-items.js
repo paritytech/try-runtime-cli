@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"attr":["automock","concretize"],"macro":["mock"]};

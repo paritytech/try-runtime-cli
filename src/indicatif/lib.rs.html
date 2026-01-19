@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/indicatif-0.17.8/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="indicatif" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">indicatif/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! indicatif is a library for Rust that helps you build command line
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/indicatif-0.17.11/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="indicatif" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">indicatif/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! indicatif is a library for Rust that helps you build command line
 <a href=#2 id=2 data-nosnippet>2</a>//! interfaces that report progress to users.  It comes with various
 <a href=#3 id=3 data-nosnippet>3</a>//! tools and utilities for formatting anything that indicates progress.
 <a href=#4 id=4 data-nosnippet>4</a>//!
@@ -176,98 +176,117 @@
 <a href=#176 id=176 data-nosnippet>176</a>//! * `bar`: renders a progress bar. By default 20 characters wide.  The
 <a href=#177 id=177 data-nosnippet>177</a>//!   style string is used to color the elapsed part, the alternative
 <a href=#178 id=178 data-nosnippet>178</a>//!   style is used for the bar that is yet to render.
-<a href=#179 id=179 data-nosnippet>179</a>//! * `wide_bar`: like `bar` but always fills the remaining space. It should not be used with
-<a href=#180 id=180 data-nosnippet>180</a>//! `wide_msg`.
-<a href=#181 id=181 data-nosnippet>181</a>//! * `spinner`: renders the spinner (current tick string). Note that spinners do not automatically tick by default. You either
-<a href=#182 id=182 data-nosnippet>182</a>//! need to call `enable_steady_tick` or manually call `tick`.
-<a href=#183 id=183 data-nosnippet>183</a>//! * `prefix`: renders the prefix set on the progress bar.
-<a href=#184 id=184 data-nosnippet>184</a>//! * `msg`: renders the currently set message on the progress bar.
-<a href=#185 id=185 data-nosnippet>185</a>//! * `wide_msg`: like `msg` but always fills the remaining space and truncates. It should not be used
-<a href=#186 id=186 data-nosnippet>186</a>//! with `wide_bar`.
-<a href=#187 id=187 data-nosnippet>187</a>//! * `pos`: renders the current position of the bar as integer
-<a href=#188 id=188 data-nosnippet>188</a>//! * `human_pos`: renders the current position of the bar as an integer, with commas as the
-<a href=#189 id=189 data-nosnippet>189</a>//! thousands separator.
-<a href=#190 id=190 data-nosnippet>190</a>//! * `len`: renders the amount of work to be done as an integer
-<a href=#191 id=191 data-nosnippet>191</a>//! * `human_len`: renders the total length of the bar as an integer, with commas as the thousands
-<a href=#192 id=192 data-nosnippet>192</a>//! separator.
-<a href=#193 id=193 data-nosnippet>193</a>//! * `percent`: renders the current position of the bar as a percentage of the total length (as an integer).
-<a href=#194 id=194 data-nosnippet>194</a>//! * `percent_precise`: renders the current position of the bar as a percentage of the total length (with 3 fraction digits).
-<a href=#195 id=195 data-nosnippet>195</a>//! * `bytes`: renders the current position of the bar as bytes (alias of `binary_bytes`).
-<a href=#196 id=196 data-nosnippet>196</a>//! * `total_bytes`: renders the total length of the bar as bytes (alias of `binary_total_bytes`).
-<a href=#197 id=197 data-nosnippet>197</a>//! * `decimal_bytes`: renders the current position of the bar as bytes using
-<a href=#198 id=198 data-nosnippet>198</a>//!   power-of-10 units, i.e. `MB`, `kB`, etc.
-<a href=#199 id=199 data-nosnippet>199</a>//! * `decimal_total_bytes`: renders the total length of the bar as bytes using
-<a href=#200 id=200 data-nosnippet>200</a>//!   power-of-10 units, i.e. `MB`, `kB`, etc.
-<a href=#201 id=201 data-nosnippet>201</a>//! * `binary_bytes`: renders the current position of the bar as bytes using
-<a href=#202 id=202 data-nosnippet>202</a>//!   power-of-two units, i.e. `MiB`, `KiB`, etc.
-<a href=#203 id=203 data-nosnippet>203</a>//! * `binary_total_bytes`: renders the total length of the bar as bytes using
-<a href=#204 id=204 data-nosnippet>204</a>//!   power-of-two units, i.e. `MiB`, `KiB`, etc.
-<a href=#205 id=205 data-nosnippet>205</a>//! * `elapsed_precise`: renders the elapsed time as `HH:MM:SS`.
-<a href=#206 id=206 data-nosnippet>206</a>//! * `elapsed`: renders the elapsed time as `42s`, `1m` etc.
-<a href=#207 id=207 data-nosnippet>207</a>//! * `per_sec`: renders the speed in steps per second.
-<a href=#208 id=208 data-nosnippet>208</a>//! * `bytes_per_sec`: renders the speed in bytes per second (alias of `binary_bytes_per_sec`).
-<a href=#209 id=209 data-nosnippet>209</a>//! * `decimal_bytes_per_sec`: renders the speed in bytes per second using
-<a href=#210 id=210 data-nosnippet>210</a>//!   power-of-10 units, i.e. `MB`, `kB`, etc.
-<a href=#211 id=211 data-nosnippet>211</a>//! * `binary_bytes_per_sec`: renders the speed in bytes per second using
-<a href=#212 id=212 data-nosnippet>212</a>//!   power-of-two units, i.e. `MiB`, `KiB`, etc.
-<a href=#213 id=213 data-nosnippet>213</a>//! * `eta_precise`: the remaining time (like `elapsed_precise`).
-<a href=#214 id=214 data-nosnippet>214</a>//! * `eta`: the remaining time (like `elapsed`).
-<a href=#215 id=215 data-nosnippet>215</a>//! * `duration_precise`: the extrapolated total duration (like `elapsed_precise`).
-<a href=#216 id=216 data-nosnippet>216</a>//! * `duration`: the extrapolated total duration time (like `elapsed`).
-<a href=#217 id=217 data-nosnippet>217</a>
-<a href=#218 id=218 data-nosnippet>218</a>//!
-<a href=#219 id=219 data-nosnippet>219</a>//! The design of the progress bar can be altered with the integrated
-<a href=#220 id=220 data-nosnippet>220</a>//! template functionality.  The template can be set by changing a
-<a href=#221 id=221 data-nosnippet>221</a>//! [`ProgressStyle`] and attaching it to the progress bar.
-<a href=#222 id=222 data-nosnippet>222</a>//!
-<a href=#223 id=223 data-nosnippet>223</a>//! # Human Readable Formatting
-<a href=#224 id=224 data-nosnippet>224</a>//!
-<a href=#225 id=225 data-nosnippet>225</a>//! There are some formatting wrappers for showing elapsed time and
-<a href=#226 id=226 data-nosnippet>226</a>//! file sizes for human users:
-<a href=#227 id=227 data-nosnippet>227</a>//!
-<a href=#228 id=228 data-nosnippet>228</a>//! ```rust
-<a href=#229 id=229 data-nosnippet>229</a>//! # use std::time::Duration;
-<a href=#230 id=230 data-nosnippet>230</a>//! use indicatif::{HumanBytes, HumanCount, HumanDuration, HumanFloatCount};
-<a href=#231 id=231 data-nosnippet>231</a>//!
-<a href=#232 id=232 data-nosnippet>232</a>//! assert_eq!("3.00 MiB", HumanBytes(3*1024*1024).to_string());
-<a href=#233 id=233 data-nosnippet>233</a>//! assert_eq!("8 seconds", HumanDuration(Duration::from_secs(8)).to_string());
-<a href=#234 id=234 data-nosnippet>234</a>//! assert_eq!("33,857,009", HumanCount(33857009).to_string());
-<a href=#235 id=235 data-nosnippet>235</a>//! assert_eq!("33,857,009.1235", HumanFloatCount(33857009.123456).to_string());
-<a href=#236 id=236 data-nosnippet>236</a>//! ```
-<a href=#237 id=237 data-nosnippet>237</a>//!
-<a href=#238 id=238 data-nosnippet>238</a>//! # Feature Flags
-<a href=#239 id=239 data-nosnippet>239</a>//!
-<a href=#240 id=240 data-nosnippet>240</a>//! * `rayon`: adds rayon support
-<a href=#241 id=241 data-nosnippet>241</a>//! * `improved_unicode`: adds improved unicode support (graphemes, better width calculation)
-<a href=#242 id=242 data-nosnippet>242</a>
-<a href=#243 id=243 data-nosnippet>243</a></span><span class="attr">#![cfg_attr(docsrs, feature(doc_cfg))]
-<a href=#244 id=244 data-nosnippet>244</a>#![warn(unreachable_pub)]
-<a href=#245 id=245 data-nosnippet>245</a>
-<a href=#246 id=246 data-nosnippet>246</a></span><span class="kw">mod </span>draw_target;
-<a href=#247 id=247 data-nosnippet>247</a><span class="kw">mod </span>format;
-<a href=#248 id=248 data-nosnippet>248</a><span class="attr">#[cfg(feature = <span class="string">"in_memory"</span>)]
-<a href=#249 id=249 data-nosnippet>249</a></span><span class="kw">mod </span>in_memory;
-<a href=#250 id=250 data-nosnippet>250</a><span class="kw">mod </span>iter;
-<a href=#251 id=251 data-nosnippet>251</a><span class="kw">mod </span>multi;
-<a href=#252 id=252 data-nosnippet>252</a><span class="kw">mod </span>progress_bar;
-<a href=#253 id=253 data-nosnippet>253</a><span class="attr">#[cfg(feature = <span class="string">"rayon"</span>)]
-<a href=#254 id=254 data-nosnippet>254</a></span><span class="kw">mod </span>rayon;
-<a href=#255 id=255 data-nosnippet>255</a><span class="kw">mod </span>state;
-<a href=#256 id=256 data-nosnippet>256</a><span class="kw">pub mod </span>style;
-<a href=#257 id=257 data-nosnippet>257</a><span class="kw">mod </span>term_like;
-<a href=#258 id=258 data-nosnippet>258</a>
-<a href=#259 id=259 data-nosnippet>259</a><span class="kw">pub use </span><span class="kw">crate</span>::draw_target::ProgressDrawTarget;
-<a href=#260 id=260 data-nosnippet>260</a><span class="kw">pub use </span><span class="kw">crate</span>::format::{
-<a href=#261 id=261 data-nosnippet>261</a>    BinaryBytes, DecimalBytes, FormattedDuration, HumanBytes, HumanCount, HumanDuration,
-<a href=#262 id=262 data-nosnippet>262</a>    HumanFloatCount,
-<a href=#263 id=263 data-nosnippet>263</a>};
-<a href=#264 id=264 data-nosnippet>264</a><span class="attr">#[cfg(feature = <span class="string">"in_memory"</span>)]
-<a href=#265 id=265 data-nosnippet>265</a></span><span class="kw">pub use </span><span class="kw">crate</span>::in_memory::InMemoryTerm;
-<a href=#266 id=266 data-nosnippet>266</a><span class="kw">pub use </span><span class="kw">crate</span>::iter::{ProgressBarIter, ProgressIterator};
-<a href=#267 id=267 data-nosnippet>267</a><span class="kw">pub use </span><span class="kw">crate</span>::multi::{MultiProgress, MultiProgressAlignment};
-<a href=#268 id=268 data-nosnippet>268</a><span class="kw">pub use </span><span class="kw">crate</span>::progress_bar::{ProgressBar, WeakProgressBar};
-<a href=#269 id=269 data-nosnippet>269</a><span class="attr">#[cfg(feature = <span class="string">"rayon"</span>)]
-<a href=#270 id=270 data-nosnippet>270</a></span><span class="kw">pub use </span><span class="kw">crate</span>::rayon::ParallelProgressIterator;
-<a href=#271 id=271 data-nosnippet>271</a><span class="kw">pub use </span><span class="kw">crate</span>::state::{ProgressFinish, ProgressState};
-<a href=#272 id=272 data-nosnippet>272</a><span class="kw">pub use </span><span class="kw">crate</span>::style::ProgressStyle;
-<a href=#273 id=273 data-nosnippet>273</a><span class="kw">pub use </span><span class="kw">crate</span>::term_like::TermLike;</code></pre></div></section></main></body></html>
+<a href=#179 id=179 data-nosnippet>179</a>//! * `wide_bar`: like `bar` but always fills the remaining space. It should not be used with `wide_msg`.
+<a href=#180 id=180 data-nosnippet>180</a>//! * `spinner`: renders the spinner (current tick string). Note that spinners do not automatically tick by default. You either
+<a href=#181 id=181 data-nosnippet>181</a>//!   need to call `enable_steady_tick` or manually call `tick`.
+<a href=#182 id=182 data-nosnippet>182</a>//! * `prefix`: renders the prefix set on the progress bar.
+<a href=#183 id=183 data-nosnippet>183</a>//! * `msg`: renders the currently set message on the progress bar.
+<a href=#184 id=184 data-nosnippet>184</a>//! * `wide_msg`: like `msg` but always fills the remaining space and truncates. It should not be used
+<a href=#185 id=185 data-nosnippet>185</a>//!   with `wide_bar`.
+<a href=#186 id=186 data-nosnippet>186</a>//! * `pos`: renders the current position of the bar as integer
+<a href=#187 id=187 data-nosnippet>187</a>//! * `human_pos`: renders the current position of the bar as an integer, with commas as the
+<a href=#188 id=188 data-nosnippet>188</a>//!   thousands separator.
+<a href=#189 id=189 data-nosnippet>189</a>//! * `len`: renders the amount of work to be done as an integer
+<a href=#190 id=190 data-nosnippet>190</a>//! * `human_len`: renders the total length of the bar as an integer, with commas as the thousands
+<a href=#191 id=191 data-nosnippet>191</a>//!   separator.
+<a href=#192 id=192 data-nosnippet>192</a>//! * `percent`: renders the current position of the bar as a percentage of the total length (as an integer).
+<a href=#193 id=193 data-nosnippet>193</a>//! * `percent_precise`: renders the current position of the bar as a percentage of the total length (with 3 fraction digits).
+<a href=#194 id=194 data-nosnippet>194</a>//! * `bytes`: renders the current position of the bar as bytes (alias of `binary_bytes`).
+<a href=#195 id=195 data-nosnippet>195</a>//! * `total_bytes`: renders the total length of the bar as bytes (alias of `binary_total_bytes`).
+<a href=#196 id=196 data-nosnippet>196</a>//! * `decimal_bytes`: renders the current position of the bar as bytes using
+<a href=#197 id=197 data-nosnippet>197</a>//!   power-of-10 units, i.e. `MB`, `kB`, etc.
+<a href=#198 id=198 data-nosnippet>198</a>//! * `decimal_total_bytes`: renders the total length of the bar as bytes using
+<a href=#199 id=199 data-nosnippet>199</a>//!   power-of-10 units, i.e. `MB`, `kB`, etc.
+<a href=#200 id=200 data-nosnippet>200</a>//! * `binary_bytes`: renders the current position of the bar as bytes using
+<a href=#201 id=201 data-nosnippet>201</a>//!   power-of-two units, i.e. `MiB`, `KiB`, etc.
+<a href=#202 id=202 data-nosnippet>202</a>//! * `binary_total_bytes`: renders the total length of the bar as bytes using
+<a href=#203 id=203 data-nosnippet>203</a>//!   power-of-two units, i.e. `MiB`, `KiB`, etc.
+<a href=#204 id=204 data-nosnippet>204</a>//! * `elapsed_precise`: renders the elapsed time as `HH:MM:SS`.
+<a href=#205 id=205 data-nosnippet>205</a>//! * `elapsed`: renders the elapsed time as `42s`, `1m` etc.
+<a href=#206 id=206 data-nosnippet>206</a>//! * `per_sec`: renders the speed in steps per second.
+<a href=#207 id=207 data-nosnippet>207</a>//! * `bytes_per_sec`: renders the speed in bytes per second (alias of `binary_bytes_per_sec`).
+<a href=#208 id=208 data-nosnippet>208</a>//! * `decimal_bytes_per_sec`: renders the speed in bytes per second using
+<a href=#209 id=209 data-nosnippet>209</a>//!   power-of-10 units, i.e. `MB`, `kB`, etc.
+<a href=#210 id=210 data-nosnippet>210</a>//! * `binary_bytes_per_sec`: renders the speed in bytes per second using
+<a href=#211 id=211 data-nosnippet>211</a>//!   power-of-two units, i.e. `MiB`, `KiB`, etc.
+<a href=#212 id=212 data-nosnippet>212</a>//! * `eta_precise`: the remaining time (like `elapsed_precise`).
+<a href=#213 id=213 data-nosnippet>213</a>//! * `eta`: the remaining time (like `elapsed`).
+<a href=#214 id=214 data-nosnippet>214</a>//! * `duration_precise`: the extrapolated total duration (like `elapsed_precise`).
+<a href=#215 id=215 data-nosnippet>215</a>//! * `duration`: the extrapolated total duration time (like `elapsed`).
+<a href=#216 id=216 data-nosnippet>216</a>//!
+<a href=#217 id=217 data-nosnippet>217</a>//! If the list above does not contain the value you need, consider creating a custom
+<a href=#218 id=218 data-nosnippet>218</a>//! [`ProgressTracker`][crate::style::ProgressTracker] implementation.
+<a href=#219 id=219 data-nosnippet>219</a>//!
+<a href=#220 id=220 data-nosnippet>220</a>//! The design of the progress bar can be altered with the integrated
+<a href=#221 id=221 data-nosnippet>221</a>//! template functionality.  The template can be set by changing a
+<a href=#222 id=222 data-nosnippet>222</a>//! [`ProgressStyle`] and attaching it to the progress bar.
+<a href=#223 id=223 data-nosnippet>223</a>//!
+<a href=#224 id=224 data-nosnippet>224</a>//! # Human Readable Formatting
+<a href=#225 id=225 data-nosnippet>225</a>//!
+<a href=#226 id=226 data-nosnippet>226</a>//! There are some formatting wrappers for showing elapsed time and
+<a href=#227 id=227 data-nosnippet>227</a>//! file sizes for human users:
+<a href=#228 id=228 data-nosnippet>228</a>//!
+<a href=#229 id=229 data-nosnippet>229</a>//! ```rust
+<a href=#230 id=230 data-nosnippet>230</a>//! # use std::time::Duration;
+<a href=#231 id=231 data-nosnippet>231</a>//! use indicatif::{HumanBytes, HumanCount, HumanDuration, HumanFloatCount};
+<a href=#232 id=232 data-nosnippet>232</a>//!
+<a href=#233 id=233 data-nosnippet>233</a>//! assert_eq!("3.00 MiB", HumanBytes(3*1024*1024).to_string());
+<a href=#234 id=234 data-nosnippet>234</a>//! assert_eq!("8 seconds", HumanDuration(Duration::from_secs(8)).to_string());
+<a href=#235 id=235 data-nosnippet>235</a>//! assert_eq!("33,857,009", HumanCount(33857009).to_string());
+<a href=#236 id=236 data-nosnippet>236</a>//! assert_eq!("33,857,009.1235", HumanFloatCount(33857009.123456).to_string());
+<a href=#237 id=237 data-nosnippet>237</a>//! ```
+<a href=#238 id=238 data-nosnippet>238</a>//!
+<a href=#239 id=239 data-nosnippet>239</a>//! # Feature Flags
+<a href=#240 id=240 data-nosnippet>240</a>//!
+<a href=#241 id=241 data-nosnippet>241</a>//! * `rayon`: adds rayon support
+<a href=#242 id=242 data-nosnippet>242</a>//! * `improved_unicode`: adds improved unicode support (graphemes, better width calculation)
+<a href=#243 id=243 data-nosnippet>243</a>
+<a href=#244 id=244 data-nosnippet>244</a></span><span class="attr">#![cfg_attr(docsrs, feature(doc_cfg))]
+<a href=#245 id=245 data-nosnippet>245</a>#![warn(unreachable_pub)]
+<a href=#246 id=246 data-nosnippet>246</a>
+<a href=#247 id=247 data-nosnippet>247</a></span><span class="kw">mod </span>draw_target;
+<a href=#248 id=248 data-nosnippet>248</a><span class="kw">mod </span>format;
+<a href=#249 id=249 data-nosnippet>249</a><span class="attr">#[cfg(feature = <span class="string">"in_memory"</span>)]
+<a href=#250 id=250 data-nosnippet>250</a></span><span class="kw">mod </span>in_memory;
+<a href=#251 id=251 data-nosnippet>251</a><span class="kw">mod </span>iter;
+<a href=#252 id=252 data-nosnippet>252</a><span class="kw">mod </span>multi;
+<a href=#253 id=253 data-nosnippet>253</a><span class="kw">mod </span>progress_bar;
+<a href=#254 id=254 data-nosnippet>254</a><span class="attr">#[cfg(feature = <span class="string">"rayon"</span>)]
+<a href=#255 id=255 data-nosnippet>255</a></span><span class="kw">mod </span>rayon;
+<a href=#256 id=256 data-nosnippet>256</a><span class="kw">mod </span>state;
+<a href=#257 id=257 data-nosnippet>257</a><span class="kw">pub mod </span>style;
+<a href=#258 id=258 data-nosnippet>258</a><span class="kw">mod </span>term_like;
+<a href=#259 id=259 data-nosnippet>259</a>
+<a href=#260 id=260 data-nosnippet>260</a><span class="kw">pub use </span><span class="kw">crate</span>::draw_target::ProgressDrawTarget;
+<a href=#261 id=261 data-nosnippet>261</a><span class="kw">pub use </span><span class="kw">crate</span>::format::{
+<a href=#262 id=262 data-nosnippet>262</a>    BinaryBytes, DecimalBytes, FormattedDuration, HumanBytes, HumanCount, HumanDuration,
+<a href=#263 id=263 data-nosnippet>263</a>    HumanFloatCount,
+<a href=#264 id=264 data-nosnippet>264</a>};
+<a href=#265 id=265 data-nosnippet>265</a><span class="attr">#[cfg(feature = <span class="string">"in_memory"</span>)]
+<a href=#266 id=266 data-nosnippet>266</a></span><span class="kw">pub use </span><span class="kw">crate</span>::in_memory::InMemoryTerm;
+<a href=#267 id=267 data-nosnippet>267</a><span class="kw">pub use </span><span class="kw">crate</span>::iter::{ProgressBarIter, ProgressIterator};
+<a href=#268 id=268 data-nosnippet>268</a><span class="kw">pub use </span><span class="kw">crate</span>::multi::{MultiProgress, MultiProgressAlignment};
+<a href=#269 id=269 data-nosnippet>269</a><span class="kw">pub use </span><span class="kw">crate</span>::progress_bar::{ProgressBar, WeakProgressBar};
+<a href=#270 id=270 data-nosnippet>270</a><span class="attr">#[cfg(feature = <span class="string">"rayon"</span>)]
+<a href=#271 id=271 data-nosnippet>271</a></span><span class="kw">pub use </span><span class="kw">crate</span>::rayon::ParallelProgressIterator;
+<a href=#272 id=272 data-nosnippet>272</a><span class="kw">pub use </span><span class="kw">crate</span>::state::{ProgressFinish, ProgressState};
+<a href=#273 id=273 data-nosnippet>273</a><span class="kw">pub use </span><span class="kw">crate</span>::style::ProgressStyle;
+<a href=#274 id=274 data-nosnippet>274</a><span class="kw">pub use </span><span class="kw">crate</span>::term_like::TermLike;
+<a href=#275 id=275 data-nosnippet>275</a>
+<a href=#276 id=276 data-nosnippet>276</a><span class="attr">#[cfg(test)]
+<a href=#277 id=277 data-nosnippet>277</a></span><span class="kw">mod </span>tests {
+<a href=#278 id=278 data-nosnippet>278</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#279 id=279 data-nosnippet>279</a>
+<a href=#280 id=280 data-nosnippet>280</a>    <span class="attr">#[allow(dead_code)]
+<a href=#281 id=281 data-nosnippet>281</a>    </span><span class="kw">trait </span>MustBeThreadSafe: Send + Sync {}
+<a href=#282 id=282 data-nosnippet>282</a>
+<a href=#283 id=283 data-nosnippet>283</a>    <span class="comment">// Ensure that the following types are `Send + Sync`
+<a href=#284 id=284 data-nosnippet>284</a>    </span><span class="kw">impl </span>MustBeThreadSafe <span class="kw">for </span>MultiProgress {}
+<a href=#285 id=285 data-nosnippet>285</a>    <span class="kw">impl </span>MustBeThreadSafe <span class="kw">for </span>MultiProgressAlignment {}
+<a href=#286 id=286 data-nosnippet>286</a>    <span class="kw">impl </span>MustBeThreadSafe <span class="kw">for </span>ProgressBar {}
+<a href=#287 id=287 data-nosnippet>287</a>    <span class="kw">impl </span>MustBeThreadSafe <span class="kw">for </span>ProgressBarIter&lt;()&gt; {}
+<a href=#288 id=288 data-nosnippet>288</a>    <span class="kw">impl </span>MustBeThreadSafe <span class="kw">for </span>ProgressFinish {}
+<a href=#289 id=289 data-nosnippet>289</a>    <span class="kw">impl </span>MustBeThreadSafe <span class="kw">for </span>ProgressState {}
+<a href=#290 id=290 data-nosnippet>290</a>    <span class="kw">impl </span>MustBeThreadSafe <span class="kw">for </span>ProgressStyle {}
+<a href=#291 id=291 data-nosnippet>291</a>    <span class="kw">impl </span>MustBeThreadSafe <span class="kw">for </span>WeakProgressBar {}
+<a href=#292 id=292 data-nosnippet>292</a>}</code></pre></div></section></main></body></html>

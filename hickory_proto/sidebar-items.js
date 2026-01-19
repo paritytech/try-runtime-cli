@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["spawn_bg"],"mod":["error","op","rr","serialize","tcp","udp","xfer"],"struct":["TokioTime"],"trait":["Executor","Time"]};
+window.SIDEBAR_ITEMS = {"enum":["ProtoErrorKind"],"mod":["op","rr","runtime","serialize","tcp","udp","xfer"],"struct":["ForwardData","ForwardNSData","ProtoError"]};

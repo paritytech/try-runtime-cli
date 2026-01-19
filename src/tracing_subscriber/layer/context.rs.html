@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tracing-subscriber-0.3.18/src/layer/context.rs`."><title>context.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="tracing_subscriber" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">tracing_subscriber/layer/</div>context.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>tracing_core::{metadata::Metadata, span, subscriber::Subscriber, Event};
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tracing-subscriber-0.3.22/src/layer/context.rs`."><title>context.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="tracing_subscriber" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="icon" href="https://raw.githubusercontent.com/tokio-rs/tracing/main/assets/favicon.ico"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">tracing_subscriber/layer/</div>context.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>tracing_core::{metadata::Metadata, span, subscriber::Subscriber, Event};
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span><span class="kw">crate</span>::registry::{<span class="self">self</span>, LookupSpan, SpanRef};
 <a href=#4 id=4 data-nosnippet>4</a>
@@ -316,119 +316,118 @@
 <a href=#316 id=316 data-nosnippet>316</a>
 <a href=#317 id=317 data-nosnippet>317</a>    <span class="doccomment">/// Returns an iterator over the [stored data] for all the spans in the
 <a href=#318 id=318 data-nosnippet>318</a>    /// current context, starting with the specified span and ending with the
-<a href=#319 id=319 data-nosnippet>319</a>    /// root of the trace tree and ending with the current span.
+<a href=#319 id=319 data-nosnippet>319</a>    /// root of the trace tree.
 <a href=#320 id=320 data-nosnippet>320</a>    ///
 <a href=#321 id=321 data-nosnippet>321</a>    /// &lt;pre class="ignore" style="white-space:normal;font:inherit;"&gt;
-<a href=#322 id=322 data-nosnippet>322</a>    /// &lt;strong&gt;Note&lt;/strong&gt;: Compared to &lt;a href="#method.scope"&gt;&lt;code&gt;scope&lt;/code&gt;&lt;/a&gt; this
-<a href=#323 id=323 data-nosnippet>323</a>    /// returns the spans in reverse order (from leaf to root). Use
-<a href=#324 id=324 data-nosnippet>324</a>    /// &lt;a href="../registry/struct.Scope.html#method.from_root"&gt;&lt;code&gt;Scope::from_root&lt;/code&gt;&lt;/a&gt;
-<a href=#325 id=325 data-nosnippet>325</a>    /// in case root-to-leaf ordering is desired.
-<a href=#326 id=326 data-nosnippet>326</a>    /// &lt;/pre&gt;
-<a href=#327 id=327 data-nosnippet>327</a>    ///
-<a href=#328 id=328 data-nosnippet>328</a>    /// &lt;pre class="ignore" style="white-space:normal;font:inherit;"&gt;
-<a href=#329 id=329 data-nosnippet>329</a>    ///     &lt;strong&gt;Note&lt;/strong&gt;: This requires the wrapped subscriber to
-<a href=#330 id=330 data-nosnippet>330</a>    ///     implement the &lt;a href="../registry/trait.LookupSpan.html"&gt;&lt;code&gt;
-<a href=#331 id=331 data-nosnippet>331</a>    ///     LookupSpan&lt;/code&gt;&lt;/a&gt; trait. See the documentation on
-<a href=#332 id=332 data-nosnippet>332</a>    ///     &lt;a href="./struct.Context.html"&gt;&lt;code&gt;Context&lt;/code&gt;'s
-<a href=#333 id=333 data-nosnippet>333</a>    ///     declaration&lt;/a&gt; for details.
-<a href=#334 id=334 data-nosnippet>334</a>    /// &lt;/pre&gt;
-<a href=#335 id=335 data-nosnippet>335</a>    ///
-<a href=#336 id=336 data-nosnippet>336</a>    /// [stored data]: crate::registry::SpanRef
-<a href=#337 id=337 data-nosnippet>337</a>    </span><span class="kw">pub fn </span>span_scope(<span class="kw-2">&amp;</span><span class="self">self</span>, id: <span class="kw-2">&amp;</span>span::Id) -&gt; <span class="prelude-ty">Option</span>&lt;registry::Scope&lt;<span class="lifetime">'_</span>, S&gt;&gt;
-<a href=#338 id=338 data-nosnippet>338</a>    <span class="kw">where
-<a href=#339 id=339 data-nosnippet>339</a>        </span>S: <span class="kw">for</span>&lt;<span class="lifetime">'lookup</span>&gt; LookupSpan&lt;<span class="lifetime">'lookup</span>&gt;,
-<a href=#340 id=340 data-nosnippet>340</a>    {
-<a href=#341 id=341 data-nosnippet>341</a>        <span class="prelude-val">Some</span>(<span class="self">self</span>.span(id)<span class="question-mark">?</span>.scope())
-<a href=#342 id=342 data-nosnippet>342</a>    }
-<a href=#343 id=343 data-nosnippet>343</a>
-<a href=#344 id=344 data-nosnippet>344</a>    <span class="doccomment">/// Returns an iterator over the [stored data] for all the spans in the
-<a href=#345 id=345 data-nosnippet>345</a>    /// current context, starting with the parent span of the specified event,
-<a href=#346 id=346 data-nosnippet>346</a>    /// and ending with the root of the trace tree and ending with the current span.
-<a href=#347 id=347 data-nosnippet>347</a>    ///
-<a href=#348 id=348 data-nosnippet>348</a>    /// &lt;pre class="ignore" style="white-space:normal;font:inherit;"&gt;
-<a href=#349 id=349 data-nosnippet>349</a>    /// &lt;strong&gt;Note&lt;/strong&gt;: Compared to &lt;a href="#method.scope"&gt;&lt;code&gt;scope&lt;/code&gt;&lt;/a&gt; this
-<a href=#350 id=350 data-nosnippet>350</a>    /// returns the spans in reverse order (from leaf to root). Use
-<a href=#351 id=351 data-nosnippet>351</a>    /// &lt;a href="../registry/struct.Scope.html#method.from_root"&gt;&lt;code&gt;Scope::from_root&lt;/code&gt;&lt;/a&gt;
-<a href=#352 id=352 data-nosnippet>352</a>    /// in case root-to-leaf ordering is desired.
-<a href=#353 id=353 data-nosnippet>353</a>    /// &lt;/pre&gt;
-<a href=#354 id=354 data-nosnippet>354</a>    ///
-<a href=#355 id=355 data-nosnippet>355</a>    /// &lt;pre class="ignore" style="white-space:normal;font:inherit;"&gt;
-<a href=#356 id=356 data-nosnippet>356</a>    ///     &lt;strong&gt;Note&lt;/strong&gt;: This requires the wrapped subscriber to
-<a href=#357 id=357 data-nosnippet>357</a>    ///     implement the &lt;a href="../registry/trait.LookupSpan.html"&gt;&lt;code&gt;
-<a href=#358 id=358 data-nosnippet>358</a>    ///     LookupSpan&lt;/code&gt;&lt;/a&gt; trait. See the documentation on
-<a href=#359 id=359 data-nosnippet>359</a>    ///     &lt;a href="./struct.Context.html"&gt;&lt;code&gt;Context&lt;/code&gt;'s
-<a href=#360 id=360 data-nosnippet>360</a>    ///     declaration&lt;/a&gt; for details.
-<a href=#361 id=361 data-nosnippet>361</a>    /// &lt;/pre&gt;
-<a href=#362 id=362 data-nosnippet>362</a>    ///
-<a href=#363 id=363 data-nosnippet>363</a>    /// [stored data]: crate::registry::SpanRef
-<a href=#364 id=364 data-nosnippet>364</a>    </span><span class="kw">pub fn </span>event_scope(<span class="kw-2">&amp;</span><span class="self">self</span>, event: <span class="kw-2">&amp;</span>Event&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;registry::Scope&lt;<span class="lifetime">'_</span>, S&gt;&gt;
-<a href=#365 id=365 data-nosnippet>365</a>    <span class="kw">where
-<a href=#366 id=366 data-nosnippet>366</a>        </span>S: <span class="kw">for</span>&lt;<span class="lifetime">'lookup</span>&gt; LookupSpan&lt;<span class="lifetime">'lookup</span>&gt;,
-<a href=#367 id=367 data-nosnippet>367</a>    {
-<a href=#368 id=368 data-nosnippet>368</a>        <span class="prelude-val">Some</span>(<span class="self">self</span>.event_span(event)<span class="question-mark">?</span>.scope())
-<a href=#369 id=369 data-nosnippet>369</a>    }
-<a href=#370 id=370 data-nosnippet>370</a>
-<a href=#371 id=371 data-nosnippet>371</a>    <span class="attr">#[cfg(all(feature = <span class="string">"registry"</span>, feature = <span class="string">"std"</span>))]
-<a href=#372 id=372 data-nosnippet>372</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>with_filter(<span class="self">self</span>, filter: FilterId) -&gt; <span class="self">Self </span>{
-<a href=#373 id=373 data-nosnippet>373</a>        <span class="comment">// If we already have our own `FilterId`, combine it with the provided
-<a href=#374 id=374 data-nosnippet>374</a>        // one. That way, the new `FilterId` will consider a span to be disabled
-<a href=#375 id=375 data-nosnippet>375</a>        // if it was disabled by the given `FilterId` *or* any `FilterId`s for
-<a href=#376 id=376 data-nosnippet>376</a>        // layers "above" us in the stack.
-<a href=#377 id=377 data-nosnippet>377</a>        //
-<a href=#378 id=378 data-nosnippet>378</a>        // See the doc comment for `FilterId::and` for details.
-<a href=#379 id=379 data-nosnippet>379</a>        </span><span class="kw">let </span>filter = <span class="self">self</span>.filter.and(filter);
-<a href=#380 id=380 data-nosnippet>380</a>        <span class="self">Self </span>{ filter, ..<span class="self">self </span>}
-<a href=#381 id=381 data-nosnippet>381</a>    }
-<a href=#382 id=382 data-nosnippet>382</a>
-<a href=#383 id=383 data-nosnippet>383</a>    <span class="attr">#[cfg(all(feature = <span class="string">"registry"</span>, feature = <span class="string">"std"</span>))]
-<a href=#384 id=384 data-nosnippet>384</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_enabled_for(<span class="kw-2">&amp;</span><span class="self">self</span>, span: <span class="kw-2">&amp;</span>span::Id, filter: FilterId) -&gt; bool
-<a href=#385 id=385 data-nosnippet>385</a>    <span class="kw">where
-<a href=#386 id=386 data-nosnippet>386</a>        </span>S: <span class="kw">for</span>&lt;<span class="lifetime">'lookup</span>&gt; LookupSpan&lt;<span class="lifetime">'lookup</span>&gt;,
-<a href=#387 id=387 data-nosnippet>387</a>    {
-<a href=#388 id=388 data-nosnippet>388</a>        <span class="self">self</span>.is_enabled_inner(span, filter).unwrap_or(<span class="bool-val">false</span>)
-<a href=#389 id=389 data-nosnippet>389</a>    }
-<a href=#390 id=390 data-nosnippet>390</a>
-<a href=#391 id=391 data-nosnippet>391</a>    <span class="attr">#[cfg(all(feature = <span class="string">"registry"</span>, feature = <span class="string">"std"</span>))]
-<a href=#392 id=392 data-nosnippet>392</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>if_enabled_for(<span class="self">self</span>, span: <span class="kw-2">&amp;</span>span::Id, filter: FilterId) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt;
-<a href=#393 id=393 data-nosnippet>393</a>    <span class="kw">where
-<a href=#394 id=394 data-nosnippet>394</a>        </span>S: <span class="kw">for</span>&lt;<span class="lifetime">'lookup</span>&gt; LookupSpan&lt;<span class="lifetime">'lookup</span>&gt;,
-<a href=#395 id=395 data-nosnippet>395</a>    {
-<a href=#396 id=396 data-nosnippet>396</a>        <span class="kw">if </span><span class="self">self</span>.is_enabled_inner(span, filter)<span class="question-mark">? </span>{
-<a href=#397 id=397 data-nosnippet>397</a>            <span class="prelude-val">Some</span>(<span class="self">self</span>.with_filter(filter))
-<a href=#398 id=398 data-nosnippet>398</a>        } <span class="kw">else </span>{
-<a href=#399 id=399 data-nosnippet>399</a>            <span class="prelude-val">None
-<a href=#400 id=400 data-nosnippet>400</a>        </span>}
-<a href=#401 id=401 data-nosnippet>401</a>    }
-<a href=#402 id=402 data-nosnippet>402</a>
-<a href=#403 id=403 data-nosnippet>403</a>    <span class="attr">#[cfg(all(feature = <span class="string">"registry"</span>, feature = <span class="string">"std"</span>))]
-<a href=#404 id=404 data-nosnippet>404</a>    </span><span class="kw">fn </span>is_enabled_inner(<span class="kw-2">&amp;</span><span class="self">self</span>, span: <span class="kw-2">&amp;</span>span::Id, filter: FilterId) -&gt; <span class="prelude-ty">Option</span>&lt;bool&gt;
-<a href=#405 id=405 data-nosnippet>405</a>    <span class="kw">where
-<a href=#406 id=406 data-nosnippet>406</a>        </span>S: <span class="kw">for</span>&lt;<span class="lifetime">'lookup</span>&gt; LookupSpan&lt;<span class="lifetime">'lookup</span>&gt;,
-<a href=#407 id=407 data-nosnippet>407</a>    {
-<a href=#408 id=408 data-nosnippet>408</a>        <span class="prelude-val">Some</span>(<span class="self">self</span>.span(span)<span class="question-mark">?</span>.is_enabled_for(filter))
-<a href=#409 id=409 data-nosnippet>409</a>    }
-<a href=#410 id=410 data-nosnippet>410</a>}
-<a href=#411 id=411 data-nosnippet>411</a>
-<a href=#412 id=412 data-nosnippet>412</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, S&gt; Context&lt;<span class="lifetime">'a</span>, S&gt; {
-<a href=#413 id=413 data-nosnippet>413</a>    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>none() -&gt; <span class="self">Self </span>{
-<a href=#414 id=414 data-nosnippet>414</a>        <span class="self">Self </span>{
-<a href=#415 id=415 data-nosnippet>415</a>            subscriber: <span class="prelude-val">None</span>,
-<a href=#416 id=416 data-nosnippet>416</a>
-<a href=#417 id=417 data-nosnippet>417</a>            <span class="attr">#[cfg(feature = <span class="string">"registry"</span>)]
-<a href=#418 id=418 data-nosnippet>418</a>            </span>filter: FilterId::none(),
-<a href=#419 id=419 data-nosnippet>419</a>        }
-<a href=#420 id=420 data-nosnippet>420</a>    }
-<a href=#421 id=421 data-nosnippet>421</a>}
-<a href=#422 id=422 data-nosnippet>422</a>
-<a href=#423 id=423 data-nosnippet>423</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, S&gt; Clone <span class="kw">for </span>Context&lt;<span class="lifetime">'a</span>, S&gt; {
-<a href=#424 id=424 data-nosnippet>424</a>    <span class="attr">#[inline]
-<a href=#425 id=425 data-nosnippet>425</a>    </span><span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-<a href=#426 id=426 data-nosnippet>426</a>        <span class="kw">let </span>subscriber = <span class="self">self</span>.subscriber.as_ref().copied();
-<a href=#427 id=427 data-nosnippet>427</a>        Context {
-<a href=#428 id=428 data-nosnippet>428</a>            subscriber,
-<a href=#429 id=429 data-nosnippet>429</a>
-<a href=#430 id=430 data-nosnippet>430</a>            <span class="attr">#[cfg(all(feature = <span class="string">"registry"</span>, feature = <span class="string">"std"</span>))]
-<a href=#431 id=431 data-nosnippet>431</a>            </span>filter: <span class="self">self</span>.filter,
-<a href=#432 id=432 data-nosnippet>432</a>        }
-<a href=#433 id=433 data-nosnippet>433</a>    }
-<a href=#434 id=434 data-nosnippet>434</a>}</code></pre></div></section></main></body></html>
+<a href=#322 id=322 data-nosnippet>322</a>    /// &lt;strong&gt;Note&lt;/strong&gt;: This returns the spans in reverse order (from leaf to root). Use
+<a href=#323 id=323 data-nosnippet>323</a>    /// &lt;a href="../registry/struct.Scope.html#method.from_root"&gt;&lt;code&gt;Scope::from_root&lt;/code&gt;&lt;/a&gt;
+<a href=#324 id=324 data-nosnippet>324</a>    /// in case root-to-leaf ordering is desired.
+<a href=#325 id=325 data-nosnippet>325</a>    /// &lt;/pre&gt;
+<a href=#326 id=326 data-nosnippet>326</a>    ///
+<a href=#327 id=327 data-nosnippet>327</a>    /// &lt;pre class="ignore" style="white-space:normal;font:inherit;"&gt;
+<a href=#328 id=328 data-nosnippet>328</a>    ///     &lt;strong&gt;Note&lt;/strong&gt;: This requires the wrapped subscriber to
+<a href=#329 id=329 data-nosnippet>329</a>    ///     implement the &lt;a href="../registry/trait.LookupSpan.html"&gt;&lt;code&gt;
+<a href=#330 id=330 data-nosnippet>330</a>    ///     LookupSpan&lt;/code&gt;&lt;/a&gt; trait. See the documentation on
+<a href=#331 id=331 data-nosnippet>331</a>    ///     &lt;a href="./struct.Context.html"&gt;&lt;code&gt;Context&lt;/code&gt;'s
+<a href=#332 id=332 data-nosnippet>332</a>    ///     declaration&lt;/a&gt; for details.
+<a href=#333 id=333 data-nosnippet>333</a>    /// &lt;/pre&gt;
+<a href=#334 id=334 data-nosnippet>334</a>    ///
+<a href=#335 id=335 data-nosnippet>335</a>    /// [stored data]: crate::registry::SpanRef
+<a href=#336 id=336 data-nosnippet>336</a>    </span><span class="kw">pub fn </span>span_scope(<span class="kw-2">&amp;</span><span class="self">self</span>, id: <span class="kw-2">&amp;</span>span::Id) -&gt; <span class="prelude-ty">Option</span>&lt;registry::Scope&lt;<span class="lifetime">'_</span>, S&gt;&gt;
+<a href=#337 id=337 data-nosnippet>337</a>    <span class="kw">where
+<a href=#338 id=338 data-nosnippet>338</a>        </span>S: <span class="kw">for</span>&lt;<span class="lifetime">'lookup</span>&gt; LookupSpan&lt;<span class="lifetime">'lookup</span>&gt;,
+<a href=#339 id=339 data-nosnippet>339</a>    {
+<a href=#340 id=340 data-nosnippet>340</a>        <span class="prelude-val">Some</span>(<span class="self">self</span>.span(id)<span class="question-mark">?</span>.scope())
+<a href=#341 id=341 data-nosnippet>341</a>    }
+<a href=#342 id=342 data-nosnippet>342</a>
+<a href=#343 id=343 data-nosnippet>343</a>    <span class="doccomment">/// Returns an iterator over the [stored data] for all the spans in the
+<a href=#344 id=344 data-nosnippet>344</a>    /// current context, starting with the parent span of the specified event,
+<a href=#345 id=345 data-nosnippet>345</a>    /// and ending with the root of the trace tree and ending with the current span.
+<a href=#346 id=346 data-nosnippet>346</a>    ///
+<a href=#347 id=347 data-nosnippet>347</a>    /// &lt;pre class="ignore" style="white-space:normal;font:inherit;"&gt;
+<a href=#348 id=348 data-nosnippet>348</a>    /// &lt;strong&gt;Note&lt;/strong&gt;: Compared to &lt;a href="#method.scope"&gt;&lt;code&gt;scope&lt;/code&gt;&lt;/a&gt; this
+<a href=#349 id=349 data-nosnippet>349</a>    /// returns the spans in reverse order (from leaf to root). Use
+<a href=#350 id=350 data-nosnippet>350</a>    /// &lt;a href="../registry/struct.Scope.html#method.from_root"&gt;&lt;code&gt;Scope::from_root&lt;/code&gt;&lt;/a&gt;
+<a href=#351 id=351 data-nosnippet>351</a>    /// in case root-to-leaf ordering is desired.
+<a href=#352 id=352 data-nosnippet>352</a>    /// &lt;/pre&gt;
+<a href=#353 id=353 data-nosnippet>353</a>    ///
+<a href=#354 id=354 data-nosnippet>354</a>    /// &lt;pre class="ignore" style="white-space:normal;font:inherit;"&gt;
+<a href=#355 id=355 data-nosnippet>355</a>    ///     &lt;strong&gt;Note&lt;/strong&gt;: This requires the wrapped subscriber to
+<a href=#356 id=356 data-nosnippet>356</a>    ///     implement the &lt;a href="../registry/trait.LookupSpan.html"&gt;&lt;code&gt;
+<a href=#357 id=357 data-nosnippet>357</a>    ///     LookupSpan&lt;/code&gt;&lt;/a&gt; trait. See the documentation on
+<a href=#358 id=358 data-nosnippet>358</a>    ///     &lt;a href="./struct.Context.html"&gt;&lt;code&gt;Context&lt;/code&gt;'s
+<a href=#359 id=359 data-nosnippet>359</a>    ///     declaration&lt;/a&gt; for details.
+<a href=#360 id=360 data-nosnippet>360</a>    /// &lt;/pre&gt;
+<a href=#361 id=361 data-nosnippet>361</a>    ///
+<a href=#362 id=362 data-nosnippet>362</a>    /// [stored data]: crate::registry::SpanRef
+<a href=#363 id=363 data-nosnippet>363</a>    </span><span class="kw">pub fn </span>event_scope(<span class="kw-2">&amp;</span><span class="self">self</span>, event: <span class="kw-2">&amp;</span>Event&lt;<span class="lifetime">'_</span>&gt;) -&gt; <span class="prelude-ty">Option</span>&lt;registry::Scope&lt;<span class="lifetime">'_</span>, S&gt;&gt;
+<a href=#364 id=364 data-nosnippet>364</a>    <span class="kw">where
+<a href=#365 id=365 data-nosnippet>365</a>        </span>S: <span class="kw">for</span>&lt;<span class="lifetime">'lookup</span>&gt; LookupSpan&lt;<span class="lifetime">'lookup</span>&gt;,
+<a href=#366 id=366 data-nosnippet>366</a>    {
+<a href=#367 id=367 data-nosnippet>367</a>        <span class="prelude-val">Some</span>(<span class="self">self</span>.event_span(event)<span class="question-mark">?</span>.scope())
+<a href=#368 id=368 data-nosnippet>368</a>    }
+<a href=#369 id=369 data-nosnippet>369</a>
+<a href=#370 id=370 data-nosnippet>370</a>    <span class="attr">#[cfg(all(feature = <span class="string">"registry"</span>, feature = <span class="string">"std"</span>))]
+<a href=#371 id=371 data-nosnippet>371</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>with_filter(<span class="self">self</span>, filter: FilterId) -&gt; <span class="self">Self </span>{
+<a href=#372 id=372 data-nosnippet>372</a>        <span class="comment">// If we already have our own `FilterId`, combine it with the provided
+<a href=#373 id=373 data-nosnippet>373</a>        // one. That way, the new `FilterId` will consider a span to be disabled
+<a href=#374 id=374 data-nosnippet>374</a>        // if it was disabled by the given `FilterId` *or* any `FilterId`s for
+<a href=#375 id=375 data-nosnippet>375</a>        // layers "above" us in the stack.
+<a href=#376 id=376 data-nosnippet>376</a>        //
+<a href=#377 id=377 data-nosnippet>377</a>        // See the doc comment for `FilterId::and` for details.
+<a href=#378 id=378 data-nosnippet>378</a>        </span><span class="kw">let </span>filter = <span class="self">self</span>.filter.and(filter);
+<a href=#379 id=379 data-nosnippet>379</a>        <span class="self">Self </span>{ filter, ..<span class="self">self </span>}
+<a href=#380 id=380 data-nosnippet>380</a>    }
+<a href=#381 id=381 data-nosnippet>381</a>
+<a href=#382 id=382 data-nosnippet>382</a>    <span class="attr">#[cfg(all(feature = <span class="string">"registry"</span>, feature = <span class="string">"std"</span>))]
+<a href=#383 id=383 data-nosnippet>383</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_enabled_for(<span class="kw-2">&amp;</span><span class="self">self</span>, span: <span class="kw-2">&amp;</span>span::Id, filter: FilterId) -&gt; bool
+<a href=#384 id=384 data-nosnippet>384</a>    <span class="kw">where
+<a href=#385 id=385 data-nosnippet>385</a>        </span>S: <span class="kw">for</span>&lt;<span class="lifetime">'lookup</span>&gt; LookupSpan&lt;<span class="lifetime">'lookup</span>&gt;,
+<a href=#386 id=386 data-nosnippet>386</a>    {
+<a href=#387 id=387 data-nosnippet>387</a>        <span class="self">self</span>.is_enabled_inner(span, filter).unwrap_or(<span class="bool-val">false</span>)
+<a href=#388 id=388 data-nosnippet>388</a>    }
+<a href=#389 id=389 data-nosnippet>389</a>
+<a href=#390 id=390 data-nosnippet>390</a>    <span class="attr">#[cfg(all(feature = <span class="string">"registry"</span>, feature = <span class="string">"std"</span>))]
+<a href=#391 id=391 data-nosnippet>391</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>if_enabled_for(<span class="self">self</span>, span: <span class="kw-2">&amp;</span>span::Id, filter: FilterId) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt;
+<a href=#392 id=392 data-nosnippet>392</a>    <span class="kw">where
+<a href=#393 id=393 data-nosnippet>393</a>        </span>S: <span class="kw">for</span>&lt;<span class="lifetime">'lookup</span>&gt; LookupSpan&lt;<span class="lifetime">'lookup</span>&gt;,
+<a href=#394 id=394 data-nosnippet>394</a>    {
+<a href=#395 id=395 data-nosnippet>395</a>        <span class="kw">if </span><span class="self">self</span>.is_enabled_inner(span, filter)<span class="question-mark">? </span>{
+<a href=#396 id=396 data-nosnippet>396</a>            <span class="prelude-val">Some</span>(<span class="self">self</span>.with_filter(filter))
+<a href=#397 id=397 data-nosnippet>397</a>        } <span class="kw">else </span>{
+<a href=#398 id=398 data-nosnippet>398</a>            <span class="prelude-val">None
+<a href=#399 id=399 data-nosnippet>399</a>        </span>}
+<a href=#400 id=400 data-nosnippet>400</a>    }
+<a href=#401 id=401 data-nosnippet>401</a>
+<a href=#402 id=402 data-nosnippet>402</a>    <span class="attr">#[cfg(all(feature = <span class="string">"registry"</span>, feature = <span class="string">"std"</span>))]
+<a href=#403 id=403 data-nosnippet>403</a>    </span><span class="kw">fn </span>is_enabled_inner(<span class="kw-2">&amp;</span><span class="self">self</span>, span: <span class="kw-2">&amp;</span>span::Id, filter: FilterId) -&gt; <span class="prelude-ty">Option</span>&lt;bool&gt;
+<a href=#404 id=404 data-nosnippet>404</a>    <span class="kw">where
+<a href=#405 id=405 data-nosnippet>405</a>        </span>S: <span class="kw">for</span>&lt;<span class="lifetime">'lookup</span>&gt; LookupSpan&lt;<span class="lifetime">'lookup</span>&gt;,
+<a href=#406 id=406 data-nosnippet>406</a>    {
+<a href=#407 id=407 data-nosnippet>407</a>        <span class="prelude-val">Some</span>(<span class="self">self</span>.span(span)<span class="question-mark">?</span>.is_enabled_for(filter))
+<a href=#408 id=408 data-nosnippet>408</a>    }
+<a href=#409 id=409 data-nosnippet>409</a>}
+<a href=#410 id=410 data-nosnippet>410</a>
+<a href=#411 id=411 data-nosnippet>411</a><span class="kw">impl</span>&lt;S&gt; Context&lt;<span class="lifetime">'_</span>, S&gt; {
+<a href=#412 id=412 data-nosnippet>412</a>    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>none() -&gt; <span class="self">Self </span>{
+<a href=#413 id=413 data-nosnippet>413</a>        <span class="self">Self </span>{
+<a href=#414 id=414 data-nosnippet>414</a>            subscriber: <span class="prelude-val">None</span>,
+<a href=#415 id=415 data-nosnippet>415</a>
+<a href=#416 id=416 data-nosnippet>416</a>            <span class="attr">#[cfg(feature = <span class="string">"registry"</span>)]
+<a href=#417 id=417 data-nosnippet>417</a>            </span>filter: FilterId::none(),
+<a href=#418 id=418 data-nosnippet>418</a>        }
+<a href=#419 id=419 data-nosnippet>419</a>    }
+<a href=#420 id=420 data-nosnippet>420</a>}
+<a href=#421 id=421 data-nosnippet>421</a>
+<a href=#422 id=422 data-nosnippet>422</a><span class="kw">impl</span>&lt;S&gt; Clone <span class="kw">for </span>Context&lt;<span class="lifetime">'_</span>, S&gt; {
+<a href=#423 id=423 data-nosnippet>423</a>    <span class="attr">#[inline]
+<a href=#424 id=424 data-nosnippet>424</a>    </span><span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+<a href=#425 id=425 data-nosnippet>425</a>        <span class="kw">let </span>subscriber = <span class="self">self</span>.subscriber.as_ref().copied();
+<a href=#426 id=426 data-nosnippet>426</a>        Context {
+<a href=#427 id=427 data-nosnippet>427</a>            subscriber,
+<a href=#428 id=428 data-nosnippet>428</a>
+<a href=#429 id=429 data-nosnippet>429</a>            <span class="attr">#[cfg(all(feature = <span class="string">"registry"</span>, feature = <span class="string">"std"</span>))]
+<a href=#430 id=430 data-nosnippet>430</a>            </span>filter: <span class="self">self</span>.filter,
+<a href=#431 id=431 data-nosnippet>431</a>        }
+<a href=#432 id=432 data-nosnippet>432</a>    }
+<a href=#433 id=433 data-nosnippet>433</a>}</code></pre></div></section></main></body></html>

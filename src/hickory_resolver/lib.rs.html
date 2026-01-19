@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hickory-resolver-0.24.1/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="hickory_resolver" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">hickory_resolver/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2015-2017 Benjamin Fry &lt;benjaminfry@me.com&gt;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hickory-resolver-0.25.2/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="hickory_resolver" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">hickory_resolver/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2015-2017 Benjamin Fry &lt;benjaminfry@me.com&gt;
 <a href=#2 id=2 data-nosnippet>2</a>//
 <a href=#3 id=3 data-nosnippet>3</a>// Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or
 <a href=#4 id=4 data-nosnippet>4</a>// https://apache.org/licenses/LICENSE-2.0&gt; or the MIT license &lt;LICENSE-MIT or
@@ -17,301 +17,225 @@
 <a href=#17 id=17 data-nosnippet>17</a>//! using an FQDN during lookup), dual-stack IPv4/IPv6 lookups, performing chained CNAME lookups,
 <a href=#18 id=18 data-nosnippet>18</a>//! and features connection metric tracking for attempting to pick the best upstream DNS resolver.
 <a href=#19 id=19 data-nosnippet>19</a>//!
-<a href=#20 id=20 data-nosnippet>20</a>//! There are two types for performing DNS queries, [`Resolver`] and [`AsyncResolver`]. `Resolver`
-<a href=#21 id=21 data-nosnippet>21</a>//! is the easiest to work with, it is a wrapper around [`AsyncResolver`]. `AsyncResolver` is a
-<a href=#22 id=22 data-nosnippet>22</a>//! `Tokio` based async resolver, and can be used inside any `Tokio` based system.
-<a href=#23 id=23 data-nosnippet>23</a>//!
-<a href=#24 id=24 data-nosnippet>24</a>//! This as best as possible attempts to abide by the DNS RFCs, please file issues at
-<a href=#25 id=25 data-nosnippet>25</a>//! &lt;https://github.com/hickory-dns/hickory-dns&gt;.
+<a href=#20 id=20 data-nosnippet>20</a>//! This as best as possible attempts to abide by the DNS RFCs, please file issues at
+<a href=#21 id=21 data-nosnippet>21</a>//! &lt;https://github.com/hickory-dns/hickory-dns&gt;.
+<a href=#22 id=22 data-nosnippet>22</a>//!
+<a href=#23 id=23 data-nosnippet>23</a>//! # Usage
+<a href=#24 id=24 data-nosnippet>24</a>//!
+<a href=#25 id=25 data-nosnippet>25</a>//! ## Declare dependency
 <a href=#26 id=26 data-nosnippet>26</a>//!
-<a href=#27 id=27 data-nosnippet>27</a>//! # Usage
-<a href=#28 id=28 data-nosnippet>28</a>//!
-<a href=#29 id=29 data-nosnippet>29</a>//! ## Declare dependency
-<a href=#30 id=30 data-nosnippet>30</a>//!
-<a href=#31 id=31 data-nosnippet>31</a>//! ```toml
-<a href=#32 id=32 data-nosnippet>32</a>//! [dependency]
-<a href=#33 id=33 data-nosnippet>33</a>//! hickory-resolver = "*"
-<a href=#34 id=34 data-nosnippet>34</a>//! ```
-<a href=#35 id=35 data-nosnippet>35</a>//!
-<a href=#36 id=36 data-nosnippet>36</a>//! ## Using the Synchronous Resolver
+<a href=#27 id=27 data-nosnippet>27</a>//! ```toml
+<a href=#28 id=28 data-nosnippet>28</a>//! [dependency]
+<a href=#29 id=29 data-nosnippet>29</a>//! hickory-resolver = "*"
+<a href=#30 id=30 data-nosnippet>30</a>//! ```
+<a href=#31 id=31 data-nosnippet>31</a>//!
+<a href=#32 id=32 data-nosnippet>32</a>//! ## Using the host system config
+<a href=#33 id=33 data-nosnippet>33</a>//!
+<a href=#34 id=34 data-nosnippet>34</a>//! On Unix systems, the `/etc/resolv.conf` can be used for configuration. Not all options
+<a href=#35 id=35 data-nosnippet>35</a>//! specified in the host systems `resolv.conf` are applicable or compatible with this software. In
+<a href=#36 id=36 data-nosnippet>36</a>//! addition there may be additional options supported which the host system does not. Example:
 <a href=#37 id=37 data-nosnippet>37</a>//!
-<a href=#38 id=38 data-nosnippet>38</a>//! This uses the default configuration, which sets the [Google Public
-<a href=#39 id=39 data-nosnippet>39</a>//! DNS](https://developers.google.com/speed/public-dns/) as the upstream resolvers. Please see
-<a href=#40 id=40 data-nosnippet>40</a>//! their [privacy statement](https://developers.google.com/speed/public-dns/privacy) for important
-<a href=#41 id=41 data-nosnippet>41</a>//! information about what they track, many ISP's track similar information in DNS.
-<a href=#42 id=42 data-nosnippet>42</a>//!
-<a href=#43 id=43 data-nosnippet>43</a>//! ```rust
-<a href=#44 id=44 data-nosnippet>44</a>//! # fn main() {
-<a href=#45 id=45 data-nosnippet>45</a>//! # #[cfg(feature = "tokio-runtime")]
-<a href=#46 id=46 data-nosnippet>46</a>//! # {
-<a href=#47 id=47 data-nosnippet>47</a>//! use std::net::*;
-<a href=#48 id=48 data-nosnippet>48</a>//! use hickory_resolver::Resolver;
-<a href=#49 id=49 data-nosnippet>49</a>//! use hickory_resolver::config::*;
-<a href=#50 id=50 data-nosnippet>50</a>//!
-<a href=#51 id=51 data-nosnippet>51</a>//! // Construct a new Resolver with default configuration options
-<a href=#52 id=52 data-nosnippet>52</a>//! let resolver = Resolver::new(ResolverConfig::default(), ResolverOpts::default()).unwrap();
+<a href=#38 id=38 data-nosnippet>38</a>//! ```rust,no_run
+<a href=#39 id=39 data-nosnippet>39</a>//! # #[tokio::main]
+<a href=#40 id=40 data-nosnippet>40</a>//! # async fn main() {
+<a href=#41 id=41 data-nosnippet>41</a>//! # #[cfg(feature = "tokio")]
+<a href=#42 id=42 data-nosnippet>42</a>//! # {
+<a href=#43 id=43 data-nosnippet>43</a>//! # use std::net::*;
+<a href=#44 id=44 data-nosnippet>44</a>//! # use hickory_resolver::Resolver;
+<a href=#45 id=45 data-nosnippet>45</a>//! // Use the host OS'es `/etc/resolv.conf`
+<a href=#46 id=46 data-nosnippet>46</a>//! # #[cfg(unix)]
+<a href=#47 id=47 data-nosnippet>47</a>//! let resolver = Resolver::builder_tokio().unwrap().build();
+<a href=#48 id=48 data-nosnippet>48</a>//! # #[cfg(unix)]
+<a href=#49 id=49 data-nosnippet>49</a>//! let response = resolver.lookup_ip("www.example.com.").await.unwrap();
+<a href=#50 id=50 data-nosnippet>50</a>//! # }
+<a href=#51 id=51 data-nosnippet>51</a>//! # }
+<a href=#52 id=52 data-nosnippet>52</a>//! ```
 <a href=#53 id=53 data-nosnippet>53</a>//!
-<a href=#54 id=54 data-nosnippet>54</a>//! // Lookup the IP addresses associated with a name.
-<a href=#55 id=55 data-nosnippet>55</a>//! // The final dot forces this to be an FQDN, otherwise the search rules as specified
-<a href=#56 id=56 data-nosnippet>56</a>//! //  in `ResolverOpts` will take effect. FQDN's are generally cheaper queries.
-<a href=#57 id=57 data-nosnippet>57</a>//! let response = resolver.lookup_ip("www.example.com.").unwrap();
-<a href=#58 id=58 data-nosnippet>58</a>//!
-<a href=#59 id=59 data-nosnippet>59</a>//! // There can be many addresses associated with the name,
-<a href=#60 id=60 data-nosnippet>60</a>//! //  this can return IPv4 and/or IPv6 addresses
-<a href=#61 id=61 data-nosnippet>61</a>//! let address = response.iter().next().expect("no addresses returned!");
-<a href=#62 id=62 data-nosnippet>62</a>//! if address.is_ipv4() {
-<a href=#63 id=63 data-nosnippet>63</a>//!     assert_eq!(address, IpAddr::V4(Ipv4Addr::new(93, 184, 216, 34)));
-<a href=#64 id=64 data-nosnippet>64</a>//! } else {
-<a href=#65 id=65 data-nosnippet>65</a>//!     assert_eq!(address, IpAddr::V6(Ipv6Addr::new(0x2606, 0x2800, 0x220, 0x1, 0x248, 0x1893, 0x25c8, 0x1946)));
-<a href=#66 id=66 data-nosnippet>66</a>//! }
-<a href=#67 id=67 data-nosnippet>67</a>//! # }
-<a href=#68 id=68 data-nosnippet>68</a>//! # }
-<a href=#69 id=69 data-nosnippet>69</a>//! ```
-<a href=#70 id=70 data-nosnippet>70</a>//!
-<a href=#71 id=71 data-nosnippet>71</a>//! ## Using the host system config
-<a href=#72 id=72 data-nosnippet>72</a>//!
-<a href=#73 id=73 data-nosnippet>73</a>//! On Unix systems, the `/etc/resolv.conf` can be used for configuration. Not all options
-<a href=#74 id=74 data-nosnippet>74</a>//! specified in the host systems `resolv.conf` are applicable or compatible with this software. In
-<a href=#75 id=75 data-nosnippet>75</a>//! addition there may be additional options supported which the host system does not. Example:
-<a href=#76 id=76 data-nosnippet>76</a>//!
-<a href=#77 id=77 data-nosnippet>77</a>//! ```rust,no_run
-<a href=#78 id=78 data-nosnippet>78</a>//! # fn main() {
-<a href=#79 id=79 data-nosnippet>79</a>//! # #[cfg(feature = "tokio-runtime")]
-<a href=#80 id=80 data-nosnippet>80</a>//! # {
-<a href=#81 id=81 data-nosnippet>81</a>//! # use std::net::*;
-<a href=#82 id=82 data-nosnippet>82</a>//! # use hickory_resolver::Resolver;
-<a href=#83 id=83 data-nosnippet>83</a>//! // Use the host OS'es `/etc/resolv.conf`
-<a href=#84 id=84 data-nosnippet>84</a>//! # #[cfg(unix)]
-<a href=#85 id=85 data-nosnippet>85</a>//! let resolver = Resolver::from_system_conf().unwrap();
-<a href=#86 id=86 data-nosnippet>86</a>//! # #[cfg(unix)]
-<a href=#87 id=87 data-nosnippet>87</a>//! let response = resolver.lookup_ip("www.example.com.").unwrap();
+<a href=#54 id=54 data-nosnippet>54</a>//! ## Using the Tokio/Async Resolver
+<a href=#55 id=55 data-nosnippet>55</a>//!
+<a href=#56 id=56 data-nosnippet>56</a>//! ```rust
+<a href=#57 id=57 data-nosnippet>57</a>//! # fn main() {
+<a href=#58 id=58 data-nosnippet>58</a>//! # #[cfg(feature = "tokio")]
+<a href=#59 id=59 data-nosnippet>59</a>//! # {
+<a href=#60 id=60 data-nosnippet>60</a>//! use std::net::*;
+<a href=#61 id=61 data-nosnippet>61</a>//! use tokio::runtime::Runtime;
+<a href=#62 id=62 data-nosnippet>62</a>//! use hickory_resolver::Resolver;
+<a href=#63 id=63 data-nosnippet>63</a>//! use hickory_resolver::name_server::TokioConnectionProvider;
+<a href=#64 id=64 data-nosnippet>64</a>//! use hickory_resolver::config::*;
+<a href=#65 id=65 data-nosnippet>65</a>//!
+<a href=#66 id=66 data-nosnippet>66</a>//! // We need a Tokio Runtime to run the resolver
+<a href=#67 id=67 data-nosnippet>67</a>//! //  this is responsible for running all Future tasks and registering interest in IO channels
+<a href=#68 id=68 data-nosnippet>68</a>//! let mut io_loop = Runtime::new().unwrap();
+<a href=#69 id=69 data-nosnippet>69</a>//!
+<a href=#70 id=70 data-nosnippet>70</a>//! // Construct a new Resolver with default configuration options
+<a href=#71 id=71 data-nosnippet>71</a>//! let resolver = Resolver::builder_with_config(
+<a href=#72 id=72 data-nosnippet>72</a>//!     ResolverConfig::default(),
+<a href=#73 id=73 data-nosnippet>73</a>//!     TokioConnectionProvider::default()
+<a href=#74 id=74 data-nosnippet>74</a>//! ).build();
+<a href=#75 id=75 data-nosnippet>75</a>//!
+<a href=#76 id=76 data-nosnippet>76</a>//! // Lookup the IP addresses associated with a name.
+<a href=#77 id=77 data-nosnippet>77</a>//! // This returns a future that will lookup the IP addresses, it must be run in the Core to
+<a href=#78 id=78 data-nosnippet>78</a>//! //  to get the actual result.
+<a href=#79 id=79 data-nosnippet>79</a>//! let lookup_future = resolver.lookup_ip("www.example.com.");
+<a href=#80 id=80 data-nosnippet>80</a>//!
+<a href=#81 id=81 data-nosnippet>81</a>//! // Run the lookup until it resolves or errors
+<a href=#82 id=82 data-nosnippet>82</a>//! let mut response = io_loop.block_on(lookup_future).unwrap();
+<a href=#83 id=83 data-nosnippet>83</a>//!
+<a href=#84 id=84 data-nosnippet>84</a>//! // There can be many addresses associated with the name,
+<a href=#85 id=85 data-nosnippet>85</a>//! //  this can return IPv4 and/or IPv6 addresses
+<a href=#86 id=86 data-nosnippet>86</a>//! let _address = response.iter().next().expect("no addresses returned!");
+<a href=#87 id=87 data-nosnippet>87</a>//! # }
 <a href=#88 id=88 data-nosnippet>88</a>//! # }
-<a href=#89 id=89 data-nosnippet>89</a>//! # }
-<a href=#90 id=90 data-nosnippet>90</a>//! ```
-<a href=#91 id=91 data-nosnippet>91</a>//!
-<a href=#92 id=92 data-nosnippet>92</a>//! ## Using the Tokio/Async Resolver
+<a href=#89 id=89 data-nosnippet>89</a>//! ```
+<a href=#90 id=90 data-nosnippet>90</a>//!
+<a href=#91 id=91 data-nosnippet>91</a>//! Generally after a lookup in an asynchronous context, there would probably be a connection made
+<a href=#92 id=92 data-nosnippet>92</a>//! to a server, for example:
 <a href=#93 id=93 data-nosnippet>93</a>//!
-<a href=#94 id=94 data-nosnippet>94</a>//! For more advanced asynchronous usage, the `AsyncResolver`] is integrated with Tokio. In fact,
-<a href=#95 id=95 data-nosnippet>95</a>//! the [`AsyncResolver`] is used by the synchronous Resolver for all lookups.
-<a href=#96 id=96 data-nosnippet>96</a>//!
-<a href=#97 id=97 data-nosnippet>97</a>//! ```rust
-<a href=#98 id=98 data-nosnippet>98</a>//! # fn main() {
-<a href=#99 id=99 data-nosnippet>99</a>//! # #[cfg(feature = "tokio-runtime")]
-<a href=#100 id=100 data-nosnippet>100</a>//! # {
-<a href=#101 id=101 data-nosnippet>101</a>//! use std::net::*;
-<a href=#102 id=102 data-nosnippet>102</a>//! use tokio::runtime::Runtime;
-<a href=#103 id=103 data-nosnippet>103</a>//! use hickory_resolver::TokioAsyncResolver;
-<a href=#104 id=104 data-nosnippet>104</a>//! use hickory_resolver::config::*;
-<a href=#105 id=105 data-nosnippet>105</a>//!
-<a href=#106 id=106 data-nosnippet>106</a>//! // We need a Tokio Runtime to run the resolver
-<a href=#107 id=107 data-nosnippet>107</a>//! //  this is responsible for running all Future tasks and registering interest in IO channels
-<a href=#108 id=108 data-nosnippet>108</a>//! let mut io_loop = Runtime::new().unwrap();
-<a href=#109 id=109 data-nosnippet>109</a>//!
-<a href=#110 id=110 data-nosnippet>110</a>//! // Construct a new Resolver with default configuration options
-<a href=#111 id=111 data-nosnippet>111</a>//! let resolver = io_loop.block_on(async {
-<a href=#112 id=112 data-nosnippet>112</a>//!     TokioAsyncResolver::tokio(
-<a href=#113 id=113 data-nosnippet>113</a>//!         ResolverConfig::default(),
-<a href=#114 id=114 data-nosnippet>114</a>//!         ResolverOpts::default())
-<a href=#115 id=115 data-nosnippet>115</a>//! });
-<a href=#116 id=116 data-nosnippet>116</a>//!
-<a href=#117 id=117 data-nosnippet>117</a>//! // Lookup the IP addresses associated with a name.
-<a href=#118 id=118 data-nosnippet>118</a>//! // This returns a future that will lookup the IP addresses, it must be run in the Core to
-<a href=#119 id=119 data-nosnippet>119</a>//! //  to get the actual result.
-<a href=#120 id=120 data-nosnippet>120</a>//! let lookup_future = resolver.lookup_ip("www.example.com.");
-<a href=#121 id=121 data-nosnippet>121</a>//!
-<a href=#122 id=122 data-nosnippet>122</a>//! // Run the lookup until it resolves or errors
-<a href=#123 id=123 data-nosnippet>123</a>//! let mut response = io_loop.block_on(lookup_future).unwrap();
-<a href=#124 id=124 data-nosnippet>124</a>//!
-<a href=#125 id=125 data-nosnippet>125</a>//! // There can be many addresses associated with the name,
-<a href=#126 id=126 data-nosnippet>126</a>//! //  this can return IPv4 and/or IPv6 addresses
-<a href=#127 id=127 data-nosnippet>127</a>//! let address = response.iter().next().expect("no addresses returned!");
-<a href=#128 id=128 data-nosnippet>128</a>//! if address.is_ipv4() {
-<a href=#129 id=129 data-nosnippet>129</a>//!     assert_eq!(address, IpAddr::V4(Ipv4Addr::new(93, 184, 216, 34)));
-<a href=#130 id=130 data-nosnippet>130</a>//! } else {
-<a href=#131 id=131 data-nosnippet>131</a>//!     assert_eq!(address, IpAddr::V6(Ipv6Addr::new(0x2606, 0x2800, 0x220, 0x1, 0x248, 0x1893, 0x25c8, 0x1946)));
-<a href=#132 id=132 data-nosnippet>132</a>//! }
-<a href=#133 id=133 data-nosnippet>133</a>//! # }
-<a href=#134 id=134 data-nosnippet>134</a>//! # }
-<a href=#135 id=135 data-nosnippet>135</a>//! ```
-<a href=#136 id=136 data-nosnippet>136</a>//!
-<a href=#137 id=137 data-nosnippet>137</a>//! Generally after a lookup in an asynchronous context, there would probably be a connection made
-<a href=#138 id=138 data-nosnippet>138</a>//! to a server, for example:
-<a href=#139 id=139 data-nosnippet>139</a>//!
-<a href=#140 id=140 data-nosnippet>140</a>//! ```rust,no_run
-<a href=#141 id=141 data-nosnippet>141</a>//! # fn main() {
-<a href=#142 id=142 data-nosnippet>142</a>//! # #[cfg(feature = "tokio-runtime")]
-<a href=#143 id=143 data-nosnippet>143</a>//! # {
-<a href=#144 id=144 data-nosnippet>144</a>//! # use std::net::*;
-<a href=#145 id=145 data-nosnippet>145</a>//! # use tokio::runtime::Runtime;
-<a href=#146 id=146 data-nosnippet>146</a>//! # use hickory_resolver::TokioAsyncResolver;
-<a href=#147 id=147 data-nosnippet>147</a>//! # use hickory_resolver::config::*;
-<a href=#148 id=148 data-nosnippet>148</a>//! # use futures_util::TryFutureExt;
-<a href=#149 id=149 data-nosnippet>149</a>//! #
-<a href=#150 id=150 data-nosnippet>150</a>//! # let mut io_loop = Runtime::new().unwrap();
-<a href=#151 id=151 data-nosnippet>151</a>//! #
-<a href=#152 id=152 data-nosnippet>152</a>//! # let resolver = io_loop.block_on(async {
-<a href=#153 id=153 data-nosnippet>153</a>//! #    TokioAsyncResolver::tokio(
-<a href=#154 id=154 data-nosnippet>154</a>//! #        ResolverConfig::default(),
-<a href=#155 id=155 data-nosnippet>155</a>//! #        ResolverOpts::default())
-<a href=#156 id=156 data-nosnippet>156</a>//! # });
-<a href=#157 id=157 data-nosnippet>157</a>//! #
-<a href=#158 id=158 data-nosnippet>158</a>//! let ips = io_loop.block_on(resolver.lookup_ip("www.example.com.")).unwrap();
-<a href=#159 id=159 data-nosnippet>159</a>//!
-<a href=#160 id=160 data-nosnippet>160</a>//! let result = io_loop.block_on(async {
-<a href=#161 id=161 data-nosnippet>161</a>//!     let ip = ips.iter().next().unwrap();
-<a href=#162 id=162 data-nosnippet>162</a>//!     TcpStream::connect((ip, 443))
-<a href=#163 id=163 data-nosnippet>163</a>//! })
-<a href=#164 id=164 data-nosnippet>164</a>//! .and_then(|conn| Ok(conn) /* do something with the connection... */)
-<a href=#165 id=165 data-nosnippet>165</a>//! .unwrap();
+<a href=#94 id=94 data-nosnippet>94</a>//! ```rust,no_run
+<a href=#95 id=95 data-nosnippet>95</a>//! # fn main() {
+<a href=#96 id=96 data-nosnippet>96</a>//! # #[cfg(feature = "tokio")]
+<a href=#97 id=97 data-nosnippet>97</a>//! # {
+<a href=#98 id=98 data-nosnippet>98</a>//! # use std::net::*;
+<a href=#99 id=99 data-nosnippet>99</a>//! # use tokio::runtime::Runtime;
+<a href=#100 id=100 data-nosnippet>100</a>//! # use hickory_resolver::Resolver;
+<a href=#101 id=101 data-nosnippet>101</a>//! # use hickory_resolver::name_server::TokioConnectionProvider;
+<a href=#102 id=102 data-nosnippet>102</a>//! # use hickory_resolver::config::*;
+<a href=#103 id=103 data-nosnippet>103</a>//! # use futures_util::TryFutureExt;
+<a href=#104 id=104 data-nosnippet>104</a>//! #
+<a href=#105 id=105 data-nosnippet>105</a>//! # let mut io_loop = Runtime::new().unwrap();
+<a href=#106 id=106 data-nosnippet>106</a>//! #
+<a href=#107 id=107 data-nosnippet>107</a>//! # let resolver = Resolver::builder_with_config(
+<a href=#108 id=108 data-nosnippet>108</a>//! #     ResolverConfig::default(),
+<a href=#109 id=109 data-nosnippet>109</a>//! #     TokioConnectionProvider::default()
+<a href=#110 id=110 data-nosnippet>110</a>//! # ).build();
+<a href=#111 id=111 data-nosnippet>111</a>//! #
+<a href=#112 id=112 data-nosnippet>112</a>//! let ips = io_loop.block_on(resolver.lookup_ip("www.example.com.")).unwrap();
+<a href=#113 id=113 data-nosnippet>113</a>//!
+<a href=#114 id=114 data-nosnippet>114</a>//! let result = io_loop.block_on(async {
+<a href=#115 id=115 data-nosnippet>115</a>//!     let ip = ips.iter().next().unwrap();
+<a href=#116 id=116 data-nosnippet>116</a>//!     TcpStream::connect((ip, 443))
+<a href=#117 id=117 data-nosnippet>117</a>//! })
+<a href=#118 id=118 data-nosnippet>118</a>//! .and_then(|conn| Ok(conn) /* do something with the connection... */)
+<a href=#119 id=119 data-nosnippet>119</a>//! .unwrap();
+<a href=#120 id=120 data-nosnippet>120</a>//! # }
+<a href=#121 id=121 data-nosnippet>121</a>//! # }
+<a href=#122 id=122 data-nosnippet>122</a>//! ```
+<a href=#123 id=123 data-nosnippet>123</a>//!
+<a href=#124 id=124 data-nosnippet>124</a>//! It's beyond the scope of these examples to show how to deal with connection failures and
+<a href=#125 id=125 data-nosnippet>125</a>//! looping etc. But if you wanted to say try a different address from the result set after a
+<a href=#126 id=126 data-nosnippet>126</a>//! connection failure, it will be necessary to create a type that implements the `Future` trait.
+<a href=#127 id=127 data-nosnippet>127</a>//! Inside the `Future::poll` method would be the place to implement a loop over the different IP
+<a href=#128 id=128 data-nosnippet>128</a>//! addresses.
+<a href=#129 id=129 data-nosnippet>129</a>//!
+<a href=#130 id=130 data-nosnippet>130</a>//! ## Optional protocol support
+<a href=#131 id=131 data-nosnippet>131</a>//!
+<a href=#132 id=132 data-nosnippet>132</a>//! The following DNS protocols are optionally supported:
+<a href=#133 id=133 data-nosnippet>133</a>//!
+<a href=#134 id=134 data-nosnippet>134</a>//! - Enable `tls` for DNS over TLS (DoT)
+<a href=#135 id=135 data-nosnippet>135</a>//! - Enable `https-rustls` for DNS over HTTP/2 (DoH)
+<a href=#136 id=136 data-nosnippet>136</a>//! - Enable `quic` for DNS over QUIC (DoQ)
+<a href=#137 id=137 data-nosnippet>137</a>//! - Enable `h3` for DNS over HTTP/3 (DoH3)
+<a href=#138 id=138 data-nosnippet>138</a>//!
+<a href=#139 id=139 data-nosnippet>139</a>//! ### Example
+<a href=#140 id=140 data-nosnippet>140</a>//!
+<a href=#141 id=141 data-nosnippet>141</a>//! Enable the TLS library through the dependency on `hickory-resolver`:
+<a href=#142 id=142 data-nosnippet>142</a>//!
+<a href=#143 id=143 data-nosnippet>143</a>//! ```toml
+<a href=#144 id=144 data-nosnippet>144</a>//! hickory-resolver = { version = "*", features = ["tls"] }
+<a href=#145 id=145 data-nosnippet>145</a>//! ```
+<a href=#146 id=146 data-nosnippet>146</a>//!
+<a href=#147 id=147 data-nosnippet>147</a>//! A default TLS configuration is available for Cloudflare's `1.1.1.1` DNS service (Quad9 as
+<a href=#148 id=148 data-nosnippet>148</a>//! well):
+<a href=#149 id=149 data-nosnippet>149</a>//!
+<a href=#150 id=150 data-nosnippet>150</a>//! ```rust,no_run
+<a href=#151 id=151 data-nosnippet>151</a>//! # fn main() {
+<a href=#152 id=152 data-nosnippet>152</a>//! # #[cfg(feature = "tokio")]
+<a href=#153 id=153 data-nosnippet>153</a>//! # {
+<a href=#154 id=154 data-nosnippet>154</a>//! use hickory_resolver::Resolver;
+<a href=#155 id=155 data-nosnippet>155</a>//! use hickory_resolver::name_server::TokioConnectionProvider;
+<a href=#156 id=156 data-nosnippet>156</a>//! use hickory_resolver::config::*;
+<a href=#157 id=157 data-nosnippet>157</a>//!
+<a href=#158 id=158 data-nosnippet>158</a>//! // Construct a new Resolver with default configuration options
+<a href=#159 id=159 data-nosnippet>159</a>//! # #[cfg(feature = "__tls")]
+<a href=#160 id=160 data-nosnippet>160</a>//! let mut resolver = Resolver::builder_with_config(
+<a href=#161 id=161 data-nosnippet>161</a>//!     ResolverConfig::cloudflare_tls(),
+<a href=#162 id=162 data-nosnippet>162</a>//!     TokioConnectionProvider::default(),
+<a href=#163 id=163 data-nosnippet>163</a>//! ).build();
+<a href=#164 id=164 data-nosnippet>164</a>//!
+<a href=#165 id=165 data-nosnippet>165</a>//! // see example above...
 <a href=#166 id=166 data-nosnippet>166</a>//! # }
 <a href=#167 id=167 data-nosnippet>167</a>//! # }
 <a href=#168 id=168 data-nosnippet>168</a>//! ```
 <a href=#169 id=169 data-nosnippet>169</a>//!
-<a href=#170 id=170 data-nosnippet>170</a>//! It's beyond the scope of these examples to show how to deal with connection failures and
-<a href=#171 id=171 data-nosnippet>171</a>//! looping etc. But if you wanted to say try a different address from the result set after a
-<a href=#172 id=172 data-nosnippet>172</a>//! connection failure, it will be necessary to create a type that implements the `Future` trait.
-<a href=#173 id=173 data-nosnippet>173</a>//! Inside the `Future::poll` method would be the place to implement a loop over the different IP
-<a href=#174 id=174 data-nosnippet>174</a>//! addresses.
-<a href=#175 id=175 data-nosnippet>175</a>//!
-<a href=#176 id=176 data-nosnippet>176</a>//! ## DNS-over-TLS and DNS-over-HTTPS
-<a href=#177 id=177 data-nosnippet>177</a>//!
-<a href=#178 id=178 data-nosnippet>178</a>//! DNS-over-TLS and DNS-over-HTTPS are supported in the Hickory DNS Resolver library. The underlying
-<a href=#179 id=179 data-nosnippet>179</a>//! implementations are available as addon libraries. *WARNING* The hickory-dns developers make no
-<a href=#180 id=180 data-nosnippet>180</a>//! claims on the security and/or privacy guarantees of this implementation.
-<a href=#181 id=181 data-nosnippet>181</a>//!
-<a href=#182 id=182 data-nosnippet>182</a>//! To use DNS-over-TLS one of the `dns-over-tls` features must be enabled at compile time. There
-<a href=#183 id=183 data-nosnippet>183</a>//! are three: `dns-over-openssl`, `dns-over-native-tls`, and `dns-over-rustls`. For DNS-over-HTTPS
-<a href=#184 id=184 data-nosnippet>184</a>//! only rustls is supported with the `dns-over-https-rustls`, this implicitly enables support for
-<a href=#185 id=185 data-nosnippet>185</a>//! DNS-over-TLS as well. The reason for each is to make the Hickory DNS libraries flexible for
-<a href=#186 id=186 data-nosnippet>186</a>//! different deployments, and/or security concerns. The easiest to use will generally be
-<a href=#187 id=187 data-nosnippet>187</a>//! `dns-over-rustls` which utilizes the `*ring*` Rust cryptography library (a rework of the
-<a href=#188 id=188 data-nosnippet>188</a>//! `boringssl` project), this should compile and be usable on most ARM and x86 platforms.
-<a href=#189 id=189 data-nosnippet>189</a>//! `dns-over-native-tls` will utilize the hosts TLS implementation where available or fallback to
-<a href=#190 id=190 data-nosnippet>190</a>//! `openssl` where not supported. `dns-over-openssl` will specify that `openssl` should be used
-<a href=#191 id=191 data-nosnippet>191</a>//! (which is a perfectly fine option if required). If more than one is specified, the precedence
-<a href=#192 id=192 data-nosnippet>192</a>//! will be in this order (i.e. only one can be used at a time) `dns-over-rustls`,
-<a href=#193 id=193 data-nosnippet>193</a>//! `dns-over-native-tls`, and then `dns-over-openssl`. **NOTICE** the Hickory DNS developers are not
-<a href=#194 id=194 data-nosnippet>194</a>//! responsible for any choice of library that does not meet required security requirements.
-<a href=#195 id=195 data-nosnippet>195</a>//!
-<a href=#196 id=196 data-nosnippet>196</a>//! ### Example
-<a href=#197 id=197 data-nosnippet>197</a>//!
-<a href=#198 id=198 data-nosnippet>198</a>//! Enable the TLS library through the dependency on `hickory-resolver`:
-<a href=#199 id=199 data-nosnippet>199</a>//!
-<a href=#200 id=200 data-nosnippet>200</a>//! ```toml
-<a href=#201 id=201 data-nosnippet>201</a>//! hickory-resolver = { version = "*", features = ["dns-over-rustls"] }
-<a href=#202 id=202 data-nosnippet>202</a>//! ```
-<a href=#203 id=203 data-nosnippet>203</a>//!
-<a href=#204 id=204 data-nosnippet>204</a>//! A default TLS configuration is available for Cloudflare's `1.1.1.1` DNS service (Quad9 as
-<a href=#205 id=205 data-nosnippet>205</a>//! well):
-<a href=#206 id=206 data-nosnippet>206</a>//!
-<a href=#207 id=207 data-nosnippet>207</a>//! ```rust,no_run
-<a href=#208 id=208 data-nosnippet>208</a>//! # fn main() {
-<a href=#209 id=209 data-nosnippet>209</a>//! # #[cfg(feature = "tokio-runtime")]
-<a href=#210 id=210 data-nosnippet>210</a>//! # {
-<a href=#211 id=211 data-nosnippet>211</a>//! use hickory_resolver::Resolver;
-<a href=#212 id=212 data-nosnippet>212</a>//! use hickory_resolver::config::*;
-<a href=#213 id=213 data-nosnippet>213</a>//!
-<a href=#214 id=214 data-nosnippet>214</a>//! // Construct a new Resolver with default configuration options
-<a href=#215 id=215 data-nosnippet>215</a>//! # #[cfg(feature = "dns-over-tls")]
-<a href=#216 id=216 data-nosnippet>216</a>//! let mut resolver = Resolver::new(ResolverConfig::cloudflare_tls(), ResolverOpts::default()).unwrap();
-<a href=#217 id=217 data-nosnippet>217</a>//!
-<a href=#218 id=218 data-nosnippet>218</a>//! // see example above...
-<a href=#219 id=219 data-nosnippet>219</a>//! # }
-<a href=#220 id=220 data-nosnippet>220</a>//! # }
-<a href=#221 id=221 data-nosnippet>221</a>//! ```
-<a href=#222 id=222 data-nosnippet>222</a>//!
-<a href=#223 id=223 data-nosnippet>223</a>//! ## mDNS (multicast DNS)
-<a href=#224 id=224 data-nosnippet>224</a>//!
-<a href=#225 id=225 data-nosnippet>225</a>//! Multicast DNS is an experimental feature in Hickory DNS at the moment. Its support on different
-<a href=#226 id=226 data-nosnippet>226</a>//! platforms is not yet ideal. Initial support is only for IPv4 mDNS, as there are some
-<a href=#227 id=227 data-nosnippet>227</a>//! complexities to figure out with IPv6. Once enabled, an mDNS `NameServer` will automatically be
-<a href=#228 id=228 data-nosnippet>228</a>//! added to the `Resolver` and used for any lookups performed in the `.local.` zone.
-<a href=#229 id=229 data-nosnippet>229</a>
-<a href=#230 id=230 data-nosnippet>230</a></span><span class="comment">// LIBRARY WARNINGS
-<a href=#231 id=231 data-nosnippet>231</a></span><span class="attr">#![warn(
-<a href=#232 id=232 data-nosnippet>232</a>    clippy::default_trait_access,
-<a href=#233 id=233 data-nosnippet>233</a>    clippy::dbg_macro,
-<a href=#234 id=234 data-nosnippet>234</a>    clippy::print_stdout,
-<a href=#235 id=235 data-nosnippet>235</a>    clippy::unimplemented,
-<a href=#236 id=236 data-nosnippet>236</a>    clippy::use_self,
-<a href=#237 id=237 data-nosnippet>237</a>    missing_copy_implementations,
-<a href=#238 id=238 data-nosnippet>238</a>    missing_docs,
-<a href=#239 id=239 data-nosnippet>239</a>    non_snake_case,
-<a href=#240 id=240 data-nosnippet>240</a>    non_upper_case_globals,
-<a href=#241 id=241 data-nosnippet>241</a>    rust_2018_idioms,
-<a href=#242 id=242 data-nosnippet>242</a>    unreachable_pub
-<a href=#243 id=243 data-nosnippet>243</a>)]
-<a href=#244 id=244 data-nosnippet>244</a>#![recursion_limit = <span class="string">"128"</span>]
-<a href=#245 id=245 data-nosnippet>245</a>#![allow(clippy::needless_doctest_main, clippy::single_component_path_imports)]
-<a href=#246 id=246 data-nosnippet>246</a>#![cfg_attr(docsrs, feature(doc_cfg))]
-<a href=#247 id=247 data-nosnippet>247</a>
-<a href=#248 id=248 data-nosnippet>248</a>#[cfg(feature = <span class="string">"dns-over-tls"</span>)]
-<a href=#249 id=249 data-nosnippet>249</a>#[macro_use]
-<a href=#250 id=250 data-nosnippet>250</a></span><span class="kw">extern crate </span>cfg_if;
-<a href=#251 id=251 data-nosnippet>251</a><span class="attr">#[cfg(feature = <span class="string">"serde-config"</span>)]
-<a href=#252 id=252 data-nosnippet>252</a>#[macro_use]
-<a href=#253 id=253 data-nosnippet>253</a></span><span class="kw">extern crate </span>serde;
-<a href=#254 id=254 data-nosnippet>254</a><span class="kw">pub extern crate </span>hickory_proto <span class="kw">as </span>proto;
-<a href=#255 id=255 data-nosnippet>255</a>
-<a href=#256 id=256 data-nosnippet>256</a><span class="kw">mod </span>async_resolver;
-<a href=#257 id=257 data-nosnippet>257</a><span class="kw">pub mod </span>caching_client;
-<a href=#258 id=258 data-nosnippet>258</a><span class="kw">pub mod </span>config;
-<a href=#259 id=259 data-nosnippet>259</a><span class="kw">pub mod </span>dns_lru;
-<a href=#260 id=260 data-nosnippet>260</a><span class="kw">pub mod </span>dns_sd;
-<a href=#261 id=261 data-nosnippet>261</a><span class="kw">pub mod </span>error;
-<a href=#262 id=262 data-nosnippet>262</a><span class="attr">#[cfg(feature = <span class="string">"dns-over-https"</span>)]
-<a href=#263 id=263 data-nosnippet>263</a></span><span class="kw">mod </span>h2;
-<a href=#264 id=264 data-nosnippet>264</a><span class="attr">#[cfg(feature = <span class="string">"dns-over-h3"</span>)]
-<a href=#265 id=265 data-nosnippet>265</a></span><span class="kw">mod </span>h3;
-<a href=#266 id=266 data-nosnippet>266</a><span class="kw">mod </span>hosts;
-<a href=#267 id=267 data-nosnippet>267</a><span class="kw">pub mod </span>lookup;
-<a href=#268 id=268 data-nosnippet>268</a><span class="kw">pub mod </span>lookup_ip;
-<a href=#269 id=269 data-nosnippet>269</a><span class="comment">// TODO: consider #[doc(hidden)]
-<a href=#270 id=270 data-nosnippet>270</a></span><span class="kw">pub mod </span>name_server;
-<a href=#271 id=271 data-nosnippet>271</a><span class="attr">#[cfg(feature = <span class="string">"dns-over-quic"</span>)]
-<a href=#272 id=272 data-nosnippet>272</a></span><span class="kw">mod </span>quic;
-<a href=#273 id=273 data-nosnippet>273</a><span class="attr">#[cfg(feature = <span class="string">"tokio-runtime"</span>)]
-<a href=#274 id=274 data-nosnippet>274</a></span><span class="kw">mod </span>resolver;
-<a href=#275 id=275 data-nosnippet>275</a><span class="kw">pub mod </span>system_conf;
-<a href=#276 id=276 data-nosnippet>276</a><span class="attr">#[cfg(feature = <span class="string">"dns-over-tls"</span>)]
-<a href=#277 id=277 data-nosnippet>277</a></span><span class="kw">mod </span>tls;
-<a href=#278 id=278 data-nosnippet>278</a>
-<a href=#279 id=279 data-nosnippet>279</a><span class="comment">// reexports from proto
-<a href=#280 id=280 data-nosnippet>280</a></span><span class="kw">pub use </span><span class="self">self</span>::proto::rr::{IntoName, Name, TryParseIp};
-<a href=#281 id=281 data-nosnippet>281</a>
-<a href=#282 id=282 data-nosnippet>282</a><span class="attr">#[cfg(feature = <span class="string">"testing"</span>)]
-<a href=#283 id=283 data-nosnippet>283</a>#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"testing"</span>)))]
-<a href=#284 id=284 data-nosnippet>284</a></span><span class="kw">pub use </span>async_resolver::testing;
-<a href=#285 id=285 data-nosnippet>285</a><span class="kw">pub use </span>async_resolver::AsyncResolver;
-<a href=#286 id=286 data-nosnippet>286</a><span class="attr">#[cfg(feature = <span class="string">"tokio-runtime"</span>)]
-<a href=#287 id=287 data-nosnippet>287</a>#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"tokio-runtime"</span>)))]
-<a href=#288 id=288 data-nosnippet>288</a></span><span class="kw">pub use </span>async_resolver::TokioAsyncResolver;
-<a href=#289 id=289 data-nosnippet>289</a><span class="kw">pub use </span>hosts::Hosts;
-<a href=#290 id=290 data-nosnippet>290</a><span class="attr">#[cfg(feature = <span class="string">"tokio-runtime"</span>)]
-<a href=#291 id=291 data-nosnippet>291</a>#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"tokio-runtime"</span>)))]
-<a href=#292 id=292 data-nosnippet>292</a></span><span class="kw">pub use </span>name_server::TokioHandle;
-<a href=#293 id=293 data-nosnippet>293</a><span class="attr">#[cfg(feature = <span class="string">"tokio-runtime"</span>)]
-<a href=#294 id=294 data-nosnippet>294</a>#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"tokio-runtime"</span>)))]
-<a href=#295 id=295 data-nosnippet>295</a></span><span class="kw">pub use </span>resolver::Resolver;
-<a href=#296 id=296 data-nosnippet>296</a>
-<a href=#297 id=297 data-nosnippet>297</a><span class="doccomment">/// This is an alias for [`AsyncResolver`], which replaced the type previously
-<a href=#298 id=298 data-nosnippet>298</a>/// called `ResolverFuture`.
-<a href=#299 id=299 data-nosnippet>299</a>///
-<a href=#300 id=300 data-nosnippet>300</a>/// # Note
-<a href=#301 id=301 data-nosnippet>301</a>///
-<a href=#302 id=302 data-nosnippet>302</a>/// For users of `ResolverFuture`, the return type for `ResolverFuture::new`
-<a href=#303 id=303 data-nosnippet>303</a>/// has changed since version 0.9 of `hickory-resolver`. It now returns
-<a href=#304 id=304 data-nosnippet>304</a>/// a tuple of an [`AsyncResolver`] _and_ a background future, which must
-<a href=#305 id=305 data-nosnippet>305</a>/// be spawned on a reactor before any lookup futures will run.
-<a href=#306 id=306 data-nosnippet>306</a>///
-<a href=#307 id=307 data-nosnippet>307</a>/// See the [`AsyncResolver`] documentation for more information on how to
-<a href=#308 id=308 data-nosnippet>308</a>/// use the background future.
-<a href=#309 id=309 data-nosnippet>309</a></span><span class="attr">#[deprecated(note = <span class="string">"use [`hickory_resolver::AsyncResolver`] instead"</span>)]
-<a href=#310 id=310 data-nosnippet>310</a>#[cfg(feature = <span class="string">"tokio-runtime"</span>)]
-<a href=#311 id=311 data-nosnippet>311</a>#[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"tokio-runtime"</span>)))]
-<a href=#312 id=312 data-nosnippet>312</a></span><span class="kw">pub type </span>ResolverFuture = TokioAsyncResolver;
-<a href=#313 id=313 data-nosnippet>313</a>
-<a href=#314 id=314 data-nosnippet>314</a><span class="doccomment">/// returns a version as specified in Cargo.toml
-<a href=#315 id=315 data-nosnippet>315</a></span><span class="kw">pub fn </span>version() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str {
-<a href=#316 id=316 data-nosnippet>316</a>    <span class="macro">env!</span>(<span class="string">"CARGO_PKG_VERSION"</span>)
-<a href=#317 id=317 data-nosnippet>317</a>}</code></pre></div></section></main></body></html>
+<a href=#170 id=170 data-nosnippet>170</a>//! ## mDNS (multicast DNS)
+<a href=#171 id=171 data-nosnippet>171</a>//!
+<a href=#172 id=172 data-nosnippet>172</a>//! Multicast DNS is an experimental feature in Hickory DNS at the moment. Its support on different
+<a href=#173 id=173 data-nosnippet>173</a>//! platforms is not yet ideal. Initial support is only for IPv4 mDNS, as there are some
+<a href=#174 id=174 data-nosnippet>174</a>//! complexities to figure out with IPv6. Once enabled, an mDNS `NameServer` will automatically be
+<a href=#175 id=175 data-nosnippet>175</a>//! added to the `Resolver` and used for any lookups performed in the `.local.` zone.
+<a href=#176 id=176 data-nosnippet>176</a>
+<a href=#177 id=177 data-nosnippet>177</a></span><span class="comment">// LIBRARY WARNINGS
+<a href=#178 id=178 data-nosnippet>178</a></span><span class="attr">#![warn(
+<a href=#179 id=179 data-nosnippet>179</a>    clippy::default_trait_access,
+<a href=#180 id=180 data-nosnippet>180</a>    clippy::dbg_macro,
+<a href=#181 id=181 data-nosnippet>181</a>    clippy::print_stdout,
+<a href=#182 id=182 data-nosnippet>182</a>    clippy::unimplemented,
+<a href=#183 id=183 data-nosnippet>183</a>    clippy::use_self,
+<a href=#184 id=184 data-nosnippet>184</a>    missing_copy_implementations,
+<a href=#185 id=185 data-nosnippet>185</a>    missing_docs,
+<a href=#186 id=186 data-nosnippet>186</a>    non_snake_case,
+<a href=#187 id=187 data-nosnippet>187</a>    non_upper_case_globals,
+<a href=#188 id=188 data-nosnippet>188</a>    rust_2018_idioms,
+<a href=#189 id=189 data-nosnippet>189</a>    unreachable_pub
+<a href=#190 id=190 data-nosnippet>190</a>)]
+<a href=#191 id=191 data-nosnippet>191</a>#![recursion_limit = <span class="string">"128"</span>]
+<a href=#192 id=192 data-nosnippet>192</a>#![allow(clippy::needless_doctest_main, clippy::single_component_path_imports)]
+<a href=#193 id=193 data-nosnippet>193</a>#![cfg_attr(docsrs, feature(doc_cfg, doc_auto_cfg))]
+<a href=#194 id=194 data-nosnippet>194</a>
+<a href=#195 id=195 data-nosnippet>195</a></span><span class="kw">pub use </span>hickory_proto <span class="kw">as </span>proto;
+<a href=#196 id=196 data-nosnippet>196</a><span class="comment">// reexports from proto
+<a href=#197 id=197 data-nosnippet>197</a></span><span class="kw">pub use </span>proto::rr::{IntoName, Name};
+<a href=#198 id=198 data-nosnippet>198</a>
+<a href=#199 id=199 data-nosnippet>199</a><span class="kw">pub mod </span>caching_client;
+<a href=#200 id=200 data-nosnippet>200</a><span class="kw">pub mod </span>config;
+<a href=#201 id=201 data-nosnippet>201</a><span class="kw">pub mod </span>dns_lru;
+<a href=#202 id=202 data-nosnippet>202</a><span class="kw">mod </span>error;
+<a href=#203 id=203 data-nosnippet>203</a><span class="kw">pub use </span>error::{ResolveError, ResolveErrorKind};
+<a href=#204 id=204 data-nosnippet>204</a><span class="attr">#[cfg(feature = <span class="string">"__https"</span>)]
+<a href=#205 id=205 data-nosnippet>205</a></span><span class="kw">mod </span>h2;
+<a href=#206 id=206 data-nosnippet>206</a><span class="attr">#[cfg(feature = <span class="string">"__h3"</span>)]
+<a href=#207 id=207 data-nosnippet>207</a></span><span class="kw">mod </span>h3;
+<a href=#208 id=208 data-nosnippet>208</a><span class="kw">mod </span>hosts;
+<a href=#209 id=209 data-nosnippet>209</a><span class="kw">pub use </span>hosts::Hosts;
+<a href=#210 id=210 data-nosnippet>210</a><span class="kw">pub mod </span>lookup;
+<a href=#211 id=211 data-nosnippet>211</a><span class="kw">pub mod </span>lookup_ip;
+<a href=#212 id=212 data-nosnippet>212</a><span class="comment">// TODO: consider #[doc(hidden)]
+<a href=#213 id=213 data-nosnippet>213</a></span><span class="kw">pub mod </span>name_server;
+<a href=#214 id=214 data-nosnippet>214</a><span class="attr">#[cfg(feature = <span class="string">"tokio"</span>)]
+<a href=#215 id=215 data-nosnippet>215</a></span><span class="kw">use </span>name_server::TokioConnectionProvider;
+<a href=#216 id=216 data-nosnippet>216</a><span class="attr">#[cfg(feature = <span class="string">"__quic"</span>)]
+<a href=#217 id=217 data-nosnippet>217</a></span><span class="kw">mod </span>quic;
+<a href=#218 id=218 data-nosnippet>218</a><span class="kw">mod </span>resolver;
+<a href=#219 id=219 data-nosnippet>219</a><span class="kw">pub use </span>resolver::LookupFuture;
+<a href=#220 id=220 data-nosnippet>220</a><span class="attr">#[cfg(feature = <span class="string">"tokio"</span>)]
+<a href=#221 id=221 data-nosnippet>221</a></span><span class="kw">pub use </span>resolver::TokioResolver;
+<a href=#222 id=222 data-nosnippet>222</a><span class="kw">pub use </span>resolver::{Resolver, ResolverBuilder};
+<a href=#223 id=223 data-nosnippet>223</a><span class="kw">pub mod </span>system_conf;
+<a href=#224 id=224 data-nosnippet>224</a><span class="attr">#[cfg(test)]
+<a href=#225 id=225 data-nosnippet>225</a></span><span class="kw">mod </span>tests;
+<a href=#226 id=226 data-nosnippet>226</a><span class="attr">#[cfg(feature = <span class="string">"__tls"</span>)]
+<a href=#227 id=227 data-nosnippet>227</a></span><span class="kw">mod </span>tls;
+<a href=#228 id=228 data-nosnippet>228</a>
+<a href=#229 id=229 data-nosnippet>229</a><span class="attr">#[doc(hidden)]
+<a href=#230 id=230 data-nosnippet>230</a>#[deprecated(since = <span class="string">"0.25.0"</span>, note = <span class="string">"use `Resolver` instead"</span>)]
+<a href=#231 id=231 data-nosnippet>231</a></span><span class="kw">pub type </span>AsyncResolver&lt;P&gt; = Resolver&lt;P&gt;;
+<a href=#232 id=232 data-nosnippet>232</a>
+<a href=#233 id=233 data-nosnippet>233</a><span class="attr">#[doc(hidden)]
+<a href=#234 id=234 data-nosnippet>234</a>#[deprecated(since = <span class="string">"0.25.0"</span>, note = <span class="string">"use `TokioResolver` instead"</span>)]
+<a href=#235 id=235 data-nosnippet>235</a>#[cfg(feature = <span class="string">"tokio"</span>)]
+<a href=#236 id=236 data-nosnippet>236</a></span><span class="kw">pub type </span>TokioAsyncResolver = Resolver&lt;TokioConnectionProvider&gt;;
+<a href=#237 id=237 data-nosnippet>237</a>
+<a href=#238 id=238 data-nosnippet>238</a><span class="doccomment">/// returns a version as specified in Cargo.toml
+<a href=#239 id=239 data-nosnippet>239</a></span><span class="kw">pub fn </span>version() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str {
+<a href=#240 id=240 data-nosnippet>240</a>    <span class="macro">env!</span>(<span class="string">"CARGO_PKG_VERSION"</span>)
+<a href=#241 id=241 data-nosnippet>241</a>}</code></pre></div></section></main></body></html>

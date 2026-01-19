@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["NEXT_OLDER_FP_FROM_FP_OFFSET","NEXT_OLDER_SP_FROM_FP_OFFSET"],"enum":["ThrowAction"],"fn":["assert_fp_is_aligned","compute_throw_action","get_next_older_pc_from_fp","get_stack_pointer","resume_to_exception_handler","visit_frames"],"struct":["ExceptionTable","ExceptionTableBuilder","Frame","UnwindHost"],"trait":["Unwind"]};

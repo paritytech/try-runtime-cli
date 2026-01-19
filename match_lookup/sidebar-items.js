@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"macro":["gen_ascii_match","gen_char_match"]};

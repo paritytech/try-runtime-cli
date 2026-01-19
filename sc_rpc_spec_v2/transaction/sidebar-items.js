@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["api","error","event","transaction","transaction_broadcast"]};
+window.SIDEBAR_ITEMS = {"mod":["api","error","event","transaction","transaction_broadcast"],"struct":["TransactionMetrics"]};

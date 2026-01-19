@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/fastrand-2.1.1/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fastrand" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="icon" href="https://raw.githubusercontent.com/smol-rs/smol/master/assets/images/logo_fullsize_transparent.png"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">fastrand/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! A simple and fast random number generator.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/fastrand-2.3.0/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="fastrand" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="icon" href="https://raw.githubusercontent.com/smol-rs/smol/master/assets/images/logo_fullsize_transparent.png"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">fastrand/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! A simple and fast random number generator.
 <a href=#2 id=2 data-nosnippet>2</a>//!
 <a href=#3 id=3 data-nosnippet>3</a>//! The implementation uses [Wyrand](https://github.com/wangyi-fudan/wyhash), a simple and fast
 <a href=#4 id=4 data-nosnippet>4</a>//! generator but **not** cryptographically secure.
@@ -32,7 +32,7 @@
 <a href=#32 id=32 data-nosnippet>32</a>//! Sample values from an array with `O(n)` complexity (`n` is the length of array):
 <a href=#33 id=33 data-nosnippet>33</a>//!
 <a href=#34 id=34 data-nosnippet>34</a>//! ```
-<a href=#35 id=35 data-nosnippet>35</a>//! fastrand::choose_multiple(vec![1, 4, 5].iter(), 2);
+<a href=#35 id=35 data-nosnippet>35</a>//! fastrand::choose_multiple([1, 4, 5], 2);
 <a href=#36 id=36 data-nosnippet>36</a>//! fastrand::choose_multiple(0..20, 12);
 <a href=#37 id=37 data-nosnippet>37</a>//! ```
 <a href=#38 id=38 data-nosnippet>38</a>//!
@@ -378,311 +378,312 @@
 <a href=#378 id=378 data-nosnippet>378</a>        f64::from_bits((<span class="number">1 </span>&lt;&lt; (b - <span class="number">2</span>)) - (<span class="number">1 </span>&lt;&lt; f) + (<span class="self">self</span>.u64(..) &gt;&gt; (b - f))) - <span class="number">1.0
 <a href=#379 id=379 data-nosnippet>379</a>    </span>}
 <a href=#380 id=380 data-nosnippet>380</a>
-<a href=#381 id=381 data-nosnippet>381</a>    <span class="doccomment">/// Collects `amount` values at random from the iterator into a vector.
+<a href=#381 id=381 data-nosnippet>381</a>    <span class="doccomment">/// Collects `amount` values at random from the iterable into a vector.
 <a href=#382 id=382 data-nosnippet>382</a>    ///
-<a href=#383 id=383 data-nosnippet>383</a>    /// The length of the returned vector equals `amount` unless the iterator
+<a href=#383 id=383 data-nosnippet>383</a>    /// The length of the returned vector equals `amount` unless the iterable
 <a href=#384 id=384 data-nosnippet>384</a>    /// contains insufficient elements, in which case it equals the number of
 <a href=#385 id=385 data-nosnippet>385</a>    /// elements available.
 <a href=#386 id=386 data-nosnippet>386</a>    ///
-<a href=#387 id=387 data-nosnippet>387</a>    /// Complexity is `O(n)` where `n` is the length of the iterator.
+<a href=#387 id=387 data-nosnippet>387</a>    /// Complexity is `O(n)` where `n` is the length of the iterable.
 <a href=#388 id=388 data-nosnippet>388</a>    </span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 <a href=#389 id=389 data-nosnippet>389</a>    #[cfg_attr(docsrs, doc(cfg(feature = <span class="string">"alloc"</span>)))]
-<a href=#390 id=390 data-nosnippet>390</a>    </span><span class="kw">pub fn </span>choose_multiple&lt;T: Iterator&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, <span class="kw-2">mut </span>source: T, amount: usize) -&gt; Vec&lt;T::Item&gt; {
+<a href=#390 id=390 data-nosnippet>390</a>    </span><span class="kw">pub fn </span>choose_multiple&lt;I: IntoIterator&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, source: I, amount: usize) -&gt; Vec&lt;I::Item&gt; {
 <a href=#391 id=391 data-nosnippet>391</a>        <span class="comment">// Adapted from: https://docs.rs/rand/latest/rand/seq/trait.IteratorRandom.html#method.choose_multiple
 <a href=#392 id=392 data-nosnippet>392</a>        </span><span class="kw">let </span><span class="kw-2">mut </span>reservoir = Vec::with_capacity(amount);
-<a href=#393 id=393 data-nosnippet>393</a>
-<a href=#394 id=394 data-nosnippet>394</a>        reservoir.extend(source.by_ref().take(amount));
-<a href=#395 id=395 data-nosnippet>395</a>
-<a href=#396 id=396 data-nosnippet>396</a>        <span class="comment">// Continue unless the iterator was exhausted
-<a href=#397 id=397 data-nosnippet>397</a>        //
-<a href=#398 id=398 data-nosnippet>398</a>        // note: this prevents iterators that "restart" from causing problems.
-<a href=#399 id=399 data-nosnippet>399</a>        // If the iterator stops once, then so do we.
-<a href=#400 id=400 data-nosnippet>400</a>        </span><span class="kw">if </span>reservoir.len() == amount {
-<a href=#401 id=401 data-nosnippet>401</a>            <span class="kw">for </span>(i, elem) <span class="kw">in </span>source.enumerate() {
-<a href=#402 id=402 data-nosnippet>402</a>                <span class="kw">let </span>end = i + <span class="number">1 </span>+ amount;
-<a href=#403 id=403 data-nosnippet>403</a>                <span class="kw">let </span>k = <span class="self">self</span>.usize(<span class="number">0</span>..end);
-<a href=#404 id=404 data-nosnippet>404</a>                <span class="kw">if let </span><span class="prelude-val">Some</span>(slot) = reservoir.get_mut(k) {
-<a href=#405 id=405 data-nosnippet>405</a>                    <span class="kw-2">*</span>slot = elem;
-<a href=#406 id=406 data-nosnippet>406</a>                }
-<a href=#407 id=407 data-nosnippet>407</a>            }
-<a href=#408 id=408 data-nosnippet>408</a>        } <span class="kw">else </span>{
-<a href=#409 id=409 data-nosnippet>409</a>            <span class="comment">// If less than one third of the `Vec` was used, reallocate
-<a href=#410 id=410 data-nosnippet>410</a>            // so that the unused space is not wasted. There is a corner
-<a href=#411 id=411 data-nosnippet>411</a>            // case where `amount` was much less than `self.len()`.
-<a href=#412 id=412 data-nosnippet>412</a>            </span><span class="kw">if </span>reservoir.capacity() &gt; <span class="number">3 </span>* reservoir.len() {
-<a href=#413 id=413 data-nosnippet>413</a>                reservoir.shrink_to_fit();
-<a href=#414 id=414 data-nosnippet>414</a>            }
-<a href=#415 id=415 data-nosnippet>415</a>        }
-<a href=#416 id=416 data-nosnippet>416</a>        reservoir
-<a href=#417 id=417 data-nosnippet>417</a>    }
-<a href=#418 id=418 data-nosnippet>418</a>
-<a href=#419 id=419 data-nosnippet>419</a>    <span class="macro">rng_integer!</span>(
-<a href=#420 id=420 data-nosnippet>420</a>        i8,
-<a href=#421 id=421 data-nosnippet>421</a>        u8,
-<a href=#422 id=422 data-nosnippet>422</a>        gen_u32,
-<a href=#423 id=423 data-nosnippet>423</a>        gen_mod_u32,
-<a href=#424 id=424 data-nosnippet>424</a>        <span class="string">"Generates a random `i8` in the given range."
-<a href=#425 id=425 data-nosnippet>425</a>    </span>);
-<a href=#426 id=426 data-nosnippet>426</a>
-<a href=#427 id=427 data-nosnippet>427</a>    <span class="macro">rng_integer!</span>(
-<a href=#428 id=428 data-nosnippet>428</a>        i16,
-<a href=#429 id=429 data-nosnippet>429</a>        u16,
-<a href=#430 id=430 data-nosnippet>430</a>        gen_u32,
-<a href=#431 id=431 data-nosnippet>431</a>        gen_mod_u32,
-<a href=#432 id=432 data-nosnippet>432</a>        <span class="string">"Generates a random `i16` in the given range."
-<a href=#433 id=433 data-nosnippet>433</a>    </span>);
-<a href=#434 id=434 data-nosnippet>434</a>
-<a href=#435 id=435 data-nosnippet>435</a>    <span class="macro">rng_integer!</span>(
-<a href=#436 id=436 data-nosnippet>436</a>        i32,
-<a href=#437 id=437 data-nosnippet>437</a>        u32,
-<a href=#438 id=438 data-nosnippet>438</a>        gen_u32,
-<a href=#439 id=439 data-nosnippet>439</a>        gen_mod_u32,
-<a href=#440 id=440 data-nosnippet>440</a>        <span class="string">"Generates a random `i32` in the given range."
-<a href=#441 id=441 data-nosnippet>441</a>    </span>);
-<a href=#442 id=442 data-nosnippet>442</a>
-<a href=#443 id=443 data-nosnippet>443</a>    <span class="macro">rng_integer!</span>(
-<a href=#444 id=444 data-nosnippet>444</a>        i64,
-<a href=#445 id=445 data-nosnippet>445</a>        u64,
-<a href=#446 id=446 data-nosnippet>446</a>        gen_u64,
-<a href=#447 id=447 data-nosnippet>447</a>        gen_mod_u64,
-<a href=#448 id=448 data-nosnippet>448</a>        <span class="string">"Generates a random `i64` in the given range."
-<a href=#449 id=449 data-nosnippet>449</a>    </span>);
-<a href=#450 id=450 data-nosnippet>450</a>
-<a href=#451 id=451 data-nosnippet>451</a>    <span class="macro">rng_integer!</span>(
-<a href=#452 id=452 data-nosnippet>452</a>        i128,
-<a href=#453 id=453 data-nosnippet>453</a>        u128,
-<a href=#454 id=454 data-nosnippet>454</a>        gen_u128,
-<a href=#455 id=455 data-nosnippet>455</a>        gen_mod_u128,
-<a href=#456 id=456 data-nosnippet>456</a>        <span class="string">"Generates a random `i128` in the given range."
-<a href=#457 id=457 data-nosnippet>457</a>    </span>);
-<a href=#458 id=458 data-nosnippet>458</a>
-<a href=#459 id=459 data-nosnippet>459</a>    <span class="attr">#[cfg(target_pointer_width = <span class="string">"16"</span>)]
-<a href=#460 id=460 data-nosnippet>460</a>    </span><span class="macro">rng_integer!</span>(
-<a href=#461 id=461 data-nosnippet>461</a>        isize,
-<a href=#462 id=462 data-nosnippet>462</a>        usize,
-<a href=#463 id=463 data-nosnippet>463</a>        gen_u32,
-<a href=#464 id=464 data-nosnippet>464</a>        gen_mod_u32,
-<a href=#465 id=465 data-nosnippet>465</a>        <span class="string">"Generates a random `isize` in the given range."
-<a href=#466 id=466 data-nosnippet>466</a>    </span>);
-<a href=#467 id=467 data-nosnippet>467</a>    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
-<a href=#468 id=468 data-nosnippet>468</a>    </span><span class="macro">rng_integer!</span>(
-<a href=#469 id=469 data-nosnippet>469</a>        isize,
-<a href=#470 id=470 data-nosnippet>470</a>        usize,
-<a href=#471 id=471 data-nosnippet>471</a>        gen_u32,
-<a href=#472 id=472 data-nosnippet>472</a>        gen_mod_u32,
-<a href=#473 id=473 data-nosnippet>473</a>        <span class="string">"Generates a random `isize` in the given range."
-<a href=#474 id=474 data-nosnippet>474</a>    </span>);
-<a href=#475 id=475 data-nosnippet>475</a>    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
-<a href=#476 id=476 data-nosnippet>476</a>    </span><span class="macro">rng_integer!</span>(
-<a href=#477 id=477 data-nosnippet>477</a>        isize,
-<a href=#478 id=478 data-nosnippet>478</a>        usize,
-<a href=#479 id=479 data-nosnippet>479</a>        gen_u64,
-<a href=#480 id=480 data-nosnippet>480</a>        gen_mod_u64,
-<a href=#481 id=481 data-nosnippet>481</a>        <span class="string">"Generates a random `isize` in the given range."
-<a href=#482 id=482 data-nosnippet>482</a>    </span>);
-<a href=#483 id=483 data-nosnippet>483</a>
-<a href=#484 id=484 data-nosnippet>484</a>    <span class="doccomment">/// Generates a random `char` in range a-z.
-<a href=#485 id=485 data-nosnippet>485</a>    </span><span class="attr">#[inline]
-<a href=#486 id=486 data-nosnippet>486</a>    </span><span class="kw">pub fn </span>lowercase(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; char {
-<a href=#487 id=487 data-nosnippet>487</a>        <span class="kw">const </span>CHARS: <span class="kw-2">&amp;</span>[u8] = <span class="string">b"abcdefghijklmnopqrstuvwxyz"</span>;
-<a href=#488 id=488 data-nosnippet>488</a>        <span class="kw-2">*</span><span class="self">self</span>.choice(CHARS).unwrap() <span class="kw">as </span>char
-<a href=#489 id=489 data-nosnippet>489</a>    }
-<a href=#490 id=490 data-nosnippet>490</a>
-<a href=#491 id=491 data-nosnippet>491</a>    <span class="doccomment">/// Initializes this generator with the given seed.
-<a href=#492 id=492 data-nosnippet>492</a>    </span><span class="attr">#[inline]
-<a href=#493 id=493 data-nosnippet>493</a>    </span><span class="kw">pub fn </span>seed(<span class="kw-2">&amp;mut </span><span class="self">self</span>, seed: u64) {
-<a href=#494 id=494 data-nosnippet>494</a>        <span class="self">self</span>.<span class="number">0 </span>= seed;
-<a href=#495 id=495 data-nosnippet>495</a>    }
-<a href=#496 id=496 data-nosnippet>496</a>
-<a href=#497 id=497 data-nosnippet>497</a>    <span class="doccomment">/// Gives back **current** seed that is being held by this generator.
-<a href=#498 id=498 data-nosnippet>498</a>    </span><span class="attr">#[inline]
-<a href=#499 id=499 data-nosnippet>499</a>    </span><span class="kw">pub fn </span>get_seed(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
-<a href=#500 id=500 data-nosnippet>500</a>        <span class="self">self</span>.<span class="number">0
-<a href=#501 id=501 data-nosnippet>501</a>    </span>}
-<a href=#502 id=502 data-nosnippet>502</a>
-<a href=#503 id=503 data-nosnippet>503</a>    <span class="doccomment">/// Choose an item from an iterator at random.
-<a href=#504 id=504 data-nosnippet>504</a>    ///
-<a href=#505 id=505 data-nosnippet>505</a>    /// This function may have an unexpected result if the `len()` property of the
-<a href=#506 id=506 data-nosnippet>506</a>    /// iterator does not match the actual number of items in the iterator. If
-<a href=#507 id=507 data-nosnippet>507</a>    /// the iterator is empty, this returns `None`.
-<a href=#508 id=508 data-nosnippet>508</a>    </span><span class="attr">#[inline]
-<a href=#509 id=509 data-nosnippet>509</a>    </span><span class="kw">pub fn </span>choice&lt;I&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, iter: I) -&gt; <span class="prelude-ty">Option</span>&lt;I::Item&gt;
-<a href=#510 id=510 data-nosnippet>510</a>    <span class="kw">where
-<a href=#511 id=511 data-nosnippet>511</a>        </span>I: IntoIterator,
-<a href=#512 id=512 data-nosnippet>512</a>        I::IntoIter: ExactSizeIterator,
-<a href=#513 id=513 data-nosnippet>513</a>    {
-<a href=#514 id=514 data-nosnippet>514</a>        <span class="kw">let </span><span class="kw-2">mut </span>iter = iter.into_iter();
-<a href=#515 id=515 data-nosnippet>515</a>
-<a href=#516 id=516 data-nosnippet>516</a>        <span class="comment">// Get the item at a random index.
-<a href=#517 id=517 data-nosnippet>517</a>        </span><span class="kw">let </span>len = iter.len();
-<a href=#518 id=518 data-nosnippet>518</a>        <span class="kw">if </span>len == <span class="number">0 </span>{
-<a href=#519 id=519 data-nosnippet>519</a>            <span class="kw">return </span><span class="prelude-val">None</span>;
-<a href=#520 id=520 data-nosnippet>520</a>        }
-<a href=#521 id=521 data-nosnippet>521</a>        <span class="kw">let </span>index = <span class="self">self</span>.usize(<span class="number">0</span>..len);
-<a href=#522 id=522 data-nosnippet>522</a>
-<a href=#523 id=523 data-nosnippet>523</a>        iter.nth(index)
-<a href=#524 id=524 data-nosnippet>524</a>    }
-<a href=#525 id=525 data-nosnippet>525</a>
-<a href=#526 id=526 data-nosnippet>526</a>    <span class="doccomment">/// Shuffles a slice randomly.
-<a href=#527 id=527 data-nosnippet>527</a>    </span><span class="attr">#[inline]
-<a href=#528 id=528 data-nosnippet>528</a>    </span><span class="kw">pub fn </span>shuffle&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[T]) {
-<a href=#529 id=529 data-nosnippet>529</a>        <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..slice.len() {
-<a href=#530 id=530 data-nosnippet>530</a>            slice.swap(i, <span class="self">self</span>.usize(..=i));
-<a href=#531 id=531 data-nosnippet>531</a>        }
-<a href=#532 id=532 data-nosnippet>532</a>    }
-<a href=#533 id=533 data-nosnippet>533</a>
-<a href=#534 id=534 data-nosnippet>534</a>    <span class="doccomment">/// Fill a byte slice with random data.
-<a href=#535 id=535 data-nosnippet>535</a>    </span><span class="attr">#[inline]
-<a href=#536 id=536 data-nosnippet>536</a>    </span><span class="kw">pub fn </span>fill(<span class="kw-2">&amp;mut </span><span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[u8]) {
-<a href=#537 id=537 data-nosnippet>537</a>        <span class="comment">// We fill the slice by chunks of 8 bytes, or one block of
-<a href=#538 id=538 data-nosnippet>538</a>        // WyRand output per new state.
-<a href=#539 id=539 data-nosnippet>539</a>        </span><span class="kw">let </span><span class="kw-2">mut </span>chunks = slice.chunks_exact_mut(core::mem::size_of::&lt;u64&gt;());
-<a href=#540 id=540 data-nosnippet>540</a>        <span class="kw">for </span>chunk <span class="kw">in </span>chunks.by_ref() {
-<a href=#541 id=541 data-nosnippet>541</a>            <span class="kw">let </span>n = <span class="self">self</span>.gen_u64().to_ne_bytes();
-<a href=#542 id=542 data-nosnippet>542</a>            <span class="comment">// Safe because the chunks are always 8 bytes exactly.
-<a href=#543 id=543 data-nosnippet>543</a>            </span>chunk.copy_from_slice(<span class="kw-2">&amp;</span>n);
-<a href=#544 id=544 data-nosnippet>544</a>        }
-<a href=#545 id=545 data-nosnippet>545</a>
-<a href=#546 id=546 data-nosnippet>546</a>        <span class="kw">let </span>remainder = chunks.into_remainder();
-<a href=#547 id=547 data-nosnippet>547</a>
-<a href=#548 id=548 data-nosnippet>548</a>        <span class="comment">// Any remainder will always be less than 8 bytes.
-<a href=#549 id=549 data-nosnippet>549</a>        </span><span class="kw">if </span>!remainder.is_empty() {
-<a href=#550 id=550 data-nosnippet>550</a>            <span class="comment">// Generate one last block of 8 bytes of entropy
-<a href=#551 id=551 data-nosnippet>551</a>            </span><span class="kw">let </span>n = <span class="self">self</span>.gen_u64().to_ne_bytes();
-<a href=#552 id=552 data-nosnippet>552</a>
-<a href=#553 id=553 data-nosnippet>553</a>            <span class="comment">// Use the remaining length to copy from block
-<a href=#554 id=554 data-nosnippet>554</a>            </span>remainder.copy_from_slice(<span class="kw-2">&amp;</span>n[..remainder.len()]);
-<a href=#555 id=555 data-nosnippet>555</a>        }
-<a href=#556 id=556 data-nosnippet>556</a>    }
-<a href=#557 id=557 data-nosnippet>557</a>
-<a href=#558 id=558 data-nosnippet>558</a>    <span class="macro">rng_integer!</span>(
-<a href=#559 id=559 data-nosnippet>559</a>        u8,
+<a href=#393 id=393 data-nosnippet>393</a>        <span class="kw">let </span><span class="kw-2">mut </span>iter = source.into_iter();
+<a href=#394 id=394 data-nosnippet>394</a>
+<a href=#395 id=395 data-nosnippet>395</a>        reservoir.extend(iter.by_ref().take(amount));
+<a href=#396 id=396 data-nosnippet>396</a>
+<a href=#397 id=397 data-nosnippet>397</a>        <span class="comment">// Continue unless the iterator was exhausted
+<a href=#398 id=398 data-nosnippet>398</a>        //
+<a href=#399 id=399 data-nosnippet>399</a>        // note: this prevents iterators that "restart" from causing problems.
+<a href=#400 id=400 data-nosnippet>400</a>        // If the iterator stops once, then so do we.
+<a href=#401 id=401 data-nosnippet>401</a>        </span><span class="kw">if </span>reservoir.len() == amount {
+<a href=#402 id=402 data-nosnippet>402</a>            <span class="kw">for </span>(i, elem) <span class="kw">in </span>iter.enumerate() {
+<a href=#403 id=403 data-nosnippet>403</a>                <span class="kw">let </span>end = i + <span class="number">1 </span>+ amount;
+<a href=#404 id=404 data-nosnippet>404</a>                <span class="kw">let </span>k = <span class="self">self</span>.usize(<span class="number">0</span>..end);
+<a href=#405 id=405 data-nosnippet>405</a>                <span class="kw">if let </span><span class="prelude-val">Some</span>(slot) = reservoir.get_mut(k) {
+<a href=#406 id=406 data-nosnippet>406</a>                    <span class="kw-2">*</span>slot = elem;
+<a href=#407 id=407 data-nosnippet>407</a>                }
+<a href=#408 id=408 data-nosnippet>408</a>            }
+<a href=#409 id=409 data-nosnippet>409</a>        } <span class="kw">else </span>{
+<a href=#410 id=410 data-nosnippet>410</a>            <span class="comment">// If less than one third of the `Vec` was used, reallocate
+<a href=#411 id=411 data-nosnippet>411</a>            // so that the unused space is not wasted. There is a corner
+<a href=#412 id=412 data-nosnippet>412</a>            // case where `amount` was much less than `self.len()`.
+<a href=#413 id=413 data-nosnippet>413</a>            </span><span class="kw">if </span>reservoir.capacity() &gt; <span class="number">3 </span>* reservoir.len() {
+<a href=#414 id=414 data-nosnippet>414</a>                reservoir.shrink_to_fit();
+<a href=#415 id=415 data-nosnippet>415</a>            }
+<a href=#416 id=416 data-nosnippet>416</a>        }
+<a href=#417 id=417 data-nosnippet>417</a>        reservoir
+<a href=#418 id=418 data-nosnippet>418</a>    }
+<a href=#419 id=419 data-nosnippet>419</a>
+<a href=#420 id=420 data-nosnippet>420</a>    <span class="macro">rng_integer!</span>(
+<a href=#421 id=421 data-nosnippet>421</a>        i8,
+<a href=#422 id=422 data-nosnippet>422</a>        u8,
+<a href=#423 id=423 data-nosnippet>423</a>        gen_u32,
+<a href=#424 id=424 data-nosnippet>424</a>        gen_mod_u32,
+<a href=#425 id=425 data-nosnippet>425</a>        <span class="string">"Generates a random `i8` in the given range."
+<a href=#426 id=426 data-nosnippet>426</a>    </span>);
+<a href=#427 id=427 data-nosnippet>427</a>
+<a href=#428 id=428 data-nosnippet>428</a>    <span class="macro">rng_integer!</span>(
+<a href=#429 id=429 data-nosnippet>429</a>        i16,
+<a href=#430 id=430 data-nosnippet>430</a>        u16,
+<a href=#431 id=431 data-nosnippet>431</a>        gen_u32,
+<a href=#432 id=432 data-nosnippet>432</a>        gen_mod_u32,
+<a href=#433 id=433 data-nosnippet>433</a>        <span class="string">"Generates a random `i16` in the given range."
+<a href=#434 id=434 data-nosnippet>434</a>    </span>);
+<a href=#435 id=435 data-nosnippet>435</a>
+<a href=#436 id=436 data-nosnippet>436</a>    <span class="macro">rng_integer!</span>(
+<a href=#437 id=437 data-nosnippet>437</a>        i32,
+<a href=#438 id=438 data-nosnippet>438</a>        u32,
+<a href=#439 id=439 data-nosnippet>439</a>        gen_u32,
+<a href=#440 id=440 data-nosnippet>440</a>        gen_mod_u32,
+<a href=#441 id=441 data-nosnippet>441</a>        <span class="string">"Generates a random `i32` in the given range."
+<a href=#442 id=442 data-nosnippet>442</a>    </span>);
+<a href=#443 id=443 data-nosnippet>443</a>
+<a href=#444 id=444 data-nosnippet>444</a>    <span class="macro">rng_integer!</span>(
+<a href=#445 id=445 data-nosnippet>445</a>        i64,
+<a href=#446 id=446 data-nosnippet>446</a>        u64,
+<a href=#447 id=447 data-nosnippet>447</a>        gen_u64,
+<a href=#448 id=448 data-nosnippet>448</a>        gen_mod_u64,
+<a href=#449 id=449 data-nosnippet>449</a>        <span class="string">"Generates a random `i64` in the given range."
+<a href=#450 id=450 data-nosnippet>450</a>    </span>);
+<a href=#451 id=451 data-nosnippet>451</a>
+<a href=#452 id=452 data-nosnippet>452</a>    <span class="macro">rng_integer!</span>(
+<a href=#453 id=453 data-nosnippet>453</a>        i128,
+<a href=#454 id=454 data-nosnippet>454</a>        u128,
+<a href=#455 id=455 data-nosnippet>455</a>        gen_u128,
+<a href=#456 id=456 data-nosnippet>456</a>        gen_mod_u128,
+<a href=#457 id=457 data-nosnippet>457</a>        <span class="string">"Generates a random `i128` in the given range."
+<a href=#458 id=458 data-nosnippet>458</a>    </span>);
+<a href=#459 id=459 data-nosnippet>459</a>
+<a href=#460 id=460 data-nosnippet>460</a>    <span class="attr">#[cfg(target_pointer_width = <span class="string">"16"</span>)]
+<a href=#461 id=461 data-nosnippet>461</a>    </span><span class="macro">rng_integer!</span>(
+<a href=#462 id=462 data-nosnippet>462</a>        isize,
+<a href=#463 id=463 data-nosnippet>463</a>        usize,
+<a href=#464 id=464 data-nosnippet>464</a>        gen_u32,
+<a href=#465 id=465 data-nosnippet>465</a>        gen_mod_u32,
+<a href=#466 id=466 data-nosnippet>466</a>        <span class="string">"Generates a random `isize` in the given range."
+<a href=#467 id=467 data-nosnippet>467</a>    </span>);
+<a href=#468 id=468 data-nosnippet>468</a>    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
+<a href=#469 id=469 data-nosnippet>469</a>    </span><span class="macro">rng_integer!</span>(
+<a href=#470 id=470 data-nosnippet>470</a>        isize,
+<a href=#471 id=471 data-nosnippet>471</a>        usize,
+<a href=#472 id=472 data-nosnippet>472</a>        gen_u32,
+<a href=#473 id=473 data-nosnippet>473</a>        gen_mod_u32,
+<a href=#474 id=474 data-nosnippet>474</a>        <span class="string">"Generates a random `isize` in the given range."
+<a href=#475 id=475 data-nosnippet>475</a>    </span>);
+<a href=#476 id=476 data-nosnippet>476</a>    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
+<a href=#477 id=477 data-nosnippet>477</a>    </span><span class="macro">rng_integer!</span>(
+<a href=#478 id=478 data-nosnippet>478</a>        isize,
+<a href=#479 id=479 data-nosnippet>479</a>        usize,
+<a href=#480 id=480 data-nosnippet>480</a>        gen_u64,
+<a href=#481 id=481 data-nosnippet>481</a>        gen_mod_u64,
+<a href=#482 id=482 data-nosnippet>482</a>        <span class="string">"Generates a random `isize` in the given range."
+<a href=#483 id=483 data-nosnippet>483</a>    </span>);
+<a href=#484 id=484 data-nosnippet>484</a>
+<a href=#485 id=485 data-nosnippet>485</a>    <span class="doccomment">/// Generates a random `char` in range a-z.
+<a href=#486 id=486 data-nosnippet>486</a>    </span><span class="attr">#[inline]
+<a href=#487 id=487 data-nosnippet>487</a>    </span><span class="kw">pub fn </span>lowercase(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; char {
+<a href=#488 id=488 data-nosnippet>488</a>        <span class="kw">const </span>CHARS: <span class="kw-2">&amp;</span>[u8] = <span class="string">b"abcdefghijklmnopqrstuvwxyz"</span>;
+<a href=#489 id=489 data-nosnippet>489</a>        <span class="kw-2">*</span><span class="self">self</span>.choice(CHARS).unwrap() <span class="kw">as </span>char
+<a href=#490 id=490 data-nosnippet>490</a>    }
+<a href=#491 id=491 data-nosnippet>491</a>
+<a href=#492 id=492 data-nosnippet>492</a>    <span class="doccomment">/// Initializes this generator with the given seed.
+<a href=#493 id=493 data-nosnippet>493</a>    </span><span class="attr">#[inline]
+<a href=#494 id=494 data-nosnippet>494</a>    </span><span class="kw">pub fn </span>seed(<span class="kw-2">&amp;mut </span><span class="self">self</span>, seed: u64) {
+<a href=#495 id=495 data-nosnippet>495</a>        <span class="self">self</span>.<span class="number">0 </span>= seed;
+<a href=#496 id=496 data-nosnippet>496</a>    }
+<a href=#497 id=497 data-nosnippet>497</a>
+<a href=#498 id=498 data-nosnippet>498</a>    <span class="doccomment">/// Gives back **current** seed that is being held by this generator.
+<a href=#499 id=499 data-nosnippet>499</a>    </span><span class="attr">#[inline]
+<a href=#500 id=500 data-nosnippet>500</a>    </span><span class="kw">pub fn </span>get_seed(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
+<a href=#501 id=501 data-nosnippet>501</a>        <span class="self">self</span>.<span class="number">0
+<a href=#502 id=502 data-nosnippet>502</a>    </span>}
+<a href=#503 id=503 data-nosnippet>503</a>
+<a href=#504 id=504 data-nosnippet>504</a>    <span class="doccomment">/// Choose an item from an iterator at random.
+<a href=#505 id=505 data-nosnippet>505</a>    ///
+<a href=#506 id=506 data-nosnippet>506</a>    /// This function may have an unexpected result if the `len()` property of the
+<a href=#507 id=507 data-nosnippet>507</a>    /// iterator does not match the actual number of items in the iterator. If
+<a href=#508 id=508 data-nosnippet>508</a>    /// the iterator is empty, this returns `None`.
+<a href=#509 id=509 data-nosnippet>509</a>    </span><span class="attr">#[inline]
+<a href=#510 id=510 data-nosnippet>510</a>    </span><span class="kw">pub fn </span>choice&lt;I&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, iter: I) -&gt; <span class="prelude-ty">Option</span>&lt;I::Item&gt;
+<a href=#511 id=511 data-nosnippet>511</a>    <span class="kw">where
+<a href=#512 id=512 data-nosnippet>512</a>        </span>I: IntoIterator,
+<a href=#513 id=513 data-nosnippet>513</a>        I::IntoIter: ExactSizeIterator,
+<a href=#514 id=514 data-nosnippet>514</a>    {
+<a href=#515 id=515 data-nosnippet>515</a>        <span class="kw">let </span><span class="kw-2">mut </span>iter = iter.into_iter();
+<a href=#516 id=516 data-nosnippet>516</a>
+<a href=#517 id=517 data-nosnippet>517</a>        <span class="comment">// Get the item at a random index.
+<a href=#518 id=518 data-nosnippet>518</a>        </span><span class="kw">let </span>len = iter.len();
+<a href=#519 id=519 data-nosnippet>519</a>        <span class="kw">if </span>len == <span class="number">0 </span>{
+<a href=#520 id=520 data-nosnippet>520</a>            <span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#521 id=521 data-nosnippet>521</a>        }
+<a href=#522 id=522 data-nosnippet>522</a>        <span class="kw">let </span>index = <span class="self">self</span>.usize(<span class="number">0</span>..len);
+<a href=#523 id=523 data-nosnippet>523</a>
+<a href=#524 id=524 data-nosnippet>524</a>        iter.nth(index)
+<a href=#525 id=525 data-nosnippet>525</a>    }
+<a href=#526 id=526 data-nosnippet>526</a>
+<a href=#527 id=527 data-nosnippet>527</a>    <span class="doccomment">/// Shuffles a slice randomly.
+<a href=#528 id=528 data-nosnippet>528</a>    </span><span class="attr">#[inline]
+<a href=#529 id=529 data-nosnippet>529</a>    </span><span class="kw">pub fn </span>shuffle&lt;T&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[T]) {
+<a href=#530 id=530 data-nosnippet>530</a>        <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..slice.len() {
+<a href=#531 id=531 data-nosnippet>531</a>            slice.swap(i, <span class="self">self</span>.usize(..=i));
+<a href=#532 id=532 data-nosnippet>532</a>        }
+<a href=#533 id=533 data-nosnippet>533</a>    }
+<a href=#534 id=534 data-nosnippet>534</a>
+<a href=#535 id=535 data-nosnippet>535</a>    <span class="doccomment">/// Fill a byte slice with random data.
+<a href=#536 id=536 data-nosnippet>536</a>    </span><span class="attr">#[inline]
+<a href=#537 id=537 data-nosnippet>537</a>    </span><span class="kw">pub fn </span>fill(<span class="kw-2">&amp;mut </span><span class="self">self</span>, slice: <span class="kw-2">&amp;mut </span>[u8]) {
+<a href=#538 id=538 data-nosnippet>538</a>        <span class="comment">// We fill the slice by chunks of 8 bytes, or one block of
+<a href=#539 id=539 data-nosnippet>539</a>        // WyRand output per new state.
+<a href=#540 id=540 data-nosnippet>540</a>        </span><span class="kw">let </span><span class="kw-2">mut </span>chunks = slice.chunks_exact_mut(core::mem::size_of::&lt;u64&gt;());
+<a href=#541 id=541 data-nosnippet>541</a>        <span class="kw">for </span>chunk <span class="kw">in </span>chunks.by_ref() {
+<a href=#542 id=542 data-nosnippet>542</a>            <span class="kw">let </span>n = <span class="self">self</span>.gen_u64().to_ne_bytes();
+<a href=#543 id=543 data-nosnippet>543</a>            <span class="comment">// Safe because the chunks are always 8 bytes exactly.
+<a href=#544 id=544 data-nosnippet>544</a>            </span>chunk.copy_from_slice(<span class="kw-2">&amp;</span>n);
+<a href=#545 id=545 data-nosnippet>545</a>        }
+<a href=#546 id=546 data-nosnippet>546</a>
+<a href=#547 id=547 data-nosnippet>547</a>        <span class="kw">let </span>remainder = chunks.into_remainder();
+<a href=#548 id=548 data-nosnippet>548</a>
+<a href=#549 id=549 data-nosnippet>549</a>        <span class="comment">// Any remainder will always be less than 8 bytes.
+<a href=#550 id=550 data-nosnippet>550</a>        </span><span class="kw">if </span>!remainder.is_empty() {
+<a href=#551 id=551 data-nosnippet>551</a>            <span class="comment">// Generate one last block of 8 bytes of entropy
+<a href=#552 id=552 data-nosnippet>552</a>            </span><span class="kw">let </span>n = <span class="self">self</span>.gen_u64().to_ne_bytes();
+<a href=#553 id=553 data-nosnippet>553</a>
+<a href=#554 id=554 data-nosnippet>554</a>            <span class="comment">// Use the remaining length to copy from block
+<a href=#555 id=555 data-nosnippet>555</a>            </span>remainder.copy_from_slice(<span class="kw-2">&amp;</span>n[..remainder.len()]);
+<a href=#556 id=556 data-nosnippet>556</a>        }
+<a href=#557 id=557 data-nosnippet>557</a>    }
+<a href=#558 id=558 data-nosnippet>558</a>
+<a href=#559 id=559 data-nosnippet>559</a>    <span class="macro">rng_integer!</span>(
 <a href=#560 id=560 data-nosnippet>560</a>        u8,
-<a href=#561 id=561 data-nosnippet>561</a>        gen_u32,
-<a href=#562 id=562 data-nosnippet>562</a>        gen_mod_u32,
-<a href=#563 id=563 data-nosnippet>563</a>        <span class="string">"Generates a random `u8` in the given range."
-<a href=#564 id=564 data-nosnippet>564</a>    </span>);
-<a href=#565 id=565 data-nosnippet>565</a>
-<a href=#566 id=566 data-nosnippet>566</a>    <span class="macro">rng_integer!</span>(
-<a href=#567 id=567 data-nosnippet>567</a>        u16,
+<a href=#561 id=561 data-nosnippet>561</a>        u8,
+<a href=#562 id=562 data-nosnippet>562</a>        gen_u32,
+<a href=#563 id=563 data-nosnippet>563</a>        gen_mod_u32,
+<a href=#564 id=564 data-nosnippet>564</a>        <span class="string">"Generates a random `u8` in the given range."
+<a href=#565 id=565 data-nosnippet>565</a>    </span>);
+<a href=#566 id=566 data-nosnippet>566</a>
+<a href=#567 id=567 data-nosnippet>567</a>    <span class="macro">rng_integer!</span>(
 <a href=#568 id=568 data-nosnippet>568</a>        u16,
-<a href=#569 id=569 data-nosnippet>569</a>        gen_u32,
-<a href=#570 id=570 data-nosnippet>570</a>        gen_mod_u32,
-<a href=#571 id=571 data-nosnippet>571</a>        <span class="string">"Generates a random `u16` in the given range."
-<a href=#572 id=572 data-nosnippet>572</a>    </span>);
-<a href=#573 id=573 data-nosnippet>573</a>
-<a href=#574 id=574 data-nosnippet>574</a>    <span class="macro">rng_integer!</span>(
-<a href=#575 id=575 data-nosnippet>575</a>        u32,
+<a href=#569 id=569 data-nosnippet>569</a>        u16,
+<a href=#570 id=570 data-nosnippet>570</a>        gen_u32,
+<a href=#571 id=571 data-nosnippet>571</a>        gen_mod_u32,
+<a href=#572 id=572 data-nosnippet>572</a>        <span class="string">"Generates a random `u16` in the given range."
+<a href=#573 id=573 data-nosnippet>573</a>    </span>);
+<a href=#574 id=574 data-nosnippet>574</a>
+<a href=#575 id=575 data-nosnippet>575</a>    <span class="macro">rng_integer!</span>(
 <a href=#576 id=576 data-nosnippet>576</a>        u32,
-<a href=#577 id=577 data-nosnippet>577</a>        gen_u32,
-<a href=#578 id=578 data-nosnippet>578</a>        gen_mod_u32,
-<a href=#579 id=579 data-nosnippet>579</a>        <span class="string">"Generates a random `u32` in the given range."
-<a href=#580 id=580 data-nosnippet>580</a>    </span>);
-<a href=#581 id=581 data-nosnippet>581</a>
-<a href=#582 id=582 data-nosnippet>582</a>    <span class="macro">rng_integer!</span>(
-<a href=#583 id=583 data-nosnippet>583</a>        u64,
+<a href=#577 id=577 data-nosnippet>577</a>        u32,
+<a href=#578 id=578 data-nosnippet>578</a>        gen_u32,
+<a href=#579 id=579 data-nosnippet>579</a>        gen_mod_u32,
+<a href=#580 id=580 data-nosnippet>580</a>        <span class="string">"Generates a random `u32` in the given range."
+<a href=#581 id=581 data-nosnippet>581</a>    </span>);
+<a href=#582 id=582 data-nosnippet>582</a>
+<a href=#583 id=583 data-nosnippet>583</a>    <span class="macro">rng_integer!</span>(
 <a href=#584 id=584 data-nosnippet>584</a>        u64,
-<a href=#585 id=585 data-nosnippet>585</a>        gen_u64,
-<a href=#586 id=586 data-nosnippet>586</a>        gen_mod_u64,
-<a href=#587 id=587 data-nosnippet>587</a>        <span class="string">"Generates a random `u64` in the given range."
-<a href=#588 id=588 data-nosnippet>588</a>    </span>);
-<a href=#589 id=589 data-nosnippet>589</a>
-<a href=#590 id=590 data-nosnippet>590</a>    <span class="macro">rng_integer!</span>(
-<a href=#591 id=591 data-nosnippet>591</a>        u128,
+<a href=#585 id=585 data-nosnippet>585</a>        u64,
+<a href=#586 id=586 data-nosnippet>586</a>        gen_u64,
+<a href=#587 id=587 data-nosnippet>587</a>        gen_mod_u64,
+<a href=#588 id=588 data-nosnippet>588</a>        <span class="string">"Generates a random `u64` in the given range."
+<a href=#589 id=589 data-nosnippet>589</a>    </span>);
+<a href=#590 id=590 data-nosnippet>590</a>
+<a href=#591 id=591 data-nosnippet>591</a>    <span class="macro">rng_integer!</span>(
 <a href=#592 id=592 data-nosnippet>592</a>        u128,
-<a href=#593 id=593 data-nosnippet>593</a>        gen_u128,
-<a href=#594 id=594 data-nosnippet>594</a>        gen_mod_u128,
-<a href=#595 id=595 data-nosnippet>595</a>        <span class="string">"Generates a random `u128` in the given range."
-<a href=#596 id=596 data-nosnippet>596</a>    </span>);
-<a href=#597 id=597 data-nosnippet>597</a>
-<a href=#598 id=598 data-nosnippet>598</a>    <span class="attr">#[cfg(target_pointer_width = <span class="string">"16"</span>)]
-<a href=#599 id=599 data-nosnippet>599</a>    </span><span class="macro">rng_integer!</span>(
-<a href=#600 id=600 data-nosnippet>600</a>        usize,
+<a href=#593 id=593 data-nosnippet>593</a>        u128,
+<a href=#594 id=594 data-nosnippet>594</a>        gen_u128,
+<a href=#595 id=595 data-nosnippet>595</a>        gen_mod_u128,
+<a href=#596 id=596 data-nosnippet>596</a>        <span class="string">"Generates a random `u128` in the given range."
+<a href=#597 id=597 data-nosnippet>597</a>    </span>);
+<a href=#598 id=598 data-nosnippet>598</a>
+<a href=#599 id=599 data-nosnippet>599</a>    <span class="attr">#[cfg(target_pointer_width = <span class="string">"16"</span>)]
+<a href=#600 id=600 data-nosnippet>600</a>    </span><span class="macro">rng_integer!</span>(
 <a href=#601 id=601 data-nosnippet>601</a>        usize,
-<a href=#602 id=602 data-nosnippet>602</a>        gen_u32,
-<a href=#603 id=603 data-nosnippet>603</a>        gen_mod_u32,
-<a href=#604 id=604 data-nosnippet>604</a>        <span class="string">"Generates a random `usize` in the given range."
-<a href=#605 id=605 data-nosnippet>605</a>    </span>);
-<a href=#606 id=606 data-nosnippet>606</a>    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
-<a href=#607 id=607 data-nosnippet>607</a>    </span><span class="macro">rng_integer!</span>(
-<a href=#608 id=608 data-nosnippet>608</a>        usize,
+<a href=#602 id=602 data-nosnippet>602</a>        usize,
+<a href=#603 id=603 data-nosnippet>603</a>        gen_u32,
+<a href=#604 id=604 data-nosnippet>604</a>        gen_mod_u32,
+<a href=#605 id=605 data-nosnippet>605</a>        <span class="string">"Generates a random `usize` in the given range."
+<a href=#606 id=606 data-nosnippet>606</a>    </span>);
+<a href=#607 id=607 data-nosnippet>607</a>    <span class="attr">#[cfg(target_pointer_width = <span class="string">"32"</span>)]
+<a href=#608 id=608 data-nosnippet>608</a>    </span><span class="macro">rng_integer!</span>(
 <a href=#609 id=609 data-nosnippet>609</a>        usize,
-<a href=#610 id=610 data-nosnippet>610</a>        gen_u32,
-<a href=#611 id=611 data-nosnippet>611</a>        gen_mod_u32,
-<a href=#612 id=612 data-nosnippet>612</a>        <span class="string">"Generates a random `usize` in the given range."
-<a href=#613 id=613 data-nosnippet>613</a>    </span>);
-<a href=#614 id=614 data-nosnippet>614</a>    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
-<a href=#615 id=615 data-nosnippet>615</a>    </span><span class="macro">rng_integer!</span>(
-<a href=#616 id=616 data-nosnippet>616</a>        usize,
+<a href=#610 id=610 data-nosnippet>610</a>        usize,
+<a href=#611 id=611 data-nosnippet>611</a>        gen_u32,
+<a href=#612 id=612 data-nosnippet>612</a>        gen_mod_u32,
+<a href=#613 id=613 data-nosnippet>613</a>        <span class="string">"Generates a random `usize` in the given range."
+<a href=#614 id=614 data-nosnippet>614</a>    </span>);
+<a href=#615 id=615 data-nosnippet>615</a>    <span class="attr">#[cfg(target_pointer_width = <span class="string">"64"</span>)]
+<a href=#616 id=616 data-nosnippet>616</a>    </span><span class="macro">rng_integer!</span>(
 <a href=#617 id=617 data-nosnippet>617</a>        usize,
-<a href=#618 id=618 data-nosnippet>618</a>        gen_u64,
-<a href=#619 id=619 data-nosnippet>619</a>        gen_mod_u64,
-<a href=#620 id=620 data-nosnippet>620</a>        <span class="string">"Generates a random `usize` in the given range."
-<a href=#621 id=621 data-nosnippet>621</a>    </span>);
-<a href=#622 id=622 data-nosnippet>622</a>
-<a href=#623 id=623 data-nosnippet>623</a>    <span class="doccomment">/// Generates a random `char` in range A-Z.
-<a href=#624 id=624 data-nosnippet>624</a>    </span><span class="attr">#[inline]
-<a href=#625 id=625 data-nosnippet>625</a>    </span><span class="kw">pub fn </span>uppercase(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; char {
-<a href=#626 id=626 data-nosnippet>626</a>        <span class="kw">const </span>CHARS: <span class="kw-2">&amp;</span>[u8] = <span class="string">b"ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span>;
-<a href=#627 id=627 data-nosnippet>627</a>        <span class="kw-2">*</span><span class="self">self</span>.choice(CHARS).unwrap() <span class="kw">as </span>char
-<a href=#628 id=628 data-nosnippet>628</a>    }
-<a href=#629 id=629 data-nosnippet>629</a>
-<a href=#630 id=630 data-nosnippet>630</a>    <span class="doccomment">/// Generates a random `char` in the given range.
-<a href=#631 id=631 data-nosnippet>631</a>    ///
-<a href=#632 id=632 data-nosnippet>632</a>    /// Panics if the range is empty.
-<a href=#633 id=633 data-nosnippet>633</a>    </span><span class="attr">#[inline]
-<a href=#634 id=634 data-nosnippet>634</a>    </span><span class="kw">pub fn </span>char(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: <span class="kw">impl </span>RangeBounds&lt;char&gt;) -&gt; char {
-<a href=#635 id=635 data-nosnippet>635</a>        <span class="kw">let </span>panic_empty_range = || {
-<a href=#636 id=636 data-nosnippet>636</a>            <span class="macro">panic!</span>(
-<a href=#637 id=637 data-nosnippet>637</a>                <span class="string">"empty range: {:?}..{:?}"</span>,
-<a href=#638 id=638 data-nosnippet>638</a>                range.start_bound(),
-<a href=#639 id=639 data-nosnippet>639</a>                range.end_bound()
-<a href=#640 id=640 data-nosnippet>640</a>            )
-<a href=#641 id=641 data-nosnippet>641</a>        };
-<a href=#642 id=642 data-nosnippet>642</a>
-<a href=#643 id=643 data-nosnippet>643</a>        <span class="kw">let </span>surrogate_start = <span class="number">0xd800u32</span>;
-<a href=#644 id=644 data-nosnippet>644</a>        <span class="kw">let </span>surrogate_len = <span class="number">0x800u32</span>;
-<a href=#645 id=645 data-nosnippet>645</a>
-<a href=#646 id=646 data-nosnippet>646</a>        <span class="kw">let </span>low = <span class="kw">match </span>range.start_bound() {
-<a href=#647 id=647 data-nosnippet>647</a>            Bound::Unbounded =&gt; <span class="number">0u8 </span><span class="kw">as </span>char,
-<a href=#648 id=648 data-nosnippet>648</a>            Bound::Included(<span class="kw-2">&amp;</span>x) =&gt; x,
-<a href=#649 id=649 data-nosnippet>649</a>            Bound::Excluded(<span class="kw-2">&amp;</span>x) =&gt; {
-<a href=#650 id=650 data-nosnippet>650</a>                <span class="kw">let </span>scalar = <span class="kw">if </span>x <span class="kw">as </span>u32 == surrogate_start - <span class="number">1 </span>{
-<a href=#651 id=651 data-nosnippet>651</a>                    surrogate_start + surrogate_len
-<a href=#652 id=652 data-nosnippet>652</a>                } <span class="kw">else </span>{
-<a href=#653 id=653 data-nosnippet>653</a>                    x <span class="kw">as </span>u32 + <span class="number">1
-<a href=#654 id=654 data-nosnippet>654</a>                </span>};
-<a href=#655 id=655 data-nosnippet>655</a>                char::try_from(scalar).unwrap_or_else(|<span class="kw">_</span>| panic_empty_range())
-<a href=#656 id=656 data-nosnippet>656</a>            }
-<a href=#657 id=657 data-nosnippet>657</a>        };
-<a href=#658 id=658 data-nosnippet>658</a>
-<a href=#659 id=659 data-nosnippet>659</a>        <span class="kw">let </span>high = <span class="kw">match </span>range.end_bound() {
-<a href=#660 id=660 data-nosnippet>660</a>            Bound::Unbounded =&gt; core::char::MAX,
-<a href=#661 id=661 data-nosnippet>661</a>            Bound::Included(<span class="kw-2">&amp;</span>x) =&gt; x,
-<a href=#662 id=662 data-nosnippet>662</a>            Bound::Excluded(<span class="kw-2">&amp;</span>x) =&gt; {
-<a href=#663 id=663 data-nosnippet>663</a>                <span class="kw">let </span>scalar = <span class="kw">if </span>x <span class="kw">as </span>u32 == surrogate_start + surrogate_len {
-<a href=#664 id=664 data-nosnippet>664</a>                    surrogate_start - <span class="number">1
-<a href=#665 id=665 data-nosnippet>665</a>                </span>} <span class="kw">else </span>{
-<a href=#666 id=666 data-nosnippet>666</a>                    (x <span class="kw">as </span>u32).wrapping_sub(<span class="number">1</span>)
-<a href=#667 id=667 data-nosnippet>667</a>                };
-<a href=#668 id=668 data-nosnippet>668</a>                char::try_from(scalar).unwrap_or_else(|<span class="kw">_</span>| panic_empty_range())
-<a href=#669 id=669 data-nosnippet>669</a>            }
-<a href=#670 id=670 data-nosnippet>670</a>        };
-<a href=#671 id=671 data-nosnippet>671</a>
-<a href=#672 id=672 data-nosnippet>672</a>        <span class="kw">if </span>low &gt; high {
-<a href=#673 id=673 data-nosnippet>673</a>            panic_empty_range();
-<a href=#674 id=674 data-nosnippet>674</a>        }
-<a href=#675 id=675 data-nosnippet>675</a>
-<a href=#676 id=676 data-nosnippet>676</a>        <span class="kw">let </span>gap = <span class="kw">if </span>(low <span class="kw">as </span>u32) &lt; surrogate_start &amp;&amp; (high <span class="kw">as </span>u32) &gt;= surrogate_start {
-<a href=#677 id=677 data-nosnippet>677</a>            surrogate_len
-<a href=#678 id=678 data-nosnippet>678</a>        } <span class="kw">else </span>{
-<a href=#679 id=679 data-nosnippet>679</a>            <span class="number">0
-<a href=#680 id=680 data-nosnippet>680</a>        </span>};
-<a href=#681 id=681 data-nosnippet>681</a>        <span class="kw">let </span>range = high <span class="kw">as </span>u32 - low <span class="kw">as </span>u32 - gap;
-<a href=#682 id=682 data-nosnippet>682</a>        <span class="kw">let </span><span class="kw-2">mut </span>val = <span class="self">self</span>.u32(<span class="number">0</span>..=range) + low <span class="kw">as </span>u32;
-<a href=#683 id=683 data-nosnippet>683</a>        <span class="kw">if </span>val &gt;= surrogate_start {
-<a href=#684 id=684 data-nosnippet>684</a>            val += gap;
-<a href=#685 id=685 data-nosnippet>685</a>        }
-<a href=#686 id=686 data-nosnippet>686</a>        val.try_into().unwrap()
-<a href=#687 id=687 data-nosnippet>687</a>    }
-<a href=#688 id=688 data-nosnippet>688</a>}</code></pre></div></section></main></body></html>
+<a href=#618 id=618 data-nosnippet>618</a>        usize,
+<a href=#619 id=619 data-nosnippet>619</a>        gen_u64,
+<a href=#620 id=620 data-nosnippet>620</a>        gen_mod_u64,
+<a href=#621 id=621 data-nosnippet>621</a>        <span class="string">"Generates a random `usize` in the given range."
+<a href=#622 id=622 data-nosnippet>622</a>    </span>);
+<a href=#623 id=623 data-nosnippet>623</a>
+<a href=#624 id=624 data-nosnippet>624</a>    <span class="doccomment">/// Generates a random `char` in range A-Z.
+<a href=#625 id=625 data-nosnippet>625</a>    </span><span class="attr">#[inline]
+<a href=#626 id=626 data-nosnippet>626</a>    </span><span class="kw">pub fn </span>uppercase(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; char {
+<a href=#627 id=627 data-nosnippet>627</a>        <span class="kw">const </span>CHARS: <span class="kw-2">&amp;</span>[u8] = <span class="string">b"ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span>;
+<a href=#628 id=628 data-nosnippet>628</a>        <span class="kw-2">*</span><span class="self">self</span>.choice(CHARS).unwrap() <span class="kw">as </span>char
+<a href=#629 id=629 data-nosnippet>629</a>    }
+<a href=#630 id=630 data-nosnippet>630</a>
+<a href=#631 id=631 data-nosnippet>631</a>    <span class="doccomment">/// Generates a random `char` in the given range.
+<a href=#632 id=632 data-nosnippet>632</a>    ///
+<a href=#633 id=633 data-nosnippet>633</a>    /// Panics if the range is empty.
+<a href=#634 id=634 data-nosnippet>634</a>    </span><span class="attr">#[inline]
+<a href=#635 id=635 data-nosnippet>635</a>    </span><span class="kw">pub fn </span>char(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: <span class="kw">impl </span>RangeBounds&lt;char&gt;) -&gt; char {
+<a href=#636 id=636 data-nosnippet>636</a>        <span class="kw">let </span>panic_empty_range = || {
+<a href=#637 id=637 data-nosnippet>637</a>            <span class="macro">panic!</span>(
+<a href=#638 id=638 data-nosnippet>638</a>                <span class="string">"empty range: {:?}..{:?}"</span>,
+<a href=#639 id=639 data-nosnippet>639</a>                range.start_bound(),
+<a href=#640 id=640 data-nosnippet>640</a>                range.end_bound()
+<a href=#641 id=641 data-nosnippet>641</a>            )
+<a href=#642 id=642 data-nosnippet>642</a>        };
+<a href=#643 id=643 data-nosnippet>643</a>
+<a href=#644 id=644 data-nosnippet>644</a>        <span class="kw">let </span>surrogate_start = <span class="number">0xd800u32</span>;
+<a href=#645 id=645 data-nosnippet>645</a>        <span class="kw">let </span>surrogate_len = <span class="number">0x800u32</span>;
+<a href=#646 id=646 data-nosnippet>646</a>
+<a href=#647 id=647 data-nosnippet>647</a>        <span class="kw">let </span>low = <span class="kw">match </span>range.start_bound() {
+<a href=#648 id=648 data-nosnippet>648</a>            Bound::Unbounded =&gt; <span class="number">0u8 </span><span class="kw">as </span>char,
+<a href=#649 id=649 data-nosnippet>649</a>            Bound::Included(<span class="kw-2">&amp;</span>x) =&gt; x,
+<a href=#650 id=650 data-nosnippet>650</a>            Bound::Excluded(<span class="kw-2">&amp;</span>x) =&gt; {
+<a href=#651 id=651 data-nosnippet>651</a>                <span class="kw">let </span>scalar = <span class="kw">if </span>x <span class="kw">as </span>u32 == surrogate_start - <span class="number">1 </span>{
+<a href=#652 id=652 data-nosnippet>652</a>                    surrogate_start + surrogate_len
+<a href=#653 id=653 data-nosnippet>653</a>                } <span class="kw">else </span>{
+<a href=#654 id=654 data-nosnippet>654</a>                    x <span class="kw">as </span>u32 + <span class="number">1
+<a href=#655 id=655 data-nosnippet>655</a>                </span>};
+<a href=#656 id=656 data-nosnippet>656</a>                char::try_from(scalar).unwrap_or_else(|<span class="kw">_</span>| panic_empty_range())
+<a href=#657 id=657 data-nosnippet>657</a>            }
+<a href=#658 id=658 data-nosnippet>658</a>        };
+<a href=#659 id=659 data-nosnippet>659</a>
+<a href=#660 id=660 data-nosnippet>660</a>        <span class="kw">let </span>high = <span class="kw">match </span>range.end_bound() {
+<a href=#661 id=661 data-nosnippet>661</a>            Bound::Unbounded =&gt; core::char::MAX,
+<a href=#662 id=662 data-nosnippet>662</a>            Bound::Included(<span class="kw-2">&amp;</span>x) =&gt; x,
+<a href=#663 id=663 data-nosnippet>663</a>            Bound::Excluded(<span class="kw-2">&amp;</span>x) =&gt; {
+<a href=#664 id=664 data-nosnippet>664</a>                <span class="kw">let </span>scalar = <span class="kw">if </span>x <span class="kw">as </span>u32 == surrogate_start + surrogate_len {
+<a href=#665 id=665 data-nosnippet>665</a>                    surrogate_start - <span class="number">1
+<a href=#666 id=666 data-nosnippet>666</a>                </span>} <span class="kw">else </span>{
+<a href=#667 id=667 data-nosnippet>667</a>                    (x <span class="kw">as </span>u32).wrapping_sub(<span class="number">1</span>)
+<a href=#668 id=668 data-nosnippet>668</a>                };
+<a href=#669 id=669 data-nosnippet>669</a>                char::try_from(scalar).unwrap_or_else(|<span class="kw">_</span>| panic_empty_range())
+<a href=#670 id=670 data-nosnippet>670</a>            }
+<a href=#671 id=671 data-nosnippet>671</a>        };
+<a href=#672 id=672 data-nosnippet>672</a>
+<a href=#673 id=673 data-nosnippet>673</a>        <span class="kw">if </span>low &gt; high {
+<a href=#674 id=674 data-nosnippet>674</a>            panic_empty_range();
+<a href=#675 id=675 data-nosnippet>675</a>        }
+<a href=#676 id=676 data-nosnippet>676</a>
+<a href=#677 id=677 data-nosnippet>677</a>        <span class="kw">let </span>gap = <span class="kw">if </span>(low <span class="kw">as </span>u32) &lt; surrogate_start &amp;&amp; (high <span class="kw">as </span>u32) &gt;= surrogate_start {
+<a href=#678 id=678 data-nosnippet>678</a>            surrogate_len
+<a href=#679 id=679 data-nosnippet>679</a>        } <span class="kw">else </span>{
+<a href=#680 id=680 data-nosnippet>680</a>            <span class="number">0
+<a href=#681 id=681 data-nosnippet>681</a>        </span>};
+<a href=#682 id=682 data-nosnippet>682</a>        <span class="kw">let </span>range = high <span class="kw">as </span>u32 - low <span class="kw">as </span>u32 - gap;
+<a href=#683 id=683 data-nosnippet>683</a>        <span class="kw">let </span><span class="kw-2">mut </span>val = <span class="self">self</span>.u32(<span class="number">0</span>..=range) + low <span class="kw">as </span>u32;
+<a href=#684 id=684 data-nosnippet>684</a>        <span class="kw">if </span>val &gt;= surrogate_start {
+<a href=#685 id=685 data-nosnippet>685</a>            val += gap;
+<a href=#686 id=686 data-nosnippet>686</a>        }
+<a href=#687 id=687 data-nosnippet>687</a>        val.try_into().unwrap()
+<a href=#688 id=688 data-nosnippet>688</a>    }
+<a href=#689 id=689 data-nosnippet>689</a>}</code></pre></div></section></main></body></html>

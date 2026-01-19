@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["IncomingRecordValidationMode","KademliaEvent","Quorum","RecordsType","RoutingTableUpdateMode"],"struct":["Config","ConfigBuilder","KademliaHandle","PeerRecord","QueryId","Record","RecordKey"]};
+window.SIDEBAR_ITEMS = {"enum":["IncomingRecordValidationMode","KademliaCommand","KademliaEvent","Quorum","RoutingTableUpdateMode"],"struct":["Config","ConfigBuilder","ContentProvider","KademliaHandle","PeerRecord","QueryId","Record","RecordKey"]};

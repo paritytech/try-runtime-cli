@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["BitswapEvent","BlockPresenceType","ResponseType","WantType"],"struct":["BitswapHandle","Config"],"type":["Cid"]};
+window.SIDEBAR_ITEMS = {"enum":["BitswapCommand","BitswapEvent","BlockPresenceType","ResponseType","WantType"],"struct":["BitswapHandle","Config"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["GenericConnection","GenericConnector","NameServer","NameServerPool","TokioHandle","TokioRuntimeProvider"],"trait":["ConnectionProvider","RuntimeProvider","Spawn"],"type":["GenericNameServer","GenericNameServerPool","TokioConnectionProvider"]};
+window.SIDEBAR_ITEMS = {"struct":["GenericConnection","GenericConnector","NameServer","NameServerPool"],"trait":["ConnectionProvider"],"type":["GenericNameServer","GenericNameServerPool","TokioConnectionProvider"]};

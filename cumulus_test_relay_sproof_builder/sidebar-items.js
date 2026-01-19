@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["RelayStateSproofBuilder"]};
+window.SIDEBAR_ITEMS = {"fn":["build_relay_parent_descendants","generate_authority_pairs"],"struct":["RelayStateSproofBuilder"]};

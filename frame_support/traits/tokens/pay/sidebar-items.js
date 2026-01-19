@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["PaymentStatus"],"struct":["PayAssetFromAccount","PayFromAccount"],"trait":["Pay"]};
+window.SIDEBAR_ITEMS = {"struct":["PayAssetFromAccount","PayFromAccount","PayWithFungibles"],"trait":["Pay","PayWithSource"],"type":["PaymentStatus"]};

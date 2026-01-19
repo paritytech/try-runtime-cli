@@ -1,8 +1,8 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/asn1-rs-0.6.2/src/asn1_types/any.rs`."><title>any.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="asn1_rs" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">asn1_rs/asn1_types/</div>any.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::ber::<span class="kw-2">*</span>;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/asn1-rs-0.7.1/src/asn1_types/any.rs`."><title>any.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="asn1_rs" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">asn1_rs/asn1_types/</div>any.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::ber::<span class="kw-2">*</span>;
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use crate</span>::<span class="kw-2">*</span>;
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span>alloc::borrow::Cow;
 <a href=#4 id=4 data-nosnippet>4</a><span class="attr">#[cfg(not(feature = <span class="string">"std"</span>))]
-<a href=#5 id=5 data-nosnippet>5</a></span><span class="kw">use </span>alloc::string::String;
+<a href=#5 id=5 data-nosnippet>5</a></span><span class="kw">use </span>alloc::string::{String, ToString};
 <a href=#6 id=6 data-nosnippet>6</a><span class="kw">use </span>core::convert::{TryFrom, TryInto};
 <a href=#7 id=7 data-nosnippet>7</a>
 <a href=#8 id=8 data-nosnippet>8</a><span class="kw">use </span><span class="self">self</span>::debug::trace;
@@ -98,7 +98,7 @@
 <a href=#98 id=98 data-nosnippet>98</a>        op: F,
 <a href=#99 id=99 data-nosnippet>99</a>    ) -&gt; ParseResult&lt;<span class="lifetime">'a</span>, T, E&gt;
 <a href=#100 id=100 data-nosnippet>100</a>    <span class="kw">where
-<a href=#101 id=101 data-nosnippet>101</a>        </span>F: FnOnce(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; ParseResult&lt;T, E&gt;,
+<a href=#101 id=101 data-nosnippet>101</a>        </span>F: FnOnce(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; ParseResult&lt;<span class="lifetime">'a</span>, T, E&gt;,
 <a href=#102 id=102 data-nosnippet>102</a>        E: From&lt;Error&gt;,
 <a href=#103 id=103 data-nosnippet>103</a>    {
 <a href=#104 id=104 data-nosnippet>104</a>        <span class="kw">let </span>(rem, any) = Any::from_ber(bytes).map_err(Err::convert)<span class="question-mark">?</span>;
@@ -122,7 +122,7 @@
 <a href=#122 id=122 data-nosnippet>122</a>        op: F,
 <a href=#123 id=123 data-nosnippet>123</a>    ) -&gt; ParseResult&lt;<span class="lifetime">'a</span>, T, E&gt;
 <a href=#124 id=124 data-nosnippet>124</a>    <span class="kw">where
-<a href=#125 id=125 data-nosnippet>125</a>        </span>F: FnOnce(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; ParseResult&lt;T, E&gt;,
+<a href=#125 id=125 data-nosnippet>125</a>        </span>F: FnOnce(<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; ParseResult&lt;<span class="lifetime">'a</span>, T, E&gt;,
 <a href=#126 id=126 data-nosnippet>126</a>        E: From&lt;Error&gt;,
 <a href=#127 id=127 data-nosnippet>127</a>    {
 <a href=#128 id=128 data-nosnippet>128</a>        <span class="kw">let </span>(rem, any) = Any::from_der(bytes).map_err(Err::convert)<span class="question-mark">?</span>;
@@ -321,125 +321,173 @@
 <a href=#321 id=321 data-nosnippet>321</a>    {
 <a href=#322 id=322 data-nosnippet>322</a>        TryFrom::try_from(<span class="self">self</span>)
 <a href=#323 id=323 data-nosnippet>323</a>    }
-<a href=#324 id=324 data-nosnippet>324</a>}
-<a href=#325 id=325 data-nosnippet>325</a>
-<a href=#326 id=326 data-nosnippet>326</a><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>parse_ber_any(input: <span class="kw-2">&amp;</span>[u8]) -&gt; ParseResult&lt;Any&gt; {
-<a href=#327 id=327 data-nosnippet>327</a>    <span class="kw">let </span>(i, header) = Header::from_ber(input)<span class="question-mark">?</span>;
-<a href=#328 id=328 data-nosnippet>328</a>    <span class="kw">let </span>(i, data) = BerParser::get_object_content(i, <span class="kw-2">&amp;</span>header, MAX_RECURSION)<span class="question-mark">?</span>;
-<a href=#329 id=329 data-nosnippet>329</a>    <span class="prelude-val">Ok</span>((i, Any { header, data }))
-<a href=#330 id=330 data-nosnippet>330</a>}
-<a href=#331 id=331 data-nosnippet>331</a>
-<a href=#332 id=332 data-nosnippet>332</a><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>parse_der_any(input: <span class="kw-2">&amp;</span>[u8]) -&gt; ParseResult&lt;Any&gt; {
-<a href=#333 id=333 data-nosnippet>333</a>    <span class="kw">let </span>(i, header) = Header::from_der(input)<span class="question-mark">?</span>;
-<a href=#334 id=334 data-nosnippet>334</a>    <span class="comment">// X.690 section 10.1: The definite form of length encoding shall be used
-<a href=#335 id=335 data-nosnippet>335</a>    </span>header.length.assert_definite()<span class="question-mark">?</span>;
-<a href=#336 id=336 data-nosnippet>336</a>    <span class="kw">let </span>(i, data) = DerParser::get_object_content(i, <span class="kw-2">&amp;</span>header, MAX_RECURSION)<span class="question-mark">?</span>;
-<a href=#337 id=337 data-nosnippet>337</a>    <span class="prelude-val">Ok</span>((i, Any { header, data }))
-<a href=#338 id=338 data-nosnippet>338</a>}
-<a href=#339 id=339 data-nosnippet>339</a>
-<a href=#340 id=340 data-nosnippet>340</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; FromBer&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span>Any&lt;<span class="lifetime">'a</span>&gt; {
-<a href=#341 id=341 data-nosnippet>341</a>    <span class="attr">#[inline]
-<a href=#342 id=342 data-nosnippet>342</a>    </span><span class="kw">fn </span>from_ber(bytes: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; ParseResult&lt;<span class="self">Self</span>&gt; {
-<a href=#343 id=343 data-nosnippet>343</a>        trace(<span class="string">"Any"</span>, parse_ber_any, bytes)
-<a href=#344 id=344 data-nosnippet>344</a>    }
-<a href=#345 id=345 data-nosnippet>345</a>}
-<a href=#346 id=346 data-nosnippet>346</a>
-<a href=#347 id=347 data-nosnippet>347</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; FromDer&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span>Any&lt;<span class="lifetime">'a</span>&gt; {
-<a href=#348 id=348 data-nosnippet>348</a>    <span class="attr">#[inline]
-<a href=#349 id=349 data-nosnippet>349</a>    </span><span class="kw">fn </span>from_der(bytes: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; ParseResult&lt;<span class="self">Self</span>&gt; {
-<a href=#350 id=350 data-nosnippet>350</a>        trace(<span class="string">"Any"</span>, parse_der_any, bytes)
-<a href=#351 id=351 data-nosnippet>351</a>    }
-<a href=#352 id=352 data-nosnippet>352</a>}
-<a href=#353 id=353 data-nosnippet>353</a>
-<a href=#354 id=354 data-nosnippet>354</a><span class="kw">impl </span>CheckDerConstraints <span class="kw">for </span>Any&lt;<span class="lifetime">'_</span>&gt; {
-<a href=#355 id=355 data-nosnippet>355</a>    <span class="kw">fn </span>check_constraints(any: <span class="kw-2">&amp;</span>Any) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#356 id=356 data-nosnippet>356</a>        any.header.length().assert_definite()<span class="question-mark">?</span>;
-<a href=#357 id=357 data-nosnippet>357</a>        <span class="comment">// if len &lt; 128, must use short form (10.1: minimum number of octets)
-<a href=#358 id=358 data-nosnippet>358</a>        </span><span class="prelude-val">Ok</span>(())
-<a href=#359 id=359 data-nosnippet>359</a>    }
-<a href=#360 id=360 data-nosnippet>360</a>}
-<a href=#361 id=361 data-nosnippet>361</a>
-<a href=#362 id=362 data-nosnippet>362</a><span class="kw">impl </span>DerAutoDerive <span class="kw">for </span>Any&lt;<span class="lifetime">'_</span>&gt; {}
-<a href=#363 id=363 data-nosnippet>363</a>
-<a href=#364 id=364 data-nosnippet>364</a><span class="kw">impl </span>DynTagged <span class="kw">for </span>Any&lt;<span class="lifetime">'_</span>&gt; {
-<a href=#365 id=365 data-nosnippet>365</a>    <span class="kw">fn </span>tag(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Tag {
-<a href=#366 id=366 data-nosnippet>366</a>        <span class="self">self</span>.tag()
-<a href=#367 id=367 data-nosnippet>367</a>    }
-<a href=#368 id=368 data-nosnippet>368</a>}
-<a href=#369 id=369 data-nosnippet>369</a>
-<a href=#370 id=370 data-nosnippet>370</a><span class="comment">// impl&lt;'a&gt; ToStatic for Any&lt;'a&gt; {
-<a href=#371 id=371 data-nosnippet>371</a>//     type Owned = Any&lt;'static&gt;;
-<a href=#372 id=372 data-nosnippet>372</a>
-<a href=#373 id=373 data-nosnippet>373</a>//     fn to_static(&amp;self) -&gt; Self::Owned {
-<a href=#374 id=374 data-nosnippet>374</a>//         Any {
-<a href=#375 id=375 data-nosnippet>375</a>//             header: self.header.to_static(),
-<a href=#376 id=376 data-nosnippet>376</a>//             data: Cow::Owned(self.data.to_vec()),
-<a href=#377 id=377 data-nosnippet>377</a>//         }
-<a href=#378 id=378 data-nosnippet>378</a>//     }
-<a href=#379 id=379 data-nosnippet>379</a>// }
-<a href=#380 id=380 data-nosnippet>380</a>
-<a href=#381 id=381 data-nosnippet>381</a></span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-<a href=#382 id=382 data-nosnippet>382</a></span><span class="kw">impl </span>ToDer <span class="kw">for </span>Any&lt;<span class="lifetime">'_</span>&gt; {
-<a href=#383 id=383 data-nosnippet>383</a>    <span class="kw">fn </span>to_der_len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
-<a href=#384 id=384 data-nosnippet>384</a>        <span class="kw">let </span>hdr_len = <span class="self">self</span>.header.to_der_len()<span class="question-mark">?</span>;
-<a href=#385 id=385 data-nosnippet>385</a>        <span class="prelude-val">Ok</span>(hdr_len + <span class="self">self</span>.data.len())
-<a href=#386 id=386 data-nosnippet>386</a>    }
+<a href=#324 id=324 data-nosnippet>324</a>
+<a href=#325 id=325 data-nosnippet>325</a>    <span class="doccomment">/// Attempt to get value as `str`, for all known string types
+<a href=#326 id=326 data-nosnippet>326</a>    ///
+<a href=#327 id=327 data-nosnippet>327</a>    /// This function does not allocate data, so it supports all string types except
+<a href=#328 id=328 data-nosnippet>328</a>    /// `UniversalString`.
+<a href=#329 id=329 data-nosnippet>329</a>    </span><span class="kw">pub fn </span>as_any_str(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
+<a href=#330 id=330 data-nosnippet>330</a>        <span class="kw">match </span><span class="self">self</span>.tag() {
+<a href=#331 id=331 data-nosnippet>331</a>            Tag::GeneralString
+<a href=#332 id=332 data-nosnippet>332</a>            | Tag::GraphicString
+<a href=#333 id=333 data-nosnippet>333</a>            | Tag::Ia5String
+<a href=#334 id=334 data-nosnippet>334</a>            | Tag::NumericString
+<a href=#335 id=335 data-nosnippet>335</a>            | Tag::PrintableString
+<a href=#336 id=336 data-nosnippet>336</a>            | Tag::T61String
+<a href=#337 id=337 data-nosnippet>337</a>            | Tag::Utf8String
+<a href=#338 id=338 data-nosnippet>338</a>            | Tag::VideotexString
+<a href=#339 id=339 data-nosnippet>339</a>            | Tag::VisibleString =&gt; {
+<a href=#340 id=340 data-nosnippet>340</a>                <span class="kw">let </span>res = core::str::from_utf8(<span class="self">self</span>.data)<span class="question-mark">?</span>;
+<a href=#341 id=341 data-nosnippet>341</a>                <span class="prelude-val">Ok</span>(res.to_string())
+<a href=#342 id=342 data-nosnippet>342</a>            }
+<a href=#343 id=343 data-nosnippet>343</a>            Tag::UniversalString =&gt; {
+<a href=#344 id=344 data-nosnippet>344</a>                <span class="kw">let </span>us = UniversalString::try_from(<span class="self">self</span>)<span class="question-mark">?</span>;
+<a href=#345 id=345 data-nosnippet>345</a>                <span class="prelude-val">Ok</span>(us.string())
+<a href=#346 id=346 data-nosnippet>346</a>            }
+<a href=#347 id=347 data-nosnippet>347</a>            <span class="kw">_ </span>=&gt; <span class="macro">todo!</span>(),
+<a href=#348 id=348 data-nosnippet>348</a>        }
+<a href=#349 id=349 data-nosnippet>349</a>    }
+<a href=#350 id=350 data-nosnippet>350</a>
+<a href=#351 id=351 data-nosnippet>351</a>    <span class="doccomment">/// Attempt to get value as `String`, for all known string types
+<a href=#352 id=352 data-nosnippet>352</a>    ///
+<a href=#353 id=353 data-nosnippet>353</a>    /// This function allocates data
+<a href=#354 id=354 data-nosnippet>354</a>    </span><span class="kw">pub fn </span>as_any_string(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="kw-2">&amp;</span>str&gt; {
+<a href=#355 id=355 data-nosnippet>355</a>        <span class="kw">match </span><span class="self">self</span>.tag() {
+<a href=#356 id=356 data-nosnippet>356</a>            Tag::GeneralString
+<a href=#357 id=357 data-nosnippet>357</a>            | Tag::GraphicString
+<a href=#358 id=358 data-nosnippet>358</a>            | Tag::Ia5String
+<a href=#359 id=359 data-nosnippet>359</a>            | Tag::NumericString
+<a href=#360 id=360 data-nosnippet>360</a>            | Tag::PrintableString
+<a href=#361 id=361 data-nosnippet>361</a>            | Tag::T61String
+<a href=#362 id=362 data-nosnippet>362</a>            <span class="comment">//| Tag::UniversalString // UCS-4, cannot be converted
+<a href=#363 id=363 data-nosnippet>363</a>            </span>| Tag::Utf8String
+<a href=#364 id=364 data-nosnippet>364</a>            | Tag::VideotexString
+<a href=#365 id=365 data-nosnippet>365</a>            | Tag::VisibleString =&gt; {
+<a href=#366 id=366 data-nosnippet>366</a>                <span class="kw">let </span>res = core::str::from_utf8(<span class="self">self</span>.data)<span class="question-mark">?</span>;
+<a href=#367 id=367 data-nosnippet>367</a>                <span class="prelude-val">Ok</span>(res)
+<a href=#368 id=368 data-nosnippet>368</a>            }
+<a href=#369 id=369 data-nosnippet>369</a>            <span class="kw">_ </span>=&gt; <span class="macro">todo!</span>(),
+<a href=#370 id=370 data-nosnippet>370</a>        }
+<a href=#371 id=371 data-nosnippet>371</a>    }
+<a href=#372 id=372 data-nosnippet>372</a>}
+<a href=#373 id=373 data-nosnippet>373</a>
+<a href=#374 id=374 data-nosnippet>374</a><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>parse_ber_any(input: <span class="kw-2">&amp;</span>[u8]) -&gt; ParseResult&lt;Any&gt; {
+<a href=#375 id=375 data-nosnippet>375</a>    <span class="kw">let </span>(i, header) = Header::from_ber(input)<span class="question-mark">?</span>;
+<a href=#376 id=376 data-nosnippet>376</a>    <span class="kw">let </span>(i, data) = BerParser::get_object_content(i, <span class="kw-2">&amp;</span>header, MAX_RECURSION)<span class="question-mark">?</span>;
+<a href=#377 id=377 data-nosnippet>377</a>    <span class="prelude-val">Ok</span>((i, Any { header, data }))
+<a href=#378 id=378 data-nosnippet>378</a>}
+<a href=#379 id=379 data-nosnippet>379</a>
+<a href=#380 id=380 data-nosnippet>380</a><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>parse_der_any(input: <span class="kw-2">&amp;</span>[u8]) -&gt; ParseResult&lt;Any&gt; {
+<a href=#381 id=381 data-nosnippet>381</a>    <span class="kw">let </span>(i, header) = Header::from_der(input)<span class="question-mark">?</span>;
+<a href=#382 id=382 data-nosnippet>382</a>    <span class="comment">// X.690 section 10.1: The definite form of length encoding shall be used
+<a href=#383 id=383 data-nosnippet>383</a>    </span>header.length.assert_definite()<span class="question-mark">?</span>;
+<a href=#384 id=384 data-nosnippet>384</a>    <span class="kw">let </span>(i, data) = DerParser::get_object_content(i, <span class="kw-2">&amp;</span>header, MAX_RECURSION)<span class="question-mark">?</span>;
+<a href=#385 id=385 data-nosnippet>385</a>    <span class="prelude-val">Ok</span>((i, Any { header, data }))
+<a href=#386 id=386 data-nosnippet>386</a>}
 <a href=#387 id=387 data-nosnippet>387</a>
-<a href=#388 id=388 data-nosnippet>388</a>    <span class="kw">fn </span>write_der_header(<span class="kw-2">&amp;</span><span class="self">self</span>, writer: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>std::io::Write) -&gt; SerializeResult&lt;usize&gt; {
-<a href=#389 id=389 data-nosnippet>389</a>        <span class="comment">// create fake header to have correct length
-<a href=#390 id=390 data-nosnippet>390</a>        </span><span class="kw">let </span>header = Header::new(
-<a href=#391 id=391 data-nosnippet>391</a>            <span class="self">self</span>.header.class,
-<a href=#392 id=392 data-nosnippet>392</a>            <span class="self">self</span>.header.constructed,
-<a href=#393 id=393 data-nosnippet>393</a>            <span class="self">self</span>.header.tag,
-<a href=#394 id=394 data-nosnippet>394</a>            Length::Definite(<span class="self">self</span>.data.len()),
-<a href=#395 id=395 data-nosnippet>395</a>        );
-<a href=#396 id=396 data-nosnippet>396</a>        <span class="kw">let </span>sz = header.write_der_header(writer)<span class="question-mark">?</span>;
-<a href=#397 id=397 data-nosnippet>397</a>        <span class="prelude-val">Ok</span>(sz)
-<a href=#398 id=398 data-nosnippet>398</a>    }
-<a href=#399 id=399 data-nosnippet>399</a>
-<a href=#400 id=400 data-nosnippet>400</a>    <span class="kw">fn </span>write_der_content(<span class="kw-2">&amp;</span><span class="self">self</span>, writer: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>std::io::Write) -&gt; SerializeResult&lt;usize&gt; {
-<a href=#401 id=401 data-nosnippet>401</a>        writer.write(<span class="self">self</span>.data).map_err(Into::into)
-<a href=#402 id=402 data-nosnippet>402</a>    }
-<a href=#403 id=403 data-nosnippet>403</a>
-<a href=#404 id=404 data-nosnippet>404</a>    <span class="doccomment">/// Similar to using `to_der`, but uses header without computing length value
-<a href=#405 id=405 data-nosnippet>405</a>    </span><span class="kw">fn </span>write_der_raw(<span class="kw-2">&amp;</span><span class="self">self</span>, writer: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>std::io::Write) -&gt; SerializeResult&lt;usize&gt; {
-<a href=#406 id=406 data-nosnippet>406</a>        <span class="kw">let </span>sz = <span class="self">self</span>.header.write_der_header(writer)<span class="question-mark">?</span>;
-<a href=#407 id=407 data-nosnippet>407</a>        <span class="kw">let </span>sz = sz + writer.write(<span class="self">self</span>.data)<span class="question-mark">?</span>;
-<a href=#408 id=408 data-nosnippet>408</a>        <span class="prelude-val">Ok</span>(sz)
-<a href=#409 id=409 data-nosnippet>409</a>    }
-<a href=#410 id=410 data-nosnippet>410</a>}
+<a href=#388 id=388 data-nosnippet>388</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; FromBer&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span>Any&lt;<span class="lifetime">'a</span>&gt; {
+<a href=#389 id=389 data-nosnippet>389</a>    <span class="attr">#[inline]
+<a href=#390 id=390 data-nosnippet>390</a>    </span><span class="kw">fn </span>from_ber(bytes: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; ParseResult&lt;<span class="lifetime">'a</span>, <span class="self">Self</span>&gt; {
+<a href=#391 id=391 data-nosnippet>391</a>        trace(<span class="string">"Any"</span>, parse_ber_any, bytes)
+<a href=#392 id=392 data-nosnippet>392</a>    }
+<a href=#393 id=393 data-nosnippet>393</a>}
+<a href=#394 id=394 data-nosnippet>394</a>
+<a href=#395 id=395 data-nosnippet>395</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; FromDer&lt;<span class="lifetime">'a</span>&gt; <span class="kw">for </span>Any&lt;<span class="lifetime">'a</span>&gt; {
+<a href=#396 id=396 data-nosnippet>396</a>    <span class="attr">#[inline]
+<a href=#397 id=397 data-nosnippet>397</a>    </span><span class="kw">fn </span>from_der(bytes: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]) -&gt; ParseResult&lt;<span class="lifetime">'a</span>, <span class="self">Self</span>&gt; {
+<a href=#398 id=398 data-nosnippet>398</a>        trace(<span class="string">"Any"</span>, parse_der_any, bytes)
+<a href=#399 id=399 data-nosnippet>399</a>    }
+<a href=#400 id=400 data-nosnippet>400</a>}
+<a href=#401 id=401 data-nosnippet>401</a>
+<a href=#402 id=402 data-nosnippet>402</a><span class="kw">impl </span>CheckDerConstraints <span class="kw">for </span>Any&lt;<span class="lifetime">'_</span>&gt; {
+<a href=#403 id=403 data-nosnippet>403</a>    <span class="kw">fn </span>check_constraints(any: <span class="kw-2">&amp;</span>Any) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#404 id=404 data-nosnippet>404</a>        any.header.length().assert_definite()<span class="question-mark">?</span>;
+<a href=#405 id=405 data-nosnippet>405</a>        <span class="comment">// if len &lt; 128, must use short form (10.1: minimum number of octets)
+<a href=#406 id=406 data-nosnippet>406</a>        </span><span class="prelude-val">Ok</span>(())
+<a href=#407 id=407 data-nosnippet>407</a>    }
+<a href=#408 id=408 data-nosnippet>408</a>}
+<a href=#409 id=409 data-nosnippet>409</a>
+<a href=#410 id=410 data-nosnippet>410</a><span class="kw">impl </span>DerAutoDerive <span class="kw">for </span>Any&lt;<span class="lifetime">'_</span>&gt; {}
 <a href=#411 id=411 data-nosnippet>411</a>
-<a href=#412 id=412 data-nosnippet>412</a><span class="attr">#[cfg(test)]
-<a href=#413 id=413 data-nosnippet>413</a></span><span class="kw">mod </span>tests {
-<a href=#414 id=414 data-nosnippet>414</a>    <span class="kw">use crate</span>::<span class="kw-2">*</span>;
-<a href=#415 id=415 data-nosnippet>415</a>    <span class="kw">use </span>hex_literal::hex;
-<a href=#416 id=416 data-nosnippet>416</a>
-<a href=#417 id=417 data-nosnippet>417</a>    <span class="attr">#[test]
-<a href=#418 id=418 data-nosnippet>418</a>    </span><span class="kw">fn </span>methods_any() {
-<a href=#419 id=419 data-nosnippet>419</a>        <span class="kw">let </span>header = Header::new_simple(Tag::Integer);
-<a href=#420 id=420 data-nosnippet>420</a>        <span class="kw">let </span>any = Any::new(header, <span class="kw-2">&amp;</span>[])
-<a href=#421 id=421 data-nosnippet>421</a>            .with_class(Class::ContextSpecific)
-<a href=#422 id=422 data-nosnippet>422</a>            .with_tag(Tag(<span class="number">0</span>));
-<a href=#423 id=423 data-nosnippet>423</a>        <span class="macro">assert_eq!</span>(any.as_bytes(), <span class="kw-2">&amp;</span>[]);
-<a href=#424 id=424 data-nosnippet>424</a>
-<a href=#425 id=425 data-nosnippet>425</a>        <span class="kw">let </span>input = <span class="kw-2">&amp;</span><span class="macro">hex!</span> {<span class="string">"80 03 02 01 01"</span>};
-<a href=#426 id=426 data-nosnippet>426</a>        <span class="kw">let </span>(<span class="kw">_</span>, any) = Any::from_ber(input).expect(<span class="string">"parsing failed"</span>);
-<a href=#427 id=427 data-nosnippet>427</a>
-<a href=#428 id=428 data-nosnippet>428</a>        <span class="kw">let </span>(<span class="kw">_</span>, r) = any.parse_ber::&lt;Integer&gt;().expect(<span class="string">"parse_ber failed"</span>);
-<a href=#429 id=429 data-nosnippet>429</a>        <span class="macro">assert_eq!</span>(r.as_u32(), <span class="prelude-val">Ok</span>(<span class="number">1</span>));
-<a href=#430 id=430 data-nosnippet>430</a>        <span class="kw">let </span>(<span class="kw">_</span>, r) = any.parse_der::&lt;Integer&gt;().expect(<span class="string">"parse_der failed"</span>);
-<a href=#431 id=431 data-nosnippet>431</a>        <span class="macro">assert_eq!</span>(r.as_u32(), <span class="prelude-val">Ok</span>(<span class="number">1</span>));
-<a href=#432 id=432 data-nosnippet>432</a>
-<a href=#433 id=433 data-nosnippet>433</a>        <span class="kw">let </span>header = <span class="kw-2">&amp;</span>any.header;
-<a href=#434 id=434 data-nosnippet>434</a>        <span class="kw">let </span>(<span class="kw">_</span>, content) = Any::parse_ber_content(<span class="kw-2">&amp;</span>input[<span class="number">2</span>..], header).unwrap();
-<a href=#435 id=435 data-nosnippet>435</a>        <span class="macro">assert_eq!</span>(content.len(), <span class="number">3</span>);
-<a href=#436 id=436 data-nosnippet>436</a>        <span class="kw">let </span>(<span class="kw">_</span>, content) = Any::parse_der_content(<span class="kw-2">&amp;</span>input[<span class="number">2</span>..], header).unwrap();
-<a href=#437 id=437 data-nosnippet>437</a>        <span class="macro">assert_eq!</span>(content.len(), <span class="number">3</span>);
-<a href=#438 id=438 data-nosnippet>438</a>
-<a href=#439 id=439 data-nosnippet>439</a>        <span class="kw">let </span>(<span class="kw">_</span>, any) = Any::from_der(<span class="kw-2">&amp;</span>input[<span class="number">2</span>..]).unwrap();
-<a href=#440 id=440 data-nosnippet>440</a>        Any::check_constraints(<span class="kw-2">&amp;</span>any).unwrap();
-<a href=#441 id=441 data-nosnippet>441</a>        <span class="macro">assert_eq!</span>(&lt;Any <span class="kw">as </span>DynTagged&gt;::tag(<span class="kw-2">&amp;</span>any), any.tag());
-<a href=#442 id=442 data-nosnippet>442</a>        <span class="kw">let </span>int = any.integer().unwrap();
-<a href=#443 id=443 data-nosnippet>443</a>        <span class="macro">assert_eq!</span>(int.as_u16(), <span class="prelude-val">Ok</span>(<span class="number">1</span>));
-<a href=#444 id=444 data-nosnippet>444</a>    }
-<a href=#445 id=445 data-nosnippet>445</a>}</code></pre></div></section></main></body></html>
+<a href=#412 id=412 data-nosnippet>412</a><span class="kw">impl </span>DynTagged <span class="kw">for </span>Any&lt;<span class="lifetime">'_</span>&gt; {
+<a href=#413 id=413 data-nosnippet>413</a>    <span class="kw">fn </span>tag(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Tag {
+<a href=#414 id=414 data-nosnippet>414</a>        <span class="self">self</span>.tag()
+<a href=#415 id=415 data-nosnippet>415</a>    }
+<a href=#416 id=416 data-nosnippet>416</a>}
+<a href=#417 id=417 data-nosnippet>417</a>
+<a href=#418 id=418 data-nosnippet>418</a><span class="comment">// impl&lt;'a&gt; ToStatic for Any&lt;'a&gt; {
+<a href=#419 id=419 data-nosnippet>419</a>//     type Owned = Any&lt;'static&gt;;
+<a href=#420 id=420 data-nosnippet>420</a>
+<a href=#421 id=421 data-nosnippet>421</a>//     fn to_static(&amp;self) -&gt; Self::Owned {
+<a href=#422 id=422 data-nosnippet>422</a>//         Any {
+<a href=#423 id=423 data-nosnippet>423</a>//             header: self.header.to_static(),
+<a href=#424 id=424 data-nosnippet>424</a>//             data: Cow::Owned(self.data.to_vec()),
+<a href=#425 id=425 data-nosnippet>425</a>//         }
+<a href=#426 id=426 data-nosnippet>426</a>//     }
+<a href=#427 id=427 data-nosnippet>427</a>// }
+<a href=#428 id=428 data-nosnippet>428</a>
+<a href=#429 id=429 data-nosnippet>429</a></span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
+<a href=#430 id=430 data-nosnippet>430</a></span><span class="kw">impl </span>ToDer <span class="kw">for </span>Any&lt;<span class="lifetime">'_</span>&gt; {
+<a href=#431 id=431 data-nosnippet>431</a>    <span class="kw">fn </span>to_der_len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;usize&gt; {
+<a href=#432 id=432 data-nosnippet>432</a>        <span class="kw">let </span>hdr_len = <span class="self">self</span>.header.to_der_len()<span class="question-mark">?</span>;
+<a href=#433 id=433 data-nosnippet>433</a>        <span class="prelude-val">Ok</span>(hdr_len + <span class="self">self</span>.data.len())
+<a href=#434 id=434 data-nosnippet>434</a>    }
+<a href=#435 id=435 data-nosnippet>435</a>
+<a href=#436 id=436 data-nosnippet>436</a>    <span class="kw">fn </span>write_der_header(<span class="kw-2">&amp;</span><span class="self">self</span>, writer: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>std::io::Write) -&gt; SerializeResult&lt;usize&gt; {
+<a href=#437 id=437 data-nosnippet>437</a>        <span class="comment">// create fake header to have correct length
+<a href=#438 id=438 data-nosnippet>438</a>        </span><span class="kw">let </span>header = Header::new(
+<a href=#439 id=439 data-nosnippet>439</a>            <span class="self">self</span>.header.class,
+<a href=#440 id=440 data-nosnippet>440</a>            <span class="self">self</span>.header.constructed,
+<a href=#441 id=441 data-nosnippet>441</a>            <span class="self">self</span>.header.tag,
+<a href=#442 id=442 data-nosnippet>442</a>            Length::Definite(<span class="self">self</span>.data.len()),
+<a href=#443 id=443 data-nosnippet>443</a>        );
+<a href=#444 id=444 data-nosnippet>444</a>        <span class="kw">let </span>sz = header.write_der_header(writer)<span class="question-mark">?</span>;
+<a href=#445 id=445 data-nosnippet>445</a>        <span class="prelude-val">Ok</span>(sz)
+<a href=#446 id=446 data-nosnippet>446</a>    }
+<a href=#447 id=447 data-nosnippet>447</a>
+<a href=#448 id=448 data-nosnippet>448</a>    <span class="kw">fn </span>write_der_content(<span class="kw-2">&amp;</span><span class="self">self</span>, writer: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>std::io::Write) -&gt; SerializeResult&lt;usize&gt; {
+<a href=#449 id=449 data-nosnippet>449</a>        writer.write(<span class="self">self</span>.data).map_err(Into::into)
+<a href=#450 id=450 data-nosnippet>450</a>    }
+<a href=#451 id=451 data-nosnippet>451</a>
+<a href=#452 id=452 data-nosnippet>452</a>    <span class="doccomment">/// Similar to using `to_der`, but uses header without computing length value
+<a href=#453 id=453 data-nosnippet>453</a>    </span><span class="kw">fn </span>write_der_raw(<span class="kw-2">&amp;</span><span class="self">self</span>, writer: <span class="kw-2">&amp;mut </span><span class="kw">dyn </span>std::io::Write) -&gt; SerializeResult&lt;usize&gt; {
+<a href=#454 id=454 data-nosnippet>454</a>        <span class="kw">let </span>sz = <span class="self">self</span>.header.write_der_header(writer)<span class="question-mark">?</span>;
+<a href=#455 id=455 data-nosnippet>455</a>        <span class="kw">let </span>sz = sz + writer.write(<span class="self">self</span>.data)<span class="question-mark">?</span>;
+<a href=#456 id=456 data-nosnippet>456</a>        <span class="prelude-val">Ok</span>(sz)
+<a href=#457 id=457 data-nosnippet>457</a>    }
+<a href=#458 id=458 data-nosnippet>458</a>}
+<a href=#459 id=459 data-nosnippet>459</a>
+<a href=#460 id=460 data-nosnippet>460</a><span class="attr">#[cfg(test)]
+<a href=#461 id=461 data-nosnippet>461</a></span><span class="kw">mod </span>tests {
+<a href=#462 id=462 data-nosnippet>462</a>    <span class="kw">use crate</span>::<span class="kw-2">*</span>;
+<a href=#463 id=463 data-nosnippet>463</a>    <span class="kw">use </span>hex_literal::hex;
+<a href=#464 id=464 data-nosnippet>464</a>
+<a href=#465 id=465 data-nosnippet>465</a>    <span class="attr">#[test]
+<a href=#466 id=466 data-nosnippet>466</a>    </span><span class="kw">fn </span>methods_any() {
+<a href=#467 id=467 data-nosnippet>467</a>        <span class="kw">let </span>header = Header::new_simple(Tag::Integer);
+<a href=#468 id=468 data-nosnippet>468</a>        <span class="kw">let </span>any = Any::new(header, <span class="kw-2">&amp;</span>[])
+<a href=#469 id=469 data-nosnippet>469</a>            .with_class(Class::ContextSpecific)
+<a href=#470 id=470 data-nosnippet>470</a>            .with_tag(Tag(<span class="number">0</span>));
+<a href=#471 id=471 data-nosnippet>471</a>        <span class="macro">assert_eq!</span>(any.as_bytes(), <span class="kw-2">&amp;</span>[]);
+<a href=#472 id=472 data-nosnippet>472</a>
+<a href=#473 id=473 data-nosnippet>473</a>        <span class="kw">let </span>input = <span class="kw-2">&amp;</span><span class="macro">hex!</span> {<span class="string">"80 03 02 01 01"</span>};
+<a href=#474 id=474 data-nosnippet>474</a>        <span class="kw">let </span>(<span class="kw">_</span>, any) = Any::from_ber(input).expect(<span class="string">"parsing failed"</span>);
+<a href=#475 id=475 data-nosnippet>475</a>
+<a href=#476 id=476 data-nosnippet>476</a>        <span class="kw">let </span>(<span class="kw">_</span>, r) = any.parse_ber::&lt;Integer&gt;().expect(<span class="string">"parse_ber failed"</span>);
+<a href=#477 id=477 data-nosnippet>477</a>        <span class="macro">assert_eq!</span>(r.as_u32(), <span class="prelude-val">Ok</span>(<span class="number">1</span>));
+<a href=#478 id=478 data-nosnippet>478</a>        <span class="kw">let </span>(<span class="kw">_</span>, r) = any.parse_der::&lt;Integer&gt;().expect(<span class="string">"parse_der failed"</span>);
+<a href=#479 id=479 data-nosnippet>479</a>        <span class="macro">assert_eq!</span>(r.as_u32(), <span class="prelude-val">Ok</span>(<span class="number">1</span>));
+<a href=#480 id=480 data-nosnippet>480</a>
+<a href=#481 id=481 data-nosnippet>481</a>        <span class="kw">let </span>header = <span class="kw-2">&amp;</span>any.header;
+<a href=#482 id=482 data-nosnippet>482</a>        <span class="kw">let </span>(<span class="kw">_</span>, content) = Any::parse_ber_content(<span class="kw-2">&amp;</span>input[<span class="number">2</span>..], header).unwrap();
+<a href=#483 id=483 data-nosnippet>483</a>        <span class="macro">assert_eq!</span>(content.len(), <span class="number">3</span>);
+<a href=#484 id=484 data-nosnippet>484</a>        <span class="kw">let </span>(<span class="kw">_</span>, content) = Any::parse_der_content(<span class="kw-2">&amp;</span>input[<span class="number">2</span>..], header).unwrap();
+<a href=#485 id=485 data-nosnippet>485</a>        <span class="macro">assert_eq!</span>(content.len(), <span class="number">3</span>);
+<a href=#486 id=486 data-nosnippet>486</a>
+<a href=#487 id=487 data-nosnippet>487</a>        <span class="kw">let </span>(<span class="kw">_</span>, any) = Any::from_der(<span class="kw-2">&amp;</span>input[<span class="number">2</span>..]).unwrap();
+<a href=#488 id=488 data-nosnippet>488</a>        Any::check_constraints(<span class="kw-2">&amp;</span>any).unwrap();
+<a href=#489 id=489 data-nosnippet>489</a>        <span class="macro">assert_eq!</span>(&lt;Any <span class="kw">as </span>DynTagged&gt;::tag(<span class="kw-2">&amp;</span>any), any.tag());
+<a href=#490 id=490 data-nosnippet>490</a>        <span class="kw">let </span>int = any.integer().unwrap();
+<a href=#491 id=491 data-nosnippet>491</a>        <span class="macro">assert_eq!</span>(int.as_u16(), <span class="prelude-val">Ok</span>(<span class="number">1</span>));
+<a href=#492 id=492 data-nosnippet>492</a>    }
+<a href=#493 id=493 data-nosnippet>493</a>}</code></pre></div></section></main></body></html>

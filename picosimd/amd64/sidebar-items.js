@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["avx2","avx2_composite","avx512","sse"]};

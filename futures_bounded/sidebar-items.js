@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["PushError"],"struct":["FuturesMap","FuturesSet","Timeout"]};
+window.SIDEBAR_ITEMS = {"enum":["PushError"],"struct":["FuturesMap","FuturesSet","FuturesTupleSet","StreamMap","StreamSet","Timeout"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["multiaddr","multihash","protocol"],"struct":["ConnectionId","RequestId","SubstreamId"]};
+window.SIDEBAR_ITEMS = {"mod":["cid","multiaddr","multihash","protocol"],"struct":["ConnectionId","RequestId","SubstreamId"]};

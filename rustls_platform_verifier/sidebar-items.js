@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["tls_config","tls_config_with_provider"],"struct":["Verifier"]};
+window.SIDEBAR_ITEMS = {"fn":["tls_config","tls_config_with_provider"],"struct":["Verifier"],"trait":["BuilderVerifierExt","ConfigVerifierExt"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["AnyEntity"],"struct":["Block","Constant","DynamicStackSlot","DynamicType","FuncRef","GlobalValue","Immediate","Inst","JumpTable","SigRef","StackSlot","Table","UserExternalNameRef","Value"]};
+window.SIDEBAR_ITEMS = {"enum":["AnyEntity"],"struct":["Block","Constant","DynamicStackSlot","DynamicType","ExceptionTable","ExceptionTag","FuncRef","GlobalValue","Immediate","Inst","JumpTable","MemoryType","SigRef","StackSlot","UserExternalNameRef","Value"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["HexToArrayError","HexToBytesError"],"trait":["FromHex"]};
+window.SIDEBAR_ITEMS = {"trait":["FromHex"]};

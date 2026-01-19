@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/8279d10/polkadot/node/network/protocol/src/grid_topology.rs`."><title>grid_topology.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkadot_node_network_protocol" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">polkadot_node_network_protocol/</div>grid_topology.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/0c70641/polkadot/node/network/protocol/src/grid_topology.rs`."><title>grid_topology.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkadot_node_network_protocol" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">polkadot_node_network_protocol/</div>grid_topology.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#2 id=2 data-nosnippet>2</a>// This file is part of Polkadot.
 <a href=#3 id=3 data-nosnippet>3</a>
 <a href=#4 id=4 data-nosnippet>4</a>// Polkadot is free software: you can redistribute it and/or modify
@@ -496,178 +496,243 @@
 <a href=#496 id=496 data-nosnippet>496</a>		<span class="kw-2">&amp;</span><span class="self">self</span>.current_topology.entry
 <a href=#497 id=497 data-nosnippet>497</a>	}
 <a href=#498 id=498 data-nosnippet>498</a>
-<a href=#499 id=499 data-nosnippet>499</a>	<span class="doccomment">/// Access the current grid topology mutably. Dangerous and intended
-<a href=#500 id=500 data-nosnippet>500</a>	/// to be used in tests.
-<a href=#501 id=501 data-nosnippet>501</a>	</span><span class="kw">pub fn </span>get_current_topology_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>SessionGridTopologyEntry {
-<a href=#502 id=502 data-nosnippet>502</a>		<span class="kw-2">&amp;mut </span><span class="self">self</span>.current_topology.entry
-<a href=#503 id=503 data-nosnippet>503</a>	}
-<a href=#504 id=504 data-nosnippet>504</a>}
-<a href=#505 id=505 data-nosnippet>505</a>
-<a href=#506 id=506 data-nosnippet>506</a><span class="doccomment">/// A representation of routing based on sample
-<a href=#507 id=507 data-nosnippet>507</a></span><span class="attr">#[derive(Debug, Clone, Copy)]
-<a href=#508 id=508 data-nosnippet>508</a></span><span class="kw">pub struct </span>RandomRouting {
-<a href=#509 id=509 data-nosnippet>509</a>	<span class="doccomment">/// The number of peers to target.
-<a href=#510 id=510 data-nosnippet>510</a>	</span>target: usize,
-<a href=#511 id=511 data-nosnippet>511</a>	<span class="doccomment">/// The number of peers this has been sent to.
-<a href=#512 id=512 data-nosnippet>512</a>	</span>sent: usize,
-<a href=#513 id=513 data-nosnippet>513</a>	<span class="doccomment">/// Sampling rate
-<a href=#514 id=514 data-nosnippet>514</a>	</span>sample_rate: usize,
-<a href=#515 id=515 data-nosnippet>515</a>}
-<a href=#516 id=516 data-nosnippet>516</a>
-<a href=#517 id=517 data-nosnippet>517</a><span class="kw">impl </span>Default <span class="kw">for </span>RandomRouting {
-<a href=#518 id=518 data-nosnippet>518</a>	<span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
-<a href=#519 id=519 data-nosnippet>519</a>		RandomRouting {
-<a href=#520 id=520 data-nosnippet>520</a>			target: DEFAULT_RANDOM_CIRCULATION,
-<a href=#521 id=521 data-nosnippet>521</a>			sent: <span class="number">0_usize</span>,
-<a href=#522 id=522 data-nosnippet>522</a>			sample_rate: DEFAULT_RANDOM_SAMPLE_RATE,
-<a href=#523 id=523 data-nosnippet>523</a>		}
-<a href=#524 id=524 data-nosnippet>524</a>	}
-<a href=#525 id=525 data-nosnippet>525</a>}
-<a href=#526 id=526 data-nosnippet>526</a>
-<a href=#527 id=527 data-nosnippet>527</a><span class="kw">impl </span>RandomRouting {
-<a href=#528 id=528 data-nosnippet>528</a>	<span class="doccomment">/// Perform random sampling for a specific peer
-<a href=#529 id=529 data-nosnippet>529</a>	/// Returns `true` for a lucky peer
-<a href=#530 id=530 data-nosnippet>530</a>	</span><span class="kw">pub fn </span>sample(<span class="kw-2">&amp;</span><span class="self">self</span>, n_peers_total: usize, rng: <span class="kw-2">&amp;mut </span>(<span class="kw">impl </span>CryptoRng + Rng)) -&gt; bool {
-<a href=#531 id=531 data-nosnippet>531</a>		<span class="kw">if </span>n_peers_total == <span class="number">0 </span>|| <span class="self">self</span>.sent &gt;= <span class="self">self</span>.target {
-<a href=#532 id=532 data-nosnippet>532</a>			<span class="bool-val">false
-<a href=#533 id=533 data-nosnippet>533</a>		</span>} <span class="kw">else if </span><span class="self">self</span>.sample_rate &gt; n_peers_total {
-<a href=#534 id=534 data-nosnippet>534</a>			<span class="bool-val">true
-<a href=#535 id=535 data-nosnippet>535</a>		</span>} <span class="kw">else </span>{
-<a href=#536 id=536 data-nosnippet>536</a>			rng.gen_ratio(<span class="self">self</span>.sample_rate <span class="kw">as _</span>, n_peers_total <span class="kw">as _</span>)
-<a href=#537 id=537 data-nosnippet>537</a>		}
-<a href=#538 id=538 data-nosnippet>538</a>	}
-<a href=#539 id=539 data-nosnippet>539</a>
-<a href=#540 id=540 data-nosnippet>540</a>	<span class="doccomment">/// Increase number of messages being sent
-<a href=#541 id=541 data-nosnippet>541</a>	</span><span class="kw">pub fn </span>inc_sent(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
-<a href=#542 id=542 data-nosnippet>542</a>		<span class="self">self</span>.sent += <span class="number">1
-<a href=#543 id=543 data-nosnippet>543</a>	</span>}
+<a href=#499 id=499 data-nosnippet>499</a>	<span class="doccomment">/// Returns the current session index.
+<a href=#500 id=500 data-nosnippet>500</a>	</span><span class="kw">pub fn </span>get_current_session_index(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; SessionIndex {
+<a href=#501 id=501 data-nosnippet>501</a>		<span class="self">self</span>.current_topology.session_index
+<a href=#502 id=502 data-nosnippet>502</a>	}
+<a href=#503 id=503 data-nosnippet>503</a>
+<a href=#504 id=504 data-nosnippet>504</a>	<span class="doccomment">/// Access the current grid topology mutably. Dangerous and intended
+<a href=#505 id=505 data-nosnippet>505</a>	/// to be used in tests.
+<a href=#506 id=506 data-nosnippet>506</a>	</span><span class="kw">pub fn </span>get_current_topology_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut </span>SessionGridTopologyEntry {
+<a href=#507 id=507 data-nosnippet>507</a>		<span class="kw-2">&amp;mut </span><span class="self">self</span>.current_topology.entry
+<a href=#508 id=508 data-nosnippet>508</a>	}
+<a href=#509 id=509 data-nosnippet>509</a>}
+<a href=#510 id=510 data-nosnippet>510</a>
+<a href=#511 id=511 data-nosnippet>511</a><span class="doccomment">/// A representation of routing based on sample
+<a href=#512 id=512 data-nosnippet>512</a></span><span class="attr">#[derive(Debug, Clone, Copy)]
+<a href=#513 id=513 data-nosnippet>513</a></span><span class="kw">pub struct </span>RandomRouting {
+<a href=#514 id=514 data-nosnippet>514</a>	<span class="doccomment">/// The number of peers to target.
+<a href=#515 id=515 data-nosnippet>515</a>	</span>target: usize,
+<a href=#516 id=516 data-nosnippet>516</a>	<span class="doccomment">/// The number of peers this has been sent to.
+<a href=#517 id=517 data-nosnippet>517</a>	</span>sent: usize,
+<a href=#518 id=518 data-nosnippet>518</a>	<span class="doccomment">/// Sampling rate
+<a href=#519 id=519 data-nosnippet>519</a>	</span>sample_rate: usize,
+<a href=#520 id=520 data-nosnippet>520</a>}
+<a href=#521 id=521 data-nosnippet>521</a>
+<a href=#522 id=522 data-nosnippet>522</a><span class="kw">impl </span>Default <span class="kw">for </span>RandomRouting {
+<a href=#523 id=523 data-nosnippet>523</a>	<span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+<a href=#524 id=524 data-nosnippet>524</a>		RandomRouting {
+<a href=#525 id=525 data-nosnippet>525</a>			target: DEFAULT_RANDOM_CIRCULATION,
+<a href=#526 id=526 data-nosnippet>526</a>			sent: <span class="number">0_usize</span>,
+<a href=#527 id=527 data-nosnippet>527</a>			sample_rate: DEFAULT_RANDOM_SAMPLE_RATE,
+<a href=#528 id=528 data-nosnippet>528</a>		}
+<a href=#529 id=529 data-nosnippet>529</a>	}
+<a href=#530 id=530 data-nosnippet>530</a>}
+<a href=#531 id=531 data-nosnippet>531</a>
+<a href=#532 id=532 data-nosnippet>532</a><span class="kw">impl </span>RandomRouting {
+<a href=#533 id=533 data-nosnippet>533</a>	<span class="doccomment">/// Perform random sampling for a specific peer
+<a href=#534 id=534 data-nosnippet>534</a>	/// Returns `true` for a lucky peer
+<a href=#535 id=535 data-nosnippet>535</a>	</span><span class="kw">pub fn </span>sample(<span class="kw-2">&amp;</span><span class="self">self</span>, n_peers_total: usize, rng: <span class="kw-2">&amp;mut </span>(<span class="kw">impl </span>CryptoRng + Rng)) -&gt; bool {
+<a href=#536 id=536 data-nosnippet>536</a>		<span class="kw">if </span>n_peers_total == <span class="number">0 </span>|| <span class="self">self</span>.sent &gt;= <span class="self">self</span>.target {
+<a href=#537 id=537 data-nosnippet>537</a>			<span class="bool-val">false
+<a href=#538 id=538 data-nosnippet>538</a>		</span>} <span class="kw">else if </span><span class="self">self</span>.sample_rate &gt; n_peers_total {
+<a href=#539 id=539 data-nosnippet>539</a>			<span class="bool-val">true
+<a href=#540 id=540 data-nosnippet>540</a>		</span>} <span class="kw">else </span>{
+<a href=#541 id=541 data-nosnippet>541</a>			rng.gen_ratio(<span class="self">self</span>.sample_rate <span class="kw">as _</span>, n_peers_total <span class="kw">as _</span>)
+<a href=#542 id=542 data-nosnippet>542</a>		}
+<a href=#543 id=543 data-nosnippet>543</a>	}
 <a href=#544 id=544 data-nosnippet>544</a>
-<a href=#545 id=545 data-nosnippet>545</a>	<span class="doccomment">/// Returns `true` if we already took all the necessary samples.
-<a href=#546 id=546 data-nosnippet>546</a>	</span><span class="kw">pub fn </span>is_complete(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-<a href=#547 id=547 data-nosnippet>547</a>		<span class="self">self</span>.sent &gt;= <span class="self">self</span>.target
-<a href=#548 id=548 data-nosnippet>548</a>	}
-<a href=#549 id=549 data-nosnippet>549</a>}
-<a href=#550 id=550 data-nosnippet>550</a>
-<a href=#551 id=551 data-nosnippet>551</a><span class="doccomment">/// Routing mode
-<a href=#552 id=552 data-nosnippet>552</a></span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq)]
-<a href=#553 id=553 data-nosnippet>553</a></span><span class="kw">pub enum </span>RequiredRouting {
-<a href=#554 id=554 data-nosnippet>554</a>	<span class="doccomment">/// We don't know yet, because we're waiting for topology info
-<a href=#555 id=555 data-nosnippet>555</a>	/// (race condition between learning about the first blocks in a new session
-<a href=#556 id=556 data-nosnippet>556</a>	/// and getting the topology for that session)
-<a href=#557 id=557 data-nosnippet>557</a>	</span>PendingTopology,
-<a href=#558 id=558 data-nosnippet>558</a>	<span class="doccomment">/// Propagate to all peers of any kind.
-<a href=#559 id=559 data-nosnippet>559</a>	</span>All,
-<a href=#560 id=560 data-nosnippet>560</a>	<span class="doccomment">/// Propagate to all peers sharing either the X or Y dimension of the grid.
-<a href=#561 id=561 data-nosnippet>561</a>	</span>GridXY,
-<a href=#562 id=562 data-nosnippet>562</a>	<span class="doccomment">/// Propagate to all peers sharing the X dimension of the grid.
-<a href=#563 id=563 data-nosnippet>563</a>	</span>GridX,
-<a href=#564 id=564 data-nosnippet>564</a>	<span class="doccomment">/// Propagate to all peers sharing the Y dimension of the grid.
-<a href=#565 id=565 data-nosnippet>565</a>	</span>GridY,
-<a href=#566 id=566 data-nosnippet>566</a>	<span class="doccomment">/// No required propagation.
-<a href=#567 id=567 data-nosnippet>567</a>	</span><span class="prelude-val">None</span>,
-<a href=#568 id=568 data-nosnippet>568</a>}
-<a href=#569 id=569 data-nosnippet>569</a>
-<a href=#570 id=570 data-nosnippet>570</a><span class="kw">impl </span>RequiredRouting {
-<a href=#571 id=571 data-nosnippet>571</a>	<span class="doccomment">/// Whether the required routing set is definitely empty.
-<a href=#572 id=572 data-nosnippet>572</a>	</span><span class="kw">pub fn </span>is_empty(<span class="self">self</span>) -&gt; bool {
-<a href=#573 id=573 data-nosnippet>573</a>		<span class="kw">match </span><span class="self">self </span>{
-<a href=#574 id=574 data-nosnippet>574</a>			RequiredRouting::PendingTopology | RequiredRouting::None =&gt; <span class="bool-val">true</span>,
-<a href=#575 id=575 data-nosnippet>575</a>			<span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
-<a href=#576 id=576 data-nosnippet>576</a>		}
-<a href=#577 id=577 data-nosnippet>577</a>	}
-<a href=#578 id=578 data-nosnippet>578</a>}
-<a href=#579 id=579 data-nosnippet>579</a>
-<a href=#580 id=580 data-nosnippet>580</a><span class="attr">#[cfg(test)]
-<a href=#581 id=581 data-nosnippet>581</a></span><span class="kw">mod </span>tests {
-<a href=#582 id=582 data-nosnippet>582</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
-<a href=#583 id=583 data-nosnippet>583</a>	<span class="kw">use </span>rand::SeedableRng;
-<a href=#584 id=584 data-nosnippet>584</a>	<span class="kw">use </span>rand_chacha::ChaCha12Rng;
-<a href=#585 id=585 data-nosnippet>585</a>
-<a href=#586 id=586 data-nosnippet>586</a>	<span class="kw">fn </span>dummy_rng() -&gt; ChaCha12Rng {
-<a href=#587 id=587 data-nosnippet>587</a>		rand_chacha::ChaCha12Rng::seed_from_u64(<span class="number">12345</span>)
-<a href=#588 id=588 data-nosnippet>588</a>	}
-<a href=#589 id=589 data-nosnippet>589</a>
-<a href=#590 id=590 data-nosnippet>590</a>	<span class="attr">#[test]
-<a href=#591 id=591 data-nosnippet>591</a>	</span><span class="kw">fn </span>test_random_routing_sample() {
-<a href=#592 id=592 data-nosnippet>592</a>		<span class="comment">// This test is fragile as it relies on a specific ChaCha12Rng
-<a href=#593 id=593 data-nosnippet>593</a>		// sequence that might be implementation defined even for a static seed
-<a href=#594 id=594 data-nosnippet>594</a>		</span><span class="kw">let </span><span class="kw-2">mut </span>rng = dummy_rng();
-<a href=#595 id=595 data-nosnippet>595</a>		<span class="kw">let </span><span class="kw-2">mut </span>random_routing = RandomRouting { target: <span class="number">4</span>, sent: <span class="number">0</span>, sample_rate: <span class="number">8 </span>};
-<a href=#596 id=596 data-nosnippet>596</a>
-<a href=#597 id=597 data-nosnippet>597</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">true</span>);
-<a href=#598 id=598 data-nosnippet>598</a>		random_routing.inc_sent();
-<a href=#599 id=599 data-nosnippet>599</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">false</span>);
-<a href=#600 id=600 data-nosnippet>600</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">false</span>);
-<a href=#601 id=601 data-nosnippet>601</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">true</span>);
-<a href=#602 id=602 data-nosnippet>602</a>		random_routing.inc_sent();
-<a href=#603 id=603 data-nosnippet>603</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">true</span>);
-<a href=#604 id=604 data-nosnippet>604</a>		random_routing.inc_sent();
-<a href=#605 id=605 data-nosnippet>605</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">false</span>);
-<a href=#606 id=606 data-nosnippet>606</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">false</span>);
-<a href=#607 id=607 data-nosnippet>607</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">false</span>);
-<a href=#608 id=608 data-nosnippet>608</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">true</span>);
-<a href=#609 id=609 data-nosnippet>609</a>		random_routing.inc_sent();
+<a href=#545 id=545 data-nosnippet>545</a>	<span class="doccomment">/// Increase number of messages being sent
+<a href=#546 id=546 data-nosnippet>546</a>	</span><span class="kw">pub fn </span>inc_sent(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+<a href=#547 id=547 data-nosnippet>547</a>		<span class="self">self</span>.sent += <span class="number">1
+<a href=#548 id=548 data-nosnippet>548</a>	</span>}
+<a href=#549 id=549 data-nosnippet>549</a>
+<a href=#550 id=550 data-nosnippet>550</a>	<span class="doccomment">/// Returns `true` if we already took all the necessary samples.
+<a href=#551 id=551 data-nosnippet>551</a>	</span><span class="kw">pub fn </span>is_complete(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+<a href=#552 id=552 data-nosnippet>552</a>		<span class="self">self</span>.sent &gt;= <span class="self">self</span>.target
+<a href=#553 id=553 data-nosnippet>553</a>	}
+<a href=#554 id=554 data-nosnippet>554</a>}
+<a href=#555 id=555 data-nosnippet>555</a>
+<a href=#556 id=556 data-nosnippet>556</a><span class="doccomment">/// Routing mode
+<a href=#557 id=557 data-nosnippet>557</a></span><span class="attr">#[derive(Debug, Clone, Copy, PartialEq)]
+<a href=#558 id=558 data-nosnippet>558</a></span><span class="kw">pub enum </span>RequiredRouting {
+<a href=#559 id=559 data-nosnippet>559</a>	<span class="doccomment">/// We don't know yet, because we're waiting for topology info
+<a href=#560 id=560 data-nosnippet>560</a>	/// (race condition between learning about the first blocks in a new session
+<a href=#561 id=561 data-nosnippet>561</a>	/// and getting the topology for that session)
+<a href=#562 id=562 data-nosnippet>562</a>	</span>PendingTopology,
+<a href=#563 id=563 data-nosnippet>563</a>	<span class="doccomment">/// Propagate to all peers of any kind.
+<a href=#564 id=564 data-nosnippet>564</a>	</span>All,
+<a href=#565 id=565 data-nosnippet>565</a>	<span class="doccomment">/// Propagate to all peers sharing either the X or Y dimension of the grid.
+<a href=#566 id=566 data-nosnippet>566</a>	</span>GridXY,
+<a href=#567 id=567 data-nosnippet>567</a>	<span class="doccomment">/// Propagate to all peers sharing the X dimension of the grid.
+<a href=#568 id=568 data-nosnippet>568</a>	</span>GridX,
+<a href=#569 id=569 data-nosnippet>569</a>	<span class="doccomment">/// Propagate to all peers sharing the Y dimension of the grid.
+<a href=#570 id=570 data-nosnippet>570</a>	</span>GridY,
+<a href=#571 id=571 data-nosnippet>571</a>	<span class="doccomment">/// No required propagation.
+<a href=#572 id=572 data-nosnippet>572</a>	</span><span class="prelude-val">None</span>,
+<a href=#573 id=573 data-nosnippet>573</a>}
+<a href=#574 id=574 data-nosnippet>574</a>
+<a href=#575 id=575 data-nosnippet>575</a><span class="kw">impl </span>RequiredRouting {
+<a href=#576 id=576 data-nosnippet>576</a>	<span class="doccomment">/// Whether the required routing set is definitely empty.
+<a href=#577 id=577 data-nosnippet>577</a>	</span><span class="kw">pub fn </span>is_empty(<span class="self">self</span>) -&gt; bool {
+<a href=#578 id=578 data-nosnippet>578</a>		<span class="kw">match </span><span class="self">self </span>{
+<a href=#579 id=579 data-nosnippet>579</a>			RequiredRouting::PendingTopology | RequiredRouting::None =&gt; <span class="bool-val">true</span>,
+<a href=#580 id=580 data-nosnippet>580</a>			<span class="kw">_ </span>=&gt; <span class="bool-val">false</span>,
+<a href=#581 id=581 data-nosnippet>581</a>		}
+<a href=#582 id=582 data-nosnippet>582</a>	}
+<a href=#583 id=583 data-nosnippet>583</a>
+<a href=#584 id=584 data-nosnippet>584</a>	<span class="doccomment">/// Combine two required routing sets into one that would cover both routing modes.
+<a href=#585 id=585 data-nosnippet>585</a>	</span><span class="kw">pub fn </span>combine(<span class="self">self</span>, other: <span class="self">Self</span>) -&gt; <span class="self">Self </span>{
+<a href=#586 id=586 data-nosnippet>586</a>		<span class="kw">match </span>(<span class="self">self</span>, other) {
+<a href=#587 id=587 data-nosnippet>587</a>			(RequiredRouting::All, <span class="kw">_</span>) | (<span class="kw">_</span>, RequiredRouting::All) =&gt; RequiredRouting::All,
+<a href=#588 id=588 data-nosnippet>588</a>			(RequiredRouting::GridXY, <span class="kw">_</span>) | (<span class="kw">_</span>, RequiredRouting::GridXY) =&gt; RequiredRouting::GridXY,
+<a href=#589 id=589 data-nosnippet>589</a>			(RequiredRouting::GridX, RequiredRouting::GridY) |
+<a href=#590 id=590 data-nosnippet>590</a>			(RequiredRouting::GridY, RequiredRouting::GridX) =&gt; RequiredRouting::GridXY,
+<a href=#591 id=591 data-nosnippet>591</a>			(RequiredRouting::GridX, RequiredRouting::GridX) =&gt; RequiredRouting::GridX,
+<a href=#592 id=592 data-nosnippet>592</a>			(RequiredRouting::GridY, RequiredRouting::GridY) =&gt; RequiredRouting::GridY,
+<a href=#593 id=593 data-nosnippet>593</a>			(RequiredRouting::None, RequiredRouting::PendingTopology) |
+<a href=#594 id=594 data-nosnippet>594</a>			(RequiredRouting::PendingTopology, RequiredRouting::None) =&gt; RequiredRouting::PendingTopology,
+<a href=#595 id=595 data-nosnippet>595</a>			(RequiredRouting::None, <span class="kw">_</span>) | (RequiredRouting::PendingTopology, <span class="kw">_</span>) =&gt; other,
+<a href=#596 id=596 data-nosnippet>596</a>			(<span class="kw">_</span>, RequiredRouting::None) | (<span class="kw">_</span>, RequiredRouting::PendingTopology) =&gt; <span class="self">self</span>,
+<a href=#597 id=597 data-nosnippet>597</a>		}
+<a href=#598 id=598 data-nosnippet>598</a>	}
+<a href=#599 id=599 data-nosnippet>599</a>}
+<a href=#600 id=600 data-nosnippet>600</a>
+<a href=#601 id=601 data-nosnippet>601</a><span class="attr">#[cfg(test)]
+<a href=#602 id=602 data-nosnippet>602</a></span><span class="kw">mod </span>tests {
+<a href=#603 id=603 data-nosnippet>603</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#604 id=604 data-nosnippet>604</a>	<span class="kw">use </span>rand::SeedableRng;
+<a href=#605 id=605 data-nosnippet>605</a>	<span class="kw">use </span>rand_chacha::ChaCha12Rng;
+<a href=#606 id=606 data-nosnippet>606</a>
+<a href=#607 id=607 data-nosnippet>607</a>	<span class="kw">fn </span>dummy_rng() -&gt; ChaCha12Rng {
+<a href=#608 id=608 data-nosnippet>608</a>		rand_chacha::ChaCha12Rng::seed_from_u64(<span class="number">12345</span>)
+<a href=#609 id=609 data-nosnippet>609</a>	}
 <a href=#610 id=610 data-nosnippet>610</a>
-<a href=#611 id=611 data-nosnippet>611</a>		<span class="kw">for _ in </span><span class="number">0</span>..<span class="number">16 </span>{
-<a href=#612 id=612 data-nosnippet>612</a>			<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">false</span>);
-<a href=#613 id=613 data-nosnippet>613</a>		}
-<a href=#614 id=614 data-nosnippet>614</a>	}
-<a href=#615 id=615 data-nosnippet>615</a>
-<a href=#616 id=616 data-nosnippet>616</a>	<span class="kw">fn </span>run_random_routing(
-<a href=#617 id=617 data-nosnippet>617</a>		random_routing: <span class="kw-2">&amp;mut </span>RandomRouting,
-<a href=#618 id=618 data-nosnippet>618</a>		rng: <span class="kw-2">&amp;mut </span>(<span class="kw">impl </span>CryptoRng + Rng),
-<a href=#619 id=619 data-nosnippet>619</a>		npeers: usize,
-<a href=#620 id=620 data-nosnippet>620</a>		iters: usize,
-<a href=#621 id=621 data-nosnippet>621</a>	) -&gt; usize {
-<a href=#622 id=622 data-nosnippet>622</a>		<span class="kw">let </span><span class="kw-2">mut </span>ret = <span class="number">0_usize</span>;
-<a href=#623 id=623 data-nosnippet>623</a>
-<a href=#624 id=624 data-nosnippet>624</a>		<span class="kw">for _ in </span><span class="number">0</span>..iters {
-<a href=#625 id=625 data-nosnippet>625</a>			<span class="kw">if </span>random_routing.sample(npeers, rng) {
-<a href=#626 id=626 data-nosnippet>626</a>				random_routing.inc_sent();
-<a href=#627 id=627 data-nosnippet>627</a>				ret += <span class="number">1</span>;
-<a href=#628 id=628 data-nosnippet>628</a>			}
-<a href=#629 id=629 data-nosnippet>629</a>		}
-<a href=#630 id=630 data-nosnippet>630</a>
-<a href=#631 id=631 data-nosnippet>631</a>		ret
-<a href=#632 id=632 data-nosnippet>632</a>	}
-<a href=#633 id=633 data-nosnippet>633</a>
-<a href=#634 id=634 data-nosnippet>634</a>	<span class="attr">#[test]
-<a href=#635 id=635 data-nosnippet>635</a>	</span><span class="kw">fn </span>test_random_routing_distribution() {
-<a href=#636 id=636 data-nosnippet>636</a>		<span class="kw">let </span><span class="kw-2">mut </span>rng = dummy_rng();
-<a href=#637 id=637 data-nosnippet>637</a>
-<a href=#638 id=638 data-nosnippet>638</a>		<span class="kw">let </span><span class="kw-2">mut </span>random_routing = RandomRouting { target: <span class="number">4</span>, sent: <span class="number">0</span>, sample_rate: <span class="number">8 </span>};
-<a href=#639 id=639 data-nosnippet>639</a>		<span class="macro">assert_eq!</span>(run_random_routing(<span class="kw-2">&amp;mut </span>random_routing, <span class="kw-2">&amp;mut </span>rng, <span class="number">100</span>, <span class="number">10000</span>), <span class="number">4</span>);
-<a href=#640 id=640 data-nosnippet>640</a>
-<a href=#641 id=641 data-nosnippet>641</a>		<span class="kw">let </span><span class="kw-2">mut </span>random_routing = RandomRouting { target: <span class="number">8</span>, sent: <span class="number">0</span>, sample_rate: <span class="number">100 </span>};
-<a href=#642 id=642 data-nosnippet>642</a>		<span class="macro">assert_eq!</span>(run_random_routing(<span class="kw-2">&amp;mut </span>random_routing, <span class="kw-2">&amp;mut </span>rng, <span class="number">100</span>, <span class="number">10000</span>), <span class="number">8</span>);
+<a href=#611 id=611 data-nosnippet>611</a>	<span class="attr">#[test]
+<a href=#612 id=612 data-nosnippet>612</a>	</span><span class="kw">fn </span>test_required_routing_combine() {
+<a href=#613 id=613 data-nosnippet>613</a>		<span class="macro">assert_eq!</span>(RequiredRouting::All.combine(RequiredRouting::None), RequiredRouting::All);
+<a href=#614 id=614 data-nosnippet>614</a>		<span class="macro">assert_eq!</span>(RequiredRouting::All.combine(RequiredRouting::GridXY), RequiredRouting::All);
+<a href=#615 id=615 data-nosnippet>615</a>		<span class="macro">assert_eq!</span>(RequiredRouting::GridXY.combine(RequiredRouting::All), RequiredRouting::All);
+<a href=#616 id=616 data-nosnippet>616</a>		<span class="macro">assert_eq!</span>(RequiredRouting::None.combine(RequiredRouting::All), RequiredRouting::All);
+<a href=#617 id=617 data-nosnippet>617</a>		<span class="macro">assert_eq!</span>(RequiredRouting::None.combine(RequiredRouting::None), RequiredRouting::None);
+<a href=#618 id=618 data-nosnippet>618</a>		<span class="macro">assert_eq!</span>(
+<a href=#619 id=619 data-nosnippet>619</a>			RequiredRouting::PendingTopology.combine(RequiredRouting::GridX),
+<a href=#620 id=620 data-nosnippet>620</a>			RequiredRouting::GridX
+<a href=#621 id=621 data-nosnippet>621</a>		);
+<a href=#622 id=622 data-nosnippet>622</a>
+<a href=#623 id=623 data-nosnippet>623</a>		<span class="macro">assert_eq!</span>(
+<a href=#624 id=624 data-nosnippet>624</a>			RequiredRouting::GridX.combine(RequiredRouting::PendingTopology),
+<a href=#625 id=625 data-nosnippet>625</a>			RequiredRouting::GridX
+<a href=#626 id=626 data-nosnippet>626</a>		);
+<a href=#627 id=627 data-nosnippet>627</a>		<span class="macro">assert_eq!</span>(RequiredRouting::GridX.combine(RequiredRouting::GridY), RequiredRouting::GridXY);
+<a href=#628 id=628 data-nosnippet>628</a>		<span class="macro">assert_eq!</span>(RequiredRouting::GridY.combine(RequiredRouting::GridX), RequiredRouting::GridXY);
+<a href=#629 id=629 data-nosnippet>629</a>		<span class="macro">assert_eq!</span>(
+<a href=#630 id=630 data-nosnippet>630</a>			RequiredRouting::GridXY.combine(RequiredRouting::GridXY),
+<a href=#631 id=631 data-nosnippet>631</a>			RequiredRouting::GridXY
+<a href=#632 id=632 data-nosnippet>632</a>		);
+<a href=#633 id=633 data-nosnippet>633</a>		<span class="macro">assert_eq!</span>(RequiredRouting::GridX.combine(RequiredRouting::GridX), RequiredRouting::GridX);
+<a href=#634 id=634 data-nosnippet>634</a>		<span class="macro">assert_eq!</span>(RequiredRouting::GridY.combine(RequiredRouting::GridY), RequiredRouting::GridY);
+<a href=#635 id=635 data-nosnippet>635</a>
+<a href=#636 id=636 data-nosnippet>636</a>		<span class="macro">assert_eq!</span>(RequiredRouting::None.combine(RequiredRouting::GridY), RequiredRouting::GridY);
+<a href=#637 id=637 data-nosnippet>637</a>		<span class="macro">assert_eq!</span>(RequiredRouting::None.combine(RequiredRouting::GridX), RequiredRouting::GridX);
+<a href=#638 id=638 data-nosnippet>638</a>		<span class="macro">assert_eq!</span>(RequiredRouting::None.combine(RequiredRouting::GridXY), RequiredRouting::GridXY);
+<a href=#639 id=639 data-nosnippet>639</a>
+<a href=#640 id=640 data-nosnippet>640</a>		<span class="macro">assert_eq!</span>(RequiredRouting::GridY.combine(RequiredRouting::None), RequiredRouting::GridY);
+<a href=#641 id=641 data-nosnippet>641</a>		<span class="macro">assert_eq!</span>(RequiredRouting::GridX.combine(RequiredRouting::None), RequiredRouting::GridX);
+<a href=#642 id=642 data-nosnippet>642</a>		<span class="macro">assert_eq!</span>(RequiredRouting::GridXY.combine(RequiredRouting::None), RequiredRouting::GridXY);
 <a href=#643 id=643 data-nosnippet>643</a>
-<a href=#644 id=644 data-nosnippet>644</a>		<span class="kw">let </span><span class="kw-2">mut </span>random_routing = RandomRouting { target: <span class="number">0</span>, sent: <span class="number">0</span>, sample_rate: <span class="number">100 </span>};
-<a href=#645 id=645 data-nosnippet>645</a>		<span class="macro">assert_eq!</span>(run_random_routing(<span class="kw-2">&amp;mut </span>random_routing, <span class="kw-2">&amp;mut </span>rng, <span class="number">100</span>, <span class="number">10000</span>), <span class="number">0</span>);
-<a href=#646 id=646 data-nosnippet>646</a>
-<a href=#647 id=647 data-nosnippet>647</a>		<span class="kw">let </span><span class="kw-2">mut </span>random_routing = RandomRouting { target: <span class="number">10</span>, sent: <span class="number">0</span>, sample_rate: <span class="number">10 </span>};
-<a href=#648 id=648 data-nosnippet>648</a>		<span class="macro">assert_eq!</span>(run_random_routing(<span class="kw-2">&amp;mut </span>random_routing, <span class="kw-2">&amp;mut </span>rng, <span class="number">10</span>, <span class="number">100</span>), <span class="number">10</span>);
-<a href=#649 id=649 data-nosnippet>649</a>	}
-<a href=#650 id=650 data-nosnippet>650</a>
-<a href=#651 id=651 data-nosnippet>651</a>	<span class="attr">#[test]
-<a href=#652 id=652 data-nosnippet>652</a>	</span><span class="kw">fn </span>test_matrix_neighbors() {
-<a href=#653 id=653 data-nosnippet>653</a>		<span class="kw">for </span>(our_index, len, expected_row, expected_column) <span class="kw">in </span><span class="macro">vec!</span>[
-<a href=#654 id=654 data-nosnippet>654</a>			(<span class="number">0usize</span>, <span class="number">1usize</span>, <span class="macro">vec!</span>[], <span class="macro">vec!</span>[]),
-<a href=#655 id=655 data-nosnippet>655</a>			(<span class="number">1</span>, <span class="number">2</span>, <span class="macro">vec!</span>[], <span class="macro">vec!</span>[<span class="number">0usize</span>]),
-<a href=#656 id=656 data-nosnippet>656</a>			(<span class="number">0</span>, <span class="number">9</span>, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>], <span class="macro">vec!</span>[<span class="number">3</span>, <span class="number">6</span>]),
-<a href=#657 id=657 data-nosnippet>657</a>			(<span class="number">9</span>, <span class="number">10</span>, <span class="macro">vec!</span>[], <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">3</span>, <span class="number">6</span>]),
-<a href=#658 id=658 data-nosnippet>658</a>			(<span class="number">10</span>, <span class="number">11</span>, <span class="macro">vec!</span>[<span class="number">9</span>], <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">4</span>, <span class="number">7</span>]),
-<a href=#659 id=659 data-nosnippet>659</a>			(<span class="number">7</span>, <span class="number">11</span>, <span class="macro">vec!</span>[<span class="number">6</span>, <span class="number">8</span>], <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">4</span>, <span class="number">10</span>]),
-<a href=#660 id=660 data-nosnippet>660</a>		]
-<a href=#661 id=661 data-nosnippet>661</a>		.into_iter()
-<a href=#662 id=662 data-nosnippet>662</a>		{
-<a href=#663 id=663 data-nosnippet>663</a>			<span class="kw">let </span>matrix = matrix_neighbors(our_index, len).unwrap();
-<a href=#664 id=664 data-nosnippet>664</a>			<span class="kw">let </span><span class="kw-2">mut </span>row_result: Vec&lt;<span class="kw">_</span>&gt; = matrix.row_neighbors.collect();
-<a href=#665 id=665 data-nosnippet>665</a>			<span class="kw">let </span><span class="kw-2">mut </span>column_result: Vec&lt;<span class="kw">_</span>&gt; = matrix.column_neighbors.collect();
-<a href=#666 id=666 data-nosnippet>666</a>			row_result.sort();
-<a href=#667 id=667 data-nosnippet>667</a>			column_result.sort();
-<a href=#668 id=668 data-nosnippet>668</a>
-<a href=#669 id=669 data-nosnippet>669</a>			<span class="macro">assert_eq!</span>(row_result, expected_row);
-<a href=#670 id=670 data-nosnippet>670</a>			<span class="macro">assert_eq!</span>(column_result, expected_column);
-<a href=#671 id=671 data-nosnippet>671</a>		}
-<a href=#672 id=672 data-nosnippet>672</a>	}
-<a href=#673 id=673 data-nosnippet>673</a>}</code></pre></div></section></main></body></html>
+<a href=#644 id=644 data-nosnippet>644</a>		<span class="macro">assert_eq!</span>(
+<a href=#645 id=645 data-nosnippet>645</a>			RequiredRouting::PendingTopology.combine(RequiredRouting::None),
+<a href=#646 id=646 data-nosnippet>646</a>			RequiredRouting::PendingTopology
+<a href=#647 id=647 data-nosnippet>647</a>		);
+<a href=#648 id=648 data-nosnippet>648</a>
+<a href=#649 id=649 data-nosnippet>649</a>		<span class="macro">assert_eq!</span>(
+<a href=#650 id=650 data-nosnippet>650</a>			RequiredRouting::None.combine(RequiredRouting::PendingTopology),
+<a href=#651 id=651 data-nosnippet>651</a>			RequiredRouting::PendingTopology
+<a href=#652 id=652 data-nosnippet>652</a>		);
+<a href=#653 id=653 data-nosnippet>653</a>	}
+<a href=#654 id=654 data-nosnippet>654</a>
+<a href=#655 id=655 data-nosnippet>655</a>	<span class="attr">#[test]
+<a href=#656 id=656 data-nosnippet>656</a>	</span><span class="kw">fn </span>test_random_routing_sample() {
+<a href=#657 id=657 data-nosnippet>657</a>		<span class="comment">// This test is fragile as it relies on a specific ChaCha12Rng
+<a href=#658 id=658 data-nosnippet>658</a>		// sequence that might be implementation defined even for a static seed
+<a href=#659 id=659 data-nosnippet>659</a>		</span><span class="kw">let </span><span class="kw-2">mut </span>rng = dummy_rng();
+<a href=#660 id=660 data-nosnippet>660</a>		<span class="kw">let </span><span class="kw-2">mut </span>random_routing = RandomRouting { target: <span class="number">4</span>, sent: <span class="number">0</span>, sample_rate: <span class="number">8 </span>};
+<a href=#661 id=661 data-nosnippet>661</a>
+<a href=#662 id=662 data-nosnippet>662</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">true</span>);
+<a href=#663 id=663 data-nosnippet>663</a>		random_routing.inc_sent();
+<a href=#664 id=664 data-nosnippet>664</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">false</span>);
+<a href=#665 id=665 data-nosnippet>665</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">false</span>);
+<a href=#666 id=666 data-nosnippet>666</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">true</span>);
+<a href=#667 id=667 data-nosnippet>667</a>		random_routing.inc_sent();
+<a href=#668 id=668 data-nosnippet>668</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">true</span>);
+<a href=#669 id=669 data-nosnippet>669</a>		random_routing.inc_sent();
+<a href=#670 id=670 data-nosnippet>670</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">false</span>);
+<a href=#671 id=671 data-nosnippet>671</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">false</span>);
+<a href=#672 id=672 data-nosnippet>672</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">false</span>);
+<a href=#673 id=673 data-nosnippet>673</a>		<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">true</span>);
+<a href=#674 id=674 data-nosnippet>674</a>		random_routing.inc_sent();
+<a href=#675 id=675 data-nosnippet>675</a>
+<a href=#676 id=676 data-nosnippet>676</a>		<span class="kw">for _ in </span><span class="number">0</span>..<span class="number">16 </span>{
+<a href=#677 id=677 data-nosnippet>677</a>			<span class="macro">assert_eq!</span>(random_routing.sample(<span class="number">16</span>, <span class="kw-2">&amp;mut </span>rng), <span class="bool-val">false</span>);
+<a href=#678 id=678 data-nosnippet>678</a>		}
+<a href=#679 id=679 data-nosnippet>679</a>	}
+<a href=#680 id=680 data-nosnippet>680</a>
+<a href=#681 id=681 data-nosnippet>681</a>	<span class="kw">fn </span>run_random_routing(
+<a href=#682 id=682 data-nosnippet>682</a>		random_routing: <span class="kw-2">&amp;mut </span>RandomRouting,
+<a href=#683 id=683 data-nosnippet>683</a>		rng: <span class="kw-2">&amp;mut </span>(<span class="kw">impl </span>CryptoRng + Rng),
+<a href=#684 id=684 data-nosnippet>684</a>		npeers: usize,
+<a href=#685 id=685 data-nosnippet>685</a>		iters: usize,
+<a href=#686 id=686 data-nosnippet>686</a>	) -&gt; usize {
+<a href=#687 id=687 data-nosnippet>687</a>		<span class="kw">let </span><span class="kw-2">mut </span>ret = <span class="number">0_usize</span>;
+<a href=#688 id=688 data-nosnippet>688</a>
+<a href=#689 id=689 data-nosnippet>689</a>		<span class="kw">for _ in </span><span class="number">0</span>..iters {
+<a href=#690 id=690 data-nosnippet>690</a>			<span class="kw">if </span>random_routing.sample(npeers, rng) {
+<a href=#691 id=691 data-nosnippet>691</a>				random_routing.inc_sent();
+<a href=#692 id=692 data-nosnippet>692</a>				ret += <span class="number">1</span>;
+<a href=#693 id=693 data-nosnippet>693</a>			}
+<a href=#694 id=694 data-nosnippet>694</a>		}
+<a href=#695 id=695 data-nosnippet>695</a>
+<a href=#696 id=696 data-nosnippet>696</a>		ret
+<a href=#697 id=697 data-nosnippet>697</a>	}
+<a href=#698 id=698 data-nosnippet>698</a>
+<a href=#699 id=699 data-nosnippet>699</a>	<span class="attr">#[test]
+<a href=#700 id=700 data-nosnippet>700</a>	</span><span class="kw">fn </span>test_random_routing_distribution() {
+<a href=#701 id=701 data-nosnippet>701</a>		<span class="kw">let </span><span class="kw-2">mut </span>rng = dummy_rng();
+<a href=#702 id=702 data-nosnippet>702</a>
+<a href=#703 id=703 data-nosnippet>703</a>		<span class="kw">let </span><span class="kw-2">mut </span>random_routing = RandomRouting { target: <span class="number">4</span>, sent: <span class="number">0</span>, sample_rate: <span class="number">8 </span>};
+<a href=#704 id=704 data-nosnippet>704</a>		<span class="macro">assert_eq!</span>(run_random_routing(<span class="kw-2">&amp;mut </span>random_routing, <span class="kw-2">&amp;mut </span>rng, <span class="number">100</span>, <span class="number">10000</span>), <span class="number">4</span>);
+<a href=#705 id=705 data-nosnippet>705</a>
+<a href=#706 id=706 data-nosnippet>706</a>		<span class="kw">let </span><span class="kw-2">mut </span>random_routing = RandomRouting { target: <span class="number">8</span>, sent: <span class="number">0</span>, sample_rate: <span class="number">100 </span>};
+<a href=#707 id=707 data-nosnippet>707</a>		<span class="macro">assert_eq!</span>(run_random_routing(<span class="kw-2">&amp;mut </span>random_routing, <span class="kw-2">&amp;mut </span>rng, <span class="number">100</span>, <span class="number">10000</span>), <span class="number">8</span>);
+<a href=#708 id=708 data-nosnippet>708</a>
+<a href=#709 id=709 data-nosnippet>709</a>		<span class="kw">let </span><span class="kw-2">mut </span>random_routing = RandomRouting { target: <span class="number">0</span>, sent: <span class="number">0</span>, sample_rate: <span class="number">100 </span>};
+<a href=#710 id=710 data-nosnippet>710</a>		<span class="macro">assert_eq!</span>(run_random_routing(<span class="kw-2">&amp;mut </span>random_routing, <span class="kw-2">&amp;mut </span>rng, <span class="number">100</span>, <span class="number">10000</span>), <span class="number">0</span>);
+<a href=#711 id=711 data-nosnippet>711</a>
+<a href=#712 id=712 data-nosnippet>712</a>		<span class="kw">let </span><span class="kw-2">mut </span>random_routing = RandomRouting { target: <span class="number">10</span>, sent: <span class="number">0</span>, sample_rate: <span class="number">10 </span>};
+<a href=#713 id=713 data-nosnippet>713</a>		<span class="macro">assert_eq!</span>(run_random_routing(<span class="kw-2">&amp;mut </span>random_routing, <span class="kw-2">&amp;mut </span>rng, <span class="number">10</span>, <span class="number">100</span>), <span class="number">10</span>);
+<a href=#714 id=714 data-nosnippet>714</a>	}
+<a href=#715 id=715 data-nosnippet>715</a>
+<a href=#716 id=716 data-nosnippet>716</a>	<span class="attr">#[test]
+<a href=#717 id=717 data-nosnippet>717</a>	</span><span class="kw">fn </span>test_matrix_neighbors() {
+<a href=#718 id=718 data-nosnippet>718</a>		<span class="kw">for </span>(our_index, len, expected_row, expected_column) <span class="kw">in </span><span class="macro">vec!</span>[
+<a href=#719 id=719 data-nosnippet>719</a>			(<span class="number">0usize</span>, <span class="number">1usize</span>, <span class="macro">vec!</span>[], <span class="macro">vec!</span>[]),
+<a href=#720 id=720 data-nosnippet>720</a>			(<span class="number">1</span>, <span class="number">2</span>, <span class="macro">vec!</span>[], <span class="macro">vec!</span>[<span class="number">0usize</span>]),
+<a href=#721 id=721 data-nosnippet>721</a>			(<span class="number">0</span>, <span class="number">9</span>, <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>], <span class="macro">vec!</span>[<span class="number">3</span>, <span class="number">6</span>]),
+<a href=#722 id=722 data-nosnippet>722</a>			(<span class="number">9</span>, <span class="number">10</span>, <span class="macro">vec!</span>[], <span class="macro">vec!</span>[<span class="number">0</span>, <span class="number">3</span>, <span class="number">6</span>]),
+<a href=#723 id=723 data-nosnippet>723</a>			(<span class="number">10</span>, <span class="number">11</span>, <span class="macro">vec!</span>[<span class="number">9</span>], <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">4</span>, <span class="number">7</span>]),
+<a href=#724 id=724 data-nosnippet>724</a>			(<span class="number">7</span>, <span class="number">11</span>, <span class="macro">vec!</span>[<span class="number">6</span>, <span class="number">8</span>], <span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">4</span>, <span class="number">10</span>]),
+<a href=#725 id=725 data-nosnippet>725</a>		]
+<a href=#726 id=726 data-nosnippet>726</a>		.into_iter()
+<a href=#727 id=727 data-nosnippet>727</a>		{
+<a href=#728 id=728 data-nosnippet>728</a>			<span class="kw">let </span>matrix = matrix_neighbors(our_index, len).unwrap();
+<a href=#729 id=729 data-nosnippet>729</a>			<span class="kw">let </span><span class="kw-2">mut </span>row_result: Vec&lt;<span class="kw">_</span>&gt; = matrix.row_neighbors.collect();
+<a href=#730 id=730 data-nosnippet>730</a>			<span class="kw">let </span><span class="kw-2">mut </span>column_result: Vec&lt;<span class="kw">_</span>&gt; = matrix.column_neighbors.collect();
+<a href=#731 id=731 data-nosnippet>731</a>			row_result.sort();
+<a href=#732 id=732 data-nosnippet>732</a>			column_result.sort();
+<a href=#733 id=733 data-nosnippet>733</a>
+<a href=#734 id=734 data-nosnippet>734</a>			<span class="macro">assert_eq!</span>(row_result, expected_row);
+<a href=#735 id=735 data-nosnippet>735</a>			<span class="macro">assert_eq!</span>(column_result, expected_column);
+<a href=#736 id=736 data-nosnippet>736</a>		}
+<a href=#737 id=737 data-nosnippet>737</a>	}
+<a href=#738 id=738 data-nosnippet>738</a>}</code></pre></div></section></main></body></html>

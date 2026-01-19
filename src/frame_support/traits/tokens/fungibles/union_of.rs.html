@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/8279d10/substrate/frame/support/src/traits/tokens/fungibles/union_of.rs`."><title>union_of.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support/traits/tokens/fungibles/</div>union_of.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/0c70641/substrate/frame/support/src/traits/tokens/fungibles/union_of.rs`."><title>union_of.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support/traits/tokens/fungibles/</div>union_of.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (Criterion) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -825,127 +825,154 @@
 <a href=#825 id=825 data-nosnippet>825</a>}
 <a href=#826 id=826 data-nosnippet>826</a>
 <a href=#827 id=827 data-nosnippet>827</a><span class="kw">impl</span>&lt;
-<a href=#828 id=828 data-nosnippet>828</a>		Left: fungibles::BalancedHold&lt;AccountId&gt;,
-<a href=#829 id=829 data-nosnippet>829</a>		Right: fungibles::BalancedHold&lt;AccountId, Balance = Left::Balance, Reason = Left::Reason&gt;,
-<a href=#830 id=830 data-nosnippet>830</a>		Criterion: Convert&lt;AssetKind, Either&lt;Left::AssetId, Right::AssetId&gt;&gt;,
-<a href=#831 id=831 data-nosnippet>831</a>		AssetKind: AssetId,
-<a href=#832 id=832 data-nosnippet>832</a>		AccountId,
-<a href=#833 id=833 data-nosnippet>833</a>	&gt; fungibles::BalancedHold&lt;AccountId&gt; <span class="kw">for </span>UnionOf&lt;Left, Right, Criterion, AssetKind, AccountId&gt;
-<a href=#834 id=834 data-nosnippet>834</a>{
-<a href=#835 id=835 data-nosnippet>835</a>	<span class="kw">fn </span>slash(
-<a href=#836 id=836 data-nosnippet>836</a>		asset: <span class="self">Self</span>::AssetId,
-<a href=#837 id=837 data-nosnippet>837</a>		reason: <span class="kw-2">&amp;</span><span class="self">Self</span>::Reason,
-<a href=#838 id=838 data-nosnippet>838</a>		who: <span class="kw-2">&amp;</span>AccountId,
-<a href=#839 id=839 data-nosnippet>839</a>		amount: <span class="self">Self</span>::Balance,
-<a href=#840 id=840 data-nosnippet>840</a>	) -&gt; (fungibles::Credit&lt;AccountId, <span class="self">Self</span>&gt;, <span class="self">Self</span>::Balance) {
-<a href=#841 id=841 data-nosnippet>841</a>		<span class="kw">match </span>Criterion::convert(asset.clone()) {
-<a href=#842 id=842 data-nosnippet>842</a>			Left(a) =&gt; {
-<a href=#843 id=843 data-nosnippet>843</a>				<span class="kw">let </span>(credit, amount) =
-<a href=#844 id=844 data-nosnippet>844</a>					&lt;Left <span class="kw">as </span>fungibles::BalancedHold&lt;AccountId&gt;&gt;::slash(a, reason, who, amount);
-<a href=#845 id=845 data-nosnippet>845</a>				(imbalance::from_fungibles(credit, asset), amount)
-<a href=#846 id=846 data-nosnippet>846</a>			},
-<a href=#847 id=847 data-nosnippet>847</a>			Right(a) =&gt; {
-<a href=#848 id=848 data-nosnippet>848</a>				<span class="kw">let </span>(credit, amount) =
-<a href=#849 id=849 data-nosnippet>849</a>					&lt;Right <span class="kw">as </span>fungibles::BalancedHold&lt;AccountId&gt;&gt;::slash(a, reason, who, amount);
-<a href=#850 id=850 data-nosnippet>850</a>				(imbalance::from_fungibles(credit, asset), amount)
-<a href=#851 id=851 data-nosnippet>851</a>			},
-<a href=#852 id=852 data-nosnippet>852</a>		}
-<a href=#853 id=853 data-nosnippet>853</a>	}
-<a href=#854 id=854 data-nosnippet>854</a>}
-<a href=#855 id=855 data-nosnippet>855</a>
-<a href=#856 id=856 data-nosnippet>856</a><span class="kw">impl</span>&lt;
-<a href=#857 id=857 data-nosnippet>857</a>		Left: fungibles::Inspect&lt;AccountId&gt; + fungibles::Create&lt;AccountId&gt;,
-<a href=#858 id=858 data-nosnippet>858</a>		Right: fungibles::Inspect&lt;AccountId, Balance = Left::Balance&gt; + fungibles::Create&lt;AccountId&gt;,
-<a href=#859 id=859 data-nosnippet>859</a>		Criterion: Convert&lt;AssetKind, Either&lt;Left::AssetId, Right::AssetId&gt;&gt;,
-<a href=#860 id=860 data-nosnippet>860</a>		AssetKind: AssetId,
-<a href=#861 id=861 data-nosnippet>861</a>		AccountId,
-<a href=#862 id=862 data-nosnippet>862</a>	&gt; fungibles::Create&lt;AccountId&gt; <span class="kw">for </span>UnionOf&lt;Left, Right, Criterion, AssetKind, AccountId&gt;
-<a href=#863 id=863 data-nosnippet>863</a>{
-<a href=#864 id=864 data-nosnippet>864</a>	<span class="kw">fn </span>create(
-<a href=#865 id=865 data-nosnippet>865</a>		asset: AssetKind,
-<a href=#866 id=866 data-nosnippet>866</a>		admin: AccountId,
-<a href=#867 id=867 data-nosnippet>867</a>		is_sufficient: bool,
-<a href=#868 id=868 data-nosnippet>868</a>		min_balance: <span class="self">Self</span>::Balance,
-<a href=#869 id=869 data-nosnippet>869</a>	) -&gt; DispatchResult {
-<a href=#870 id=870 data-nosnippet>870</a>		<span class="kw">match </span>Criterion::convert(asset) {
-<a href=#871 id=871 data-nosnippet>871</a>			Left(a) =&gt;
-<a href=#872 id=872 data-nosnippet>872</a>				&lt;Left <span class="kw">as </span>fungibles::Create&lt;AccountId&gt;&gt;::create(a, admin, is_sufficient, min_balance),
-<a href=#873 id=873 data-nosnippet>873</a>			Right(a) =&gt; &lt;Right <span class="kw">as </span>fungibles::Create&lt;AccountId&gt;&gt;::create(
-<a href=#874 id=874 data-nosnippet>874</a>				a,
-<a href=#875 id=875 data-nosnippet>875</a>				admin,
-<a href=#876 id=876 data-nosnippet>876</a>				is_sufficient,
-<a href=#877 id=877 data-nosnippet>877</a>				min_balance,
-<a href=#878 id=878 data-nosnippet>878</a>			),
+<a href=#828 id=828 data-nosnippet>828</a>		Left: fungibles::BalancedHold&lt;AccountId&gt;
+<a href=#829 id=829 data-nosnippet>829</a>			+ fungibles::hold::DoneSlash&lt;<span class="self">Self</span>::AssetId, <span class="self">Self</span>::Reason, AccountId, <span class="self">Self</span>::Balance&gt;,
+<a href=#830 id=830 data-nosnippet>830</a>		Right: fungibles::BalancedHold&lt;AccountId, Balance = Left::Balance, Reason = Left::Reason&gt;
+<a href=#831 id=831 data-nosnippet>831</a>			+ fungibles::hold::DoneSlash&lt;<span class="self">Self</span>::AssetId, <span class="self">Self</span>::Reason, AccountId, <span class="self">Self</span>::Balance&gt;,
+<a href=#832 id=832 data-nosnippet>832</a>		Criterion: Convert&lt;AssetKind, Either&lt;Left::AssetId, Right::AssetId&gt;&gt;,
+<a href=#833 id=833 data-nosnippet>833</a>		AssetKind: AssetId,
+<a href=#834 id=834 data-nosnippet>834</a>		AccountId,
+<a href=#835 id=835 data-nosnippet>835</a>	&gt; fungibles::BalancedHold&lt;AccountId&gt; <span class="kw">for </span>UnionOf&lt;Left, Right, Criterion, AssetKind, AccountId&gt;
+<a href=#836 id=836 data-nosnippet>836</a>{
+<a href=#837 id=837 data-nosnippet>837</a>	<span class="kw">fn </span>slash(
+<a href=#838 id=838 data-nosnippet>838</a>		asset: <span class="self">Self</span>::AssetId,
+<a href=#839 id=839 data-nosnippet>839</a>		reason: <span class="kw-2">&amp;</span><span class="self">Self</span>::Reason,
+<a href=#840 id=840 data-nosnippet>840</a>		who: <span class="kw-2">&amp;</span>AccountId,
+<a href=#841 id=841 data-nosnippet>841</a>		amount: <span class="self">Self</span>::Balance,
+<a href=#842 id=842 data-nosnippet>842</a>	) -&gt; (fungibles::Credit&lt;AccountId, <span class="self">Self</span>&gt;, <span class="self">Self</span>::Balance) {
+<a href=#843 id=843 data-nosnippet>843</a>		<span class="kw">match </span>Criterion::convert(asset.clone()) {
+<a href=#844 id=844 data-nosnippet>844</a>			Left(a) =&gt; {
+<a href=#845 id=845 data-nosnippet>845</a>				<span class="kw">let </span>(credit, amount) =
+<a href=#846 id=846 data-nosnippet>846</a>					&lt;Left <span class="kw">as </span>fungibles::BalancedHold&lt;AccountId&gt;&gt;::slash(a, reason, who, amount);
+<a href=#847 id=847 data-nosnippet>847</a>				(imbalance::from_fungibles(credit, asset), amount)
+<a href=#848 id=848 data-nosnippet>848</a>			},
+<a href=#849 id=849 data-nosnippet>849</a>			Right(a) =&gt; {
+<a href=#850 id=850 data-nosnippet>850</a>				<span class="kw">let </span>(credit, amount) =
+<a href=#851 id=851 data-nosnippet>851</a>					&lt;Right <span class="kw">as </span>fungibles::BalancedHold&lt;AccountId&gt;&gt;::slash(a, reason, who, amount);
+<a href=#852 id=852 data-nosnippet>852</a>				(imbalance::from_fungibles(credit, asset), amount)
+<a href=#853 id=853 data-nosnippet>853</a>			},
+<a href=#854 id=854 data-nosnippet>854</a>		}
+<a href=#855 id=855 data-nosnippet>855</a>	}
+<a href=#856 id=856 data-nosnippet>856</a>}
+<a href=#857 id=857 data-nosnippet>857</a>
+<a href=#858 id=858 data-nosnippet>858</a><span class="kw">impl</span>&lt;
+<a href=#859 id=859 data-nosnippet>859</a>		Reason,
+<a href=#860 id=860 data-nosnippet>860</a>		Balance,
+<a href=#861 id=861 data-nosnippet>861</a>		Left: fungibles::Inspect&lt;AccountId&gt;
+<a href=#862 id=862 data-nosnippet>862</a>			+ fungibles::hold::DoneSlash&lt;Left::AssetId, Reason, AccountId, Balance&gt;,
+<a href=#863 id=863 data-nosnippet>863</a>		Right: fungibles::Inspect&lt;AccountId&gt;
+<a href=#864 id=864 data-nosnippet>864</a>			+ fungibles::hold::DoneSlash&lt;Right::AssetId, Reason, AccountId, Balance&gt;,
+<a href=#865 id=865 data-nosnippet>865</a>		Criterion: Convert&lt;AssetKind, Either&lt;Left::AssetId, Right::AssetId&gt;&gt;,
+<a href=#866 id=866 data-nosnippet>866</a>		AssetKind: AssetId,
+<a href=#867 id=867 data-nosnippet>867</a>		AccountId,
+<a href=#868 id=868 data-nosnippet>868</a>	&gt; fungibles::hold::DoneSlash&lt;AssetKind, Reason, AccountId, Balance&gt;
+<a href=#869 id=869 data-nosnippet>869</a>	<span class="kw">for </span>UnionOf&lt;Left, Right, Criterion, AssetKind, AccountId&gt;
+<a href=#870 id=870 data-nosnippet>870</a>{
+<a href=#871 id=871 data-nosnippet>871</a>	<span class="kw">fn </span>done_slash(asset: AssetKind, reason: <span class="kw-2">&amp;</span>Reason, who: <span class="kw-2">&amp;</span>AccountId, amount: Balance) {
+<a href=#872 id=872 data-nosnippet>872</a>		<span class="kw">match </span>Criterion::convert(asset.clone()) {
+<a href=#873 id=873 data-nosnippet>873</a>			Left(a) =&gt; {
+<a href=#874 id=874 data-nosnippet>874</a>				Left::done_slash(a, reason, who, amount);
+<a href=#875 id=875 data-nosnippet>875</a>			},
+<a href=#876 id=876 data-nosnippet>876</a>			Right(a) =&gt; {
+<a href=#877 id=877 data-nosnippet>877</a>				Right::done_slash(a, reason, who, amount);
+<a href=#878 id=878 data-nosnippet>878</a>			},
 <a href=#879 id=879 data-nosnippet>879</a>		}
 <a href=#880 id=880 data-nosnippet>880</a>	}
 <a href=#881 id=881 data-nosnippet>881</a>}
 <a href=#882 id=882 data-nosnippet>882</a>
 <a href=#883 id=883 data-nosnippet>883</a><span class="kw">impl</span>&lt;
-<a href=#884 id=884 data-nosnippet>884</a>		Left: fungibles::Inspect&lt;AccountId&gt; + AccountTouch&lt;Left::AssetId, AccountId&gt;,
-<a href=#885 id=885 data-nosnippet>885</a>		Right: fungibles::Inspect&lt;AccountId&gt;
-<a href=#886 id=886 data-nosnippet>886</a>			+ AccountTouch&lt;
-<a href=#887 id=887 data-nosnippet>887</a>				Right::AssetId,
-<a href=#888 id=888 data-nosnippet>888</a>				AccountId,
-<a href=#889 id=889 data-nosnippet>889</a>				Balance = &lt;Left <span class="kw">as </span>AccountTouch&lt;Left::AssetId, AccountId&gt;&gt;::Balance,
-<a href=#890 id=890 data-nosnippet>890</a>			&gt;,
-<a href=#891 id=891 data-nosnippet>891</a>		Criterion: Convert&lt;AssetKind, Either&lt;Left::AssetId, Right::AssetId&gt;&gt;,
-<a href=#892 id=892 data-nosnippet>892</a>		AssetKind: AssetId,
-<a href=#893 id=893 data-nosnippet>893</a>		AccountId,
-<a href=#894 id=894 data-nosnippet>894</a>	&gt; AccountTouch&lt;AssetKind, AccountId&gt; <span class="kw">for </span>UnionOf&lt;Left, Right, Criterion, AssetKind, AccountId&gt;
-<a href=#895 id=895 data-nosnippet>895</a>{
-<a href=#896 id=896 data-nosnippet>896</a>	<span class="kw">type </span>Balance = &lt;Left <span class="kw">as </span>AccountTouch&lt;Left::AssetId, AccountId&gt;&gt;::Balance;
-<a href=#897 id=897 data-nosnippet>897</a>
-<a href=#898 id=898 data-nosnippet>898</a>	<span class="kw">fn </span>deposit_required(asset: AssetKind) -&gt; <span class="self">Self</span>::Balance {
-<a href=#899 id=899 data-nosnippet>899</a>		<span class="kw">match </span>Criterion::convert(asset) {
-<a href=#900 id=900 data-nosnippet>900</a>			Left(a) =&gt; &lt;Left <span class="kw">as </span>AccountTouch&lt;Left::AssetId, AccountId&gt;&gt;::deposit_required(a),
-<a href=#901 id=901 data-nosnippet>901</a>			Right(a) =&gt; &lt;Right <span class="kw">as </span>AccountTouch&lt;Right::AssetId, AccountId&gt;&gt;::deposit_required(a),
-<a href=#902 id=902 data-nosnippet>902</a>		}
-<a href=#903 id=903 data-nosnippet>903</a>	}
-<a href=#904 id=904 data-nosnippet>904</a>
-<a href=#905 id=905 data-nosnippet>905</a>	<span class="kw">fn </span>should_touch(asset: AssetKind, who: <span class="kw-2">&amp;</span>AccountId) -&gt; bool {
-<a href=#906 id=906 data-nosnippet>906</a>		<span class="kw">match </span>Criterion::convert(asset) {
-<a href=#907 id=907 data-nosnippet>907</a>			Left(a) =&gt; &lt;Left <span class="kw">as </span>AccountTouch&lt;Left::AssetId, AccountId&gt;&gt;::should_touch(a, who),
-<a href=#908 id=908 data-nosnippet>908</a>			Right(a) =&gt; &lt;Right <span class="kw">as </span>AccountTouch&lt;Right::AssetId, AccountId&gt;&gt;::should_touch(a, who),
-<a href=#909 id=909 data-nosnippet>909</a>		}
-<a href=#910 id=910 data-nosnippet>910</a>	}
-<a href=#911 id=911 data-nosnippet>911</a>
-<a href=#912 id=912 data-nosnippet>912</a>	<span class="kw">fn </span>touch(asset: AssetKind, who: <span class="kw-2">&amp;</span>AccountId, depositor: <span class="kw-2">&amp;</span>AccountId) -&gt; DispatchResult {
-<a href=#913 id=913 data-nosnippet>913</a>		<span class="kw">match </span>Criterion::convert(asset) {
-<a href=#914 id=914 data-nosnippet>914</a>			Left(a) =&gt; &lt;Left <span class="kw">as </span>AccountTouch&lt;Left::AssetId, AccountId&gt;&gt;::touch(a, who, depositor),
-<a href=#915 id=915 data-nosnippet>915</a>			Right(a) =&gt;
-<a href=#916 id=916 data-nosnippet>916</a>				&lt;Right <span class="kw">as </span>AccountTouch&lt;Right::AssetId, AccountId&gt;&gt;::touch(a, who, depositor),
-<a href=#917 id=917 data-nosnippet>917</a>		}
-<a href=#918 id=918 data-nosnippet>918</a>	}
-<a href=#919 id=919 data-nosnippet>919</a>}
-<a href=#920 id=920 data-nosnippet>920</a>
-<a href=#921 id=921 data-nosnippet>921</a><span class="kw">impl</span>&lt;
-<a href=#922 id=922 data-nosnippet>922</a>		Left: fungibles::Inspect&lt;AccountId&gt; + fungibles::Refund&lt;AccountId&gt;,
-<a href=#923 id=923 data-nosnippet>923</a>		Right: fungibles::Inspect&lt;AccountId&gt;
-<a href=#924 id=924 data-nosnippet>924</a>			+ fungibles::Refund&lt;AccountId, Balance = &lt;Left <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::Balance&gt;,
-<a href=#925 id=925 data-nosnippet>925</a>		Criterion: Convert&lt;
-<a href=#926 id=926 data-nosnippet>926</a>			AssetKind,
-<a href=#927 id=927 data-nosnippet>927</a>			Either&lt;
-<a href=#928 id=928 data-nosnippet>928</a>				&lt;Left <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::AssetId,
-<a href=#929 id=929 data-nosnippet>929</a>				&lt;Right <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::AssetId,
-<a href=#930 id=930 data-nosnippet>930</a>			&gt;,
-<a href=#931 id=931 data-nosnippet>931</a>		&gt;,
-<a href=#932 id=932 data-nosnippet>932</a>		AssetKind: AssetId,
-<a href=#933 id=933 data-nosnippet>933</a>		AccountId,
-<a href=#934 id=934 data-nosnippet>934</a>	&gt; fungibles::Refund&lt;AccountId&gt; <span class="kw">for </span>UnionOf&lt;Left, Right, Criterion, AssetKind, AccountId&gt;
-<a href=#935 id=935 data-nosnippet>935</a>{
-<a href=#936 id=936 data-nosnippet>936</a>	<span class="kw">type </span>AssetId = AssetKind;
-<a href=#937 id=937 data-nosnippet>937</a>	<span class="kw">type </span>Balance = &lt;Left <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::Balance;
+<a href=#884 id=884 data-nosnippet>884</a>		Left: fungibles::Inspect&lt;AccountId&gt; + fungibles::Create&lt;AccountId&gt;,
+<a href=#885 id=885 data-nosnippet>885</a>		Right: fungibles::Inspect&lt;AccountId, Balance = Left::Balance&gt; + fungibles::Create&lt;AccountId&gt;,
+<a href=#886 id=886 data-nosnippet>886</a>		Criterion: Convert&lt;AssetKind, Either&lt;Left::AssetId, Right::AssetId&gt;&gt;,
+<a href=#887 id=887 data-nosnippet>887</a>		AssetKind: AssetId,
+<a href=#888 id=888 data-nosnippet>888</a>		AccountId,
+<a href=#889 id=889 data-nosnippet>889</a>	&gt; fungibles::Create&lt;AccountId&gt; <span class="kw">for </span>UnionOf&lt;Left, Right, Criterion, AssetKind, AccountId&gt;
+<a href=#890 id=890 data-nosnippet>890</a>{
+<a href=#891 id=891 data-nosnippet>891</a>	<span class="kw">fn </span>create(
+<a href=#892 id=892 data-nosnippet>892</a>		asset: AssetKind,
+<a href=#893 id=893 data-nosnippet>893</a>		admin: AccountId,
+<a href=#894 id=894 data-nosnippet>894</a>		is_sufficient: bool,
+<a href=#895 id=895 data-nosnippet>895</a>		min_balance: <span class="self">Self</span>::Balance,
+<a href=#896 id=896 data-nosnippet>896</a>	) -&gt; DispatchResult {
+<a href=#897 id=897 data-nosnippet>897</a>		<span class="kw">match </span>Criterion::convert(asset) {
+<a href=#898 id=898 data-nosnippet>898</a>			Left(a) =&gt;
+<a href=#899 id=899 data-nosnippet>899</a>				&lt;Left <span class="kw">as </span>fungibles::Create&lt;AccountId&gt;&gt;::create(a, admin, is_sufficient, min_balance),
+<a href=#900 id=900 data-nosnippet>900</a>			Right(a) =&gt; &lt;Right <span class="kw">as </span>fungibles::Create&lt;AccountId&gt;&gt;::create(
+<a href=#901 id=901 data-nosnippet>901</a>				a,
+<a href=#902 id=902 data-nosnippet>902</a>				admin,
+<a href=#903 id=903 data-nosnippet>903</a>				is_sufficient,
+<a href=#904 id=904 data-nosnippet>904</a>				min_balance,
+<a href=#905 id=905 data-nosnippet>905</a>			),
+<a href=#906 id=906 data-nosnippet>906</a>		}
+<a href=#907 id=907 data-nosnippet>907</a>	}
+<a href=#908 id=908 data-nosnippet>908</a>}
+<a href=#909 id=909 data-nosnippet>909</a>
+<a href=#910 id=910 data-nosnippet>910</a><span class="kw">impl</span>&lt;
+<a href=#911 id=911 data-nosnippet>911</a>		Left: fungibles::Inspect&lt;AccountId&gt; + AccountTouch&lt;Left::AssetId, AccountId&gt;,
+<a href=#912 id=912 data-nosnippet>912</a>		Right: fungibles::Inspect&lt;AccountId&gt;
+<a href=#913 id=913 data-nosnippet>913</a>			+ AccountTouch&lt;
+<a href=#914 id=914 data-nosnippet>914</a>				Right::AssetId,
+<a href=#915 id=915 data-nosnippet>915</a>				AccountId,
+<a href=#916 id=916 data-nosnippet>916</a>				Balance = &lt;Left <span class="kw">as </span>AccountTouch&lt;Left::AssetId, AccountId&gt;&gt;::Balance,
+<a href=#917 id=917 data-nosnippet>917</a>			&gt;,
+<a href=#918 id=918 data-nosnippet>918</a>		Criterion: Convert&lt;AssetKind, Either&lt;Left::AssetId, Right::AssetId&gt;&gt;,
+<a href=#919 id=919 data-nosnippet>919</a>		AssetKind: AssetId,
+<a href=#920 id=920 data-nosnippet>920</a>		AccountId,
+<a href=#921 id=921 data-nosnippet>921</a>	&gt; AccountTouch&lt;AssetKind, AccountId&gt; <span class="kw">for </span>UnionOf&lt;Left, Right, Criterion, AssetKind, AccountId&gt;
+<a href=#922 id=922 data-nosnippet>922</a>{
+<a href=#923 id=923 data-nosnippet>923</a>	<span class="kw">type </span>Balance = &lt;Left <span class="kw">as </span>AccountTouch&lt;Left::AssetId, AccountId&gt;&gt;::Balance;
+<a href=#924 id=924 data-nosnippet>924</a>
+<a href=#925 id=925 data-nosnippet>925</a>	<span class="kw">fn </span>deposit_required(asset: AssetKind) -&gt; <span class="self">Self</span>::Balance {
+<a href=#926 id=926 data-nosnippet>926</a>		<span class="kw">match </span>Criterion::convert(asset) {
+<a href=#927 id=927 data-nosnippet>927</a>			Left(a) =&gt; &lt;Left <span class="kw">as </span>AccountTouch&lt;Left::AssetId, AccountId&gt;&gt;::deposit_required(a),
+<a href=#928 id=928 data-nosnippet>928</a>			Right(a) =&gt; &lt;Right <span class="kw">as </span>AccountTouch&lt;Right::AssetId, AccountId&gt;&gt;::deposit_required(a),
+<a href=#929 id=929 data-nosnippet>929</a>		}
+<a href=#930 id=930 data-nosnippet>930</a>	}
+<a href=#931 id=931 data-nosnippet>931</a>
+<a href=#932 id=932 data-nosnippet>932</a>	<span class="kw">fn </span>should_touch(asset: AssetKind, who: <span class="kw-2">&amp;</span>AccountId) -&gt; bool {
+<a href=#933 id=933 data-nosnippet>933</a>		<span class="kw">match </span>Criterion::convert(asset) {
+<a href=#934 id=934 data-nosnippet>934</a>			Left(a) =&gt; &lt;Left <span class="kw">as </span>AccountTouch&lt;Left::AssetId, AccountId&gt;&gt;::should_touch(a, who),
+<a href=#935 id=935 data-nosnippet>935</a>			Right(a) =&gt; &lt;Right <span class="kw">as </span>AccountTouch&lt;Right::AssetId, AccountId&gt;&gt;::should_touch(a, who),
+<a href=#936 id=936 data-nosnippet>936</a>		}
+<a href=#937 id=937 data-nosnippet>937</a>	}
 <a href=#938 id=938 data-nosnippet>938</a>
-<a href=#939 id=939 data-nosnippet>939</a>	<span class="kw">fn </span>deposit_held(asset: AssetKind, who: AccountId) -&gt; <span class="prelude-ty">Option</span>&lt;(AccountId, <span class="self">Self</span>::Balance)&gt; {
+<a href=#939 id=939 data-nosnippet>939</a>	<span class="kw">fn </span>touch(asset: AssetKind, who: <span class="kw-2">&amp;</span>AccountId, depositor: <span class="kw-2">&amp;</span>AccountId) -&gt; DispatchResult {
 <a href=#940 id=940 data-nosnippet>940</a>		<span class="kw">match </span>Criterion::convert(asset) {
-<a href=#941 id=941 data-nosnippet>941</a>			Left(a) =&gt; &lt;Left <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::deposit_held(a, who),
-<a href=#942 id=942 data-nosnippet>942</a>			Right(a) =&gt; &lt;Right <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::deposit_held(a, who),
-<a href=#943 id=943 data-nosnippet>943</a>		}
-<a href=#944 id=944 data-nosnippet>944</a>	}
-<a href=#945 id=945 data-nosnippet>945</a>	<span class="kw">fn </span>refund(asset: AssetKind, who: AccountId) -&gt; DispatchResult {
-<a href=#946 id=946 data-nosnippet>946</a>		<span class="kw">match </span>Criterion::convert(asset) {
-<a href=#947 id=947 data-nosnippet>947</a>			Left(a) =&gt; &lt;Left <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::refund(a, who),
-<a href=#948 id=948 data-nosnippet>948</a>			Right(a) =&gt; &lt;Right <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::refund(a, who),
-<a href=#949 id=949 data-nosnippet>949</a>		}
-<a href=#950 id=950 data-nosnippet>950</a>	}
-<a href=#951 id=951 data-nosnippet>951</a>}</code></pre></div></section></main></body></html>
+<a href=#941 id=941 data-nosnippet>941</a>			Left(a) =&gt; &lt;Left <span class="kw">as </span>AccountTouch&lt;Left::AssetId, AccountId&gt;&gt;::touch(a, who, depositor),
+<a href=#942 id=942 data-nosnippet>942</a>			Right(a) =&gt;
+<a href=#943 id=943 data-nosnippet>943</a>				&lt;Right <span class="kw">as </span>AccountTouch&lt;Right::AssetId, AccountId&gt;&gt;::touch(a, who, depositor),
+<a href=#944 id=944 data-nosnippet>944</a>		}
+<a href=#945 id=945 data-nosnippet>945</a>	}
+<a href=#946 id=946 data-nosnippet>946</a>}
+<a href=#947 id=947 data-nosnippet>947</a>
+<a href=#948 id=948 data-nosnippet>948</a><span class="kw">impl</span>&lt;
+<a href=#949 id=949 data-nosnippet>949</a>		Left: fungibles::Inspect&lt;AccountId&gt; + fungibles::Refund&lt;AccountId&gt;,
+<a href=#950 id=950 data-nosnippet>950</a>		Right: fungibles::Inspect&lt;AccountId&gt;
+<a href=#951 id=951 data-nosnippet>951</a>			+ fungibles::Refund&lt;AccountId, Balance = &lt;Left <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::Balance&gt;,
+<a href=#952 id=952 data-nosnippet>952</a>		Criterion: Convert&lt;
+<a href=#953 id=953 data-nosnippet>953</a>			AssetKind,
+<a href=#954 id=954 data-nosnippet>954</a>			Either&lt;
+<a href=#955 id=955 data-nosnippet>955</a>				&lt;Left <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::AssetId,
+<a href=#956 id=956 data-nosnippet>956</a>				&lt;Right <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::AssetId,
+<a href=#957 id=957 data-nosnippet>957</a>			&gt;,
+<a href=#958 id=958 data-nosnippet>958</a>		&gt;,
+<a href=#959 id=959 data-nosnippet>959</a>		AssetKind: AssetId,
+<a href=#960 id=960 data-nosnippet>960</a>		AccountId,
+<a href=#961 id=961 data-nosnippet>961</a>	&gt; fungibles::Refund&lt;AccountId&gt; <span class="kw">for </span>UnionOf&lt;Left, Right, Criterion, AssetKind, AccountId&gt;
+<a href=#962 id=962 data-nosnippet>962</a>{
+<a href=#963 id=963 data-nosnippet>963</a>	<span class="kw">type </span>AssetId = AssetKind;
+<a href=#964 id=964 data-nosnippet>964</a>	<span class="kw">type </span>Balance = &lt;Left <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::Balance;
+<a href=#965 id=965 data-nosnippet>965</a>
+<a href=#966 id=966 data-nosnippet>966</a>	<span class="kw">fn </span>deposit_held(asset: AssetKind, who: AccountId) -&gt; <span class="prelude-ty">Option</span>&lt;(AccountId, <span class="self">Self</span>::Balance)&gt; {
+<a href=#967 id=967 data-nosnippet>967</a>		<span class="kw">match </span>Criterion::convert(asset) {
+<a href=#968 id=968 data-nosnippet>968</a>			Left(a) =&gt; &lt;Left <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::deposit_held(a, who),
+<a href=#969 id=969 data-nosnippet>969</a>			Right(a) =&gt; &lt;Right <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::deposit_held(a, who),
+<a href=#970 id=970 data-nosnippet>970</a>		}
+<a href=#971 id=971 data-nosnippet>971</a>	}
+<a href=#972 id=972 data-nosnippet>972</a>	<span class="kw">fn </span>refund(asset: AssetKind, who: AccountId) -&gt; DispatchResult {
+<a href=#973 id=973 data-nosnippet>973</a>		<span class="kw">match </span>Criterion::convert(asset) {
+<a href=#974 id=974 data-nosnippet>974</a>			Left(a) =&gt; &lt;Left <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::refund(a, who),
+<a href=#975 id=975 data-nosnippet>975</a>			Right(a) =&gt; &lt;Right <span class="kw">as </span>fungibles::Refund&lt;AccountId&gt;&gt;::refund(a, who),
+<a href=#976 id=976 data-nosnippet>976</a>		}
+<a href=#977 id=977 data-nosnippet>977</a>	}
+<a href=#978 id=978 data-nosnippet>978</a>}</code></pre></div></section></main></body></html>

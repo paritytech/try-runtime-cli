@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["VERSION"],"fn":["demangle_function_name","demangle_function_name_or_index","subslice_range"],"struct":["CodeMemory","CompiledModule","CompiledModuleInfo","JitDumpAgent","NullProfilerAgent","ObjectBuilder","PerfMapAgent","SymbolizeContext","VTuneAgent"],"trait":["ProfilingAgent"]};

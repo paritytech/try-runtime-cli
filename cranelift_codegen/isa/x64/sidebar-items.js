@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Inst"],"mod":["args","encoding","settings"],"struct":["CallInfo","EmitInfo","EmitState"]};
+window.SIDEBAR_ITEMS = {"enum":["AtomicRmwSeqOp","Inst"],"fn":["create_cie","emit_unwind_info"],"mod":["args","external","settings"],"struct":["EmitInfo","EmitState"]};

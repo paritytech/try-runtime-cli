@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["BlockOrigin","BlockStatus"],"mod":["block_validation","error"],"struct":["DisableProofRecording","EnableProofRecording","InherentData","NoNetwork","NoProofRecorded","Proposal"],"trait":["Environment","ProofRecording","Proposer","SelectChain","StateBackend","SyncOracle"]};
+window.SIDEBAR_ITEMS = {"enum":["BlockOrigin","BlockStatus"],"mod":["block_validation","error"],"struct":["InherentData","NoNetwork","Proposal","ProposeArgs"],"trait":["Environment","Proposer","SelectChain","StateBackend","SyncOracle"]};

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.128/src/value/ser.rs`."><title>ser.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="serde_json" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">serde_json/value/</div>ser.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::error::{Error, ErrorCode, <span class="prelude-ty">Result</span>};
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.149/src/value/ser.rs`."><title>ser.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="serde_json" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">serde_json/value/</div>ser.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::error::{Error, ErrorCode, <span class="prelude-ty">Result</span>};
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span><span class="kw">crate</span>::map::Map;
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span><span class="kw">crate</span>::value::{to_value, Value};
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span>alloc::borrow::ToOwned;
@@ -261,9 +261,9 @@
 <a href=#261 id=261 data-nosnippet>261</a>        })
 <a href=#262 id=262 data-nosnippet>262</a>    }
 <a href=#263 id=263 data-nosnippet>263</a>
-<a href=#264 id=264 data-nosnippet>264</a>    <span class="kw">fn </span>serialize_map(<span class="self">self</span>, _len: <span class="prelude-ty">Option</span>&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeMap&gt; {
+<a href=#264 id=264 data-nosnippet>264</a>    <span class="kw">fn </span>serialize_map(<span class="self">self</span>, len: <span class="prelude-ty">Option</span>&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::SerializeMap&gt; {
 <a href=#265 id=265 data-nosnippet>265</a>        <span class="prelude-val">Ok</span>(SerializeMap::Map {
-<a href=#266 id=266 data-nosnippet>266</a>            map: Map::new(),
+<a href=#266 id=266 data-nosnippet>266</a>            map: Map::with_capacity(len.unwrap_or(<span class="number">0</span>)),
 <a href=#267 id=267 data-nosnippet>267</a>            next_key: <span class="prelude-val">None</span>,
 <a href=#268 id=268 data-nosnippet>268</a>        })
 <a href=#269 id=269 data-nosnippet>269</a>    }
@@ -486,52 +486,52 @@
 <a href=#486 id=486 data-nosnippet>486</a>    }
 <a href=#487 id=487 data-nosnippet>487</a>
 <a href=#488 id=488 data-nosnippet>488</a>    <span class="kw">fn </span>serialize_bool(<span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-<a href=#489 id=489 data-nosnippet>489</a>        <span class="prelude-val">Ok</span>(value.to_string())
+<a href=#489 id=489 data-nosnippet>489</a>        <span class="prelude-val">Ok</span>(<span class="kw">if </span>value { <span class="string">"true" </span>} <span class="kw">else </span>{ <span class="string">"false" </span>}.to_owned())
 <a href=#490 id=490 data-nosnippet>490</a>    }
 <a href=#491 id=491 data-nosnippet>491</a>
 <a href=#492 id=492 data-nosnippet>492</a>    <span class="kw">fn </span>serialize_i8(<span class="self">self</span>, value: i8) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-<a href=#493 id=493 data-nosnippet>493</a>        <span class="prelude-val">Ok</span>(value.to_string())
+<a href=#493 id=493 data-nosnippet>493</a>        <span class="prelude-val">Ok</span>(itoa::Buffer::new().format(value).to_owned())
 <a href=#494 id=494 data-nosnippet>494</a>    }
 <a href=#495 id=495 data-nosnippet>495</a>
 <a href=#496 id=496 data-nosnippet>496</a>    <span class="kw">fn </span>serialize_i16(<span class="self">self</span>, value: i16) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-<a href=#497 id=497 data-nosnippet>497</a>        <span class="prelude-val">Ok</span>(value.to_string())
+<a href=#497 id=497 data-nosnippet>497</a>        <span class="prelude-val">Ok</span>(itoa::Buffer::new().format(value).to_owned())
 <a href=#498 id=498 data-nosnippet>498</a>    }
 <a href=#499 id=499 data-nosnippet>499</a>
 <a href=#500 id=500 data-nosnippet>500</a>    <span class="kw">fn </span>serialize_i32(<span class="self">self</span>, value: i32) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-<a href=#501 id=501 data-nosnippet>501</a>        <span class="prelude-val">Ok</span>(value.to_string())
+<a href=#501 id=501 data-nosnippet>501</a>        <span class="prelude-val">Ok</span>(itoa::Buffer::new().format(value).to_owned())
 <a href=#502 id=502 data-nosnippet>502</a>    }
 <a href=#503 id=503 data-nosnippet>503</a>
 <a href=#504 id=504 data-nosnippet>504</a>    <span class="kw">fn </span>serialize_i64(<span class="self">self</span>, value: i64) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-<a href=#505 id=505 data-nosnippet>505</a>        <span class="prelude-val">Ok</span>(value.to_string())
+<a href=#505 id=505 data-nosnippet>505</a>        <span class="prelude-val">Ok</span>(itoa::Buffer::new().format(value).to_owned())
 <a href=#506 id=506 data-nosnippet>506</a>    }
 <a href=#507 id=507 data-nosnippet>507</a>
 <a href=#508 id=508 data-nosnippet>508</a>    <span class="kw">fn </span>serialize_i128(<span class="self">self</span>, value: i128) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-<a href=#509 id=509 data-nosnippet>509</a>        <span class="prelude-val">Ok</span>(value.to_string())
+<a href=#509 id=509 data-nosnippet>509</a>        <span class="prelude-val">Ok</span>(itoa::Buffer::new().format(value).to_owned())
 <a href=#510 id=510 data-nosnippet>510</a>    }
 <a href=#511 id=511 data-nosnippet>511</a>
 <a href=#512 id=512 data-nosnippet>512</a>    <span class="kw">fn </span>serialize_u8(<span class="self">self</span>, value: u8) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-<a href=#513 id=513 data-nosnippet>513</a>        <span class="prelude-val">Ok</span>(value.to_string())
+<a href=#513 id=513 data-nosnippet>513</a>        <span class="prelude-val">Ok</span>(itoa::Buffer::new().format(value).to_owned())
 <a href=#514 id=514 data-nosnippet>514</a>    }
 <a href=#515 id=515 data-nosnippet>515</a>
 <a href=#516 id=516 data-nosnippet>516</a>    <span class="kw">fn </span>serialize_u16(<span class="self">self</span>, value: u16) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-<a href=#517 id=517 data-nosnippet>517</a>        <span class="prelude-val">Ok</span>(value.to_string())
+<a href=#517 id=517 data-nosnippet>517</a>        <span class="prelude-val">Ok</span>(itoa::Buffer::new().format(value).to_owned())
 <a href=#518 id=518 data-nosnippet>518</a>    }
 <a href=#519 id=519 data-nosnippet>519</a>
 <a href=#520 id=520 data-nosnippet>520</a>    <span class="kw">fn </span>serialize_u32(<span class="self">self</span>, value: u32) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-<a href=#521 id=521 data-nosnippet>521</a>        <span class="prelude-val">Ok</span>(value.to_string())
+<a href=#521 id=521 data-nosnippet>521</a>        <span class="prelude-val">Ok</span>(itoa::Buffer::new().format(value).to_owned())
 <a href=#522 id=522 data-nosnippet>522</a>    }
 <a href=#523 id=523 data-nosnippet>523</a>
 <a href=#524 id=524 data-nosnippet>524</a>    <span class="kw">fn </span>serialize_u64(<span class="self">self</span>, value: u64) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-<a href=#525 id=525 data-nosnippet>525</a>        <span class="prelude-val">Ok</span>(value.to_string())
+<a href=#525 id=525 data-nosnippet>525</a>        <span class="prelude-val">Ok</span>(itoa::Buffer::new().format(value).to_owned())
 <a href=#526 id=526 data-nosnippet>526</a>    }
 <a href=#527 id=527 data-nosnippet>527</a>
 <a href=#528 id=528 data-nosnippet>528</a>    <span class="kw">fn </span>serialize_u128(<span class="self">self</span>, value: u128) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
-<a href=#529 id=529 data-nosnippet>529</a>        <span class="prelude-val">Ok</span>(value.to_string())
+<a href=#529 id=529 data-nosnippet>529</a>        <span class="prelude-val">Ok</span>(itoa::Buffer::new().format(value).to_owned())
 <a href=#530 id=530 data-nosnippet>530</a>    }
 <a href=#531 id=531 data-nosnippet>531</a>
 <a href=#532 id=532 data-nosnippet>532</a>    <span class="kw">fn </span>serialize_f32(<span class="self">self</span>, value: f32) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
 <a href=#533 id=533 data-nosnippet>533</a>        <span class="kw">if </span>value.is_finite() {
-<a href=#534 id=534 data-nosnippet>534</a>            <span class="prelude-val">Ok</span>(ryu::Buffer::new().format_finite(value).to_owned())
+<a href=#534 id=534 data-nosnippet>534</a>            <span class="prelude-val">Ok</span>(zmij::Buffer::new().format_finite(value).to_owned())
 <a href=#535 id=535 data-nosnippet>535</a>        } <span class="kw">else </span>{
 <a href=#536 id=536 data-nosnippet>536</a>            <span class="prelude-val">Err</span>(float_key_must_be_finite())
 <a href=#537 id=537 data-nosnippet>537</a>        }
@@ -539,7 +539,7 @@
 <a href=#539 id=539 data-nosnippet>539</a>
 <a href=#540 id=540 data-nosnippet>540</a>    <span class="kw">fn </span>serialize_f64(<span class="self">self</span>, value: f64) -&gt; <span class="prelude-ty">Result</span>&lt;String&gt; {
 <a href=#541 id=541 data-nosnippet>541</a>        <span class="kw">if </span>value.is_finite() {
-<a href=#542 id=542 data-nosnippet>542</a>            <span class="prelude-val">Ok</span>(ryu::Buffer::new().format_finite(value).to_owned())
+<a href=#542 id=542 data-nosnippet>542</a>            <span class="prelude-val">Ok</span>(zmij::Buffer::new().format_finite(value).to_owned())
 <a href=#543 id=543 data-nosnippet>543</a>        } <span class="kw">else </span>{
 <a href=#544 id=544 data-nosnippet>544</a>            <span class="prelude-val">Err</span>(float_key_must_be_finite())
 <a href=#545 id=545 data-nosnippet>545</a>        }

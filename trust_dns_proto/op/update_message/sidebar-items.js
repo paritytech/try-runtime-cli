@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["MAX_PAYLOAD_LEN"],"fn":["append","compare_and_swap","create","delete_all","delete_by_rdata","delete_rrset","zone_transfer"],"trait":["UpdateMessage"]};

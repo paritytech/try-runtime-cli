@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/8279d10/substrate/frame/support/src/storage/types/counted_nmap.rs`."><title>counted_nmap.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/types/</div>counted_nmap.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/0c70641/substrate/frame/support/src/storage/types/counted_nmap.rs`."><title>counted_nmap.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/types/</div>counted_nmap.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -633,7 +633,7 @@
 <a href=#633 id=633 data-nosnippet>633</a>	MaxValues: Get&lt;<span class="prelude-ty">Option</span>&lt;u32&gt;&gt;,
 <a href=#634 id=634 data-nosnippet>634</a>{
 <a href=#635 id=635 data-nosnippet>635</a>	<span class="kw">fn </span>build_metadata(
-<a href=#636 id=636 data-nosnippet>636</a>		deprecation_status: sp_metadata_ir::DeprecationStatusIR,
+<a href=#636 id=636 data-nosnippet>636</a>		deprecation_status: sp_metadata_ir::ItemDeprecationInfoIR,
 <a href=#637 id=637 data-nosnippet>637</a>		docs: Vec&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;,
 <a href=#638 id=638 data-nosnippet>638</a>		entries: <span class="kw-2">&amp;mut </span>Vec&lt;StorageEntryMetadataIR&gt;,
 <a href=#639 id=639 data-nosnippet>639</a>	) {
@@ -865,12 +865,12 @@
 <a href=#865 id=865 data-nosnippet>865</a>
 <a href=#866 id=866 data-nosnippet>866</a>			<span class="kw">let </span><span class="kw-2">mut </span>entries = <span class="macro">vec!</span>[];
 <a href=#867 id=867 data-nosnippet>867</a>			A::build_metadata(
-<a href=#868 id=868 data-nosnippet>868</a>				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#868 id=868 data-nosnippet>868</a>				sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#869 id=869 data-nosnippet>869</a>				<span class="macro">vec!</span>[],
 <a href=#870 id=870 data-nosnippet>870</a>				<span class="kw-2">&amp;mut </span>entries,
 <a href=#871 id=871 data-nosnippet>871</a>			);
 <a href=#872 id=872 data-nosnippet>872</a>			AValueQueryWithAnOnEmpty::build_metadata(
-<a href=#873 id=873 data-nosnippet>873</a>				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#873 id=873 data-nosnippet>873</a>				sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#874 id=874 data-nosnippet>874</a>				<span class="macro">vec!</span>[],
 <a href=#875 id=875 data-nosnippet>875</a>				<span class="kw-2">&amp;mut </span>entries,
 <a href=#876 id=876 data-nosnippet>876</a>			);
@@ -887,7 +887,7 @@
 <a href=#887 id=887 data-nosnippet>887</a>						},
 <a href=#888 id=888 data-nosnippet>888</a>						default: <span class="prelude-ty">Option</span>::&lt;u32&gt;::None.encode(),
 <a href=#889 id=889 data-nosnippet>889</a>						docs: <span class="macro">vec!</span>[],
-<a href=#890 id=890 data-nosnippet>890</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#890 id=890 data-nosnippet>890</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#891 id=891 data-nosnippet>891</a>					},
 <a href=#892 id=892 data-nosnippet>892</a>					StorageEntryMetadataIR {
 <a href=#893 id=893 data-nosnippet>893</a>						name: <span class="string">"Foo"</span>,
@@ -899,7 +899,7 @@
 <a href=#899 id=899 data-nosnippet>899</a>						} <span class="kw">else </span>{
 <a href=#900 id=900 data-nosnippet>900</a>							<span class="macro">vec!</span>[<span class="string">"Counter for the related counted storage map"</span>]
 <a href=#901 id=901 data-nosnippet>901</a>						},
-<a href=#902 id=902 data-nosnippet>902</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#902 id=902 data-nosnippet>902</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#903 id=903 data-nosnippet>903</a>					},
 <a href=#904 id=904 data-nosnippet>904</a>					StorageEntryMetadataIR {
 <a href=#905 id=905 data-nosnippet>905</a>						name: <span class="string">"Foo"</span>,
@@ -911,7 +911,7 @@
 <a href=#911 id=911 data-nosnippet>911</a>						},
 <a href=#912 id=912 data-nosnippet>912</a>						default: <span class="number">98u32</span>.encode(),
 <a href=#913 id=913 data-nosnippet>913</a>						docs: <span class="macro">vec!</span>[],
-<a href=#914 id=914 data-nosnippet>914</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#914 id=914 data-nosnippet>914</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#915 id=915 data-nosnippet>915</a>					},
 <a href=#916 id=916 data-nosnippet>916</a>					StorageEntryMetadataIR {
 <a href=#917 id=917 data-nosnippet>917</a>						name: <span class="string">"Foo"</span>,
@@ -923,7 +923,7 @@
 <a href=#923 id=923 data-nosnippet>923</a>						} <span class="kw">else </span>{
 <a href=#924 id=924 data-nosnippet>924</a>							<span class="macro">vec!</span>[<span class="string">"Counter for the related counted storage map"</span>]
 <a href=#925 id=925 data-nosnippet>925</a>						},
-<a href=#926 id=926 data-nosnippet>926</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#926 id=926 data-nosnippet>926</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#927 id=927 data-nosnippet>927</a>					},
 <a href=#928 id=928 data-nosnippet>928</a>				]
 <a href=#929 id=929 data-nosnippet>929</a>			);
@@ -1126,12 +1126,12 @@
 <a href=#1126 id=1126 data-nosnippet>1126</a>
 <a href=#1127 id=1127 data-nosnippet>1127</a>			<span class="kw">let </span><span class="kw-2">mut </span>entries = <span class="macro">vec!</span>[];
 <a href=#1128 id=1128 data-nosnippet>1128</a>			A::build_metadata(
-<a href=#1129 id=1129 data-nosnippet>1129</a>				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#1129 id=1129 data-nosnippet>1129</a>				sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1130 id=1130 data-nosnippet>1130</a>				<span class="macro">vec!</span>[],
 <a href=#1131 id=1131 data-nosnippet>1131</a>				<span class="kw-2">&amp;mut </span>entries,
 <a href=#1132 id=1132 data-nosnippet>1132</a>			);
 <a href=#1133 id=1133 data-nosnippet>1133</a>			AValueQueryWithAnOnEmpty::build_metadata(
-<a href=#1134 id=1134 data-nosnippet>1134</a>				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#1134 id=1134 data-nosnippet>1134</a>				sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1135 id=1135 data-nosnippet>1135</a>				<span class="macro">vec!</span>[],
 <a href=#1136 id=1136 data-nosnippet>1136</a>				<span class="kw-2">&amp;mut </span>entries,
 <a href=#1137 id=1137 data-nosnippet>1137</a>			);
@@ -1151,7 +1151,7 @@
 <a href=#1151 id=1151 data-nosnippet>1151</a>						},
 <a href=#1152 id=1152 data-nosnippet>1152</a>						default: <span class="prelude-ty">Option</span>::&lt;u32&gt;::None.encode(),
 <a href=#1153 id=1153 data-nosnippet>1153</a>						docs: <span class="macro">vec!</span>[],
-<a href=#1154 id=1154 data-nosnippet>1154</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#1154 id=1154 data-nosnippet>1154</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1155 id=1155 data-nosnippet>1155</a>					},
 <a href=#1156 id=1156 data-nosnippet>1156</a>					StorageEntryMetadataIR {
 <a href=#1157 id=1157 data-nosnippet>1157</a>						name: <span class="string">"Foo"</span>,
@@ -1163,7 +1163,7 @@
 <a href=#1163 id=1163 data-nosnippet>1163</a>						} <span class="kw">else </span>{
 <a href=#1164 id=1164 data-nosnippet>1164</a>							<span class="macro">vec!</span>[<span class="string">"Counter for the related counted storage map"</span>]
 <a href=#1165 id=1165 data-nosnippet>1165</a>						},
-<a href=#1166 id=1166 data-nosnippet>1166</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#1166 id=1166 data-nosnippet>1166</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1167 id=1167 data-nosnippet>1167</a>					},
 <a href=#1168 id=1168 data-nosnippet>1168</a>					StorageEntryMetadataIR {
 <a href=#1169 id=1169 data-nosnippet>1169</a>						name: <span class="string">"Foo"</span>,
@@ -1178,7 +1178,7 @@
 <a href=#1178 id=1178 data-nosnippet>1178</a>						},
 <a href=#1179 id=1179 data-nosnippet>1179</a>						default: <span class="number">98u32</span>.encode(),
 <a href=#1180 id=1180 data-nosnippet>1180</a>						docs: <span class="macro">vec!</span>[],
-<a href=#1181 id=1181 data-nosnippet>1181</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#1181 id=1181 data-nosnippet>1181</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1182 id=1182 data-nosnippet>1182</a>					},
 <a href=#1183 id=1183 data-nosnippet>1183</a>					StorageEntryMetadataIR {
 <a href=#1184 id=1184 data-nosnippet>1184</a>						name: <span class="string">"Foo"</span>,
@@ -1190,7 +1190,7 @@
 <a href=#1190 id=1190 data-nosnippet>1190</a>						} <span class="kw">else </span>{
 <a href=#1191 id=1191 data-nosnippet>1191</a>							<span class="macro">vec!</span>[<span class="string">"Counter for the related counted storage map"</span>]
 <a href=#1192 id=1192 data-nosnippet>1192</a>						},
-<a href=#1193 id=1193 data-nosnippet>1193</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#1193 id=1193 data-nosnippet>1193</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1194 id=1194 data-nosnippet>1194</a>					},
 <a href=#1195 id=1195 data-nosnippet>1195</a>				]
 <a href=#1196 id=1196 data-nosnippet>1196</a>			);
@@ -1424,12 +1424,12 @@
 <a href=#1424 id=1424 data-nosnippet>1424</a>
 <a href=#1425 id=1425 data-nosnippet>1425</a>			<span class="kw">let </span><span class="kw-2">mut </span>entries = <span class="macro">vec!</span>[];
 <a href=#1426 id=1426 data-nosnippet>1426</a>			A::build_metadata(
-<a href=#1427 id=1427 data-nosnippet>1427</a>				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#1427 id=1427 data-nosnippet>1427</a>				sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1428 id=1428 data-nosnippet>1428</a>				<span class="macro">vec!</span>[],
 <a href=#1429 id=1429 data-nosnippet>1429</a>				<span class="kw-2">&amp;mut </span>entries,
 <a href=#1430 id=1430 data-nosnippet>1430</a>			);
 <a href=#1431 id=1431 data-nosnippet>1431</a>			AValueQueryWithAnOnEmpty::build_metadata(
-<a href=#1432 id=1432 data-nosnippet>1432</a>				sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#1432 id=1432 data-nosnippet>1432</a>				sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1433 id=1433 data-nosnippet>1433</a>				<span class="macro">vec!</span>[],
 <a href=#1434 id=1434 data-nosnippet>1434</a>				<span class="kw-2">&amp;mut </span>entries,
 <a href=#1435 id=1435 data-nosnippet>1435</a>			);
@@ -1450,7 +1450,7 @@
 <a href=#1450 id=1450 data-nosnippet>1450</a>						},
 <a href=#1451 id=1451 data-nosnippet>1451</a>						default: <span class="prelude-ty">Option</span>::&lt;u32&gt;::None.encode(),
 <a href=#1452 id=1452 data-nosnippet>1452</a>						docs: <span class="macro">vec!</span>[],
-<a href=#1453 id=1453 data-nosnippet>1453</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#1453 id=1453 data-nosnippet>1453</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1454 id=1454 data-nosnippet>1454</a>					},
 <a href=#1455 id=1455 data-nosnippet>1455</a>					StorageEntryMetadataIR {
 <a href=#1456 id=1456 data-nosnippet>1456</a>						name: <span class="string">"Foo"</span>,
@@ -1462,7 +1462,7 @@
 <a href=#1462 id=1462 data-nosnippet>1462</a>						} <span class="kw">else </span>{
 <a href=#1463 id=1463 data-nosnippet>1463</a>							<span class="macro">vec!</span>[<span class="string">"Counter for the related counted storage map"</span>]
 <a href=#1464 id=1464 data-nosnippet>1464</a>						},
-<a href=#1465 id=1465 data-nosnippet>1465</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#1465 id=1465 data-nosnippet>1465</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1466 id=1466 data-nosnippet>1466</a>					},
 <a href=#1467 id=1467 data-nosnippet>1467</a>					StorageEntryMetadataIR {
 <a href=#1468 id=1468 data-nosnippet>1468</a>						name: <span class="string">"Foo"</span>,
@@ -1478,7 +1478,7 @@
 <a href=#1478 id=1478 data-nosnippet>1478</a>						},
 <a href=#1479 id=1479 data-nosnippet>1479</a>						default: <span class="number">98u32</span>.encode(),
 <a href=#1480 id=1480 data-nosnippet>1480</a>						docs: <span class="macro">vec!</span>[],
-<a href=#1481 id=1481 data-nosnippet>1481</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#1481 id=1481 data-nosnippet>1481</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1482 id=1482 data-nosnippet>1482</a>					},
 <a href=#1483 id=1483 data-nosnippet>1483</a>					StorageEntryMetadataIR {
 <a href=#1484 id=1484 data-nosnippet>1484</a>						name: <span class="string">"Foo"</span>,
@@ -1490,7 +1490,7 @@
 <a href=#1490 id=1490 data-nosnippet>1490</a>						} <span class="kw">else </span>{
 <a href=#1491 id=1491 data-nosnippet>1491</a>							<span class="macro">vec!</span>[<span class="string">"Counter for the related counted storage map"</span>]
 <a href=#1492 id=1492 data-nosnippet>1492</a>						},
-<a href=#1493 id=1493 data-nosnippet>1493</a>						deprecation_info: sp_metadata_ir::DeprecationStatusIR::NotDeprecated,
+<a href=#1493 id=1493 data-nosnippet>1493</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1494 id=1494 data-nosnippet>1494</a>					},
 <a href=#1495 id=1495 data-nosnippet>1495</a>				]
 <a href=#1496 id=1496 data-nosnippet>1496</a>			);

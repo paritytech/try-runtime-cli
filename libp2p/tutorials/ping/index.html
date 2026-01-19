@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Ping Tutorial - Getting started with rust-libp2p"><title>libp2p::tutorials::ping - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="libp2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="icon" href="https://libp2p.io/img/favicon.png"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module ping</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><a class="logo-container" href="../../../libp2p/index.html"><img src="https://libp2p.io/img/logo_small.png" alt="logo"></a><h2><a href="../../../libp2p/index.html">libp2p</a><span class="version">0.52.4</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module ping</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#ping-tutorial---getting-started-with-rust-libp2p" title="Ping Tutorial - Getting started with rust-libp2p">Ping Tutorial - Getting started with rust-libp2p</a><ul><li><a href="#scaffolding" title="Scaffolding">Scaffolding</a></li><li><a href="#network-identity" title="Network identity">Network identity</a></li><li><a href="#transport" title="Transport">Transport</a></li><li><a href="#network-behaviour" title="Network behaviour">Network behaviour</a></li><li><a href="#swarm" title="Swarm">Swarm</a></li><li><a href="#idle-connection-timeout" title="Idle connection timeout">Idle connection timeout</a></li><li><a href="#multiaddr" title="Multiaddr">Multiaddr</a></li><li><a href="#continuously-polling-the-swarm" title="Continuously polling the Swarm">Continuously polling the Swarm</a></li><li><a href="#running-two-nodes" title="Running two nodes">Running two nodes</a></li></ul></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In libp2p::<wbr>tutorials</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">libp2p</a>::<wbr><a href="../index.html">tutorials</a></div><h1>Module <span>ping</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/libp2p/tutorials/ping.rs.html#21-376">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="ping-tutorial---getting-started-with-rust-libp2p"><a class="doc-anchor" href="#ping-tutorial---getting-started-with-rust-libp2p">§</a>Ping Tutorial - Getting started with rust-libp2p</h2>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Ping Tutorial - Getting started with rust-libp2p"><title>libp2p::tutorials::ping - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="libp2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="icon" href="https://libp2p.io/img/favicon.png"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Module ping</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><a class="logo-container" href="../../../libp2p/index.html"><img src="https://libp2p.io/img/logo_small.png" alt="logo"></a><h2><a href="../../../libp2p/index.html">libp2p</a><span class="version">0.54.1</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">Module ping</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#ping-tutorial---getting-started-with-rust-libp2p" title="Ping Tutorial - Getting started with rust-libp2p">Ping Tutorial - Getting started with rust-libp2p</a><ul><li><a href="#scaffolding" title="Scaffolding">Scaffolding</a></li><li><a href="#network-identity" title="Network identity">Network identity</a></li><li><a href="#transport" title="Transport">Transport</a></li><li><a href="#network-behaviour" title="Network behaviour">Network behaviour</a></li><li><a href="#swarm" title="Swarm">Swarm</a></li><li><a href="#idle-connection-timeout" title="Idle connection timeout">Idle connection timeout</a></li><li><a href="#multiaddr" title="Multiaddr">Multiaddr</a></li><li><a href="#continuously-polling-the-swarm" title="Continuously polling the Swarm">Continuously polling the Swarm</a></li><li><a href="#running-two-nodes" title="Running two nodes">Running two nodes</a></li></ul></li></ul></section><div id="rustdoc-modnav"><h2><a href="../index.html">In libp2p::<wbr>tutorials</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="../../index.html">libp2p</a>::<wbr><a href="../index.html">tutorials</a></div><h1>Module <span>ping</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../../../src/libp2p/tutorials/ping.rs.html#21-381">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="ping-tutorial---getting-started-with-rust-libp2p"><a class="doc-anchor" href="#ping-tutorial---getting-started-with-rust-libp2p">§</a>Ping Tutorial - Getting started with rust-libp2p</h2>
 <p>This tutorial aims to give newcomers a hands-on overview of how to use the
 Rust libp2p implementation. People new to Rust likely want to get started on
 <a href="https://www.rust-lang.org/">Rust</a> itself, before diving into all the
@@ -32,10 +32,10 @@ At the time of writing we have:</p>
     edition = &quot;2021&quot;
 
 [dependencies]
-    libp2p = { version = &quot;0.52&quot;, features = [&quot;tcp&quot;, &quot;dns&quot;, &quot;async-std&quot;, &quot;noise&quot;, &quot;yamux&quot;, &quot;websocket&quot;, &quot;ping&quot;, &quot;macros&quot;] }
-    futures = &quot;0.3&quot;
-    env_logger = &quot;0.10.0&quot;
-    async-std = { version = &quot;1.12&quot;, features = [&quot;attributes&quot;] }</code></pre></div></li>
+    libp2p = { version = &quot;0.52&quot;, features = [&quot;tcp&quot;, &quot;tls&quot;, &quot;dns&quot;, &quot;async-std&quot;, &quot;noise&quot;, &quot;yamux&quot;, &quot;websocket&quot;, &quot;ping&quot;, &quot;macros&quot;] }
+    futures = &quot;0.3.21&quot;
+    async-std = { version = &quot;1.12.0&quot;, features = [&quot;attributes&quot;] }
+    tracing-subscriber = { version = &quot;0.3&quot;, features = [&quot;env-filter&quot;] }</code></pre></div></li>
 </ol>
 <h3 id="network-identity"><a class="doc-anchor" href="#network-identity">§</a>Network identity</h3>
 <p>With all the scaffolding in place, we can dive into the libp2p specifics.
@@ -45,10 +45,11 @@ Nodes identify each other via their <a href="../../struct.PeerId.html" title="st
 derived from their public key. Now, replace the contents of main.rs by:</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::error::Error;
+<span class="kw">use </span>tracing_subscriber::EnvFilter;
 
 <span class="attr">#[async_std::main]
 </span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
-    env_logger::init();
+    tracing_subscriber::fmt().with_env_filter(EnvFilter::from_default_env()).init();
 
     <span class="kw">let </span><span class="kw-2">mut </span>swarm = libp2p::SwarmBuilder::with_new_identity();
 
@@ -62,19 +63,19 @@ one or more streams on a connection. Another libp2p transport is QUIC, providing
 streams out-of-the-box. We will stick to TCP for now. Each of these implement the <a href="../../trait.Transport.html" title="trait libp2p::Transport"><code>Transport</code></a>
 trait.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>libp2p::{identity, PeerId};
-<span class="kw">use </span>std::error::Error;
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>std::error::Error;
+<span class="kw">use </span>tracing_subscriber::EnvFilter;
 
 <span class="attr">#[async_std::main]
 </span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
-    env_logger::init();
+    tracing_subscriber::fmt().with_env_filter(EnvFilter::from_default_env()).init();
 
     <span class="kw">let </span><span class="kw-2">mut </span>swarm = libp2p::SwarmBuilder::with_new_identity()
         .with_async_std()
         .with_tcp(
-            libp2p_tcp::Config::default(),
-            libp2p_tls::Config::new,
-            libp2p_yamux::Config::default,
+            libp2p::tcp::Config::default(),
+            libp2p::tls::Config::new,
+            libp2p::yamux::Config::default,
         )<span class="question-mark">?</span>;
 
     <span class="prelude-val">Ok</span>(())
@@ -96,20 +97,20 @@ network.</p>
 separate <em>how</em> to send bytes from <em>what</em> bytes and to <em>whom</em> to send.</p>
 <p>With the above in mind, let’s extend our example, creating a <a href="../../ping/struct.Behaviour.html" title="struct libp2p::ping::Behaviour"><code>ping::Behaviour</code></a> at the end:</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>libp2p::swarm::NetworkBehaviour;
-<span class="kw">use </span>libp2p::{identity, ping, PeerId};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>libp2p::ping;
+<span class="kw">use </span>tracing_subscriber::EnvFilter;
 <span class="kw">use </span>std::error::Error;
 
 <span class="attr">#[async_std::main]
 </span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
-    env_logger::init();
+    tracing_subscriber::fmt().with_env_filter(EnvFilter::from_default_env()).init();
 
     <span class="kw">let </span><span class="kw-2">mut </span>swarm = libp2p::SwarmBuilder::with_new_identity()
         .with_async_std()
         .with_tcp(
-            libp2p_tcp::Config::default(),
-            libp2p_tls::Config::new,
-            libp2p_yamux::Config::default,
+            libp2p::tcp::Config::default(),
+            libp2p::tls::Config::new,
+            libp2p::yamux::Config::default,
         )<span class="question-mark">?
         </span>.with_behaviour(|<span class="kw">_</span>| ping::Behaviour::default())<span class="question-mark">?</span>;
 
@@ -120,20 +121,20 @@ which connects the two, allowing both to make progress. Put simply, a <a href=".
 <a href="../../trait.Transport.html" title="trait libp2p::Transport"><code>Transport</code></a> and a <a href="../../swarm/trait.NetworkBehaviour.html" title="trait libp2p::swarm::NetworkBehaviour"><code>NetworkBehaviour</code></a> forward, passing commands from the <a href="../../swarm/trait.NetworkBehaviour.html" title="trait libp2p::swarm::NetworkBehaviour"><code>NetworkBehaviour</code></a>
 to the <a href="../../trait.Transport.html" title="trait libp2p::Transport"><code>Transport</code></a> as well as events from the <a href="../../trait.Transport.html" title="trait libp2p::Transport"><code>Transport</code></a> to the <a href="../../swarm/trait.NetworkBehaviour.html" title="trait libp2p::swarm::NetworkBehaviour"><code>NetworkBehaviour</code></a>.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>libp2p::swarm::{NetworkBehaviour, SwarmBuilder};
-<span class="kw">use </span>libp2p::{identity, ping, PeerId};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>libp2p::ping;
 <span class="kw">use </span>std::error::Error;
+<span class="kw">use </span>tracing_subscriber::EnvFilter;
 
 <span class="attr">#[async_std::main]
 </span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
-    env_logger::init();
+    tracing_subscriber::fmt().with_env_filter(EnvFilter::from_default_env()).init();
 
     <span class="kw">let </span><span class="kw-2">mut </span>swarm = libp2p::SwarmBuilder::with_new_identity()
         .with_async_std()
         .with_tcp(
-            libp2p_tcp::Config::default(),
-            libp2p_tls::Config::new,
-            libp2p_yamux::Config::default,
+            libp2p::tcp::Config::default(),
+            libp2p::tls::Config::new,
+            libp2p::yamux::Config::default,
         )<span class="question-mark">?
         </span>.with_behaviour(|<span class="kw">_</span>| ping::Behaviour::default())<span class="question-mark">?
         </span>.build();
@@ -147,31 +148,31 @@ Typically, connections are kept alive if they are “in use” by a certain prot
 The ping protocol however is only an “auxiliary” kind of protocol.
 Thus, without any other behaviour in place, we would not be able to observe the pings.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>libp2p::swarm::{NetworkBehaviour, SwarmBuilder};
-<span class="kw">use </span>libp2p::{identity, ping, PeerId};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>libp2p::ping;
 <span class="kw">use </span>std::error::Error;
 <span class="kw">use </span>std::time::Duration;
+<span class="kw">use </span>tracing_subscriber::EnvFilter;
 
 <span class="attr">#[async_std::main]
 </span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
-    env_logger::init();
+    tracing_subscriber::fmt().with_env_filter(EnvFilter::from_default_env()).init();
 
     <span class="kw">let </span><span class="kw-2">mut </span>swarm = libp2p::SwarmBuilder::with_new_identity()
         .with_async_std()
         .with_tcp(
-            libp2p_tcp::Config::default(),
-            libp2p_tls::Config::new,
-            libp2p_yamux::Config::default,
+            libp2p::tcp::Config::default(),
+            libp2p::tls::Config::new,
+            libp2p::yamux::Config::default,
         )<span class="question-mark">?
         </span>.with_behaviour(|<span class="kw">_</span>| ping::Behaviour::default())<span class="question-mark">?
-        </span>.with_swarm_config(|cfg| cfg.with_idle_connection_timeout(Duration::from_secs(<span class="number">30</span>))) <span class="comment">// Allows us to observe pings for 30 seconds.
+        </span>.with_swarm_config(|cfg| cfg.with_idle_connection_timeout(Duration::from_secs(u64::MAX))) <span class="comment">// Allows us to observe pings indefinitely.
         </span>.build();
 
     <span class="prelude-val">Ok</span>(())
 }</code></pre></div><h3 id="multiaddr"><a class="doc-anchor" href="#multiaddr">§</a>Multiaddr</h3>
 <p>With the <a href="../../struct.Swarm.html" title="struct libp2p::Swarm"><code>Swarm</code></a> in place, we are all set to listen for incoming
 connections. We only need to pass an address to the <a href="../../struct.Swarm.html" title="struct libp2p::Swarm"><code>Swarm</code></a>, just like for
-<a href="https://doc.rust-lang.org/1.91.1/std/net/tcp/struct.TcpListener.html#method.bind" title="associated function std::net::tcp::TcpListener::bind"><code>std::net::TcpListener::bind</code></a>. But instead of passing an IP address, we
+<a href="https://doc.rust-lang.org/1.92.0/std/net/tcp/struct.TcpListener.html#method.bind" title="associated function std::net::tcp::TcpListener::bind"><code>std::net::TcpListener::bind</code></a>. But instead of passing an IP address, we
 pass a <a href="../../struct.Multiaddr.html" title="struct libp2p::Multiaddr"><code>Multiaddr</code></a> which is yet another core concept of libp2p worth
 taking a look at.</p>
 <p>A <a href="../../struct.Multiaddr.html" title="struct libp2p::Multiaddr"><code>Multiaddr</code></a> is a self-describing network address and protocol stack that
@@ -190,22 +191,24 @@ network <code>/ip4/192.168.178.25/tcp/24915</code>.</p>
 <p>In addition, if provided on the CLI, let’s instruct our local node to dial a
 remote peer.</p>
 
-<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>libp2p::swarm::{NetworkBehaviour, SwarmBuilder};
-<span class="kw">use </span>libp2p::{identity, ping, Multiaddr, PeerId};
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>libp2p::{ping, Multiaddr};
 <span class="kw">use </span>std::error::Error;
 <span class="kw">use </span>std::time::Duration;
+<span class="kw">use </span>tracing_subscriber::EnvFilter;
 
 <span class="attr">#[async_std::main]
 </span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
+    tracing_subscriber::fmt().with_env_filter(EnvFilter::from_default_env()).init();
+
     <span class="kw">let </span><span class="kw-2">mut </span>swarm = libp2p::SwarmBuilder::with_new_identity()
         .with_async_std()
         .with_tcp(
-            libp2p_tcp::Config::default(),
-            libp2p_tls::Config::new,
-            libp2p_yamux::Config::default,
+            libp2p::tcp::Config::default(),
+            libp2p::tls::Config::new,
+            libp2p::yamux::Config::default,
         )<span class="question-mark">?
         </span>.with_behaviour(|<span class="kw">_</span>| ping::Behaviour::default())<span class="question-mark">?
-        </span>.with_swarm_config(|cfg| cfg.with_idle_connection_timeout(Duration::from_secs(<span class="number">30</span>))) <span class="comment">// Allows us to observe pings for 30 seconds.
+        </span>.with_swarm_config(|cfg| cfg.with_idle_connection_timeout(Duration::from_secs(u64::MAX))) <span class="comment">// Allows us to observe pings indefinitely..
         </span>.build();
 
     <span class="comment">// Tell the swarm to listen on all interfaces and a random, OS-assigned
@@ -227,22 +230,25 @@ a loop, allowing it to listen for incoming connections and establish an
 outgoing connection in case we specify an address on the CLI.</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>futures::prelude::<span class="kw-2">*</span>;
-<span class="kw">use </span>libp2p::swarm::{NetworkBehaviour, SwarmEvent, SwarmBuilder};
-<span class="kw">use </span>libp2p::{identity, ping, Multiaddr, PeerId};
+<span class="kw">use </span>libp2p::swarm::SwarmEvent;
+<span class="kw">use </span>libp2p::{ping, Multiaddr};
 <span class="kw">use </span>std::error::Error;
 <span class="kw">use </span>std::time::Duration;
+<span class="kw">use </span>tracing_subscriber::EnvFilter;
 
 <span class="attr">#[async_std::main]
 </span><span class="kw">async fn </span>main() -&gt; <span class="prelude-ty">Result</span>&lt;(), Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
+    tracing_subscriber::fmt().with_env_filter(EnvFilter::from_default_env()).init();
+
     <span class="kw">let </span><span class="kw-2">mut </span>swarm = libp2p::SwarmBuilder::with_new_identity()
         .with_async_std()
         .with_tcp(
-            libp2p_tcp::Config::default(),
-            libp2p_tls::Config::new,
-            libp2p_yamux::Config::default,
+            libp2p::tcp::Config::default(),
+            libp2p::tls::Config::new,
+            libp2p::yamux::Config::default,
         )<span class="question-mark">?
         </span>.with_behaviour(|<span class="kw">_</span>| ping::Behaviour::default())<span class="question-mark">?
-        </span>.with_swarm_config(|cfg| cfg.with_idle_connection_timeout(Duration::from_secs(<span class="number">30</span>))) <span class="comment">// Allows us to observe pings for 30 seconds.
+        </span>.with_swarm_config(|cfg| cfg.with_idle_connection_timeout(Duration::from_secs(u64::MAX))) <span class="comment">// Allows us to observe pings indefinitely.
         </span>.build();
 
     <span class="comment">// Tell the swarm to listen on all interfaces and a random, OS-assigned

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["AUX_TMP_REG","TMP_REG"],"enum":["NativeReg"],"fn":["to_guest_reg","to_native_reg"]};

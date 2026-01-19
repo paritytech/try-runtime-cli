@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":["LegacyPrefixes","OpcodeMap"],"fn":["encode_modrm"]};

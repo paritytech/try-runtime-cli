@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["Query","QueryParts"]};
+window.SIDEBAR_ITEMS = {"struct":["Query"]};

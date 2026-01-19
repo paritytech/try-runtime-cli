@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"derive":["PassByCodec","PassByEnum","PassByInner"],"struct":["Codec","Enum","Inner"],"trait":["PassBy","PassByImpl","PassByInner"]};
+window.SIDEBAR_ITEMS = {"struct":["AllocateAndReturnByCodec","AllocateAndReturnFatPointer","AllocateAndReturnPointer","PassAs","PassFatPointerAndDecode","PassFatPointerAndDecodeSlice","PassFatPointerAndRead","PassFatPointerAndReadWrite","PassPointerAndRead","PassPointerAndReadCopy","PassPointerAndWrite","ReturnAs"]};

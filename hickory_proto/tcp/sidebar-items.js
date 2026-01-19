@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["TcpClientConnect","TcpClientStream","TcpStream"],"trait":["Connect","DnsTcpStream"]};
+window.SIDEBAR_ITEMS = {"struct":["TcpClientStream","TcpStream"],"trait":["DnsTcpStream"]};

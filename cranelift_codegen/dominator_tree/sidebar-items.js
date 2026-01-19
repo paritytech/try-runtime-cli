@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["ChildIter","DominatorTree","DominatorTreePreorder"]};
+window.SIDEBAR_ITEMS = {"struct":["ChildIter","DominatorTree","DominatorTreePreorder","SimpleDominatorTree"]};

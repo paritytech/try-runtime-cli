@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-rustls-0.27.3/src/connector.rs`."><title>connector.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="hyper_rustls" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">hyper_rustls/</div>connector.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>std::future::Future;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-rustls-0.27.7/src/connector.rs`."><title>connector.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="hyper_rustls" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">hyper_rustls/</div>connector.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>std::future::Future;
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span>std::pin::Pin;
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span>std::sync::Arc;
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span>std::task::{Context, Poll};
@@ -69,7 +69,7 @@
 <a href=#69 id=69 data-nosnippet>69</a>        <span class="comment">// dst.scheme() would need to derive Eq to be matchable;
 <a href=#70 id=70 data-nosnippet>70</a>        // use an if cascade instead
 <a href=#71 id=71 data-nosnippet>71</a>        </span><span class="kw">match </span>dst.scheme() {
-<a href=#72 id=72 data-nosnippet>72</a>            <span class="prelude-val">Some</span>(scheme) <span class="kw">if </span>scheme == <span class="kw-2">&amp;</span>http::uri::Scheme::HTTP =&gt; {
+<a href=#72 id=72 data-nosnippet>72</a>            <span class="prelude-val">Some</span>(scheme) <span class="kw">if </span>scheme == <span class="kw-2">&amp;</span>http::uri::Scheme::HTTP &amp;&amp; !<span class="self">self</span>.force_https =&gt; {
 <a href=#73 id=73 data-nosnippet>73</a>                <span class="kw">let </span>future = <span class="self">self</span>.http.call(dst);
 <a href=#74 id=74 data-nosnippet>74</a>                <span class="kw">return </span>Box::pin(<span class="kw">async move </span>{
 <a href=#75 id=75 data-nosnippet>75</a>                    <span class="prelude-val">Ok</span>(MaybeHttpsStream::Http(future.<span class="kw">await</span>.map_err(Into::into)<span class="question-mark">?</span>))
@@ -198,4 +198,99 @@
 <a href=#198 id=198 data-nosnippet>198</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
 <a href=#199 id=199 data-nosnippet>199</a>        uri: <span class="kw-2">&amp;</span>Uri,
 <a href=#200 id=200 data-nosnippet>200</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;ServerName&lt;<span class="lifetime">'static</span>&gt;, Box&lt;<span class="kw">dyn </span>std::error::Error + Sync + Send&gt;&gt;;
-<a href=#201 id=201 data-nosnippet>201</a>}</code></pre></div></section></main></body></html>
+<a href=#201 id=201 data-nosnippet>201</a>}
+<a href=#202 id=202 data-nosnippet>202</a>
+<a href=#203 id=203 data-nosnippet>203</a><span class="attr">#[cfg(all(
+<a href=#204 id=204 data-nosnippet>204</a>    test,
+<a href=#205 id=205 data-nosnippet>205</a>    any(feature = <span class="string">"ring"</span>, feature = <span class="string">"aws-lc-rs"</span>),
+<a href=#206 id=206 data-nosnippet>206</a>    any(
+<a href=#207 id=207 data-nosnippet>207</a>        feature = <span class="string">"rustls-native-certs"</span>,
+<a href=#208 id=208 data-nosnippet>208</a>        feature = <span class="string">"webpki-roots"</span>,
+<a href=#209 id=209 data-nosnippet>209</a>        feature = <span class="string">"rustls-platform-verifier"</span>,
+<a href=#210 id=210 data-nosnippet>210</a>    )
+<a href=#211 id=211 data-nosnippet>211</a>))]
+<a href=#212 id=212 data-nosnippet>212</a></span><span class="kw">mod </span>tests {
+<a href=#213 id=213 data-nosnippet>213</a>    <span class="kw">use </span>std::future::poll_fn;
+<a href=#214 id=214 data-nosnippet>214</a>
+<a href=#215 id=215 data-nosnippet>215</a>    <span class="kw">use </span>http::Uri;
+<a href=#216 id=216 data-nosnippet>216</a>    <span class="kw">use </span>hyper_util::rt::TokioIo;
+<a href=#217 id=217 data-nosnippet>217</a>    <span class="kw">use </span>tokio::net::TcpStream;
+<a href=#218 id=218 data-nosnippet>218</a>    <span class="kw">use </span>tower_service::Service;
+<a href=#219 id=219 data-nosnippet>219</a>
+<a href=#220 id=220 data-nosnippet>220</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#221 id=221 data-nosnippet>221</a>    <span class="kw">use crate</span>::{ConfigBuilderExt, HttpsConnectorBuilder, MaybeHttpsStream};
+<a href=#222 id=222 data-nosnippet>222</a>
+<a href=#223 id=223 data-nosnippet>223</a>    <span class="attr">#[tokio::test]
+<a href=#224 id=224 data-nosnippet>224</a>    </span><span class="kw">async fn </span>connects_https() {
+<a href=#225 id=225 data-nosnippet>225</a>        connect(Allow::Any, Scheme::Https)
+<a href=#226 id=226 data-nosnippet>226</a>            .<span class="kw">await
+<a href=#227 id=227 data-nosnippet>227</a>            </span>.unwrap();
+<a href=#228 id=228 data-nosnippet>228</a>    }
+<a href=#229 id=229 data-nosnippet>229</a>
+<a href=#230 id=230 data-nosnippet>230</a>    <span class="attr">#[tokio::test]
+<a href=#231 id=231 data-nosnippet>231</a>    </span><span class="kw">async fn </span>connects_http() {
+<a href=#232 id=232 data-nosnippet>232</a>        connect(Allow::Any, Scheme::Http)
+<a href=#233 id=233 data-nosnippet>233</a>            .<span class="kw">await
+<a href=#234 id=234 data-nosnippet>234</a>            </span>.unwrap();
+<a href=#235 id=235 data-nosnippet>235</a>    }
+<a href=#236 id=236 data-nosnippet>236</a>
+<a href=#237 id=237 data-nosnippet>237</a>    <span class="attr">#[tokio::test]
+<a href=#238 id=238 data-nosnippet>238</a>    </span><span class="kw">async fn </span>connects_https_only() {
+<a href=#239 id=239 data-nosnippet>239</a>        connect(Allow::Https, Scheme::Https)
+<a href=#240 id=240 data-nosnippet>240</a>            .<span class="kw">await
+<a href=#241 id=241 data-nosnippet>241</a>            </span>.unwrap();
+<a href=#242 id=242 data-nosnippet>242</a>    }
+<a href=#243 id=243 data-nosnippet>243</a>
+<a href=#244 id=244 data-nosnippet>244</a>    <span class="attr">#[tokio::test]
+<a href=#245 id=245 data-nosnippet>245</a>    </span><span class="kw">async fn </span>enforces_https_only() {
+<a href=#246 id=246 data-nosnippet>246</a>        <span class="kw">let </span>message = connect(Allow::Https, Scheme::Http)
+<a href=#247 id=247 data-nosnippet>247</a>            .<span class="kw">await
+<a href=#248 id=248 data-nosnippet>248</a>            </span>.unwrap_err()
+<a href=#249 id=249 data-nosnippet>249</a>            .to_string();
+<a href=#250 id=250 data-nosnippet>250</a>
+<a href=#251 id=251 data-nosnippet>251</a>        <span class="macro">assert_eq!</span>(message, <span class="string">"unsupported scheme http"</span>);
+<a href=#252 id=252 data-nosnippet>252</a>    }
+<a href=#253 id=253 data-nosnippet>253</a>
+<a href=#254 id=254 data-nosnippet>254</a>    <span class="kw">async fn </span>connect(
+<a href=#255 id=255 data-nosnippet>255</a>        allow: Allow,
+<a href=#256 id=256 data-nosnippet>256</a>        scheme: Scheme,
+<a href=#257 id=257 data-nosnippet>257</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;MaybeHttpsStream&lt;TokioIo&lt;TcpStream&gt;&gt;, BoxError&gt; {
+<a href=#258 id=258 data-nosnippet>258</a>        <span class="kw">let </span>config_builder = rustls::ClientConfig::builder();
+<a href=#259 id=259 data-nosnippet>259</a>        <span class="macro">cfg_if::cfg_if!</span> {
+<a href=#260 id=260 data-nosnippet>260</a>            <span class="kw">if </span><span class="attr">#[cfg(feature = <span class="string">"rustls-platform-verifier"</span>)] </span>{
+<a href=#261 id=261 data-nosnippet>261</a>                <span class="kw">let </span>config_builder = config_builder.try_with_platform_verifier()<span class="question-mark">?</span>;
+<a href=#262 id=262 data-nosnippet>262</a>            } <span class="kw">else if </span><span class="attr">#[cfg(feature = <span class="string">"rustls-native-certs"</span>)] </span>{
+<a href=#263 id=263 data-nosnippet>263</a>                <span class="kw">let </span>config_builder = config_builder.with_native_roots().unwrap();
+<a href=#264 id=264 data-nosnippet>264</a>            } <span class="kw">else if </span><span class="attr">#[cfg(feature = <span class="string">"webpki-roots"</span>)] </span>{
+<a href=#265 id=265 data-nosnippet>265</a>                <span class="kw">let </span>config_builder = config_builder.with_webpki_roots();
+<a href=#266 id=266 data-nosnippet>266</a>            }
+<a href=#267 id=267 data-nosnippet>267</a>        }
+<a href=#268 id=268 data-nosnippet>268</a>        <span class="kw">let </span>config = config_builder.with_no_client_auth();
+<a href=#269 id=269 data-nosnippet>269</a>
+<a href=#270 id=270 data-nosnippet>270</a>        <span class="kw">let </span>builder = HttpsConnectorBuilder::new().with_tls_config(config);
+<a href=#271 id=271 data-nosnippet>271</a>        <span class="kw">let </span><span class="kw-2">mut </span>service = <span class="kw">match </span>allow {
+<a href=#272 id=272 data-nosnippet>272</a>            Allow::Https =&gt; builder.https_only(),
+<a href=#273 id=273 data-nosnippet>273</a>            Allow::Any =&gt; builder.https_or_http(),
+<a href=#274 id=274 data-nosnippet>274</a>        }
+<a href=#275 id=275 data-nosnippet>275</a>        .enable_http1()
+<a href=#276 id=276 data-nosnippet>276</a>        .build();
+<a href=#277 id=277 data-nosnippet>277</a>
+<a href=#278 id=278 data-nosnippet>278</a>        poll_fn(|cx| service.poll_ready(cx)).<span class="kw">await</span><span class="question-mark">?</span>;
+<a href=#279 id=279 data-nosnippet>279</a>        service
+<a href=#280 id=280 data-nosnippet>280</a>            .call(Uri::from_static(<span class="kw">match </span>scheme {
+<a href=#281 id=281 data-nosnippet>281</a>                Scheme::Https =&gt; <span class="string">"https://google.com"</span>,
+<a href=#282 id=282 data-nosnippet>282</a>                Scheme::Http =&gt; <span class="string">"http://google.com"</span>,
+<a href=#283 id=283 data-nosnippet>283</a>            }))
+<a href=#284 id=284 data-nosnippet>284</a>            .<span class="kw">await
+<a href=#285 id=285 data-nosnippet>285</a>    </span>}
+<a href=#286 id=286 data-nosnippet>286</a>
+<a href=#287 id=287 data-nosnippet>287</a>    <span class="kw">enum </span>Allow {
+<a href=#288 id=288 data-nosnippet>288</a>        Https,
+<a href=#289 id=289 data-nosnippet>289</a>        Any,
+<a href=#290 id=290 data-nosnippet>290</a>    }
+<a href=#291 id=291 data-nosnippet>291</a>
+<a href=#292 id=292 data-nosnippet>292</a>    <span class="kw">enum </span>Scheme {
+<a href=#293 id=293 data-nosnippet>293</a>        Https,
+<a href=#294 id=294 data-nosnippet>294</a>        Http,
+<a href=#295 id=295 data-nosnippet>295</a>    }
+<a href=#296 id=296 data-nosnippet>296</a>}</code></pre></div></section></main></body></html>

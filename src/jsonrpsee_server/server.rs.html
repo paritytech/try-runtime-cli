@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/jsonrpsee-server-0.24.5/src/server.rs`."><title>server.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">jsonrpsee_server/</div>server.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/jsonrpsee-server-0.24.10/src/server.rs`."><title>server.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jsonrpsee_server" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">jsonrpsee_server/</div>server.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2019-2021 Parity Technologies (UK) Ltd.
 <a href=#2 id=2 data-nosnippet>2</a>//
 <a href=#3 id=3 data-nosnippet>3</a>// Permission is hereby granted, free of charge, to any
 <a href=#4 id=4 data-nosnippet>4</a>// person obtaining a copy of this software and associated
@@ -970,20 +970,20 @@
 <a href=#970 id=970 data-nosnippet>970</a>	}
 <a href=#971 id=971 data-nosnippet>971</a>}
 <a href=#972 id=972 data-nosnippet>972</a>
-<a href=#973 id=973 data-nosnippet>973</a><span class="kw">impl</span>&lt;Body, RpcMiddleware, HttpMiddleware&gt; Service&lt;HttpRequest&lt;Body&gt;&gt; <span class="kw">for </span>TowerService&lt;RpcMiddleware, HttpMiddleware&gt;
+<a href=#973 id=973 data-nosnippet>973</a><span class="kw">impl</span>&lt;RequestBody, ResponseBody, RpcMiddleware, HttpMiddleware&gt; Service&lt;HttpRequest&lt;RequestBody&gt;&gt; <span class="kw">for </span>TowerService&lt;RpcMiddleware, HttpMiddleware&gt;
 <a href=#974 id=974 data-nosnippet>974</a><span class="kw">where
 <a href=#975 id=975 data-nosnippet>975</a>	</span>RpcMiddleware: <span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; tower::Layer&lt;RpcService&gt; + Clone,
 <a href=#976 id=976 data-nosnippet>976</a>	&lt;RpcMiddleware <span class="kw">as </span>Layer&lt;RpcService&gt;&gt;::Service: Send + Sync + <span class="lifetime">'static</span>,
 <a href=#977 id=977 data-nosnippet>977</a>	<span class="kw">for</span>&lt;<span class="lifetime">'a</span>&gt; &lt;RpcMiddleware <span class="kw">as </span>Layer&lt;RpcService&gt;&gt;::Service: RpcServiceT&lt;<span class="lifetime">'a</span>&gt;,
 <a href=#978 id=978 data-nosnippet>978</a>	HttpMiddleware: Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt; + Send + <span class="lifetime">'static</span>,
 <a href=#979 id=979 data-nosnippet>979</a>	&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service:
-<a href=#980 id=980 data-nosnippet>980</a>		Send + Service&lt;HttpRequest&lt;Body&gt;, Response = HttpResponse, Error = Box&lt;(<span class="kw">dyn </span>StdError + Send + Sync + <span class="lifetime">'static</span>)&gt;&gt;,
-<a href=#981 id=981 data-nosnippet>981</a>	&lt;&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;HttpRequest&lt;Body&gt;&gt;&gt;::Future:
+<a href=#980 id=980 data-nosnippet>980</a>		Send + Service&lt;HttpRequest&lt;RequestBody&gt;, Response = HttpResponse&lt;ResponseBody&gt;, Error = Box&lt;(<span class="kw">dyn </span>StdError + Send + Sync + <span class="lifetime">'static</span>)&gt;&gt;,
+<a href=#981 id=981 data-nosnippet>981</a>	&lt;&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;HttpRequest&lt;RequestBody&gt;&gt;&gt;::Future:
 <a href=#982 id=982 data-nosnippet>982</a>		Send + <span class="lifetime">'static</span>,
-<a href=#983 id=983 data-nosnippet>983</a>	Body: http_body::Body&lt;Data = Bytes&gt; + Send + <span class="lifetime">'static</span>,
-<a href=#984 id=984 data-nosnippet>984</a>	Body::Error: Into&lt;BoxError&gt;,
+<a href=#983 id=983 data-nosnippet>983</a>	RequestBody: http_body::Body&lt;Data = Bytes&gt; + Send + <span class="lifetime">'static</span>,
+<a href=#984 id=984 data-nosnippet>984</a>	RequestBody::Error: Into&lt;BoxError&gt;,
 <a href=#985 id=985 data-nosnippet>985</a>{
-<a href=#986 id=986 data-nosnippet>986</a>	<span class="kw">type </span>Response = HttpResponse;
+<a href=#986 id=986 data-nosnippet>986</a>	<span class="kw">type </span>Response = HttpResponse&lt;ResponseBody&gt;;
 <a href=#987 id=987 data-nosnippet>987</a>	<span class="kw">type </span>Error = BoxError;
 <a href=#988 id=988 data-nosnippet>988</a>	<span class="kw">type </span>Future = Pin&lt;Box&lt;<span class="kw">dyn </span>Future&lt;Output = <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Response, <span class="self">Self</span>::Error&gt;&gt; + Send&gt;&gt;;
 <a href=#989 id=989 data-nosnippet>989</a>
@@ -991,7 +991,7 @@
 <a href=#991 id=991 data-nosnippet>991</a>		Poll::Ready(<span class="prelude-val">Ok</span>(()))
 <a href=#992 id=992 data-nosnippet>992</a>	}
 <a href=#993 id=993 data-nosnippet>993</a>
-<a href=#994 id=994 data-nosnippet>994</a>	<span class="kw">fn </span>call(<span class="kw-2">&amp;mut </span><span class="self">self</span>, request: HttpRequest&lt;Body&gt;) -&gt; <span class="self">Self</span>::Future {
+<a href=#994 id=994 data-nosnippet>994</a>	<span class="kw">fn </span>call(<span class="kw-2">&amp;mut </span><span class="self">self</span>, request: HttpRequest&lt;RequestBody&gt;) -&gt; <span class="self">Self</span>::Future {
 <a href=#995 id=995 data-nosnippet>995</a>		Box::pin(<span class="self">self</span>.http_middleware.service(<span class="self">self</span>.rpc_middleware.clone()).call(request))
 <a href=#996 id=996 data-nosnippet>996</a>	}
 <a href=#997 id=997 data-nosnippet>997</a>}
@@ -1146,201 +1146,208 @@
 <a href=#1146 id=1146 data-nosnippet>1146</a>				RpcServiceCfg::OnlyCalls,
 <a href=#1147 id=1147 data-nosnippet>1147</a>			));
 <a href=#1148 id=1148 data-nosnippet>1148</a>
-<a href=#1149 id=1149 data-nosnippet>1149</a>			Box::pin(
-<a href=#1150 id=1150 data-nosnippet>1150</a>				http::call_with_service(request, batch_config, max_request_size, rpc_service, max_response_size)
-<a href=#1151 id=1151 data-nosnippet>1151</a>					.map(<span class="prelude-val">Ok</span>),
-<a href=#1152 id=1152 data-nosnippet>1152</a>			)
-<a href=#1153 id=1153 data-nosnippet>1153</a>		} <span class="kw">else </span>{
-<a href=#1154 id=1154 data-nosnippet>1154</a>			Box::pin(<span class="kw">async </span>{ http::response::denied() }.map(<span class="prelude-val">Ok</span>))
-<a href=#1155 id=1155 data-nosnippet>1155</a>		}
-<a href=#1156 id=1156 data-nosnippet>1156</a>	}
-<a href=#1157 id=1157 data-nosnippet>1157</a>}
-<a href=#1158 id=1158 data-nosnippet>1158</a>
-<a href=#1159 id=1159 data-nosnippet>1159</a><span class="kw">struct </span>ProcessConnection&lt;<span class="lifetime">'a</span>, HttpMiddleware, RpcMiddleware&gt; {
-<a href=#1160 id=1160 data-nosnippet>1160</a>	http_middleware: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>tower::ServiceBuilder&lt;HttpMiddleware&gt;,
-<a href=#1161 id=1161 data-nosnippet>1161</a>	rpc_middleware: RpcServiceBuilder&lt;RpcMiddleware&gt;,
-<a href=#1162 id=1162 data-nosnippet>1162</a>	conn_guard: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>ConnectionGuard,
-<a href=#1163 id=1163 data-nosnippet>1163</a>	conn_id: u32,
-<a href=#1164 id=1164 data-nosnippet>1164</a>	server_cfg: ServerConfig,
-<a href=#1165 id=1165 data-nosnippet>1165</a>	stop_handle: StopHandle,
-<a href=#1166 id=1166 data-nosnippet>1166</a>	socket: TcpStream,
-<a href=#1167 id=1167 data-nosnippet>1167</a>	drop_on_completion: mpsc::Sender&lt;()&gt;,
-<a href=#1168 id=1168 data-nosnippet>1168</a>	remote_addr: SocketAddr,
-<a href=#1169 id=1169 data-nosnippet>1169</a>	methods: Methods,
-<a href=#1170 id=1170 data-nosnippet>1170</a>}
-<a href=#1171 id=1171 data-nosnippet>1171</a>
-<a href=#1172 id=1172 data-nosnippet>1172</a><span class="attr">#[instrument(name = <span class="string">"connection"</span>, skip_all, fields(remote_addr = %params.remote_addr, conn_id = %params.conn_id), level = <span class="string">"INFO"</span>)]
-<a href=#1173 id=1173 data-nosnippet>1173</a></span><span class="kw">fn </span>process_connection&lt;<span class="lifetime">'a</span>, RpcMiddleware, HttpMiddleware, Body&gt;(params: ProcessConnection&lt;HttpMiddleware, RpcMiddleware&gt;)
-<a href=#1174 id=1174 data-nosnippet>1174</a><span class="kw">where
-<a href=#1175 id=1175 data-nosnippet>1175</a>	</span>RpcMiddleware: <span class="lifetime">'static</span>,
-<a href=#1176 id=1176 data-nosnippet>1176</a>	HttpMiddleware: Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt; + Send + <span class="lifetime">'static</span>,
-<a href=#1177 id=1177 data-nosnippet>1177</a>	&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service:
-<a href=#1178 id=1178 data-nosnippet>1178</a>		Send + <span class="lifetime">'static </span>+ Clone + Service&lt;HttpRequest, Response = HttpResponse&lt;Body&gt;, Error = BoxError&gt;,
-<a href=#1179 id=1179 data-nosnippet>1179</a>	&lt;&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;HttpRequest&gt;&gt;::Future:
-<a href=#1180 id=1180 data-nosnippet>1180</a>		Send + <span class="lifetime">'static</span>,
-<a href=#1181 id=1181 data-nosnippet>1181</a>	Body: http_body::Body&lt;Data = Bytes&gt; + Send + <span class="lifetime">'static</span>,
-<a href=#1182 id=1182 data-nosnippet>1182</a>	&lt;Body <span class="kw">as </span>http_body::Body&gt;::Error: Into&lt;BoxError&gt;,
-<a href=#1183 id=1183 data-nosnippet>1183</a>	&lt;Body <span class="kw">as </span>http_body::Body&gt;::Data: Send,
-<a href=#1184 id=1184 data-nosnippet>1184</a>{
-<a href=#1185 id=1185 data-nosnippet>1185</a>	<span class="kw">let </span>ProcessConnection {
-<a href=#1186 id=1186 data-nosnippet>1186</a>		http_middleware,
-<a href=#1187 id=1187 data-nosnippet>1187</a>		rpc_middleware,
-<a href=#1188 id=1188 data-nosnippet>1188</a>		conn_guard,
-<a href=#1189 id=1189 data-nosnippet>1189</a>		conn_id,
-<a href=#1190 id=1190 data-nosnippet>1190</a>		server_cfg,
-<a href=#1191 id=1191 data-nosnippet>1191</a>		socket,
-<a href=#1192 id=1192 data-nosnippet>1192</a>		stop_handle,
-<a href=#1193 id=1193 data-nosnippet>1193</a>		drop_on_completion,
-<a href=#1194 id=1194 data-nosnippet>1194</a>		methods,
-<a href=#1195 id=1195 data-nosnippet>1195</a>		..
-<a href=#1196 id=1196 data-nosnippet>1196</a>	} = params;
-<a href=#1197 id=1197 data-nosnippet>1197</a>
-<a href=#1198 id=1198 data-nosnippet>1198</a>	<span class="kw">if let </span><span class="prelude-val">Err</span>(e) = socket.set_nodelay(server_cfg.tcp_no_delay) {
-<a href=#1199 id=1199 data-nosnippet>1199</a>		<span class="macro">tracing::warn!</span>(target: LOG_TARGET, <span class="string">"Could not set NODELAY on socket: {:?}"</span>, e);
-<a href=#1200 id=1200 data-nosnippet>1200</a>		<span class="kw">return</span>;
-<a href=#1201 id=1201 data-nosnippet>1201</a>	}
-<a href=#1202 id=1202 data-nosnippet>1202</a>
-<a href=#1203 id=1203 data-nosnippet>1203</a>	<span class="kw">let </span>tower_service = TowerServiceNoHttp {
-<a href=#1204 id=1204 data-nosnippet>1204</a>		inner: ServiceData {
-<a href=#1205 id=1205 data-nosnippet>1205</a>			server_cfg,
-<a href=#1206 id=1206 data-nosnippet>1206</a>			methods,
-<a href=#1207 id=1207 data-nosnippet>1207</a>			stop_handle: stop_handle.clone(),
-<a href=#1208 id=1208 data-nosnippet>1208</a>			conn_id,
-<a href=#1209 id=1209 data-nosnippet>1209</a>			conn_guard: conn_guard.clone(),
-<a href=#1210 id=1210 data-nosnippet>1210</a>		},
-<a href=#1211 id=1211 data-nosnippet>1211</a>		rpc_middleware,
-<a href=#1212 id=1212 data-nosnippet>1212</a>		on_session_close: <span class="prelude-val">None</span>,
-<a href=#1213 id=1213 data-nosnippet>1213</a>	};
-<a href=#1214 id=1214 data-nosnippet>1214</a>
-<a href=#1215 id=1215 data-nosnippet>1215</a>	<span class="kw">let </span>service = http_middleware.service(tower_service);
-<a href=#1216 id=1216 data-nosnippet>1216</a>
-<a href=#1217 id=1217 data-nosnippet>1217</a>	tokio::spawn(<span class="kw">async </span>{
-<a href=#1218 id=1218 data-nosnippet>1218</a>		<span class="comment">// this requires Clone.
-<a href=#1219 id=1219 data-nosnippet>1219</a>		</span><span class="kw">let </span>service = <span class="kw">crate</span>::utils::TowerToHyperService::new(service);
-<a href=#1220 id=1220 data-nosnippet>1220</a>		<span class="kw">let </span>io = TokioIo::new(socket);
-<a href=#1221 id=1221 data-nosnippet>1221</a>		<span class="kw">let </span>builder = hyper_util::server::conn::auto::Builder::new(TokioExecutor::new());
-<a href=#1222 id=1222 data-nosnippet>1222</a>
-<a href=#1223 id=1223 data-nosnippet>1223</a>		<span class="kw">let </span>conn = builder.serve_connection_with_upgrades(io, service);
-<a href=#1224 id=1224 data-nosnippet>1224</a>		<span class="kw">let </span>stopped = stop_handle.shutdown();
-<a href=#1225 id=1225 data-nosnippet>1225</a>
-<a href=#1226 id=1226 data-nosnippet>1226</a>		<span class="macro">tokio::pin!</span>(stopped, conn);
-<a href=#1227 id=1227 data-nosnippet>1227</a>
-<a href=#1228 id=1228 data-nosnippet>1228</a>		<span class="kw">let </span>res = <span class="kw">match </span>future::select(conn, stopped).<span class="kw">await </span>{
-<a href=#1229 id=1229 data-nosnippet>1229</a>			Either::Left((conn, <span class="kw">_</span>)) =&gt; conn,
-<a href=#1230 id=1230 data-nosnippet>1230</a>			Either::Right((<span class="kw">_</span>, <span class="kw-2">mut </span>conn)) =&gt; {
-<a href=#1231 id=1231 data-nosnippet>1231</a>				<span class="comment">// NOTE: the connection should continue to be polled until shutdown can finish.
-<a href=#1232 id=1232 data-nosnippet>1232</a>				// Thus, both lines below are needed and not a nit.
-<a href=#1233 id=1233 data-nosnippet>1233</a>				</span>conn.as_mut().graceful_shutdown();
-<a href=#1234 id=1234 data-nosnippet>1234</a>				conn.<span class="kw">await
-<a href=#1235 id=1235 data-nosnippet>1235</a>			</span>}
-<a href=#1236 id=1236 data-nosnippet>1236</a>		};
-<a href=#1237 id=1237 data-nosnippet>1237</a>
-<a href=#1238 id=1238 data-nosnippet>1238</a>		<span class="kw">if let </span><span class="prelude-val">Err</span>(e) = res {
-<a href=#1239 id=1239 data-nosnippet>1239</a>			<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"HTTP serve connection failed {:?}"</span>, e);
-<a href=#1240 id=1240 data-nosnippet>1240</a>		}
-<a href=#1241 id=1241 data-nosnippet>1241</a>		drop(drop_on_completion)
-<a href=#1242 id=1242 data-nosnippet>1242</a>	});
-<a href=#1243 id=1243 data-nosnippet>1243</a>}
+<a href=#1149 id=1149 data-nosnippet>1149</a>			Box::pin(<span class="kw">async move </span>{
+<a href=#1150 id=1150 data-nosnippet>1150</a>				<span class="kw">let </span>rp =
+<a href=#1151 id=1151 data-nosnippet>1151</a>					http::call_with_service(request, batch_config, max_request_size, rpc_service, max_response_size)
+<a href=#1152 id=1152 data-nosnippet>1152</a>						.<span class="kw">await</span>;
+<a href=#1153 id=1153 data-nosnippet>1153</a>				<span class="comment">// NOTE: The `conn guard` must be held until the response is processed
+<a href=#1154 id=1154 data-nosnippet>1154</a>				// to respect the `max_connections` limit.
+<a href=#1155 id=1155 data-nosnippet>1155</a>				</span>drop(conn);
+<a href=#1156 id=1156 data-nosnippet>1156</a>				<span class="prelude-val">Ok</span>(rp)
+<a href=#1157 id=1157 data-nosnippet>1157</a>			})
+<a href=#1158 id=1158 data-nosnippet>1158</a>		} <span class="kw">else </span>{
+<a href=#1159 id=1159 data-nosnippet>1159</a>			<span class="comment">// NOTE: the `conn guard` is dropped when this function which is fine
+<a href=#1160 id=1160 data-nosnippet>1160</a>			// because it doesn't rely on any async operations.
+<a href=#1161 id=1161 data-nosnippet>1161</a>			</span>Box::pin(<span class="kw">async </span>{ <span class="prelude-val">Ok</span>(http::response::denied()) })
+<a href=#1162 id=1162 data-nosnippet>1162</a>		}
+<a href=#1163 id=1163 data-nosnippet>1163</a>	}
+<a href=#1164 id=1164 data-nosnippet>1164</a>}
+<a href=#1165 id=1165 data-nosnippet>1165</a>
+<a href=#1166 id=1166 data-nosnippet>1166</a><span class="kw">struct </span>ProcessConnection&lt;<span class="lifetime">'a</span>, HttpMiddleware, RpcMiddleware&gt; {
+<a href=#1167 id=1167 data-nosnippet>1167</a>	http_middleware: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>tower::ServiceBuilder&lt;HttpMiddleware&gt;,
+<a href=#1168 id=1168 data-nosnippet>1168</a>	rpc_middleware: RpcServiceBuilder&lt;RpcMiddleware&gt;,
+<a href=#1169 id=1169 data-nosnippet>1169</a>	conn_guard: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>ConnectionGuard,
+<a href=#1170 id=1170 data-nosnippet>1170</a>	conn_id: u32,
+<a href=#1171 id=1171 data-nosnippet>1171</a>	server_cfg: ServerConfig,
+<a href=#1172 id=1172 data-nosnippet>1172</a>	stop_handle: StopHandle,
+<a href=#1173 id=1173 data-nosnippet>1173</a>	socket: TcpStream,
+<a href=#1174 id=1174 data-nosnippet>1174</a>	drop_on_completion: mpsc::Sender&lt;()&gt;,
+<a href=#1175 id=1175 data-nosnippet>1175</a>	remote_addr: SocketAddr,
+<a href=#1176 id=1176 data-nosnippet>1176</a>	methods: Methods,
+<a href=#1177 id=1177 data-nosnippet>1177</a>}
+<a href=#1178 id=1178 data-nosnippet>1178</a>
+<a href=#1179 id=1179 data-nosnippet>1179</a><span class="attr">#[instrument(name = <span class="string">"connection"</span>, skip_all, fields(remote_addr = %params.remote_addr, conn_id = %params.conn_id), level = <span class="string">"INFO"</span>)]
+<a href=#1180 id=1180 data-nosnippet>1180</a></span><span class="kw">fn </span>process_connection&lt;<span class="lifetime">'a</span>, RpcMiddleware, HttpMiddleware, Body&gt;(params: ProcessConnection&lt;HttpMiddleware, RpcMiddleware&gt;)
+<a href=#1181 id=1181 data-nosnippet>1181</a><span class="kw">where
+<a href=#1182 id=1182 data-nosnippet>1182</a>	</span>RpcMiddleware: <span class="lifetime">'static</span>,
+<a href=#1183 id=1183 data-nosnippet>1183</a>	HttpMiddleware: Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt; + Send + <span class="lifetime">'static</span>,
+<a href=#1184 id=1184 data-nosnippet>1184</a>	&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service:
+<a href=#1185 id=1185 data-nosnippet>1185</a>		Send + <span class="lifetime">'static </span>+ Clone + Service&lt;HttpRequest, Response = HttpResponse&lt;Body&gt;, Error = BoxError&gt;,
+<a href=#1186 id=1186 data-nosnippet>1186</a>	&lt;&lt;HttpMiddleware <span class="kw">as </span>Layer&lt;TowerServiceNoHttp&lt;RpcMiddleware&gt;&gt;&gt;::Service <span class="kw">as </span>Service&lt;HttpRequest&gt;&gt;::Future:
+<a href=#1187 id=1187 data-nosnippet>1187</a>		Send + <span class="lifetime">'static</span>,
+<a href=#1188 id=1188 data-nosnippet>1188</a>	Body: http_body::Body&lt;Data = Bytes&gt; + Send + <span class="lifetime">'static</span>,
+<a href=#1189 id=1189 data-nosnippet>1189</a>	&lt;Body <span class="kw">as </span>http_body::Body&gt;::Error: Into&lt;BoxError&gt;,
+<a href=#1190 id=1190 data-nosnippet>1190</a>	&lt;Body <span class="kw">as </span>http_body::Body&gt;::Data: Send,
+<a href=#1191 id=1191 data-nosnippet>1191</a>{
+<a href=#1192 id=1192 data-nosnippet>1192</a>	<span class="kw">let </span>ProcessConnection {
+<a href=#1193 id=1193 data-nosnippet>1193</a>		http_middleware,
+<a href=#1194 id=1194 data-nosnippet>1194</a>		rpc_middleware,
+<a href=#1195 id=1195 data-nosnippet>1195</a>		conn_guard,
+<a href=#1196 id=1196 data-nosnippet>1196</a>		conn_id,
+<a href=#1197 id=1197 data-nosnippet>1197</a>		server_cfg,
+<a href=#1198 id=1198 data-nosnippet>1198</a>		socket,
+<a href=#1199 id=1199 data-nosnippet>1199</a>		stop_handle,
+<a href=#1200 id=1200 data-nosnippet>1200</a>		drop_on_completion,
+<a href=#1201 id=1201 data-nosnippet>1201</a>		methods,
+<a href=#1202 id=1202 data-nosnippet>1202</a>		..
+<a href=#1203 id=1203 data-nosnippet>1203</a>	} = params;
+<a href=#1204 id=1204 data-nosnippet>1204</a>
+<a href=#1205 id=1205 data-nosnippet>1205</a>	<span class="kw">if let </span><span class="prelude-val">Err</span>(e) = socket.set_nodelay(server_cfg.tcp_no_delay) {
+<a href=#1206 id=1206 data-nosnippet>1206</a>		<span class="macro">tracing::warn!</span>(target: LOG_TARGET, <span class="string">"Could not set NODELAY on socket: {:?}"</span>, e);
+<a href=#1207 id=1207 data-nosnippet>1207</a>		<span class="kw">return</span>;
+<a href=#1208 id=1208 data-nosnippet>1208</a>	}
+<a href=#1209 id=1209 data-nosnippet>1209</a>
+<a href=#1210 id=1210 data-nosnippet>1210</a>	<span class="kw">let </span>tower_service = TowerServiceNoHttp {
+<a href=#1211 id=1211 data-nosnippet>1211</a>		inner: ServiceData {
+<a href=#1212 id=1212 data-nosnippet>1212</a>			server_cfg,
+<a href=#1213 id=1213 data-nosnippet>1213</a>			methods,
+<a href=#1214 id=1214 data-nosnippet>1214</a>			stop_handle: stop_handle.clone(),
+<a href=#1215 id=1215 data-nosnippet>1215</a>			conn_id,
+<a href=#1216 id=1216 data-nosnippet>1216</a>			conn_guard: conn_guard.clone(),
+<a href=#1217 id=1217 data-nosnippet>1217</a>		},
+<a href=#1218 id=1218 data-nosnippet>1218</a>		rpc_middleware,
+<a href=#1219 id=1219 data-nosnippet>1219</a>		on_session_close: <span class="prelude-val">None</span>,
+<a href=#1220 id=1220 data-nosnippet>1220</a>	};
+<a href=#1221 id=1221 data-nosnippet>1221</a>
+<a href=#1222 id=1222 data-nosnippet>1222</a>	<span class="kw">let </span>service = http_middleware.service(tower_service);
+<a href=#1223 id=1223 data-nosnippet>1223</a>
+<a href=#1224 id=1224 data-nosnippet>1224</a>	tokio::spawn(<span class="kw">async </span>{
+<a href=#1225 id=1225 data-nosnippet>1225</a>		<span class="comment">// this requires Clone.
+<a href=#1226 id=1226 data-nosnippet>1226</a>		</span><span class="kw">let </span>service = <span class="kw">crate</span>::utils::TowerToHyperService::new(service);
+<a href=#1227 id=1227 data-nosnippet>1227</a>		<span class="kw">let </span>io = TokioIo::new(socket);
+<a href=#1228 id=1228 data-nosnippet>1228</a>		<span class="kw">let </span>builder = hyper_util::server::conn::auto::Builder::new(TokioExecutor::new());
+<a href=#1229 id=1229 data-nosnippet>1229</a>
+<a href=#1230 id=1230 data-nosnippet>1230</a>		<span class="kw">let </span>conn = builder.serve_connection_with_upgrades(io, service);
+<a href=#1231 id=1231 data-nosnippet>1231</a>		<span class="kw">let </span>stopped = stop_handle.shutdown();
+<a href=#1232 id=1232 data-nosnippet>1232</a>
+<a href=#1233 id=1233 data-nosnippet>1233</a>		<span class="macro">tokio::pin!</span>(stopped, conn);
+<a href=#1234 id=1234 data-nosnippet>1234</a>
+<a href=#1235 id=1235 data-nosnippet>1235</a>		<span class="kw">let </span>res = <span class="kw">match </span>future::select(conn, stopped).<span class="kw">await </span>{
+<a href=#1236 id=1236 data-nosnippet>1236</a>			Either::Left((conn, <span class="kw">_</span>)) =&gt; conn,
+<a href=#1237 id=1237 data-nosnippet>1237</a>			Either::Right((<span class="kw">_</span>, <span class="kw-2">mut </span>conn)) =&gt; {
+<a href=#1238 id=1238 data-nosnippet>1238</a>				<span class="comment">// NOTE: the connection should continue to be polled until shutdown can finish.
+<a href=#1239 id=1239 data-nosnippet>1239</a>				// Thus, both lines below are needed and not a nit.
+<a href=#1240 id=1240 data-nosnippet>1240</a>				</span>conn.as_mut().graceful_shutdown();
+<a href=#1241 id=1241 data-nosnippet>1241</a>				conn.<span class="kw">await
+<a href=#1242 id=1242 data-nosnippet>1242</a>			</span>}
+<a href=#1243 id=1243 data-nosnippet>1243</a>		};
 <a href=#1244 id=1244 data-nosnippet>1244</a>
-<a href=#1245 id=1245 data-nosnippet>1245</a><span class="kw">enum </span>AcceptConnection&lt;S&gt; {
-<a href=#1246 id=1246 data-nosnippet>1246</a>	Shutdown,
-<a href=#1247 id=1247 data-nosnippet>1247</a>	Established { socket: TcpStream, remote_addr: SocketAddr, stop: S },
-<a href=#1248 id=1248 data-nosnippet>1248</a>	<span class="prelude-val">Err</span>((std::io::Error, S)),
-<a href=#1249 id=1249 data-nosnippet>1249</a>}
-<a href=#1250 id=1250 data-nosnippet>1250</a>
-<a href=#1251 id=1251 data-nosnippet>1251</a><span class="kw">async fn </span>try_accept_conn&lt;S&gt;(listener: <span class="kw-2">&amp;</span>TcpListener, stopped: S) -&gt; AcceptConnection&lt;S&gt;
-<a href=#1252 id=1252 data-nosnippet>1252</a><span class="kw">where
-<a href=#1253 id=1253 data-nosnippet>1253</a>	</span>S: Future + Unpin,
-<a href=#1254 id=1254 data-nosnippet>1254</a>{
-<a href=#1255 id=1255 data-nosnippet>1255</a>	<span class="kw">let </span>accept = listener.accept();
-<a href=#1256 id=1256 data-nosnippet>1256</a>	<span class="macro">tokio::pin!</span>(accept);
+<a href=#1245 id=1245 data-nosnippet>1245</a>		<span class="kw">if let </span><span class="prelude-val">Err</span>(e) = res {
+<a href=#1246 id=1246 data-nosnippet>1246</a>			<span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"HTTP serve connection failed {:?}"</span>, e);
+<a href=#1247 id=1247 data-nosnippet>1247</a>		}
+<a href=#1248 id=1248 data-nosnippet>1248</a>		drop(drop_on_completion)
+<a href=#1249 id=1249 data-nosnippet>1249</a>	});
+<a href=#1250 id=1250 data-nosnippet>1250</a>}
+<a href=#1251 id=1251 data-nosnippet>1251</a>
+<a href=#1252 id=1252 data-nosnippet>1252</a><span class="kw">enum </span>AcceptConnection&lt;S&gt; {
+<a href=#1253 id=1253 data-nosnippet>1253</a>	Shutdown,
+<a href=#1254 id=1254 data-nosnippet>1254</a>	Established { socket: TcpStream, remote_addr: SocketAddr, stop: S },
+<a href=#1255 id=1255 data-nosnippet>1255</a>	<span class="prelude-val">Err</span>((std::io::Error, S)),
+<a href=#1256 id=1256 data-nosnippet>1256</a>}
 <a href=#1257 id=1257 data-nosnippet>1257</a>
-<a href=#1258 id=1258 data-nosnippet>1258</a>	<span class="kw">match </span>futures_util::future::select(accept, stopped).<span class="kw">await </span>{
-<a href=#1259 id=1259 data-nosnippet>1259</a>		Either::Left((res, stop)) =&gt; <span class="kw">match </span>res {
-<a href=#1260 id=1260 data-nosnippet>1260</a>			<span class="prelude-val">Ok</span>((socket, remote_addr)) =&gt; AcceptConnection::Established { socket, remote_addr, stop },
-<a href=#1261 id=1261 data-nosnippet>1261</a>			<span class="prelude-val">Err</span>(e) =&gt; AcceptConnection::Err((e, stop)),
-<a href=#1262 id=1262 data-nosnippet>1262</a>		},
-<a href=#1263 id=1263 data-nosnippet>1263</a>		Either::Right(<span class="kw">_</span>) =&gt; AcceptConnection::Shutdown,
-<a href=#1264 id=1264 data-nosnippet>1264</a>	}
-<a href=#1265 id=1265 data-nosnippet>1265</a>}
-<a href=#1266 id=1266 data-nosnippet>1266</a>
-<a href=#1267 id=1267 data-nosnippet>1267</a><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>handle_rpc_call&lt;S&gt;(
-<a href=#1268 id=1268 data-nosnippet>1268</a>	body: <span class="kw-2">&amp;</span>[u8],
-<a href=#1269 id=1269 data-nosnippet>1269</a>	is_single: bool,
-<a href=#1270 id=1270 data-nosnippet>1270</a>	batch_config: BatchRequestConfig,
-<a href=#1271 id=1271 data-nosnippet>1271</a>	max_response_size: u32,
-<a href=#1272 id=1272 data-nosnippet>1272</a>	rpc_service: <span class="kw-2">&amp;</span>S,
-<a href=#1273 id=1273 data-nosnippet>1273</a>	extensions: Extensions,
-<a href=#1274 id=1274 data-nosnippet>1274</a>) -&gt; <span class="prelude-ty">Option</span>&lt;MethodResponse&gt;
-<a href=#1275 id=1275 data-nosnippet>1275</a><span class="kw">where
-<a href=#1276 id=1276 data-nosnippet>1276</a>	for</span>&lt;<span class="lifetime">'a</span>&gt; S: RpcServiceT&lt;<span class="lifetime">'a</span>&gt; + Send,
-<a href=#1277 id=1277 data-nosnippet>1277</a>{
-<a href=#1278 id=1278 data-nosnippet>1278</a>	<span class="comment">// Single request or notification
-<a href=#1279 id=1279 data-nosnippet>1279</a>	</span><span class="kw">if </span>is_single {
-<a href=#1280 id=1280 data-nosnippet>1280</a>		<span class="kw">if let </span><span class="prelude-val">Ok</span>(req) = deserialize::from_slice_with_extensions(body, extensions) {
-<a href=#1281 id=1281 data-nosnippet>1281</a>			<span class="prelude-val">Some</span>(rpc_service.call(req).<span class="kw">await</span>)
-<a href=#1282 id=1282 data-nosnippet>1282</a>		} <span class="kw">else if let </span><span class="prelude-val">Ok</span>(_notif) = serde_json::from_slice::&lt;Notif&gt;(body) {
-<a href=#1283 id=1283 data-nosnippet>1283</a>			<span class="prelude-val">None
-<a href=#1284 id=1284 data-nosnippet>1284</a>		</span>} <span class="kw">else </span>{
-<a href=#1285 id=1285 data-nosnippet>1285</a>			<span class="kw">let </span>(id, code) = prepare_error(body);
-<a href=#1286 id=1286 data-nosnippet>1286</a>			<span class="prelude-val">Some</span>(MethodResponse::error(id, ErrorObject::from(code)))
-<a href=#1287 id=1287 data-nosnippet>1287</a>		}
-<a href=#1288 id=1288 data-nosnippet>1288</a>	}
-<a href=#1289 id=1289 data-nosnippet>1289</a>	<span class="comment">// Batch of requests.
-<a href=#1290 id=1290 data-nosnippet>1290</a>	</span><span class="kw">else </span>{
-<a href=#1291 id=1291 data-nosnippet>1291</a>		<span class="kw">let </span>max_len = <span class="kw">match </span>batch_config {
-<a href=#1292 id=1292 data-nosnippet>1292</a>			BatchRequestConfig::Disabled =&gt; {
-<a href=#1293 id=1293 data-nosnippet>1293</a>				<span class="kw">let </span>rp = MethodResponse::error(
-<a href=#1294 id=1294 data-nosnippet>1294</a>					Id::Null,
-<a href=#1295 id=1295 data-nosnippet>1295</a>					ErrorObject::borrowed(BATCHES_NOT_SUPPORTED_CODE, BATCHES_NOT_SUPPORTED_MSG, <span class="prelude-val">None</span>),
-<a href=#1296 id=1296 data-nosnippet>1296</a>				);
-<a href=#1297 id=1297 data-nosnippet>1297</a>				<span class="kw">return </span><span class="prelude-val">Some</span>(rp);
-<a href=#1298 id=1298 data-nosnippet>1298</a>			}
-<a href=#1299 id=1299 data-nosnippet>1299</a>			BatchRequestConfig::Limit(limit) =&gt; limit <span class="kw">as </span>usize,
-<a href=#1300 id=1300 data-nosnippet>1300</a>			BatchRequestConfig::Unlimited =&gt; usize::MAX,
-<a href=#1301 id=1301 data-nosnippet>1301</a>		};
-<a href=#1302 id=1302 data-nosnippet>1302</a>
-<a href=#1303 id=1303 data-nosnippet>1303</a>		<span class="kw">if let </span><span class="prelude-val">Ok</span>(batch) = serde_json::from_slice::&lt;Vec&lt;<span class="kw-2">&amp;</span>JsonRawValue&gt;&gt;(body) {
-<a href=#1304 id=1304 data-nosnippet>1304</a>			<span class="kw">if </span>batch.len() &gt; max_len {
-<a href=#1305 id=1305 data-nosnippet>1305</a>				<span class="kw">return </span><span class="prelude-val">Some</span>(MethodResponse::error(Id::Null, reject_too_big_batch_request(max_len)));
-<a href=#1306 id=1306 data-nosnippet>1306</a>			}
-<a href=#1307 id=1307 data-nosnippet>1307</a>
-<a href=#1308 id=1308 data-nosnippet>1308</a>			<span class="kw">let </span><span class="kw-2">mut </span>got_notif = <span class="bool-val">false</span>;
-<a href=#1309 id=1309 data-nosnippet>1309</a>			<span class="kw">let </span><span class="kw-2">mut </span>batch_response = BatchResponseBuilder::new_with_limit(max_response_size <span class="kw">as </span>usize);
-<a href=#1310 id=1310 data-nosnippet>1310</a>
-<a href=#1311 id=1311 data-nosnippet>1311</a>			<span class="kw">for </span>call <span class="kw">in </span>batch {
-<a href=#1312 id=1312 data-nosnippet>1312</a>				<span class="kw">if let </span><span class="prelude-val">Ok</span>(req) = deserialize::from_str_with_extensions(call.get(), extensions.clone()) {
-<a href=#1313 id=1313 data-nosnippet>1313</a>					<span class="kw">let </span>rp = rpc_service.call(req).<span class="kw">await</span>;
+<a href=#1258 id=1258 data-nosnippet>1258</a><span class="kw">async fn </span>try_accept_conn&lt;S&gt;(listener: <span class="kw-2">&amp;</span>TcpListener, stopped: S) -&gt; AcceptConnection&lt;S&gt;
+<a href=#1259 id=1259 data-nosnippet>1259</a><span class="kw">where
+<a href=#1260 id=1260 data-nosnippet>1260</a>	</span>S: Future + Unpin,
+<a href=#1261 id=1261 data-nosnippet>1261</a>{
+<a href=#1262 id=1262 data-nosnippet>1262</a>	<span class="kw">let </span>accept = listener.accept();
+<a href=#1263 id=1263 data-nosnippet>1263</a>	<span class="macro">tokio::pin!</span>(accept);
+<a href=#1264 id=1264 data-nosnippet>1264</a>
+<a href=#1265 id=1265 data-nosnippet>1265</a>	<span class="kw">match </span>futures_util::future::select(accept, stopped).<span class="kw">await </span>{
+<a href=#1266 id=1266 data-nosnippet>1266</a>		Either::Left((res, stop)) =&gt; <span class="kw">match </span>res {
+<a href=#1267 id=1267 data-nosnippet>1267</a>			<span class="prelude-val">Ok</span>((socket, remote_addr)) =&gt; AcceptConnection::Established { socket, remote_addr, stop },
+<a href=#1268 id=1268 data-nosnippet>1268</a>			<span class="prelude-val">Err</span>(e) =&gt; AcceptConnection::Err((e, stop)),
+<a href=#1269 id=1269 data-nosnippet>1269</a>		},
+<a href=#1270 id=1270 data-nosnippet>1270</a>		Either::Right(<span class="kw">_</span>) =&gt; AcceptConnection::Shutdown,
+<a href=#1271 id=1271 data-nosnippet>1271</a>	}
+<a href=#1272 id=1272 data-nosnippet>1272</a>}
+<a href=#1273 id=1273 data-nosnippet>1273</a>
+<a href=#1274 id=1274 data-nosnippet>1274</a><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>handle_rpc_call&lt;S&gt;(
+<a href=#1275 id=1275 data-nosnippet>1275</a>	body: <span class="kw-2">&amp;</span>[u8],
+<a href=#1276 id=1276 data-nosnippet>1276</a>	is_single: bool,
+<a href=#1277 id=1277 data-nosnippet>1277</a>	batch_config: BatchRequestConfig,
+<a href=#1278 id=1278 data-nosnippet>1278</a>	max_response_size: u32,
+<a href=#1279 id=1279 data-nosnippet>1279</a>	rpc_service: <span class="kw-2">&amp;</span>S,
+<a href=#1280 id=1280 data-nosnippet>1280</a>	extensions: Extensions,
+<a href=#1281 id=1281 data-nosnippet>1281</a>) -&gt; <span class="prelude-ty">Option</span>&lt;MethodResponse&gt;
+<a href=#1282 id=1282 data-nosnippet>1282</a><span class="kw">where
+<a href=#1283 id=1283 data-nosnippet>1283</a>	for</span>&lt;<span class="lifetime">'a</span>&gt; S: RpcServiceT&lt;<span class="lifetime">'a</span>&gt; + Send,
+<a href=#1284 id=1284 data-nosnippet>1284</a>{
+<a href=#1285 id=1285 data-nosnippet>1285</a>	<span class="comment">// Single request or notification
+<a href=#1286 id=1286 data-nosnippet>1286</a>	</span><span class="kw">if </span>is_single {
+<a href=#1287 id=1287 data-nosnippet>1287</a>		<span class="kw">if let </span><span class="prelude-val">Ok</span>(req) = deserialize::from_slice_with_extensions(body, extensions) {
+<a href=#1288 id=1288 data-nosnippet>1288</a>			<span class="prelude-val">Some</span>(rpc_service.call(req).<span class="kw">await</span>)
+<a href=#1289 id=1289 data-nosnippet>1289</a>		} <span class="kw">else if let </span><span class="prelude-val">Ok</span>(_notif) = serde_json::from_slice::&lt;Notif&gt;(body) {
+<a href=#1290 id=1290 data-nosnippet>1290</a>			<span class="prelude-val">None
+<a href=#1291 id=1291 data-nosnippet>1291</a>		</span>} <span class="kw">else </span>{
+<a href=#1292 id=1292 data-nosnippet>1292</a>			<span class="kw">let </span>(id, code) = prepare_error(body);
+<a href=#1293 id=1293 data-nosnippet>1293</a>			<span class="prelude-val">Some</span>(MethodResponse::error(id, ErrorObject::from(code)))
+<a href=#1294 id=1294 data-nosnippet>1294</a>		}
+<a href=#1295 id=1295 data-nosnippet>1295</a>	}
+<a href=#1296 id=1296 data-nosnippet>1296</a>	<span class="comment">// Batch of requests.
+<a href=#1297 id=1297 data-nosnippet>1297</a>	</span><span class="kw">else </span>{
+<a href=#1298 id=1298 data-nosnippet>1298</a>		<span class="kw">let </span>max_len = <span class="kw">match </span>batch_config {
+<a href=#1299 id=1299 data-nosnippet>1299</a>			BatchRequestConfig::Disabled =&gt; {
+<a href=#1300 id=1300 data-nosnippet>1300</a>				<span class="kw">let </span>rp = MethodResponse::error(
+<a href=#1301 id=1301 data-nosnippet>1301</a>					Id::Null,
+<a href=#1302 id=1302 data-nosnippet>1302</a>					ErrorObject::borrowed(BATCHES_NOT_SUPPORTED_CODE, BATCHES_NOT_SUPPORTED_MSG, <span class="prelude-val">None</span>),
+<a href=#1303 id=1303 data-nosnippet>1303</a>				);
+<a href=#1304 id=1304 data-nosnippet>1304</a>				<span class="kw">return </span><span class="prelude-val">Some</span>(rp);
+<a href=#1305 id=1305 data-nosnippet>1305</a>			}
+<a href=#1306 id=1306 data-nosnippet>1306</a>			BatchRequestConfig::Limit(limit) =&gt; limit <span class="kw">as </span>usize,
+<a href=#1307 id=1307 data-nosnippet>1307</a>			BatchRequestConfig::Unlimited =&gt; usize::MAX,
+<a href=#1308 id=1308 data-nosnippet>1308</a>		};
+<a href=#1309 id=1309 data-nosnippet>1309</a>
+<a href=#1310 id=1310 data-nosnippet>1310</a>		<span class="kw">if let </span><span class="prelude-val">Ok</span>(batch) = serde_json::from_slice::&lt;Vec&lt;<span class="kw-2">&amp;</span>JsonRawValue&gt;&gt;(body) {
+<a href=#1311 id=1311 data-nosnippet>1311</a>			<span class="kw">if </span>batch.len() &gt; max_len {
+<a href=#1312 id=1312 data-nosnippet>1312</a>				<span class="kw">return </span><span class="prelude-val">Some</span>(MethodResponse::error(Id::Null, reject_too_big_batch_request(max_len)));
+<a href=#1313 id=1313 data-nosnippet>1313</a>			}
 <a href=#1314 id=1314 data-nosnippet>1314</a>
-<a href=#1315 id=1315 data-nosnippet>1315</a>					<span class="kw">if let </span><span class="prelude-val">Err</span>(too_large) = batch_response.append(<span class="kw-2">&amp;</span>rp) {
-<a href=#1316 id=1316 data-nosnippet>1316</a>						<span class="kw">return </span><span class="prelude-val">Some</span>(too_large);
-<a href=#1317 id=1317 data-nosnippet>1317</a>					}
-<a href=#1318 id=1318 data-nosnippet>1318</a>				} <span class="kw">else if let </span><span class="prelude-val">Ok</span>(_notif) = serde_json::from_str::&lt;Notif&gt;(call.get()) {
-<a href=#1319 id=1319 data-nosnippet>1319</a>					<span class="comment">// notifications should not be answered.
-<a href=#1320 id=1320 data-nosnippet>1320</a>					</span>got_notif = <span class="bool-val">true</span>;
-<a href=#1321 id=1321 data-nosnippet>1321</a>				} <span class="kw">else </span>{
-<a href=#1322 id=1322 data-nosnippet>1322</a>					<span class="comment">// valid JSON but could be not parsable as `InvalidRequest`
-<a href=#1323 id=1323 data-nosnippet>1323</a>					</span><span class="kw">let </span>id = <span class="kw">match </span>serde_json::from_str::&lt;InvalidRequest&gt;(call.get()) {
-<a href=#1324 id=1324 data-nosnippet>1324</a>						<span class="prelude-val">Ok</span>(err) =&gt; err.id,
-<a href=#1325 id=1325 data-nosnippet>1325</a>						<span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; Id::Null,
-<a href=#1326 id=1326 data-nosnippet>1326</a>					};
-<a href=#1327 id=1327 data-nosnippet>1327</a>
-<a href=#1328 id=1328 data-nosnippet>1328</a>					<span class="kw">if let </span><span class="prelude-val">Err</span>(too_large) =
-<a href=#1329 id=1329 data-nosnippet>1329</a>						batch_response.append(<span class="kw-2">&amp;</span>MethodResponse::error(id, ErrorObject::from(ErrorCode::InvalidRequest)))
-<a href=#1330 id=1330 data-nosnippet>1330</a>					{
-<a href=#1331 id=1331 data-nosnippet>1331</a>						<span class="kw">return </span><span class="prelude-val">Some</span>(too_large);
-<a href=#1332 id=1332 data-nosnippet>1332</a>					}
-<a href=#1333 id=1333 data-nosnippet>1333</a>				}
-<a href=#1334 id=1334 data-nosnippet>1334</a>			}
-<a href=#1335 id=1335 data-nosnippet>1335</a>
-<a href=#1336 id=1336 data-nosnippet>1336</a>			<span class="kw">if </span>got_notif &amp;&amp; batch_response.is_empty() {
-<a href=#1337 id=1337 data-nosnippet>1337</a>				<span class="prelude-val">None
-<a href=#1338 id=1338 data-nosnippet>1338</a>			</span>} <span class="kw">else </span>{
-<a href=#1339 id=1339 data-nosnippet>1339</a>				<span class="kw">let </span>batch_rp = batch_response.finish();
-<a href=#1340 id=1340 data-nosnippet>1340</a>				<span class="prelude-val">Some</span>(MethodResponse::from_batch(batch_rp))
+<a href=#1315 id=1315 data-nosnippet>1315</a>			<span class="kw">let </span><span class="kw-2">mut </span>got_notif = <span class="bool-val">false</span>;
+<a href=#1316 id=1316 data-nosnippet>1316</a>			<span class="kw">let </span><span class="kw-2">mut </span>batch_response = BatchResponseBuilder::new_with_limit(max_response_size <span class="kw">as </span>usize);
+<a href=#1317 id=1317 data-nosnippet>1317</a>
+<a href=#1318 id=1318 data-nosnippet>1318</a>			<span class="kw">for </span>call <span class="kw">in </span>batch {
+<a href=#1319 id=1319 data-nosnippet>1319</a>				<span class="kw">if let </span><span class="prelude-val">Ok</span>(req) = deserialize::from_str_with_extensions(call.get(), extensions.clone()) {
+<a href=#1320 id=1320 data-nosnippet>1320</a>					<span class="kw">let </span>rp = rpc_service.call(req).<span class="kw">await</span>;
+<a href=#1321 id=1321 data-nosnippet>1321</a>
+<a href=#1322 id=1322 data-nosnippet>1322</a>					<span class="kw">if let </span><span class="prelude-val">Err</span>(too_large) = batch_response.append(<span class="kw-2">&amp;</span>rp) {
+<a href=#1323 id=1323 data-nosnippet>1323</a>						<span class="kw">return </span><span class="prelude-val">Some</span>(too_large);
+<a href=#1324 id=1324 data-nosnippet>1324</a>					}
+<a href=#1325 id=1325 data-nosnippet>1325</a>				} <span class="kw">else if let </span><span class="prelude-val">Ok</span>(_notif) = serde_json::from_str::&lt;Notif&gt;(call.get()) {
+<a href=#1326 id=1326 data-nosnippet>1326</a>					<span class="comment">// notifications should not be answered.
+<a href=#1327 id=1327 data-nosnippet>1327</a>					</span>got_notif = <span class="bool-val">true</span>;
+<a href=#1328 id=1328 data-nosnippet>1328</a>				} <span class="kw">else </span>{
+<a href=#1329 id=1329 data-nosnippet>1329</a>					<span class="comment">// valid JSON but could be not parsable as `InvalidRequest`
+<a href=#1330 id=1330 data-nosnippet>1330</a>					</span><span class="kw">let </span>id = <span class="kw">match </span>serde_json::from_str::&lt;InvalidRequest&gt;(call.get()) {
+<a href=#1331 id=1331 data-nosnippet>1331</a>						<span class="prelude-val">Ok</span>(err) =&gt; err.id,
+<a href=#1332 id=1332 data-nosnippet>1332</a>						<span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; Id::Null,
+<a href=#1333 id=1333 data-nosnippet>1333</a>					};
+<a href=#1334 id=1334 data-nosnippet>1334</a>
+<a href=#1335 id=1335 data-nosnippet>1335</a>					<span class="kw">if let </span><span class="prelude-val">Err</span>(too_large) =
+<a href=#1336 id=1336 data-nosnippet>1336</a>						batch_response.append(<span class="kw-2">&amp;</span>MethodResponse::error(id, ErrorObject::from(ErrorCode::InvalidRequest)))
+<a href=#1337 id=1337 data-nosnippet>1337</a>					{
+<a href=#1338 id=1338 data-nosnippet>1338</a>						<span class="kw">return </span><span class="prelude-val">Some</span>(too_large);
+<a href=#1339 id=1339 data-nosnippet>1339</a>					}
+<a href=#1340 id=1340 data-nosnippet>1340</a>				}
 <a href=#1341 id=1341 data-nosnippet>1341</a>			}
-<a href=#1342 id=1342 data-nosnippet>1342</a>		} <span class="kw">else </span>{
-<a href=#1343 id=1343 data-nosnippet>1343</a>			<span class="prelude-val">Some</span>(MethodResponse::error(Id::Null, ErrorObject::from(ErrorCode::ParseError)))
-<a href=#1344 id=1344 data-nosnippet>1344</a>		}
-<a href=#1345 id=1345 data-nosnippet>1345</a>	}
-<a href=#1346 id=1346 data-nosnippet>1346</a>}</code></pre></div></section></main></body></html>
+<a href=#1342 id=1342 data-nosnippet>1342</a>
+<a href=#1343 id=1343 data-nosnippet>1343</a>			<span class="kw">if </span>got_notif &amp;&amp; batch_response.is_empty() {
+<a href=#1344 id=1344 data-nosnippet>1344</a>				<span class="prelude-val">None
+<a href=#1345 id=1345 data-nosnippet>1345</a>			</span>} <span class="kw">else </span>{
+<a href=#1346 id=1346 data-nosnippet>1346</a>				<span class="kw">let </span>batch_rp = batch_response.finish();
+<a href=#1347 id=1347 data-nosnippet>1347</a>				<span class="prelude-val">Some</span>(MethodResponse::from_batch(batch_rp))
+<a href=#1348 id=1348 data-nosnippet>1348</a>			}
+<a href=#1349 id=1349 data-nosnippet>1349</a>		} <span class="kw">else </span>{
+<a href=#1350 id=1350 data-nosnippet>1350</a>			<span class="prelude-val">Some</span>(MethodResponse::error(Id::Null, ErrorObject::from(ErrorCode::ParseError)))
+<a href=#1351 id=1351 data-nosnippet>1351</a>		}
+<a href=#1352 id=1352 data-nosnippet>1352</a>	}
+<a href=#1353 id=1353 data-nosnippet>1353</a>}</code></pre></div></section></main></body></html>

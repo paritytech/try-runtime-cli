@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["DisplayFunction","DisplayFunctionAnnotations","Function","FunctionParameters","FunctionStencil","VersionMarker"]};
+window.SIDEBAR_ITEMS = {"struct":["DisplayFunction","DisplayFunctionSpec","Function","FunctionParameters","FunctionStencil","VersionMarker"]};

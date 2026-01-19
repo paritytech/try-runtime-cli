@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["ARRAY_LENGTH_OFFSET","HEADER_ALIGN","HEADER_SIZE"],"struct":["NullTypeLayouts"]};

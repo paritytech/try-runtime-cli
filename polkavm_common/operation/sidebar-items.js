@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["div","divu","mulh","mulhsu","mulhu","rem","remu"]};
+window.SIDEBAR_ITEMS = {"fn":["div","div64","divu","divu64","mulh","mulh64","mulhsu","mulhsu64","mulhu","mulhu64","rem","rem64","remu","remu64"]};

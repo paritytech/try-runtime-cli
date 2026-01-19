@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["amd64"],"struct":["Assembler","Instruction","Label"]};
+window.SIDEBAR_ITEMS = {"mod":["amd64"],"struct":["Assembler","Instruction","Label","ReservedAssembler","U0","U1","U2","U3","U4","U5","U6"],"trait":["NonZero"]};

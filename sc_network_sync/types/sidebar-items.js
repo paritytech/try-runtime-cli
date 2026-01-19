@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["PeerRequest","PeerRequestType","SyncEvent","SyncState"],"struct":["BadPeer","ExtendedPeerInfo","OpaqueStateRequest","OpaqueStateResponse","PeerInfo","SyncStatus"],"trait":["SyncEventStream","SyncStatusProvider"]};
+window.SIDEBAR_ITEMS = {"enum":["SyncEvent","SyncState"],"struct":["BadPeer","ExtendedPeerInfo","PeerInfo","SyncStatus"],"trait":["SyncEventStream","SyncStatusProvider"]};

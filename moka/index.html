@@ -1,0 +1,219 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Moka is a fast, concurrent cache library for Rust. Moka is inspired by the Caffeine library for Java."><title>moka - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="moka" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../static.files/storage-e2aeef58.js"></script><script defer src="../crates.js"></script><script defer src="../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">Crate moka</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../moka/index.html">moka</a><span class="version">0.12.12</span></h2></div><div class="sidebar-elems"><ul class="block"><li><a id="all-types" href="all.html">All Items</a></li></ul><section id="rustdoc-toc"><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#features" title="Features">Features</a><ul><li><a href="#cache-policies" title="Cache Policies">Cache Policies</a></li></ul></li><li><a href="#examples" title="Examples">Examples</a></li><li><a href="#minimum-supported-rust-versions" title="Minimum Supported Rust Versions">Minimum Supported Rust Versions</a></li><li><a href="#implementation-details" title="Implementation Details">Implementation Details</a><ul><li><a href="#concurrency" title="Concurrency">Concurrency</a></li><li><a href="#maintenance-tasks" title="Maintenance Tasks">Maintenance Tasks</a></li></ul></li></ul><h3><a href="#reexports">Crate Items</a></h3><ul class="block"><li><a href="#reexports" title="Re-exports">Re-exports</a></li><li><a href="#modules" title="Modules">Modules</a></li><li><a href="#structs" title="Structs">Structs</a></li><li><a href="#enums" title="Enums">Enums</a></li><li><a href="#traits" title="Traits">Traits</a></li></ul></section><div id="rustdoc-modnav"></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content"><div class="main-heading"><h1>Crate <span>moka</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/moka/lib.rs.html#1-305">Source</a> </span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Moka is a fast, concurrent cache library for Rust. Moka is inspired by the
+<a href="https://github.com/ben-manes/caffeine">Caffeine</a> library for Java.</p>
+<p>Moka provides in-memory concurrent cache implementations on top of hash maps.
+They support full concurrency of retrievals and a high expected concurrency for
+updates. They utilize a lock-free concurrent hash table as the central key-value
+storage.</p>
+<p>All cache implementations perform a best-effort bounding of the map using an
+entry replacement algorithm to determine which entries to evict when the capacity
+is exceeded.</p>
+<h2 id="features"><a class="doc-anchor" href="#features">§</a>Features</h2>
+<ul>
+<li>Thread-safe, highly concurrent in-memory cache implementations:
+<ul>
+<li>Synchronous caches that can be shared across OS threads.</li>
+<li>An asynchronous (futures aware) cache.</li>
+</ul>
+</li>
+<li>A cache can be bounded by one of the followings:
+<ul>
+<li>The maximum number of entries.</li>
+<li>The total weighted size of entries. (Size aware eviction)</li>
+</ul>
+</li>
+<li>Maintains near optimal hit ratio by using an entry replacement algorithms
+inspired by Caffeine:
+<ul>
+<li>Admission to a cache is controlled by the Least Frequently Used (LFU)
+policy.</li>
+<li>Eviction from a cache is controlled by the Least Recently Used (LRU)
+policy.</li>
+<li><a href="https://github.com/moka-rs/moka/wiki#admission-and-eviction-policies">More details and some benchmark results are available here</a>.</li>
+</ul>
+</li>
+<li>Supports expiration policies:
+<ul>
+<li>Time to live.</li>
+<li>Time to idle.</li>
+<li>Per-entry variable expiration.</li>
+</ul>
+</li>
+<li>Supports eviction listener, a callback function that will be called when an
+entry is removed from the cache.</li>
+</ul>
+<h3 id="cache-policies"><a class="doc-anchor" href="#cache-policies">§</a>Cache Policies</h3>
+<p>When a cache is full, it has to select and evict existing entries to make some
+room. A cache policy is a strategy to determine which entry to evict.</p>
+<p>The choice of the cache policy may have a significant impact on the performance
+of the cache. Because the time for cache misses is usually much greater than the
+time for cache hits, the miss rate (number of misses per second) has a
+significant impact on the performance.</p>
+<p>Moka provides the following policies:</p>
+<ul>
+<li>TinyLFU</li>
+<li>LRU</li>
+</ul>
+<h4 id="tinylfu"><a class="doc-anchor" href="#tinylfu">§</a>TinyLFU</h4>
+<p>TinyLFU is the default policy of the cache, and will be suitable for most
+workloads.</p>
+<p>TinyLFU is a combination of the LRU eviction policy and the LFU admission policy.
+LRU stands for Least Recently Used, which is very popular in many cache systems.
+LFU stands for Least Frequently Used.</p>
+<p><img src="https://github.com/moka-rs/moka/wiki/images/benchmarks/moka-tiny-lfu.png" alt="The lifecycle of cached entries with TinyLFU" /></p>
+<p>With TinyLFU policy, the cache will admit a new entry based on its popularity. If
+the key of the entry is popular, it will be admitted to the cache. Otherwise, it
+will be rejected.</p>
+<p>The popularity of the key is estimated by the historic popularity estimator
+called LFU filter. It is a modified Count-Min Sketch, and it can estimate the
+frequency of keys with a very low memory footprint (thus the name “tiny”). Note
+that it tracks not only the keys currently in the cache, but all hit and missed
+keys.</p>
+<p>Once the entry is admitted to the cache, it will be evicted based on the LRU
+policy. It evicts the least recently used entry from the cache.</p>
+<p>TinyLFU will be suitable for most workloads, such as database, search, and
+analytics.</p>
+<h4 id="lru"><a class="doc-anchor" href="#lru">§</a>LRU</h4>
+<p>LRU stands for Least Recently Used.</p>
+<p>With LRU policy, the cache will evict the least recently used entry. It is a
+simple policy and has been used in many cache systems.</p>
+<p>LRU will be suitable for recency-biased workloads, such as job queues and event
+streams.</p>
+<h2 id="examples"><a class="doc-anchor" href="#examples">§</a>Examples</h2>
+<p>See the following document:</p>
+<ul>
+<li>Thread-safe, synchronous caches:
+<ul>
+<li><a href="./sync/struct.Cache.html"><code>sync::Cache</code></a></li>
+<li><a href="./sync/struct.SegmentedCache.html"><code>sync::SegmentedCache</code></a></li>
+</ul>
+</li>
+<li>An asynchronous (futures aware) cache:
+<ul>
+<li><a href="./future/struct.Cache.html"><code>future::Cache</code></a> (Requires “future” feature)</li>
+</ul>
+</li>
+</ul>
+<p><strong>NOTE:</strong> The following caches have been moved to a separate crate called
+“<a href="https://crates.io/crates/mini-moka">mini-moka</a>”.</p>
+<ul>
+<li>Non concurrent cache for single threaded applications:
+<ul>
+<li><code>moka::unsync::Cache</code> → <a href="https://docs.rs/mini-moka/latest/mini_moka/unsync/struct.Cache.html"><code>mini_moka::unsync::Cache</code></a></li>
+</ul>
+</li>
+<li>A simple, thread-safe, synchronous cache:
+<ul>
+<li><code>moka::dash::Cache</code> → <a href="https://docs.rs/mini-moka/latest/mini_moka/sync/struct.Cache.html"><code>mini_moka::sync::Cache</code></a></li>
+</ul>
+</li>
+</ul>
+<h2 id="minimum-supported-rust-versions"><a class="doc-anchor" href="#minimum-supported-rust-versions">§</a>Minimum Supported Rust Versions</h2>
+<p>This crate’s minimum supported Rust versions (MSRV) are the followings:</p>
+<div><table><thead><tr><th style="text-align: left">Feature</th><th style="text-align: center">MSRV</th></tr></thead><tbody>
+<tr><td style="text-align: left"><code>future</code></td><td style="text-align: center">Rust 1.71.1 (August 3, 2023)</td></tr>
+<tr><td style="text-align: left"><code>sync</code></td><td style="text-align: center">Rust 1.71.1 (August 3, 2023)</td></tr>
+</tbody></table>
+</div>
+<p>It will keep a rolling MSRV policy of at least 6 months. If the default features
+with a mandatory features (<code>future</code> or <code>sync</code>) are enabled, MSRV will be updated
+conservatively. When using other features, MSRV might be updated more frequently,
+up to the latest stable.</p>
+<p>In both cases, increasing MSRV is <em>not</em> considered a semver-breaking change.</p>
+<h2 id="implementation-details"><a class="doc-anchor" href="#implementation-details">§</a>Implementation Details</h2><h3 id="concurrency"><a class="doc-anchor" href="#concurrency">§</a>Concurrency</h3>
+<p>The entry replacement algorithms are kept eventually consistent with the
+concurrent hash table. While updates to the cache are immediately applied to the
+hash table, recording of reads and writes may not be immediately reflected on the
+cache policy’s data structures.</p>
+<p>These cache policy structures are guarded by a lock and operations are applied in
+batches to avoid lock contention.</p>
+<p>Recap:</p>
+<ul>
+<li>The concurrent hash table in the cache is <em>strong consistent</em>:
+<ul>
+<li>It is a lock-free data structure and immediately applies updates.</li>
+<li>It is guaranteed that the inserted entry will become visible immediately to
+all threads.</li>
+</ul>
+</li>
+<li>The cache policy’s data structures are <em>eventually consistent</em>:
+<ul>
+<li>They are guarded by a lock and operations are applied in batches.</li>
+<li>An example of eventual consistency: the <code>entry_count</code> method may return an
+outdated value.</li>
+</ul>
+</li>
+</ul>
+<h4 id="bounded-channels"><a class="doc-anchor" href="#bounded-channels">§</a>Bounded Channels</h4>
+<p>In order to hold the recordings of reads and writes until they are applied to the
+cache policy’s data structures, the cache uses two bounded channels, one for
+reads and the other for writes. Bounded means that a channel have a maximum
+number of elements that can be stored.</p>
+<p>These channels are drained when one of the following conditions is met:</p>
+<ul>
+<li>The numbers of read or write recordings reach to the configured amounts.
+<ul>
+<li>It is currently hard-coded to 64.</li>
+</ul>
+</li>
+<li>Or, the certain time past from the last draining.
+<ul>
+<li>It is currently hard-coded to 300 milliseconds.</li>
+</ul>
+</li>
+</ul>
+<p>Cache does not have a dedicated thread for draining. Instead, it is done by a
+user thread. When user code calls certain cache methods, such as <code>get</code>,
+<code>get_with</code>, <code>insert</code>, and <code>run_pending_tasks</code>, the cache checks if the above
+condition is met, and if so, it will start draining as a part of the method call
+and apply the recordings to the cache policy’s data structures. See <a href="#maintenance-tasks">the
+Maintenance Tasks section</a> for more details of applying the
+recordings.</p>
+<h4 id="when-a-bounded-channels-is-full"><a class="doc-anchor" href="#when-a-bounded-channels-is-full">§</a>When a Bounded Channels is Full</h4>
+<p>Under heavy concurrent operations from clients, draining may not be able to catch
+up and the bounded channels can become full. In this case, the cache will do one
+of the followings:</p>
+<ul>
+<li>For the read channel, recordings of new reads will be discarded, so that
+retrievals will never be blocked. This behavior may have some impact to the hit
+rate of the cache.</li>
+<li>For the write channel, updates from clients to the cache will be blocked until
+the draining task catches up.</li>
+</ul>
+<h3 id="maintenance-tasks"><a class="doc-anchor" href="#maintenance-tasks">§</a>Maintenance Tasks</h3>
+<p>When draining the read and write recordings from the channels, the cache will do
+the following maintenance tasks:</p>
+<ol>
+<li>Determine whether to admit an entry to the cache or not, based on its
+popularity.
+<ul>
+<li>If not, the entry is removed from the internal concurrent hash table.</li>
+</ul>
+</li>
+<li>Apply the recording of cache reads and writes to the internal data structures
+for the cache policies, such as the LFU filter, LRU queues, and hierarchical
+timer wheels.
+<ul>
+<li>The hierarchical timer wheels are used for the per-entry expiration policy.</li>
+</ul>
+</li>
+<li>When cache’s max capacity is exceeded, remove least recently used (LRU)
+entries.</li>
+<li>Remove expired entries.</li>
+<li>Find and remove the entries that have been invalidated by the <code>invalidate_all</code>
+or <code>invalidate_entries_if</code> methods.</li>
+<li>Deliver removal notifications to the eviction listener. (Call the eviction
+listener closure with the information about the evicted entry)</li>
+</ol>
+<p>The following cache method calls may trigger the maintenance tasks:</p>
+<ul>
+<li>All cache write methods: <code>insert</code>, <code>get_with</code>, <code>invalidate</code>, etc., except for
+<code>invalidate_all</code> and <code>invalidate_entries_if</code>.</li>
+<li>Some of the cache read methods: <code>get</code></li>
+<li><code>run_pending_tasks</code> method, which executes the pending maintenance tasks
+explicitly.</li>
+</ul>
+<p>Except <code>run_pending_tasks</code> method, the maintenance tasks are executed lazily
+when one of the conditions in the <a href="#bounded-channels">Bounded Channels</a> section
+is met.</p>
+</div></details><h2 id="reexports" class="section-header">Re-exports<a href="#reexports" class="anchor">§</a></h2><dl class="item-table reexports"><dt id="reexport.Expiry"><code>pub use policy::<a class="trait" href="policy/trait.Expiry.html" title="trait moka::policy::Expiry">Expiry</a>;</code></dt><dt id="reexport.Policy"><code>pub use policy::<a class="struct" href="policy/struct.Policy.html" title="struct moka::policy::Policy">Policy</a>;</code></dt></dl><h2 id="modules" class="section-header">Modules<a href="#modules" class="anchor">§</a></h2><dl class="item-table"><dt><a class="mod" href="notification/index.html" title="mod moka::notification">notification</a></dt><dd>Common data types for notifications.</dd><dt><a class="mod" href="ops/index.html" title="mod moka::ops">ops</a></dt><dd>Cache operations.</dd><dt><a class="mod" href="policy/index.html" title="mod moka::policy">policy</a></dt><dt><a class="mod" href="sync/index.html" title="mod moka::sync">sync</a></dt><dd>Provides thread-safe, concurrent cache implementations.</dd></dl><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><dl class="item-table"><dt><a class="struct" href="struct.Entry.html" title="struct moka::Entry">Entry</a></dt><dd>A snapshot of a single entry in the cache.</dd></dl><h2 id="enums" class="section-header">Enums<a href="#enums" class="anchor">§</a></h2><dl class="item-table"><dt><a class="enum" href="enum.PredicateError.html" title="enum moka::PredicateError">Predicate<wbr>Error</a></dt><dd>The error type for the functionalities around
+<a href="./sync/struct.Cache.html#method.invalidate_entries_if"><code>Cache::invalidate_entries_if</code></a> method.</dd></dl><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><dl class="item-table"><dt><a class="trait" href="trait.Equivalent.html" title="trait moka::Equivalent">Equivalent</a></dt><dd>Key equivalence trait.</dd></dl><script type="text/json" id="notable-traits-data">{"&[u8]":"<h3>Notable traits for <code>&amp;[<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.92.0/std/primitive.u8.html\">u8</a>]</code></h3><pre><code><div class=\"where\">impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.92.0/std/io/trait.Read.html\" title=\"trait std::io::Read\">Read</a> for &amp;[<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.92.0/std/primitive.u8.html\">u8</a>]</div>","&mut Vec<u8>":"<h3>Notable traits for <code><a class=\"struct\" href=\"https://doc.rust-lang.org/1.92.0/alloc/vec/struct.Vec.html\" title=\"struct alloc::vec::Vec\">Vec</a>&lt;<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.92.0/std/primitive.u8.html\">u8</a>, A&gt;</code></h3><pre><code><div class=\"where\">impl&lt;A&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/1.92.0/std/io/trait.Write.html\" title=\"trait std::io::Write\">Write</a> for <a class=\"struct\" href=\"https://doc.rust-lang.org/1.92.0/alloc/vec/struct.Vec.html\" title=\"struct alloc::vec::Vec\">Vec</a>&lt;<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.92.0/std/primitive.u8.html\">u8</a>, A&gt;<div class=\"where\">where\n    A: <a class=\"trait\" href=\"https://doc.rust-lang.org/1.92.0/core/alloc/trait.Allocator.html\" title=\"trait core::alloc::Allocator\">Allocator</a>,</div></div>","Vec<u8>":"<h3>Notable traits for <code><a class=\"struct\" href=\"https://doc.rust-lang.org/1.92.0/alloc/vec/struct.Vec.html\" title=\"struct alloc::vec::Vec\">Vec</a>&lt;<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.92.0/std/primitive.u8.html\">u8</a>, A&gt;</code></h3><pre><code><div class=\"where\">impl&lt;A&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/1.92.0/std/io/trait.Write.html\" title=\"trait std::io::Write\">Write</a> for <a class=\"struct\" href=\"https://doc.rust-lang.org/1.92.0/alloc/vec/struct.Vec.html\" title=\"struct alloc::vec::Vec\">Vec</a>&lt;<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.92.0/std/primitive.u8.html\">u8</a>, A&gt;<div class=\"where\">where\n    A: <a class=\"trait\" href=\"https://doc.rust-lang.org/1.92.0/core/alloc/trait.Allocator.html\" title=\"trait core::alloc::Allocator\">Allocator</a>,</div></div>"}</script></section></div></main></body></html>

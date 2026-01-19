@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["init"],"struct":["Config","Log","Span","StartTime","TracesIn","TracesOut"]};

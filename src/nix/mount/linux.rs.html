@@ -1,7 +1,7 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.24.3/src/mount/linux.rs`."><title>linux.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">nix/mount/</div>linux.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="attr">#![allow(missing_docs)]
-<a href=#2 id=2 data-nosnippet>2</a></span><span class="kw">use </span>libc::{<span class="self">self</span>, c_ulong, c_int};
-<a href=#3 id=3 data-nosnippet>3</a><span class="kw">use crate</span>::{<span class="prelude-ty">Result</span>, NixPath};
-<a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span><span class="kw">crate</span>::errno::Errno;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.26.4/src/mount/linux.rs`."><title>linux.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="nix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">nix/mount/</div>linux.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="attr">#![allow(missing_docs)]
+<a href=#2 id=2 data-nosnippet>2</a></span><span class="kw">use </span><span class="kw">crate</span>::errno::Errno;
+<a href=#3 id=3 data-nosnippet>3</a><span class="kw">use crate</span>::{NixPath, <span class="prelude-ty">Result</span>};
+<a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span>libc::{<span class="self">self</span>, c_int, c_ulong};
 <a href=#5 id=5 data-nosnippet>5</a>
 <a href=#6 id=6 data-nosnippet>6</a><span class="macro">libc_bitflags!</span>(
 <a href=#7 id=7 data-nosnippet>7</a>    <span class="kw">pub struct </span>MsFlags: c_ulong {
@@ -57,56 +57,59 @@
 <a href=#57 id=57 data-nosnippet>57</a>    }
 <a href=#58 id=58 data-nosnippet>58</a>);
 <a href=#59 id=59 data-nosnippet>59</a>
-<a href=#60 id=60 data-nosnippet>60</a><span class="kw">pub fn </span>mount&lt;P1: <span class="question-mark">?</span>Sized + NixPath, P2: <span class="question-mark">?</span>Sized + NixPath, P3: <span class="question-mark">?</span>Sized + NixPath, P4: <span class="question-mark">?</span>Sized + NixPath&gt;(
-<a href=#61 id=61 data-nosnippet>61</a>        source: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>P1&gt;,
-<a href=#62 id=62 data-nosnippet>62</a>        target: <span class="kw-2">&amp;</span>P2,
-<a href=#63 id=63 data-nosnippet>63</a>        fstype: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>P3&gt;,
-<a href=#64 id=64 data-nosnippet>64</a>        flags: MsFlags,
-<a href=#65 id=65 data-nosnippet>65</a>        data: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>P4&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#66 id=66 data-nosnippet>66</a>
-<a href=#67 id=67 data-nosnippet>67</a>    <span class="kw">fn </span>with_opt_nix_path&lt;P, T, F&gt;(p: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>P&gt;, f: F) -&gt; <span class="prelude-ty">Result</span>&lt;T&gt;
-<a href=#68 id=68 data-nosnippet>68</a>        <span class="kw">where </span>P: <span class="question-mark">?</span>Sized + NixPath,
-<a href=#69 id=69 data-nosnippet>69</a>              F: FnOnce(<span class="kw-2">*const </span>libc::c_char) -&gt; T
-<a href=#70 id=70 data-nosnippet>70</a>    {
-<a href=#71 id=71 data-nosnippet>71</a>        <span class="kw">match </span>p {
-<a href=#72 id=72 data-nosnippet>72</a>            <span class="prelude-val">Some</span>(path) =&gt; path.with_nix_path(|p_str| f(p_str.as_ptr())),
-<a href=#73 id=73 data-nosnippet>73</a>            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(f(std::ptr::null()))
-<a href=#74 id=74 data-nosnippet>74</a>        }
-<a href=#75 id=75 data-nosnippet>75</a>    }
-<a href=#76 id=76 data-nosnippet>76</a>
-<a href=#77 id=77 data-nosnippet>77</a>    <span class="kw">let </span>res = with_opt_nix_path(source, |s| {
-<a href=#78 id=78 data-nosnippet>78</a>        target.with_nix_path(|t| {
-<a href=#79 id=79 data-nosnippet>79</a>            with_opt_nix_path(fstype, |ty| {
-<a href=#80 id=80 data-nosnippet>80</a>                with_opt_nix_path(data, |d| {
-<a href=#81 id=81 data-nosnippet>81</a>                    <span class="kw">unsafe </span>{
-<a href=#82 id=82 data-nosnippet>82</a>                        libc::mount(
-<a href=#83 id=83 data-nosnippet>83</a>                            s,
-<a href=#84 id=84 data-nosnippet>84</a>                            t.as_ptr(),
-<a href=#85 id=85 data-nosnippet>85</a>                            ty,
-<a href=#86 id=86 data-nosnippet>86</a>                            flags.bits,
-<a href=#87 id=87 data-nosnippet>87</a>                            d <span class="kw">as </span><span class="kw-2">*const </span>libc::c_void
-<a href=#88 id=88 data-nosnippet>88</a>                        )
-<a href=#89 id=89 data-nosnippet>89</a>                    }
-<a href=#90 id=90 data-nosnippet>90</a>                })
-<a href=#91 id=91 data-nosnippet>91</a>            })
-<a href=#92 id=92 data-nosnippet>92</a>        })
-<a href=#93 id=93 data-nosnippet>93</a>    })<span class="question-mark">????</span>;
-<a href=#94 id=94 data-nosnippet>94</a>
-<a href=#95 id=95 data-nosnippet>95</a>    Errno::result(res).map(drop)
-<a href=#96 id=96 data-nosnippet>96</a>}
-<a href=#97 id=97 data-nosnippet>97</a>
-<a href=#98 id=98 data-nosnippet>98</a><span class="kw">pub fn </span>umount&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(target: <span class="kw-2">&amp;</span>P) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#99 id=99 data-nosnippet>99</a>    <span class="kw">let </span>res = target.with_nix_path(|cstr| {
-<a href=#100 id=100 data-nosnippet>100</a>        <span class="kw">unsafe </span>{ libc::umount(cstr.as_ptr()) }
-<a href=#101 id=101 data-nosnippet>101</a>    })<span class="question-mark">?</span>;
-<a href=#102 id=102 data-nosnippet>102</a>
-<a href=#103 id=103 data-nosnippet>103</a>    Errno::result(res).map(drop)
-<a href=#104 id=104 data-nosnippet>104</a>}
+<a href=#60 id=60 data-nosnippet>60</a><span class="kw">pub fn </span>mount&lt;
+<a href=#61 id=61 data-nosnippet>61</a>    P1: <span class="question-mark">?</span>Sized + NixPath,
+<a href=#62 id=62 data-nosnippet>62</a>    P2: <span class="question-mark">?</span>Sized + NixPath,
+<a href=#63 id=63 data-nosnippet>63</a>    P3: <span class="question-mark">?</span>Sized + NixPath,
+<a href=#64 id=64 data-nosnippet>64</a>    P4: <span class="question-mark">?</span>Sized + NixPath,
+<a href=#65 id=65 data-nosnippet>65</a>&gt;(
+<a href=#66 id=66 data-nosnippet>66</a>    source: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>P1&gt;,
+<a href=#67 id=67 data-nosnippet>67</a>    target: <span class="kw-2">&amp;</span>P2,
+<a href=#68 id=68 data-nosnippet>68</a>    fstype: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>P3&gt;,
+<a href=#69 id=69 data-nosnippet>69</a>    flags: MsFlags,
+<a href=#70 id=70 data-nosnippet>70</a>    data: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>P4&gt;,
+<a href=#71 id=71 data-nosnippet>71</a>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#72 id=72 data-nosnippet>72</a>    <span class="kw">fn </span>with_opt_nix_path&lt;P, T, F&gt;(p: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>P&gt;, f: F) -&gt; <span class="prelude-ty">Result</span>&lt;T&gt;
+<a href=#73 id=73 data-nosnippet>73</a>    <span class="kw">where
+<a href=#74 id=74 data-nosnippet>74</a>        </span>P: <span class="question-mark">?</span>Sized + NixPath,
+<a href=#75 id=75 data-nosnippet>75</a>        F: FnOnce(<span class="kw-2">*const </span>libc::c_char) -&gt; T,
+<a href=#76 id=76 data-nosnippet>76</a>    {
+<a href=#77 id=77 data-nosnippet>77</a>        <span class="kw">match </span>p {
+<a href=#78 id=78 data-nosnippet>78</a>            <span class="prelude-val">Some</span>(path) =&gt; path.with_nix_path(|p_str| f(p_str.as_ptr())),
+<a href=#79 id=79 data-nosnippet>79</a>            <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(f(std::ptr::null())),
+<a href=#80 id=80 data-nosnippet>80</a>        }
+<a href=#81 id=81 data-nosnippet>81</a>    }
+<a href=#82 id=82 data-nosnippet>82</a>
+<a href=#83 id=83 data-nosnippet>83</a>    <span class="kw">let </span>res = with_opt_nix_path(source, |s| {
+<a href=#84 id=84 data-nosnippet>84</a>        target.with_nix_path(|t| {
+<a href=#85 id=85 data-nosnippet>85</a>            with_opt_nix_path(fstype, |ty| {
+<a href=#86 id=86 data-nosnippet>86</a>                with_opt_nix_path(data, |d| <span class="kw">unsafe </span>{
+<a href=#87 id=87 data-nosnippet>87</a>                    libc::mount(
+<a href=#88 id=88 data-nosnippet>88</a>                        s,
+<a href=#89 id=89 data-nosnippet>89</a>                        t.as_ptr(),
+<a href=#90 id=90 data-nosnippet>90</a>                        ty,
+<a href=#91 id=91 data-nosnippet>91</a>                        flags.bits,
+<a href=#92 id=92 data-nosnippet>92</a>                        d <span class="kw">as </span><span class="kw-2">*const </span>libc::c_void,
+<a href=#93 id=93 data-nosnippet>93</a>                    )
+<a href=#94 id=94 data-nosnippet>94</a>                })
+<a href=#95 id=95 data-nosnippet>95</a>            })
+<a href=#96 id=96 data-nosnippet>96</a>        })
+<a href=#97 id=97 data-nosnippet>97</a>    })<span class="question-mark">????</span>;
+<a href=#98 id=98 data-nosnippet>98</a>
+<a href=#99 id=99 data-nosnippet>99</a>    Errno::result(res).map(drop)
+<a href=#100 id=100 data-nosnippet>100</a>}
+<a href=#101 id=101 data-nosnippet>101</a>
+<a href=#102 id=102 data-nosnippet>102</a><span class="kw">pub fn </span>umount&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(target: <span class="kw-2">&amp;</span>P) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#103 id=103 data-nosnippet>103</a>    <span class="kw">let </span>res =
+<a href=#104 id=104 data-nosnippet>104</a>        target.with_nix_path(|cstr| <span class="kw">unsafe </span>{ libc::umount(cstr.as_ptr()) })<span class="question-mark">?</span>;
 <a href=#105 id=105 data-nosnippet>105</a>
-<a href=#106 id=106 data-nosnippet>106</a><span class="kw">pub fn </span>umount2&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(target: <span class="kw-2">&amp;</span>P, flags: MntFlags) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#107 id=107 data-nosnippet>107</a>    <span class="kw">let </span>res = target.with_nix_path(|cstr| {
-<a href=#108 id=108 data-nosnippet>108</a>        <span class="kw">unsafe </span>{ libc::umount2(cstr.as_ptr(), flags.bits) }
-<a href=#109 id=109 data-nosnippet>109</a>    })<span class="question-mark">?</span>;
-<a href=#110 id=110 data-nosnippet>110</a>
-<a href=#111 id=111 data-nosnippet>111</a>    Errno::result(res).map(drop)
-<a href=#112 id=112 data-nosnippet>112</a>}</code></pre></div></section></main></body></html>
+<a href=#106 id=106 data-nosnippet>106</a>    Errno::result(res).map(drop)
+<a href=#107 id=107 data-nosnippet>107</a>}
+<a href=#108 id=108 data-nosnippet>108</a>
+<a href=#109 id=109 data-nosnippet>109</a><span class="kw">pub fn </span>umount2&lt;P: <span class="question-mark">?</span>Sized + NixPath&gt;(target: <span class="kw-2">&amp;</span>P, flags: MntFlags) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#110 id=110 data-nosnippet>110</a>    <span class="kw">let </span>res = target.with_nix_path(|cstr| <span class="kw">unsafe </span>{
+<a href=#111 id=111 data-nosnippet>111</a>        libc::umount2(cstr.as_ptr(), flags.bits)
+<a href=#112 id=112 data-nosnippet>112</a>    })<span class="question-mark">?</span>;
+<a href=#113 id=113 data-nosnippet>113</a>
+<a href=#114 id=114 data-nosnippet>114</a>    Errno::result(res).map(drop)
+<a href=#115 id=115 data-nosnippet>115</a>}</code></pre></div></section></main></body></html>

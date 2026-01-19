@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["CODE_BLOB_BOMB_LIMIT"],"enum":["Error"],"fn":["compress","decompress"]};
+window.SIDEBAR_ITEMS = {"constant":["CODE_BLOB_BOMB_LIMIT"],"enum":["Error"],"fn":["compress","compress_strongly","compress_weakly","decompress"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["format_trace"],"mod":["log_tracer"],"struct":["LogTracer"],"trait":["AsLog","AsTrace","NormalizeEvent"]};
+window.SIDEBAR_ITEMS = {"fn":["format_trace"],"mod":["log_tracer"],"struct":["InterestCacheConfig","LogTracer"],"trait":["AsLog","AsTrace","NormalizeEvent"]};

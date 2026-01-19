@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["ProtocolName"],"struct":["Multiaddr","PeerId"]};
+window.SIDEBAR_ITEMS = {"enum":["ProtocolName"]};

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["error","hash"],"struct":["Author"],"trait":["AuthorApiClient","AuthorApiServer"]};
+window.SIDEBAR_ITEMS = {"mod":["error","hash"],"struct":["Author","GeneratedSessionKeys"],"trait":["AuthorApiClient","AuthorApiServer"]};

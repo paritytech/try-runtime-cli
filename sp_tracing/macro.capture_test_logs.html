@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Macro for capturing logs during test execution."><title>capture_test_logs in sp_tracing - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../" data-static-root-path="../static.files/" data-current-crate="sp_tracing" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../static.files/storage-e2aeef58.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-044be391.svg"></head><body class="rustdoc macro"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><rustdoc-topbar><h2><a href="#">capture_test_logs</a></h2></rustdoc-topbar><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../sp_tracing/index.html">sp_<wbr>tracing</a><span class="version">16.0.0</span></h2></div><div class="sidebar-elems"><section id="rustdoc-toc"><h2 class="location"><a href="#">capture_<wbr>test_<wbr>logs</a></h2><h3><a href="#">Sections</a></h3><ul class="block top-toc"><li><a href="#arguments" title="Arguments">Arguments</a></li><li><a href="#examples" title="Examples">Examples</a></li><li><a href="#related-functions" title="Related functions:">Related functions:</a></li></ul></section><div id="rustdoc-modnav"><h2 class="in-crate"><a href="index.html">In crate sp_<wbr>tracing</a></h2></div></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><div class="width-limiter"><section id="main-content" class="content"><div class="main-heading"><div class="rustdoc-breadcrumbs"><a href="index.html">sp_tracing</a></div><h1>Macro <span class="macro">capture_<wbr>test_<wbr>logs</span>&nbsp;<button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><rustdoc-toolbar></rustdoc-toolbar><span class="sub-heading"><a class="src" href="../src/sp_tracing/lib.rs.html#487-507">Source</a> </span></div><pre class="rust item-decl"><code>macro_rules! capture_test_logs {
+    ($max_level:expr, $print_logs:expr, $test:block) =&gt; { ... };
+    ($max_level:expr, $test:block) =&gt; { ... };
+    ($test:block) =&gt; { ... };
+}</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Macro for capturing logs during test execution.</p>
+<p>This macro sets up a log subscriber with a specified maximum log level
+and an option to print logs to the test output while capturing them.</p>
+<h2 id="arguments"><a class="doc-anchor" href="#arguments">§</a>Arguments</h2>
+<ul>
+<li><code>$max_level</code>: The maximum log level to capture.</li>
+<li><code>$print_logs</code>: Whether to also print logs to the test output.</li>
+<li><code>$test</code>: The block of code where logs are captured.</li>
+</ul>
+<h2 id="examples"><a class="doc-anchor" href="#examples">§</a>Examples</h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>sp_tracing::{
+    capture_test_logs,
+    tracing::{info, warn, Level},
+};
+
+<span class="comment">// Capture logs at WARN level without printing them
+</span><span class="kw">let </span>log_capture = <span class="macro">capture_test_logs!</span>(Level::WARN, <span class="bool-val">false</span>, {
+    <span class="macro">info!</span>(<span class="string">"Captured info message"</span>);
+    <span class="macro">warn!</span>(<span class="string">"Captured warning"</span>);
+});
+
+<span class="macro">assert!</span>(!log_capture.contains(<span class="string">"Captured info message"</span>));
+<span class="macro">assert!</span>(log_capture.contains(<span class="string">"Captured warning"</span>));
+
+<span class="comment">// Capture logs at TRACE level and also print them
+</span><span class="kw">let </span>log_capture = <span class="macro">capture_test_logs!</span>(Level::TRACE, <span class="bool-val">true</span>, {
+    <span class="macro">info!</span>(<span class="string">"This will be captured and printed"</span>);
+});
+
+<span class="macro">assert!</span>(log_capture.contains(<span class="string">"This will be captured and printed"</span>));</code></pre></div><h2 id="related-functions"><a class="doc-anchor" href="#related-functions">§</a>Related functions:</h2>
+<ul>
+<li><a href="test_log_capture/fn.init_log_capture.html" title="fn sp_tracing::test_log_capture::init_log_capture"><code>init_log_capture()</code></a>: Captures logs for assertions.</li>
+<li><code>sp_tracing::init_for_tests()</code>: Outputs logs but does not capture them.</li>
+</ul>
+</div></details></section></div></main></body></html>

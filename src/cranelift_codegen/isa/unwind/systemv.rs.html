@@ -1,14 +1,14 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cranelift-codegen-0.95.1/src/isa/unwind/systemv.rs`."><title>systemv.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-e56847b5.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="cranelift_codegen" data-themes="" data-resource-suffix="" data-rustdoc-version="1.91.1 (ed61e7d7e 2025-11-07)" data-channel="1.91.1" data-search-js="search-e256b49e.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-6dc2a7f3.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">cranelift_codegen/isa/unwind/</div>systemv.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! System V ABI unwind information.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cranelift-codegen-0.122.0/src/isa/unwind/systemv.rs`."><title>systemv.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="cranelift_codegen" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">cranelift_codegen/isa/unwind/</div>systemv.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! System V ABI unwind information.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a></span><span class="kw">use </span><span class="kw">crate</span>::isa::unwind::UnwindInst;
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span><span class="kw">crate</span>::machinst::Reg;
 <a href=#5 id=5 data-nosnippet>5</a><span class="kw">use </span><span class="kw">crate</span>::result::CodegenResult;
-<a href=#6 id=6 data-nosnippet>6</a><span class="kw">use crate</span>::{binemit::CodeOffset, CodegenError};
+<a href=#6 id=6 data-nosnippet>6</a><span class="kw">use crate</span>::{CodegenError, binemit::CodeOffset};
 <a href=#7 id=7 data-nosnippet>7</a><span class="kw">use </span>alloc::vec::Vec;
 <a href=#8 id=8 data-nosnippet>8</a><span class="kw">use </span>gimli::write::{Address, FrameDescriptionEntry};
 <a href=#9 id=9 data-nosnippet>9</a>
 <a href=#10 id=10 data-nosnippet>10</a><span class="attr">#[cfg(feature = <span class="string">"enable-serde"</span>)]
-<a href=#11 id=11 data-nosnippet>11</a></span><span class="kw">use </span>serde::{Deserialize, Serialize};
+<a href=#11 id=11 data-nosnippet>11</a></span><span class="kw">use </span>serde_derive::{Deserialize, Serialize};
 <a href=#12 id=12 data-nosnippet>12</a>
 <a href=#13 id=13 data-nosnippet>13</a><span class="kw">type </span>Register = u16;
 <a href=#14 id=14 data-nosnippet>14</a>
@@ -34,7 +34,7 @@
 <a href=#34 id=34 data-nosnippet>34</a>                <span class="string">"register mapping is currently only implemented for x86_64"
 <a href=#35 id=35 data-nosnippet>35</a>            </span>),
 <a href=#36 id=36 data-nosnippet>36</a>            RegisterMappingError::UnsupportedRegisterBank(bank) =&gt; {
-<a href=#37 id=37 data-nosnippet>37</a>                <span class="macro">write!</span>(f, <span class="string">"unsupported register bank: {}"</span>, bank)
+<a href=#37 id=37 data-nosnippet>37</a>                <span class="macro">write!</span>(f, <span class="string">"unsupported register bank: {bank}"</span>)
 <a href=#38 id=38 data-nosnippet>38</a>            }
 <a href=#39 id=39 data-nosnippet>39</a>        }
 <a href=#40 id=40 data-nosnippet>40</a>    }
@@ -93,180 +93,196 @@
 <a href=#93 id=93 data-nosnippet>93</a>    }
 <a href=#94 id=94 data-nosnippet>94</a>}
 <a href=#95 id=95 data-nosnippet>95</a>
-<a href=#96 id=96 data-nosnippet>96</a><span class="kw">impl </span>Into&lt;gimli::write::CallFrameInstruction&gt; <span class="kw">for </span>CallFrameInstruction {
-<a href=#97 id=97 data-nosnippet>97</a>    <span class="kw">fn </span>into(<span class="self">self</span>) -&gt; gimli::write::CallFrameInstruction {
-<a href=#98 id=98 data-nosnippet>98</a>        <span class="kw">use </span>gimli::{write::CallFrameInstruction, write::Expression, Register};
-<a href=#99 id=99 data-nosnippet>99</a>
-<a href=#100 id=100 data-nosnippet>100</a>        <span class="kw">match </span><span class="self">self </span>{
-<a href=#101 id=101 data-nosnippet>101</a>            <span class="self">Self</span>::Cfa(reg, offset) =&gt; CallFrameInstruction::Cfa(Register(reg), offset),
-<a href=#102 id=102 data-nosnippet>102</a>            <span class="self">Self</span>::CfaRegister(reg) =&gt; CallFrameInstruction::CfaRegister(Register(reg)),
-<a href=#103 id=103 data-nosnippet>103</a>            <span class="self">Self</span>::CfaOffset(offset) =&gt; CallFrameInstruction::CfaOffset(offset),
-<a href=#104 id=104 data-nosnippet>104</a>            <span class="self">Self</span>::Restore(reg) =&gt; CallFrameInstruction::Restore(Register(reg)),
-<a href=#105 id=105 data-nosnippet>105</a>            <span class="self">Self</span>::Undefined(reg) =&gt; CallFrameInstruction::Undefined(Register(reg)),
-<a href=#106 id=106 data-nosnippet>106</a>            <span class="self">Self</span>::SameValue(reg) =&gt; CallFrameInstruction::SameValue(Register(reg)),
-<a href=#107 id=107 data-nosnippet>107</a>            <span class="self">Self</span>::Offset(reg, offset) =&gt; CallFrameInstruction::Offset(Register(reg), offset),
-<a href=#108 id=108 data-nosnippet>108</a>            <span class="self">Self</span>::ValOffset(reg, offset) =&gt; CallFrameInstruction::ValOffset(Register(reg), offset),
-<a href=#109 id=109 data-nosnippet>109</a>            <span class="self">Self</span>::Register(reg1, reg2) =&gt; {
-<a href=#110 id=110 data-nosnippet>110</a>                CallFrameInstruction::Register(Register(reg1), Register(reg2))
-<a href=#111 id=111 data-nosnippet>111</a>            }
-<a href=#112 id=112 data-nosnippet>112</a>            <span class="self">Self</span>::RememberState =&gt; CallFrameInstruction::RememberState,
-<a href=#113 id=113 data-nosnippet>113</a>            <span class="self">Self</span>::RestoreState =&gt; CallFrameInstruction::RestoreState,
-<a href=#114 id=114 data-nosnippet>114</a>            <span class="self">Self</span>::ArgsSize(size) =&gt; CallFrameInstruction::ArgsSize(size),
-<a href=#115 id=115 data-nosnippet>115</a>            <span class="self">Self</span>::Aarch64SetPointerAuth { return_addresses } =&gt; {
-<a href=#116 id=116 data-nosnippet>116</a>                <span class="comment">// To enable pointer authentication for return addresses in dwarf directives, we
-<a href=#117 id=117 data-nosnippet>117</a>                // use a small dwarf expression that sets the value of the pseudo-register
-<a href=#118 id=118 data-nosnippet>118</a>                // RA_SIGN_STATE (RA stands for return address) to 0 or 1. This behavior is
-<a href=#119 id=119 data-nosnippet>119</a>                // documented in
-<a href=#120 id=120 data-nosnippet>120</a>                // https://github.com/ARM-software/abi-aa/blob/master/aadwarf64/aadwarf64.rst#41dwarf-register-names.
-<a href=#121 id=121 data-nosnippet>121</a>                </span><span class="kw">let </span><span class="kw-2">mut </span>expr = Expression::new();
-<a href=#122 id=122 data-nosnippet>122</a>                expr.op(<span class="kw">if </span>return_addresses {
-<a href=#123 id=123 data-nosnippet>123</a>                    gimli::DW_OP_lit1
-<a href=#124 id=124 data-nosnippet>124</a>                } <span class="kw">else </span>{
-<a href=#125 id=125 data-nosnippet>125</a>                    gimli::DW_OP_lit0
-<a href=#126 id=126 data-nosnippet>126</a>                });
-<a href=#127 id=127 data-nosnippet>127</a>                <span class="kw">const </span>RA_SIGN_STATE: Register = Register(<span class="number">34</span>);
-<a href=#128 id=128 data-nosnippet>128</a>                CallFrameInstruction::ValExpression(RA_SIGN_STATE, expr)
-<a href=#129 id=129 data-nosnippet>129</a>            }
-<a href=#130 id=130 data-nosnippet>130</a>        }
-<a href=#131 id=131 data-nosnippet>131</a>    }
-<a href=#132 id=132 data-nosnippet>132</a>}
-<a href=#133 id=133 data-nosnippet>133</a>
-<a href=#134 id=134 data-nosnippet>134</a><span class="doccomment">/// Maps UnwindInfo register to gimli's index space.
-<a href=#135 id=135 data-nosnippet>135</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">trait </span>RegisterMapper&lt;Reg&gt; {
-<a href=#136 id=136 data-nosnippet>136</a>    <span class="doccomment">/// Maps Reg.
-<a href=#137 id=137 data-nosnippet>137</a>    </span><span class="kw">fn </span>map(<span class="kw-2">&amp;</span><span class="self">self</span>, reg: Reg) -&gt; <span class="prelude-ty">Result</span>&lt;Register, RegisterMappingError&gt;;
-<a href=#138 id=138 data-nosnippet>138</a>    <span class="doccomment">/// Gets stack pointer register.
-<a href=#139 id=139 data-nosnippet>139</a>    </span><span class="kw">fn </span>sp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Register;
-<a href=#140 id=140 data-nosnippet>140</a>    <span class="doccomment">/// Gets the frame pointer register, if any.
-<a href=#141 id=141 data-nosnippet>141</a>    </span><span class="kw">fn </span>fp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Register&gt; {
-<a href=#142 id=142 data-nosnippet>142</a>        <span class="prelude-val">None
-<a href=#143 id=143 data-nosnippet>143</a>    </span>}
-<a href=#144 id=144 data-nosnippet>144</a>    <span class="doccomment">/// Gets the link register, if any.
-<a href=#145 id=145 data-nosnippet>145</a>    </span><span class="kw">fn </span>lr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Register&gt; {
-<a href=#146 id=146 data-nosnippet>146</a>        <span class="prelude-val">None
-<a href=#147 id=147 data-nosnippet>147</a>    </span>}
-<a href=#148 id=148 data-nosnippet>148</a>    <span class="doccomment">/// What is the offset from saved FP to saved LR?
-<a href=#149 id=149 data-nosnippet>149</a>    </span><span class="kw">fn </span>lr_offset(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u32&gt; {
-<a href=#150 id=150 data-nosnippet>150</a>        <span class="prelude-val">None
-<a href=#151 id=151 data-nosnippet>151</a>    </span>}
-<a href=#152 id=152 data-nosnippet>152</a>}
-<a href=#153 id=153 data-nosnippet>153</a>
-<a href=#154 id=154 data-nosnippet>154</a><span class="doccomment">/// Represents unwind information for a single System V ABI function.
-<a href=#155 id=155 data-nosnippet>155</a>///
-<a href=#156 id=156 data-nosnippet>156</a>/// This representation is not ISA specific.
-<a href=#157 id=157 data-nosnippet>157</a></span><span class="attr">#[derive(Clone, Debug, PartialEq, Eq)]
-<a href=#158 id=158 data-nosnippet>158</a>#[cfg_attr(feature = <span class="string">"enable-serde"</span>, derive(Serialize, Deserialize))]
-<a href=#159 id=159 data-nosnippet>159</a></span><span class="kw">pub struct </span>UnwindInfo {
-<a href=#160 id=160 data-nosnippet>160</a>    instructions: Vec&lt;(u32, CallFrameInstruction)&gt;,
-<a href=#161 id=161 data-nosnippet>161</a>    len: u32,
-<a href=#162 id=162 data-nosnippet>162</a>}
-<a href=#163 id=163 data-nosnippet>163</a>
-<a href=#164 id=164 data-nosnippet>164</a><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create_unwind_info_from_insts&lt;MR: RegisterMapper&lt;Reg&gt;&gt;(
-<a href=#165 id=165 data-nosnippet>165</a>    insts: <span class="kw-2">&amp;</span>[(CodeOffset, UnwindInst)],
-<a href=#166 id=166 data-nosnippet>166</a>    code_len: usize,
-<a href=#167 id=167 data-nosnippet>167</a>    mr: <span class="kw-2">&amp;</span>MR,
-<a href=#168 id=168 data-nosnippet>168</a>) -&gt; CodegenResult&lt;UnwindInfo&gt; {
-<a href=#169 id=169 data-nosnippet>169</a>    <span class="kw">let </span><span class="kw-2">mut </span>instructions = <span class="macro">vec!</span>[];
-<a href=#170 id=170 data-nosnippet>170</a>
-<a href=#171 id=171 data-nosnippet>171</a>    <span class="kw">let </span><span class="kw-2">mut </span>cfa_offset = <span class="number">0</span>;
-<a href=#172 id=172 data-nosnippet>172</a>    <span class="kw">let </span><span class="kw-2">mut </span>clobber_offset_to_cfa = <span class="number">0</span>;
-<a href=#173 id=173 data-nosnippet>173</a>    <span class="kw">for </span><span class="kw-2">&amp;</span>(instruction_offset, <span class="kw-2">ref </span>inst) <span class="kw">in </span>insts {
-<a href=#174 id=174 data-nosnippet>174</a>        <span class="kw">match </span>inst {
-<a href=#175 id=175 data-nosnippet>175</a>            <span class="kw-2">&amp;</span>UnwindInst::PushFrameRegs {
-<a href=#176 id=176 data-nosnippet>176</a>                offset_upward_to_caller_sp,
-<a href=#177 id=177 data-nosnippet>177</a>            } =&gt; {
-<a href=#178 id=178 data-nosnippet>178</a>                <span class="comment">// Define CFA in terms of current SP (SP changed and we haven't
-<a href=#179 id=179 data-nosnippet>179</a>                // set FP yet).
-<a href=#180 id=180 data-nosnippet>180</a>                </span>instructions.push((
-<a href=#181 id=181 data-nosnippet>181</a>                    instruction_offset,
-<a href=#182 id=182 data-nosnippet>182</a>                    CallFrameInstruction::CfaOffset(offset_upward_to_caller_sp <span class="kw">as </span>i32),
-<a href=#183 id=183 data-nosnippet>183</a>                ));
-<a href=#184 id=184 data-nosnippet>184</a>                <span class="comment">// Note that we saved the old FP value on the stack.  Use of this
-<a href=#185 id=185 data-nosnippet>185</a>                // operation implies that the target defines a FP register.
-<a href=#186 id=186 data-nosnippet>186</a>                </span>instructions.push((
-<a href=#187 id=187 data-nosnippet>187</a>                    instruction_offset,
-<a href=#188 id=188 data-nosnippet>188</a>                    CallFrameInstruction::Offset(
-<a href=#189 id=189 data-nosnippet>189</a>                        mr.fp().unwrap(),
-<a href=#190 id=190 data-nosnippet>190</a>                        -(offset_upward_to_caller_sp <span class="kw">as </span>i32),
-<a href=#191 id=191 data-nosnippet>191</a>                    ),
-<a href=#192 id=192 data-nosnippet>192</a>                ));
-<a href=#193 id=193 data-nosnippet>193</a>                <span class="comment">// If there is a link register on this architecture, note that
-<a href=#194 id=194 data-nosnippet>194</a>                // we saved it as well.
-<a href=#195 id=195 data-nosnippet>195</a>                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(lr) = mr.lr() {
-<a href=#196 id=196 data-nosnippet>196</a>                    instructions.push((
-<a href=#197 id=197 data-nosnippet>197</a>                        instruction_offset,
-<a href=#198 id=198 data-nosnippet>198</a>                        CallFrameInstruction::Offset(
-<a href=#199 id=199 data-nosnippet>199</a>                            lr,
-<a href=#200 id=200 data-nosnippet>200</a>                            -(offset_upward_to_caller_sp <span class="kw">as </span>i32)
-<a href=#201 id=201 data-nosnippet>201</a>                                + mr.lr_offset().expect(<span class="string">"LR offset not provided"</span>) <span class="kw">as </span>i32,
-<a href=#202 id=202 data-nosnippet>202</a>                        ),
-<a href=#203 id=203 data-nosnippet>203</a>                    ));
-<a href=#204 id=204 data-nosnippet>204</a>                }
-<a href=#205 id=205 data-nosnippet>205</a>            }
-<a href=#206 id=206 data-nosnippet>206</a>            <span class="kw-2">&amp;</span>UnwindInst::DefineNewFrame {
-<a href=#207 id=207 data-nosnippet>207</a>                offset_upward_to_caller_sp,
-<a href=#208 id=208 data-nosnippet>208</a>                offset_downward_to_clobbers,
-<a href=#209 id=209 data-nosnippet>209</a>            } =&gt; {
-<a href=#210 id=210 data-nosnippet>210</a>                <span class="comment">// Define CFA in terms of FP. Note that we assume it was already
-<a href=#211 id=211 data-nosnippet>211</a>                // defined correctly in terms of the current SP, and FP has just
-<a href=#212 id=212 data-nosnippet>212</a>                // been set to the current SP, so we do not need to change the
-<a href=#213 id=213 data-nosnippet>213</a>                // offset, only the register.  (This is done only if the target
-<a href=#214 id=214 data-nosnippet>214</a>                // defines a frame pointer register.)
-<a href=#215 id=215 data-nosnippet>215</a>                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(fp) = mr.fp() {
-<a href=#216 id=216 data-nosnippet>216</a>                    instructions.push((instruction_offset, CallFrameInstruction::CfaRegister(fp)));
-<a href=#217 id=217 data-nosnippet>217</a>                }
-<a href=#218 id=218 data-nosnippet>218</a>                <span class="comment">// Record initial CFA offset.  This will be used with later
-<a href=#219 id=219 data-nosnippet>219</a>                // StackAlloc calls if we do not have a frame pointer.
-<a href=#220 id=220 data-nosnippet>220</a>                </span>cfa_offset = offset_upward_to_caller_sp;
-<a href=#221 id=221 data-nosnippet>221</a>                <span class="comment">// Record distance from CFA downward to clobber area so we can
-<a href=#222 id=222 data-nosnippet>222</a>                // express clobber offsets later in terms of CFA.
-<a href=#223 id=223 data-nosnippet>223</a>                </span>clobber_offset_to_cfa = offset_upward_to_caller_sp + offset_downward_to_clobbers;
-<a href=#224 id=224 data-nosnippet>224</a>            }
-<a href=#225 id=225 data-nosnippet>225</a>            <span class="kw-2">&amp;</span>UnwindInst::StackAlloc { size } =&gt; {
-<a href=#226 id=226 data-nosnippet>226</a>                <span class="comment">// If we do not use a frame pointer, we need to update the
-<a href=#227 id=227 data-nosnippet>227</a>                // CFA offset whenever the stack pointer changes.
-<a href=#228 id=228 data-nosnippet>228</a>                </span><span class="kw">if </span>mr.fp().is_none() {
-<a href=#229 id=229 data-nosnippet>229</a>                    cfa_offset += size;
-<a href=#230 id=230 data-nosnippet>230</a>                    instructions.push((
-<a href=#231 id=231 data-nosnippet>231</a>                        instruction_offset,
-<a href=#232 id=232 data-nosnippet>232</a>                        CallFrameInstruction::CfaOffset(cfa_offset <span class="kw">as </span>i32),
-<a href=#233 id=233 data-nosnippet>233</a>                    ));
-<a href=#234 id=234 data-nosnippet>234</a>                }
-<a href=#235 id=235 data-nosnippet>235</a>            }
-<a href=#236 id=236 data-nosnippet>236</a>            <span class="kw-2">&amp;</span>UnwindInst::SaveReg {
-<a href=#237 id=237 data-nosnippet>237</a>                clobber_offset,
-<a href=#238 id=238 data-nosnippet>238</a>                reg,
-<a href=#239 id=239 data-nosnippet>239</a>            } =&gt; {
-<a href=#240 id=240 data-nosnippet>240</a>                <span class="kw">let </span>reg = mr
-<a href=#241 id=241 data-nosnippet>241</a>                    .map(reg.into())
-<a href=#242 id=242 data-nosnippet>242</a>                    .map_err(|e| CodegenError::RegisterMappingError(e))<span class="question-mark">?</span>;
-<a href=#243 id=243 data-nosnippet>243</a>                <span class="kw">let </span>off = (clobber_offset <span class="kw">as </span>i32) - (clobber_offset_to_cfa <span class="kw">as </span>i32);
-<a href=#244 id=244 data-nosnippet>244</a>                instructions.push((instruction_offset, CallFrameInstruction::Offset(reg, off)));
-<a href=#245 id=245 data-nosnippet>245</a>            }
-<a href=#246 id=246 data-nosnippet>246</a>            <span class="kw-2">&amp;</span>UnwindInst::Aarch64SetPointerAuth { return_addresses } =&gt; {
-<a href=#247 id=247 data-nosnippet>247</a>                instructions.push((
-<a href=#248 id=248 data-nosnippet>248</a>                    instruction_offset,
-<a href=#249 id=249 data-nosnippet>249</a>                    CallFrameInstruction::Aarch64SetPointerAuth { return_addresses },
-<a href=#250 id=250 data-nosnippet>250</a>                ));
-<a href=#251 id=251 data-nosnippet>251</a>            }
-<a href=#252 id=252 data-nosnippet>252</a>        }
-<a href=#253 id=253 data-nosnippet>253</a>    }
-<a href=#254 id=254 data-nosnippet>254</a>
-<a href=#255 id=255 data-nosnippet>255</a>    <span class="prelude-val">Ok</span>(UnwindInfo {
-<a href=#256 id=256 data-nosnippet>256</a>        instructions,
-<a href=#257 id=257 data-nosnippet>257</a>        len: code_len <span class="kw">as </span>u32,
-<a href=#258 id=258 data-nosnippet>258</a>    })
-<a href=#259 id=259 data-nosnippet>259</a>}
-<a href=#260 id=260 data-nosnippet>260</a>
-<a href=#261 id=261 data-nosnippet>261</a><span class="kw">impl </span>UnwindInfo {
-<a href=#262 id=262 data-nosnippet>262</a>    <span class="doccomment">/// Converts the unwind information into a `FrameDescriptionEntry`.
-<a href=#263 id=263 data-nosnippet>263</a>    </span><span class="kw">pub fn </span>to_fde(<span class="kw-2">&amp;</span><span class="self">self</span>, address: Address) -&gt; gimli::write::FrameDescriptionEntry {
-<a href=#264 id=264 data-nosnippet>264</a>        <span class="kw">let </span><span class="kw-2">mut </span>fde = FrameDescriptionEntry::new(address, <span class="self">self</span>.len);
-<a href=#265 id=265 data-nosnippet>265</a>
-<a href=#266 id=266 data-nosnippet>266</a>        <span class="kw">for </span>(offset, inst) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.instructions {
-<a href=#267 id=267 data-nosnippet>267</a>            fde.add_instruction(<span class="kw-2">*</span>offset, inst.clone().into());
+<a href=#96 id=96 data-nosnippet>96</a><span class="kw">impl </span>From&lt;CallFrameInstruction&gt; <span class="kw">for </span>gimli::write::CallFrameInstruction {
+<a href=#97 id=97 data-nosnippet>97</a>    <span class="kw">fn </span>from(cfi: CallFrameInstruction) -&gt; gimli::write::CallFrameInstruction {
+<a href=#98 id=98 data-nosnippet>98</a>        <span class="kw">use </span>CallFrameInstruction <span class="kw">as </span>ClifCfi;
+<a href=#99 id=99 data-nosnippet>99</a>        <span class="kw">use </span>gimli::{Register, write::CallFrameInstruction <span class="kw">as </span>GimliCfi, write::Expression};
+<a href=#100 id=100 data-nosnippet>100</a>
+<a href=#101 id=101 data-nosnippet>101</a>        <span class="kw">match </span>cfi {
+<a href=#102 id=102 data-nosnippet>102</a>            ClifCfi::Cfa(reg, offset) =&gt; GimliCfi::Cfa(Register(reg), offset),
+<a href=#103 id=103 data-nosnippet>103</a>            ClifCfi::CfaRegister(reg) =&gt; GimliCfi::CfaRegister(Register(reg)),
+<a href=#104 id=104 data-nosnippet>104</a>            ClifCfi::CfaOffset(offset) =&gt; GimliCfi::CfaOffset(offset),
+<a href=#105 id=105 data-nosnippet>105</a>            ClifCfi::Restore(reg) =&gt; GimliCfi::Restore(Register(reg)),
+<a href=#106 id=106 data-nosnippet>106</a>            ClifCfi::Undefined(reg) =&gt; GimliCfi::Undefined(Register(reg)),
+<a href=#107 id=107 data-nosnippet>107</a>            ClifCfi::SameValue(reg) =&gt; GimliCfi::SameValue(Register(reg)),
+<a href=#108 id=108 data-nosnippet>108</a>            ClifCfi::Offset(reg, offset) =&gt; GimliCfi::Offset(Register(reg), offset),
+<a href=#109 id=109 data-nosnippet>109</a>            ClifCfi::ValOffset(reg, offset) =&gt; GimliCfi::ValOffset(Register(reg), offset),
+<a href=#110 id=110 data-nosnippet>110</a>            ClifCfi::Register(reg1, reg2) =&gt; GimliCfi::Register(Register(reg1), Register(reg2)),
+<a href=#111 id=111 data-nosnippet>111</a>            ClifCfi::RememberState =&gt; GimliCfi::RememberState,
+<a href=#112 id=112 data-nosnippet>112</a>            ClifCfi::RestoreState =&gt; GimliCfi::RestoreState,
+<a href=#113 id=113 data-nosnippet>113</a>            ClifCfi::ArgsSize(size) =&gt; GimliCfi::ArgsSize(size),
+<a href=#114 id=114 data-nosnippet>114</a>            ClifCfi::Aarch64SetPointerAuth { return_addresses } =&gt; {
+<a href=#115 id=115 data-nosnippet>115</a>                <span class="comment">// To enable pointer authentication for return addresses in dwarf directives, we
+<a href=#116 id=116 data-nosnippet>116</a>                // use a small dwarf expression that sets the value of the pseudo-register
+<a href=#117 id=117 data-nosnippet>117</a>                // RA_SIGN_STATE (RA stands for return address) to 0 or 1. This behavior is
+<a href=#118 id=118 data-nosnippet>118</a>                // documented in
+<a href=#119 id=119 data-nosnippet>119</a>                // https://github.com/ARM-software/abi-aa/blob/master/aadwarf64/aadwarf64.rst#41dwarf-register-names.
+<a href=#120 id=120 data-nosnippet>120</a>                </span><span class="kw">let </span><span class="kw-2">mut </span>expr = Expression::new();
+<a href=#121 id=121 data-nosnippet>121</a>                expr.op(<span class="kw">if </span>return_addresses {
+<a href=#122 id=122 data-nosnippet>122</a>                    gimli::DW_OP_lit1
+<a href=#123 id=123 data-nosnippet>123</a>                } <span class="kw">else </span>{
+<a href=#124 id=124 data-nosnippet>124</a>                    gimli::DW_OP_lit0
+<a href=#125 id=125 data-nosnippet>125</a>                });
+<a href=#126 id=126 data-nosnippet>126</a>                <span class="kw">const </span>RA_SIGN_STATE: Register = Register(<span class="number">34</span>);
+<a href=#127 id=127 data-nosnippet>127</a>                GimliCfi::ValExpression(RA_SIGN_STATE, expr)
+<a href=#128 id=128 data-nosnippet>128</a>            }
+<a href=#129 id=129 data-nosnippet>129</a>        }
+<a href=#130 id=130 data-nosnippet>130</a>    }
+<a href=#131 id=131 data-nosnippet>131</a>}
+<a href=#132 id=132 data-nosnippet>132</a>
+<a href=#133 id=133 data-nosnippet>133</a><span class="doccomment">/// Maps UnwindInfo register to gimli's index space.
+<a href=#134 id=134 data-nosnippet>134</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">trait </span>RegisterMapper&lt;Reg&gt; {
+<a href=#135 id=135 data-nosnippet>135</a>    <span class="doccomment">/// Maps Reg.
+<a href=#136 id=136 data-nosnippet>136</a>    </span><span class="kw">fn </span>map(<span class="kw-2">&amp;</span><span class="self">self</span>, reg: Reg) -&gt; <span class="prelude-ty">Result</span>&lt;Register, RegisterMappingError&gt;;
+<a href=#137 id=137 data-nosnippet>137</a>    <span class="doccomment">/// Gets the frame pointer register, if any.
+<a href=#138 id=138 data-nosnippet>138</a>    </span><span class="kw">fn </span>fp(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Register&gt; {
+<a href=#139 id=139 data-nosnippet>139</a>        <span class="prelude-val">None
+<a href=#140 id=140 data-nosnippet>140</a>    </span>}
+<a href=#141 id=141 data-nosnippet>141</a>    <span class="doccomment">/// Gets the link register, if any.
+<a href=#142 id=142 data-nosnippet>142</a>    </span><span class="kw">fn </span>lr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Register&gt; {
+<a href=#143 id=143 data-nosnippet>143</a>        <span class="prelude-val">None
+<a href=#144 id=144 data-nosnippet>144</a>    </span>}
+<a href=#145 id=145 data-nosnippet>145</a>    <span class="doccomment">/// What is the offset from saved FP to saved LR?
+<a href=#146 id=146 data-nosnippet>146</a>    </span><span class="kw">fn </span>lr_offset(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u32&gt; {
+<a href=#147 id=147 data-nosnippet>147</a>        <span class="prelude-val">None
+<a href=#148 id=148 data-nosnippet>148</a>    </span>}
+<a href=#149 id=149 data-nosnippet>149</a>}
+<a href=#150 id=150 data-nosnippet>150</a>
+<a href=#151 id=151 data-nosnippet>151</a><span class="doccomment">/// Represents unwind information for a single System V ABI function.
+<a href=#152 id=152 data-nosnippet>152</a>///
+<a href=#153 id=153 data-nosnippet>153</a>/// This representation is not ISA specific.
+<a href=#154 id=154 data-nosnippet>154</a></span><span class="attr">#[derive(Clone, Debug, PartialEq, Eq)]
+<a href=#155 id=155 data-nosnippet>155</a>#[cfg_attr(feature = <span class="string">"enable-serde"</span>, derive(Serialize, Deserialize))]
+<a href=#156 id=156 data-nosnippet>156</a></span><span class="kw">pub struct </span>UnwindInfo {
+<a href=#157 id=157 data-nosnippet>157</a>    instructions: Vec&lt;(u32, CallFrameInstruction)&gt;,
+<a href=#158 id=158 data-nosnippet>158</a>    len: u32,
+<a href=#159 id=159 data-nosnippet>159</a>}
+<a href=#160 id=160 data-nosnippet>160</a>
+<a href=#161 id=161 data-nosnippet>161</a><span class="doccomment">/// Offset from the caller's SP to CFA as we define it.
+<a href=#162 id=162 data-nosnippet>162</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>caller_sp_to_cfa_offset() -&gt; u32 {
+<a href=#163 id=163 data-nosnippet>163</a>    <span class="comment">// Currently we define them to always be equal.
+<a href=#164 id=164 data-nosnippet>164</a>    </span><span class="number">0
+<a href=#165 id=165 data-nosnippet>165</a></span>}
+<a href=#166 id=166 data-nosnippet>166</a>
+<a href=#167 id=167 data-nosnippet>167</a><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>create_unwind_info_from_insts&lt;MR: RegisterMapper&lt;Reg&gt;&gt;(
+<a href=#168 id=168 data-nosnippet>168</a>    insts: <span class="kw-2">&amp;</span>[(CodeOffset, UnwindInst)],
+<a href=#169 id=169 data-nosnippet>169</a>    code_len: usize,
+<a href=#170 id=170 data-nosnippet>170</a>    mr: <span class="kw-2">&amp;</span>MR,
+<a href=#171 id=171 data-nosnippet>171</a>) -&gt; CodegenResult&lt;UnwindInfo&gt; {
+<a href=#172 id=172 data-nosnippet>172</a>    <span class="kw">let </span><span class="kw-2">mut </span>instructions = <span class="macro">vec!</span>[];
+<a href=#173 id=173 data-nosnippet>173</a>
+<a href=#174 id=174 data-nosnippet>174</a>    <span class="kw">let </span><span class="kw-2">mut </span>cfa_offset = <span class="number">0</span>;
+<a href=#175 id=175 data-nosnippet>175</a>    <span class="kw">let </span><span class="kw-2">mut </span>clobber_offset_to_cfa = <span class="number">0</span>;
+<a href=#176 id=176 data-nosnippet>176</a>    <span class="kw">for </span><span class="kw-2">&amp;</span>(instruction_offset, <span class="kw-2">ref </span>inst) <span class="kw">in </span>insts {
+<a href=#177 id=177 data-nosnippet>177</a>        <span class="kw">match </span>inst {
+<a href=#178 id=178 data-nosnippet>178</a>            <span class="kw-2">&amp;</span>UnwindInst::PushFrameRegs {
+<a href=#179 id=179 data-nosnippet>179</a>                offset_upward_to_caller_sp,
+<a href=#180 id=180 data-nosnippet>180</a>            } =&gt; {
+<a href=#181 id=181 data-nosnippet>181</a>                <span class="comment">// Define CFA in terms of current SP (SP changed and we haven't
+<a href=#182 id=182 data-nosnippet>182</a>                // set FP yet).
+<a href=#183 id=183 data-nosnippet>183</a>                </span>instructions.push((
+<a href=#184 id=184 data-nosnippet>184</a>                    instruction_offset,
+<a href=#185 id=185 data-nosnippet>185</a>                    CallFrameInstruction::CfaOffset(offset_upward_to_caller_sp <span class="kw">as </span>i32),
+<a href=#186 id=186 data-nosnippet>186</a>                ));
+<a href=#187 id=187 data-nosnippet>187</a>                <span class="comment">// Note that we saved the old FP value on the stack.  Use of this
+<a href=#188 id=188 data-nosnippet>188</a>                // operation implies that the target defines a FP register.
+<a href=#189 id=189 data-nosnippet>189</a>                </span>instructions.push((
+<a href=#190 id=190 data-nosnippet>190</a>                    instruction_offset,
+<a href=#191 id=191 data-nosnippet>191</a>                    CallFrameInstruction::Offset(
+<a href=#192 id=192 data-nosnippet>192</a>                        mr.fp().unwrap(),
+<a href=#193 id=193 data-nosnippet>193</a>                        -(offset_upward_to_caller_sp <span class="kw">as </span>i32),
+<a href=#194 id=194 data-nosnippet>194</a>                    ),
+<a href=#195 id=195 data-nosnippet>195</a>                ));
+<a href=#196 id=196 data-nosnippet>196</a>                <span class="comment">// If there is a link register on this architecture, note that
+<a href=#197 id=197 data-nosnippet>197</a>                // we saved it as well.
+<a href=#198 id=198 data-nosnippet>198</a>                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(lr) = mr.lr() {
+<a href=#199 id=199 data-nosnippet>199</a>                    instructions.push((
+<a href=#200 id=200 data-nosnippet>200</a>                        instruction_offset,
+<a href=#201 id=201 data-nosnippet>201</a>                        CallFrameInstruction::Offset(
+<a href=#202 id=202 data-nosnippet>202</a>                            lr,
+<a href=#203 id=203 data-nosnippet>203</a>                            -(offset_upward_to_caller_sp <span class="kw">as </span>i32)
+<a href=#204 id=204 data-nosnippet>204</a>                                + mr.lr_offset().expect(<span class="string">"LR offset not provided"</span>) <span class="kw">as </span>i32,
+<a href=#205 id=205 data-nosnippet>205</a>                        ),
+<a href=#206 id=206 data-nosnippet>206</a>                    ));
+<a href=#207 id=207 data-nosnippet>207</a>                }
+<a href=#208 id=208 data-nosnippet>208</a>            }
+<a href=#209 id=209 data-nosnippet>209</a>            <span class="kw-2">&amp;</span>UnwindInst::DefineNewFrame {
+<a href=#210 id=210 data-nosnippet>210</a>                offset_upward_to_caller_sp,
+<a href=#211 id=211 data-nosnippet>211</a>                offset_downward_to_clobbers,
+<a href=#212 id=212 data-nosnippet>212</a>            } =&gt; {
+<a href=#213 id=213 data-nosnippet>213</a>                <span class="comment">// Define CFA in terms of FP. Note that we assume it was already
+<a href=#214 id=214 data-nosnippet>214</a>                // defined correctly in terms of the current SP, and FP has just
+<a href=#215 id=215 data-nosnippet>215</a>                // been set to the current SP, so we do not need to change the
+<a href=#216 id=216 data-nosnippet>216</a>                // offset, only the register.  (This is done only if the target
+<a href=#217 id=217 data-nosnippet>217</a>                // defines a frame pointer register.)
+<a href=#218 id=218 data-nosnippet>218</a>                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(fp) = mr.fp() {
+<a href=#219 id=219 data-nosnippet>219</a>                    instructions.push((instruction_offset, CallFrameInstruction::CfaRegister(fp)));
+<a href=#220 id=220 data-nosnippet>220</a>                }
+<a href=#221 id=221 data-nosnippet>221</a>                <span class="comment">// Record initial CFA offset.  This will be used with later
+<a href=#222 id=222 data-nosnippet>222</a>                // StackAlloc calls if we do not have a frame pointer.
+<a href=#223 id=223 data-nosnippet>223</a>                </span>cfa_offset = offset_upward_to_caller_sp;
+<a href=#224 id=224 data-nosnippet>224</a>                <span class="comment">// Record distance from CFA downward to clobber area so we can
+<a href=#225 id=225 data-nosnippet>225</a>                // express clobber offsets later in terms of CFA.
+<a href=#226 id=226 data-nosnippet>226</a>                </span>clobber_offset_to_cfa = offset_upward_to_caller_sp + offset_downward_to_clobbers;
+<a href=#227 id=227 data-nosnippet>227</a>            }
+<a href=#228 id=228 data-nosnippet>228</a>            <span class="kw-2">&amp;</span>UnwindInst::StackAlloc { size } =&gt; {
+<a href=#229 id=229 data-nosnippet>229</a>                <span class="comment">// If we do not use a frame pointer, we need to update the
+<a href=#230 id=230 data-nosnippet>230</a>                // CFA offset whenever the stack pointer changes.
+<a href=#231 id=231 data-nosnippet>231</a>                </span><span class="kw">if </span>mr.fp().is_none() {
+<a href=#232 id=232 data-nosnippet>232</a>                    cfa_offset += size;
+<a href=#233 id=233 data-nosnippet>233</a>                    instructions.push((
+<a href=#234 id=234 data-nosnippet>234</a>                        instruction_offset,
+<a href=#235 id=235 data-nosnippet>235</a>                        CallFrameInstruction::CfaOffset(cfa_offset <span class="kw">as </span>i32),
+<a href=#236 id=236 data-nosnippet>236</a>                    ));
+<a href=#237 id=237 data-nosnippet>237</a>                }
+<a href=#238 id=238 data-nosnippet>238</a>            }
+<a href=#239 id=239 data-nosnippet>239</a>            <span class="kw-2">&amp;</span>UnwindInst::SaveReg {
+<a href=#240 id=240 data-nosnippet>240</a>                clobber_offset,
+<a href=#241 id=241 data-nosnippet>241</a>                reg,
+<a href=#242 id=242 data-nosnippet>242</a>            } =&gt; {
+<a href=#243 id=243 data-nosnippet>243</a>                <span class="kw">let </span>reg = mr
+<a href=#244 id=244 data-nosnippet>244</a>                    .map(reg.into())
+<a href=#245 id=245 data-nosnippet>245</a>                    .map_err(|e| CodegenError::RegisterMappingError(e))<span class="question-mark">?</span>;
+<a href=#246 id=246 data-nosnippet>246</a>                <span class="kw">let </span>off = (clobber_offset <span class="kw">as </span>i32) - (clobber_offset_to_cfa <span class="kw">as </span>i32);
+<a href=#247 id=247 data-nosnippet>247</a>                instructions.push((instruction_offset, CallFrameInstruction::Offset(reg, off)));
+<a href=#248 id=248 data-nosnippet>248</a>            }
+<a href=#249 id=249 data-nosnippet>249</a>            <span class="kw-2">&amp;</span>UnwindInst::RegStackOffset {
+<a href=#250 id=250 data-nosnippet>250</a>                clobber_offset,
+<a href=#251 id=251 data-nosnippet>251</a>                reg,
+<a href=#252 id=252 data-nosnippet>252</a>            } =&gt; {
+<a href=#253 id=253 data-nosnippet>253</a>                <span class="kw">let </span>reg = mr
+<a href=#254 id=254 data-nosnippet>254</a>                    .map(reg.into())
+<a href=#255 id=255 data-nosnippet>255</a>                    .map_err(|e| CodegenError::RegisterMappingError(e))<span class="question-mark">?</span>;
+<a href=#256 id=256 data-nosnippet>256</a>                <span class="kw">let </span>off = (clobber_offset <span class="kw">as </span>i32) - (clobber_offset_to_cfa <span class="kw">as </span>i32);
+<a href=#257 id=257 data-nosnippet>257</a>                instructions.push((
+<a href=#258 id=258 data-nosnippet>258</a>                    instruction_offset,
+<a href=#259 id=259 data-nosnippet>259</a>                    CallFrameInstruction::ValOffset(reg, off),
+<a href=#260 id=260 data-nosnippet>260</a>                ));
+<a href=#261 id=261 data-nosnippet>261</a>            }
+<a href=#262 id=262 data-nosnippet>262</a>            <span class="kw-2">&amp;</span>UnwindInst::Aarch64SetPointerAuth { return_addresses } =&gt; {
+<a href=#263 id=263 data-nosnippet>263</a>                instructions.push((
+<a href=#264 id=264 data-nosnippet>264</a>                    instruction_offset,
+<a href=#265 id=265 data-nosnippet>265</a>                    CallFrameInstruction::Aarch64SetPointerAuth { return_addresses },
+<a href=#266 id=266 data-nosnippet>266</a>                ));
+<a href=#267 id=267 data-nosnippet>267</a>            }
 <a href=#268 id=268 data-nosnippet>268</a>        }
-<a href=#269 id=269 data-nosnippet>269</a>
-<a href=#270 id=270 data-nosnippet>270</a>        fde
-<a href=#271 id=271 data-nosnippet>271</a>    }
-<a href=#272 id=272 data-nosnippet>272</a>}</code></pre></div></section></main></body></html>
+<a href=#269 id=269 data-nosnippet>269</a>    }
+<a href=#270 id=270 data-nosnippet>270</a>
+<a href=#271 id=271 data-nosnippet>271</a>    <span class="prelude-val">Ok</span>(UnwindInfo {
+<a href=#272 id=272 data-nosnippet>272</a>        instructions,
+<a href=#273 id=273 data-nosnippet>273</a>        len: code_len <span class="kw">as </span>u32,
+<a href=#274 id=274 data-nosnippet>274</a>    })
+<a href=#275 id=275 data-nosnippet>275</a>}
+<a href=#276 id=276 data-nosnippet>276</a>
+<a href=#277 id=277 data-nosnippet>277</a><span class="kw">impl </span>UnwindInfo {
+<a href=#278 id=278 data-nosnippet>278</a>    <span class="doccomment">/// Converts the unwind information into a `FrameDescriptionEntry`.
+<a href=#279 id=279 data-nosnippet>279</a>    </span><span class="kw">pub fn </span>to_fde(<span class="kw-2">&amp;</span><span class="self">self</span>, address: Address) -&gt; gimli::write::FrameDescriptionEntry {
+<a href=#280 id=280 data-nosnippet>280</a>        <span class="kw">let </span><span class="kw-2">mut </span>fde = FrameDescriptionEntry::new(address, <span class="self">self</span>.len);
+<a href=#281 id=281 data-nosnippet>281</a>
+<a href=#282 id=282 data-nosnippet>282</a>        <span class="kw">for </span>(offset, inst) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.instructions {
+<a href=#283 id=283 data-nosnippet>283</a>            fde.add_instruction(<span class="kw-2">*</span>offset, inst.clone().into());
+<a href=#284 id=284 data-nosnippet>284</a>        }
+<a href=#285 id=285 data-nosnippet>285</a>
+<a href=#286 id=286 data-nosnippet>286</a>        fde
+<a href=#287 id=287 data-nosnippet>287</a>    }
+<a href=#288 id=288 data-nosnippet>288</a>}</code></pre></div></section></main></body></html>
