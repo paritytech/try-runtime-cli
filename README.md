@@ -26,7 +26,8 @@ Some resources about the above:
 
 The basis of all try-runtime commands is the same: connect to a live node, scrape its *state*
 and put it inside a [`TestExternalities`], then call into a *specific runtime-api* using the
-given state and some *runtime*.
+given state and some *runtime*. Multiple node URIs can be provided to enable parallel state
+downloads for improved performance.
 
 Alternatively, the state could come from a snapshot file.
 
@@ -182,18 +183,35 @@ cargo build --features try-runtime --release && cp target/release/substrate .
 * Run the migrations of a given runtime on top of a live state.
 
 ```bash
-# assuming there's `./substrate --dev --tmp --ws-port 9999` or similar running.
+# Assuming local nodes are running (e.g., `./substrate --dev --tmp --ws-port 9999`).
+# Multiple --uri flags can be provided for parallel state download.
 try-runtime \
     --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
     on-runtime-upgrade \
-    # Passing this flag will skip multi-block-migration checks and only run pre_upgrade/post_upgrade checks.
     --disable-mbm-checks \
-    live --uri ws://localhost:9999
+    live \
+    --uri ws://localhost:9999 \
+    --uri ws://localhost:9998
+    ...
+```
+
+To speed up state download, you can provide multiple URIs for parallel fetching:
+
+```bash
+# assuming multiple substrate nodes running on ports 9999, 9998, 9997
+try-runtime \
+    --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
+    on-runtime-upgrade \
+    live \
+    --uri ws://localhost:9999 \
+    --uri ws://localhost:9998 \
+    --uri ws://localhost:9997
 ```
 
 * Same as the previous example, but run it at specific block number's state and using the live
   polkadot network. This means that this block hash's state should not yet have been pruned by
-  the node running at `rpc.polkadot.io`.
+  the node running at `rpc.polkadot.io`. Multiple `--uri` flags can be provided for parallel
+  state download.
 
 ```bash
 try-runtime \
@@ -207,11 +225,20 @@ try-runtime \
 * Now, let's use a snapshot file. First, we create the snapshot:
 
 ```bash
-try-runtime --runtime existing create-snapshot --uri ws://localhost:9999 my-snapshot.snap
+try-runtime --runtime existing create-snapshot --uri ws://localhost:9999 -- my-snapshot.snap
 2022-12-13 10:28:17.516  INFO                 main remote-ext: since no at is provided, setting it to latest finalized head, 0xe7d0b614dfe89af65b33577aae46a6f958c974bf52f8a5e865a0f4faeb578d22
 2022-12-13 10:28:17.516  INFO                 main remote-ext: since no prefix is filtered, the data for all pallets will be downloaded
 2022-12-13 10:28:17.550  INFO                 main remote-ext: writing snapshot of 1611464 bytes to "node-268@latest.snap"
 2022-12-13 10:28:17.551  INFO                 main remote-ext: initialized state externalities with storage root 0x925e4e95de4c08474fb7f976c4472fa9b8a1091619cd7820a793bf796ee6d932 and state_version V1
+```
+
+For faster snapshot creation with large state, use multiple RPC endpoints:
+
+```bash
+try-runtime --runtime existing create-snapshot \
+    --uri ws://localhost:9999 \
+    --uri ws://localhost:9998 \
+    -- my-snapshot.snap
 ```
 
 > Note that the snapshot contains the `existing` runtime, which does not have the correct
