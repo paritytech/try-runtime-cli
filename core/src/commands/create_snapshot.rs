@@ -62,7 +62,7 @@ where
     let path = match snapshot_path {
         Some(path) => path,
         None => {
-            let rpc = ws_client(&command.from.uri).await.unwrap();
+            let rpc = ws_client(&command.from.uri[0]).await.unwrap();
             let remote_spec = StateApi::<Block::Hash>::runtime_version(&rpc, None)
                 .await
                 .unwrap();

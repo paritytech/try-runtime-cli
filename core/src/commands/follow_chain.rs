@@ -136,7 +136,7 @@ where
         // create an ext at the state of this block, whatever is the first subscription event.
         if maybe_state_ext.is_none() {
             let state = State::Live(LiveState {
-                uri: command.uri.clone(),
+                uri: vec![command.uri.clone()],
                 // a bit dodgy, we have to un-parse the has to a string again and re-parse it
                 // inside.
                 at: Some(hex::encode(header.parent_hash().encode())),
