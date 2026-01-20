@@ -76,7 +76,7 @@ impl Command {
                 log::error!(target: LOG_TARGET, "--block-uri is provided while state type is live, Are you sure you know what you are doing?");
                 block_ws_uri.to_owned()
             }
-            (None, State::Live(LiveState { uri, .. })) => uri.clone(),
+            (None, State::Live(LiveState { uri, .. })) => uri[0].clone(),
             (None, State::Snap { .. }) => {
                 panic!("either `--block-uri` must be provided, or state must be `live`");
             }
@@ -112,7 +112,7 @@ where
                     .map_err(rpc_err_handler)?
                     .expect("header exists, block should also exist; qed");
                 LiveState {
-                    uri: block_ws_uri,
+                    uri: vec![block_ws_uri],
                     at: Some(hex::encode(header.hash().encode())),
                     pallet: Default::default(),
                     hashed_prefixes: Default::default(),

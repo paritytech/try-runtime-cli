@@ -48,13 +48,15 @@ use crate::{
 /// A `Live` variant for [`State`]
 #[derive(Debug, Clone, clap::Args)]
 pub struct LiveState {
-    /// The url to connect to.
+    /// The url(s) to connect to. Can be provided multiple times for parallel state download.
     #[arg(
 		short,
 		long,
 		value_parser = parse::url,
+		num_args = 1..,
+		required = true,
 	)]
-    pub uri: String,
+    pub uri: Vec<String>,
 
     /// The block hash at which to fetch the state.
     ///
@@ -112,7 +114,7 @@ impl LiveState {
 
         // Get the block number requested by the user, or the current block number if they
         // didn't specify one.
-        let rpc = ws_client(&self.uri).await?;
+        let rpc = ws_client(&self.uri[0]).await?;
         let previous_hash = ChainApi::<(), Block::Hash, Block::Header, ()>::header(&rpc, at)
             .await
             .map_err(rpc_err_handler)
@@ -204,7 +206,7 @@ impl State {
                     .collect::<Result<Vec<_>, _>>()?;
                 Builder::<Block>::new().mode(Mode::Online(OnlineConfig {
                     at,
-                    transport: uri.to_owned().into(),
+                    transport_uris: uri.clone(),
                     state_snapshot,
                     pallets: pallet.clone(),
                     child_trie: *child_tree,
