@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/jiff-0.2.18/src/shared/util/itime.rs`."><title>itime.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="jiff" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">jiff/shared/util/</div>itime.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">/*!
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/jiff-0.2.18/src/shared/util/itime.rs`."><title>itime.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="jiff" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">jiff/shared/util/</div>itime.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">/*!
 <a href=#2 id=2 data-nosnippet>2</a>This module defines the internal core time data types.
 <a href=#3 id=3 data-nosnippet>3</a>
 <a href=#4 id=4 data-nosnippet>4</a>This includes physical time (i.e., a timestamp) and civil time.
@@ -98,7 +98,7 @@
 <a href=#98 id=98 data-nosnippet>98</a>            </span>+ (<span class="self">self</span>.time.to_second().second <span class="kw">as </span>i64);
 <a href=#99 id=99 data-nosnippet>99</a>        <span class="kw">let </span><span class="kw-2">mut </span>nanosecond = <span class="self">self</span>.time.subsec_nanosecond;
 <a href=#100 id=100 data-nosnippet>100</a>        second -= offset.second <span class="kw">as </span>i64;
-<a href=#101 id=101 data-nosnippet>101</a>        <span class="kw">if </span>epoch_day &lt; <span class="number">0 </span>&amp;&amp; nanosecond != <span class="number">0 </span>{
+<a href=#101 id=101 data-nosnippet>101</a>        <span class="kw">if </span>epoch_day &lt; <span class="number">0 </span>&amp;&amp; <span class="macro">nanosecond !</span>= <span class="number">0 </span>{
 <a href=#102 id=102 data-nosnippet>102</a>            second += <span class="number">1</span>;
 <a href=#103 id=103 data-nosnippet>103</a>            nanosecond -= <span class="number">1_000_000_000</span>;
 <a href=#104 id=104 data-nosnippet>104</a>        }
@@ -286,7 +286,7 @@
 <a href=#286 id=286 data-nosnippet>286</a>            </span>.map_err(|<span class="kw">_</span>| RangeError::DayOfYear)<span class="question-mark">?
 <a href=#287 id=287 data-nosnippet>287</a>            </span>.to_date();
 <a href=#288 id=288 data-nosnippet>288</a>        <span class="comment">// If we overflowed into the next year, then `day` is too big.
-<a href=#289 id=289 data-nosnippet>289</a>        </span><span class="kw">if </span>year != end.year {
+<a href=#289 id=289 data-nosnippet>289</a>        </span><span class="kw">if </span><span class="macro">year !</span>= end.year {
 <a href=#290 id=290 data-nosnippet>290</a>            <span class="comment">// Can only happen given day=366 and this is a leap year.
 <a href=#291 id=291 data-nosnippet>291</a>            </span><span class="macro">debug_assert_eq!</span>(day, <span class="number">366</span>);
 <a href=#292 id=292 data-nosnippet>292</a>            <span class="macro">debug_assert!</span>(!is_leap_year(year));
@@ -541,10 +541,10 @@
 <a href=#541 id=541 data-nosnippet>541</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const fn </span>to_time(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ITime {
 <a href=#542 id=542 data-nosnippet>542</a>        <span class="kw">let </span><span class="kw-2">mut </span>second = <span class="self">self</span>.second;
 <a href=#543 id=543 data-nosnippet>543</a>        <span class="kw">let </span><span class="kw-2">mut </span>time = ITime::ZERO;
-<a href=#544 id=544 data-nosnippet>544</a>        <span class="kw">if </span>second != <span class="number">0 </span>{
+<a href=#544 id=544 data-nosnippet>544</a>        <span class="kw">if </span><span class="macro">second !</span>= <span class="number">0 </span>{
 <a href=#545 id=545 data-nosnippet>545</a>            time.hour = (second / <span class="number">3600</span>) <span class="kw">as </span>i8;
 <a href=#546 id=546 data-nosnippet>546</a>            second %= <span class="number">3600</span>;
-<a href=#547 id=547 data-nosnippet>547</a>            <span class="kw">if </span>second != <span class="number">0 </span>{
+<a href=#547 id=547 data-nosnippet>547</a>            <span class="kw">if </span><span class="macro">second !</span>= <span class="number">0 </span>{
 <a href=#548 id=548 data-nosnippet>548</a>                time.minute = (second / <span class="number">60</span>) <span class="kw">as </span>i8;
 <a href=#549 id=549 data-nosnippet>549</a>                time.second = (second % <span class="number">60</span>) <span class="kw">as </span>i8;
 <a href=#550 id=550 data-nosnippet>550</a>            }
@@ -564,13 +564,13 @@
 <a href=#564 id=564 data-nosnippet>564</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const fn </span>to_time(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; ITime {
 <a href=#565 id=565 data-nosnippet>565</a>        <span class="kw">let </span><span class="kw-2">mut </span>nanosecond = <span class="self">self</span>.nanosecond;
 <a href=#566 id=566 data-nosnippet>566</a>        <span class="kw">let </span><span class="kw-2">mut </span>time = ITime::ZERO;
-<a href=#567 id=567 data-nosnippet>567</a>        <span class="kw">if </span>nanosecond != <span class="number">0 </span>{
+<a href=#567 id=567 data-nosnippet>567</a>        <span class="kw">if </span><span class="macro">nanosecond !</span>= <span class="number">0 </span>{
 <a href=#568 id=568 data-nosnippet>568</a>            time.hour = (nanosecond / <span class="number">3_600_000_000_000</span>) <span class="kw">as </span>i8;
 <a href=#569 id=569 data-nosnippet>569</a>            nanosecond %= <span class="number">3_600_000_000_000</span>;
-<a href=#570 id=570 data-nosnippet>570</a>            <span class="kw">if </span>nanosecond != <span class="number">0 </span>{
+<a href=#570 id=570 data-nosnippet>570</a>            <span class="kw">if </span><span class="macro">nanosecond !</span>= <span class="number">0 </span>{
 <a href=#571 id=571 data-nosnippet>571</a>                time.minute = (nanosecond / <span class="number">60_000_000_000</span>) <span class="kw">as </span>i8;
 <a href=#572 id=572 data-nosnippet>572</a>                nanosecond %= <span class="number">60_000_000_000</span>;
-<a href=#573 id=573 data-nosnippet>573</a>                <span class="kw">if </span>nanosecond != <span class="number">0 </span>{
+<a href=#573 id=573 data-nosnippet>573</a>                <span class="kw">if </span><span class="macro">nanosecond !</span>= <span class="number">0 </span>{
 <a href=#574 id=574 data-nosnippet>574</a>                    time.second = (nanosecond / <span class="number">1_000_000_000</span>) <span class="kw">as </span>i8;
 <a href=#575 id=575 data-nosnippet>575</a>                    time.subsec_nanosecond =
 <a href=#576 id=576 data-nosnippet>576</a>                        (nanosecond % <span class="number">1_000_000_000</span>) <span class="kw">as </span>i32;
@@ -962,4 +962,5 @@
 <a href=#962 id=962 data-nosnippet>962</a>            <span class="prelude-val">Err</span>(RangeError::DayOfYear),
 <a href=#963 id=963 data-nosnippet>963</a>        );
 <a href=#964 id=964 data-nosnippet>964</a>    }
-<a href=#965 id=965 data-nosnippet>965</a>}</code></pre></div></section></main></body></html>
+<a href=#965 id=965 data-nosnippet>965</a>}
+</code></pre></div></section></main></body></html>

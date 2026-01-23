@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/polkavm-0.30.0/src/api.rs`."><title>api.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkavm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">polkavm/</div>api.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>alloc::boxed::Box;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/polkavm-0.30.0/src/api.rs`."><title>api.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkavm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">polkavm/</div>api.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>alloc::boxed::Box;
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span>alloc::format;
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span>alloc::sync::Arc;
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span>alloc::vec::Vec;
@@ -573,7 +573,7 @@
 <a href=#573 id=573 data-nosnippet>573</a>                )<span class="question-mark">?</span>;
 <a href=#574 id=574 data-nosnippet>574</a>
 <a href=#575 id=575 data-nosnippet>575</a>                blob.visit(
-<a href=#576 id=576 data-nosnippet>576</a>                    polkavm_common::program::<span class="macro-nonterminal">$</span><span class="macro">build_static_dispatch_table!</span>(<span class="macro-nonterminal">$visitor_name</span>, VisitorTy&lt;<span class="lifetime">'a</span>&gt;),
+<a href=#576 id=576 data-nosnippet>576</a>                    polkavm_common::program::<span class="macro-nonterminal">$build_static_dispatch_table</span>!(<span class="macro-nonterminal">$visitor_name</span>, VisitorTy&lt;<span class="lifetime">'a</span>&gt;),
 <a href=#577 id=577 data-nosnippet>577</a>                    <span class="kw-2">&amp;mut </span>visitor,
 <a href=#578 id=578 data-nosnippet>578</a>                );
 <a href=#579 id=579 data-nosnippet>579</a>
@@ -1181,7 +1181,7 @@
 <a href=#1181 id=1181 data-nosnippet>1181</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>crosscheck) = <span class="self">self</span>.crosscheck_instance {
 <a href=#1182 id=1182 data-nosnippet>1182</a>                <span class="kw">let </span>is_step = <span class="macro">matches!</span>(interruption, InterruptKind::Step);
 <a href=#1183 id=1183 data-nosnippet>1183</a>                <span class="kw">let </span>expected_interruption = crosscheck.run().expect(<span class="string">"crosscheck failed"</span>);
-<a href=#1184 id=1184 data-nosnippet>1184</a>                <span class="kw">if </span>interruption != expected_interruption {
+<a href=#1184 id=1184 data-nosnippet>1184</a>                <span class="kw">if </span><span class="macro">interruption !</span>= expected_interruption {
 <a href=#1185 id=1185 data-nosnippet>1185</a>                    <span class="macro">panic!</span>(<span class="string">"run: crosscheck mismatch, interpreter = {expected_interruption:?}, backend = {interruption:?}"</span>);
 <a href=#1186 id=1186 data-nosnippet>1186</a>                }
 <a href=#1187 id=1187 data-nosnippet>1187</a>
@@ -1189,7 +1189,7 @@
 <a href=#1189 id=1189 data-nosnippet>1189</a>                    <span class="kw">for </span>reg <span class="kw">in </span>Reg::ALL {
 <a href=#1190 id=1190 data-nosnippet>1190</a>                        <span class="kw">let </span>value = <span class="macro">access_backend!</span>(<span class="self">self</span>.backend, |backend| backend.reg(reg));
 <a href=#1191 id=1191 data-nosnippet>1191</a>                        <span class="kw">let </span>expected_value = crosscheck.reg(reg);
-<a href=#1192 id=1192 data-nosnippet>1192</a>                        <span class="kw">if </span>value != expected_value {
+<a href=#1192 id=1192 data-nosnippet>1192</a>                        <span class="kw">if </span><span class="macro">value !</span>= expected_value {
 <a href=#1193 id=1193 data-nosnippet>1193</a>                            <span class="macro">panic!</span>(<span class="string">"run: crosscheck mismatch for {reg}, interpreter = 0x{expected_value:x}, backend = 0x{value:x}"</span>);
 <a href=#1194 id=1194 data-nosnippet>1194</a>                        }
 <a href=#1195 id=1195 data-nosnippet>1195</a>                    }
@@ -1200,7 +1200,7 @@
 <a href=#1200 id=1200 data-nosnippet>1200</a>                <span class="kw">let </span>crosscheck_next_program_counter = crosscheck.next_program_counter();
 <a href=#1201 id=1201 data-nosnippet>1201</a>                <span class="kw">if </span><span class="self">self</span>.module.gas_metering() != <span class="prelude-val">Some</span>(GasMeteringKind::Async) {
 <a href=#1202 id=1202 data-nosnippet>1202</a>                    <span class="kw">let </span>gas = <span class="self">self</span>.gas();
-<a href=#1203 id=1203 data-nosnippet>1203</a>                    <span class="kw">if </span>gas != crosscheck_gas {
+<a href=#1203 id=1203 data-nosnippet>1203</a>                    <span class="kw">if </span><span class="macro">gas !</span>= crosscheck_gas {
 <a href=#1204 id=1204 data-nosnippet>1204</a>                        <span class="macro">panic!</span>(<span class="string">"run: crosscheck mismatch for gas, interpreter = {crosscheck_gas}, backend = {gas}"</span>);
 <a href=#1205 id=1205 data-nosnippet>1205</a>                    }
 <a href=#1206 id=1206 data-nosnippet>1206</a>                }
@@ -1459,7 +1459,7 @@
 <a href=#1459 id=1459 data-nosnippet>1459</a>
 <a href=#1460 id=1460 data-nosnippet>1460</a>        <span class="kw">if </span><span class="macro">cfg!</span>(debug_assertions) {
 <a href=#1461 id=1461 data-nosnippet>1461</a>            <span class="kw">let </span>is_inaccessible = !<span class="self">self</span>.is_memory_accessible(address, cast(length).assert_always_fits_in_u32(), MemoryProtection::Read);
-<a href=#1462 id=1462 data-nosnippet>1462</a>            <span class="kw">if </span>is_inaccessible != <span class="macro">matches!</span>(result, <span class="prelude-val">Err</span>(MemoryAccessError::OutOfRangeAccess { .. })) {
+<a href=#1462 id=1462 data-nosnippet>1462</a>            <span class="kw">if </span><span class="macro">is_inaccessible !</span>= <span class="macro">matches!</span>(result, <span class="prelude-val">Err</span>(MemoryAccessError::OutOfRangeAccess { .. })) {
 <a href=#1463 id=1463 data-nosnippet>1463</a>                <span class="macro">panic!</span>(
 <a href=#1464 id=1464 data-nosnippet>1464</a>                    <span class="string">"'read_memory_into' doesn't match with 'is_memory_accessible' for 0x{:x}-0x{:x} (read_memory_into = {:?}, is_memory_accessible = {})"</span>,
 <a href=#1465 id=1465 data-nosnippet>1465</a>                    address,
@@ -1509,7 +1509,7 @@
 <a href=#1509 id=1509 data-nosnippet>1509</a>            <span class="kw">let </span>expected_result = crosscheck.write_memory(address, data);
 <a href=#1510 id=1510 data-nosnippet>1510</a>            <span class="kw">let </span>expected_success = expected_result.is_ok();
 <a href=#1511 id=1511 data-nosnippet>1511</a>            <span class="kw">let </span>success = result.is_ok();
-<a href=#1512 id=1512 data-nosnippet>1512</a>            <span class="kw">if </span>success != expected_success {
+<a href=#1512 id=1512 data-nosnippet>1512</a>            <span class="kw">if </span><span class="macro">success !</span>= expected_success {
 <a href=#1513 id=1513 data-nosnippet>1513</a>                <span class="kw">let </span>address_end = u64::from(address) + cast(data.len()).to_u64();
 <a href=#1514 id=1514 data-nosnippet>1514</a>                <span class="macro">panic!</span>(<span class="string">"write_memory: crosscheck mismatch, range = 0x{address:x}..0x{address_end:x}, interpreter = {expected_success}, backend = {success}"</span>);
 <a href=#1515 id=1515 data-nosnippet>1515</a>            }
@@ -1518,7 +1518,7 @@
 <a href=#1518 id=1518 data-nosnippet>1518</a>        <span class="kw">if </span><span class="macro">cfg!</span>(debug_assertions) {
 <a href=#1519 id=1519 data-nosnippet>1519</a>            <span class="kw">let </span>is_inaccessible =
 <a href=#1520 id=1520 data-nosnippet>1520</a>                !<span class="self">self</span>.is_memory_accessible(address, cast(data.len()).assert_always_fits_in_u32(), MemoryProtection::ReadWrite);
-<a href=#1521 id=1521 data-nosnippet>1521</a>            <span class="kw">if </span>is_inaccessible != <span class="macro">matches!</span>(result, <span class="prelude-val">Err</span>(MemoryAccessError::OutOfRangeAccess { .. })) {
+<a href=#1521 id=1521 data-nosnippet>1521</a>            <span class="kw">if </span><span class="macro">is_inaccessible !</span>= <span class="macro">matches!</span>(result, <span class="prelude-val">Err</span>(MemoryAccessError::OutOfRangeAccess { .. })) {
 <a href=#1522 id=1522 data-nosnippet>1522</a>                <span class="macro">panic!</span>(
 <a href=#1523 id=1523 data-nosnippet>1523</a>                    <span class="string">"'write_memory' doesn't match with 'is_memory_accessible' for 0x{:x}-0x{:x} (write_memory = {:?}, is_memory_accessible = {})"</span>,
 <a href=#1524 id=1524 data-nosnippet>1524</a>                    address,
@@ -1698,7 +1698,7 @@
 <a href=#1698 id=1698 data-nosnippet>1698</a>            <span class="kw">let </span>expected_result = crosscheck.zero_memory(address, length, memory_protection);
 <a href=#1699 id=1699 data-nosnippet>1699</a>            <span class="kw">let </span>expected_success = expected_result.is_ok();
 <a href=#1700 id=1700 data-nosnippet>1700</a>            <span class="kw">let </span>success = result.is_ok();
-<a href=#1701 id=1701 data-nosnippet>1701</a>            <span class="kw">if </span>success != expected_success {
+<a href=#1701 id=1701 data-nosnippet>1701</a>            <span class="kw">if </span><span class="macro">success !</span>= expected_success {
 <a href=#1702 id=1702 data-nosnippet>1702</a>                <span class="kw">let </span>address_end = u64::from(address) + u64::from(length);
 <a href=#1703 id=1703 data-nosnippet>1703</a>                <span class="macro">panic!</span>(<span class="string">"zero_memory: crosscheck mismatch, range = 0x{address:x}..0x{address_end:x}, interpreter = {expected_success}, backend = {success}"</span>);
 <a href=#1704 id=1704 data-nosnippet>1704</a>            }
@@ -1706,7 +1706,7 @@
 <a href=#1706 id=1706 data-nosnippet>1706</a>
 <a href=#1707 id=1707 data-nosnippet>1707</a>        <span class="kw">if </span><span class="macro">cfg!</span>(debug_assertions) &amp;&amp; memory_protection.is_none() {
 <a href=#1708 id=1708 data-nosnippet>1708</a>            <span class="kw">let </span>is_inaccessible = !<span class="self">self</span>.is_memory_accessible(address, length, MemoryProtection::ReadWrite);
-<a href=#1709 id=1709 data-nosnippet>1709</a>            <span class="kw">if </span>is_inaccessible != <span class="macro">matches!</span>(result, <span class="prelude-val">Err</span>(MemoryAccessError::OutOfRangeAccess { .. })) {
+<a href=#1709 id=1709 data-nosnippet>1709</a>            <span class="kw">if </span><span class="macro">is_inaccessible !</span>= <span class="macro">matches!</span>(result, <span class="prelude-val">Err</span>(MemoryAccessError::OutOfRangeAccess { .. })) {
 <a href=#1710 id=1710 data-nosnippet>1710</a>                <span class="macro">panic!</span>(
 <a href=#1711 id=1711 data-nosnippet>1711</a>                    <span class="string">"'zero_memory' doesn't match with 'is_memory_accessible' for 0x{:x}-0x{:x} (zero_memory = {:?}, is_memory_accessible = {})"</span>,
 <a href=#1712 id=1712 data-nosnippet>1712</a>                    address,
@@ -1797,7 +1797,7 @@
 <a href=#1797 id=1797 data-nosnippet>1797</a>            <span class="kw">let </span>expected_result = crosscheck.sbrk(size);
 <a href=#1798 id=1798 data-nosnippet>1798</a>            <span class="kw">let </span>expected_success = expected_result.is_some();
 <a href=#1799 id=1799 data-nosnippet>1799</a>            <span class="kw">let </span>success = result.is_some();
-<a href=#1800 id=1800 data-nosnippet>1800</a>            <span class="kw">if </span>success != expected_success {
+<a href=#1800 id=1800 data-nosnippet>1800</a>            <span class="kw">if </span><span class="macro">success !</span>= expected_success {
 <a href=#1801 id=1801 data-nosnippet>1801</a>                <span class="macro">panic!</span>(<span class="string">"sbrk: crosscheck mismatch, size = {size}, interpreter = {expected_success}, backend = {success}"</span>);
 <a href=#1802 id=1802 data-nosnippet>1802</a>            }
 <a href=#1803 id=1803 data-nosnippet>1803</a>        }
@@ -1894,4 +1894,5 @@
 <a href=#1894 id=1894 data-nosnippet>1894</a>        </span>}
 <a href=#1895 id=1895 data-nosnippet>1895</a>        <span class="prelude-val">Ok</span>(())
 <a href=#1896 id=1896 data-nosnippet>1896</a>    }
-<a href=#1897 id=1897 data-nosnippet>1897</a>}</code></pre></div></section></main></body></html>
+<a href=#1897 id=1897 data-nosnippet>1897</a>}
+</code></pre></div></section></main></body></html>

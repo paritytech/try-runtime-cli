@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/client/network/sync/src/strategy/chain_sync.rs`."><title>chain_sync.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_network_sync" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_network_sync/strategy/</div>chain_sync.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/client/network/sync/src/strategy/chain_sync.rs`."><title>chain_sync.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_network_sync" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_network_sync/strategy/</div>chain_sync.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -410,7 +410,7 @@
 <a href=#410 id=410 data-nosnippet>410</a>		<span class="kw">let </span>hash = announce.header.hash();
 <a href=#411 id=411 data-nosnippet>411</a>		<span class="kw">let </span>parent_status =
 <a href=#412 id=412 data-nosnippet>412</a>			<span class="self">self</span>.block_status(announce.header.parent_hash()).unwrap_or(BlockStatus::Unknown);
-<a href=#413 id=413 data-nosnippet>413</a>		<span class="kw">let </span>known_parent = parent_status != BlockStatus::Unknown;
+<a href=#413 id=413 data-nosnippet>413</a>		<span class="kw">let </span>known_parent = <span class="macro">parent_status !</span>= BlockStatus::Unknown;
 <a href=#414 id=414 data-nosnippet>414</a>		<span class="kw">let </span>ancient_parent = parent_status == BlockStatus::InChainPruned;
 <a href=#415 id=415 data-nosnippet>415</a>
 <a href=#416 id=416 data-nosnippet>416</a>		<span class="kw">let </span>known = <span class="self">self</span>.is_known(<span class="kw-2">&amp;</span>hash);
@@ -580,7 +580,7 @@
 <a href=#580 id=580 data-nosnippet>580</a>		protocol_name: ProtocolName,
 <a href=#581 id=581 data-nosnippet>581</a>		response: Box&lt;<span class="kw">dyn </span>Any + Send&gt;,
 <a href=#582 id=582 data-nosnippet>582</a>	) {
-<a href=#583 id=583 data-nosnippet>583</a>		<span class="kw">if </span><span class="self">Self</span>::STRATEGY_KEY != key {
+<a href=#583 id=583 data-nosnippet>583</a>		<span class="kw">if </span><span class="macro">Self::STRATEGY_KEY !</span>= key {
 <a href=#584 id=584 data-nosnippet>584</a>			<span class="macro">warn!</span>(
 <a href=#585 id=585 data-nosnippet>585</a>				target: LOG_TARGET,
 <a href=#586 id=586 data-nosnippet>586</a>				<span class="string">"Unexpected generic response strategy key {key:?}, protocol {protocol_name}"</span>,
@@ -1408,7 +1408,7 @@
 <a href=#1408 id=1408 data-nosnippet>1408</a>		request: BlockRequest&lt;B&gt;,
 <a href=#1409 id=1409 data-nosnippet>1409</a>		blocks: Vec&lt;BlockData&lt;B&gt;&gt;,
 <a href=#1410 id=1410 data-nosnippet>1410</a>	) -&gt; <span class="prelude-ty">Result</span>&lt;(), BadPeer&gt; {
-<a href=#1411 id=1411 data-nosnippet>1411</a>		<span class="kw">if </span>key != <span class="self">Self</span>::STRATEGY_KEY {
+<a href=#1411 id=1411 data-nosnippet>1411</a>		<span class="kw">if </span><span class="macro">key !</span>= <span class="self">Self</span>::STRATEGY_KEY {
 <a href=#1412 id=1412 data-nosnippet>1412</a>			<span class="macro">error!</span>(
 <a href=#1413 id=1413 data-nosnippet>1413</a>				target: LOG_TARGET,
 <a href=#1414 id=1414 data-nosnippet>1414</a>				<span class="string">"`on_block_response()` called with unexpected key {key:?} for chain sync"</span>,
@@ -1424,7 +1424,7 @@
 <a href=#1424 id=1424 data-nosnippet>1424</a>				.and_then(|b| b.header.as_ref().map(|h| h.number())),
 <a href=#1425 id=1425 data-nosnippet>1425</a>			block_response.blocks.last().and_then(|b| b.header.as_ref().map(|h| h.number())),
 <a href=#1426 id=1426 data-nosnippet>1426</a>		) {
-<a href=#1427 id=1427 data-nosnippet>1427</a>			(<span class="prelude-val">Some</span>(first), <span class="prelude-val">Some</span>(last)) <span class="kw">if </span>first != last =&gt; <span class="macro">format!</span>(<span class="string">" ({}..{})"</span>, first, last),
+<a href=#1427 id=1427 data-nosnippet>1427</a>			(<span class="prelude-val">Some</span>(first), <span class="prelude-val">Some</span>(last)) <span class="kw">if </span><span class="macro">first !</span>= last =&gt; <span class="macro">format!</span>(<span class="string">" ({}..{})"</span>, first, last),
 <a href=#1428 id=1428 data-nosnippet>1428</a>			(<span class="prelude-val">Some</span>(first), <span class="prelude-val">Some</span>(<span class="kw">_</span>)) =&gt; <span class="macro">format!</span>(<span class="string">" ({})"</span>, first),
 <a href=#1429 id=1429 data-nosnippet>1429</a>			<span class="kw">_ </span>=&gt; Default::default(),
 <a href=#1430 id=1430 data-nosnippet>1430</a>		};
@@ -1467,7 +1467,7 @@
 <a href=#1467 id=1467 data-nosnippet>1467</a>
 <a href=#1468 id=1468 data-nosnippet>1468</a>			<span class="comment">// We only request one justification at a time
 <a href=#1469 id=1469 data-nosnippet>1469</a>			</span><span class="kw">let </span>justification = <span class="kw">if let </span><span class="prelude-val">Some</span>(block) = response.blocks.into_iter().next() {
-<a href=#1470 id=1470 data-nosnippet>1470</a>				<span class="kw">if </span>hash != block.hash {
+<a href=#1470 id=1470 data-nosnippet>1470</a>				<span class="kw">if </span><span class="macro">hash !</span>= block.hash {
 <a href=#1471 id=1471 data-nosnippet>1471</a>					<span class="macro">warn!</span>(
 <a href=#1472 id=1472 data-nosnippet>1472</a>						target: LOG_TARGET,
 <a href=#1473 id=1473 data-nosnippet>1473</a>						<span class="string">"💔 Invalid block justification provided by {}: requested: {:?} got: {:?}"</span>,
@@ -1742,7 +1742,7 @@
 <a href=#1742 id=1742 data-nosnippet>1742</a>
 <a href=#1743 id=1743 data-nosnippet>1743</a>	<span class="doccomment">/// Is the block corresponding to the given hash known?
 <a href=#1744 id=1744 data-nosnippet>1744</a>	</span><span class="kw">fn </span>is_known(<span class="kw-2">&amp;</span><span class="self">self</span>, hash: <span class="kw-2">&amp;</span>B::Hash) -&gt; bool {
-<a href=#1745 id=1745 data-nosnippet>1745</a>		<span class="self">self</span>.block_status(hash).ok().map_or(<span class="bool-val">false</span>, |s| s != BlockStatus::Unknown)
+<a href=#1745 id=1745 data-nosnippet>1745</a>		<span class="self">self</span>.block_status(hash).ok().map_or(<span class="bool-val">false</span>, |s| <span class="macro">s !</span>= BlockStatus::Unknown)
 <a href=#1746 id=1746 data-nosnippet>1746</a>	}
 <a href=#1747 id=1747 data-nosnippet>1747</a>
 <a href=#1748 id=1748 data-nosnippet>1748</a>	<span class="doccomment">/// Is any peer downloading the given hash?
@@ -2402,7 +2402,7 @@
 <a href=#2402 id=2402 data-nosnippet>2402</a>	<span class="kw">for </span>b <span class="kw">in </span>blocks {
 <a href=#2403 id=2403 data-nosnippet>2403</a>		<span class="kw">if let </span><span class="prelude-val">Some</span>(header) = <span class="kw-2">&amp;</span>b.header {
 <a href=#2404 id=2404 data-nosnippet>2404</a>			<span class="kw">let </span>hash = header.hash();
-<a href=#2405 id=2405 data-nosnippet>2405</a>			<span class="kw">if </span>hash != b.hash {
+<a href=#2405 id=2405 data-nosnippet>2405</a>			<span class="kw">if </span><span class="macro">hash !</span>= b.hash {
 <a href=#2406 id=2406 data-nosnippet>2406</a>				<span class="macro">debug!</span>(
 <a href=#2407 id=2407 data-nosnippet>2407</a>					target: LOG_TARGET,
 <a href=#2408 id=2408 data-nosnippet>2408</a>					<span class="string">"Bad header received from {}. Expected hash {:?}, got {:?}"</span>,
@@ -2416,4 +2416,5 @@
 <a href=#2416 id=2416 data-nosnippet>2416</a>	}
 <a href=#2417 id=2417 data-nosnippet>2417</a>
 <a href=#2418 id=2418 data-nosnippet>2418</a>	<span class="prelude-val">Ok</span>(blocks.first().and_then(|b| b.header.as_ref()).map(|h| <span class="kw-2">*</span>h.number()))
-<a href=#2419 id=2419 data-nosnippet>2419</a>}</code></pre></div></section></main></body></html>
+<a href=#2419 id=2419 data-nosnippet>2419</a>}
+</code></pre></div></section></main></body></html>

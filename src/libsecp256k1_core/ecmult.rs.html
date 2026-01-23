@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libsecp256k1-core-0.3.0/src/ecmult.rs`."><title>ecmult.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="libsecp256k1_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">libsecp256k1_core/</div>ecmult.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use crate</span>::{
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libsecp256k1-core-0.3.0/src/ecmult.rs`."><title>ecmult.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="libsecp256k1_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">libsecp256k1_core/</div>ecmult.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use crate</span>::{
 <a href=#2 id=2 data-nosnippet>2</a>    field::Field,
 <a href=#3 id=3 data-nosnippet>3</a>    group::{globalz_set_table_gej, set_table_gej_var, Affine, AffineStorage, Jacobian, AFFINE_G},
 <a href=#4 id=4 data-nosnippet>4</a>    scalar::Scalar,
@@ -322,7 +322,7 @@
 <a href=#322 id=322 data-nosnippet>322</a>    }
 <a href=#323 id=323 data-nosnippet>323</a>    r.infinity = <span class="bool-val">false</span>;
 <a href=#324 id=324 data-nosnippet>324</a>    <span class="kw">let </span>neg_y = r.y.neg(<span class="number">1</span>);
-<a href=#325 id=325 data-nosnippet>325</a>    r.y.cmov(<span class="kw-2">&amp;</span>neg_y, n != abs_n);
+<a href=#325 id=325 data-nosnippet>325</a>    r.y.cmov(<span class="kw-2">&amp;</span>neg_y, <span class="macro">n !</span>= abs_n);
 <a href=#326 id=326 data-nosnippet>326</a>}
 <a href=#327 id=327 data-nosnippet>327</a>
 <a href=#328 id=328 data-nosnippet>328</a><span class="kw">fn </span>table_get_ge_storage(r: <span class="kw-2">&amp;mut </span>Affine, pre: <span class="kw-2">&amp;</span>[AffineStorage], n: i32, w: usize) {
@@ -472,12 +472,12 @@
 <a href=#472 id=472 data-nosnippet>472</a>            <span class="kw-2">*</span>r = r.double_var(<span class="prelude-val">None</span>);
 <a href=#473 id=473 data-nosnippet>473</a>
 <a href=#474 id=474 data-nosnippet>474</a>            n = wnaf_na[i <span class="kw">as </span>usize];
-<a href=#475 id=475 data-nosnippet>475</a>            <span class="kw">if </span>i &lt; bits_na &amp;&amp; n != <span class="number">0 </span>{
+<a href=#475 id=475 data-nosnippet>475</a>            <span class="kw">if </span>i &lt; bits_na &amp;&amp; <span class="macro">n !</span>= <span class="number">0 </span>{
 <a href=#476 id=476 data-nosnippet>476</a>                table_get_ge(<span class="kw-2">&amp;mut </span>tmpa, <span class="kw-2">&amp;</span>pre_a, n, WINDOW_A);
 <a href=#477 id=477 data-nosnippet>477</a>                <span class="kw-2">*</span>r = r.add_ge_var(<span class="kw-2">&amp;</span>tmpa, <span class="prelude-val">None</span>);
 <a href=#478 id=478 data-nosnippet>478</a>            }
 <a href=#479 id=479 data-nosnippet>479</a>            n = wnaf_ng[i <span class="kw">as </span>usize];
-<a href=#480 id=480 data-nosnippet>480</a>            <span class="kw">if </span>i &lt; bits_ng &amp;&amp; n != <span class="number">0 </span>{
+<a href=#480 id=480 data-nosnippet>480</a>            <span class="kw">if </span>i &lt; bits_ng &amp;&amp; <span class="macro">n !</span>= <span class="number">0 </span>{
 <a href=#481 id=481 data-nosnippet>481</a>                table_get_ge_storage(<span class="kw-2">&amp;mut </span>tmpa, <span class="kw-2">&amp;</span><span class="self">self</span>.pre_g, n, WINDOW_G);
 <a href=#482 id=482 data-nosnippet>482</a>                <span class="kw-2">*</span>r = r.add_zinv_var(<span class="kw-2">&amp;</span>tmpa, <span class="kw-2">&amp;</span>z);
 <a href=#483 id=483 data-nosnippet>483</a>            }
@@ -516,7 +516,7 @@
 <a href=#516 id=516 data-nosnippet>516</a>         * r, rather than having it start at infinity, get doubled
 <a href=#517 id=517 data-nosnippet>517</a>         * several times, then have its new value added to it) */
 <a href=#518 id=518 data-nosnippet>518</a>        </span><span class="kw">let </span>i = wnaf_1[WNAF_SIZE];
-<a href=#519 id=519 data-nosnippet>519</a>        <span class="macro">debug_assert!</span>(i != <span class="number">0</span>);
+<a href=#519 id=519 data-nosnippet>519</a>        <span class="macro">debug_assert!</span>(<span class="macro">i !</span>= <span class="number">0</span>);
 <a href=#520 id=520 data-nosnippet>520</a>        table_get_ge_const(<span class="kw-2">&amp;mut </span>tmpa, <span class="kw-2">&amp;</span>pre_a, i, WINDOW_A);
 <a href=#521 id=521 data-nosnippet>521</a>        r.set_ge(<span class="kw-2">&amp;</span>tmpa);
 <a href=#522 id=522 data-nosnippet>522</a>
@@ -529,7 +529,7 @@
 <a href=#529 id=529 data-nosnippet>529</a>
 <a href=#530 id=530 data-nosnippet>530</a>            <span class="kw">let </span>n = wnaf_1[i];
 <a href=#531 id=531 data-nosnippet>531</a>            table_get_ge_const(<span class="kw-2">&amp;mut </span>tmpa, <span class="kw-2">&amp;</span>pre_a, n, WINDOW_A);
-<a href=#532 id=532 data-nosnippet>532</a>            <span class="macro">debug_assert!</span>(n != <span class="number">0</span>);
+<a href=#532 id=532 data-nosnippet>532</a>            <span class="macro">debug_assert!</span>(<span class="macro">n !</span>= <span class="number">0</span>);
 <a href=#533 id=533 data-nosnippet>533</a>            <span class="kw-2">*</span>r = r.add_ge(<span class="kw-2">&amp;</span>tmpa);
 <a href=#534 id=534 data-nosnippet>534</a>        }
 <a href=#535 id=535 data-nosnippet>535</a>
@@ -580,4 +580,5 @@
 <a href=#580 id=580 data-nosnippet>580</a>        add.clear();
 <a href=#581 id=581 data-nosnippet>581</a>        gnb.clear();
 <a href=#582 id=582 data-nosnippet>582</a>    }
-<a href=#583 id=583 data-nosnippet>583</a>}</code></pre></div></section></main></body></html>
+<a href=#583 id=583 data-nosnippet>583</a>}
+</code></pre></div></section></main></body></html>

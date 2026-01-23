@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-internal-cranelift-35.0.0/src/translate/code_translator.rs`."><title>code_translator.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="wasmtime_internal_cranelift" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasmtime_internal_cranelift/translate/</div>code_translator.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! This module contains the bulk of the interesting code performing the translation between
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-internal-cranelift-35.0.0/src/translate/code_translator.rs`."><title>code_translator.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="wasmtime_internal_cranelift" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasmtime_internal_cranelift/translate/</div>code_translator.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! This module contains the bulk of the interesting code performing the translation between
 <a href=#2 id=2 data-nosnippet>2</a>//! WebAssembly and Cranelift IR.
 <a href=#3 id=3 data-nosnippet>3</a>//!
 <a href=#4 id=4 data-nosnippet>4</a>//! The translation is done in one pass, opcode by opcode. Two main data structures are used during
@@ -3549,7 +3549,7 @@
 <a href=#3549 id=3549 data-nosnippet>3549</a>    </span>);
 <a href=#3550 id=3550 data-nosnippet>3550</a>
 <a href=#3551 id=3551 data-nosnippet>3551</a>    <span class="kw">let </span><span class="kw-2">mut </span>res = builder.ins().atomic_rmw(access_ty, flags, op, addr, arg2);
-<a href=#3552 id=3552 data-nosnippet>3552</a>    <span class="kw">if </span>access_ty != widened_ty {
+<a href=#3552 id=3552 data-nosnippet>3552</a>    <span class="kw">if </span><span class="macro">access_ty !</span>= widened_ty {
 <a href=#3553 id=3553 data-nosnippet>3553</a>        res = builder.ins().uextend(widened_ty, res);
 <a href=#3554 id=3554 data-nosnippet>3554</a>    }
 <a href=#3555 id=3555 data-nosnippet>3555</a>    state.push1(res);
@@ -3605,7 +3605,7 @@
 <a href=#3605 id=3605 data-nosnippet>3605</a>        )<span class="question-mark">?
 <a href=#3606 id=3606 data-nosnippet>3606</a>    </span>);
 <a href=#3607 id=3607 data-nosnippet>3607</a>    <span class="kw">let </span><span class="kw-2">mut </span>res = builder.ins().atomic_cas(flags, addr, expected, replacement);
-<a href=#3608 id=3608 data-nosnippet>3608</a>    <span class="kw">if </span>access_ty != widened_ty {
+<a href=#3608 id=3608 data-nosnippet>3608</a>    <span class="kw">if </span><span class="macro">access_ty !</span>= widened_ty {
 <a href=#3609 id=3609 data-nosnippet>3609</a>        res = builder.ins().uextend(widened_ty, res);
 <a href=#3610 id=3610 data-nosnippet>3610</a>    }
 <a href=#3611 id=3611 data-nosnippet>3611</a>    state.push1(res);
@@ -3648,7 +3648,7 @@
 <a href=#3648 id=3648 data-nosnippet>3648</a>        )<span class="question-mark">?
 <a href=#3649 id=3649 data-nosnippet>3649</a>    </span>);
 <a href=#3650 id=3650 data-nosnippet>3650</a>    <span class="kw">let </span><span class="kw-2">mut </span>res = builder.ins().atomic_load(access_ty, flags, addr);
-<a href=#3651 id=3651 data-nosnippet>3651</a>    <span class="kw">if </span>access_ty != widened_ty {
+<a href=#3651 id=3651 data-nosnippet>3651</a>    <span class="kw">if </span><span class="macro">access_ty !</span>= widened_ty {
 <a href=#3652 id=3652 data-nosnippet>3652</a>        res = builder.ins().uextend(widened_ty, res);
 <a href=#3653 id=3653 data-nosnippet>3653</a>    }
 <a href=#3654 id=3654 data-nosnippet>3654</a>    state.push1(res);
@@ -4140,7 +4140,7 @@
 <a href=#4140 id=4140 data-nosnippet>4140</a>            <span class="comment">// This is the same check that would be done by `optionally_bitcast_vector`, except we
 <a href=#4141 id=4141 data-nosnippet>4141</a>            // can't take a mutable borrow of the FunctionBuilder here, so we defer inserting the
 <a href=#4142 id=4142 data-nosnippet>4142</a>            // bitcast instruction to the caller.
-<a href=#4143 id=4143 data-nosnippet>4143</a>            </span>arg_type != <span class="kw-2">*</span>param_type
+<a href=#4143 id=4143 data-nosnippet>4143</a>            </span><span class="macro">arg_type !</span>= <span class="kw-2">*</span>param_type
 <a href=#4144 id=4144 data-nosnippet>4144</a>        })
 <a href=#4145 id=4145 data-nosnippet>4145</a>        .collect()
 <a href=#4146 id=4146 data-nosnippet>4146</a>}
@@ -4177,4 +4177,5 @@
 <a href=#4177 id=4177 data-nosnippet>4177</a>        flags.set_endianness(ir::Endianness::Little);
 <a href=#4178 id=4178 data-nosnippet>4178</a>        <span class="kw-2">*</span>arg = builder.ins().bitcast(t, flags, <span class="kw-2">*</span>arg);
 <a href=#4179 id=4179 data-nosnippet>4179</a>    }
-<a href=#4180 id=4180 data-nosnippet>4180</a>}</code></pre></div></section></main></body></html>
+<a href=#4180 id=4180 data-nosnippet>4180</a>}
+</code></pre></div></section></main></body></html>

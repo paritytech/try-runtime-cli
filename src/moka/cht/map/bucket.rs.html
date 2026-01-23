@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/moka-0.12.12/src/cht/map/bucket.rs`."><title>bucket.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="moka" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">moka/cht/map/</div>bucket.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>std::{
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/moka-0.12.12/src/cht/map/bucket.rs`."><title>bucket.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="moka" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">moka/cht/map/</div>bucket.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>std::{
 <a href=#2 id=2 data-nosnippet>2</a>    hash::{BuildHasher, Hash},
 <a href=#3 id=3 data-nosnippet>3</a>    mem::{<span class="self">self</span>, MaybeUninit},
 <a href=#4 id=4 data-nosnippet>4</a>    ptr,
@@ -182,7 +182,7 @@
 <a href=#182 id=182 data-nosnippet>182</a>        <span class="kw">let </span><span class="kw-2">mut </span>probe = <span class="self">self</span>.probe(guard, hash);
 <a href=#183 id=183 data-nosnippet>183</a>        <span class="kw">while let </span><span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>((<span class="kw">_</span>, this_bucket, this_bucket_ptr))) = probe.next() {
 <a href=#184 id=184 data-nosnippet>184</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(this_bucket_ref) = <span class="kw">unsafe </span>{ this_bucket_ptr.as_ref() } {
-<a href=#185 id=185 data-nosnippet>185</a>                <span class="kw">if </span><span class="kw-2">&amp;</span>this_bucket_ref.key != state.key() {
+<a href=#185 id=185 data-nosnippet>185</a>                <span class="kw">if </span><span class="kw-2">&amp;</span>this_bucket_ref.<span class="macro">key !</span>= state.key() {
 <a href=#186 id=186 data-nosnippet>186</a>                    <span class="comment">// Different key. Try next bucket.
 <a href=#187 id=187 data-nosnippet>187</a>                    </span><span class="kw">continue</span>;
 <a href=#188 id=188 data-nosnippet>188</a>                }
@@ -241,7 +241,7 @@
 <a href=#241 id=241 data-nosnippet>241</a>                <span class="kw">if let </span><span class="prelude-val">Some</span>(this_bucket_ref) = <span class="kw">unsafe </span>{ this_bucket_ptr.as_ref() } {
 <a href=#242 id=242 data-nosnippet>242</a>                    <span class="kw">let </span>this_key = <span class="kw-2">&amp;</span>this_bucket_ref.key;
 <a href=#243 id=243 data-nosnippet>243</a>
-<a href=#244 id=244 data-nosnippet>244</a>                    <span class="kw">if </span>this_key != state.key() {
+<a href=#244 id=244 data-nosnippet>244</a>                    <span class="kw">if </span><span class="macro">this_key !</span>= state.key() {
 <a href=#245 id=245 data-nosnippet>245</a>                        <span class="comment">// Different key. Try next bucket.
 <a href=#246 id=246 data-nosnippet>246</a>                        </span><span class="kw">continue</span>;
 <a href=#247 id=247 data-nosnippet>247</a>                    }
@@ -303,7 +303,7 @@
 <a href=#303 id=303 data-nosnippet>303</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(Bucket { key: this_key, .. }) = <span class="kw">unsafe </span>{ this_bucket_ptr.as_ref() } {
 <a href=#304 id=304 data-nosnippet>304</a>                <span class="kw">if </span>this_bucket_ptr == bucket_ptr {
 <a href=#305 id=305 data-nosnippet>305</a>                    <span class="kw">return </span><span class="prelude-val">None</span>;
-<a href=#306 id=306 data-nosnippet>306</a>                } <span class="kw">else if </span>this_key != key {
+<a href=#306 id=306 data-nosnippet>306</a>                } <span class="kw">else if </span><span class="macro">this_key !</span>= key {
 <a href=#307 id=307 data-nosnippet>307</a>                    <span class="kw">continue</span>;
 <a href=#308 id=308 data-nosnippet>308</a>                } <span class="kw">else if </span>!is_borrowed(this_bucket_ptr) {
 <a href=#309 id=309 data-nosnippet>309</a>                    <span class="kw">return </span><span class="prelude-val">None</span>;
@@ -762,17 +762,17 @@
 <a href=#762 id=762 data-nosnippet>762</a>
 <a href=#763 id=763 data-nosnippet>763</a></span><span class="attr">#[inline]
 <a href=#764 id=764 data-nosnippet>764</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_sentinel&lt;K, V&gt;(bucket_ptr: Shared&lt;<span class="lifetime">'_</span>, Bucket&lt;K, V&gt;&gt;) -&gt; bool {
-<a href=#765 id=765 data-nosnippet>765</a>    bucket_ptr.tag() &amp; SENTINEL_TAG != <span class="number">0
+<a href=#765 id=765 data-nosnippet>765</a>    bucket_ptr.tag() &amp; <span class="macro">SENTINEL_TAG !</span>= <span class="number">0
 <a href=#766 id=766 data-nosnippet>766</a></span>}
 <a href=#767 id=767 data-nosnippet>767</a>
 <a href=#768 id=768 data-nosnippet>768</a><span class="attr">#[inline]
 <a href=#769 id=769 data-nosnippet>769</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_tombstone&lt;K, V&gt;(bucket_ptr: Shared&lt;<span class="lifetime">'_</span>, Bucket&lt;K, V&gt;&gt;) -&gt; bool {
-<a href=#770 id=770 data-nosnippet>770</a>    bucket_ptr.tag() &amp; TOMBSTONE_TAG != <span class="number">0
+<a href=#770 id=770 data-nosnippet>770</a>    bucket_ptr.tag() &amp; <span class="macro">TOMBSTONE_TAG !</span>= <span class="number">0
 <a href=#771 id=771 data-nosnippet>771</a></span>}
 <a href=#772 id=772 data-nosnippet>772</a>
 <a href=#773 id=773 data-nosnippet>773</a><span class="attr">#[inline]
 <a href=#774 id=774 data-nosnippet>774</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>is_borrowed&lt;K, V&gt;(bucket_ptr: Shared&lt;<span class="lifetime">'_</span>, Bucket&lt;K, V&gt;&gt;) -&gt; bool {
-<a href=#775 id=775 data-nosnippet>775</a>    bucket_ptr.tag() &amp; BORROWED_TAG != <span class="number">0
+<a href=#775 id=775 data-nosnippet>775</a>    bucket_ptr.tag() &amp; <span class="macro">BORROWED_TAG !</span>= <span class="number">0
 <a href=#776 id=776 data-nosnippet>776</a></span>}
 <a href=#777 id=777 data-nosnippet>777</a>
 <a href=#778 id=778 data-nosnippet>778</a><span class="attr">#[cfg(test)]
@@ -913,4 +913,5 @@
 <a href=#913 id=913 data-nosnippet>913</a>        maybe_bucket_ptr
 <a href=#914 id=914 data-nosnippet>914</a>            .map(|p| <span class="kw">unsafe </span>{ p.as_ref() }.map(|b| <span class="kw">unsafe </span>{ <span class="kw-2">&amp;*</span>b.maybe_value.as_ptr() }.clone()))
 <a href=#915 id=915 data-nosnippet>915</a>    }
-<a href=#916 id=916 data-nosnippet>916</a>}</code></pre></div></section></main></body></html>
+<a href=#916 id=916 data-nosnippet>916</a>}
+</code></pre></div></section></main></body></html>

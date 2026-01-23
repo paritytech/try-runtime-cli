@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/jiff-0.2.18/src/span.rs`."><title>span.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jiff" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">jiff/</div>span.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>core::{cmp::Ordering, time::Duration <span class="kw">as </span>UnsignedDuration};
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/jiff-0.2.18/src/span.rs`."><title>span.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="jiff" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">jiff/</div>span.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>core::{cmp::Ordering, time::Duration <span class="kw">as </span>UnsignedDuration};
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use crate</span>::{
 <a href=#4 id=4 data-nosnippet>4</a>    civil::{Date, DateTime, Time},
@@ -1509,51 +1509,51 @@
 <a href=#1509 id=1509 data-nosnippet>1509</a>        // actually going to multiply with it. If our span has non-zero years,
 <a href=#1510 id=1510 data-nosnippet>1510</a>        // then our multiple can't exceed the bounds of `SpanYears`, otherwise
 <a href=#1511 id=1511 data-nosnippet>1511</a>        // it is guaranteed to overflow.
-<a href=#1512 id=1512 data-nosnippet>1512</a>        </span><span class="kw">if </span><span class="self">self</span>.years != C(<span class="number">0</span>) {
+<a href=#1512 id=1512 data-nosnippet>1512</a>        </span><span class="kw">if </span><span class="self">self</span>.<span class="macro">years !</span>= C(<span class="number">0</span>) {
 <a href=#1513 id=1513 data-nosnippet>1513</a>            <span class="kw">let </span>rhs = t::SpanYears::try_new(<span class="string">"years multiple"</span>, rhs)<span class="question-mark">?</span>;
 <a href=#1514 id=1514 data-nosnippet>1514</a>            <span class="self">self</span>.years = <span class="self">self</span>.years.try_checked_mul(<span class="string">"years"</span>, rhs.abs())<span class="question-mark">?</span>;
 <a href=#1515 id=1515 data-nosnippet>1515</a>        }
-<a href=#1516 id=1516 data-nosnippet>1516</a>        <span class="kw">if </span><span class="self">self</span>.months != C(<span class="number">0</span>) {
+<a href=#1516 id=1516 data-nosnippet>1516</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">months !</span>= C(<span class="number">0</span>) {
 <a href=#1517 id=1517 data-nosnippet>1517</a>            <span class="kw">let </span>rhs = t::SpanMonths::try_new(<span class="string">"months multiple"</span>, rhs)<span class="question-mark">?</span>;
 <a href=#1518 id=1518 data-nosnippet>1518</a>            <span class="self">self</span>.months = <span class="self">self</span>.months.try_checked_mul(<span class="string">"months"</span>, rhs.abs())<span class="question-mark">?</span>;
 <a href=#1519 id=1519 data-nosnippet>1519</a>        }
-<a href=#1520 id=1520 data-nosnippet>1520</a>        <span class="kw">if </span><span class="self">self</span>.weeks != C(<span class="number">0</span>) {
+<a href=#1520 id=1520 data-nosnippet>1520</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">weeks !</span>= C(<span class="number">0</span>) {
 <a href=#1521 id=1521 data-nosnippet>1521</a>            <span class="kw">let </span>rhs = t::SpanWeeks::try_new(<span class="string">"weeks multiple"</span>, rhs)<span class="question-mark">?</span>;
 <a href=#1522 id=1522 data-nosnippet>1522</a>            <span class="self">self</span>.weeks = <span class="self">self</span>.weeks.try_checked_mul(<span class="string">"weeks"</span>, rhs.abs())<span class="question-mark">?</span>;
 <a href=#1523 id=1523 data-nosnippet>1523</a>        }
-<a href=#1524 id=1524 data-nosnippet>1524</a>        <span class="kw">if </span><span class="self">self</span>.days != C(<span class="number">0</span>) {
+<a href=#1524 id=1524 data-nosnippet>1524</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">days !</span>= C(<span class="number">0</span>) {
 <a href=#1525 id=1525 data-nosnippet>1525</a>            <span class="kw">let </span>rhs = t::SpanDays::try_new(<span class="string">"days multiple"</span>, rhs)<span class="question-mark">?</span>;
 <a href=#1526 id=1526 data-nosnippet>1526</a>            <span class="self">self</span>.days = <span class="self">self</span>.days.try_checked_mul(<span class="string">"days"</span>, rhs.abs())<span class="question-mark">?</span>;
 <a href=#1527 id=1527 data-nosnippet>1527</a>        }
-<a href=#1528 id=1528 data-nosnippet>1528</a>        <span class="kw">if </span><span class="self">self</span>.hours != C(<span class="number">0</span>) {
+<a href=#1528 id=1528 data-nosnippet>1528</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">hours !</span>= C(<span class="number">0</span>) {
 <a href=#1529 id=1529 data-nosnippet>1529</a>            <span class="kw">let </span>rhs = t::SpanHours::try_new(<span class="string">"hours multiple"</span>, rhs)<span class="question-mark">?</span>;
 <a href=#1530 id=1530 data-nosnippet>1530</a>            <span class="self">self</span>.hours = <span class="self">self</span>.hours.try_checked_mul(<span class="string">"hours"</span>, rhs.abs())<span class="question-mark">?</span>;
 <a href=#1531 id=1531 data-nosnippet>1531</a>        }
-<a href=#1532 id=1532 data-nosnippet>1532</a>        <span class="kw">if </span><span class="self">self</span>.minutes != C(<span class="number">0</span>) {
+<a href=#1532 id=1532 data-nosnippet>1532</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">minutes !</span>= C(<span class="number">0</span>) {
 <a href=#1533 id=1533 data-nosnippet>1533</a>            <span class="kw">let </span>rhs = t::SpanMinutes::try_new(<span class="string">"minutes multiple"</span>, rhs)<span class="question-mark">?</span>;
 <a href=#1534 id=1534 data-nosnippet>1534</a>            <span class="self">self</span>.minutes =
 <a href=#1535 id=1535 data-nosnippet>1535</a>                <span class="self">self</span>.minutes.try_checked_mul(<span class="string">"minutes"</span>, rhs.abs())<span class="question-mark">?</span>;
 <a href=#1536 id=1536 data-nosnippet>1536</a>        }
-<a href=#1537 id=1537 data-nosnippet>1537</a>        <span class="kw">if </span><span class="self">self</span>.seconds != C(<span class="number">0</span>) {
+<a href=#1537 id=1537 data-nosnippet>1537</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">seconds !</span>= C(<span class="number">0</span>) {
 <a href=#1538 id=1538 data-nosnippet>1538</a>            <span class="kw">let </span>rhs = t::SpanSeconds::try_new(<span class="string">"seconds multiple"</span>, rhs)<span class="question-mark">?</span>;
 <a href=#1539 id=1539 data-nosnippet>1539</a>            <span class="self">self</span>.seconds =
 <a href=#1540 id=1540 data-nosnippet>1540</a>                <span class="self">self</span>.seconds.try_checked_mul(<span class="string">"seconds"</span>, rhs.abs())<span class="question-mark">?</span>;
 <a href=#1541 id=1541 data-nosnippet>1541</a>        }
-<a href=#1542 id=1542 data-nosnippet>1542</a>        <span class="kw">if </span><span class="self">self</span>.milliseconds != C(<span class="number">0</span>) {
+<a href=#1542 id=1542 data-nosnippet>1542</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">milliseconds !</span>= C(<span class="number">0</span>) {
 <a href=#1543 id=1543 data-nosnippet>1543</a>            <span class="kw">let </span>rhs =
 <a href=#1544 id=1544 data-nosnippet>1544</a>                t::SpanMilliseconds::try_new(<span class="string">"milliseconds multiple"</span>, rhs)<span class="question-mark">?</span>;
 <a href=#1545 id=1545 data-nosnippet>1545</a>            <span class="self">self</span>.milliseconds = <span class="self">self
 <a href=#1546 id=1546 data-nosnippet>1546</a>                </span>.milliseconds
 <a href=#1547 id=1547 data-nosnippet>1547</a>                .try_checked_mul(<span class="string">"milliseconds"</span>, rhs.abs())<span class="question-mark">?</span>;
 <a href=#1548 id=1548 data-nosnippet>1548</a>        }
-<a href=#1549 id=1549 data-nosnippet>1549</a>        <span class="kw">if </span><span class="self">self</span>.microseconds != C(<span class="number">0</span>) {
+<a href=#1549 id=1549 data-nosnippet>1549</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">microseconds !</span>= C(<span class="number">0</span>) {
 <a href=#1550 id=1550 data-nosnippet>1550</a>            <span class="kw">let </span>rhs =
 <a href=#1551 id=1551 data-nosnippet>1551</a>                t::SpanMicroseconds::try_new(<span class="string">"microseconds multiple"</span>, rhs)<span class="question-mark">?</span>;
 <a href=#1552 id=1552 data-nosnippet>1552</a>            <span class="self">self</span>.microseconds = <span class="self">self
 <a href=#1553 id=1553 data-nosnippet>1553</a>                </span>.microseconds
 <a href=#1554 id=1554 data-nosnippet>1554</a>                .try_checked_mul(<span class="string">"microseconds"</span>, rhs.abs())<span class="question-mark">?</span>;
 <a href=#1555 id=1555 data-nosnippet>1555</a>        }
-<a href=#1556 id=1556 data-nosnippet>1556</a>        <span class="kw">if </span><span class="self">self</span>.nanoseconds != C(<span class="number">0</span>) {
+<a href=#1556 id=1556 data-nosnippet>1556</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">nanoseconds !</span>= C(<span class="number">0</span>) {
 <a href=#1557 id=1557 data-nosnippet>1557</a>            <span class="kw">let </span>rhs =
 <a href=#1558 id=1558 data-nosnippet>1558</a>                t::SpanNanoseconds::try_new(<span class="string">"nanoseconds multiple"</span>, rhs)<span class="question-mark">?</span>;
 <a href=#1559 id=1559 data-nosnippet>1559</a>            <span class="self">self</span>.nanoseconds =
@@ -3097,9 +3097,9 @@
 <a href=#3097 id=3097 data-nosnippet>3097</a>    /// fractional second unit.
 <a href=#3098 id=3098 data-nosnippet>3098</a>    </span><span class="attr">#[inline]
 <a href=#3099 id=3099 data-nosnippet>3099</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>has_fractional_seconds(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-<a href=#3100 id=3100 data-nosnippet>3100</a>        <span class="self">self</span>.milliseconds != C(<span class="number">0</span>)
-<a href=#3101 id=3101 data-nosnippet>3101</a>            || <span class="self">self</span>.microseconds != C(<span class="number">0</span>)
-<a href=#3102 id=3102 data-nosnippet>3102</a>            || <span class="self">self</span>.nanoseconds != C(<span class="number">0</span>)
+<a href=#3100 id=3100 data-nosnippet>3100</a>        <span class="self">self</span>.<span class="macro">milliseconds !</span>= C(<span class="number">0</span>)
+<a href=#3101 id=3101 data-nosnippet>3101</a>            || <span class="self">self</span>.<span class="macro">microseconds !</span>= C(<span class="number">0</span>)
+<a href=#3102 id=3102 data-nosnippet>3102</a>            || <span class="self">self</span>.<span class="macro">nanoseconds !</span>= C(<span class="number">0</span>)
 <a href=#3103 id=3103 data-nosnippet>3103</a>    }
 <a href=#3104 id=3104 data-nosnippet>3104</a>
 <a href=#3105 id=3105 data-nosnippet>3105</a>    <span class="doccomment">/// Returns an equivalent span, but with all non-calendar (units below
@@ -3113,7 +3113,7 @@
 <a href=#3113 id=3113 data-nosnippet>3113</a>        span.milliseconds = t::SpanMilliseconds::N::&lt;<span class="number">0</span>&gt;();
 <a href=#3114 id=3114 data-nosnippet>3114</a>        span.microseconds = t::SpanMicroseconds::N::&lt;<span class="number">0</span>&gt;();
 <a href=#3115 id=3115 data-nosnippet>3115</a>        span.nanoseconds = t::SpanNanoseconds::N::&lt;<span class="number">0</span>&gt;();
-<a href=#3116 id=3116 data-nosnippet>3116</a>        <span class="kw">if </span>span.sign != C(<span class="number">0</span>)
+<a href=#3116 id=3116 data-nosnippet>3116</a>        <span class="kw">if </span>span.<span class="macro">sign !</span>= C(<span class="number">0</span>)
 <a href=#3117 id=3117 data-nosnippet>3117</a>            &amp;&amp; span.years == C(<span class="number">0</span>)
 <a href=#3118 id=3118 data-nosnippet>3118</a>            &amp;&amp; span.months == C(<span class="number">0</span>)
 <a href=#3119 id=3119 data-nosnippet>3119</a>            &amp;&amp; span.weeks == C(<span class="number">0</span>)
@@ -3134,7 +3134,7 @@
 <a href=#3134 id=3134 data-nosnippet>3134</a>        span.months = t::SpanMonths::N::&lt;<span class="number">0</span>&gt;();
 <a href=#3135 id=3135 data-nosnippet>3135</a>        span.weeks = t::SpanWeeks::N::&lt;<span class="number">0</span>&gt;();
 <a href=#3136 id=3136 data-nosnippet>3136</a>        span.days = t::SpanDays::N::&lt;<span class="number">0</span>&gt;();
-<a href=#3137 id=3137 data-nosnippet>3137</a>        <span class="kw">if </span>span.sign != C(<span class="number">0</span>)
+<a href=#3137 id=3137 data-nosnippet>3137</a>        <span class="kw">if </span>span.<span class="macro">sign !</span>= C(<span class="number">0</span>)
 <a href=#3138 id=3138 data-nosnippet>3138</a>            &amp;&amp; span.hours == C(<span class="number">0</span>)
 <a href=#3139 id=3139 data-nosnippet>3139</a>            &amp;&amp; span.minutes == C(<span class="number">0</span>)
 <a href=#3140 id=3140 data-nosnippet>3140</a>            &amp;&amp; span.seconds == C(<span class="number">0</span>)
@@ -3266,34 +3266,34 @@
 <a href=#3266 id=3266 data-nosnippet>3266</a>        <span class="kw">let </span><span class="kw-2">mut </span>buf = alloc::string::String::new();
 <a href=#3267 id=3267 data-nosnippet>3267</a>        <span class="macro">write!</span>(buf, <span class="string">"Span {{ sign: {:?}, units: {:?}"</span>, <span class="self">self</span>.sign, <span class="self">self</span>.units)
 <a href=#3268 id=3268 data-nosnippet>3268</a>            .unwrap();
-<a href=#3269 id=3269 data-nosnippet>3269</a>        <span class="kw">if </span><span class="self">self</span>.years != C(<span class="number">0</span>) {
+<a href=#3269 id=3269 data-nosnippet>3269</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">years !</span>= C(<span class="number">0</span>) {
 <a href=#3270 id=3270 data-nosnippet>3270</a>            <span class="macro">write!</span>(buf, <span class="string">", years: {:?}"</span>, <span class="self">self</span>.years).unwrap();
 <a href=#3271 id=3271 data-nosnippet>3271</a>        }
-<a href=#3272 id=3272 data-nosnippet>3272</a>        <span class="kw">if </span><span class="self">self</span>.months != C(<span class="number">0</span>) {
+<a href=#3272 id=3272 data-nosnippet>3272</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">months !</span>= C(<span class="number">0</span>) {
 <a href=#3273 id=3273 data-nosnippet>3273</a>            <span class="macro">write!</span>(buf, <span class="string">", months: {:?}"</span>, <span class="self">self</span>.months).unwrap();
 <a href=#3274 id=3274 data-nosnippet>3274</a>        }
-<a href=#3275 id=3275 data-nosnippet>3275</a>        <span class="kw">if </span><span class="self">self</span>.weeks != C(<span class="number">0</span>) {
+<a href=#3275 id=3275 data-nosnippet>3275</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">weeks !</span>= C(<span class="number">0</span>) {
 <a href=#3276 id=3276 data-nosnippet>3276</a>            <span class="macro">write!</span>(buf, <span class="string">", weeks: {:?}"</span>, <span class="self">self</span>.weeks).unwrap();
 <a href=#3277 id=3277 data-nosnippet>3277</a>        }
-<a href=#3278 id=3278 data-nosnippet>3278</a>        <span class="kw">if </span><span class="self">self</span>.days != C(<span class="number">0</span>) {
+<a href=#3278 id=3278 data-nosnippet>3278</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">days !</span>= C(<span class="number">0</span>) {
 <a href=#3279 id=3279 data-nosnippet>3279</a>            <span class="macro">write!</span>(buf, <span class="string">", days: {:?}"</span>, <span class="self">self</span>.days).unwrap();
 <a href=#3280 id=3280 data-nosnippet>3280</a>        }
-<a href=#3281 id=3281 data-nosnippet>3281</a>        <span class="kw">if </span><span class="self">self</span>.hours != C(<span class="number">0</span>) {
+<a href=#3281 id=3281 data-nosnippet>3281</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">hours !</span>= C(<span class="number">0</span>) {
 <a href=#3282 id=3282 data-nosnippet>3282</a>            <span class="macro">write!</span>(buf, <span class="string">", hours: {:?}"</span>, <span class="self">self</span>.hours).unwrap();
 <a href=#3283 id=3283 data-nosnippet>3283</a>        }
-<a href=#3284 id=3284 data-nosnippet>3284</a>        <span class="kw">if </span><span class="self">self</span>.minutes != C(<span class="number">0</span>) {
+<a href=#3284 id=3284 data-nosnippet>3284</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">minutes !</span>= C(<span class="number">0</span>) {
 <a href=#3285 id=3285 data-nosnippet>3285</a>            <span class="macro">write!</span>(buf, <span class="string">", minutes: {:?}"</span>, <span class="self">self</span>.minutes).unwrap();
 <a href=#3286 id=3286 data-nosnippet>3286</a>        }
-<a href=#3287 id=3287 data-nosnippet>3287</a>        <span class="kw">if </span><span class="self">self</span>.seconds != C(<span class="number">0</span>) {
+<a href=#3287 id=3287 data-nosnippet>3287</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">seconds !</span>= C(<span class="number">0</span>) {
 <a href=#3288 id=3288 data-nosnippet>3288</a>            <span class="macro">write!</span>(buf, <span class="string">", seconds: {:?}"</span>, <span class="self">self</span>.seconds).unwrap();
 <a href=#3289 id=3289 data-nosnippet>3289</a>        }
-<a href=#3290 id=3290 data-nosnippet>3290</a>        <span class="kw">if </span><span class="self">self</span>.milliseconds != C(<span class="number">0</span>) {
+<a href=#3290 id=3290 data-nosnippet>3290</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">milliseconds !</span>= C(<span class="number">0</span>) {
 <a href=#3291 id=3291 data-nosnippet>3291</a>            <span class="macro">write!</span>(buf, <span class="string">", milliseconds: {:?}"</span>, <span class="self">self</span>.milliseconds).unwrap();
 <a href=#3292 id=3292 data-nosnippet>3292</a>        }
-<a href=#3293 id=3293 data-nosnippet>3293</a>        <span class="kw">if </span><span class="self">self</span>.microseconds != C(<span class="number">0</span>) {
+<a href=#3293 id=3293 data-nosnippet>3293</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">microseconds !</span>= C(<span class="number">0</span>) {
 <a href=#3294 id=3294 data-nosnippet>3294</a>            <span class="macro">write!</span>(buf, <span class="string">", microseconds: {:?}"</span>, <span class="self">self</span>.microseconds).unwrap();
 <a href=#3295 id=3295 data-nosnippet>3295</a>        }
-<a href=#3296 id=3296 data-nosnippet>3296</a>        <span class="kw">if </span><span class="self">self</span>.nanoseconds != C(<span class="number">0</span>) {
+<a href=#3296 id=3296 data-nosnippet>3296</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">nanoseconds !</span>= C(<span class="number">0</span>) {
 <a href=#3297 id=3297 data-nosnippet>3297</a>            <span class="macro">write!</span>(buf, <span class="string">", nanoseconds: {:?}"</span>, <span class="self">self</span>.nanoseconds).unwrap();
 <a href=#3298 id=3298 data-nosnippet>3298</a>        }
 <a href=#3299 id=3299 data-nosnippet>3299</a>        buf.push_str(<span class="string">" }}"</span>);
@@ -6607,7 +6607,7 @@
 <a href=#6607 id=6607 data-nosnippet>6607</a>                .months_ranged(balanced.get_months_ranged())
 <a href=#6608 id=6608 data-nosnippet>6608</a>                .weeks_ranged(balanced.get_weeks_ranged())
 <a href=#6609 id=6609 data-nosnippet>6609</a>                .days_ranged(balanced.get_days_ranged() + day_delta);
-<a href=#6610 id=6610 data-nosnippet>6610</a>        <span class="kw">let </span>grew_big_unit = day_delta != C(<span class="number">0</span>);
+<a href=#6610 id=6610 data-nosnippet>6610</a>        <span class="kw">let </span>grew_big_unit = <span class="macro">day_delta !</span>= C(<span class="number">0</span>);
 <a href=#6611 id=6611 data-nosnippet>6611</a>        <span class="prelude-val">Ok</span>(Nudge { span, rounded_relative_end, grew_big_unit })
 <a href=#6612 id=6612 data-nosnippet>6612</a>    }
 <a href=#6613 id=6613 data-nosnippet>6613</a>
@@ -6640,7 +6640,7 @@
 <a href=#6640 id=6640 data-nosnippet>6640</a>            }
 <a href=#6641 id=6641 data-nosnippet>6641</a>            <span class="comment">// We only bubble smaller units up into weeks when the largest unit
 <a href=#6642 id=6642 data-nosnippet>6642</a>            // is explicitly set to weeks. Otherwise, we leave it as-is.
-<a href=#6643 id=6643 data-nosnippet>6643</a>            </span><span class="kw">if </span>unit == Unit::Week &amp;&amp; largest != Unit::Week {
+<a href=#6643 id=6643 data-nosnippet>6643</a>            </span><span class="kw">if </span>unit == Unit::Week &amp;&amp; <span class="macro">largest !</span>= Unit::Week {
 <a href=#6644 id=6644 data-nosnippet>6644</a>                <span class="kw">continue</span>;
 <a href=#6645 id=6645 data-nosnippet>6645</a>            }
 <a href=#6646 id=6646 data-nosnippet>6646</a>
@@ -7361,4 +7361,5 @@
 <a href=#7361 id=7361 data-nosnippet>7361</a>            @<span class="string">r#"found nothing after sign `-`, which is not a valid duration in either the ISO 8601 format or Jiff's "friendly" format at line 1 column 3"#</span>,
 <a href=#7362 id=7362 data-nosnippet>7362</a>        );
 <a href=#7363 id=7363 data-nosnippet>7363</a>    }
-<a href=#7364 id=7364 data-nosnippet>7364</a>}</code></pre></div></section></main></body></html>
+<a href=#7364 id=7364 data-nosnippet>7364</a>}
+</code></pre></div></section></main></body></html>

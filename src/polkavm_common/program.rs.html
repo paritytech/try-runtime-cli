@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/polkavm-common-0.30.0/src/program.rs`."><title>program.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkavm_common" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">polkavm_common/</div>program.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::abi::{VM_CODE_ADDRESS_ALIGNMENT, VM_MAXIMUM_CODE_SIZE, VM_MAXIMUM_IMPORT_COUNT, VM_MAXIMUM_JUMP_TABLE_ENTRIES};
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/polkavm-common-0.30.0/src/program.rs`."><title>program.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkavm_common" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">polkavm_common/</div>program.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::abi::{VM_CODE_ADDRESS_ALIGNMENT, VM_MAXIMUM_CODE_SIZE, VM_MAXIMUM_IMPORT_COUNT, VM_MAXIMUM_JUMP_TABLE_ENTRIES};
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span><span class="kw">crate</span>::cast::cast;
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span><span class="kw">crate</span>::utils::ArcBytes;
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span><span class="kw">crate</span>::varint::{read_simple_varint, read_varint, write_simple_varint, MAX_VARINT_LENGTH};
@@ -3516,7 +3516,7 @@
 <a href=#3516 id=3516 data-nosnippet>3516</a>
 <a href=#3517 id=3517 data-nosnippet>3517</a>    <span class="kw">fn </span>store_indirect_u8(<span class="kw-2">&amp;mut </span><span class="self">self</span>, src: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3518 id=3518 data-nosnippet>3518</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3519 id=3519 data-nosnippet>3519</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
+<a href=#3519 id=3519 data-nosnippet>3519</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
 <a href=#3520 id=3520 data-nosnippet>3520</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3521 id=3521 data-nosnippet>3521</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"u8 [{base} + {offset}] = {src}"</span>)
 <a href=#3522 id=3522 data-nosnippet>3522</a>        } <span class="kw">else </span>{
@@ -3527,7 +3527,7 @@
 <a href=#3527 id=3527 data-nosnippet>3527</a>    <span class="kw">fn </span>store_indirect_u16(<span class="kw-2">&amp;mut </span><span class="self">self</span>, src: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3528 id=3528 data-nosnippet>3528</a>        <span class="kw">let </span>src = <span class="self">self</span>.format_reg(src);
 <a href=#3529 id=3529 data-nosnippet>3529</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3530 id=3530 data-nosnippet>3530</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
+<a href=#3530 id=3530 data-nosnippet>3530</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
 <a href=#3531 id=3531 data-nosnippet>3531</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3532 id=3532 data-nosnippet>3532</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"u16 [{base} + {offset}] = {src}"</span>)
 <a href=#3533 id=3533 data-nosnippet>3533</a>        } <span class="kw">else </span>{
@@ -3538,7 +3538,7 @@
 <a href=#3538 id=3538 data-nosnippet>3538</a>    <span class="kw">fn </span>store_indirect_u32(<span class="kw-2">&amp;mut </span><span class="self">self</span>, src: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3539 id=3539 data-nosnippet>3539</a>        <span class="kw">let </span>src = <span class="self">self</span>.format_reg(src);
 <a href=#3540 id=3540 data-nosnippet>3540</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3541 id=3541 data-nosnippet>3541</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
+<a href=#3541 id=3541 data-nosnippet>3541</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
 <a href=#3542 id=3542 data-nosnippet>3542</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3543 id=3543 data-nosnippet>3543</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"u32 [{base} + {offset}] = {src}"</span>)
 <a href=#3544 id=3544 data-nosnippet>3544</a>        } <span class="kw">else </span>{
@@ -3549,7 +3549,7 @@
 <a href=#3549 id=3549 data-nosnippet>3549</a>    <span class="kw">fn </span>store_indirect_u64(<span class="kw-2">&amp;mut </span><span class="self">self</span>, src: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3550 id=3550 data-nosnippet>3550</a>        <span class="kw">let </span>src = <span class="self">self</span>.format_reg(src);
 <a href=#3551 id=3551 data-nosnippet>3551</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3552 id=3552 data-nosnippet>3552</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
+<a href=#3552 id=3552 data-nosnippet>3552</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
 <a href=#3553 id=3553 data-nosnippet>3553</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3554 id=3554 data-nosnippet>3554</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"u64 [{base} + {offset}] = {src}"</span>)
 <a href=#3555 id=3555 data-nosnippet>3555</a>        } <span class="kw">else </span>{
@@ -3608,7 +3608,7 @@
 <a href=#3608 id=3608 data-nosnippet>3608</a>    <span class="kw">fn </span>load_indirect_u8(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3609 id=3609 data-nosnippet>3609</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3610 id=3610 data-nosnippet>3610</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3611 id=3611 data-nosnippet>3611</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
+<a href=#3611 id=3611 data-nosnippet>3611</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
 <a href=#3612 id=3612 data-nosnippet>3612</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3613 id=3613 data-nosnippet>3613</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = u8 [{} + {}]"</span>, dst, base, offset)
 <a href=#3614 id=3614 data-nosnippet>3614</a>        } <span class="kw">else </span>{
@@ -3619,7 +3619,7 @@
 <a href=#3619 id=3619 data-nosnippet>3619</a>    <span class="kw">fn </span>load_indirect_i8(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3620 id=3620 data-nosnippet>3620</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3621 id=3621 data-nosnippet>3621</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3622 id=3622 data-nosnippet>3622</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
+<a href=#3622 id=3622 data-nosnippet>3622</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
 <a href=#3623 id=3623 data-nosnippet>3623</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3624 id=3624 data-nosnippet>3624</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = i8 [{} + {}]"</span>, dst, base, offset)
 <a href=#3625 id=3625 data-nosnippet>3625</a>        } <span class="kw">else </span>{
@@ -3630,7 +3630,7 @@
 <a href=#3630 id=3630 data-nosnippet>3630</a>    <span class="kw">fn </span>load_indirect_u16(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3631 id=3631 data-nosnippet>3631</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3632 id=3632 data-nosnippet>3632</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3633 id=3633 data-nosnippet>3633</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
+<a href=#3633 id=3633 data-nosnippet>3633</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
 <a href=#3634 id=3634 data-nosnippet>3634</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3635 id=3635 data-nosnippet>3635</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = u16 [{} + {}]"</span>, dst, base, offset)
 <a href=#3636 id=3636 data-nosnippet>3636</a>        } <span class="kw">else </span>{
@@ -3641,7 +3641,7 @@
 <a href=#3641 id=3641 data-nosnippet>3641</a>    <span class="kw">fn </span>load_indirect_i16(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3642 id=3642 data-nosnippet>3642</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3643 id=3643 data-nosnippet>3643</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3644 id=3644 data-nosnippet>3644</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
+<a href=#3644 id=3644 data-nosnippet>3644</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
 <a href=#3645 id=3645 data-nosnippet>3645</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3646 id=3646 data-nosnippet>3646</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = i16 [{} + {}]"</span>, dst, base, offset)
 <a href=#3647 id=3647 data-nosnippet>3647</a>        } <span class="kw">else </span>{
@@ -3652,7 +3652,7 @@
 <a href=#3652 id=3652 data-nosnippet>3652</a>    <span class="kw">fn </span>load_indirect_u32(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3653 id=3653 data-nosnippet>3653</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3654 id=3654 data-nosnippet>3654</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3655 id=3655 data-nosnippet>3655</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
+<a href=#3655 id=3655 data-nosnippet>3655</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
 <a href=#3656 id=3656 data-nosnippet>3656</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3657 id=3657 data-nosnippet>3657</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = u32 [{} + {}]"</span>, dst, base, offset)
 <a href=#3658 id=3658 data-nosnippet>3658</a>        } <span class="kw">else </span>{
@@ -3663,7 +3663,7 @@
 <a href=#3663 id=3663 data-nosnippet>3663</a>    <span class="kw">fn </span>load_indirect_i32(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3664 id=3664 data-nosnippet>3664</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3665 id=3665 data-nosnippet>3665</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3666 id=3666 data-nosnippet>3666</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
+<a href=#3666 id=3666 data-nosnippet>3666</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
 <a href=#3667 id=3667 data-nosnippet>3667</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3668 id=3668 data-nosnippet>3668</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = i32 [{} + {}]"</span>, dst, base, offset)
 <a href=#3669 id=3669 data-nosnippet>3669</a>        } <span class="kw">else </span>{
@@ -3674,7 +3674,7 @@
 <a href=#3674 id=3674 data-nosnippet>3674</a>    <span class="kw">fn </span>load_indirect_u64(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3675 id=3675 data-nosnippet>3675</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3676 id=3676 data-nosnippet>3676</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3677 id=3677 data-nosnippet>3677</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
+<a href=#3677 id=3677 data-nosnippet>3677</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
 <a href=#3678 id=3678 data-nosnippet>3678</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3679 id=3679 data-nosnippet>3679</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = u64 [{} + {}]"</span>, dst, base, offset)
 <a href=#3680 id=3680 data-nosnippet>3680</a>        } <span class="kw">else </span>{
@@ -3853,7 +3853,7 @@
 <a href=#3853 id=3853 data-nosnippet>3853</a>    <span class="kw">fn </span>load_imm_and_jump_indirect(<span class="kw-2">&amp;mut </span><span class="self">self</span>, ra: RawReg, base: RawReg, value: u32, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3854 id=3854 data-nosnippet>3854</a>        <span class="kw">let </span>ra = <span class="self">self</span>.format_reg(ra);
 <a href=#3855 id=3855 data-nosnippet>3855</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3856 id=3856 data-nosnippet>3856</a>        <span class="kw">if </span>ra != base {
+<a href=#3856 id=3856 data-nosnippet>3856</a>        <span class="kw">if </span><span class="macro">ra !</span>= base {
 <a href=#3857 id=3857 data-nosnippet>3857</a>            <span class="kw">if </span>!<span class="self">self</span>.format.prefer_unaliased &amp;&amp; offset == <span class="number">0 </span>{
 <a href=#3858 id=3858 data-nosnippet>3858</a>                <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{ra} = {value}, jump [{base}]"</span>)
 <a href=#3859 id=3859 data-nosnippet>3859</a>            } <span class="kw">else </span>{
@@ -4190,7 +4190,7 @@
 <a href=#4190 id=4190 data-nosnippet>4190</a>    }
 <a href=#4191 id=4191 data-nosnippet>4191</a>
 <a href=#4192 id=4192 data-nosnippet>4192</a>    <span class="kw">fn </span>read_section_as_bytes(<span class="kw-2">&amp;mut </span><span class="self">self</span>, out_section: <span class="kw-2">&amp;mut </span>u8, expected_section: u8) -&gt; <span class="prelude-ty">Result</span>&lt;ArcBytes, ProgramParseError&gt; {
-<a href=#4193 id=4193 data-nosnippet>4193</a>        <span class="kw">if </span><span class="kw-2">*</span>out_section != expected_section {
+<a href=#4193 id=4193 data-nosnippet>4193</a>        <span class="kw">if </span><span class="kw-2">*</span><span class="macro">out_section !</span>= expected_section {
 <a href=#4194 id=4194 data-nosnippet>4194</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(ArcBytes::default());
 <a href=#4195 id=4195 data-nosnippet>4195</a>        }
 <a href=#4196 id=4196 data-nosnippet>4196</a>
@@ -5144,7 +5144,7 @@
 <a href=#5144 id=5144 data-nosnippet>5144</a>        };
 <a href=#5145 id=5145 data-nosnippet>5145</a>
 <a href=#5146 id=5146 data-nosnippet>5146</a>        <span class="kw">let </span>blob_len = BlobLen::from_le_bytes(reader.read_slice(BLOB_LEN_SIZE)<span class="question-mark">?</span>.try_into().unwrap());
-<a href=#5147 id=5147 data-nosnippet>5147</a>        <span class="kw">if </span>blob_len != blob.len() <span class="kw">as </span>u64 {
+<a href=#5147 id=5147 data-nosnippet>5147</a>        <span class="kw">if </span><span class="macro">blob_len !</span>= blob.len() <span class="kw">as </span>u64 {
 <a href=#5148 id=5148 data-nosnippet>5148</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(ProgramParseError(ProgramParseErrorKind::Other(
 <a href=#5149 id=5149 data-nosnippet>5149</a>                <span class="string">"blob size doesn't match the blob length metadata"</span>,
 <a href=#5150 id=5150 data-nosnippet>5150</a>            )));
@@ -5158,7 +5158,7 @@
 <a href=#5158 id=5158 data-nosnippet>5158</a>            parts.ro_data_size = reader.read_varint()<span class="question-mark">?</span>;
 <a href=#5159 id=5159 data-nosnippet>5159</a>            parts.rw_data_size = reader.read_varint()<span class="question-mark">?</span>;
 <a href=#5160 id=5160 data-nosnippet>5160</a>            parts.stack_size = reader.read_varint()<span class="question-mark">?</span>;
-<a href=#5161 id=5161 data-nosnippet>5161</a>            <span class="kw">if </span>position + section_length <span class="kw">as </span>usize != reader.position {
+<a href=#5161 id=5161 data-nosnippet>5161</a>            <span class="kw">if </span>position + section_length <span class="kw">as </span><span class="macro">usize !</span>= reader.position {
 <a href=#5162 id=5162 data-nosnippet>5162</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(ProgramParseError(ProgramParseErrorKind::Other(
 <a href=#5163 id=5163 data-nosnippet>5163</a>                    <span class="string">"the memory config section contains more data than expected"</span>,
 <a href=#5164 id=5164 data-nosnippet>5164</a>                )));
@@ -5205,7 +5205,7 @@
 <a href=#5205 id=5205 data-nosnippet>5205</a>            section = reader.read_byte()<span class="question-mark">?</span>;
 <a href=#5206 id=5206 data-nosnippet>5206</a>        }
 <a href=#5207 id=5207 data-nosnippet>5207</a>
-<a href=#5208 id=5208 data-nosnippet>5208</a>        <span class="kw">if </span>section != SECTION_END_OF_FILE {
+<a href=#5208 id=5208 data-nosnippet>5208</a>        <span class="kw">if </span><span class="macro">section !</span>= SECTION_END_OF_FILE {
 <a href=#5209 id=5209 data-nosnippet>5209</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(ProgramParseError(ProgramParseErrorKind::UnexpectedSection {
 <a href=#5210 id=5210 data-nosnippet>5210</a>                offset: reader.position - <span class="number">1</span>,
 <a href=#5211 id=5211 data-nosnippet>5211</a>                section,
@@ -5326,7 +5326,7 @@
 <a href=#5326 id=5326 data-nosnippet>5326</a>                <span class="kw">let </span>last_byte = <span class="kw-2">*</span>blob.bitmask.last().unwrap();
 <a href=#5327 id=5327 data-nosnippet>5327</a>                <span class="kw">let </span>padding_bits = blob.bitmask.len() * <span class="number">8 </span>- blob.code.len();
 <a href=#5328 id=5328 data-nosnippet>5328</a>                <span class="kw">let </span>padding_mask = ((<span class="number">0b10000000_u8 </span><span class="kw">as </span>i8) &gt;&gt; (padding_bits - <span class="number">1</span>)) <span class="kw">as </span>u8;
-<a href=#5329 id=5329 data-nosnippet>5329</a>                <span class="kw">if </span>last_byte &amp; padding_mask != <span class="number">0 </span>{
+<a href=#5329 id=5329 data-nosnippet>5329</a>                <span class="kw">if </span>last_byte &amp; <span class="macro">padding_mask !</span>= <span class="number">0 </span>{
 <a href=#5330 id=5330 data-nosnippet>5330</a>                    <span class="kw">return </span><span class="prelude-val">Err</span>(ProgramParseError(ProgramParseErrorKind::Other(
 <a href=#5331 id=5331 data-nosnippet>5331</a>                        <span class="string">"the bitmask is padded with non-zero bits"</span>,
 <a href=#5332 id=5332 data-nosnippet>5332</a>                    )));
@@ -5622,7 +5622,7 @@
 <a href=#5622 id=5622 data-nosnippet>5622</a>        <span class="kw">const </span>ENTRY_SIZE: usize = <span class="number">12</span>;
 <a href=#5623 id=5623 data-nosnippet>5623</a>
 <a href=#5624 id=5624 data-nosnippet>5624</a>        <span class="kw">let </span>slice = <span class="kw-2">&amp;</span><span class="self">self</span>.debug_line_program_ranges;
-<a href=#5625 id=5625 data-nosnippet>5625</a>        <span class="kw">if </span>slice.len() % ENTRY_SIZE != <span class="number">0 </span>{
+<a href=#5625 id=5625 data-nosnippet>5625</a>        <span class="kw">if </span>slice.len() % <span class="macro">ENTRY_SIZE !</span>= <span class="number">0 </span>{
 <a href=#5626 id=5626 data-nosnippet>5626</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(ProgramParseError(ProgramParseErrorKind::Other(
 <a href=#5627 id=5627 data-nosnippet>5627</a>                <span class="string">"the debug function ranges section has an invalid size"</span>,
 <a href=#5628 id=5628 data-nosnippet>5628</a>            )));
@@ -6369,4 +6369,5 @@
 <a href=#6369 id=6369 data-nosnippet>6369</a>            <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
 <a href=#6370 id=6370 data-nosnippet>6370</a>        }
 <a href=#6371 id=6371 data-nosnippet>6371</a>    }
-<a href=#6372 id=6372 data-nosnippet>6372</a>}</code></pre></div></section></main></body></html>
+<a href=#6372 id=6372 data-nosnippet>6372</a>}
+</code></pre></div></section></main></body></html>

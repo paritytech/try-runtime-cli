@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/uint-0.10.0/src/uint.rs`."><title>uint.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="uint" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">uint/</div>uint.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2020 Parity Technologies
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/uint-0.10.0/src/uint.rs`."><title>uint.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="uint" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">uint/</div>uint.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2020 Parity Technologies
 <a href=#2 id=2 data-nosnippet>2</a>//
 <a href=#3 id=3 data-nosnippet>3</a>// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or
 <a href=#4 id=4 data-nosnippet>4</a>// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license
@@ -212,14 +212,14 @@
 <a href=#212 id=212 data-nosnippet>212</a><span class="attr">#[macro_export]
 <a href=#213 id=213 data-nosnippet>213</a>#[doc(hidden)]
 <a href=#214 id=214 data-nosnippet>214</a></span><span class="macro">macro_rules!</span> uint_overflowing_binop {
-<a href=#215 id=215 data-nosnippet>215</a>	(<span class="macro-nonterminal">$name</span>:ident, <span class="macro-nonterminal">$n_words</span>: tt, <span class="macro-nonterminal">$self_expr</span>: expr, <span class="macro-nonterminal">$other</span>: expr, <span class="macro-nonterminal">$</span><span class="kw">fn</span>:<span class="macro-nonterminal">expr</span>) =&gt; {{
+<a href=#215 id=215 data-nosnippet>215</a>	(<span class="macro-nonterminal">$name</span>:ident, <span class="macro-nonterminal">$n_words</span>: tt, <span class="macro-nonterminal">$self_expr</span>: expr, <span class="macro-nonterminal">$other</span>: expr, <span class="macro-nonterminal">$fn</span>:expr) =&gt; {{
 <a href=#216 id=216 data-nosnippet>216</a>		<span class="kw">use </span><span class="macro-nonterminal">$crate::core_ </span><span class="kw">as </span>core;
 <a href=#217 id=217 data-nosnippet>217</a>		<span class="kw">let </span><span class="macro-nonterminal">$name</span>(<span class="kw-2">ref </span>me) = <span class="macro-nonterminal">$self_expr</span>;
 <a href=#218 id=218 data-nosnippet>218</a>		<span class="kw">let </span><span class="macro-nonterminal">$name</span>(<span class="kw-2">ref </span>you) = <span class="macro-nonterminal">$other</span>;
 <a href=#219 id=219 data-nosnippet>219</a>
 <a href=#220 id=220 data-nosnippet>220</a>		<span class="kw">let </span><span class="kw-2">mut </span>ret = [<span class="number">0u64</span>; <span class="macro-nonterminal">$n_words</span>];
 <a href=#221 id=221 data-nosnippet>221</a>		<span class="kw">let </span><span class="kw-2">mut </span>carry = <span class="number">0u64</span>;
-<a href=#222 id=222 data-nosnippet>222</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::static_assertions::const_assert!</span>(<span class="macro-nonterminal">core::isize::MAX </span><span class="kw">as </span>usize / core::mem::size_of::&lt;u64&gt;() &gt; <span class="macro-nonterminal">$n_words</span>);
+<a href=#222 id=222 data-nosnippet>222</a>		<span class="macro-nonterminal">$crate::static_assertions::const_assert</span>!(core::isize::MAX <span class="kw">as </span>usize / core::mem::size_of::&lt;u64&gt;() &gt; <span class="macro-nonterminal">$n_words</span>);
 <a href=#223 id=223 data-nosnippet>223</a>
 <a href=#224 id=224 data-nosnippet>224</a>		<span class="comment">// `unroll!` is recursive, but doesn’t use `$crate::unroll`, so we need to ensure that it
 <a href=#225 id=225 data-nosnippet>225</a>		// is in scope unqualified.
@@ -228,14 +228,14 @@
 <a href=#228 id=228 data-nosnippet>228</a>			<span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..<span class="macro-nonterminal">$n_words </span>{
 <a href=#229 id=229 data-nosnippet>229</a>				<span class="kw">use </span>core::ptr;
 <a href=#230 id=230 data-nosnippet>230</a>
-<a href=#231 id=231 data-nosnippet>231</a>				<span class="kw">if </span>carry != <span class="number">0 </span>{
-<a href=#232 id=232 data-nosnippet>232</a>					<span class="kw">let </span>(res1, overflow1) = (<span class="macro-nonterminal">$</span><span class="kw">fn</span>)(<span class="macro-nonterminal">me</span>[i], you[i]);
-<a href=#233 id=233 data-nosnippet>233</a>					<span class="kw">let </span>(res2, overflow2) = (<span class="macro-nonterminal">$</span><span class="kw">fn</span>)(<span class="macro-nonterminal">res1</span>, carry);
+<a href=#231 id=231 data-nosnippet>231</a>				<span class="kw">if </span><span class="macro">carry !</span>= <span class="number">0 </span>{
+<a href=#232 id=232 data-nosnippet>232</a>					<span class="kw">let </span>(res1, overflow1) = (<span class="macro-nonterminal">$fn</span>)(me[i], you[i]);
+<a href=#233 id=233 data-nosnippet>233</a>					<span class="kw">let </span>(res2, overflow2) = (<span class="macro-nonterminal">$fn</span>)(res1, carry);
 <a href=#234 id=234 data-nosnippet>234</a>
 <a href=#235 id=235 data-nosnippet>235</a>					ret[i] = res2;
 <a href=#236 id=236 data-nosnippet>236</a>					carry = (overflow1 <span class="kw">as </span>u8 + overflow2 <span class="kw">as </span>u8) <span class="kw">as </span>u64;
 <a href=#237 id=237 data-nosnippet>237</a>				} <span class="kw">else </span>{
-<a href=#238 id=238 data-nosnippet>238</a>					<span class="kw">let </span>(res, overflow) = (<span class="macro-nonterminal">$</span><span class="kw">fn</span>)(<span class="macro-nonterminal">me</span>[i], you[i]);
+<a href=#238 id=238 data-nosnippet>238</a>					<span class="kw">let </span>(res, overflow) = (<span class="macro-nonterminal">$fn</span>)(me[i], you[i]);
 <a href=#239 id=239 data-nosnippet>239</a>
 <a href=#240 id=240 data-nosnippet>240</a>					ret[i] = res;
 <a href=#241 id=241 data-nosnippet>241</a>					carry = overflow <span class="kw">as </span>u64;
@@ -251,10 +251,10 @@
 <a href=#251 id=251 data-nosnippet>251</a>#[doc(hidden)]
 <a href=#252 id=252 data-nosnippet>252</a></span><span class="macro">macro_rules!</span> uint_full_mul_reg {
 <a href=#253 id=253 data-nosnippet>253</a>	(<span class="macro-nonterminal">$name</span>:ident, <span class="number">8</span>, <span class="macro-nonterminal">$self_expr</span>:expr, <span class="macro-nonterminal">$other</span>:expr) =&gt; {
-<a href=#254 id=254 data-nosnippet>254</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::uint_full_mul_reg!</span>(<span class="macro-nonterminal">$name</span>, <span class="number">8</span>, <span class="macro-nonterminal">$self_expr</span>, <span class="macro-nonterminal">$other</span>, |a, b| a != <span class="number">0 </span>|| b != <span class="number">0</span>);
+<a href=#254 id=254 data-nosnippet>254</a>		<span class="macro-nonterminal">$crate::uint_full_mul_reg</span>!(<span class="macro-nonterminal">$name</span>, <span class="number">8</span>, <span class="macro-nonterminal">$self_expr</span>, <span class="macro-nonterminal">$other</span>, |a, b| <span class="macro">a !</span>= <span class="number">0 </span>|| <span class="macro">b !</span>= <span class="number">0</span>);
 <a href=#255 id=255 data-nosnippet>255</a>	};
 <a href=#256 id=256 data-nosnippet>256</a>	(<span class="macro-nonterminal">$name</span>:ident, <span class="macro-nonterminal">$n_words</span>:tt, <span class="macro-nonterminal">$self_expr</span>:expr, <span class="macro-nonterminal">$other</span>:expr) =&gt; {
-<a href=#257 id=257 data-nosnippet>257</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::uint_full_mul_reg!</span>(<span class="macro-nonterminal">$name</span>, <span class="macro-nonterminal">$n_words</span>, <span class="macro-nonterminal">$self_expr</span>, <span class="macro-nonterminal">$other</span>, |<span class="kw">_</span>, <span class="kw">_</span>| <span class="bool-val">true</span>);
+<a href=#257 id=257 data-nosnippet>257</a>		<span class="macro-nonterminal">$crate::uint_full_mul_reg</span>!(<span class="macro-nonterminal">$name</span>, <span class="macro-nonterminal">$n_words</span>, <span class="macro-nonterminal">$self_expr</span>, <span class="macro-nonterminal">$other</span>, |<span class="kw">_</span>, <span class="kw">_</span>| <span class="bool-val">true</span>);
 <a href=#258 id=258 data-nosnippet>258</a>	};
 <a href=#259 id=259 data-nosnippet>259</a>	(<span class="macro-nonterminal">$name</span>:ident, <span class="macro-nonterminal">$n_words</span>:tt, <span class="macro-nonterminal">$self_expr</span>:expr, <span class="macro-nonterminal">$other</span>:expr, <span class="macro-nonterminal">$check</span>:expr) =&gt; {{
 <a href=#260 id=260 data-nosnippet>260</a>		{
@@ -308,7 +308,7 @@
 <a href=#308 id=308 data-nosnippet>308</a>#[doc(hidden)]
 <a href=#309 id=309 data-nosnippet>309</a></span><span class="macro">macro_rules!</span> uint_overflowing_mul {
 <a href=#310 id=310 data-nosnippet>310</a>	(<span class="macro-nonterminal">$name</span>:ident, <span class="macro-nonterminal">$n_words</span>: tt, <span class="macro-nonterminal">$self_expr</span>: expr, <span class="macro-nonterminal">$other</span>: expr) =&gt; {{
-<a href=#311 id=311 data-nosnippet>311</a>		<span class="kw">let </span>ret: [u64; <span class="macro-nonterminal">$n_words </span>* <span class="number">2</span>] = <span class="macro-nonterminal">$</span><span class="macro">crate::uint_full_mul_reg!</span>(<span class="macro-nonterminal">$name</span>, <span class="macro-nonterminal">$n_words</span>, <span class="macro-nonterminal">$self_expr</span>, <span class="macro-nonterminal">$other</span>);
+<a href=#311 id=311 data-nosnippet>311</a>		<span class="kw">let </span>ret: [u64; <span class="macro-nonterminal">$n_words </span>* <span class="number">2</span>] = <span class="macro-nonterminal">$crate::uint_full_mul_reg</span>!(<span class="macro-nonterminal">$name</span>, <span class="macro-nonterminal">$n_words</span>, <span class="macro-nonterminal">$self_expr</span>, <span class="macro-nonterminal">$other</span>);
 <a href=#312 id=312 data-nosnippet>312</a>
 <a href=#313 id=313 data-nosnippet>313</a>		<span class="comment">// The safety of this is enforced by the compiler
 <a href=#314 id=314 data-nosnippet>314</a>		</span><span class="kw">let </span>ret: [[u64; <span class="macro-nonterminal">$n_words</span>]; <span class="number">2</span>] = <span class="kw">unsafe </span>{ <span class="macro-nonterminal">$crate::core_::mem::transmute</span>(ret) };
@@ -366,7 +366,7 @@
 <a href=#366 id=366 data-nosnippet>366</a>			<span class="kw">fn </span>mul(<span class="self">self</span>, other: <span class="macro-nonterminal">$other</span>) -&gt; <span class="macro-nonterminal">$name </span>{
 <a href=#367 id=367 data-nosnippet>367</a>				<span class="kw">let </span>bignum: <span class="macro-nonterminal">$name </span>= other.into();
 <a href=#368 id=368 data-nosnippet>368</a>				<span class="kw">let </span>(result, overflow) = <span class="self">self</span>.overflowing_mul(bignum);
-<a href=#369 id=369 data-nosnippet>369</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::panic_on_overflow!</span>(<span class="macro-nonterminal">overflow</span>);
+<a href=#369 id=369 data-nosnippet>369</a>				<span class="macro-nonterminal">$crate::panic_on_overflow</span>!(overflow);
 <a href=#370 id=370 data-nosnippet>370</a>				result
 <a href=#371 id=371 data-nosnippet>371</a>			}
 <a href=#372 id=372 data-nosnippet>372</a>		}
@@ -377,7 +377,7 @@
 <a href=#377 id=377 data-nosnippet>377</a>			<span class="kw">fn </span>mul(<span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="macro-nonterminal">$other</span>) -&gt; <span class="macro-nonterminal">$name </span>{
 <a href=#378 id=378 data-nosnippet>378</a>				<span class="kw">let </span>bignum: <span class="macro-nonterminal">$name </span>= (<span class="kw-2">*</span>other).into();
 <a href=#379 id=379 data-nosnippet>379</a>				<span class="kw">let </span>(result, overflow) = <span class="self">self</span>.overflowing_mul(bignum);
-<a href=#380 id=380 data-nosnippet>380</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::panic_on_overflow!</span>(<span class="macro-nonterminal">overflow</span>);
+<a href=#380 id=380 data-nosnippet>380</a>				<span class="macro-nonterminal">$crate::panic_on_overflow</span>!(overflow);
 <a href=#381 id=381 data-nosnippet>381</a>				result
 <a href=#382 id=382 data-nosnippet>382</a>			}
 <a href=#383 id=383 data-nosnippet>383</a>		}
@@ -388,7 +388,7 @@
 <a href=#388 id=388 data-nosnippet>388</a>			<span class="kw">fn </span>mul(<span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="macro-nonterminal">$other</span>) -&gt; <span class="macro-nonterminal">$name </span>{
 <a href=#389 id=389 data-nosnippet>389</a>				<span class="kw">let </span>bignum: <span class="macro-nonterminal">$name </span>= (<span class="kw-2">*</span>other).into();
 <a href=#390 id=390 data-nosnippet>390</a>				<span class="kw">let </span>(result, overflow) = <span class="self">self</span>.overflowing_mul(bignum);
-<a href=#391 id=391 data-nosnippet>391</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::panic_on_overflow!</span>(<span class="macro-nonterminal">overflow</span>);
+<a href=#391 id=391 data-nosnippet>391</a>				<span class="macro-nonterminal">$crate::panic_on_overflow</span>!(overflow);
 <a href=#392 id=392 data-nosnippet>392</a>				result
 <a href=#393 id=393 data-nosnippet>393</a>			}
 <a href=#394 id=394 data-nosnippet>394</a>		}
@@ -399,7 +399,7 @@
 <a href=#399 id=399 data-nosnippet>399</a>			<span class="kw">fn </span>mul(<span class="self">self</span>, other: <span class="macro-nonterminal">$other</span>) -&gt; <span class="macro-nonterminal">$name </span>{
 <a href=#400 id=400 data-nosnippet>400</a>				<span class="kw">let </span>bignum: <span class="macro-nonterminal">$name </span>= other.into();
 <a href=#401 id=401 data-nosnippet>401</a>				<span class="kw">let </span>(result, overflow) = <span class="self">self</span>.overflowing_mul(bignum);
-<a href=#402 id=402 data-nosnippet>402</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::panic_on_overflow!</span>(<span class="macro-nonterminal">overflow</span>);
+<a href=#402 id=402 data-nosnippet>402</a>				<span class="macro-nonterminal">$crate::panic_on_overflow</span>!(overflow);
 <a href=#403 id=403 data-nosnippet>403</a>				result
 <a href=#404 id=404 data-nosnippet>404</a>			}
 <a href=#405 id=405 data-nosnippet>405</a>		}
@@ -422,7 +422,7 @@
 <a href=#422 id=422 data-nosnippet>422</a>
 <a href=#423 id=423 data-nosnippet>423</a>			<span class="kw">fn </span>mul(<span class="self">self</span>, other: <span class="macro-nonterminal">$other</span>) -&gt; <span class="macro-nonterminal">$name </span>{
 <a href=#424 id=424 data-nosnippet>424</a>				<span class="kw">let </span>(result, carry) = <span class="self">self</span>.overflowing_mul_u64(other <span class="kw">as </span>u64);
-<a href=#425 id=425 data-nosnippet>425</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::panic_on_overflow!</span>(<span class="macro-nonterminal">carry </span>&gt; <span class="number">0</span>);
+<a href=#425 id=425 data-nosnippet>425</a>				<span class="macro-nonterminal">$crate::panic_on_overflow</span>!(carry &gt; <span class="number">0</span>);
 <a href=#426 id=426 data-nosnippet>426</a>				result
 <a href=#427 id=427 data-nosnippet>427</a>			}
 <a href=#428 id=428 data-nosnippet>428</a>		}
@@ -432,7 +432,7 @@
 <a href=#432 id=432 data-nosnippet>432</a>
 <a href=#433 id=433 data-nosnippet>433</a>			<span class="kw">fn </span>mul(<span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="macro-nonterminal">$other</span>) -&gt; <span class="macro-nonterminal">$name </span>{
 <a href=#434 id=434 data-nosnippet>434</a>				<span class="kw">let </span>(result, carry) = <span class="self">self</span>.overflowing_mul_u64(<span class="kw-2">*</span>other <span class="kw">as </span>u64);
-<a href=#435 id=435 data-nosnippet>435</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::panic_on_overflow!</span>(<span class="macro-nonterminal">carry </span>&gt; <span class="number">0</span>);
+<a href=#435 id=435 data-nosnippet>435</a>				<span class="macro-nonterminal">$crate::panic_on_overflow</span>!(carry &gt; <span class="number">0</span>);
 <a href=#436 id=436 data-nosnippet>436</a>				result
 <a href=#437 id=437 data-nosnippet>437</a>			}
 <a href=#438 id=438 data-nosnippet>438</a>		}
@@ -442,7 +442,7 @@
 <a href=#442 id=442 data-nosnippet>442</a>
 <a href=#443 id=443 data-nosnippet>443</a>			<span class="kw">fn </span>mul(<span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="macro-nonterminal">$other</span>) -&gt; <span class="macro-nonterminal">$name </span>{
 <a href=#444 id=444 data-nosnippet>444</a>				<span class="kw">let </span>(result, carry) = <span class="self">self</span>.overflowing_mul_u64(<span class="kw-2">*</span>other <span class="kw">as </span>u64);
-<a href=#445 id=445 data-nosnippet>445</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::panic_on_overflow!</span>(<span class="macro-nonterminal">carry </span>&gt; <span class="number">0</span>);
+<a href=#445 id=445 data-nosnippet>445</a>				<span class="macro-nonterminal">$crate::panic_on_overflow</span>!(carry &gt; <span class="number">0</span>);
 <a href=#446 id=446 data-nosnippet>446</a>				result
 <a href=#447 id=447 data-nosnippet>447</a>			}
 <a href=#448 id=448 data-nosnippet>448</a>		}
@@ -452,7 +452,7 @@
 <a href=#452 id=452 data-nosnippet>452</a>
 <a href=#453 id=453 data-nosnippet>453</a>			<span class="kw">fn </span>mul(<span class="self">self</span>, other: <span class="macro-nonterminal">$other</span>) -&gt; <span class="macro-nonterminal">$name </span>{
 <a href=#454 id=454 data-nosnippet>454</a>				<span class="kw">let </span>(result, carry) = <span class="self">self</span>.overflowing_mul_u64(other <span class="kw">as </span>u64);
-<a href=#455 id=455 data-nosnippet>455</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::panic_on_overflow!</span>(<span class="macro-nonterminal">carry </span>&gt; <span class="number">0</span>);
+<a href=#455 id=455 data-nosnippet>455</a>				<span class="macro-nonterminal">$crate::panic_on_overflow</span>!(carry &gt; <span class="number">0</span>);
 <a href=#456 id=456 data-nosnippet>456</a>				result
 <a href=#457 id=457 data-nosnippet>457</a>			}
 <a href=#458 id=458 data-nosnippet>458</a>		}
@@ -469,11 +469,11 @@
 <a href=#469 id=469 data-nosnippet>469</a><span class="attr">#[macro_export]
 <a href=#470 id=470 data-nosnippet>470</a></span><span class="macro">macro_rules!</span> construct_uint {
 <a href=#471 id=471 data-nosnippet>471</a>	( $(<span class="attr">#[<span class="macro-nonterminal">$attr</span>:meta]</span>)* <span class="macro-nonterminal">$visibility</span>:vis <span class="kw">struct </span><span class="macro-nonterminal">$name</span>:ident (<span class="number">1</span>); ) =&gt; {
-<a href=#472 id=472 data-nosnippet>472</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::construct_uint!</span>{ @<span class="macro-nonterminal">construct </span>$(<span class="attr">#[<span class="macro-nonterminal">$attr</span>]</span>)* <span class="macro-nonterminal">$visibility </span><span class="kw">struct </span><span class="macro-nonterminal">$name </span>(<span class="number">1</span>); }
+<a href=#472 id=472 data-nosnippet>472</a>		<span class="macro-nonterminal">$crate::construct_uint</span>!{ @construct $(<span class="attr">#[<span class="macro-nonterminal">$attr</span>]</span>)* <span class="macro-nonterminal">$visibility </span><span class="kw">struct </span><span class="macro-nonterminal">$name </span>(<span class="number">1</span>); }
 <a href=#473 id=473 data-nosnippet>473</a>	};
 <a href=#474 id=474 data-nosnippet>474</a>
 <a href=#475 id=475 data-nosnippet>475</a>	( $(<span class="attr">#[<span class="macro-nonterminal">$attr</span>:meta]</span>)* <span class="macro-nonterminal">$visibility</span>:vis <span class="kw">struct </span><span class="macro-nonterminal">$name</span>:ident ( <span class="macro-nonterminal">$n_words</span>:tt ); ) =&gt; {
-<a href=#476 id=476 data-nosnippet>476</a>			<span class="macro-nonterminal">$</span><span class="macro">crate::construct_uint!</span> { @<span class="macro-nonterminal">construct </span>$(<span class="attr">#[<span class="macro-nonterminal">$attr</span>]</span>)* <span class="macro-nonterminal">$visibility </span><span class="kw">struct </span><span class="macro-nonterminal">$name </span>(<span class="macro-nonterminal">$n_words</span>); }
+<a href=#476 id=476 data-nosnippet>476</a>			<span class="macro-nonterminal">$crate::construct_uint</span>! { @construct $(<span class="attr">#[<span class="macro-nonterminal">$attr</span>]</span>)* <span class="macro-nonterminal">$visibility </span><span class="kw">struct </span><span class="macro-nonterminal">$name </span>(<span class="macro-nonterminal">$n_words</span>); }
 <a href=#477 id=477 data-nosnippet>477</a>
 <a href=#478 id=478 data-nosnippet>478</a>			<span class="kw">impl </span><span class="macro-nonterminal">$crate::core_::convert::From</span>&lt;u128&gt; <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
 <a href=#479 id=479 data-nosnippet>479</a>				<span class="kw">fn </span>from(value: u128) -&gt; <span class="macro-nonterminal">$name </span>{
@@ -955,7 +955,7 @@
 <a href=#955 id=955 data-nosnippet>955</a>				<span class="kw">let </span>my_bits = <span class="self">self</span>.bits();
 <a href=#956 id=956 data-nosnippet>956</a>				<span class="kw">let </span>your_bits = other.bits();
 <a href=#957 id=957 data-nosnippet>957</a>
-<a href=#958 id=958 data-nosnippet>958</a>				<span class="macro">assert!</span>(your_bits != <span class="number">0</span>, <span class="string">"division by zero"</span>);
+<a href=#958 id=958 data-nosnippet>958</a>				<span class="macro">assert!</span>(<span class="macro">your_bits !</span>= <span class="number">0</span>, <span class="string">"division by zero"</span>);
 <a href=#959 id=959 data-nosnippet>959</a>
 <a href=#960 id=960 data-nosnippet>960</a>				<span class="comment">// Early return in case we are dividing by a larger number than us
 <a href=#961 id=961 data-nosnippet>961</a>				</span><span class="kw">if </span>my_bits &lt; your_bits {
@@ -1042,15 +1042,15 @@
 <a href=#1042 id=1042 data-nosnippet>1042</a>
 <a href=#1043 id=1043 data-nosnippet>1043</a>				<span class="kw">while </span>n &gt; u_one {
 <a href=#1044 id=1044 data-nosnippet>1044</a>					<span class="kw">if </span>is_even(<span class="kw-2">&amp;</span>n) {
-<a href=#1045 id=1045 data-nosnippet>1045</a>						x = <span class="macro-nonterminal">$</span><span class="macro">crate::overflowing!</span>(<span class="macro-nonterminal">x</span>.overflowing_mul(x), overflow);
+<a href=#1045 id=1045 data-nosnippet>1045</a>						x = <span class="macro-nonterminal">$crate::overflowing</span>!(x.overflowing_mul(x), overflow);
 <a href=#1046 id=1046 data-nosnippet>1046</a>						n &gt;&gt;= <span class="number">1usize</span>;
 <a href=#1047 id=1047 data-nosnippet>1047</a>					} <span class="kw">else </span>{
-<a href=#1048 id=1048 data-nosnippet>1048</a>						y = <span class="macro-nonterminal">$</span><span class="macro">crate::overflowing!</span>(<span class="macro-nonterminal">x</span>.overflowing_mul(y), overflow);
-<a href=#1049 id=1049 data-nosnippet>1049</a>						x = <span class="macro-nonterminal">$</span><span class="macro">crate::overflowing!</span>(<span class="macro-nonterminal">x</span>.overflowing_mul(x), overflow);
+<a href=#1048 id=1048 data-nosnippet>1048</a>						y = <span class="macro-nonterminal">$crate::overflowing</span>!(x.overflowing_mul(y), overflow);
+<a href=#1049 id=1049 data-nosnippet>1049</a>						x = <span class="macro-nonterminal">$crate::overflowing</span>!(x.overflowing_mul(x), overflow);
 <a href=#1050 id=1050 data-nosnippet>1050</a>						n = (n - u_one) &gt;&gt; <span class="number">1usize</span>;
 <a href=#1051 id=1051 data-nosnippet>1051</a>					}
 <a href=#1052 id=1052 data-nosnippet>1052</a>				}
-<a href=#1053 id=1053 data-nosnippet>1053</a>				<span class="kw">let </span>res = <span class="macro-nonterminal">$</span><span class="macro">crate::overflowing!</span>(<span class="macro-nonterminal">x</span>.overflowing_mul(y), overflow);
+<a href=#1053 id=1053 data-nosnippet>1053</a>				<span class="kw">let </span>res = <span class="macro-nonterminal">$crate::overflowing</span>!(x.overflowing_mul(y), overflow);
 <a href=#1054 id=1054 data-nosnippet>1054</a>				(res, overflow)
 <a href=#1055 id=1055 data-nosnippet>1055</a>			}
 <a href=#1056 id=1056 data-nosnippet>1056</a>
@@ -1065,7 +1065,7 @@
 <a href=#1065 id=1065 data-nosnippet>1065</a>			<span class="doccomment">/// Addition which overflows and returns a flag if it does.
 <a href=#1066 id=1066 data-nosnippet>1066</a>			</span><span class="attr">#[inline(always)]
 <a href=#1067 id=1067 data-nosnippet>1067</a>			</span><span class="kw">pub fn </span>overflowing_add(<span class="self">self</span>, other: <span class="macro-nonterminal">$name</span>) -&gt; (<span class="macro-nonterminal">$name</span>, bool) {
-<a href=#1068 id=1068 data-nosnippet>1068</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::uint_overflowing_binop!</span>(
+<a href=#1068 id=1068 data-nosnippet>1068</a>				<span class="macro-nonterminal">$crate::uint_overflowing_binop</span>!(
 <a href=#1069 id=1069 data-nosnippet>1069</a>					<span class="macro-nonterminal">$name</span>,
 <a href=#1070 id=1070 data-nosnippet>1070</a>					<span class="macro-nonterminal">$n_words</span>,
 <a href=#1071 id=1071 data-nosnippet>1071</a>					<span class="self">self</span>,
@@ -1093,7 +1093,7 @@
 <a href=#1093 id=1093 data-nosnippet>1093</a>			<span class="doccomment">/// Subtraction which underflows and returns a flag if it does.
 <a href=#1094 id=1094 data-nosnippet>1094</a>			</span><span class="attr">#[inline(always)]
 <a href=#1095 id=1095 data-nosnippet>1095</a>			</span><span class="kw">pub fn </span>overflowing_sub(<span class="self">self</span>, other: <span class="macro-nonterminal">$name</span>) -&gt; (<span class="macro-nonterminal">$name</span>, bool) {
-<a href=#1096 id=1096 data-nosnippet>1096</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::uint_overflowing_binop!</span>(
+<a href=#1096 id=1096 data-nosnippet>1096</a>				<span class="macro-nonterminal">$crate::uint_overflowing_binop</span>!(
 <a href=#1097 id=1097 data-nosnippet>1097</a>					<span class="macro-nonterminal">$name</span>,
 <a href=#1098 id=1098 data-nosnippet>1098</a>					<span class="macro-nonterminal">$n_words</span>,
 <a href=#1099 id=1099 data-nosnippet>1099</a>					<span class="self">self</span>,
@@ -1130,7 +1130,7 @@
 <a href=#1130 id=1130 data-nosnippet>1130</a>			<span class="doccomment">/// Multiply with overflow, returning a flag if it does.
 <a href=#1131 id=1131 data-nosnippet>1131</a>			</span><span class="attr">#[inline(always)]
 <a href=#1132 id=1132 data-nosnippet>1132</a>			</span><span class="kw">pub fn </span>overflowing_mul(<span class="self">self</span>, other: <span class="macro-nonterminal">$name</span>) -&gt; (<span class="macro-nonterminal">$name</span>, bool) {
-<a href=#1133 id=1133 data-nosnippet>1133</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::uint_overflowing_mul!</span>(<span class="macro-nonterminal">$name</span>, <span class="macro-nonterminal">$n_words</span>, <span class="self">self</span>, other)
+<a href=#1133 id=1133 data-nosnippet>1133</a>				<span class="macro-nonterminal">$crate::uint_overflowing_mul</span>!(<span class="macro-nonterminal">$name</span>, <span class="macro-nonterminal">$n_words</span>, <span class="self">self</span>, other)
 <a href=#1134 id=1134 data-nosnippet>1134</a>			}
 <a href=#1135 id=1135 data-nosnippet>1135</a>
 <a href=#1136 id=1136 data-nosnippet>1136</a>			<span class="doccomment">/// Multiplication which saturates at the maximum value..
@@ -1298,7 +1298,7 @@
 <a href=#1298 id=1298 data-nosnippet>1298</a>						<span class="comment">// nibble &lt; 16
 <a href=#1299 id=1299 data-nosnippet>1299</a>						</span><span class="kw">let </span>nibble = (ch &amp; (<span class="number">15u64 </span>&lt;&lt; ((<span class="number">15 </span>- x) * <span class="number">4</span>) <span class="kw">as </span>u64)) &gt;&gt; (((<span class="number">15 </span>- x) * <span class="number">4</span>) <span class="kw">as </span>u64);
 <a href=#1300 id=1300 data-nosnippet>1300</a>						<span class="kw">if </span>!latch {
-<a href=#1301 id=1301 data-nosnippet>1301</a>							latch = nibble != <span class="number">0</span>;
+<a href=#1301 id=1301 data-nosnippet>1301</a>							latch = <span class="macro">nibble !</span>= <span class="number">0</span>;
 <a href=#1302 id=1302 data-nosnippet>1302</a>						}
 <a href=#1303 id=1303 data-nosnippet>1303</a>
 <a href=#1304 id=1304 data-nosnippet>1304</a>						<span class="kw">if </span>latch {
@@ -1336,10 +1336,10 @@
 <a href=#1336 id=1336 data-nosnippet>1336</a>			}
 <a href=#1337 id=1337 data-nosnippet>1337</a>		}
 <a href=#1338 id=1338 data-nosnippet>1338</a>
-<a href=#1339 id=1339 data-nosnippet>1339</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_map_from!</span>(<span class="macro-nonterminal">$name</span>, u8, u64);
-<a href=#1340 id=1340 data-nosnippet>1340</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_map_from!</span>(<span class="macro-nonterminal">$name</span>, u16, u64);
-<a href=#1341 id=1341 data-nosnippet>1341</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_map_from!</span>(<span class="macro-nonterminal">$name</span>, u32, u64);
-<a href=#1342 id=1342 data-nosnippet>1342</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_map_from!</span>(<span class="macro-nonterminal">$name</span>, usize, u64);
+<a href=#1339 id=1339 data-nosnippet>1339</a>		<span class="macro-nonterminal">$crate::impl_map_from</span>!(<span class="macro-nonterminal">$name</span>, u8, u64);
+<a href=#1340 id=1340 data-nosnippet>1340</a>		<span class="macro-nonterminal">$crate::impl_map_from</span>!(<span class="macro-nonterminal">$name</span>, u16, u64);
+<a href=#1341 id=1341 data-nosnippet>1341</a>		<span class="macro-nonterminal">$crate::impl_map_from</span>!(<span class="macro-nonterminal">$name</span>, u32, u64);
+<a href=#1342 id=1342 data-nosnippet>1342</a>		<span class="macro-nonterminal">$crate::impl_map_from</span>!(<span class="macro-nonterminal">$name</span>, usize, u64);
 <a href=#1343 id=1343 data-nosnippet>1343</a>
 <a href=#1344 id=1344 data-nosnippet>1344</a>		<span class="kw">impl </span><span class="macro-nonterminal">$crate::core_::convert::From</span>&lt;i64&gt; <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
 <a href=#1345 id=1345 data-nosnippet>1345</a>			<span class="kw">fn </span>from(value: i64) -&gt; <span class="macro-nonterminal">$name </span>{
@@ -1350,28 +1350,28 @@
 <a href=#1350 id=1350 data-nosnippet>1350</a>			}
 <a href=#1351 id=1351 data-nosnippet>1351</a>		}
 <a href=#1352 id=1352 data-nosnippet>1352</a>
-<a href=#1353 id=1353 data-nosnippet>1353</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_map_from!</span>(<span class="macro-nonterminal">$name</span>, i8, i64);
-<a href=#1354 id=1354 data-nosnippet>1354</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_map_from!</span>(<span class="macro-nonterminal">$name</span>, i16, i64);
-<a href=#1355 id=1355 data-nosnippet>1355</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_map_from!</span>(<span class="macro-nonterminal">$name</span>, i32, i64);
-<a href=#1356 id=1356 data-nosnippet>1356</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_map_from!</span>(<span class="macro-nonterminal">$name</span>, isize, i64);
+<a href=#1353 id=1353 data-nosnippet>1353</a>		<span class="macro-nonterminal">$crate::impl_map_from</span>!(<span class="macro-nonterminal">$name</span>, i8, i64);
+<a href=#1354 id=1354 data-nosnippet>1354</a>		<span class="macro-nonterminal">$crate::impl_map_from</span>!(<span class="macro-nonterminal">$name</span>, i16, i64);
+<a href=#1355 id=1355 data-nosnippet>1355</a>		<span class="macro-nonterminal">$crate::impl_map_from</span>!(<span class="macro-nonterminal">$name</span>, i32, i64);
+<a href=#1356 id=1356 data-nosnippet>1356</a>		<span class="macro-nonterminal">$crate::impl_map_from</span>!(<span class="macro-nonterminal">$name</span>, isize, i64);
 <a href=#1357 id=1357 data-nosnippet>1357</a>
-<a href=#1358 id=1358 data-nosnippet>1358</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_try_from_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, u8);
-<a href=#1359 id=1359 data-nosnippet>1359</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_try_from_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, u16);
-<a href=#1360 id=1360 data-nosnippet>1360</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_try_from_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, u32);
-<a href=#1361 id=1361 data-nosnippet>1361</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_try_from_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, usize);
-<a href=#1362 id=1362 data-nosnippet>1362</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_try_from_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, u64);
-<a href=#1363 id=1363 data-nosnippet>1363</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_try_from_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, i8);
-<a href=#1364 id=1364 data-nosnippet>1364</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_try_from_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, i16);
-<a href=#1365 id=1365 data-nosnippet>1365</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_try_from_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, i32);
-<a href=#1366 id=1366 data-nosnippet>1366</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_try_from_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, isize);
-<a href=#1367 id=1367 data-nosnippet>1367</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_try_from_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, i64);
+<a href=#1358 id=1358 data-nosnippet>1358</a>		<span class="macro-nonterminal">$crate::impl_try_from_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, u8);
+<a href=#1359 id=1359 data-nosnippet>1359</a>		<span class="macro-nonterminal">$crate::impl_try_from_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, u16);
+<a href=#1360 id=1360 data-nosnippet>1360</a>		<span class="macro-nonterminal">$crate::impl_try_from_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, u32);
+<a href=#1361 id=1361 data-nosnippet>1361</a>		<span class="macro-nonterminal">$crate::impl_try_from_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, usize);
+<a href=#1362 id=1362 data-nosnippet>1362</a>		<span class="macro-nonterminal">$crate::impl_try_from_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, u64);
+<a href=#1363 id=1363 data-nosnippet>1363</a>		<span class="macro-nonterminal">$crate::impl_try_from_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, i8);
+<a href=#1364 id=1364 data-nosnippet>1364</a>		<span class="macro-nonterminal">$crate::impl_try_from_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, i16);
+<a href=#1365 id=1365 data-nosnippet>1365</a>		<span class="macro-nonterminal">$crate::impl_try_from_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, i32);
+<a href=#1366 id=1366 data-nosnippet>1366</a>		<span class="macro-nonterminal">$crate::impl_try_from_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, isize);
+<a href=#1367 id=1367 data-nosnippet>1367</a>		<span class="macro-nonterminal">$crate::impl_try_from_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, i64);
 <a href=#1368 id=1368 data-nosnippet>1368</a>
 <a href=#1369 id=1369 data-nosnippet>1369</a>		<span class="kw">impl</span>&lt;T&gt; <span class="macro-nonterminal">$crate::core_::ops::Add</span>&lt;T&gt; <span class="kw">for </span><span class="macro-nonterminal">$name </span><span class="kw">where </span>T: Into&lt;<span class="macro-nonterminal">$name</span>&gt; {
 <a href=#1370 id=1370 data-nosnippet>1370</a>			<span class="kw">type </span>Output = <span class="macro-nonterminal">$name</span>;
 <a href=#1371 id=1371 data-nosnippet>1371</a>
 <a href=#1372 id=1372 data-nosnippet>1372</a>			<span class="kw">fn </span>add(<span class="self">self</span>, other: T) -&gt; <span class="macro-nonterminal">$name </span>{
 <a href=#1373 id=1373 data-nosnippet>1373</a>				<span class="kw">let </span>(result, overflow) = <span class="self">self</span>.overflowing_add(other.into());
-<a href=#1374 id=1374 data-nosnippet>1374</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::panic_on_overflow!</span>(<span class="macro-nonterminal">overflow</span>);
+<a href=#1374 id=1374 data-nosnippet>1374</a>				<span class="macro-nonterminal">$crate::panic_on_overflow</span>!(overflow);
 <a href=#1375 id=1375 data-nosnippet>1375</a>				result
 <a href=#1376 id=1376 data-nosnippet>1376</a>			}
 <a href=#1377 id=1377 data-nosnippet>1377</a>		}
@@ -1387,7 +1387,7 @@
 <a href=#1387 id=1387 data-nosnippet>1387</a>		<span class="kw">impl </span><span class="macro-nonterminal">$crate::core_::ops::AddAssign</span>&lt;<span class="macro-nonterminal">$name</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
 <a href=#1388 id=1388 data-nosnippet>1388</a>			<span class="kw">fn </span>add_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$name</span>) {
 <a href=#1389 id=1389 data-nosnippet>1389</a>				<span class="kw">let </span>(result, overflow) = <span class="self">self</span>.overflowing_add(other);
-<a href=#1390 id=1390 data-nosnippet>1390</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::panic_on_overflow!</span>(<span class="macro-nonterminal">overflow</span>);
+<a href=#1390 id=1390 data-nosnippet>1390</a>				<span class="macro-nonterminal">$crate::panic_on_overflow</span>!(overflow);
 <a href=#1391 id=1391 data-nosnippet>1391</a>				<span class="kw-2">*</span><span class="self">self </span>= result
 <a href=#1392 id=1392 data-nosnippet>1392</a>			}
 <a href=#1393 id=1393 data-nosnippet>1393</a>		}
@@ -1398,7 +1398,7 @@
 <a href=#1398 id=1398 data-nosnippet>1398</a>			<span class="attr">#[inline]
 <a href=#1399 id=1399 data-nosnippet>1399</a>			</span><span class="kw">fn </span>sub(<span class="self">self</span>, other: T) -&gt; <span class="macro-nonterminal">$name </span>{
 <a href=#1400 id=1400 data-nosnippet>1400</a>				<span class="kw">let </span>(result, overflow) = <span class="self">self</span>.overflowing_sub(other.into());
-<a href=#1401 id=1401 data-nosnippet>1401</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::panic_on_overflow!</span>(<span class="macro-nonterminal">overflow</span>);
+<a href=#1401 id=1401 data-nosnippet>1401</a>				<span class="macro-nonterminal">$crate::panic_on_overflow</span>!(overflow);
 <a href=#1402 id=1402 data-nosnippet>1402</a>				result
 <a href=#1403 id=1403 data-nosnippet>1403</a>			}
 <a href=#1404 id=1404 data-nosnippet>1404</a>		}
@@ -1414,23 +1414,23 @@
 <a href=#1414 id=1414 data-nosnippet>1414</a>		<span class="kw">impl </span><span class="macro-nonterminal">$crate::core_::ops::SubAssign</span>&lt;<span class="macro-nonterminal">$name</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$name </span>{
 <a href=#1415 id=1415 data-nosnippet>1415</a>			<span class="kw">fn </span>sub_assign(<span class="kw-2">&amp;mut </span><span class="self">self</span>, other: <span class="macro-nonterminal">$name</span>) {
 <a href=#1416 id=1416 data-nosnippet>1416</a>				<span class="kw">let </span>(result, overflow) = <span class="self">self</span>.overflowing_sub(other);
-<a href=#1417 id=1417 data-nosnippet>1417</a>				<span class="macro-nonterminal">$</span><span class="macro">crate::panic_on_overflow!</span>(<span class="macro-nonterminal">overflow</span>);
+<a href=#1417 id=1417 data-nosnippet>1417</a>				<span class="macro-nonterminal">$crate::panic_on_overflow</span>!(overflow);
 <a href=#1418 id=1418 data-nosnippet>1418</a>				<span class="kw-2">*</span><span class="self">self </span>= result
 <a href=#1419 id=1419 data-nosnippet>1419</a>			}
 <a href=#1420 id=1420 data-nosnippet>1420</a>		}
 <a href=#1421 id=1421 data-nosnippet>1421</a>
 <a href=#1422 id=1422 data-nosnippet>1422</a>		<span class="comment">// all other impls
-<a href=#1423 id=1423 data-nosnippet>1423</a>		</span><span class="macro-nonterminal">$</span><span class="macro">crate::impl_mul_from!</span>(<span class="macro-nonterminal">$name</span>, <span class="macro-nonterminal">$name</span>);
-<a href=#1424 id=1424 data-nosnippet>1424</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_mul_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, u8);
-<a href=#1425 id=1425 data-nosnippet>1425</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_mul_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, u16);
-<a href=#1426 id=1426 data-nosnippet>1426</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_mul_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, u32);
-<a href=#1427 id=1427 data-nosnippet>1427</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_mul_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, u64);
-<a href=#1428 id=1428 data-nosnippet>1428</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_mul_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, usize);
-<a href=#1429 id=1429 data-nosnippet>1429</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_mul_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, i8);
-<a href=#1430 id=1430 data-nosnippet>1430</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_mul_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, i16);
-<a href=#1431 id=1431 data-nosnippet>1431</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_mul_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, i32);
-<a href=#1432 id=1432 data-nosnippet>1432</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_mul_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, i64);
-<a href=#1433 id=1433 data-nosnippet>1433</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_mul_for_primitive!</span>(<span class="macro-nonterminal">$name</span>, isize);
+<a href=#1423 id=1423 data-nosnippet>1423</a>		</span><span class="macro-nonterminal">$crate::impl_mul_from</span>!(<span class="macro-nonterminal">$name</span>, <span class="macro-nonterminal">$name</span>);
+<a href=#1424 id=1424 data-nosnippet>1424</a>		<span class="macro-nonterminal">$crate::impl_mul_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, u8);
+<a href=#1425 id=1425 data-nosnippet>1425</a>		<span class="macro-nonterminal">$crate::impl_mul_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, u16);
+<a href=#1426 id=1426 data-nosnippet>1426</a>		<span class="macro-nonterminal">$crate::impl_mul_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, u32);
+<a href=#1427 id=1427 data-nosnippet>1427</a>		<span class="macro-nonterminal">$crate::impl_mul_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, u64);
+<a href=#1428 id=1428 data-nosnippet>1428</a>		<span class="macro-nonterminal">$crate::impl_mul_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, usize);
+<a href=#1429 id=1429 data-nosnippet>1429</a>		<span class="macro-nonterminal">$crate::impl_mul_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, i8);
+<a href=#1430 id=1430 data-nosnippet>1430</a>		<span class="macro-nonterminal">$crate::impl_mul_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, i16);
+<a href=#1431 id=1431 data-nosnippet>1431</a>		<span class="macro-nonterminal">$crate::impl_mul_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, i32);
+<a href=#1432 id=1432 data-nosnippet>1432</a>		<span class="macro-nonterminal">$crate::impl_mul_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, i64);
+<a href=#1433 id=1433 data-nosnippet>1433</a>		<span class="macro-nonterminal">$crate::impl_mul_for_primitive</span>!(<span class="macro-nonterminal">$name</span>, isize);
 <a href=#1434 id=1434 data-nosnippet>1434</a>
 <a href=#1435 id=1435 data-nosnippet>1435</a>		<span class="kw">impl</span>&lt;T&gt; <span class="macro-nonterminal">$crate::core_::ops::Div</span>&lt;T&gt; <span class="kw">for </span><span class="macro-nonterminal">$name </span><span class="kw">where </span>T: Into&lt;<span class="macro-nonterminal">$name</span>&gt; {
 <a href=#1436 id=1436 data-nosnippet>1436</a>			<span class="kw">type </span>Output = <span class="macro-nonterminal">$name</span>;
@@ -1655,7 +1655,7 @@
 <a href=#1655 id=1655 data-nosnippet>1655</a>		<span class="kw">impl </span><span class="macro-nonterminal">$crate::core_::fmt::Display </span><span class="kw">for </span><span class="macro-nonterminal">$name </span>{
 <a href=#1656 id=1656 data-nosnippet>1656</a>			<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span><span class="macro-nonterminal">$crate::core_::fmt::Formatter</span>) -&gt; <span class="macro-nonterminal">$crate::core_::fmt::Result </span>{
 <a href=#1657 id=1657 data-nosnippet>1657</a>				<span class="kw">if </span><span class="self">self</span>.is_zero() {
-<a href=#1658 id=1658 data-nosnippet>1658</a>					<span class="kw">return </span><span class="macro-nonterminal">$</span><span class="macro">crate::core_::write!</span>(<span class="macro-nonterminal">f</span>, <span class="string">"0"</span>);
+<a href=#1658 id=1658 data-nosnippet>1658</a>					<span class="kw">return </span><span class="macro-nonterminal">$crate::core_::write</span>!(f, <span class="string">"0"</span>);
 <a href=#1659 id=1659 data-nosnippet>1659</a>				}
 <a href=#1660 id=1660 data-nosnippet>1660</a>
 <a href=#1661 id=1661 data-nosnippet>1661</a>				<span class="kw">let </span><span class="kw-2">mut </span>buf = [<span class="number">0_u8</span>; <span class="macro-nonterminal">$n_words</span><span class="kw-2">*</span><span class="number">20</span>];
@@ -1736,8 +1736,8 @@
 <a href=#1736 id=1736 data-nosnippet>1736</a>
 <a href=#1737 id=1737 data-nosnippet>1737</a>		<span class="comment">// `$n_words * 8` because macro expects bytes and
 <a href=#1738 id=1738 data-nosnippet>1738</a>		// uints use 64 bit (8 byte) words
-<a href=#1739 id=1739 data-nosnippet>1739</a>		</span><span class="macro-nonterminal">$</span><span class="macro">crate::impl_quickcheck_arbitrary_for_uint!</span>(<span class="macro-nonterminal">$name</span>, (<span class="macro-nonterminal">$n_words </span>* <span class="number">8</span>));
-<a href=#1740 id=1740 data-nosnippet>1740</a>		<span class="macro-nonterminal">$</span><span class="macro">crate::impl_arbitrary_for_uint!</span>(<span class="macro-nonterminal">$name</span>, (<span class="macro-nonterminal">$n_words </span>* <span class="number">8</span>));
+<a href=#1739 id=1739 data-nosnippet>1739</a>		</span><span class="macro-nonterminal">$crate::impl_quickcheck_arbitrary_for_uint</span>!(<span class="macro-nonterminal">$name</span>, (<span class="macro-nonterminal">$n_words </span>* <span class="number">8</span>));
+<a href=#1740 id=1740 data-nosnippet>1740</a>		<span class="macro-nonterminal">$crate::impl_arbitrary_for_uint</span>!(<span class="macro-nonterminal">$name</span>, (<span class="macro-nonterminal">$n_words </span>* <span class="number">8</span>));
 <a href=#1741 id=1741 data-nosnippet>1741</a>	}
 <a href=#1742 id=1742 data-nosnippet>1742</a>}
 <a href=#1743 id=1743 data-nosnippet>1743</a>
@@ -1807,4 +1807,5 @@
 <a href=#1807 id=1807 data-nosnippet>1807</a>#[doc(hidden)]
 <a href=#1808 id=1808 data-nosnippet>1808</a></span><span class="macro">macro_rules!</span> impl_arbitrary_for_uint {
 <a href=#1809 id=1809 data-nosnippet>1809</a>	(<span class="macro-nonterminal">$uint</span>: ty, <span class="macro-nonterminal">$n_bytes</span>: tt) =&gt; {};
-<a href=#1810 id=1810 data-nosnippet>1810</a>}</code></pre></div></section></main></body></html>
+<a href=#1810 id=1810 data-nosnippet>1810</a>}
+</code></pre></div></section></main></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/yasna-0.5.2/src/reader/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="yasna" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">yasna/reader/</div>mod.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2016 Masaki Hara
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/yasna-0.5.2/src/reader/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="yasna" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">yasna/reader/</div>mod.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2016 Masaki Hara
 <a href=#2 id=2 data-nosnippet>2</a>// Copyright 2017,2019 Fortanix, Inc.
 <a href=#3 id=3 data-nosnippet>3</a>//
 <a href=#4 id=4 data-nosnippet>4</a>// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or
@@ -158,7 +158,7 @@
 <a href=#158 id=158 data-nosnippet>158</a>    }
 <a href=#159 id=159 data-nosnippet>159</a>
 <a href=#160 id=160 data-nosnippet>160</a>    <span class="kw">fn </span>end_of_buf(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; ASN1Result&lt;()&gt; {
-<a href=#161 id=161 data-nosnippet>161</a>        <span class="kw">if </span><span class="self">self</span>.pos != <span class="self">self</span>.buf.len() {
+<a href=#161 id=161 data-nosnippet>161</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">pos !</span>= <span class="self">self</span>.buf.len() {
 <a href=#162 id=162 data-nosnippet>162</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(ASN1Error::new(ASN1ErrorKind::Extra));
 <a href=#163 id=163 data-nosnippet>163</a>        }
 <a href=#164 id=164 data-nosnippet>164</a>        <span class="kw">return </span><span class="prelude-val">Ok</span>(());
@@ -166,11 +166,11 @@
 <a href=#166 id=166 data-nosnippet>166</a>
 <a href=#167 id=167 data-nosnippet>167</a>    <span class="kw">fn </span>end_of_contents(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; ASN1Result&lt;()&gt; {
 <a href=#168 id=168 data-nosnippet>168</a>        <span class="kw">let </span>(tag, pcbit) = <span class="self">self</span>.read_identifier()<span class="question-mark">?</span>;
-<a href=#169 id=169 data-nosnippet>169</a>        <span class="kw">if </span>tag != TAG_EOC || pcbit != PCBit::Primitive {
+<a href=#169 id=169 data-nosnippet>169</a>        <span class="kw">if </span><span class="macro">tag !</span>= TAG_EOC || <span class="macro">pcbit !</span>= PCBit::Primitive {
 <a href=#170 id=170 data-nosnippet>170</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(ASN1Error::new(ASN1ErrorKind::Invalid));
 <a href=#171 id=171 data-nosnippet>171</a>        }
 <a href=#172 id=172 data-nosnippet>172</a>        <span class="kw">let </span>b = <span class="self">self</span>.read_u8()<span class="question-mark">?</span>;
-<a href=#173 id=173 data-nosnippet>173</a>        <span class="kw">if </span>b != <span class="number">0 </span>{
+<a href=#173 id=173 data-nosnippet>173</a>        <span class="kw">if </span><span class="macro">b !</span>= <span class="number">0 </span>{
 <a href=#174 id=174 data-nosnippet>174</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(ASN1Error::new(ASN1ErrorKind::Invalid));
 <a href=#175 id=175 data-nosnippet>175</a>        }
 <a href=#176 id=176 data-nosnippet>176</a>        <span class="kw">return </span><span class="prelude-val">Ok</span>(());
@@ -271,7 +271,7 @@
 <a href=#271 id=271 data-nosnippet>271</a>        }
 <a href=#272 id=272 data-nosnippet>272</a>        <span class="kw">let </span>old_pos = <span class="self">self</span>.pos;
 <a href=#273 id=273 data-nosnippet>273</a>        <span class="kw">let </span>(tag2, pcbit) = <span class="self">self</span>.read_identifier()<span class="question-mark">?</span>;
-<a href=#274 id=274 data-nosnippet>274</a>        <span class="kw">if </span>tag2 != tag {
+<a href=#274 id=274 data-nosnippet>274</a>        <span class="kw">if </span><span class="macro">tag2 !</span>= tag {
 <a href=#275 id=275 data-nosnippet>275</a>            <span class="self">self</span>.pos = old_pos;
 <a href=#276 id=276 data-nosnippet>276</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(ASN1Error::new(ASN1ErrorKind::Invalid));
 <a href=#277 id=277 data-nosnippet>277</a>        }
@@ -290,7 +290,7 @@
 <a href=#290 id=290 data-nosnippet>290</a>                <span class="self">self</span>.buf = <span class="kw-2">&amp;</span>old_buf[..limit];
 <a href=#291 id=291 data-nosnippet>291</a>            },
 <a href=#292 id=292 data-nosnippet>292</a>            <span class="prelude-val">None </span>=&gt; {
-<a href=#293 id=293 data-nosnippet>293</a>                <span class="kw">if </span>pcbit != PCBit::Constructed {
+<a href=#293 id=293 data-nosnippet>293</a>                <span class="kw">if </span><span class="macro">pcbit !</span>= PCBit::Constructed {
 <a href=#294 id=294 data-nosnippet>294</a>                    <span class="kw">return </span><span class="prelude-val">Err</span>(ASN1Error::new(ASN1ErrorKind::Invalid));
 <a href=#295 id=295 data-nosnippet>295</a>                }
 <a href=#296 id=296 data-nosnippet>296</a>                <span class="kw">if </span><span class="self">self</span>.mode == BERMode::Der {
@@ -355,7 +355,7 @@
 <a href=#355 id=355 data-nosnippet>355</a>                <span class="kw">if </span>skip_depth == <span class="number">0 </span>{
 <a href=#356 id=356 data-nosnippet>356</a>                    data_pos = <span class="prelude-val">Some</span>(<span class="self">self</span>.pos);
 <a href=#357 id=357 data-nosnippet>357</a>                }
-<a href=#358 id=358 data-nosnippet>358</a>                <span class="kw">if </span>pcbit != PCBit::Constructed || <span class="self">self</span>.mode == BERMode::Der {
+<a href=#358 id=358 data-nosnippet>358</a>                <span class="kw">if </span><span class="macro">pcbit !</span>= PCBit::Constructed || <span class="self">self</span>.mode == BERMode::Der {
 <a href=#359 id=359 data-nosnippet>359</a>                    <span class="kw">return </span><span class="prelude-val">Err</span>(ASN1Error::new(ASN1ErrorKind::Invalid));
 <a href=#360 id=360 data-nosnippet>360</a>                }
 <a href=#361 id=361 data-nosnippet>361</a>                skip_depth += <span class="number">1</span>;
@@ -458,10 +458,10 @@
 <a href=#458 id=458 data-nosnippet>458</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(ASN1Error::new(ASN1ErrorKind::Invalid));
 <a href=#459 id=459 data-nosnippet>459</a>            }
 <a href=#460 id=460 data-nosnippet>460</a>            <span class="kw">let </span>b = buf[<span class="number">0</span>];
-<a href=#461 id=461 data-nosnippet>461</a>            <span class="kw">if </span>mode == BERMode::Der &amp;&amp; b != <span class="number">0 </span>&amp;&amp; b != <span class="number">255 </span>{
+<a href=#461 id=461 data-nosnippet>461</a>            <span class="kw">if </span>mode == BERMode::Der &amp;&amp; <span class="macro">b !</span>= <span class="number">0 </span>&amp;&amp; <span class="macro">b !</span>= <span class="number">255 </span>{
 <a href=#462 id=462 data-nosnippet>462</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(ASN1Error::new(ASN1ErrorKind::Invalid));
 <a href=#463 id=463 data-nosnippet>463</a>            }
-<a href=#464 id=464 data-nosnippet>464</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(b != <span class="number">0</span>);
+<a href=#464 id=464 data-nosnippet>464</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="macro">b !</span>= <span class="number">0</span>);
 <a href=#465 id=465 data-nosnippet>465</a>        })
 <a href=#466 id=466 data-nosnippet>466</a>    }
 <a href=#467 id=467 data-nosnippet>467</a>
@@ -779,7 +779,7 @@
 <a href=#779 id=779 data-nosnippet>779</a>    <span class="kw">fn </span>read_bitvec_impl(<span class="self">self</span>, unused_bits: <span class="kw-2">&amp;mut </span>usize, bytes: <span class="kw-2">&amp;mut </span>Vec&lt;u8&gt;)
 <a href=#780 id=780 data-nosnippet>780</a>            -&gt; ASN1Result&lt;()&gt; {
 <a href=#781 id=781 data-nosnippet>781</a>        <span class="kw">use </span><span class="kw">super</span>::tags::TAG_BITSTRING;
-<a href=#782 id=782 data-nosnippet>782</a>        <span class="kw">if </span><span class="kw-2">*</span>unused_bits != <span class="number">0 </span>{
+<a href=#782 id=782 data-nosnippet>782</a>        <span class="kw">if </span><span class="kw-2">*</span><span class="macro">unused_bits !</span>= <span class="number">0 </span>{
 <a href=#783 id=783 data-nosnippet>783</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(ASN1Error::new(ASN1ErrorKind::Invalid));
 <a href=#784 id=784 data-nosnippet>784</a>        }
 <a href=#785 id=785 data-nosnippet>785</a>        <span class="kw">let </span>mode = <span class="self">self</span>.inner.mode;
@@ -1339,7 +1339,7 @@
 <a href=#1339 id=1339 data-nosnippet>1339</a>            <span class="kw">for </span><span class="kw-2">&amp;</span>byte <span class="kw">in </span>bytes.iter() {
 <a href=#1340 id=1340 data-nosnippet>1340</a>                <span class="kw">if </span>!(
 <a href=#1341 id=1341 data-nosnippet>1341</a>                    byte == <span class="string">b' ' </span>||
-<a href=#1342 id=1342 data-nosnippet>1342</a>                    (<span class="string">b'\'' </span>&lt;= byte &amp;&amp; byte &lt;= <span class="string">b':' </span>&amp;&amp; byte != <span class="string">b'*'</span>) ||
+<a href=#1342 id=1342 data-nosnippet>1342</a>                    (<span class="string">b'\'' </span>&lt;= byte &amp;&amp; byte &lt;= <span class="string">b':' </span>&amp;&amp; <span class="macro">byte !</span>= <span class="string">b'*'</span>) ||
 <a href=#1343 id=1343 data-nosnippet>1343</a>                    byte == <span class="string">b'=' </span>||
 <a href=#1344 id=1344 data-nosnippet>1344</a>                    (<span class="string">b'A' </span>&lt;= byte &amp;&amp; byte &lt;= <span class="string">b'Z'</span>) ||
 <a href=#1345 id=1345 data-nosnippet>1345</a>                    (<span class="string">b'a' </span>&lt;= byte &amp;&amp; byte &lt;= <span class="string">b'z'</span>)) {
@@ -1887,4 +1887,5 @@
 <a href=#1887 id=1887 data-nosnippet>1887</a>
 <a href=#1888 id=1888 data-nosnippet>1888</a>
 <a href=#1889 id=1889 data-nosnippet>1889</a><span class="attr">#[cfg(test)]
-<a href=#1890 id=1890 data-nosnippet>1890</a></span><span class="kw">mod </span>tests;</code></pre></div></section></main></body></html>
+<a href=#1890 id=1890 data-nosnippet>1890</a></span><span class="kw">mod </span>tests;
+</code></pre></div></section></main></body></html>

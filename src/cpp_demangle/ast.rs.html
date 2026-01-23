@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpp_demangle-0.4.5/src/ast.rs`."><title>ast.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cpp_demangle" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">cpp_demangle/</div>ast.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-5"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Abstract syntax tree types for mangled symbols.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpp_demangle-0.4.5/src/ast.rs`."><title>ast.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cpp_demangle" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">cpp_demangle/</div>ast.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-5"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Abstract syntax tree types for mangled symbols.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a></span><span class="kw">use super</span>::{DemangleNodeType, DemangleOptions, DemangleWrite, ParseOptions};
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span><span class="kw">crate</span>::error::{<span class="self">self</span>, <span class="prelude-ty">Result</span>};
@@ -619,9 +619,9 @@
 <a href=#619 id=619 data-nosnippet>619</a>            is_template_prefix_in_nested_name: <span class="bool-val">false</span>,
 <a href=#620 id=620 data-nosnippet>620</a>            is_template_argument_pack: <span class="bool-val">false</span>,
 <a href=#621 id=621 data-nosnippet>621</a>            is_explicit_obj_param: <span class="bool-val">false</span>,
-<a href=#622 id=622 data-nosnippet>622</a>            show_params: !options.no_params,
-<a href=#623 id=623 data-nosnippet>623</a>            show_return_type: !options.no_return_type,
-<a href=#624 id=624 data-nosnippet>624</a>            show_expression_literal_types: !options.hide_expression_literal_types,
+<a href=#622 id=622 data-nosnippet>622</a>            <span class="macro">show_params: !</span>options.no_params,
+<a href=#623 id=623 data-nosnippet>623</a>            <span class="macro">show_return_type: !</span>options.no_return_type,
+<a href=#624 id=624 data-nosnippet>624</a>            <span class="macro">show_expression_literal_types: !</span>options.hide_expression_literal_types,
 <a href=#625 id=625 data-nosnippet>625</a>            state: Cell::new(DemangleState { recursion_level: <span class="number">0 </span>}),
 <a href=#626 id=626 data-nosnippet>626</a>        }
 <a href=#627 id=627 data-nosnippet>627</a>    }
@@ -2137,7 +2137,7 @@
 <a href=#2137 id=2137 data-nosnippet>2137</a>        }
 <a href=#2138 id=2138 data-nosnippet>2138</a>
 <a href=#2139 id=2139 data-nosnippet>2139</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(cv_qualifiers) = <span class="self">self</span>.cv_qualifiers() {
-<a href=#2140 id=2140 data-nosnippet>2140</a>            <span class="kw">if </span>cv_qualifiers != <span class="kw-2">&amp;</span>CvQualifiers::default() &amp;&amp; ctx.show_params {
+<a href=#2140 id=2140 data-nosnippet>2140</a>            <span class="kw">if </span><span class="macro">cv_qualifiers !</span>= <span class="kw-2">&amp;</span>CvQualifiers::default() &amp;&amp; ctx.show_params {
 <a href=#2141 id=2141 data-nosnippet>2141</a>                cv_qualifiers.demangle(ctx, scope)<span class="question-mark">?</span>;
 <a href=#2142 id=2142 data-nosnippet>2142</a>            }
 <a href=#2143 id=2143 data-nosnippet>2143</a>        }
@@ -5264,7 +5264,7 @@
 <a href=#5264 id=5264 data-nosnippet>5264</a>    ) -&gt; fmt::Result {
 <a href=#5265 id=5265 data-nosnippet>5265</a>        <span class="kw">let </span>ctx = <span class="macro">try_begin_demangle_as_inner!</span>(<span class="self">self</span>, ctx, scope);
 <a href=#5266 id=5266 data-nosnippet>5266</a>
-<a href=#5267 id=5267 data-nosnippet>5267</a>        <span class="kw">if </span>ctx.last_char_written != <span class="prelude-val">Some</span>(<span class="string">'('</span>) {
+<a href=#5267 id=5267 data-nosnippet>5267</a>        <span class="kw">if </span>ctx.<span class="macro">last_char_written !</span>= <span class="prelude-val">Some</span>(<span class="string">'('</span>) {
 <a href=#5268 id=5268 data-nosnippet>5268</a>            ctx.ensure_space()<span class="question-mark">?</span>;
 <a href=#5269 id=5269 data-nosnippet>5269</a>        }
 <a href=#5270 id=5270 data-nosnippet>5270</a>
@@ -7030,7 +7030,7 @@
 <a href=#7030 id=7030 data-nosnippet>7030</a>
 <a href=#7031 id=7031 data-nosnippet>7031</a>        <span class="kw">if let </span><span class="prelude-val">Ok</span>((ty, tail)) = <span class="macro">try_recurse!</span>(TypeHandle::parse(ctx, subs, tail)) {
 <a href=#7032 id=7032 data-nosnippet>7032</a>            <span class="kw">let </span>start = tail.index();
-<a href=#7033 id=7033 data-nosnippet>7033</a>            <span class="kw">let </span>num_bytes_in_literal = tail.as_ref().iter().take_while(|&amp;&amp;c| c != <span class="string">b'E'</span>).count();
+<a href=#7033 id=7033 data-nosnippet>7033</a>            <span class="kw">let </span>num_bytes_in_literal = tail.as_ref().iter().take_while(|&amp;&amp;c| <span class="macro">c !</span>= <span class="string">b'E'</span>).count();
 <a href=#7034 id=7034 data-nosnippet>7034</a>            <span class="kw">let </span>tail = tail.range_from(num_bytes_in_literal..);
 <a href=#7035 id=7035 data-nosnippet>7035</a>            <span class="kw">let </span>end = tail.index();
 <a href=#7036 id=7036 data-nosnippet>7036</a>            <span class="kw">let </span>tail = consume(<span class="string">b"E"</span>, tail)<span class="question-mark">?</span>;
@@ -8020,7 +8020,7 @@
 <a href=#8020 id=8020 data-nosnippet>8020</a>            .as_ref()
 <a href=#8021 id=8021 data-nosnippet>8021</a>            .iter()
 <a href=#8022 id=8022 data-nosnippet>8022</a>            .map(|<span class="kw-2">&amp;</span>c| c <span class="kw">as </span>char)
-<a href=#8023 id=8023 data-nosnippet>8023</a>            .take_while(|<span class="kw-2">&amp;</span>c| c != <span class="string">'$' </span>|| c.is_digit(<span class="number">36</span>))
+<a href=#8023 id=8023 data-nosnippet>8023</a>            .take_while(|<span class="kw-2">&amp;</span>c| <span class="macro">c !</span>= <span class="string">'$' </span>|| c.is_digit(<span class="number">36</span>))
 <a href=#8024 id=8024 data-nosnippet>8024</a>            .count();
 <a href=#8025 id=8025 data-nosnippet>8025</a>
 <a href=#8026 id=8026 data-nosnippet>8026</a>        <span class="kw">if </span>end == <span class="number">0 </span>{
@@ -8304,7 +8304,7 @@
 <a href=#8304 id=8304 data-nosnippet>8304</a>                error
 <a href=#8305 id=8305 data-nosnippet>8305</a>            ),
 <a href=#8306 id=8306 data-nosnippet>8306</a>            <span class="prelude-val">Ok</span>((value, tail)) =&gt; {
-<a href=#8307 id=8307 data-nosnippet>8307</a>                <span class="kw">if </span>value != expected {
+<a href=#8307 id=8307 data-nosnippet>8307</a>                <span class="kw">if </span><span class="macro">value !</span>= expected {
 <a href=#8308 id=8308 data-nosnippet>8308</a>                    <span class="macro">panic!</span>(
 <a href=#8309 id=8309 data-nosnippet>8309</a>                        <span class="string">"Parsing {:?} as {} produced\n\n{:#?}\n\nbut we expected\n\n{:#?}"</span>,
 <a href=#8310 id=8310 data-nosnippet>8310</a>                        String::from_utf8_lossy(input),
@@ -8313,7 +8313,7 @@
 <a href=#8313 id=8313 data-nosnippet>8313</a>                        expected
 <a href=#8314 id=8314 data-nosnippet>8314</a>                    );
 <a href=#8315 id=8315 data-nosnippet>8315</a>                }
-<a href=#8316 id=8316 data-nosnippet>8316</a>                <span class="kw">if </span>tail != expected_tail {
+<a href=#8316 id=8316 data-nosnippet>8316</a>                <span class="kw">if </span><span class="macro">tail !</span>= expected_tail {
 <a href=#8317 id=8317 data-nosnippet>8317</a>                    <span class="macro">panic!</span>(
 <a href=#8318 id=8318 data-nosnippet>8318</a>                        <span class="string">"Parsing {:?} as {} left a tail of {:?}, expected {:?}"</span>,
 <a href=#8319 id=8319 data-nosnippet>8319</a>                        String::from_utf8_lossy(input),
@@ -12078,4 +12078,5 @@
 <a href=#12078 id=12078 data-nosnippet>12078</a>            }
 <a href=#12079 id=12079 data-nosnippet>12079</a>        });
 <a href=#12080 id=12080 data-nosnippet>12080</a>    }
-<a href=#12081 id=12081 data-nosnippet>12081</a>}</code></pre></div></section></main></body></html>
+<a href=#12081 id=12081 data-nosnippet>12081</a>}
+</code></pre></div></section></main></body></html>

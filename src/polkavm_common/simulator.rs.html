@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/polkavm-common-0.30.0/src/simulator.rs`."><title>simulator.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkavm_common" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">polkavm_common/</div>simulator.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="attr">#![allow(clippy::undocumented_unsafe_blocks)]
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/polkavm-common-0.30.0/src/simulator.rs`."><title>simulator.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkavm_common" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">polkavm_common/</div>simulator.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="attr">#![allow(clippy::undocumented_unsafe_blocks)]
 <a href=#2 id=2 data-nosnippet>2</a>#![allow(unsafe_code)]
 <a href=#3 id=3 data-nosnippet>3</a>
 <a href=#4 id=4 data-nosnippet>4</a></span><span class="kw">use </span><span class="kw">crate</span>::cast::cast;
@@ -115,15 +115,15 @@
 <a href=#115 id=115 data-nosnippet>115</a></span><span class="kw">impl </span>core::fmt::Debug <span class="kw">for </span>DebugDeps {
 <a href=#116 id=116 data-nosnippet>116</a>    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
 <a href=#117 id=117 data-nosnippet>117</a>        fmt.write_str(<span class="string">"{"</span>)<span class="question-mark">?</span>;
-<a href=#118 id=118 data-nosnippet>118</a>        <span class="kw">let </span>iter = <span class="self">self</span>.<span class="number">0</span>.into_iter().enumerate().filter(|(<span class="kw">_</span>, deps)| <span class="kw-2">*</span>deps != <span class="number">0</span>);
+<a href=#118 id=118 data-nosnippet>118</a>        <span class="kw">let </span>iter = <span class="self">self</span>.<span class="number">0</span>.into_iter().enumerate().filter(|(<span class="kw">_</span>, deps)| <span class="kw-2">*</span><span class="macro">deps !</span>= <span class="number">0</span>);
 <a href=#119 id=119 data-nosnippet>119</a>        <span class="kw">let </span><span class="kw-2">mut </span>remaining = iter.clone().count();
 <a href=#120 id=120 data-nosnippet>120</a>        <span class="kw">for </span>(nth, <span class="kw-2">mut </span>deps) <span class="kw">in </span>iter {
 <a href=#121 id=121 data-nosnippet>121</a>            <span class="macro">write!</span>(fmt, <span class="string">"{nth}={{"</span>)<span class="question-mark">?</span>;
-<a href=#122 id=122 data-nosnippet>122</a>            <span class="kw">while </span>deps != <span class="number">0 </span>{
+<a href=#122 id=122 data-nosnippet>122</a>            <span class="kw">while </span><span class="macro">deps !</span>= <span class="number">0 </span>{
 <a href=#123 id=123 data-nosnippet>123</a>                <span class="kw">let </span>slot = deps.trailing_zeros();
 <a href=#124 id=124 data-nosnippet>124</a>                deps &amp;= !(<span class="number">1 </span>&lt;&lt; slot);
 <a href=#125 id=125 data-nosnippet>125</a>                <span class="macro">write!</span>(fmt, <span class="string">"{slot}"</span>)<span class="question-mark">?</span>;
-<a href=#126 id=126 data-nosnippet>126</a>                <span class="kw">if </span>deps != <span class="number">0 </span>{
+<a href=#126 id=126 data-nosnippet>126</a>                <span class="kw">if </span><span class="macro">deps !</span>= <span class="number">0 </span>{
 <a href=#127 id=127 data-nosnippet>127</a>                    fmt.write_str(<span class="string">","</span>)<span class="question-mark">?</span>;
 <a href=#128 id=128 data-nosnippet>128</a>                }
 <a href=#129 id=129 data-nosnippet>129</a>            }
@@ -146,7 +146,7 @@
 <a href=#146 id=146 data-nosnippet>146</a></span><span class="kw">impl </span>core::fmt::Debug <span class="kw">for </span>DebugMask {
 <a href=#147 id=147 data-nosnippet>147</a>    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
 <a href=#148 id=148 data-nosnippet>148</a>        fmt.write_str(<span class="string">"{"</span>)<span class="question-mark">?</span>;
-<a href=#149 id=149 data-nosnippet>149</a>        <span class="kw">let </span>iter = <span class="self">self</span>.<span class="number">0</span>.into_iter().enumerate().filter(|(<span class="kw">_</span>, mask)| <span class="kw-2">*</span>mask != <span class="number">0</span>);
+<a href=#149 id=149 data-nosnippet>149</a>        <span class="kw">let </span>iter = <span class="self">self</span>.<span class="number">0</span>.into_iter().enumerate().filter(|(<span class="kw">_</span>, mask)| <span class="kw-2">*</span><span class="macro">mask !</span>= <span class="number">0</span>);
 <a href=#150 id=150 data-nosnippet>150</a>        <span class="kw">let </span><span class="kw-2">mut </span>remaining = iter.clone().count();
 <a href=#151 id=151 data-nosnippet>151</a>        <span class="kw">for </span>(nth, mask) <span class="kw">in </span>iter {
 <a href=#152 id=152 data-nosnippet>152</a>            <span class="kw">if </span>mask == <span class="number">0 </span>{
@@ -175,7 +175,7 @@
 <a href=#175 id=175 data-nosnippet>175</a></span><span class="kw">impl </span>core::fmt::Debug <span class="kw">for </span>DebugEntryByRegister {
 <a href=#176 id=176 data-nosnippet>176</a>    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
 <a href=#177 id=177 data-nosnippet>177</a>        fmt.write_str(<span class="string">"{"</span>)<span class="question-mark">?</span>;
-<a href=#178 id=178 data-nosnippet>178</a>        <span class="kw">let </span><span class="kw-2">mut </span>remaining = <span class="self">self</span>.<span class="number">0</span>.iter().filter(|&amp;&amp;entry| entry != -<span class="number">1</span>).count();
+<a href=#178 id=178 data-nosnippet>178</a>        <span class="kw">let </span><span class="kw-2">mut </span>remaining = <span class="self">self</span>.<span class="number">0</span>.iter().filter(|&amp;&amp;entry| <span class="macro">entry !</span>= -<span class="number">1</span>).count();
 <a href=#179 id=179 data-nosnippet>179</a>        <span class="kw">for </span>(reg, entry) <span class="kw">in </span><span class="kw">crate</span>::program::Reg::ALL.into_iter().zip(<span class="self">self</span>.<span class="number">0</span>.into_iter()) {
 <a href=#180 id=180 data-nosnippet>180</a>            <span class="kw">if </span>entry == -<span class="number">1 </span>{
 <a href=#181 id=181 data-nosnippet>181</a>                <span class="kw">continue</span>;
@@ -221,7 +221,7 @@
 <a href=#221 id=221 data-nosnippet>221</a></span><span class="kw">impl </span>core::fmt::Debug <span class="kw">for </span>DebugState {
 <a href=#222 id=222 data-nosnippet>222</a>    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>core::fmt::Formatter) -&gt; core::fmt::Result {
 <a href=#223 id=223 data-nosnippet>223</a>        fmt.write_str(<span class="string">"{"</span>)<span class="question-mark">?</span>;
-<a href=#224 id=224 data-nosnippet>224</a>        <span class="kw">let </span>iter = <span class="self">self</span>.<span class="number">0</span>.into_iter().enumerate().filter(|(<span class="kw">_</span>, state)| <span class="kw-2">*</span>state != <span class="number">0</span>);
+<a href=#224 id=224 data-nosnippet>224</a>        <span class="kw">let </span>iter = <span class="self">self</span>.<span class="number">0</span>.into_iter().enumerate().filter(|(<span class="kw">_</span>, state)| <span class="kw-2">*</span><span class="macro">state !</span>= <span class="number">0</span>);
 <a href=#225 id=225 data-nosnippet>225</a>        <span class="kw">let </span><span class="kw-2">mut </span>remaining = iter.clone().count();
 <a href=#226 id=226 data-nosnippet>226</a>        <span class="kw">for </span>(nth, state) <span class="kw">in </span>iter {
 <a href=#227 id=227 data-nosnippet>227</a>            remaining -= <span class="number">1</span>;
@@ -460,7 +460,7 @@
 <a href=#460 id=460 data-nosnippet>460</a>        }
 <a href=#461 id=461 data-nosnippet>461</a>
 <a href=#462 id=462 data-nosnippet>462</a>        <span class="kw">let </span><span class="kw-2">mut </span>bits = mask.most_significant_bits();
-<a href=#463 id=463 data-nosnippet>463</a>        <span class="kw">while </span>bits != <span class="number">0 </span>{
+<a href=#463 id=463 data-nosnippet>463</a>        <span class="kw">while </span><span class="macro">bits !</span>= <span class="number">0 </span>{
 <a href=#464 id=464 data-nosnippet>464</a>            <span class="kw">let </span>slot = bits.trailing_zeros();
 <a href=#465 id=465 data-nosnippet>465</a>            <span class="self">self</span>.emit_event(slot, event_kind);
 <a href=#466 id=466 data-nosnippet>466</a>            bits &amp;= !(<span class="number">1 </span>&lt;&lt; slot);
@@ -618,7 +618,7 @@
 <a href=#618 id=618 data-nosnippet>618</a>                <span class="kw">let </span>have_enough_resources = have_enough_resources.and(is_waiting_to_start);
 <a href=#619 id=619 data-nosnippet>619</a>                <span class="kw">let </span>mask = have_enough_resources.most_significant_bits().rotate_right(<span class="self">self</span>.reorder_buffer_head);
 <a href=#620 id=620 data-nosnippet>620</a>                <span class="kw">let </span>position = mask.trailing_zeros();
-<a href=#621 id=621 data-nosnippet>621</a>                <span class="kw">if </span>position != <span class="number">32 </span>{
+<a href=#621 id=621 data-nosnippet>621</a>                <span class="kw">if </span><span class="macro">position !</span>= <span class="number">32 </span>{
 <a href=#622 id=622 data-nosnippet>622</a>                    <span class="kw">let </span>position = (position + <span class="self">self</span>.reorder_buffer_head) % (REORDER_BUFFER_SIZE <span class="kw">as </span>u32);
 <a href=#623 id=623 data-nosnippet>623</a>                    <span class="attr">#[cfg(all(test, feature = <span class="string">"logging"</span>))]
 <a href=#624 id=624 data-nosnippet>624</a>                    </span><span class="macro">log::debug!</span>(
@@ -693,7 +693,7 @@
 <a href=#693 id=693 data-nosnippet>693</a>
 <a href=#694 id=694 data-nosnippet>694</a>        <span class="attr">#[cfg(all(test, feature = <span class="string">"logging"</span>))]
 <a href=#695 id=695 data-nosnippet>695</a>        </span>{
-<a href=#696 id=696 data-nosnippet>696</a>            <span class="kw">if </span><span class="self">self</span>.rob_state != original_state {
+<a href=#696 id=696 data-nosnippet>696</a>            <span class="kw">if </span><span class="self">self</span>.<span class="macro">rob_state !</span>= original_state {
 <a href=#697 id=697 data-nosnippet>697</a>                <span class="macro">log::debug!</span>(<span class="string">"tick_cycle_avx2[{}]: state changed!"</span>, <span class="self">self</span>.cycles);
 <a href=#698 id=698 data-nosnippet>698</a>            } <span class="kw">else </span>{
 <a href=#699 id=699 data-nosnippet>699</a>                <span class="macro">log::debug!</span>(<span class="string">"tick_cycle_avx2[{}]: state did NOT change!"</span>, <span class="self">self</span>.cycles);
@@ -703,17 +703,17 @@
 <a href=#703 id=703 data-nosnippet>703</a>        <span class="attr">#[cfg(test)]
 <a href=#704 id=704 data-nosnippet>704</a>        </span>{
 <a href=#705 id=705 data-nosnippet>705</a>            <span class="macro">assert!</span>(
-<a href=#706 id=706 data-nosnippet>706</a>                <span class="self">self</span>.instructions_in_flight != original_instructions_in_flight
-<a href=#707 id=707 data-nosnippet>707</a>                    || <span class="self">self</span>.reorder_buffer_head != original_reorder_buffer_head
-<a href=#708 id=708 data-nosnippet>708</a>                    || <span class="self">self</span>.decode_slots_remaining_this_cycle != original_decode_slots
-<a href=#709 id=709 data-nosnippet>709</a>                    || <span class="self">self</span>.resources_available != original_resources_available
-<a href=#710 id=710 data-nosnippet>710</a>                    || <span class="self">self</span>.rob_state != original_state
+<a href=#706 id=706 data-nosnippet>706</a>                <span class="self">self</span>.<span class="macro">instructions_in_flight !</span>= original_instructions_in_flight
+<a href=#707 id=707 data-nosnippet>707</a>                    || <span class="self">self</span>.<span class="macro">reorder_buffer_head !</span>= original_reorder_buffer_head
+<a href=#708 id=708 data-nosnippet>708</a>                    || <span class="self">self</span>.<span class="macro">decode_slots_remaining_this_cycle !</span>= original_decode_slots
+<a href=#709 id=709 data-nosnippet>709</a>                    || <span class="self">self</span>.<span class="macro">resources_available !</span>= original_resources_available
+<a href=#710 id=710 data-nosnippet>710</a>                    || <span class="self">self</span>.<span class="macro">rob_state !</span>= original_state
 <a href=#711 id=711 data-nosnippet>711</a>                    || <span class="self">self</span>.rob_cycles_remaining.max_signed(i8x32::negative_one())
 <a href=#712 id=712 data-nosnippet>712</a>                        != original_cycles_remaining.max_signed(i8x32::negative_one())
-<a href=#713 id=713 data-nosnippet>713</a>                    || <span class="self">self</span>.rob_dependencies != original_dependencies
-<a href=#714 id=714 data-nosnippet>714</a>                    || <span class="self">self</span>.rob_depended_by != original_depended_by
-<a href=#715 id=715 data-nosnippet>715</a>                    || <span class="self">self</span>.rob_entry_by_register != original_entry_by_register
-<a href=#716 id=716 data-nosnippet>716</a>                    || <span class="self">self</span>.rob_required_resources != original_required_resources,
+<a href=#713 id=713 data-nosnippet>713</a>                    || <span class="self">self</span>.<span class="macro">rob_dependencies !</span>= original_dependencies
+<a href=#714 id=714 data-nosnippet>714</a>                    || <span class="self">self</span>.<span class="macro">rob_depended_by !</span>= original_depended_by
+<a href=#715 id=715 data-nosnippet>715</a>                    || <span class="self">self</span>.<span class="macro">rob_entry_by_register !</span>= original_entry_by_register
+<a href=#716 id=716 data-nosnippet>716</a>                    || <span class="self">self</span>.<span class="macro">rob_required_resources !</span>= original_required_resources,
 <a href=#717 id=717 data-nosnippet>717</a>                <span class="string">"made no progress"
 <a href=#718 id=718 data-nosnippet>718</a>            </span>);
 <a href=#719 id=719 data-nosnippet>719</a>        }
@@ -844,12 +844,12 @@
 <a href=#844 id=844 data-nosnippet>844</a>        <span class="kw">let </span>entry_by_register = <span class="self">self</span>.rob_entry_by_register.as_slice_mut();
 <a href=#845 id=845 data-nosnippet>845</a>        <span class="kw">let </span>registers_written_by_rob_entry = <span class="self">self</span>.registers_written_by_rob_entry.as_slice_mut();
 <a href=#846 id=846 data-nosnippet>846</a>        <span class="kw">let </span>old_slot = entry_by_register[dst.to_usize()];
-<a href=#847 id=847 data-nosnippet>847</a>        <span class="kw">if </span>old_slot != -<span class="number">1 </span>{
+<a href=#847 id=847 data-nosnippet>847</a>        <span class="kw">if </span><span class="macro">old_slot !</span>= -<span class="number">1 </span>{
 <a href=#848 id=848 data-nosnippet>848</a>            registers_written_by_rob_entry[old_slot <span class="kw">as </span>usize] &amp;= !(<span class="number">1_i16 </span>&lt;&lt; dst.to_usize());
 <a href=#849 id=849 data-nosnippet>849</a>        }
 <a href=#850 id=850 data-nosnippet>850</a>
 <a href=#851 id=851 data-nosnippet>851</a>        <span class="kw">let </span>new_slot = entry_by_register[src.to_usize()];
-<a href=#852 id=852 data-nosnippet>852</a>        <span class="kw">if </span>new_slot != -<span class="number">1 </span>{
+<a href=#852 id=852 data-nosnippet>852</a>        <span class="kw">if </span><span class="macro">new_slot !</span>= -<span class="number">1 </span>{
 <a href=#853 id=853 data-nosnippet>853</a>            registers_written_by_rob_entry[new_slot <span class="kw">as </span>usize] |= <span class="number">1 </span>&lt;&lt; dst.to_usize();
 <a href=#854 id=854 data-nosnippet>854</a>        }
 <a href=#855 id=855 data-nosnippet>855</a>
@@ -2358,7 +2358,7 @@
 <a href=#2358 id=2358 data-nosnippet>2358</a>                is_in_cycles = <span class="bool-val">true</span>;
 <a href=#2359 id=2359 data-nosnippet>2359</a>                last = <span class="string">'.'</span>;
 <a href=#2360 id=2360 data-nosnippet>2360</a>            } <span class="kw">else if </span>ch == <span class="string">'.' </span>{
-<a href=#2361 id=2361 data-nosnippet>2361</a>                <span class="kw">if </span>last != <span class="string">'R' </span>&amp;&amp; last != <span class="string">'D' </span>&amp;&amp; is_in_cycles {
+<a href=#2361 id=2361 data-nosnippet>2361</a>                <span class="kw">if </span><span class="macro">last !</span>= <span class="string">'R' </span>&amp;&amp; <span class="macro">last !</span>= <span class="string">'D' </span>&amp;&amp; is_in_cycles {
 <a href=#2362 id=2362 data-nosnippet>2362</a>                    ch = last;
 <a href=#2363 id=2363 data-nosnippet>2363</a>                }
 <a href=#2364 id=2364 data-nosnippet>2364</a>            } <span class="kw">else </span>{
@@ -2427,7 +2427,7 @@
 <a href=#2427 id=2427 data-nosnippet>2427</a>            expected_cycles = expected_cycles.max(line.split(<span class="string">"  "</span>).next().unwrap().len() <span class="kw">as </span>u32);
 <a href=#2428 id=2428 data-nosnippet>2428</a>        }
 <a href=#2429 id=2429 data-nosnippet>2429</a>
-<a href=#2430 id=2430 data-nosnippet>2430</a>        <span class="kw">if </span>timeline_s != expected_timeline_s {
+<a href=#2430 id=2430 data-nosnippet>2430</a>        <span class="kw">if </span><span class="macro">timeline_s !</span>= expected_timeline_s {
 <a href=#2431 id=2431 data-nosnippet>2431</a>            <span class="macro">panic!</span>(<span class="string">"Timeline mismatch!\n\nExpected timeline:\n{expected_timeline_s}\nActual timeline:\n{timeline_s}"</span>);
 <a href=#2432 id=2432 data-nosnippet>2432</a>        }
 <a href=#2433 id=2433 data-nosnippet>2433</a>
@@ -2444,7 +2444,7 @@
 <a href=#2444 id=2444 data-nosnippet>2444</a>        <span class="kw">let </span>(timeline_ff_s, cycles_ff) =
 <a href=#2445 id=2445 data-nosnippet>2445</a>            timeline_for_instructions(blob.code(), InstructionSetKind::Latest64, config, <span class="kw-2">&amp;</span>instructions, timeline_config);
 <a href=#2446 id=2446 data-nosnippet>2446</a>        <span class="macro">assert_eq!</span>(cycles_ff, cycles);
-<a href=#2447 id=2447 data-nosnippet>2447</a>        <span class="kw">if </span>timeline_ff_s != expected_timeline_s {
+<a href=#2447 id=2447 data-nosnippet>2447</a>        <span class="kw">if </span><span class="macro">timeline_ff_s !</span>= expected_timeline_s {
 <a href=#2448 id=2448 data-nosnippet>2448</a>            <span class="macro">panic!</span>(<span class="string">"Timeline mismatch for fast-forward!\n\nExpected timeline:\n{expected_timeline_s}\nActual timeline:\n{timeline_ff_s}"</span>);
 <a href=#2449 id=2449 data-nosnippet>2449</a>        }
 <a href=#2450 id=2450 data-nosnippet>2450</a>    }
@@ -2949,4 +2949,5 @@
 <a href=#2949 id=2949 data-nosnippet>2949</a>            "</span>,
 <a href=#2950 id=2950 data-nosnippet>2950</a>        )
 <a href=#2951 id=2951 data-nosnippet>2951</a>    }
-<a href=#2952 id=2952 data-nosnippet>2952</a>}</code></pre></div></section></main></body></html>
+<a href=#2952 id=2952 data-nosnippet>2952</a>}
+</code></pre></div></section></main></body></html>

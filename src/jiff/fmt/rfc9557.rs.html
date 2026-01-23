@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/jiff-0.2.18/src/fmt/rfc9557.rs`."><title>rfc9557.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="jiff" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">jiff/fmt/</div>rfc9557.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">/*!
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/jiff-0.2.18/src/fmt/rfc9557.rs`."><title>rfc9557.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="jiff" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">jiff/fmt/</div>rfc9557.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">/*!
 <a href=#2 id=2 data-nosnippet>2</a>This module provides parsing facilities for [RFC 9557] extensions to
 <a href=#3 id=3 data-nosnippet>3</a>[RFC 3339].
 <a href=#4 id=4 data-nosnippet>4</a>
@@ -234,7 +234,7 @@
 <a href=#234 id=234 data-nosnippet>234</a>        <span class="kw">let </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>first, tail)) = input.split_first() <span class="kw">else </span>{
 <a href=#235 id=235 data-nosnippet>235</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(Parsed { value: <span class="prelude-val">None</span>, input: unconsumed });
 <a href=#236 id=236 data-nosnippet>236</a>        };
-<a href=#237 id=237 data-nosnippet>237</a>        <span class="kw">if </span>first != <span class="string">b'[' </span>{
+<a href=#237 id=237 data-nosnippet>237</a>        <span class="kw">if </span><span class="macro">first !</span>= <span class="string">b'[' </span>{
 <a href=#238 id=238 data-nosnippet>238</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(Parsed { value: <span class="prelude-val">None</span>, input: unconsumed });
 <a href=#239 id=239 data-nosnippet>239</a>        }
 <a href=#240 id=240 data-nosnippet>240</a>        input = tail;
@@ -303,7 +303,7 @@
 <a href=#303 id=303 data-nosnippet>303</a>        <span class="kw">let </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>first, tail)) = input.split_first() <span class="kw">else </span>{
 <a href=#304 id=304 data-nosnippet>304</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(Parsed { value: <span class="bool-val">false</span>, input });
 <a href=#305 id=305 data-nosnippet>305</a>        };
-<a href=#306 id=306 data-nosnippet>306</a>        <span class="kw">if </span>first != <span class="string">b'[' </span>{
+<a href=#306 id=306 data-nosnippet>306</a>        <span class="kw">if </span><span class="macro">first !</span>= <span class="string">b'[' </span>{
 <a href=#307 id=307 data-nosnippet>307</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(Parsed { value: <span class="bool-val">false</span>, input });
 <a href=#308 id=308 data-nosnippet>308</a>        }
 <a href=#309 id=309 data-nosnippet>309</a>        input = tail;
@@ -498,7 +498,7 @@
 <a href=#498 id=498 data-nosnippet>498</a>        <span class="kw">let </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>first, tail)) = input.split_first() <span class="kw">else </span>{
 <a href=#499 id=499 data-nosnippet>499</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::from(E::EndOfInputAnnotationSeparator));
 <a href=#500 id=500 data-nosnippet>500</a>        };
-<a href=#501 id=501 data-nosnippet>501</a>        <span class="kw">if </span>first != <span class="string">b'=' </span>{
+<a href=#501 id=501 data-nosnippet>501</a>        <span class="kw">if </span><span class="macro">first !</span>= <span class="string">b'=' </span>{
 <a href=#502 id=502 data-nosnippet>502</a>            <span class="comment">// If we see a /, then it's likely the user was trying to insert a
 <a href=#503 id=503 data-nosnippet>503</a>            // time zone annotation in the wrong place.
 <a href=#504 id=504 data-nosnippet>504</a>            </span><span class="kw">return </span><span class="prelude-val">Err</span>(Error::from(<span class="kw">if </span>first == <span class="string">b'/' </span>{
@@ -517,7 +517,7 @@
 <a href=#517 id=517 data-nosnippet>517</a>        <span class="kw">let </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>first, tail)) = input.split_first() <span class="kw">else </span>{
 <a href=#518 id=518 data-nosnippet>518</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::from(E::EndOfInputAnnotationClose));
 <a href=#519 id=519 data-nosnippet>519</a>        };
-<a href=#520 id=520 data-nosnippet>520</a>        <span class="kw">if </span>first != <span class="string">b']' </span>{
+<a href=#520 id=520 data-nosnippet>520</a>        <span class="kw">if </span><span class="macro">first !</span>= <span class="string">b']' </span>{
 <a href=#521 id=521 data-nosnippet>521</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::from(E::UnexpectedByteAnnotationClose {
 <a href=#522 id=522 data-nosnippet>522</a>                byte: first,
 <a href=#523 id=523 data-nosnippet>523</a>            }));
@@ -532,7 +532,7 @@
 <a href=#532 id=532 data-nosnippet>532</a>        <span class="kw">let </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>first, tail)) = input.split_first() <span class="kw">else </span>{
 <a href=#533 id=533 data-nosnippet>533</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::from(E::EndOfInputTzAnnotationClose));
 <a href=#534 id=534 data-nosnippet>534</a>        };
-<a href=#535 id=535 data-nosnippet>535</a>        <span class="kw">if </span>first != <span class="string">b']' </span>{
+<a href=#535 id=535 data-nosnippet>535</a>        <span class="kw">if </span><span class="macro">first !</span>= <span class="string">b']' </span>{
 <a href=#536 id=536 data-nosnippet>536</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::from(E::UnexpectedByteTzAnnotationClose {
 <a href=#537 id=537 data-nosnippet>537</a>                byte: first,
 <a href=#538 id=538 data-nosnippet>538</a>            }));
@@ -993,4 +993,5 @@
 <a href=#993 id=993 data-nosnippet>993</a>            @<span class="string">"expected an `=` after parsing an RFC 9557 annotation key, but found `/` instead (time zone annotations must come first)"</span>,
 <a href=#994 id=994 data-nosnippet>994</a>        );
 <a href=#995 id=995 data-nosnippet>995</a>    }
-<a href=#996 id=996 data-nosnippet>996</a>}</code></pre></div></section></main></body></html>
+<a href=#996 id=996 data-nosnippet>996</a>}
+</code></pre></div></section></main></body></html>

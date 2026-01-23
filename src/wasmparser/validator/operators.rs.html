@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmparser-0.235.0/src/validator/operators.rs`."><title>operators.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="wasmparser" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasmparser/validator/</div>operators.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">/* Copyright 2019 Mozilla Foundation
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmparser-0.235.0/src/validator/operators.rs`."><title>operators.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="wasmparser" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasmparser/validator/</div>operators.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">/* Copyright 2019 Mozilla Foundation
 <a href=#2 id=2 data-nosnippet>2</a> *
 <a href=#3 id=3 data-nosnippet>3</a> * Licensed under the Apache License, Version 2.0 (the "License");
 <a href=#4 id=4 data-nosnippet>4</a> * you may not use this file except in compliance with the License.
@@ -1004,7 +1004,7 @@
 <a href=#1004 id=1004 data-nosnippet>1004</a>    }
 <a href=#1005 id=1005 data-nosnippet>1005</a>
 <a href=#1006 id=1006 data-nosnippet>1006</a>    <span class="kw">fn </span>check_shared_memarg(<span class="kw-2">&amp;</span><span class="self">self</span>, memarg: MemArg) -&gt; <span class="prelude-ty">Result</span>&lt;ValType&gt; {
-<a href=#1007 id=1007 data-nosnippet>1007</a>        <span class="kw">if </span>memarg.align != memarg.max_align {
+<a href=#1007 id=1007 data-nosnippet>1007</a>        <span class="kw">if </span>memarg.<span class="macro">align !</span>= memarg.max_align {
 <a href=#1008 id=1008 data-nosnippet>1008</a>            <span class="macro">bail!</span>(
 <a href=#1009 id=1009 data-nosnippet>1009</a>                <span class="self">self</span>.offset,
 <a href=#1010 id=1010 data-nosnippet>1010</a>                <span class="string">"atomic instructions must always specify maximum alignment"
@@ -1607,7 +1607,7 @@
 <a href=#1607 id=1607 data-nosnippet>1607</a>                            }
 <a href=#1608 id=1608 data-nosnippet>1608</a>                            <span class="kw">let </span>expected_nargs = tag_ty.params().len() + <span class="number">1</span>;
 <a href=#1609 id=1609 data-nosnippet>1609</a>                            <span class="kw">let </span>actual_nargs = <span class="self">self</span>.label_types(block.<span class="number">0</span>, block.<span class="number">1</span>)<span class="question-mark">?</span>.len();
-<a href=#1610 id=1610 data-nosnippet>1610</a>                            <span class="kw">if </span>actual_nargs != expected_nargs {
+<a href=#1610 id=1610 data-nosnippet>1610</a>                            <span class="kw">if </span><span class="macro">actual_nargs !</span>= expected_nargs {
 <a href=#1611 id=1611 data-nosnippet>1611</a>                                <span class="macro">bail!</span>(
 <a href=#1612 id=1612 data-nosnippet>1612</a>                                    <span class="self">self</span>.offset,
 <a href=#1613 id=1613 data-nosnippet>1613</a>                                    <span class="string">"type mismatch: expected {expected_nargs} label result(s), but label is annotated with {actual_nargs} results"
@@ -1828,7 +1828,7 @@
 <a href=#1828 id=1828 data-nosnippet>1828</a>    }
 <a href=#1829 id=1829 data-nosnippet>1829</a>    <span class="kw">fn </span>visit_else(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
 <a href=#1830 id=1830 data-nosnippet>1830</a>        <span class="kw">let </span>frame = <span class="self">self</span>.pop_ctrl()<span class="question-mark">?</span>;
-<a href=#1831 id=1831 data-nosnippet>1831</a>        <span class="kw">if </span>frame.kind != FrameKind::If {
+<a href=#1831 id=1831 data-nosnippet>1831</a>        <span class="kw">if </span>frame.<span class="macro">kind !</span>= FrameKind::If {
 <a href=#1832 id=1832 data-nosnippet>1832</a>            <span class="macro">bail!</span>(<span class="self">self</span>.offset, <span class="string">"else found outside of an `if` block"</span>);
 <a href=#1833 id=1833 data-nosnippet>1833</a>        }
 <a href=#1834 id=1834 data-nosnippet>1834</a>        <span class="self">self</span>.push_ctrl(FrameKind::Else, frame.block_type)<span class="question-mark">?</span>;
@@ -2047,7 +2047,7 @@
 <a href=#2047 id=2047 data-nosnippet>2047</a>            <span class="comment">// Otherwise these are two integral types and they must match for
 <a href=#2048 id=2048 data-nosnippet>2048</a>            // `select` to typecheck.
 <a href=#2049 id=2049 data-nosnippet>2049</a>            </span>(t @ MaybeType::Known(t1), MaybeType::Known(t2)) =&gt; {
-<a href=#2050 id=2050 data-nosnippet>2050</a>                <span class="kw">if </span>t1 != t2 {
+<a href=#2050 id=2050 data-nosnippet>2050</a>                <span class="kw">if </span><span class="macro">t1 !</span>= t2 {
 <a href=#2051 id=2051 data-nosnippet>2051</a>                    <span class="macro">bail!</span>(
 <a href=#2052 id=2052 data-nosnippet>2052</a>                        <span class="self">self</span>.offset,
 <a href=#2053 id=2053 data-nosnippet>2053</a>                        <span class="string">"type mismatch: select operands have different types"
@@ -3080,7 +3080,7 @@
 <a href=#3080 id=3080 data-nosnippet>3080</a>            </span>(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="kw">_</span>)) | (<span class="prelude-val">Some</span>(<span class="kw">_</span>), <span class="prelude-val">None</span>) | (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; {}
 <a href=#3081 id=3081 data-nosnippet>3081</a>
 <a href=#3082 id=3082 data-nosnippet>3082</a>            (<span class="prelude-val">Some</span>(is_a_shared), <span class="prelude-val">Some</span>(is_b_shared)) =&gt; {
-<a href=#3083 id=3083 data-nosnippet>3083</a>                <span class="kw">if </span>is_a_shared != is_b_shared {
+<a href=#3083 id=3083 data-nosnippet>3083</a>                <span class="kw">if </span><span class="macro">is_a_shared !</span>= is_b_shared {
 <a href=#3084 id=3084 data-nosnippet>3084</a>                    <span class="macro">bail!</span>(
 <a href=#3085 id=3085 data-nosnippet>3085</a>                        <span class="self">self</span>.offset,
 <a href=#3086 id=3086 data-nosnippet>3086</a>                        <span class="string">"type mismatch: expected `ref.eq` types to match `shared`-ness"
@@ -4000,7 +4000,7 @@
 <a href=#4000 id=4000 data-nosnippet>4000</a>    }
 <a href=#4001 id=4001 data-nosnippet>4001</a>    <span class="kw">fn </span>visit_catch(<span class="kw-2">&amp;mut </span><span class="self">self</span>, index: u32) -&gt; <span class="self">Self</span>::Output {
 <a href=#4002 id=4002 data-nosnippet>4002</a>        <span class="kw">let </span>frame = <span class="self">self</span>.pop_ctrl()<span class="question-mark">?</span>;
-<a href=#4003 id=4003 data-nosnippet>4003</a>        <span class="kw">if </span>frame.kind != FrameKind::LegacyTry &amp;&amp; frame.kind != FrameKind::LegacyCatch {
+<a href=#4003 id=4003 data-nosnippet>4003</a>        <span class="kw">if </span>frame.<span class="macro">kind !</span>= FrameKind::LegacyTry &amp;&amp; frame.<span class="macro">kind !</span>= FrameKind::LegacyCatch {
 <a href=#4004 id=4004 data-nosnippet>4004</a>            <span class="macro">bail!</span>(<span class="self">self</span>.offset, <span class="string">"catch found outside of an `try` block"</span>);
 <a href=#4005 id=4005 data-nosnippet>4005</a>        }
 <a href=#4006 id=4006 data-nosnippet>4006</a>        <span class="comment">// Start a new frame and push `exnref` value.
@@ -4024,7 +4024,7 @@
 <a href=#4024 id=4024 data-nosnippet>4024</a>        <span class="comment">// This is not a jump, but we need to check that the `rethrow`
 <a href=#4025 id=4025 data-nosnippet>4025</a>        // targets an actual `catch` to get the exception.
 <a href=#4026 id=4026 data-nosnippet>4026</a>        </span><span class="kw">let </span>(<span class="kw">_</span>, kind) = <span class="self">self</span>.jump(relative_depth)<span class="question-mark">?</span>;
-<a href=#4027 id=4027 data-nosnippet>4027</a>        <span class="kw">if </span>kind != FrameKind::LegacyCatch &amp;&amp; kind != FrameKind::LegacyCatchAll {
+<a href=#4027 id=4027 data-nosnippet>4027</a>        <span class="kw">if </span><span class="macro">kind !</span>= FrameKind::LegacyCatch &amp;&amp; <span class="macro">kind !</span>= FrameKind::LegacyCatchAll {
 <a href=#4028 id=4028 data-nosnippet>4028</a>            <span class="macro">bail!</span>(
 <a href=#4029 id=4029 data-nosnippet>4029</a>                <span class="self">self</span>.offset,
 <a href=#4030 id=4030 data-nosnippet>4030</a>                <span class="string">"invalid rethrow label: target was not a `catch` block"
@@ -4035,7 +4035,7 @@
 <a href=#4035 id=4035 data-nosnippet>4035</a>    }
 <a href=#4036 id=4036 data-nosnippet>4036</a>    <span class="kw">fn </span>visit_delegate(<span class="kw-2">&amp;mut </span><span class="self">self</span>, relative_depth: u32) -&gt; <span class="self">Self</span>::Output {
 <a href=#4037 id=4037 data-nosnippet>4037</a>        <span class="kw">let </span>frame = <span class="self">self</span>.pop_ctrl()<span class="question-mark">?</span>;
-<a href=#4038 id=4038 data-nosnippet>4038</a>        <span class="kw">if </span>frame.kind != FrameKind::LegacyTry {
+<a href=#4038 id=4038 data-nosnippet>4038</a>        <span class="kw">if </span>frame.<span class="macro">kind !</span>= FrameKind::LegacyTry {
 <a href=#4039 id=4039 data-nosnippet>4039</a>            <span class="macro">bail!</span>(<span class="self">self</span>.offset, <span class="string">"delegate found outside of an `try` block"</span>);
 <a href=#4040 id=4040 data-nosnippet>4040</a>        }
 <a href=#4041 id=4041 data-nosnippet>4041</a>        <span class="comment">// This operation is not a jump, but we need to check the
@@ -4050,7 +4050,7 @@
 <a href=#4050 id=4050 data-nosnippet>4050</a>        <span class="kw">let </span>frame = <span class="self">self</span>.pop_ctrl()<span class="question-mark">?</span>;
 <a href=#4051 id=4051 data-nosnippet>4051</a>        <span class="kw">if </span>frame.kind == FrameKind::LegacyCatchAll {
 <a href=#4052 id=4052 data-nosnippet>4052</a>            <span class="macro">bail!</span>(<span class="self">self</span>.offset, <span class="string">"only one catch_all allowed per `try` block"</span>);
-<a href=#4053 id=4053 data-nosnippet>4053</a>        } <span class="kw">else if </span>frame.kind != FrameKind::LegacyTry &amp;&amp; frame.kind != FrameKind::LegacyCatch {
+<a href=#4053 id=4053 data-nosnippet>4053</a>        } <span class="kw">else if </span>frame.<span class="macro">kind !</span>= FrameKind::LegacyTry &amp;&amp; frame.<span class="macro">kind !</span>= FrameKind::LegacyCatch {
 <a href=#4054 id=4054 data-nosnippet>4054</a>            <span class="macro">bail!</span>(<span class="self">self</span>.offset, <span class="string">"catch_all found outside of a `try` block"</span>);
 <a href=#4055 id=4055 data-nosnippet>4055</a>        }
 <a href=#4056 id=4056 data-nosnippet>4056</a>        <span class="kw">let </span>height = <span class="self">self</span>.operands.len();
@@ -4373,4 +4373,5 @@
 <a href=#4373 id=4373 data-nosnippet>4373</a>    <span class="kw">fn </span>label_block(<span class="kw-2">&amp;</span><span class="self">self</span>, depth: u32) -&gt; <span class="prelude-ty">Option</span>&lt;(BlockType, FrameKind)&gt; {
 <a href=#4374 id=4374 data-nosnippet>4374</a>        <span class="self">self</span>.<span class="number">0</span>.jump(depth).ok()
 <a href=#4375 id=4375 data-nosnippet>4375</a>    }
-<a href=#4376 id=4376 data-nosnippet>4376</a>}</code></pre></div></section></main></body></html>
+<a href=#4376 id=4376 data-nosnippet>4376</a>}
+</code></pre></div></section></main></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pulley-interpreter-35.0.0/src/interp.rs`."><title>interp.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="pulley_interpreter" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">pulley_interpreter/</div>interp.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Interpretation of pulley bytecode.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pulley-interpreter-35.0.0/src/interp.rs`."><title>interp.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="pulley_interpreter" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">pulley_interpreter/</div>interp.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Interpretation of pulley bytecode.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a></span><span class="kw">use </span><span class="kw">crate</span>::decode::<span class="kw-2">*</span>;
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span><span class="kw">crate</span>::encode::Encode;
@@ -1146,7 +1146,7 @@
 <a href=#1146 id=1146 data-nosnippet>1146</a>        val: f64,
 <a href=#1147 id=1147 data-nosnippet>1147</a>        (lo, hi): (f64, f64),
 <a href=#1148 id=1148 data-nosnippet>1148</a>    ) -&gt; ControlFlow&lt;Done&gt; {
-<a href=#1149 id=1149 data-nosnippet>1149</a>        <span class="kw">if </span>val != val {
+<a href=#1149 id=1149 data-nosnippet>1149</a>        <span class="kw">if </span><span class="macro">val !</span>= val {
 <a href=#1150 id=1150 data-nosnippet>1150</a>            <span class="kw">return </span><span class="self">self</span>.done_trap_kind::&lt;I&gt;(<span class="prelude-val">Some</span>(TrapKind::BadConversionToInteger));
 <a href=#1151 id=1151 data-nosnippet>1151</a>        }
 <a href=#1152 id=1152 data-nosnippet>1152</a>        <span class="kw">let </span>val = val.wasm_trunc();
@@ -1433,7 +1433,7 @@
 <a href=#1433 id=1433 data-nosnippet>1433</a>
 <a href=#1434 id=1434 data-nosnippet>1434</a>    <span class="kw">fn </span>br_if32(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cond: XReg, offset: PcRelOffset) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#1435 id=1435 data-nosnippet>1435</a>        <span class="kw">let </span>cond = <span class="self">self</span>.state[cond].get_u32();
-<a href=#1436 id=1436 data-nosnippet>1436</a>        <span class="kw">if </span>cond != <span class="number">0 </span>{
+<a href=#1436 id=1436 data-nosnippet>1436</a>        <span class="kw">if </span><span class="macro">cond !</span>= <span class="number">0 </span>{
 <a href=#1437 id=1437 data-nosnippet>1437</a>            <span class="self">self</span>.pc_rel_jump::&lt;<span class="kw">crate</span>::BrIf&gt;(offset)
 <a href=#1438 id=1438 data-nosnippet>1438</a>        } <span class="kw">else </span>{
 <a href=#1439 id=1439 data-nosnippet>1439</a>            ControlFlow::Continue(())
@@ -1462,7 +1462,7 @@
 <a href=#1462 id=1462 data-nosnippet>1462</a>    <span class="kw">fn </span>br_if_xneq32(<span class="kw-2">&amp;mut </span><span class="self">self</span>, a: XReg, b: XReg, offset: PcRelOffset) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#1463 id=1463 data-nosnippet>1463</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[a].get_u32();
 <a href=#1464 id=1464 data-nosnippet>1464</a>        <span class="kw">let </span>b = <span class="self">self</span>.state[b].get_u32();
-<a href=#1465 id=1465 data-nosnippet>1465</a>        <span class="kw">if </span>a != b {
+<a href=#1465 id=1465 data-nosnippet>1465</a>        <span class="kw">if </span><span class="macro">a !</span>= b {
 <a href=#1466 id=1466 data-nosnippet>1466</a>            <span class="self">self</span>.pc_rel_jump::&lt;<span class="kw">crate</span>::BrIfXneq32&gt;(offset)
 <a href=#1467 id=1467 data-nosnippet>1467</a>        } <span class="kw">else </span>{
 <a href=#1468 id=1468 data-nosnippet>1468</a>            ControlFlow::Continue(())
@@ -1522,7 +1522,7 @@
 <a href=#1522 id=1522 data-nosnippet>1522</a>    <span class="kw">fn </span>br_if_xneq64(<span class="kw-2">&amp;mut </span><span class="self">self</span>, a: XReg, b: XReg, offset: PcRelOffset) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#1523 id=1523 data-nosnippet>1523</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[a].get_u64();
 <a href=#1524 id=1524 data-nosnippet>1524</a>        <span class="kw">let </span>b = <span class="self">self</span>.state[b].get_u64();
-<a href=#1525 id=1525 data-nosnippet>1525</a>        <span class="kw">if </span>a != b {
+<a href=#1525 id=1525 data-nosnippet>1525</a>        <span class="kw">if </span><span class="macro">a !</span>= b {
 <a href=#1526 id=1526 data-nosnippet>1526</a>            <span class="self">self</span>.pc_rel_jump::&lt;<span class="kw">crate</span>::BrIfXneq64&gt;(offset)
 <a href=#1527 id=1527 data-nosnippet>1527</a>        } <span class="kw">else </span>{
 <a href=#1528 id=1528 data-nosnippet>1528</a>            ControlFlow::Continue(())
@@ -1917,7 +1917,7 @@
 <a href=#1917 id=1917 data-nosnippet>1917</a>    <span class="kw">fn </span>xneq64(<span class="kw-2">&amp;mut </span><span class="self">self</span>, operands: BinaryOperands&lt;XReg&gt;) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#1918 id=1918 data-nosnippet>1918</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[operands.src1].get_u64();
 <a href=#1919 id=1919 data-nosnippet>1919</a>        <span class="kw">let </span>b = <span class="self">self</span>.state[operands.src2].get_u64();
-<a href=#1920 id=1920 data-nosnippet>1920</a>        <span class="self">self</span>.state[operands.dst].set_u32(u32::from(a != b));
+<a href=#1920 id=1920 data-nosnippet>1920</a>        <span class="self">self</span>.state[operands.dst].set_u32(u32::from(<span class="macro">a !</span>= b));
 <a href=#1921 id=1921 data-nosnippet>1921</a>        ControlFlow::Continue(())
 <a href=#1922 id=1922 data-nosnippet>1922</a>    }
 <a href=#1923 id=1923 data-nosnippet>1923</a>
@@ -1959,7 +1959,7 @@
 <a href=#1959 id=1959 data-nosnippet>1959</a>    <span class="kw">fn </span>xneq32(<span class="kw-2">&amp;mut </span><span class="self">self</span>, operands: BinaryOperands&lt;XReg&gt;) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#1960 id=1960 data-nosnippet>1960</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[operands.src1].get_u32();
 <a href=#1961 id=1961 data-nosnippet>1961</a>        <span class="kw">let </span>b = <span class="self">self</span>.state[operands.src2].get_u32();
-<a href=#1962 id=1962 data-nosnippet>1962</a>        <span class="self">self</span>.state[operands.dst].set_u32(u32::from(a != b));
+<a href=#1962 id=1962 data-nosnippet>1962</a>        <span class="self">self</span>.state[operands.dst].set_u32(u32::from(<span class="macro">a !</span>= b));
 <a href=#1963 id=1963 data-nosnippet>1963</a>        ControlFlow::Continue(())
 <a href=#1964 id=1964 data-nosnippet>1964</a>    }
 <a href=#1965 id=1965 data-nosnippet>1965</a>
@@ -3206,7 +3206,7 @@
 <a href=#3206 id=3206 data-nosnippet>3206</a>    <span class="kw">fn </span>fneq32(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: XReg, src1: FReg, src2: FReg) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#3207 id=3207 data-nosnippet>3207</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[src1].get_f32();
 <a href=#3208 id=3208 data-nosnippet>3208</a>        <span class="kw">let </span>b = <span class="self">self</span>.state[src2].get_f32();
-<a href=#3209 id=3209 data-nosnippet>3209</a>        <span class="self">self</span>.state[dst].set_u32(u32::from(a != b));
+<a href=#3209 id=3209 data-nosnippet>3209</a>        <span class="self">self</span>.state[dst].set_u32(u32::from(<span class="macro">a !</span>= b));
 <a href=#3210 id=3210 data-nosnippet>3210</a>        ControlFlow::Continue(())
 <a href=#3211 id=3211 data-nosnippet>3211</a>    }
 <a href=#3212 id=3212 data-nosnippet>3212</a>
@@ -3234,7 +3234,7 @@
 <a href=#3234 id=3234 data-nosnippet>3234</a>    <span class="kw">fn </span>fneq64(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: XReg, src1: FReg, src2: FReg) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#3235 id=3235 data-nosnippet>3235</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[src1].get_f64();
 <a href=#3236 id=3236 data-nosnippet>3236</a>        <span class="kw">let </span>b = <span class="self">self</span>.state[src2].get_f64();
-<a href=#3237 id=3237 data-nosnippet>3237</a>        <span class="self">self</span>.state[dst].set_u32(u32::from(a != b));
+<a href=#3237 id=3237 data-nosnippet>3237</a>        <span class="self">self</span>.state[dst].set_u32(u32::from(<span class="macro">a !</span>= b));
 <a href=#3238 id=3238 data-nosnippet>3238</a>        ControlFlow::Continue(())
 <a href=#3239 id=3239 data-nosnippet>3239</a>    }
 <a href=#3240 id=3240 data-nosnippet>3240</a>
@@ -4206,7 +4206,7 @@
 <a href=#4206 id=4206 data-nosnippet>4206</a>    <span class="attr">#[interp_disable_if_cfg(pulley_disable_interp_simd)]
 <a href=#4207 id=4207 data-nosnippet>4207</a>    </span><span class="kw">fn </span>valltrue8x16(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: XReg, src: VReg) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#4208 id=4208 data-nosnippet>4208</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[src].get_u8x16();
-<a href=#4209 id=4209 data-nosnippet>4209</a>        <span class="kw">let </span>result = a.iter().all(|a| <span class="kw-2">*</span>a != <span class="number">0</span>);
+<a href=#4209 id=4209 data-nosnippet>4209</a>        <span class="kw">let </span>result = a.iter().all(|a| <span class="kw-2">*</span><span class="macro">a !</span>= <span class="number">0</span>);
 <a href=#4210 id=4210 data-nosnippet>4210</a>        <span class="self">self</span>.state[dst].set_u32(u32::from(result));
 <a href=#4211 id=4211 data-nosnippet>4211</a>        ControlFlow::Continue(())
 <a href=#4212 id=4212 data-nosnippet>4212</a>    }
@@ -4214,7 +4214,7 @@
 <a href=#4214 id=4214 data-nosnippet>4214</a>    <span class="attr">#[interp_disable_if_cfg(pulley_disable_interp_simd)]
 <a href=#4215 id=4215 data-nosnippet>4215</a>    </span><span class="kw">fn </span>valltrue16x8(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: XReg, src: VReg) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#4216 id=4216 data-nosnippet>4216</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[src].get_u16x8();
-<a href=#4217 id=4217 data-nosnippet>4217</a>        <span class="kw">let </span>result = a.iter().all(|a| <span class="kw-2">*</span>a != <span class="number">0</span>);
+<a href=#4217 id=4217 data-nosnippet>4217</a>        <span class="kw">let </span>result = a.iter().all(|a| <span class="kw-2">*</span><span class="macro">a !</span>= <span class="number">0</span>);
 <a href=#4218 id=4218 data-nosnippet>4218</a>        <span class="self">self</span>.state[dst].set_u32(u32::from(result));
 <a href=#4219 id=4219 data-nosnippet>4219</a>        ControlFlow::Continue(())
 <a href=#4220 id=4220 data-nosnippet>4220</a>    }
@@ -4222,7 +4222,7 @@
 <a href=#4222 id=4222 data-nosnippet>4222</a>    <span class="attr">#[interp_disable_if_cfg(pulley_disable_interp_simd)]
 <a href=#4223 id=4223 data-nosnippet>4223</a>    </span><span class="kw">fn </span>valltrue32x4(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: XReg, src: VReg) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#4224 id=4224 data-nosnippet>4224</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[src].get_u32x4();
-<a href=#4225 id=4225 data-nosnippet>4225</a>        <span class="kw">let </span>result = a.iter().all(|a| <span class="kw-2">*</span>a != <span class="number">0</span>);
+<a href=#4225 id=4225 data-nosnippet>4225</a>        <span class="kw">let </span>result = a.iter().all(|a| <span class="kw-2">*</span><span class="macro">a !</span>= <span class="number">0</span>);
 <a href=#4226 id=4226 data-nosnippet>4226</a>        <span class="self">self</span>.state[dst].set_u32(u32::from(result));
 <a href=#4227 id=4227 data-nosnippet>4227</a>        ControlFlow::Continue(())
 <a href=#4228 id=4228 data-nosnippet>4228</a>    }
@@ -4230,7 +4230,7 @@
 <a href=#4230 id=4230 data-nosnippet>4230</a>    <span class="attr">#[interp_disable_if_cfg(pulley_disable_interp_simd)]
 <a href=#4231 id=4231 data-nosnippet>4231</a>    </span><span class="kw">fn </span>valltrue64x2(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: XReg, src: VReg) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#4232 id=4232 data-nosnippet>4232</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[src].get_u64x2();
-<a href=#4233 id=4233 data-nosnippet>4233</a>        <span class="kw">let </span>result = a.iter().all(|a| <span class="kw-2">*</span>a != <span class="number">0</span>);
+<a href=#4233 id=4233 data-nosnippet>4233</a>        <span class="kw">let </span>result = a.iter().all(|a| <span class="kw-2">*</span><span class="macro">a !</span>= <span class="number">0</span>);
 <a href=#4234 id=4234 data-nosnippet>4234</a>        <span class="self">self</span>.state[dst].set_u32(u32::from(result));
 <a href=#4235 id=4235 data-nosnippet>4235</a>        ControlFlow::Continue(())
 <a href=#4236 id=4236 data-nosnippet>4236</a>    }
@@ -4238,7 +4238,7 @@
 <a href=#4238 id=4238 data-nosnippet>4238</a>    <span class="attr">#[interp_disable_if_cfg(pulley_disable_interp_simd)]
 <a href=#4239 id=4239 data-nosnippet>4239</a>    </span><span class="kw">fn </span>vanytrue8x16(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: XReg, src: VReg) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#4240 id=4240 data-nosnippet>4240</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[src].get_u8x16();
-<a href=#4241 id=4241 data-nosnippet>4241</a>        <span class="kw">let </span>result = a.iter().any(|a| <span class="kw-2">*</span>a != <span class="number">0</span>);
+<a href=#4241 id=4241 data-nosnippet>4241</a>        <span class="kw">let </span>result = a.iter().any(|a| <span class="kw-2">*</span><span class="macro">a !</span>= <span class="number">0</span>);
 <a href=#4242 id=4242 data-nosnippet>4242</a>        <span class="self">self</span>.state[dst].set_u32(u32::from(result));
 <a href=#4243 id=4243 data-nosnippet>4243</a>        ControlFlow::Continue(())
 <a href=#4244 id=4244 data-nosnippet>4244</a>    }
@@ -4246,7 +4246,7 @@
 <a href=#4246 id=4246 data-nosnippet>4246</a>    <span class="attr">#[interp_disable_if_cfg(pulley_disable_interp_simd)]
 <a href=#4247 id=4247 data-nosnippet>4247</a>    </span><span class="kw">fn </span>vanytrue16x8(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: XReg, src: VReg) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#4248 id=4248 data-nosnippet>4248</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[src].get_u16x8();
-<a href=#4249 id=4249 data-nosnippet>4249</a>        <span class="kw">let </span>result = a.iter().any(|a| <span class="kw-2">*</span>a != <span class="number">0</span>);
+<a href=#4249 id=4249 data-nosnippet>4249</a>        <span class="kw">let </span>result = a.iter().any(|a| <span class="kw-2">*</span><span class="macro">a !</span>= <span class="number">0</span>);
 <a href=#4250 id=4250 data-nosnippet>4250</a>        <span class="self">self</span>.state[dst].set_u32(u32::from(result));
 <a href=#4251 id=4251 data-nosnippet>4251</a>        ControlFlow::Continue(())
 <a href=#4252 id=4252 data-nosnippet>4252</a>    }
@@ -4254,7 +4254,7 @@
 <a href=#4254 id=4254 data-nosnippet>4254</a>    <span class="attr">#[interp_disable_if_cfg(pulley_disable_interp_simd)]
 <a href=#4255 id=4255 data-nosnippet>4255</a>    </span><span class="kw">fn </span>vanytrue32x4(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: XReg, src: VReg) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#4256 id=4256 data-nosnippet>4256</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[src].get_u32x4();
-<a href=#4257 id=4257 data-nosnippet>4257</a>        <span class="kw">let </span>result = a.iter().any(|a| <span class="kw-2">*</span>a != <span class="number">0</span>);
+<a href=#4257 id=4257 data-nosnippet>4257</a>        <span class="kw">let </span>result = a.iter().any(|a| <span class="kw-2">*</span><span class="macro">a !</span>= <span class="number">0</span>);
 <a href=#4258 id=4258 data-nosnippet>4258</a>        <span class="self">self</span>.state[dst].set_u32(u32::from(result));
 <a href=#4259 id=4259 data-nosnippet>4259</a>        ControlFlow::Continue(())
 <a href=#4260 id=4260 data-nosnippet>4260</a>    }
@@ -4262,7 +4262,7 @@
 <a href=#4262 id=4262 data-nosnippet>4262</a>    <span class="attr">#[interp_disable_if_cfg(pulley_disable_interp_simd)]
 <a href=#4263 id=4263 data-nosnippet>4263</a>    </span><span class="kw">fn </span>vanytrue64x2(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: XReg, src: VReg) -&gt; ControlFlow&lt;Done&gt; {
 <a href=#4264 id=4264 data-nosnippet>4264</a>        <span class="kw">let </span>a = <span class="self">self</span>.state[src].get_u64x2();
-<a href=#4265 id=4265 data-nosnippet>4265</a>        <span class="kw">let </span>result = a.iter().any(|a| <span class="kw-2">*</span>a != <span class="number">0</span>);
+<a href=#4265 id=4265 data-nosnippet>4265</a>        <span class="kw">let </span>result = a.iter().any(|a| <span class="kw-2">*</span><span class="macro">a !</span>= <span class="number">0</span>);
 <a href=#4266 id=4266 data-nosnippet>4266</a>        <span class="self">self</span>.state[dst].set_u32(u32::from(result));
 <a href=#4267 id=4267 data-nosnippet>4267</a>        ControlFlow::Continue(())
 <a href=#4268 id=4268 data-nosnippet>4268</a>    }
@@ -4842,7 +4842,7 @@
 <a href=#4842 id=4842 data-nosnippet>4842</a>        <span class="kw">let </span>b = <span class="self">self</span>.state[operands.src2].get_u8x16();
 <a href=#4843 id=4843 data-nosnippet>4843</a>        <span class="kw">let </span><span class="kw-2">mut </span>c = [<span class="number">0</span>; <span class="number">16</span>];
 <a href=#4844 id=4844 data-nosnippet>4844</a>        <span class="kw">for </span>((a, b), c) <span class="kw">in </span>a.iter().zip(<span class="kw-2">&amp;</span>b).zip(<span class="kw-2">&amp;mut </span>c) {
-<a href=#4845 id=4845 data-nosnippet>4845</a>            <span class="kw-2">*</span>c = <span class="kw">if </span>a != b { u8::MAX } <span class="kw">else </span>{ <span class="number">0 </span>};
+<a href=#4845 id=4845 data-nosnippet>4845</a>            <span class="kw-2">*</span>c = <span class="kw">if </span><span class="macro">a !</span>= b { u8::MAX } <span class="kw">else </span>{ <span class="number">0 </span>};
 <a href=#4846 id=4846 data-nosnippet>4846</a>        }
 <a href=#4847 id=4847 data-nosnippet>4847</a>        <span class="self">self</span>.state[operands.dst].set_u8x16(c);
 <a href=#4848 id=4848 data-nosnippet>4848</a>        ControlFlow::Continue(())
@@ -4914,7 +4914,7 @@
 <a href=#4914 id=4914 data-nosnippet>4914</a>        <span class="kw">let </span>b = <span class="self">self</span>.state[operands.src2].get_u16x8();
 <a href=#4915 id=4915 data-nosnippet>4915</a>        <span class="kw">let </span><span class="kw-2">mut </span>c = [<span class="number">0</span>; <span class="number">8</span>];
 <a href=#4916 id=4916 data-nosnippet>4916</a>        <span class="kw">for </span>((a, b), c) <span class="kw">in </span>a.iter().zip(<span class="kw-2">&amp;</span>b).zip(<span class="kw-2">&amp;mut </span>c) {
-<a href=#4917 id=4917 data-nosnippet>4917</a>            <span class="kw-2">*</span>c = <span class="kw">if </span>a != b { u16::MAX } <span class="kw">else </span>{ <span class="number">0 </span>};
+<a href=#4917 id=4917 data-nosnippet>4917</a>            <span class="kw-2">*</span>c = <span class="kw">if </span><span class="macro">a !</span>= b { u16::MAX } <span class="kw">else </span>{ <span class="number">0 </span>};
 <a href=#4918 id=4918 data-nosnippet>4918</a>        }
 <a href=#4919 id=4919 data-nosnippet>4919</a>        <span class="self">self</span>.state[operands.dst].set_u16x8(c);
 <a href=#4920 id=4920 data-nosnippet>4920</a>        ControlFlow::Continue(())
@@ -4986,7 +4986,7 @@
 <a href=#4986 id=4986 data-nosnippet>4986</a>        <span class="kw">let </span>b = <span class="self">self</span>.state[operands.src2].get_u32x4();
 <a href=#4987 id=4987 data-nosnippet>4987</a>        <span class="kw">let </span><span class="kw-2">mut </span>c = [<span class="number">0</span>; <span class="number">4</span>];
 <a href=#4988 id=4988 data-nosnippet>4988</a>        <span class="kw">for </span>((a, b), c) <span class="kw">in </span>a.iter().zip(<span class="kw-2">&amp;</span>b).zip(<span class="kw-2">&amp;mut </span>c) {
-<a href=#4989 id=4989 data-nosnippet>4989</a>            <span class="kw-2">*</span>c = <span class="kw">if </span>a != b { u32::MAX } <span class="kw">else </span>{ <span class="number">0 </span>};
+<a href=#4989 id=4989 data-nosnippet>4989</a>            <span class="kw-2">*</span>c = <span class="kw">if </span><span class="macro">a !</span>= b { u32::MAX } <span class="kw">else </span>{ <span class="number">0 </span>};
 <a href=#4990 id=4990 data-nosnippet>4990</a>        }
 <a href=#4991 id=4991 data-nosnippet>4991</a>        <span class="self">self</span>.state[operands.dst].set_u32x4(c);
 <a href=#4992 id=4992 data-nosnippet>4992</a>        ControlFlow::Continue(())
@@ -5058,7 +5058,7 @@
 <a href=#5058 id=5058 data-nosnippet>5058</a>        <span class="kw">let </span>b = <span class="self">self</span>.state[operands.src2].get_u64x2();
 <a href=#5059 id=5059 data-nosnippet>5059</a>        <span class="kw">let </span><span class="kw-2">mut </span>c = [<span class="number">0</span>; <span class="number">2</span>];
 <a href=#5060 id=5060 data-nosnippet>5060</a>        <span class="kw">for </span>((a, b), c) <span class="kw">in </span>a.iter().zip(<span class="kw-2">&amp;</span>b).zip(<span class="kw-2">&amp;mut </span>c) {
-<a href=#5061 id=5061 data-nosnippet>5061</a>            <span class="kw-2">*</span>c = <span class="kw">if </span>a != b { u64::MAX } <span class="kw">else </span>{ <span class="number">0 </span>};
+<a href=#5061 id=5061 data-nosnippet>5061</a>            <span class="kw-2">*</span>c = <span class="kw">if </span><span class="macro">a !</span>= b { u64::MAX } <span class="kw">else </span>{ <span class="number">0 </span>};
 <a href=#5062 id=5062 data-nosnippet>5062</a>        }
 <a href=#5063 id=5063 data-nosnippet>5063</a>        <span class="self">self</span>.state[operands.dst].set_u64x2(c);
 <a href=#5064 id=5064 data-nosnippet>5064</a>        ControlFlow::Continue(())
@@ -5438,7 +5438,7 @@
 <a href=#5438 id=5438 data-nosnippet>5438</a>        <span class="kw">let </span>b = <span class="self">self</span>.state[operands.src2].get_f32x4();
 <a href=#5439 id=5439 data-nosnippet>5439</a>        <span class="kw">let </span><span class="kw-2">mut </span>c = [<span class="number">0</span>; <span class="number">4</span>];
 <a href=#5440 id=5440 data-nosnippet>5440</a>        <span class="kw">for </span>((a, b), c) <span class="kw">in </span>a.iter().zip(<span class="kw-2">&amp;</span>b).zip(<span class="kw-2">&amp;mut </span>c) {
-<a href=#5441 id=5441 data-nosnippet>5441</a>            <span class="kw-2">*</span>c = <span class="kw">if </span>a != b { u32::MAX } <span class="kw">else </span>{ <span class="number">0 </span>};
+<a href=#5441 id=5441 data-nosnippet>5441</a>            <span class="kw-2">*</span>c = <span class="kw">if </span><span class="macro">a !</span>= b { u32::MAX } <span class="kw">else </span>{ <span class="number">0 </span>};
 <a href=#5442 id=5442 data-nosnippet>5442</a>        }
 <a href=#5443 id=5443 data-nosnippet>5443</a>        <span class="self">self</span>.state[operands.dst].set_u32x4(c);
 <a href=#5444 id=5444 data-nosnippet>5444</a>        ControlFlow::Continue(())
@@ -5486,7 +5486,7 @@
 <a href=#5486 id=5486 data-nosnippet>5486</a>        <span class="kw">let </span>b = <span class="self">self</span>.state[operands.src2].get_f64x2();
 <a href=#5487 id=5487 data-nosnippet>5487</a>        <span class="kw">let </span><span class="kw-2">mut </span>c = [<span class="number">0</span>; <span class="number">2</span>];
 <a href=#5488 id=5488 data-nosnippet>5488</a>        <span class="kw">for </span>((a, b), c) <span class="kw">in </span>a.iter().zip(<span class="kw-2">&amp;</span>b).zip(<span class="kw-2">&amp;mut </span>c) {
-<a href=#5489 id=5489 data-nosnippet>5489</a>            <span class="kw-2">*</span>c = <span class="kw">if </span>a != b { u64::MAX } <span class="kw">else </span>{ <span class="number">0 </span>};
+<a href=#5489 id=5489 data-nosnippet>5489</a>            <span class="kw-2">*</span>c = <span class="kw">if </span><span class="macro">a !</span>= b { u64::MAX } <span class="kw">else </span>{ <span class="number">0 </span>};
 <a href=#5490 id=5490 data-nosnippet>5490</a>        }
 <a href=#5491 id=5491 data-nosnippet>5491</a>        <span class="self">self</span>.state[operands.dst].set_u64x2(c);
 <a href=#5492 id=5492 data-nosnippet>5492</a>        ControlFlow::Continue(())
@@ -5620,4 +5620,5 @@
 <a href=#5620 id=5620 data-nosnippet>5620</a>        <span class="self">self</span>.set_i128(dst_lo, dst_hi, result <span class="kw">as </span>i128);
 <a href=#5621 id=5621 data-nosnippet>5621</a>        ControlFlow::Continue(())
 <a href=#5622 id=5622 data-nosnippet>5622</a>    }
-<a href=#5623 id=5623 data-nosnippet>5623</a>}</code></pre></div></section></main></body></html>
+<a href=#5623 id=5623 data-nosnippet>5623</a>}
+</code></pre></div></section></main></body></html>

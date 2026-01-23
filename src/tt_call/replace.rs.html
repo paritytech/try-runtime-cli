@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tt-call-1.0.9/src/replace.rs`."><title>replace.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="tt_call" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">tt_call/</div>replace.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">/// Replace each token that matches a given predicate by a given replacement
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tt-call-1.0.9/src/replace.rs`."><title>replace.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="tt_call" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">tt_call/</div>replace.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">/// Replace each token that matches a given predicate by a given replacement
 <a href=#2 id=2 data-nosnippet>2</a>/// sequence of tokens.
 <a href=#3 id=3 data-nosnippet>3</a>/// &lt;sup&gt;**[tt-call]**&lt;/sup&gt;
 <a href=#4 id=4 data-nosnippet>4</a>///
@@ -68,7 +68,7 @@
 <a href=#68 id=68 data-nosnippet>68</a>        replace_with = [{ $(<span class="macro-nonterminal">$with</span>:tt)* }]
 <a href=#69 id=69 data-nosnippet>69</a>        input = [{ $(<span class="macro-nonterminal">$input</span>:tt)* }]
 <a href=#70 id=70 data-nosnippet>70</a>    } =&gt; {
-<a href=#71 id=71 data-nosnippet>71</a>        <span class="macro-nonterminal">$</span><span class="macro">crate::private_replace!</span> {
+<a href=#71 id=71 data-nosnippet>71</a>        <span class="macro-nonterminal">$crate::private_replace</span>! {
 <a href=#72 id=72 data-nosnippet>72</a>            <span class="macro-nonterminal">$caller
 <a href=#73 id=73 data-nosnippet>73</a>            </span>condition = [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
 <a href=#74 id=74 data-nosnippet>74</a>            replace_with = [{ $(<span class="macro-nonterminal">$with</span>)* }]
@@ -89,7 +89,7 @@
 <a href=#89 id=89 data-nosnippet>89</a>        tokens = [{ $(<span class="macro-nonterminal">$tokens</span>:tt)* }]
 <a href=#90 id=90 data-nosnippet>90</a>        rest = [{ }]
 <a href=#91 id=91 data-nosnippet>91</a>    } =&gt; {
-<a href=#92 id=92 data-nosnippet>92</a>        <span class="macro-nonterminal">$</span><span class="macro">crate::tt_return!</span> {
+<a href=#92 id=92 data-nosnippet>92</a>        <span class="macro-nonterminal">$crate::tt_return</span>! {
 <a href=#93 id=93 data-nosnippet>93</a>            <span class="macro-nonterminal">$caller
 <a href=#94 id=94 data-nosnippet>94</a>            </span>tokens = [{ $(<span class="macro-nonterminal">$tokens</span>)* }]
 <a href=#95 id=95 data-nosnippet>95</a>        }
@@ -103,13 +103,13 @@
 <a href=#103 id=103 data-nosnippet>103</a>        tokens = [{ $(<span class="macro-nonterminal">$tokens</span>:tt)* }]
 <a href=#104 id=104 data-nosnippet>104</a>        rest = [{ ( $(<span class="macro-nonterminal">$group</span>:tt)* ) $(<span class="macro-nonterminal">$rest</span>:tt)* }]
 <a href=#105 id=105 data-nosnippet>105</a>    } =&gt; {
-<a href=#106 id=106 data-nosnippet>106</a>        <span class="macro-nonterminal">$</span><span class="macro">crate::tt_call!</span> {
+<a href=#106 id=106 data-nosnippet>106</a>        <span class="macro-nonterminal">$crate::tt_call</span>! {
 <a href=#107 id=107 data-nosnippet>107</a>            <span class="kw">macro </span>= [{ <span class="macro-nonterminal">$crate::private_replace </span>}]
 <a href=#108 id=108 data-nosnippet>108</a>            condition = [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
 <a href=#109 id=109 data-nosnippet>109</a>            replace_with = [{ $(<span class="macro-nonterminal">$with</span>)* }]
 <a href=#110 id=110 data-nosnippet>110</a>            tokens = [{ }]
 <a href=#111 id=111 data-nosnippet>111</a>            rest = [{ $(<span class="macro-nonterminal">$group</span>)* }]
-<a href=#112 id=112 data-nosnippet>112</a>            ~~&gt; <span class="macro-nonterminal">$</span><span class="macro">crate::private_replace!</span> {
+<a href=#112 id=112 data-nosnippet>112</a>            ~~&gt; <span class="macro-nonterminal">$crate::private_replace</span>! {
 <a href=#113 id=113 data-nosnippet>113</a>                <span class="macro-nonterminal">$caller
 <a href=#114 id=114 data-nosnippet>114</a>                </span>condition = [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
 <a href=#115 id=115 data-nosnippet>115</a>                replace_with = [{ $(<span class="macro-nonterminal">$with</span>)* }]
@@ -128,7 +128,7 @@
 <a href=#128 id=128 data-nosnippet>128</a>        after_paren = [{ $(<span class="macro-nonterminal">$after</span>:tt)* }]
 <a href=#129 id=129 data-nosnippet>129</a>        tokens = [{ $(<span class="macro-nonterminal">$inside</span>:tt)* }]
 <a href=#130 id=130 data-nosnippet>130</a>    } =&gt; {
-<a href=#131 id=131 data-nosnippet>131</a>        <span class="macro-nonterminal">$</span><span class="macro">crate::private_replace!</span> {
+<a href=#131 id=131 data-nosnippet>131</a>        <span class="macro-nonterminal">$crate::private_replace</span>! {
 <a href=#132 id=132 data-nosnippet>132</a>            <span class="macro-nonterminal">$caller
 <a href=#133 id=133 data-nosnippet>133</a>            </span>condition = [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
 <a href=#134 id=134 data-nosnippet>134</a>            replace_with = [{ $(<span class="macro-nonterminal">$with</span>)* }]
@@ -145,13 +145,13 @@
 <a href=#145 id=145 data-nosnippet>145</a>        tokens = [{ $(<span class="macro-nonterminal">$tokens</span>:tt)* }]
 <a href=#146 id=146 data-nosnippet>146</a>        rest = [{ [ $(<span class="macro-nonterminal">$group</span>:tt)* ] $(<span class="macro-nonterminal">$rest</span>:tt)* }]
 <a href=#147 id=147 data-nosnippet>147</a>    } =&gt; {
-<a href=#148 id=148 data-nosnippet>148</a>        <span class="macro-nonterminal">$</span><span class="macro">crate::tt_call!</span> {
+<a href=#148 id=148 data-nosnippet>148</a>        <span class="macro-nonterminal">$crate::tt_call</span>! {
 <a href=#149 id=149 data-nosnippet>149</a>            <span class="kw">macro </span>= [{ <span class="macro-nonterminal">$crate::private_replace </span>}]
 <a href=#150 id=150 data-nosnippet>150</a>            condition = [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
 <a href=#151 id=151 data-nosnippet>151</a>            replace_with = [{ $(<span class="macro-nonterminal">$with</span>)* }]
 <a href=#152 id=152 data-nosnippet>152</a>            tokens = [{ }]
 <a href=#153 id=153 data-nosnippet>153</a>            rest = [{ $(<span class="macro-nonterminal">$group</span>)* }]
-<a href=#154 id=154 data-nosnippet>154</a>            ~~&gt; <span class="macro-nonterminal">$</span><span class="macro">crate::private_replace!</span> {
+<a href=#154 id=154 data-nosnippet>154</a>            ~~&gt; <span class="macro-nonterminal">$crate::private_replace</span>! {
 <a href=#155 id=155 data-nosnippet>155</a>                <span class="macro-nonterminal">$caller
 <a href=#156 id=156 data-nosnippet>156</a>                </span>condition = [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
 <a href=#157 id=157 data-nosnippet>157</a>                replace_with = [{ $(<span class="macro-nonterminal">$with</span>)* }]
@@ -170,7 +170,7 @@
 <a href=#170 id=170 data-nosnippet>170</a>        after_bracket = [{ $(<span class="macro-nonterminal">$after</span>:tt)* }]
 <a href=#171 id=171 data-nosnippet>171</a>        tokens = [{ $(<span class="macro-nonterminal">$inside</span>:tt)* }]
 <a href=#172 id=172 data-nosnippet>172</a>    } =&gt; {
-<a href=#173 id=173 data-nosnippet>173</a>        <span class="macro-nonterminal">$</span><span class="macro">crate::private_replace!</span> {
+<a href=#173 id=173 data-nosnippet>173</a>        <span class="macro-nonterminal">$crate::private_replace</span>! {
 <a href=#174 id=174 data-nosnippet>174</a>            <span class="macro-nonterminal">$caller
 <a href=#175 id=175 data-nosnippet>175</a>            </span>condition = [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
 <a href=#176 id=176 data-nosnippet>176</a>            replace_with = [{ $(<span class="macro-nonterminal">$with</span>)* }]
@@ -187,13 +187,13 @@
 <a href=#187 id=187 data-nosnippet>187</a>        tokens = [{ $(<span class="macro-nonterminal">$tokens</span>:tt)* }]
 <a href=#188 id=188 data-nosnippet>188</a>        rest = [{ { $(<span class="macro-nonterminal">$group</span>:tt)* } $(<span class="macro-nonterminal">$rest</span>:tt)* }]
 <a href=#189 id=189 data-nosnippet>189</a>    } =&gt; {
-<a href=#190 id=190 data-nosnippet>190</a>        <span class="macro-nonterminal">$</span><span class="macro">crate::tt_call!</span> {
+<a href=#190 id=190 data-nosnippet>190</a>        <span class="macro-nonterminal">$crate::tt_call</span>! {
 <a href=#191 id=191 data-nosnippet>191</a>            <span class="kw">macro </span>= [{ <span class="macro-nonterminal">$crate::private_replace </span>}]
 <a href=#192 id=192 data-nosnippet>192</a>            condition = [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
 <a href=#193 id=193 data-nosnippet>193</a>            replace_with = [{ $(<span class="macro-nonterminal">$with</span>)* }]
 <a href=#194 id=194 data-nosnippet>194</a>            tokens = [{ }]
 <a href=#195 id=195 data-nosnippet>195</a>            rest = [{ $(<span class="macro-nonterminal">$group</span>)* }]
-<a href=#196 id=196 data-nosnippet>196</a>            ~~&gt; <span class="macro-nonterminal">$</span><span class="macro">crate::private_replace!</span> {
+<a href=#196 id=196 data-nosnippet>196</a>            ~~&gt; <span class="macro-nonterminal">$crate::private_replace</span>! {
 <a href=#197 id=197 data-nosnippet>197</a>                <span class="macro-nonterminal">$caller
 <a href=#198 id=198 data-nosnippet>198</a>                </span>condition = [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
 <a href=#199 id=199 data-nosnippet>199</a>                replace_with = [{ $(<span class="macro-nonterminal">$with</span>)* }]
@@ -212,7 +212,7 @@
 <a href=#212 id=212 data-nosnippet>212</a>        after_brace = [{ $(<span class="macro-nonterminal">$after</span>:tt)* }]
 <a href=#213 id=213 data-nosnippet>213</a>        tokens = [{ $(<span class="macro-nonterminal">$inside</span>:tt)* }]
 <a href=#214 id=214 data-nosnippet>214</a>    } =&gt; {
-<a href=#215 id=215 data-nosnippet>215</a>        <span class="macro-nonterminal">$</span><span class="macro">crate::private_replace!</span> {
+<a href=#215 id=215 data-nosnippet>215</a>        <span class="macro-nonterminal">$crate::private_replace</span>! {
 <a href=#216 id=216 data-nosnippet>216</a>            <span class="macro-nonterminal">$caller
 <a href=#217 id=217 data-nosnippet>217</a>            </span>condition = [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
 <a href=#218 id=218 data-nosnippet>218</a>            replace_with = [{ $(<span class="macro-nonterminal">$with</span>)* }]
@@ -229,11 +229,11 @@
 <a href=#229 id=229 data-nosnippet>229</a>        tokens = [{ $(<span class="macro-nonterminal">$tokens</span>:tt)* }]
 <a href=#230 id=230 data-nosnippet>230</a>        rest = [{ <span class="macro-nonterminal">$first</span>:tt $(<span class="macro-nonterminal">$rest</span>:tt)* }]
 <a href=#231 id=231 data-nosnippet>231</a>    } =&gt; {
-<a href=#232 id=232 data-nosnippet>232</a>        <span class="macro-nonterminal">$</span><span class="macro">crate::tt_if!</span> {
-<a href=#233 id=233 data-nosnippet>233</a>            <span class="macro-nonterminal">condition </span>= [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
+<a href=#232 id=232 data-nosnippet>232</a>        <span class="macro-nonterminal">$crate::tt_if</span>! {
+<a href=#233 id=233 data-nosnippet>233</a>            condition = [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
 <a href=#234 id=234 data-nosnippet>234</a>            input = [{ <span class="macro-nonterminal">$first </span>}]
 <a href=#235 id=235 data-nosnippet>235</a>            <span class="bool-val">true </span>= [{
-<a href=#236 id=236 data-nosnippet>236</a>                <span class="macro-nonterminal">$</span><span class="macro">crate::private_replace!</span> {
+<a href=#236 id=236 data-nosnippet>236</a>                <span class="macro-nonterminal">$crate::private_replace</span>! {
 <a href=#237 id=237 data-nosnippet>237</a>                    <span class="macro-nonterminal">$caller
 <a href=#238 id=238 data-nosnippet>238</a>                    </span>condition = [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
 <a href=#239 id=239 data-nosnippet>239</a>                    replace_with = [{ $(<span class="macro-nonterminal">$with</span>)* }]
@@ -242,7 +242,7 @@
 <a href=#242 id=242 data-nosnippet>242</a>                }
 <a href=#243 id=243 data-nosnippet>243</a>            }]
 <a href=#244 id=244 data-nosnippet>244</a>            <span class="bool-val">false </span>= [{
-<a href=#245 id=245 data-nosnippet>245</a>                <span class="macro-nonterminal">$</span><span class="macro">crate::private_replace!</span> {
+<a href=#245 id=245 data-nosnippet>245</a>                <span class="macro-nonterminal">$crate::private_replace</span>! {
 <a href=#246 id=246 data-nosnippet>246</a>                    <span class="macro-nonterminal">$caller
 <a href=#247 id=247 data-nosnippet>247</a>                    </span>condition = [{ $(<span class="macro-nonterminal">$condition</span>)::* }]
 <a href=#248 id=248 data-nosnippet>248</a>                    replace_with = [{ $(<span class="macro-nonterminal">$with</span>)* }]
@@ -252,4 +252,5 @@
 <a href=#252 id=252 data-nosnippet>252</a>            }]
 <a href=#253 id=253 data-nosnippet>253</a>        }
 <a href=#254 id=254 data-nosnippet>254</a>    };
-<a href=#255 id=255 data-nosnippet>255</a>}</code></pre></div></section></main></body></html>
+<a href=#255 id=255 data-nosnippet>255</a>}
+</code></pre></div></section></main></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmprinter-0.235.0/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="wasmprinter" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasmprinter/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! A crate to convert a WebAssembly binary to its textual representation in the
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmprinter-0.235.0/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="wasmprinter" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasmprinter/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! A crate to convert a WebAssembly binary to its textual representation in the
 <a href=#2 id=2 data-nosnippet>2</a>//! WebAssembly Text Format (WAT).
 <a href=#3 id=3 data-nosnippet>3</a>//!
 <a href=#4 id=4 data-nosnippet>4</a>//! This crate is intended for developer toolchains and debugging, supporting
@@ -426,7 +426,7 @@
 <a href=#426 id=426 data-nosnippet>426</a>            <span class="kw">match </span>payload {
 <a href=#427 id=427 data-nosnippet>427</a>                Payload::Version { encoding, .. } =&gt; {
 <a href=#428 id=428 data-nosnippet>428</a>                    <span class="kw">if let </span><span class="prelude-val">Some</span>(e) = expected {
-<a href=#429 id=429 data-nosnippet>429</a>                        <span class="kw">if </span>encoding != e {
+<a href=#429 id=429 data-nosnippet>429</a>                        <span class="kw">if </span><span class="macro">encoding !</span>= e {
 <a href=#430 id=430 data-nosnippet>430</a>                            <span class="macro">bail!</span>(<span class="string">"incorrect encoding for nested module or component"</span>);
 <a href=#431 id=431 data-nosnippet>431</a>                        }
 <a href=#432 id=432 data-nosnippet>432</a>                        expected = <span class="prelude-val">None</span>;
@@ -722,7 +722,7 @@
 <a href=#722 id=722 data-nosnippet>722</a>    <span class="kw">fn </span>update_custom_section_place(<span class="kw-2">&amp;</span><span class="self">self</span>, states: <span class="kw-2">&amp;mut </span>Vec&lt;State&gt;, place: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str) {
 <a href=#723 id=723 data-nosnippet>723</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(last) = states.last_mut() {
 <a href=#724 id=724 data-nosnippet>724</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>((prev, prev_line)) = <span class="kw-2">&amp;mut </span>last.custom_section_place {
-<a href=#725 id=725 data-nosnippet>725</a>                <span class="kw">if </span><span class="kw-2">*</span>prev_line != <span class="self">self</span>.line {
+<a href=#725 id=725 data-nosnippet>725</a>                <span class="kw">if </span><span class="kw-2">*</span><span class="macro">prev_line !</span>= <span class="self">self</span>.line {
 <a href=#726 id=726 data-nosnippet>726</a>                    <span class="kw-2">*</span>prev = place;
 <a href=#727 id=727 data-nosnippet>727</a>                    <span class="kw-2">*</span>prev_line = <span class="self">self</span>.line;
 <a href=#728 id=728 data-nosnippet>728</a>                }
@@ -751,7 +751,7 @@
 <a href=#751 id=751 data-nosnippet>751</a>    <span class="kw">fn </span>end_group(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
 <a href=#752 id=752 data-nosnippet>752</a>        <span class="self">self</span>.nesting -= <span class="number">1</span>;
 <a href=#753 id=753 data-nosnippet>753</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(line) = <span class="self">self</span>.group_lines.pop() {
-<a href=#754 id=754 data-nosnippet>754</a>            <span class="kw">if </span>line != <span class="self">self</span>.line {
+<a href=#754 id=754 data-nosnippet>754</a>            <span class="kw">if </span><span class="macro">line !</span>= <span class="self">self</span>.line {
 <a href=#755 id=755 data-nosnippet>755</a>                <span class="self">self</span>.newline_unknown_pos()<span class="question-mark">?</span>;
 <a href=#756 id=756 data-nosnippet>756</a>            }
 <a href=#757 id=757 data-nosnippet>757</a>        }
@@ -1420,7 +1420,7 @@
 <a href=#1420 id=1420 data-nosnippet>1420</a>        // a newline as well in case the last instruction was something
 <a href=#1421 id=1421 data-nosnippet>1421</a>        // like an `if` which has a comment after it which could interfere
 <a href=#1422 id=1422 data-nosnippet>1422</a>        // with the closing paren printed for the func.
-<a href=#1423 id=1423 data-nosnippet>1423</a>        </span><span class="kw">if </span><span class="self">self</span>.nesting != nesting_start {
+<a href=#1423 id=1423 data-nosnippet>1423</a>        </span><span class="kw">if </span><span class="self">self</span>.<span class="macro">nesting !</span>= nesting_start {
 <a href=#1424 id=1424 data-nosnippet>1424</a>            <span class="self">self</span>.nesting = nesting_start;
 <a href=#1425 id=1425 data-nosnippet>1425</a>            <span class="self">self</span>.newline(reader.original_position())<span class="question-mark">?</span>;
 <a href=#1426 id=1426 data-nosnippet>1426</a>        }
@@ -1675,7 +1675,7 @@
 <a href=#1675 id=1675 data-nosnippet>1675</a>                    memory_index,
 <a href=#1676 id=1676 data-nosnippet>1676</a>                    offset_expr,
 <a href=#1677 id=1677 data-nosnippet>1677</a>                } =&gt; {
-<a href=#1678 id=1678 data-nosnippet>1678</a>                    <span class="kw">if </span><span class="kw-2">*</span>memory_index != <span class="number">0 </span>{
+<a href=#1678 id=1678 data-nosnippet>1678</a>                    <span class="kw">if </span><span class="kw-2">*</span><span class="macro">memory_index !</span>= <span class="number">0 </span>{
 <a href=#1679 id=1679 data-nosnippet>1679</a>                        <span class="self">self</span>.start_group(<span class="string">"memory "</span>)<span class="question-mark">?</span>;
 <a href=#1680 id=1680 data-nosnippet>1680</a>                        <span class="self">self</span>.print_idx(<span class="kw-2">&amp;</span>state.core.memory_names, <span class="kw-2">*</span>memory_index)<span class="question-mark">?</span>;
 <a href=#1681 id=1681 data-nosnippet>1681</a>                        <span class="self">self</span>.end_group()<span class="question-mark">?</span>;
@@ -1749,7 +1749,7 @@
 <a href=#1749 id=1749 data-nosnippet>1749</a>    <span class="kw">fn </span>print_str_contents(<span class="kw-2">&amp;mut </span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
 <a href=#1750 id=1750 data-nosnippet>1750</a>        <span class="kw">for </span>c <span class="kw">in </span>name.chars() {
 <a href=#1751 id=1751 data-nosnippet>1751</a>            <span class="kw">let </span>v = c <span class="kw">as </span>u32;
-<a href=#1752 id=1752 data-nosnippet>1752</a>            <span class="kw">if </span>(<span class="number">0x20</span>..<span class="number">0x7f</span>).contains(<span class="kw-2">&amp;</span>v) &amp;&amp; c != <span class="string">'"' </span>&amp;&amp; c != <span class="string">'\\' </span>&amp;&amp; v &lt; <span class="number">0xff </span>{
+<a href=#1752 id=1752 data-nosnippet>1752</a>            <span class="kw">if </span>(<span class="number">0x20</span>..<span class="number">0x7f</span>).contains(<span class="kw-2">&amp;</span>v) &amp;&amp; <span class="macro">c !</span>= <span class="string">'"' </span>&amp;&amp; <span class="macro">c !</span>= <span class="string">'\\' </span>&amp;&amp; v &lt; <span class="number">0xff </span>{
 <a href=#1753 id=1753 data-nosnippet>1753</a>                <span class="macro">write!</span>(<span class="self">self</span>.result, <span class="string">"{c}"</span>)<span class="question-mark">?</span>;
 <a href=#1754 id=1754 data-nosnippet>1754</a>            } <span class="kw">else </span>{
 <a href=#1755 id=1755 data-nosnippet>1755</a>                <span class="macro">write!</span>(<span class="self">self</span>.result, <span class="string">"\\u{{{v:x}}}"</span>,)<span class="question-mark">?</span>;
@@ -1762,7 +1762,7 @@
 <a href=#1762 id=1762 data-nosnippet>1762</a>        <span class="self">self</span>.result.start_literal()<span class="question-mark">?</span>;
 <a href=#1763 id=1763 data-nosnippet>1763</a>        <span class="self">self</span>.result.write_str(<span class="string">"\""</span>)<span class="question-mark">?</span>;
 <a href=#1764 id=1764 data-nosnippet>1764</a>        <span class="kw">for </span>byte <span class="kw">in </span>bytes {
-<a href=#1765 id=1765 data-nosnippet>1765</a>            <span class="kw">if </span><span class="kw-2">*</span>byte &gt;= <span class="number">0x20 </span>&amp;&amp; <span class="kw-2">*</span>byte &lt; <span class="number">0x7f </span>&amp;&amp; <span class="kw-2">*</span>byte != <span class="string">b'"' </span>&amp;&amp; <span class="kw-2">*</span>byte != <span class="string">b'\\' </span>{
+<a href=#1765 id=1765 data-nosnippet>1765</a>            <span class="kw">if </span><span class="kw-2">*</span>byte &gt;= <span class="number">0x20 </span>&amp;&amp; <span class="kw-2">*</span>byte &lt; <span class="number">0x7f </span>&amp;&amp; <span class="kw-2">*</span><span class="macro">byte !</span>= <span class="string">b'"' </span>&amp;&amp; <span class="kw-2">*</span><span class="macro">byte !</span>= <span class="string">b'\\' </span>{
 <a href=#1766 id=1766 data-nosnippet>1766</a>                <span class="macro">write!</span>(<span class="self">self</span>.result, <span class="string">"{}"</span>, <span class="kw-2">*</span>byte <span class="kw">as </span>char)<span class="question-mark">?</span>;
 <a href=#1767 id=1767 data-nosnippet>1767</a>            } <span class="kw">else </span>{
 <a href=#1768 id=1768 data-nosnippet>1768</a>                <span class="self">self</span>.hex_byte(<span class="kw-2">*</span>byte)<span class="question-mark">?</span>;
@@ -2306,4 +2306,5 @@
 <a href=#2306 id=2306 data-nosnippet>2306</a>        );
 <a href=#2307 id=2307 data-nosnippet>2307</a>    }
 <a href=#2308 id=2308 data-nosnippet>2308</a>    <span class="prelude-val">Ok</span>(())
-<a href=#2309 id=2309 data-nosnippet>2309</a>}</code></pre></div></section></main></body></html>
+<a href=#2309 id=2309 data-nosnippet>2309</a>}
+</code></pre></div></section></main></body></html>

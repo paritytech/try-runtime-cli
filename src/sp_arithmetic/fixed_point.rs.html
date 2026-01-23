@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/primitives/arithmetic/src/fixed_point.rs`."><title>fixed_point.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_arithmetic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sp_arithmetic/</div>fixed_point.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/primitives/arithmetic/src/fixed_point.rs`."><title>fixed_point.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_arithmetic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sp_arithmetic/</div>fixed_point.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -188,7 +188,7 @@
 <a href=#188 id=188 data-nosnippet>188</a>
 <a href=#189 id=189 data-nosnippet>189</a>		<span class="kw">let </span>n: I129 = n.into();
 <a href=#190 id=190 data-nosnippet>190</a>		<span class="kw">let </span>d: I129 = d.into();
-<a href=#191 id=191 data-nosnippet>191</a>		<span class="kw">let </span>negative = n.negative != d.negative;
+<a href=#191 id=191 data-nosnippet>191</a>		<span class="kw">let </span>negative = n.<span class="macro">negative !</span>= d.negative;
 <a href=#192 id=192 data-nosnippet>192</a>
 <a href=#193 id=193 data-nosnippet>193</a>		multiply_by_rational_with_rounding(
 <a href=#194 id=194 data-nosnippet>194</a>			n.value,
@@ -207,7 +207,7 @@
 <a href=#207 id=207 data-nosnippet>207</a>	</span><span class="kw">fn </span>checked_mul_int&lt;N: FixedPointOperand&gt;(<span class="self">self</span>, n: N) -&gt; <span class="prelude-ty">Option</span>&lt;N&gt; {
 <a href=#208 id=208 data-nosnippet>208</a>		<span class="kw">let </span>lhs: I129 = <span class="self">self</span>.into_inner().into();
 <a href=#209 id=209 data-nosnippet>209</a>		<span class="kw">let </span>rhs: I129 = n.into();
-<a href=#210 id=210 data-nosnippet>210</a>		<span class="kw">let </span>negative = lhs.negative != rhs.negative;
+<a href=#210 id=210 data-nosnippet>210</a>		<span class="kw">let </span>negative = lhs.<span class="macro">negative !</span>= rhs.negative;
 <a href=#211 id=211 data-nosnippet>211</a>
 <a href=#212 id=212 data-nosnippet>212</a>		multiply_by_rational_with_rounding(
 <a href=#213 id=213 data-nosnippet>213</a>			lhs.value,
@@ -233,7 +233,7 @@
 <a href=#233 id=233 data-nosnippet>233</a>	</span><span class="kw">fn </span>checked_div_int&lt;N: FixedPointOperand&gt;(<span class="self">self</span>, d: N) -&gt; <span class="prelude-ty">Option</span>&lt;N&gt; {
 <a href=#234 id=234 data-nosnippet>234</a>		<span class="kw">let </span>lhs: I129 = <span class="self">self</span>.into_inner().into();
 <a href=#235 id=235 data-nosnippet>235</a>		<span class="kw">let </span>rhs: I129 = d.into();
-<a href=#236 id=236 data-nosnippet>236</a>		<span class="kw">let </span>negative = lhs.negative != rhs.negative;
+<a href=#236 id=236 data-nosnippet>236</a>		<span class="kw">let </span>negative = lhs.<span class="macro">negative !</span>= rhs.negative;
 <a href=#237 id=237 data-nosnippet>237</a>
 <a href=#238 id=238 data-nosnippet>238</a>		lhs.value
 <a href=#239 id=239 data-nosnippet>239</a>			.checked_div(rhs.value)
@@ -684,7 +684,7 @@
 <a href=#684 id=684 data-nosnippet>684</a>					&lt;<span class="macro-nonterminal">$inner_type</span>&gt;::min_value()
 <a href=#685 id=685 data-nosnippet>685</a>				} <span class="kw">else </span>{
 <a href=#686 id=686 data-nosnippet>686</a>					<span class="kw">let </span>unsigned_inner = n.value <span class="kw">as </span><span class="macro-nonterminal">$inner_type</span>;
-<a href=#687 id=687 data-nosnippet>687</a>					<span class="kw">if </span>unsigned_inner <span class="kw">as </span>u128 != n.value || (unsigned_inner &gt; <span class="number">0</span>) != (n.value &gt; <span class="number">0</span>) {
+<a href=#687 id=687 data-nosnippet>687</a>					<span class="kw">if </span>unsigned_inner <span class="kw">as </span><span class="macro">u128 !</span>= n.value || (unsigned_inner &gt; <span class="number">0</span>) != (n.value &gt; <span class="number">0</span>) {
 <a href=#688 id=688 data-nosnippet>688</a>						<span class="kw">return </span><span class="prelude-val">None
 <a href=#689 id=689 data-nosnippet>689</a>					</span>};
 <a href=#690 id=690 data-nosnippet>690</a>					<span class="kw">if </span>n.negative {
@@ -747,7 +747,7 @@
 <a href=#747 id=747 data-nosnippet>747</a>			) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
 <a href=#748 id=748 data-nosnippet>748</a>				<span class="kw">let </span>lhs = <span class="self">self</span>.into_i129();
 <a href=#749 id=749 data-nosnippet>749</a>				<span class="kw">let </span>rhs = other.into_i129();
-<a href=#750 id=750 data-nosnippet>750</a>				<span class="kw">let </span>negative = lhs.negative != rhs.negative;
+<a href=#750 id=750 data-nosnippet>750</a>				<span class="kw">let </span>negative = lhs.<span class="macro">negative !</span>= rhs.negative;
 <a href=#751 id=751 data-nosnippet>751</a>
 <a href=#752 id=752 data-nosnippet>752</a>				<span class="kw">match </span>multiply_by_rational_with_rounding(
 <a href=#753 id=753 data-nosnippet>753</a>					lhs.value,
@@ -784,7 +784,7 @@
 <a href=#784 id=784 data-nosnippet>784</a>
 <a href=#785 id=785 data-nosnippet>785</a>				<span class="kw">let </span>lhs = <span class="self">self</span>.into_i129();
 <a href=#786 id=786 data-nosnippet>786</a>				<span class="kw">let </span>rhs = other.into_i129();
-<a href=#787 id=787 data-nosnippet>787</a>				<span class="kw">let </span>negative = lhs.negative != rhs.negative;
+<a href=#787 id=787 data-nosnippet>787</a>				<span class="kw">let </span>negative = lhs.<span class="macro">negative !</span>= rhs.negative;
 <a href=#788 id=788 data-nosnippet>788</a>
 <a href=#789 id=789 data-nosnippet>789</a>				<span class="kw">match </span>multiply_by_rational_with_rounding(
 <a href=#790 id=790 data-nosnippet>790</a>					lhs.value,
@@ -896,7 +896,7 @@
 <a href=#896 id=896 data-nosnippet>896</a>
 <a href=#897 id=897 data-nosnippet>897</a>				<span class="kw">let </span>lhs: I129 = <span class="self">self</span>.<span class="number">0</span>.into();
 <a href=#898 id=898 data-nosnippet>898</a>				<span class="kw">let </span>rhs: I129 = other.<span class="number">0</span>.into();
-<a href=#899 id=899 data-nosnippet>899</a>				<span class="kw">let </span>negative = lhs.negative != rhs.negative;
+<a href=#899 id=899 data-nosnippet>899</a>				<span class="kw">let </span>negative = lhs.<span class="macro">negative !</span>= rhs.negative;
 <a href=#900 id=900 data-nosnippet>900</a>
 <a href=#901 id=901 data-nosnippet>901</a>				<span class="comment">// Note that this uses the old (well-tested) code with sign-ignorant rounding. This
 <a href=#902 id=902 data-nosnippet>902</a>				// is equivalent to the `SignedRounding::NearestPrefMinor`. This means it is
@@ -917,7 +917,7 @@
 <a href=#917 id=917 data-nosnippet>917</a>			<span class="kw">fn </span>checked_mul(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
 <a href=#918 id=918 data-nosnippet>918</a>				<span class="kw">let </span>lhs: I129 = <span class="self">self</span>.<span class="number">0</span>.into();
 <a href=#919 id=919 data-nosnippet>919</a>				<span class="kw">let </span>rhs: I129 = other.<span class="number">0</span>.into();
-<a href=#920 id=920 data-nosnippet>920</a>				<span class="kw">let </span>negative = lhs.negative != rhs.negative;
+<a href=#920 id=920 data-nosnippet>920</a>				<span class="kw">let </span>negative = lhs.<span class="macro">negative !</span>= rhs.negative;
 <a href=#921 id=921 data-nosnippet>921</a>
 <a href=#922 id=922 data-nosnippet>922</a>				multiply_by_rational_with_rounding(
 <a href=#923 id=923 data-nosnippet>923</a>					lhs.value,
@@ -2270,4 +2270,5 @@
 <a href=#2270 id=2270 data-nosnippet>2270</a>	<span class="number">1_000_000_000_000_000_000</span>,
 <a href=#2271 id=2271 data-nosnippet>2271</a>	<span class="string">"_Fixed Point 128 bits unsigned, range = \
 <a href=#2272 id=2272 data-nosnippet>2272</a>		[0.000000000000000000, 340282366920938463463.374607431768211455]_"</span>,
-<a href=#2273 id=2273 data-nosnippet>2273</a>);</code></pre></div></section></main></body></html>
+<a href=#2273 id=2273 data-nosnippet>2273</a>);
+</code></pre></div></section></main></body></html>

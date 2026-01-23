@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.16.1/src/lazy_bool.rs`."><title>lazy_bool.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="serde_with_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">serde_with_macros/</div>lazy_bool.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>core::{
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with_macros-3.16.1/src/lazy_bool.rs`."><title>lazy_bool.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="serde_with_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">serde_with_macros/</div>lazy_bool.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>core::{
 <a href=#2 id=2 data-nosnippet>2</a>    mem,
 <a href=#3 id=3 data-nosnippet>3</a>    ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not},
 <a href=#4 id=4 data-nosnippet>4</a>};
@@ -32,16 +32,16 @@
 <a href=#32 id=32 data-nosnippet>32</a></span><span class="macro">macro_rules!</span> impl_op {
 <a href=#33 id=33 data-nosnippet>33</a>    (
 <a href=#34 id=34 data-nosnippet>34</a>        &lt;
-<a href=#35 id=35 data-nosnippet>35</a>            <span class="macro-nonterminal">$</span><span class="kw">trait</span>:<span class="macro-nonterminal">ident</span>::<span class="macro-nonterminal">$method</span>:ident,
+<a href=#35 id=35 data-nosnippet>35</a>            <span class="macro-nonterminal">$trait</span>:ident::<span class="macro-nonterminal">$method</span>:ident,
 <a href=#36 id=36 data-nosnippet>36</a>            <span class="macro-nonterminal">$assign_trait</span>:ident::<span class="macro-nonterminal">$assign_method</span>:ident
 <a href=#37 id=37 data-nosnippet>37</a>        &gt;(<span class="macro-nonterminal">$matching</span>:pat_param) {
 <a href=#38 id=38 data-nosnippet>38</a>            $(<span class="macro-nonterminal">$pattern</span>:pat =&gt; <span class="macro-nonterminal">$body</span>:expr),+ $(,)<span class="question-mark">?
 <a href=#39 id=39 data-nosnippet>39</a>        </span>}
 <a href=#40 id=40 data-nosnippet>40</a>        $(<span class="kw">where </span>$(<span class="macro-nonterminal">$bound</span>:tt)+)<span class="question-mark">?
 <a href=#41 id=41 data-nosnippet>41</a>    </span>) =&gt; {
-<a href=#42 id=42 data-nosnippet>42</a>        <span class="kw">impl</span>&lt;L, R, T&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">LazyBool</span>&lt;R&gt;&gt; <span class="kw">for </span>LazyBool&lt;L&gt;
+<a href=#42 id=42 data-nosnippet>42</a>        <span class="kw">impl</span>&lt;L, R, T&gt; <span class="macro-nonterminal">$trait</span>&lt;LazyBool&lt;R&gt;&gt; <span class="kw">for </span>LazyBool&lt;L&gt;
 <a href=#43 id=43 data-nosnippet>43</a>        <span class="kw">where
-<a href=#44 id=44 data-nosnippet>44</a>            </span>L: <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">R</span>, Output = T&gt;,
+<a href=#44 id=44 data-nosnippet>44</a>            </span>L: <span class="macro-nonterminal">$trait</span>&lt;R, Output = T&gt;,
 <a href=#45 id=45 data-nosnippet>45</a>            LazyBool&lt;L&gt;: Into&lt;LazyBool&lt;T&gt;&gt;,
 <a href=#46 id=46 data-nosnippet>46</a>            LazyBool&lt;R&gt;: Into&lt;LazyBool&lt;T&gt;&gt;,
 <a href=#47 id=47 data-nosnippet>47</a>            $($(<span class="macro-nonterminal">$bound</span>)+)<span class="question-mark">?
@@ -58,9 +58,9 @@
 <a href=#58 id=58 data-nosnippet>58</a>            }
 <a href=#59 id=59 data-nosnippet>59</a>        }
 <a href=#60 id=60 data-nosnippet>60</a>
-<a href=#61 id=61 data-nosnippet>61</a>        <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, L, R, T&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="macro-nonterminal">LazyBool</span>&lt;R&gt;&gt; <span class="kw">for </span>LazyBool&lt;L&gt;
+<a href=#61 id=61 data-nosnippet>61</a>        <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, L, R, T&gt; <span class="macro-nonterminal">$trait</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>LazyBool&lt;R&gt;&gt; <span class="kw">for </span>LazyBool&lt;L&gt;
 <a href=#62 id=62 data-nosnippet>62</a>        <span class="kw">where
-<a href=#63 id=63 data-nosnippet>63</a>            </span>L: <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="macro-nonterminal">R</span>, Output = T&gt;,
+<a href=#63 id=63 data-nosnippet>63</a>            </span>L: <span class="macro-nonterminal">$trait</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>R, Output = T&gt;,
 <a href=#64 id=64 data-nosnippet>64</a>            LazyBool&lt;L&gt;: Into&lt;LazyBool&lt;T&gt;&gt;,
 <a href=#65 id=65 data-nosnippet>65</a>            LazyBool&lt;R&gt;: Into&lt;LazyBool&lt;T&gt;&gt; + Clone,
 <a href=#66 id=66 data-nosnippet>66</a>            $($(<span class="macro-nonterminal">$bound</span>)+)<span class="question-mark">?
@@ -77,9 +77,9 @@
 <a href=#77 id=77 data-nosnippet>77</a>            }
 <a href=#78 id=78 data-nosnippet>78</a>        }
 <a href=#79 id=79 data-nosnippet>79</a>
-<a href=#80 id=80 data-nosnippet>80</a>        <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, L, R, T&gt; <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">LazyBool</span>&lt;R&gt;&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>LazyBool&lt;L&gt;
+<a href=#80 id=80 data-nosnippet>80</a>        <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, L, R, T&gt; <span class="macro-nonterminal">$trait</span>&lt;LazyBool&lt;R&gt;&gt; <span class="kw">for </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>LazyBool&lt;L&gt;
 <a href=#81 id=81 data-nosnippet>81</a>        <span class="kw">where
-<a href=#82 id=82 data-nosnippet>82</a>            </span>LazyBool&lt;R&gt;: <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="macro-nonterminal">LazyBool</span>&lt;L&gt;, Output = LazyBool&lt;T&gt;&gt;,
+<a href=#82 id=82 data-nosnippet>82</a>            </span>LazyBool&lt;R&gt;: <span class="macro-nonterminal">$trait</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>LazyBool&lt;L&gt;, Output = LazyBool&lt;T&gt;&gt;,
 <a href=#83 id=83 data-nosnippet>83</a>        {
 <a href=#84 id=84 data-nosnippet>84</a>            <span class="kw">type </span>Output = LazyBool&lt;T&gt;;
 <a href=#85 id=85 data-nosnippet>85</a>
@@ -90,7 +90,7 @@
 <a href=#90 id=90 data-nosnippet>90</a>
 <a href=#91 id=91 data-nosnippet>91</a>        <span class="kw">impl</span>&lt;L, R&gt; <span class="macro-nonterminal">$assign_trait</span>&lt;LazyBool&lt;R&gt;&gt; <span class="kw">for </span>LazyBool&lt;L&gt;
 <a href=#92 id=92 data-nosnippet>92</a>        <span class="kw">where
-<a href=#93 id=93 data-nosnippet>93</a>            </span>LazyBool&lt;L&gt;: <span class="macro-nonterminal">$</span><span class="kw">trait</span>&lt;<span class="macro-nonterminal">LazyBool</span>&lt;R&gt;, Output = LazyBool&lt;L&gt;&gt;,
+<a href=#93 id=93 data-nosnippet>93</a>            </span>LazyBool&lt;L&gt;: <span class="macro-nonterminal">$trait</span>&lt;LazyBool&lt;R&gt;, Output = LazyBool&lt;L&gt;&gt;,
 <a href=#94 id=94 data-nosnippet>94</a>        {
 <a href=#95 id=95 data-nosnippet>95</a>            <span class="kw">fn </span><span class="macro-nonterminal">$assign_method</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rhs: LazyBool&lt;R&gt;) {
 <a href=#96 id=96 data-nosnippet>96</a>                <span class="kw">let </span>lhs = mem::take(<span class="self">self</span>);
@@ -136,4 +136,5 @@
 <a href=#136 id=136 data-nosnippet>136</a>    <span class="kw">fn </span>not(<span class="self">self</span>) -&gt; <span class="self">Self</span>::Output {
 <a href=#137 id=137 data-nosnippet>137</a>        !<span class="self">self</span>.clone()
 <a href=#138 id=138 data-nosnippet>138</a>    }
-<a href=#139 id=139 data-nosnippet>139</a>}</code></pre></div></section></main></body></html>
+<a href=#139 id=139 data-nosnippet>139</a>}
+</code></pre></div></section></main></body></html>

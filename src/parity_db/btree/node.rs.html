@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/parity-db-0.4.13/src/btree/node.rs`."><title>node.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parity_db" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">parity_db/btree/</div>node.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2021-2022 Parity Technologies (UK) Ltd.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/parity-db-0.4.13/src/btree/node.rs`."><title>node.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="parity_db" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">parity_db/btree/</div>node.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2021-2022 Parity Technologies (UK) Ltd.
 <a href=#2 id=2 data-nosnippet>2</a>// This file is dual-licensed as Apache-2.0 or MIT.
 <a href=#3 id=3 data-nosnippet>3</a>
 <a href=#4 id=4 data-nosnippet>4</a></span><span class="doccomment">//! BTree node struct and methods.
@@ -110,7 +110,7 @@
 <a href=#110 id=110 data-nosnippet>110</a>		btree: TablesRef,
 <a href=#111 id=111 data-nosnippet>111</a>		log: <span class="kw-2">&amp;mut </span>LogWriter,
 <a href=#112 id=112 data-nosnippet>112</a>	) -&gt; <span class="prelude-ty">Result</span>&lt;(<span class="prelude-ty">Option</span>&lt;(Separator, Child)&gt;, bool)&gt; {
-<a href=#113 id=113 data-nosnippet>113</a>		<span class="kw">let </span>has_child = depth != <span class="number">0</span>;
+<a href=#113 id=113 data-nosnippet>113</a>		<span class="kw">let </span>has_child = <span class="macro">depth !</span>= <span class="number">0</span>;
 <a href=#114 id=114 data-nosnippet>114</a>
 <a href=#115 id=115 data-nosnippet>115</a>		<span class="kw">let </span>(at, i) = <span class="self">self</span>.position(key)<span class="question-mark">?</span>;
 <a href=#116 id=116 data-nosnippet>116</a>		<span class="comment">// insert
@@ -188,7 +188,7 @@
 <a href=#188 id=188 data-nosnippet>188</a>		btree: TablesRef,
 <a href=#189 id=189 data-nosnippet>189</a>		log: <span class="kw-2">&amp;mut </span>LogWriter,
 <a href=#190 id=190 data-nosnippet>190</a>	) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;(Separator, Child)&gt;&gt; {
-<a href=#191 id=191 data-nosnippet>191</a>		<span class="macro">debug_assert!</span>(depth != <span class="number">0</span>);
+<a href=#191 id=191 data-nosnippet>191</a>		<span class="macro">debug_assert!</span>(<span class="macro">depth !</span>= <span class="number">0</span>);
 <a href=#192 id=192 data-nosnippet>192</a>		<span class="kw">let </span>has_child = <span class="bool-val">true</span>;
 <a href=#193 id=193 data-nosnippet>193</a>		<span class="kw">let </span>child = right_child;
 <a href=#194 id=194 data-nosnippet>194</a>		<span class="kw">if </span><span class="self">self</span>.has_separator(ORDER - <span class="number">1</span>) {
@@ -242,7 +242,7 @@
 <a href=#242 id=242 data-nosnippet>242</a>	) -&gt; <span class="prelude-ty">Result</span>&lt;(<span class="prelude-ty">Option</span>&lt;(Separator, Child)&gt;, bool)&gt; {
 <a href=#243 id=243 data-nosnippet>243</a>		<span class="kw">let </span>change = <span class="kw-2">&amp;</span>changes[<span class="number">0</span>];
 <a href=#244 id=244 data-nosnippet>244</a>		<span class="kw">let </span>key = change.key();
-<a href=#245 id=245 data-nosnippet>245</a>		<span class="kw">let </span>has_child = depth != <span class="number">0</span>;
+<a href=#245 id=245 data-nosnippet>245</a>		<span class="kw">let </span>has_child = <span class="macro">depth !</span>= <span class="number">0</span>;
 <a href=#246 id=246 data-nosnippet>246</a>		<span class="kw">let </span>(at, i) = <span class="self">self</span>.position(key.value())<span class="question-mark">?</span>;
 <a href=#247 id=247 data-nosnippet>247</a>		<span class="kw">if </span>at {
 <a href=#248 id=248 data-nosnippet>248</a>			<span class="kw">let </span>existing = <span class="self">self</span>.separator_address(i);
@@ -260,7 +260,7 @@
 <a href=#260 id=260 data-nosnippet>260</a>				</span>.is_none()
 <a href=#261 id=261 data-nosnippet>261</a>				{
 <a href=#262 id=262 data-nosnippet>262</a>					<span class="kw">let _ </span>= <span class="self">self</span>.remove_separator(i);
-<a href=#263 id=263 data-nosnippet>263</a>					<span class="kw">if </span>depth != <span class="number">0 </span>{
+<a href=#263 id=263 data-nosnippet>263</a>					<span class="kw">if </span><span class="macro">depth !</span>= <span class="number">0 </span>{
 <a href=#264 id=264 data-nosnippet>264</a>						<span class="comment">// replace by bigger value in left child.
 <a href=#265 id=265 data-nosnippet>265</a>						</span><span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>child) = <span class="self">self</span>.fetch_child(i, values, log)<span class="question-mark">? </span>{
 <a href=#266 id=266 data-nosnippet>266</a>							<span class="kw">let </span>(need_balance, sep) = child.remove_last(depth - <span class="number">1</span>, values, log)<span class="question-mark">?</span>;
@@ -535,7 +535,7 @@
 <a href=#535 id=535 data-nosnippet>535</a>		parent_size: usize,
 <a href=#536 id=536 data-nosnippet>536</a>	) -&gt; <span class="prelude-ty">Result</span>&lt;bool&gt; {
 <a href=#537 id=537 data-nosnippet>537</a>		<span class="kw">let </span>size = <span class="self">self</span>.number_separator();
-<a href=#538 id=538 data-nosnippet>538</a>		<span class="kw">if </span>parent_size != <span class="number">0 </span>&amp;&amp; size &lt; ORDER / <span class="number">2 </span>{
+<a href=#538 id=538 data-nosnippet>538</a>		<span class="kw">if </span><span class="macro">parent_size !</span>= <span class="number">0 </span>&amp;&amp; size &lt; ORDER / <span class="number">2 </span>{
 <a href=#539 id=539 data-nosnippet>539</a>			<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
 <a href=#540 id=540 data-nosnippet>540</a>		}
 <a href=#541 id=541 data-nosnippet>541</a>
@@ -825,4 +825,5 @@
 <a href=#825 id=825 data-nosnippet>825</a>		}
 <a href=#826 id=826 data-nosnippet>826</a>		<span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
 <a href=#827 id=827 data-nosnippet>827</a>	}
-<a href=#828 id=828 data-nosnippet>828</a>}</code></pre></div></section></main></body></html>
+<a href=#828 id=828 data-nosnippet>828</a>}
+</code></pre></div></section></main></body></html>

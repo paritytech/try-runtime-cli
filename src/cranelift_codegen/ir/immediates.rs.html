@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cranelift-codegen-0.122.0/src/ir/immediates.rs`."><title>immediates.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="cranelift_codegen" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">cranelift_codegen/ir/</div>immediates.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Immediate operands for Cranelift instructions
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cranelift-codegen-0.122.0/src/ir/immediates.rs`."><title>immediates.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="cranelift_codegen" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">cranelift_codegen/ir/</div>immediates.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Immediate operands for Cranelift instructions
 <a href=#2 id=2 data-nosnippet>2</a>//!
 <a href=#3 id=3 data-nosnippet>3</a>//! This module defines the types of immediate operands that can appear on Cranelift instructions.
 <a href=#4 id=4 data-nosnippet>4</a>//! Each type here should have a corresponding definition in the
@@ -271,7 +271,7 @@
 <a href=#271 id=271 data-nosnippet>271</a>                }
 <a href=#272 id=272 data-nosnippet>272</a>                <span class="prelude-val">None </span>=&gt; {
 <a href=#273 id=273 data-nosnippet>273</a>                    <span class="comment">// Allow embedded underscores, but fail on anything else.
-<a href=#274 id=274 data-nosnippet>274</a>                    </span><span class="kw">if </span>ch != <span class="string">'_' </span>{
+<a href=#274 id=274 data-nosnippet>274</a>                    </span><span class="kw">if </span><span class="macro">ch !</span>= <span class="string">'_' </span>{
 <a href=#275 id=275 data-nosnippet>275</a>                        <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Invalid character in hexadecimal number"</span>);
 <a href=#276 id=276 data-nosnippet>276</a>                    }
 <a href=#277 id=277 data-nosnippet>277</a>                }
@@ -294,7 +294,7 @@
 <a href=#294 id=294 data-nosnippet>294</a>                }
 <a href=#295 id=295 data-nosnippet>295</a>                <span class="prelude-val">None </span>=&gt; {
 <a href=#296 id=296 data-nosnippet>296</a>                    <span class="comment">// Allow embedded underscores, but fail on anything else.
-<a href=#297 id=297 data-nosnippet>297</a>                    </span><span class="kw">if </span>ch != <span class="string">'_' </span>{
+<a href=#297 id=297 data-nosnippet>297</a>                    </span><span class="kw">if </span><span class="macro">ch !</span>= <span class="string">'_' </span>{
 <a href=#298 id=298 data-nosnippet>298</a>                        <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Invalid character in decimal number"</span>);
 <a href=#299 id=299 data-nosnippet>299</a>                    }
 <a href=#300 id=300 data-nosnippet>300</a>                }
@@ -725,7 +725,7 @@
 <a href=#725 id=725 data-nosnippet>725</a>                    }
 <a href=#726 id=726 data-nosnippet>726</a>                    <span class="kw">let </span>lhs_positive = <span class="self">self</span>.is_positive();
 <a href=#727 id=727 data-nosnippet>727</a>                    <span class="kw">let </span>rhs_positive = rhs.is_positive();
-<a href=#728 id=728 data-nosnippet>728</a>                    <span class="kw">if </span>lhs_positive != rhs_positive {
+<a href=#728 id=728 data-nosnippet>728</a>                    <span class="kw">if </span><span class="macro">lhs_positive !</span>= rhs_positive {
 <a href=#729 id=729 data-nosnippet>729</a>                        <span class="comment">// Different signs: negative &lt; positive
 <a href=#730 id=730 data-nosnippet>730</a>                        </span><span class="kw">return </span>lhs_positive.partial_cmp(<span class="kw-2">&amp;</span>rhs_positive);
 <a href=#731 id=731 data-nosnippet>731</a>                    }
@@ -913,7 +913,7 @@
 <a href=#913 id=913 data-nosnippet>913</a>    </span><span class="kw">let </span>left_t_bits = t_bits &lt;&lt; (<span class="number">4 </span>* digits - t);
 <a href=#914 id=914 data-nosnippet>914</a>
 <a href=#915 id=915 data-nosnippet>915</a>    <span class="comment">// All formats share the leading sign.
-<a href=#916 id=916 data-nosnippet>916</a>    </span><span class="kw">if </span>sign_bit != <span class="number">0 </span>{
+<a href=#916 id=916 data-nosnippet>916</a>    </span><span class="kw">if </span><span class="macro">sign_bit !</span>= <span class="number">0 </span>{
 <a href=#917 id=917 data-nosnippet>917</a>        <span class="macro">write!</span>(f, <span class="string">"-"</span>)<span class="question-mark">?</span>;
 <a href=#918 id=918 data-nosnippet>918</a>    }
 <a href=#919 id=919 data-nosnippet>919</a>
@@ -945,7 +945,7 @@
 <a href=#945 id=945 data-nosnippet>945</a>            </span><span class="kw">let </span>payload = t_bits &amp; ((<span class="number">1 </span>&lt;&lt; (t - <span class="number">1</span>)) - <span class="number">1</span>);
 <a href=#946 id=946 data-nosnippet>946</a>            <span class="kw">if </span>t_bits &amp; (<span class="number">1 </span>&lt;&lt; (t - <span class="number">1</span>)) != <span class="number">0 </span>{
 <a href=#947 id=947 data-nosnippet>947</a>                <span class="comment">// Quiet NaN.
-<a href=#948 id=948 data-nosnippet>948</a>                </span><span class="kw">if </span>payload != <span class="number">0 </span>{
+<a href=#948 id=948 data-nosnippet>948</a>                </span><span class="kw">if </span><span class="macro">payload !</span>= <span class="number">0 </span>{
 <a href=#949 id=949 data-nosnippet>949</a>                    <span class="macro">write!</span>(f, <span class="string">"NaN:0x{payload:x}"</span>)
 <a href=#950 id=950 data-nosnippet>950</a>                } <span class="kw">else </span>{
 <a href=#951 id=951 data-nosnippet>951</a>                    <span class="macro">write!</span>(f, <span class="string">"NaN"</span>)
@@ -1030,7 +1030,7 @@
 <a href=#1030 id=1030 data-nosnippet>1030</a>        <span class="kw">match </span>ch {
 <a href=#1031 id=1031 data-nosnippet>1031</a>            <span class="string">'.' </span>=&gt; {
 <a href=#1032 id=1032 data-nosnippet>1032</a>                <span class="comment">// This is the radix point. There can only be one.
-<a href=#1033 id=1033 data-nosnippet>1033</a>                </span><span class="kw">if </span>digits_before_period != <span class="prelude-val">None </span>{
+<a href=#1033 id=1033 data-nosnippet>1033</a>                </span><span class="kw">if </span><span class="macro">digits_before_period !</span>= <span class="prelude-val">None </span>{
 <a href=#1034 id=1034 data-nosnippet>1034</a>                    <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Multiple radix points"</span>);
 <a href=#1035 id=1035 data-nosnippet>1035</a>                } <span class="kw">else </span>{
 <a href=#1036 id=1036 data-nosnippet>1036</a>                    digits_before_period = <span class="prelude-val">Some</span>(digits);
@@ -1958,4 +1958,5 @@
 <a href=#1958 id=1958 data-nosnippet>1958</a>            </span>);
 <a href=#1959 id=1959 data-nosnippet>1959</a>        }
 <a href=#1960 id=1960 data-nosnippet>1960</a>    }
-<a href=#1961 id=1961 data-nosnippet>1961</a>}</code></pre></div></section></main></body></html>
+<a href=#1961 id=1961 data-nosnippet>1961</a>}
+</code></pre></div></section></main></body></html>

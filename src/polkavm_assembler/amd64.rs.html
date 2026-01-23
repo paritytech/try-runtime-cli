@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/polkavm-assembler-0.30.0/src/amd64.rs`."><title>amd64.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkavm_assembler" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">polkavm_assembler/</div>amd64.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="attr">#![allow(non_camel_case_types)]
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/polkavm-assembler-0.30.0/src/amd64.rs`."><title>amd64.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkavm_assembler" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">polkavm_assembler/</div>amd64.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="attr">#![allow(non_camel_case_types)]
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a></span><span class="kw">use </span><span class="kw">crate</span>::misc::{FixupKind, InstBuf, Instruction, Label};
 <a href=#4 id=4 data-nosnippet>4</a>
@@ -335,7 +335,7 @@
 <a href=#335 id=335 data-nosnippet>335</a>                }
 <a href=#336 id=336 data-nosnippet>336</a>
 <a href=#337 id=337 data-nosnippet>337</a>                fmt.write_str(<span class="string">"rip"</span>)<span class="question-mark">?</span>;
-<a href=#338 id=338 data-nosnippet>338</a>                <span class="kw">if </span>offset != <span class="number">0 </span>{
+<a href=#338 id=338 data-nosnippet>338</a>                <span class="kw">if </span><span class="macro">offset !</span>= <span class="number">0 </span>{
 <a href=#339 id=339 data-nosnippet>339</a>                    <span class="kw">if </span>offset &gt; <span class="number">0 </span>{
 <a href=#340 id=340 data-nosnippet>340</a>                        fmt.write_fmt(<span class="macro">core::format_args!</span>(<span class="string">"+0x{:x}"</span>, offset))<span class="question-mark">?</span>;
 <a href=#341 id=341 data-nosnippet>341</a>                    } <span class="kw">else </span>{
@@ -371,7 +371,7 @@
 <a href=#371 id=371 data-nosnippet>371</a>            }
 <a href=#372 id=372 data-nosnippet>372</a>        }
 <a href=#373 id=373 data-nosnippet>373</a>
-<a href=#374 id=374 data-nosnippet>374</a>        <span class="kw">if </span>offset != <span class="number">0 </span>|| (base.is_none() &amp;&amp; index.is_none()) {
+<a href=#374 id=374 data-nosnippet>374</a>        <span class="kw">if </span><span class="macro">offset !</span>= <span class="number">0 </span>|| (base.is_none() &amp;&amp; index.is_none()) {
 <a href=#375 id=375 data-nosnippet>375</a>            <span class="kw">if </span>base.is_some() || index.is_some() {
 <a href=#376 id=376 data-nosnippet>376</a>                <span class="kw">if </span>offset &gt; <span class="number">0 </span>{
 <a href=#377 id=377 data-nosnippet>377</a>                    fmt.write_fmt(<span class="macro">core::format_args!</span>(<span class="string">"+0x{:x}"</span>, offset))<span class="question-mark">?</span>;
@@ -587,7 +587,7 @@
 <a href=#587 id=587 data-nosnippet>587</a>
 <a href=#588 id=588 data-nosnippet>588</a>                <span class="self">self</span>.modrm |= base.modrm_rm_bits();
 <a href=#589 id=589 data-nosnippet>589</a>
-<a href=#590 id=590 data-nosnippet>590</a>                <span class="kw">let </span>set_displacement = (offset != <span class="number">0</span>) | <span class="macro">matches!</span>(base, Reg::rbp | Reg::r13);
+<a href=#590 id=590 data-nosnippet>590</a>                <span class="kw">let </span>set_displacement = (<span class="macro">offset !</span>= <span class="number">0</span>) | <span class="macro">matches!</span>(base, Reg::rbp | Reg::r13);
 <a href=#591 id=591 data-nosnippet>591</a>                <span class="kw">let </span>set_displacement_mask = (-(set_displacement <span class="kw">as </span>i32)) <span class="kw">as </span>u32;
 <a href=#592 id=592 data-nosnippet>592</a>                <span class="kw">if </span>offset &lt;= i8::MAX <span class="kw">as </span>i32 &amp;&amp; offset &gt;= i8::MIN <span class="kw">as </span>i32 {
 <a href=#593 id=593 data-nosnippet>593</a>                    <span class="self">self</span>.modrm |= <span class="number">0b01000000 </span>&amp; set_displacement_mask <span class="kw">as </span>u8;
@@ -616,7 +616,7 @@
 <a href=#616 id=616 data-nosnippet>616</a>                <span class="self">self</span>.sib |= base.modrm_rm_bits();
 <a href=#617 id=617 data-nosnippet>617</a>                <span class="self">self</span>.sib |= ((scale <span class="kw">as </span>usize) &lt;&lt; <span class="number">6</span>) <span class="kw">as </span>u8;
 <a href=#618 id=618 data-nosnippet>618</a>
-<a href=#619 id=619 data-nosnippet>619</a>                <span class="kw">let </span>set_displacement = (offset != <span class="number">0</span>) | <span class="macro">matches!</span>(base, Reg::rbp | Reg::r13);
+<a href=#619 id=619 data-nosnippet>619</a>                <span class="kw">let </span>set_displacement = (<span class="macro">offset !</span>= <span class="number">0</span>) | <span class="macro">matches!</span>(base, Reg::rbp | Reg::r13);
 <a href=#620 id=620 data-nosnippet>620</a>                <span class="kw">let </span>set_displacement_mask = (-(set_displacement <span class="kw">as </span>i32)) <span class="kw">as </span>u32;
 <a href=#621 id=621 data-nosnippet>621</a>                <span class="kw">if </span>offset &lt;= i8::MAX <span class="kw">as </span>i32 &amp;&amp; offset &gt;= i8::MIN <span class="kw">as </span>i32 {
 <a href=#622 id=622 data-nosnippet>622</a>                    <span class="self">self</span>.modrm |= <span class="number">0b01000000 </span>&amp; set_displacement_mask <span class="kw">as </span>u8;
@@ -728,7 +728,7 @@
 <a href=#728 id=728 data-nosnippet>728</a>            buf.append(PREFIX_OVERRIDE_ADDR_SIZE);
 <a href=#729 id=729 data-nosnippet>729</a>        }
 <a href=#730 id=730 data-nosnippet>730</a>
-<a href=#731 id=731 data-nosnippet>731</a>        <span class="kw">if </span><span class="self">self</span>.rex != <span class="number">0 </span>{
+<a href=#731 id=731 data-nosnippet>731</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">rex !</span>= <span class="number">0 </span>{
 <a href=#732 id=732 data-nosnippet>732</a>            buf.append(<span class="self">self</span>.rex);
 <a href=#733 id=733 data-nosnippet>733</a>        }
 <a href=#734 id=734 data-nosnippet>734</a>
@@ -738,7 +738,7 @@
 <a href=#738 id=738 data-nosnippet>738</a>
 <a href=#739 id=739 data-nosnippet>739</a>        buf.append(<span class="self">self</span>.opcode);
 <a href=#740 id=740 data-nosnippet>740</a>
-<a href=#741 id=741 data-nosnippet>741</a>        <span class="kw">if </span><span class="self">self</span>.modrm != <span class="number">0 </span>|| <span class="self">self</span>.force_enable_modrm {
+<a href=#741 id=741 data-nosnippet>741</a>        <span class="kw">if </span><span class="self">self</span>.<span class="macro">modrm !</span>= <span class="number">0 </span>|| <span class="self">self</span>.force_enable_modrm {
 <a href=#742 id=742 data-nosnippet>742</a>            buf.append(<span class="self">self</span>.modrm);
 <a href=#743 id=743 data-nosnippet>743</a>            <span class="kw">if </span><span class="self">self</span>.modrm &amp; <span class="number">0b11000000 </span>!= <span class="number">0b11000000 </span>&amp;&amp; <span class="self">self</span>.modrm &amp; <span class="number">0b111 </span>== <span class="number">0b100 </span>{
 <a href=#744 id=744 data-nosnippet>744</a>                buf.append(<span class="self">self</span>.sib);
@@ -869,11 +869,11 @@
 <a href=#869 id=869 data-nosnippet>869</a>        Label
 <a href=#870 id=870 data-nosnippet>870</a>    };
 <a href=#871 id=871 data-nosnippet>871</a>
-<a href=#872 id=872 data-nosnippet>872</a>    (@conv_ty <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>) =&gt; {
-<a href=#873 id=873 data-nosnippet>873</a>        <span class="kw">impl </span>Into&lt;<span class="macro-nonterminal">$</span><span class="kw">type</span>&gt;
+<a href=#872 id=872 data-nosnippet>872</a>    (@conv_ty <span class="macro-nonterminal">$type</span>:ty) =&gt; {
+<a href=#873 id=873 data-nosnippet>873</a>        <span class="kw">impl </span>Into&lt;<span class="macro-nonterminal">$type</span>&gt;
 <a href=#874 id=874 data-nosnippet>874</a>    };
 <a href=#875 id=875 data-nosnippet>875</a>
-<a href=#876 id=876 data-nosnippet>876</a>    (@<span class="macro-nonterminal">ctor_impl $name</span>:ident, $((<span class="macro-nonterminal">$arg_name</span>:ident: <span class="macro-nonterminal">$arg_ty</span>:tt)),<span class="kw-2">*</span>) =&gt; {
+<a href=#876 id=876 data-nosnippet>876</a>    (@ctor_impl <span class="macro-nonterminal">$name</span>:ident, $((<span class="macro-nonterminal">$arg_name</span>:ident: <span class="macro-nonterminal">$arg_ty</span>:tt)),<span class="kw-2">*</span>) =&gt; {
 <a href=#877 id=877 data-nosnippet>877</a>        <span class="attr">#[inline(always)]
 <a href=#878 id=878 data-nosnippet>878</a>        </span><span class="kw">pub fn </span><span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$arg_name</span>: <span class="macro">impl_inst!</span>(@conv_ty <span class="macro-nonterminal">$arg_ty</span>)),<span class="kw-2">*</span>) -&gt; Instruction&lt;types::<span class="macro-nonterminal">$name</span>&gt; {
 <a href=#879 id=879 data-nosnippet>879</a>            <span class="kw">let </span>instruction = <span class="self">self</span>::types::<span class="macro-nonterminal">$name</span>($(<span class="macro-nonterminal">$arg_name</span>.into()),<span class="kw-2">*</span>);
@@ -2668,4 +2668,5 @@
 <a href=#2668 id=2668 data-nosnippet>2668</a>        <span class="kw">let </span>disassembly = disassemble(<span class="kw-2">&amp;</span>asm.finalize());
 <a href=#2669 id=2669 data-nosnippet>2669</a>        <span class="macro">assert_eq!</span>(disassembly, <span class="string">"00000000 488d0500000000 lea rax, [rip]\n00000007 90 nop"</span>);
 <a href=#2670 id=2670 data-nosnippet>2670</a>    }
-<a href=#2671 id=2671 data-nosnippet>2671</a>}</code></pre></div></section></main></body></html>
+<a href=#2671 id=2671 data-nosnippet>2671</a>}
+</code></pre></div></section></main></body></html>

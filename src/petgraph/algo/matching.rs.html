@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/petgraph-0.6.5/src/algo/matching.rs`."><title>matching.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="petgraph" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">petgraph/algo/</div>matching.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>std::collections::VecDeque;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/petgraph-0.6.5/src/algo/matching.rs`."><title>matching.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="petgraph" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">petgraph/algo/</div>matching.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>std::collections::VecDeque;
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span>std::hash::Hash;
 <a href=#3 id=3 data-nosnippet>3</a>
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span><span class="kw">crate</span>::visit::{
@@ -123,7 +123,7 @@
 <a href=#123 id=123 data-nosnippet>123</a>    </span>}
 <a href=#124 id=124 data-nosnippet>124</a>
 <a href=#125 id=125 data-nosnippet>125</a>    <span class="kw">fn </span>try_from_index(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::NodeId&gt; {
-<a href=#126 id=126 data-nosnippet>126</a>        <span class="kw">if </span>i != <span class="self">self</span>.dummy_idx() {
+<a href=#126 id=126 data-nosnippet>126</a>        <span class="kw">if </span><span class="macro">i !</span>= <span class="self">self</span>.dummy_idx() {
 <a href=#127 id=127 data-nosnippet>127</a>            <span class="prelude-val">Some</span>(<span class="self">self</span>.from_index(i))
 <a href=#128 id=128 data-nosnippet>128</a>        } <span class="kw">else </span>{
 <a href=#129 id=129 data-nosnippet>129</a>            <span class="prelude-val">None
@@ -144,7 +144,7 @@
 <a href=#144 id=144 data-nosnippet>144</a>    <span class="kw">type </span>Item = G::NodeId;
 <a href=#145 id=145 data-nosnippet>145</a>
 <a href=#146 id=146 data-nosnippet>146</a>    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
-<a href=#147 id=147 data-nosnippet>147</a>        <span class="kw">while </span><span class="self">self</span>.current != <span class="self">self</span>.mate.len() {
+<a href=#147 id=147 data-nosnippet>147</a>        <span class="kw">while </span><span class="self">self</span>.<span class="macro">current !</span>= <span class="self">self</span>.mate.len() {
 <a href=#148 id=148 data-nosnippet>148</a>            <span class="kw">let </span>current = <span class="self">self</span>.current;
 <a href=#149 id=149 data-nosnippet>149</a>            <span class="self">self</span>.current += <span class="number">1</span>;
 <a href=#150 id=150 data-nosnippet>150</a>
@@ -170,7 +170,7 @@
 <a href=#170 id=170 data-nosnippet>170</a>    <span class="kw">type </span>Item = (G::NodeId, G::NodeId);
 <a href=#171 id=171 data-nosnippet>171</a>
 <a href=#172 id=172 data-nosnippet>172</a>    <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
-<a href=#173 id=173 data-nosnippet>173</a>        <span class="kw">while </span><span class="self">self</span>.current != <span class="self">self</span>.mate.len() {
+<a href=#173 id=173 data-nosnippet>173</a>        <span class="kw">while </span><span class="self">self</span>.<span class="macro">current !</span>= <span class="self">self</span>.mate.len() {
 <a href=#174 id=174 data-nosnippet>174</a>            <span class="kw">let </span>current = <span class="self">self</span>.current;
 <a href=#175 id=175 data-nosnippet>175</a>            <span class="self">self</span>.current += <span class="number">1</span>;
 <a href=#176 id=176 data-nosnippet>176</a>
@@ -421,7 +421,7 @@
 <a href=#421 id=421 data-nosnippet>421</a>                <span class="kw">let </span>other_vertex = edge.target();
 <a href=#422 id=422 data-nosnippet>422</a>                <span class="kw">let </span>other_idx = graph.to_index(other_vertex);
 <a href=#423 id=423 data-nosnippet>423</a>
-<a href=#424 id=424 data-nosnippet>424</a>                <span class="kw">if </span>mate[other_idx].is_none() &amp;&amp; other_vertex != start {
+<a href=#424 id=424 data-nosnippet>424</a>                <span class="kw">if </span>mate[other_idx].is_none() &amp;&amp; <span class="macro">other_vertex !</span>= start {
 <a href=#425 id=425 data-nosnippet>425</a>                    <span class="comment">// An augmenting path was found. Augment the matching. If
 <a href=#426 id=426 data-nosnippet>426</a>                    // `other` is actually the start node, then the augmentation
 <a href=#427 id=427 data-nosnippet>427</a>                    // must not be performed, because the start vertex would be
@@ -525,7 +525,7 @@
 <a href=#525 id=525 data-nosnippet>525</a>    <span class="comment">// Find the join.
 <a href=#526 id=526 data-nosnippet>526</a>    </span><span class="kw">let </span>join = <span class="kw">loop </span>{
 <a href=#527 id=527 data-nosnippet>527</a>        <span class="comment">// Swap the sides. Do not swap if the right side is already finished.
-<a href=#528 id=528 data-nosnippet>528</a>        </span><span class="kw">if </span>right != graph.dummy_idx() {
+<a href=#528 id=528 data-nosnippet>528</a>        </span><span class="kw">if </span><span class="macro">right !</span>= graph.dummy_idx() {
 <a href=#529 id=529 data-nosnippet>529</a>            std::mem::swap(<span class="kw-2">&amp;mut </span>left, <span class="kw-2">&amp;mut </span>right);
 <a href=#530 id=530 data-nosnippet>530</a>        }
 <a href=#531 id=531 data-nosnippet>531</a>
@@ -548,7 +548,7 @@
 <a href=#548 id=548 data-nosnippet>548</a>    <span class="comment">// Label all inner vertices on P(source) and P(target) with the found join.
 <a href=#549 id=549 data-nosnippet>549</a>    </span><span class="kw">for </span>endpoint <span class="kw">in </span>[source, target].iter().copied() {
 <a href=#550 id=550 data-nosnippet>550</a>        <span class="kw">let </span><span class="kw-2">mut </span>inner = first_inner[endpoint];
-<a href=#551 id=551 data-nosnippet>551</a>        <span class="kw">while </span>inner != join {
+<a href=#551 id=551 data-nosnippet>551</a>        <span class="kw">while </span><span class="macro">inner !</span>= join {
 <a href=#552 id=552 data-nosnippet>552</a>            <span class="comment">// Notify the caller about labeling a vertex.
 <a href=#553 id=553 data-nosnippet>553</a>            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(ix) = graph.try_from_index(inner) {
 <a href=#554 id=554 data-nosnippet>554</a>                visitor(ix);
@@ -565,7 +565,7 @@
 <a href=#565 id=565 data-nosnippet>565</a>    <span class="kw">for </span>(vertex_idx, vertex_label) <span class="kw">in </span>label.iter().enumerate() {
 <a href=#566 id=566 data-nosnippet>566</a>        <span class="comment">// To all outer vertices that are on paths P(source) and P(target) until
 <a href=#567 id=567 data-nosnippet>567</a>        // the join, se the join as their first inner vertex.
-<a href=#568 id=568 data-nosnippet>568</a>        </span><span class="kw">if </span>vertex_idx != graph.dummy_idx()
+<a href=#568 id=568 data-nosnippet>568</a>        </span><span class="kw">if </span><span class="macro">vertex_idx !</span>= graph.dummy_idx()
 <a href=#569 id=569 data-nosnippet>569</a>            &amp;&amp; vertex_label.is_outer()
 <a href=#570 id=570 data-nosnippet>570</a>            &amp;&amp; label[first_inner[vertex_idx]].is_outer()
 <a href=#571 id=571 data-nosnippet>571</a>        {
@@ -608,4 +608,5 @@
 <a href=#608 id=608 data-nosnippet>608</a>    } <span class="kw">else </span>{
 <a href=#609 id=609 data-nosnippet>609</a>        <span class="macro">panic!</span>(<span class="string">"Unexpected label when augmenting path"</span>);
 <a href=#610 id=610 data-nosnippet>610</a>    }
-<a href=#611 id=611 data-nosnippet>611</a>}</code></pre></div></section></main></body></html>
+<a href=#611 id=611 data-nosnippet>611</a>}
+</code></pre></div></section></main></body></html>

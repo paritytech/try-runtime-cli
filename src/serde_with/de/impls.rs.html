@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with-3.16.1/src/de/impls.rs`."><title>impls.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="serde_with" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">serde_with/de/</div>impls.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="self">self</span>::macros::<span class="kw-2">*</span>;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with-3.16.1/src/de/impls.rs`."><title>impls.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="serde_with" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">serde_with/de/</div>impls.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span><span class="self">self</span>::macros::<span class="kw-2">*</span>;
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use crate</span>::{formats::<span class="kw-2">*</span>, prelude::<span class="kw-2">*</span>};
 <a href=#3 id=3 data-nosnippet>3</a><span class="attr">#[cfg(feature = <span class="string">"hashbrown_0_14"</span>)]
 <a href=#4 id=4 data-nosnippet>4</a></span><span class="kw">use </span>hashbrown_0_14::{HashMap <span class="kw">as </span>HashbrownMap014, HashSet <span class="kw">as </span>HashbrownSet014};
@@ -27,35 +27,35 @@
 <a href=#27 id=27 data-nosnippet>27</a>    </span><span class="macro">macro_rules!</span> foreach_map {
 <a href=#28 id=28 data-nosnippet>28</a>        (<span class="macro-nonterminal">$m</span>:ident) =&gt; {
 <a href=#29 id=29 data-nosnippet>29</a>            <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
-<a href=#30 id=30 data-nosnippet>30</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(<span class="macro-nonterminal">BTreeMap</span>&lt;K: Ord, V&gt;, (|_size| BTreeMap::new()));
+<a href=#30 id=30 data-nosnippet>30</a>            </span><span class="macro-nonterminal">$m</span>!(BTreeMap&lt;K: Ord, V&gt;, (|_size| BTreeMap::new()));
 <a href=#31 id=31 data-nosnippet>31</a>            <span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-<a href=#32 id=32 data-nosnippet>32</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#33 id=33 data-nosnippet>33</a>                <span class="macro-nonterminal">HashMap</span>&lt;K: Eq + Hash, V, S: BuildHasher + Default&gt;,
+<a href=#32 id=32 data-nosnippet>32</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#33 id=33 data-nosnippet>33</a>                HashMap&lt;K: Eq + Hash, V, S: BuildHasher + Default&gt;,
 <a href=#34 id=34 data-nosnippet>34</a>                (|size| HashMap::with_capacity_and_hasher(size, Default::default()))
 <a href=#35 id=35 data-nosnippet>35</a>            );
 <a href=#36 id=36 data-nosnippet>36</a>            <span class="attr">#[cfg(feature = <span class="string">"hashbrown_0_14"</span>)]
-<a href=#37 id=37 data-nosnippet>37</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#38 id=38 data-nosnippet>38</a>                <span class="macro-nonterminal">HashbrownMap014</span>&lt;K: Eq + Hash, V, S: BuildHasher + Default&gt;,
+<a href=#37 id=37 data-nosnippet>37</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#38 id=38 data-nosnippet>38</a>                HashbrownMap014&lt;K: Eq + Hash, V, S: BuildHasher + Default&gt;,
 <a href=#39 id=39 data-nosnippet>39</a>                (|size| HashbrownMap014::with_capacity_and_hasher(size, Default::default()))
 <a href=#40 id=40 data-nosnippet>40</a>            );
 <a href=#41 id=41 data-nosnippet>41</a>            <span class="attr">#[cfg(feature = <span class="string">"hashbrown_0_15"</span>)]
-<a href=#42 id=42 data-nosnippet>42</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#43 id=43 data-nosnippet>43</a>                <span class="macro-nonterminal">HashbrownMap015</span>&lt;K: Eq + Hash, V, S: BuildHasher + Default&gt;,
+<a href=#42 id=42 data-nosnippet>42</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#43 id=43 data-nosnippet>43</a>                HashbrownMap015&lt;K: Eq + Hash, V, S: BuildHasher + Default&gt;,
 <a href=#44 id=44 data-nosnippet>44</a>                (|size| HashbrownMap015::with_capacity_and_hasher(size, Default::default()))
 <a href=#45 id=45 data-nosnippet>45</a>            );
 <a href=#46 id=46 data-nosnippet>46</a>            <span class="attr">#[cfg(feature = <span class="string">"hashbrown_0_16"</span>)]
-<a href=#47 id=47 data-nosnippet>47</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#48 id=48 data-nosnippet>48</a>                <span class="macro-nonterminal">HashbrownMap016</span>&lt;K: Eq + Hash, V, S: BuildHasher + Default&gt;,
+<a href=#47 id=47 data-nosnippet>47</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#48 id=48 data-nosnippet>48</a>                HashbrownMap016&lt;K: Eq + Hash, V, S: BuildHasher + Default&gt;,
 <a href=#49 id=49 data-nosnippet>49</a>                (|size| HashbrownMap016::with_capacity_and_hasher(size, Default::default()))
 <a href=#50 id=50 data-nosnippet>50</a>            );
 <a href=#51 id=51 data-nosnippet>51</a>            <span class="attr">#[cfg(feature = <span class="string">"indexmap_1"</span>)]
-<a href=#52 id=52 data-nosnippet>52</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#53 id=53 data-nosnippet>53</a>                <span class="macro-nonterminal">IndexMap</span>&lt;K: Eq + Hash, V, S: BuildHasher + Default&gt;,
+<a href=#52 id=52 data-nosnippet>52</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#53 id=53 data-nosnippet>53</a>                IndexMap&lt;K: Eq + Hash, V, S: BuildHasher + Default&gt;,
 <a href=#54 id=54 data-nosnippet>54</a>                (|size| IndexMap::with_capacity_and_hasher(size, Default::default()))
 <a href=#55 id=55 data-nosnippet>55</a>            );
 <a href=#56 id=56 data-nosnippet>56</a>            <span class="attr">#[cfg(feature = <span class="string">"indexmap_2"</span>)]
-<a href=#57 id=57 data-nosnippet>57</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#58 id=58 data-nosnippet>58</a>                <span class="macro-nonterminal">IndexMap2</span>&lt;K: Eq + Hash, V, S: BuildHasher + Default&gt;,
+<a href=#57 id=57 data-nosnippet>57</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#58 id=58 data-nosnippet>58</a>                IndexMap2&lt;K: Eq + Hash, V, S: BuildHasher + Default&gt;,
 <a href=#59 id=59 data-nosnippet>59</a>                (|size| IndexMap2::with_capacity_and_hasher(size, Default::default()))
 <a href=#60 id=60 data-nosnippet>60</a>            );
 <a href=#61 id=61 data-nosnippet>61</a>        };
@@ -64,40 +64,40 @@
 <a href=#64 id=64 data-nosnippet>64</a>    <span class="macro">macro_rules!</span> foreach_set {
 <a href=#65 id=65 data-nosnippet>65</a>        (<span class="macro-nonterminal">$m</span>:ident) =&gt; {
 <a href=#66 id=66 data-nosnippet>66</a>            <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
-<a href=#67 id=67 data-nosnippet>67</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(<span class="macro-nonterminal">BTreeSet</span>&lt;T: Ord&gt;, (|<span class="kw">_</span>| BTreeSet::new()), insert);
+<a href=#67 id=67 data-nosnippet>67</a>            </span><span class="macro-nonterminal">$m</span>!(BTreeSet&lt;T: Ord&gt;, (|<span class="kw">_</span>| BTreeSet::new()), insert);
 <a href=#68 id=68 data-nosnippet>68</a>            <span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
-<a href=#69 id=69 data-nosnippet>69</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#70 id=70 data-nosnippet>70</a>                <span class="macro-nonterminal">HashSet</span>&lt;T: Eq + Hash, S: BuildHasher + Default&gt;,
+<a href=#69 id=69 data-nosnippet>69</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#70 id=70 data-nosnippet>70</a>                HashSet&lt;T: Eq + Hash, S: BuildHasher + Default&gt;,
 <a href=#71 id=71 data-nosnippet>71</a>                (|size| HashSet::with_capacity_and_hasher(size, S::default())),
 <a href=#72 id=72 data-nosnippet>72</a>                insert
 <a href=#73 id=73 data-nosnippet>73</a>            );
 <a href=#74 id=74 data-nosnippet>74</a>            <span class="attr">#[cfg(feature = <span class="string">"hashbrown_0_14"</span>)]
-<a href=#75 id=75 data-nosnippet>75</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#76 id=76 data-nosnippet>76</a>                <span class="macro-nonterminal">HashbrownSet014</span>&lt;T: Eq + Hash, S: BuildHasher + Default&gt;,
+<a href=#75 id=75 data-nosnippet>75</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#76 id=76 data-nosnippet>76</a>                HashbrownSet014&lt;T: Eq + Hash, S: BuildHasher + Default&gt;,
 <a href=#77 id=77 data-nosnippet>77</a>                (|size| HashbrownSet014::with_capacity_and_hasher(size, S::default())),
 <a href=#78 id=78 data-nosnippet>78</a>                insert
 <a href=#79 id=79 data-nosnippet>79</a>            );
 <a href=#80 id=80 data-nosnippet>80</a>            <span class="attr">#[cfg(feature = <span class="string">"hashbrown_0_15"</span>)]
-<a href=#81 id=81 data-nosnippet>81</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#82 id=82 data-nosnippet>82</a>                <span class="macro-nonterminal">HashbrownSet015</span>&lt;T: Eq + Hash, S: BuildHasher + Default&gt;,
+<a href=#81 id=81 data-nosnippet>81</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#82 id=82 data-nosnippet>82</a>                HashbrownSet015&lt;T: Eq + Hash, S: BuildHasher + Default&gt;,
 <a href=#83 id=83 data-nosnippet>83</a>                (|size| HashbrownSet015::with_capacity_and_hasher(size, S::default())),
 <a href=#84 id=84 data-nosnippet>84</a>                insert
 <a href=#85 id=85 data-nosnippet>85</a>            );
 <a href=#86 id=86 data-nosnippet>86</a>            <span class="attr">#[cfg(feature = <span class="string">"hashbrown_0_16"</span>)]
-<a href=#87 id=87 data-nosnippet>87</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#88 id=88 data-nosnippet>88</a>                <span class="macro-nonterminal">HashbrownSet016</span>&lt;T: Eq + Hash, S: BuildHasher + Default&gt;,
+<a href=#87 id=87 data-nosnippet>87</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#88 id=88 data-nosnippet>88</a>                HashbrownSet016&lt;T: Eq + Hash, S: BuildHasher + Default&gt;,
 <a href=#89 id=89 data-nosnippet>89</a>                (|size| HashbrownSet016::with_capacity_and_hasher(size, S::default())),
 <a href=#90 id=90 data-nosnippet>90</a>                insert
 <a href=#91 id=91 data-nosnippet>91</a>            );
 <a href=#92 id=92 data-nosnippet>92</a>            <span class="attr">#[cfg(feature = <span class="string">"indexmap_1"</span>)]
-<a href=#93 id=93 data-nosnippet>93</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#94 id=94 data-nosnippet>94</a>                <span class="macro-nonterminal">IndexSet</span>&lt;T: Eq + Hash, S: BuildHasher + Default&gt;,
+<a href=#93 id=93 data-nosnippet>93</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#94 id=94 data-nosnippet>94</a>                IndexSet&lt;T: Eq + Hash, S: BuildHasher + Default&gt;,
 <a href=#95 id=95 data-nosnippet>95</a>                (|size| IndexSet::with_capacity_and_hasher(size, S::default())),
 <a href=#96 id=96 data-nosnippet>96</a>                insert
 <a href=#97 id=97 data-nosnippet>97</a>            );
 <a href=#98 id=98 data-nosnippet>98</a>            <span class="attr">#[cfg(feature = <span class="string">"indexmap_2"</span>)]
-<a href=#99 id=99 data-nosnippet>99</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#100 id=100 data-nosnippet>100</a>                <span class="macro-nonterminal">IndexSet2</span>&lt;T: Eq + Hash, S: BuildHasher + Default&gt;,
+<a href=#99 id=99 data-nosnippet>99</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#100 id=100 data-nosnippet>100</a>                IndexSet2&lt;T: Eq + Hash, S: BuildHasher + Default&gt;,
 <a href=#101 id=101 data-nosnippet>101</a>                (|size| IndexSet2::with_capacity_and_hasher(size, S::default())),
 <a href=#102 id=102 data-nosnippet>102</a>                insert
 <a href=#103 id=103 data-nosnippet>103</a>            );
@@ -109,20 +109,20 @@
 <a href=#109 id=109 data-nosnippet>109</a>            <span class="macro">foreach_set!</span>(<span class="macro-nonterminal">$m</span>);
 <a href=#110 id=110 data-nosnippet>110</a>
 <a href=#111 id=111 data-nosnippet>111</a>            <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
-<a href=#112 id=112 data-nosnippet>112</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#113 id=113 data-nosnippet>113</a>                <span class="macro-nonterminal">BinaryHeap</span>&lt;T: Ord&gt;,
+<a href=#112 id=112 data-nosnippet>112</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#113 id=113 data-nosnippet>113</a>                BinaryHeap&lt;T: Ord&gt;,
 <a href=#114 id=114 data-nosnippet>114</a>                (|size| BinaryHeap::with_capacity(size)),
 <a href=#115 id=115 data-nosnippet>115</a>                push
 <a href=#116 id=116 data-nosnippet>116</a>            );
 <a href=#117 id=117 data-nosnippet>117</a>            <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
-<a href=#118 id=118 data-nosnippet>118</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(<span class="macro-nonterminal">BoxedSlice</span>&lt;T&gt;, (|size| Vec::with_capacity(size)), push);
+<a href=#118 id=118 data-nosnippet>118</a>            </span><span class="macro-nonterminal">$m</span>!(BoxedSlice&lt;T&gt;, (|size| Vec::with_capacity(size)), push);
 <a href=#119 id=119 data-nosnippet>119</a>            <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
-<a href=#120 id=120 data-nosnippet>120</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(<span class="macro-nonterminal">LinkedList</span>&lt;T&gt;, (|<span class="kw">_</span>| LinkedList::new()), push_back);
+<a href=#120 id=120 data-nosnippet>120</a>            </span><span class="macro-nonterminal">$m</span>!(LinkedList&lt;T&gt;, (|<span class="kw">_</span>| LinkedList::new()), push_back);
 <a href=#121 id=121 data-nosnippet>121</a>            <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
-<a href=#122 id=122 data-nosnippet>122</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(<span class="macro-nonterminal">Vec</span>&lt;T&gt;, (|size| Vec::with_capacity(size)), push);
+<a href=#122 id=122 data-nosnippet>122</a>            </span><span class="macro-nonterminal">$m</span>!(Vec&lt;T&gt;, (|size| Vec::with_capacity(size)), push);
 <a href=#123 id=123 data-nosnippet>123</a>            <span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
-<a href=#124 id=124 data-nosnippet>124</a>            </span><span class="macro-nonterminal">$</span><span class="macro">m!</span>(
-<a href=#125 id=125 data-nosnippet>125</a>                <span class="macro-nonterminal">VecDeque</span>&lt;T&gt;,
+<a href=#124 id=124 data-nosnippet>124</a>            </span><span class="macro-nonterminal">$m</span>!(
+<a href=#125 id=125 data-nosnippet>125</a>                VecDeque&lt;T&gt;,
 <a href=#126 id=126 data-nosnippet>126</a>                (|size| VecDeque::with_capacity(size)),
 <a href=#127 id=127 data-nosnippet>127</a>                push_back
 <a href=#128 id=128 data-nosnippet>128</a>            );
@@ -2103,42 +2103,42 @@
 <a href=#2103 id=2103 data-nosnippet>2103</a>            <span class="kw">where
 <a href=#2104 id=2104 data-nosnippet>2104</a>                </span>E: DeError,
 <a href=#2105 id=2105 data-nosnippet>2105</a>            {
-<a href=#2106 id=2106 data-nosnippet>2106</a>                <span class="prelude-val">Ok</span>(v != <span class="number">0</span>)
+<a href=#2106 id=2106 data-nosnippet>2106</a>                <span class="prelude-val">Ok</span>(<span class="macro">v !</span>= <span class="number">0</span>)
 <a href=#2107 id=2107 data-nosnippet>2107</a>            }
 <a href=#2108 id=2108 data-nosnippet>2108</a>
 <a href=#2109 id=2109 data-nosnippet>2109</a>            <span class="kw">fn </span>visit_i8&lt;E&gt;(<span class="self">self</span>, v: i8) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
 <a href=#2110 id=2110 data-nosnippet>2110</a>            <span class="kw">where
 <a href=#2111 id=2111 data-nosnippet>2111</a>                </span>E: DeError,
 <a href=#2112 id=2112 data-nosnippet>2112</a>            {
-<a href=#2113 id=2113 data-nosnippet>2113</a>                <span class="prelude-val">Ok</span>(v != <span class="number">0</span>)
+<a href=#2113 id=2113 data-nosnippet>2113</a>                <span class="prelude-val">Ok</span>(<span class="macro">v !</span>= <span class="number">0</span>)
 <a href=#2114 id=2114 data-nosnippet>2114</a>            }
 <a href=#2115 id=2115 data-nosnippet>2115</a>
 <a href=#2116 id=2116 data-nosnippet>2116</a>            <span class="kw">fn </span>visit_u64&lt;E&gt;(<span class="self">self</span>, v: u64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
 <a href=#2117 id=2117 data-nosnippet>2117</a>            <span class="kw">where
 <a href=#2118 id=2118 data-nosnippet>2118</a>                </span>E: DeError,
 <a href=#2119 id=2119 data-nosnippet>2119</a>            {
-<a href=#2120 id=2120 data-nosnippet>2120</a>                <span class="prelude-val">Ok</span>(v != <span class="number">0</span>)
+<a href=#2120 id=2120 data-nosnippet>2120</a>                <span class="prelude-val">Ok</span>(<span class="macro">v !</span>= <span class="number">0</span>)
 <a href=#2121 id=2121 data-nosnippet>2121</a>            }
 <a href=#2122 id=2122 data-nosnippet>2122</a>
 <a href=#2123 id=2123 data-nosnippet>2123</a>            <span class="kw">fn </span>visit_i64&lt;E&gt;(<span class="self">self</span>, v: i64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
 <a href=#2124 id=2124 data-nosnippet>2124</a>            <span class="kw">where
 <a href=#2125 id=2125 data-nosnippet>2125</a>                </span>E: DeError,
 <a href=#2126 id=2126 data-nosnippet>2126</a>            {
-<a href=#2127 id=2127 data-nosnippet>2127</a>                <span class="prelude-val">Ok</span>(v != <span class="number">0</span>)
+<a href=#2127 id=2127 data-nosnippet>2127</a>                <span class="prelude-val">Ok</span>(<span class="macro">v !</span>= <span class="number">0</span>)
 <a href=#2128 id=2128 data-nosnippet>2128</a>            }
 <a href=#2129 id=2129 data-nosnippet>2129</a>
 <a href=#2130 id=2130 data-nosnippet>2130</a>            <span class="kw">fn </span>visit_u128&lt;E&gt;(<span class="self">self</span>, v: u128) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
 <a href=#2131 id=2131 data-nosnippet>2131</a>            <span class="kw">where
 <a href=#2132 id=2132 data-nosnippet>2132</a>                </span>E: DeError,
 <a href=#2133 id=2133 data-nosnippet>2133</a>            {
-<a href=#2134 id=2134 data-nosnippet>2134</a>                <span class="prelude-val">Ok</span>(v != <span class="number">0</span>)
+<a href=#2134 id=2134 data-nosnippet>2134</a>                <span class="prelude-val">Ok</span>(<span class="macro">v !</span>= <span class="number">0</span>)
 <a href=#2135 id=2135 data-nosnippet>2135</a>            }
 <a href=#2136 id=2136 data-nosnippet>2136</a>
 <a href=#2137 id=2137 data-nosnippet>2137</a>            <span class="kw">fn </span>visit_i128&lt;E&gt;(<span class="self">self</span>, v: i128) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
 <a href=#2138 id=2138 data-nosnippet>2138</a>            <span class="kw">where
 <a href=#2139 id=2139 data-nosnippet>2139</a>                </span>E: DeError,
 <a href=#2140 id=2140 data-nosnippet>2140</a>            {
-<a href=#2141 id=2141 data-nosnippet>2141</a>                <span class="prelude-val">Ok</span>(v != <span class="number">0</span>)
+<a href=#2141 id=2141 data-nosnippet>2141</a>                <span class="prelude-val">Ok</span>(<span class="macro">v !</span>= <span class="number">0</span>)
 <a href=#2142 id=2142 data-nosnippet>2142</a>            }
 <a href=#2143 id=2143 data-nosnippet>2143</a>        }
 <a href=#2144 id=2144 data-nosnippet>2144</a>
@@ -2146,4 +2146,5 @@
 <a href=#2146 id=2146 data-nosnippet>2146</a>    }
 <a href=#2147 id=2147 data-nosnippet>2147</a>}
 <a href=#2148 id=2148 data-nosnippet>2148</a>
-<a href=#2149 id=2149 data-nosnippet>2149</a><span class="comment">// endregion</span></code></pre></div></section></main></body></html>
+<a href=#2149 id=2149 data-nosnippet>2149</a><span class="comment">// endregion
+</span></code></pre></div></section></main></body></html>

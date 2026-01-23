@@ -1,5 +1,5 @@
 (function() {
-    var implementors = Object.fromEntries([["fs_err",[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.92.0/std/os/unix/fs/trait.DirEntryExt.html\" title=\"trait std::os::unix::fs::DirEntryExt\">DirEntryExt</a> for <a class=\"struct\" href=\"fs_err/struct.DirEntry.html\" title=\"struct fs_err::DirEntry\">DirEntry</a>"]]],["no_std_compat",[]],["rustix",[]]]);
+    var implementors = Object.fromEntries([["fs_err",[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.93.0/std/os/unix/fs/trait.DirEntryExt.html\" title=\"trait std::os::unix::fs::DirEntryExt\">DirEntryExt</a> for <a class=\"struct\" href=\"fs_err/struct.DirEntry.html\" title=\"struct fs_err::DirEntry\">DirEntry</a>"]]],["no_std_compat",[]],["rustix",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {

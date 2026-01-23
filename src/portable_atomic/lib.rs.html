@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-atomic-1.13.0/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="portable_atomic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">portable_atomic/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// SPDX-License-Identifier: Apache-2.0 OR MIT
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/portable-atomic-1.13.0/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="portable_atomic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">portable_atomic/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// SPDX-License-Identifier: Apache-2.0 OR MIT
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a></span><span class="doccomment">/*!
 <a href=#4 id=4 data-nosnippet>4</a>&lt;!-- Note: Document from sync-markdown-to-rustdoc:start through sync-markdown-to-rustdoc:end
@@ -1049,8 +1049,8 @@
 <a href=#1049 id=1049 data-nosnippet>1049</a>        )))]
 <a href=#1050 id=1050 data-nosnippet>1050</a>        </span>{
 <a href=#1051 id=1051 data-nosnippet>1051</a>            <span class="kw">match </span><span class="self">self</span>.as_atomic_u8().compare_exchange(current <span class="kw">as </span>u8, new <span class="kw">as </span>u8, success, failure) {
-<a href=#1052 id=1052 data-nosnippet>1052</a>                <span class="prelude-val">Ok</span>(x) =&gt; <span class="prelude-val">Ok</span>(x != <span class="number">0</span>),
-<a href=#1053 id=1053 data-nosnippet>1053</a>                <span class="prelude-val">Err</span>(x) =&gt; <span class="prelude-val">Err</span>(x != <span class="number">0</span>),
+<a href=#1052 id=1052 data-nosnippet>1052</a>                <span class="prelude-val">Ok</span>(x) =&gt; <span class="prelude-val">Ok</span>(<span class="macro">x !</span>= <span class="number">0</span>),
+<a href=#1053 id=1053 data-nosnippet>1053</a>                <span class="prelude-val">Err</span>(x) =&gt; <span class="prelude-val">Err</span>(<span class="macro">x !</span>= <span class="number">0</span>),
 <a href=#1054 id=1054 data-nosnippet>1054</a>            }
 <a href=#1055 id=1055 data-nosnippet>1055</a>        }
 <a href=#1056 id=1056 data-nosnippet>1056</a>    }
@@ -1126,8 +1126,8 @@
 <a href=#1126 id=1126 data-nosnippet>1126</a>                </span>.as_atomic_u8()
 <a href=#1127 id=1127 data-nosnippet>1127</a>                .compare_exchange_weak(current <span class="kw">as </span>u8, new <span class="kw">as </span>u8, success, failure)
 <a href=#1128 id=1128 data-nosnippet>1128</a>            {
-<a href=#1129 id=1129 data-nosnippet>1129</a>                <span class="prelude-val">Ok</span>(x) =&gt; <span class="prelude-val">Ok</span>(x != <span class="number">0</span>),
-<a href=#1130 id=1130 data-nosnippet>1130</a>                <span class="prelude-val">Err</span>(x) =&gt; <span class="prelude-val">Err</span>(x != <span class="number">0</span>),
+<a href=#1129 id=1129 data-nosnippet>1129</a>                <span class="prelude-val">Ok</span>(x) =&gt; <span class="prelude-val">Ok</span>(<span class="macro">x !</span>= <span class="number">0</span>),
+<a href=#1130 id=1130 data-nosnippet>1130</a>                <span class="prelude-val">Err</span>(x) =&gt; <span class="prelude-val">Err</span>(<span class="macro">x !</span>= <span class="number">0</span>),
 <a href=#1131 id=1131 data-nosnippet>1131</a>            }
 <a href=#1132 id=1132 data-nosnippet>1132</a>        }
 <a href=#1133 id=1133 data-nosnippet>1133</a>    }
@@ -3059,7 +3059,7 @@
 <a href=#3059 id=3059 data-nosnippet>3059</a>            }
 <a href=#3060 id=3060 data-nosnippet>3060</a>
 <a href=#3061 id=3061 data-nosnippet>3061</a>            <span class="macro">cfg_has_atomic_cas_or_amo32!</span> {
-<a href=#3062 id=3062 data-nosnippet>3062</a>            <span class="macro-nonterminal">$</span><span class="macro">cfg_has_atomic_cas_or_amo32_or_8!</span> {
+<a href=#3062 id=3062 data-nosnippet>3062</a>            <span class="macro-nonterminal">$cfg_has_atomic_cas_or_amo32_or_8</span>! {
 <a href=#3063 id=3063 data-nosnippet>3063</a>            <span class="macro">doc_comment!</span> {
 <a href=#3064 id=3064 data-nosnippet>3064</a>                <span class="macro">concat!</span>(<span class="string">"Stores a value into the atomic integer, returning the previous value.
 <a href=#3065 id=3065 data-nosnippet>3065</a>
@@ -3197,7 +3197,7 @@
 <a href=#3197 id=3197 data-nosnippet>3197</a>            }
 <a href=#3198 id=3198 data-nosnippet>3198</a>            } <span class="comment">// cfg_has_atomic_cas!
 <a href=#3199 id=3199 data-nosnippet>3199</a>
-<a href=#3200 id=3200 data-nosnippet>3200</a>            </span><span class="macro-nonterminal">$</span><span class="macro">cfg_has_atomic_cas_or_amo32_or_8!</span> {
+<a href=#3200 id=3200 data-nosnippet>3200</a>            </span><span class="macro-nonterminal">$cfg_has_atomic_cas_or_amo32_or_8</span>! {
 <a href=#3201 id=3201 data-nosnippet>3201</a>            <span class="macro">doc_comment!</span> {
 <a href=#3202 id=3202 data-nosnippet>3202</a>                <span class="macro">concat!</span>(<span class="string">"Adds to the current value, returning the previous value.
 <a href=#3203 id=3203 data-nosnippet>3203</a>
@@ -3616,7 +3616,7 @@
 <a href=#3616 id=3616 data-nosnippet>3616</a>            }
 <a href=#3617 id=3617 data-nosnippet>3617</a>            } <span class="comment">// cfg_has_atomic_cas!
 <a href=#3618 id=3618 data-nosnippet>3618</a>
-<a href=#3619 id=3619 data-nosnippet>3619</a>            </span><span class="macro-nonterminal">$</span><span class="macro">cfg_has_atomic_cas_or_amo32_or_8!</span> {
+<a href=#3619 id=3619 data-nosnippet>3619</a>            </span><span class="macro-nonterminal">$cfg_has_atomic_cas_or_amo32_or_8</span>! {
 <a href=#3620 id=3620 data-nosnippet>3620</a>            <span class="macro">doc_comment!</span> {
 <a href=#3621 id=3621 data-nosnippet>3621</a>                <span class="macro">concat!</span>(<span class="string">"Maximum with the current value.
 <a href=#3622 id=3622 data-nosnippet>3622</a>
@@ -3936,8 +3936,8 @@
 <a href=#3936 id=3936 data-nosnippet>3936</a>        <span class="attr">#[doc(hidden)]
 <a href=#3937 id=3937 data-nosnippet>3937</a>        #[allow(unused_variables, clippy::unused_self, clippy::extra_unused_lifetimes)]
 <a href=#3938 id=3938 data-nosnippet>3938</a>        </span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; <span class="macro-nonterminal">$atomic_type </span>{
-<a href=#3939 id=3939 data-nosnippet>3939</a>            <span class="macro-nonterminal">$</span><span class="macro">cfg_no_atomic_cas_or_amo32_or_8!</span> {
-<a href=#3940 id=3940 data-nosnippet>3940</a>            <span class="attr">#[<span class="macro-nonterminal">inline</span>]
+<a href=#3939 id=3939 data-nosnippet>3939</a>            <span class="macro-nonterminal">$cfg_no_atomic_cas_or_amo32_or_8</span>! {
+<a href=#3940 id=3940 data-nosnippet>3940</a>            <span class="attr">#[inline]
 <a href=#3941 id=3941 data-nosnippet>3941</a>            </span><span class="kw">pub fn </span>swap(<span class="kw-2">&amp;</span><span class="self">self</span>, val: <span class="macro-nonterminal">$int_type</span>, order: Ordering) -&gt; <span class="macro-nonterminal">$int_type
 <a href=#3942 id=3942 data-nosnippet>3942</a>            </span><span class="kw">where
 <a href=#3943 id=3943 data-nosnippet>3943</a>                </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">Self</span>: HasSwap,
@@ -3971,8 +3971,8 @@
 <a href=#3971 id=3971 data-nosnippet>3971</a>            {
 <a href=#3972 id=3972 data-nosnippet>3972</a>                <span class="macro">unimplemented!</span>()
 <a href=#3973 id=3973 data-nosnippet>3973</a>            }
-<a href=#3974 id=3974 data-nosnippet>3974</a>            <span class="macro-nonterminal">$</span><span class="macro">cfg_no_atomic_cas_or_amo32_or_8!</span> {
-<a href=#3975 id=3975 data-nosnippet>3975</a>            <span class="attr">#[<span class="macro-nonterminal">inline</span>]
+<a href=#3974 id=3974 data-nosnippet>3974</a>            <span class="macro-nonterminal">$cfg_no_atomic_cas_or_amo32_or_8</span>! {
+<a href=#3975 id=3975 data-nosnippet>3975</a>            <span class="attr">#[inline]
 <a href=#3976 id=3976 data-nosnippet>3976</a>            </span><span class="kw">pub fn </span>fetch_add(<span class="kw-2">&amp;</span><span class="self">self</span>, val: <span class="macro-nonterminal">$int_type</span>, order: Ordering) -&gt; <span class="macro-nonterminal">$int_type
 <a href=#3977 id=3977 data-nosnippet>3977</a>            </span><span class="kw">where
 <a href=#3978 id=3978 data-nosnippet>3978</a>                </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">Self</span>: HasFetchAdd,
@@ -4067,8 +4067,8 @@
 <a href=#4067 id=4067 data-nosnippet>4067</a>            {
 <a href=#4068 id=4068 data-nosnippet>4068</a>                <span class="macro">unimplemented!</span>()
 <a href=#4069 id=4069 data-nosnippet>4069</a>            }
-<a href=#4070 id=4070 data-nosnippet>4070</a>            <span class="macro-nonterminal">$</span><span class="macro">cfg_no_atomic_cas_or_amo32_or_8!</span> {
-<a href=#4071 id=4071 data-nosnippet>4071</a>            <span class="attr">#[<span class="macro-nonterminal">inline</span>]
+<a href=#4070 id=4070 data-nosnippet>4070</a>            <span class="macro-nonterminal">$cfg_no_atomic_cas_or_amo32_or_8</span>! {
+<a href=#4071 id=4071 data-nosnippet>4071</a>            <span class="attr">#[inline]
 <a href=#4072 id=4072 data-nosnippet>4072</a>            </span><span class="kw">pub fn </span>fetch_max(<span class="kw-2">&amp;</span><span class="self">self</span>, val: <span class="macro-nonterminal">$int_type</span>, order: Ordering) -&gt; <span class="macro-nonterminal">$int_type
 <a href=#4073 id=4073 data-nosnippet>4073</a>            </span><span class="kw">where
 <a href=#4074 id=4074 data-nosnippet>4074</a>                </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">Self</span>: HasFetchMax,
@@ -5174,4 +5174,5 @@
 <a href=#5174 id=5174 data-nosnippet>5174</a>    </span><span class="kw">pub trait </span>HasBitToggle {}
 <a href=#5175 id=5175 data-nosnippet>5175</a>    } <span class="comment">// cfg_no_atomic_cas_or_amo32!
 <a href=#5176 id=5176 data-nosnippet>5176</a></span>}
-<a href=#5177 id=5177 data-nosnippet>5177</a>} <span class="comment">// cfg_no_atomic_cas!</span></code></pre></div></section></main></body></html>
+<a href=#5177 id=5177 data-nosnippet>5177</a>} <span class="comment">// cfg_no_atomic_cas!
+</span></code></pre></div></section></main></body></html>

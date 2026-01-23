@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasm-timer-0.2.5/src/timer.rs`."><title>timer.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="wasm_timer" data-themes="" data-resource-suffix="" data-rustdoc-version="1.92.0 (ded5c06cf 2025-12-08)" data-channel="1.92.0" data-search-js="search-d69d8955.js" data-stringdex-js="stringdex-c3e638e9.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-ce535bd0.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasm_timer/</div>timer.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// The `timer` module is a copy-paste from the code of `futures-timer`, but
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasm-timer-0.2.5/src/timer.rs`."><title>timer.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="wasm_timer" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasm_timer/</div>timer.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// The `timer` module is a copy-paste from the code of `futures-timer`, but
 <a href=#2 id=2 data-nosnippet>2</a>// adjusted for WASM.
 <a href=#3 id=3 data-nosnippet>3</a>// 
 <a href=#4 id=4 data-nosnippet>4</a>// Copyright (c) 2014 Alex Crichton
@@ -319,7 +319,7 @@
 <a href=#319 id=319 data-nosnippet>319</a>/// also containing some payload data.
 <a href=#320 id=320 data-nosnippet>320</a></span><span class="kw">struct </span>HeapTimer {
 <a href=#321 id=321 data-nosnippet>321</a>    at: Instant,
-<a href=#322 id=322 data-nosnippet>322</a>    gen: usize,
+<a href=#322 id=322 data-nosnippet>322</a>    <span class="kw">gen</span>: usize,
 <a href=#323 id=323 data-nosnippet>323</a>    node: Arc&lt;Node&lt;ScheduledTimer&gt;&gt;,
 <a href=#324 id=324 data-nosnippet>324</a>}
 <a href=#325 id=325 data-nosnippet>325</a>
@@ -375,7 +375,7 @@
 <a href=#375 id=375 data-nosnippet>375</a>            // blocked.
 <a href=#376 id=376 data-nosnippet>376</a>            </span><span class="kw">let </span>heap_timer = <span class="self">self</span>.timer_heap.pop().unwrap();
 <a href=#377 id=377 data-nosnippet>377</a>            <span class="kw-2">*</span>heap_timer.node.slot.lock().unwrap() = <span class="prelude-val">None</span>;
-<a href=#378 id=378 data-nosnippet>378</a>            <span class="kw">let </span>bits = heap_timer.gen &lt;&lt; <span class="number">2</span>;
+<a href=#378 id=378 data-nosnippet>378</a>            <span class="kw">let </span>bits = heap_timer.<span class="kw">gen </span>&lt;&lt; <span class="number">2</span>;
 <a href=#379 id=379 data-nosnippet>379</a>            <span class="kw">match </span>heap_timer
 <a href=#380 id=380 data-nosnippet>380</a>                .node
 <a href=#381 id=381 data-nosnippet>381</a>                .state
@@ -393,14 +393,14 @@
 <a href=#393 id=393 data-nosnippet>393</a>        <span class="comment">// TODO: avoid remove + push and instead just do one sift of the heap?
 <a href=#394 id=394 data-nosnippet>394</a>        // In theory we could update it in place and then do the percolation
 <a href=#395 id=395 data-nosnippet>395</a>        // as necessary
-<a href=#396 id=396 data-nosnippet>396</a>        </span><span class="kw">let </span>gen = node.state.load(SeqCst) &gt;&gt; <span class="number">2</span>;
+<a href=#396 id=396 data-nosnippet>396</a>        </span><span class="kw">let gen </span>= node.state.load(SeqCst) &gt;&gt; <span class="number">2</span>;
 <a href=#397 id=397 data-nosnippet>397</a>        <span class="kw">let </span><span class="kw-2">mut </span>slot = node.slot.lock().unwrap();
 <a href=#398 id=398 data-nosnippet>398</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(heap_slot) = slot.take() {
 <a href=#399 id=399 data-nosnippet>399</a>            <span class="self">self</span>.timer_heap.remove(heap_slot);
 <a href=#400 id=400 data-nosnippet>400</a>        }
 <a href=#401 id=401 data-nosnippet>401</a>        <span class="kw-2">*</span>slot = <span class="prelude-val">Some</span>(<span class="self">self</span>.timer_heap.push(HeapTimer {
 <a href=#402 id=402 data-nosnippet>402</a>            at: at,
-<a href=#403 id=403 data-nosnippet>403</a>            gen: gen,
+<a href=#403 id=403 data-nosnippet>403</a>            <span class="kw">gen</span>: <span class="kw">gen</span>,
 <a href=#404 id=404 data-nosnippet>404</a>            node: node.clone(),
 <a href=#405 id=405 data-nosnippet>405</a>        }));
 <a href=#406 id=406 data-nosnippet>406</a>    }
@@ -570,7 +570,7 @@
 <a href=#570 id=570 data-nosnippet>570</a>        <span class="comment">// At this point our fallback handle global was configured so we use
 <a href=#571 id=571 data-nosnippet>571</a>        // its value to reify a handle, clone it, and then forget our reified
 <a href=#572 id=572 data-nosnippet>572</a>        // handle as we don't actually have an owning reference to it.
-<a href=#573 id=573 data-nosnippet>573</a>        </span><span class="macro">assert!</span>(fallback != <span class="number">0</span>);
+<a href=#573 id=573 data-nosnippet>573</a>        </span><span class="macro">assert!</span>(<span class="macro">fallback !</span>= <span class="number">0</span>);
 <a href=#574 id=574 data-nosnippet>574</a>        <span class="kw">unsafe </span>{
 <a href=#575 id=575 data-nosnippet>575</a>            <span class="kw">let </span>handle = TimerHandle::from_usize(fallback);
 <a href=#576 id=576 data-nosnippet>576</a>            <span class="kw">let </span>ret = handle.clone();
@@ -607,7 +607,7 @@
 <a href=#607 id=607 data-nosnippet>607</a>        <span class="comment">// At this point our fallback handle global was configured so we use
 <a href=#608 id=608 data-nosnippet>608</a>        // its value to reify a handle, clone it, and then forget our reified
 <a href=#609 id=609 data-nosnippet>609</a>        // handle as we don't actually have an owning reference to it.
-<a href=#610 id=610 data-nosnippet>610</a>        </span><span class="macro">assert!</span>(fallback != <span class="number">0</span>);
+<a href=#610 id=610 data-nosnippet>610</a>        </span><span class="macro">assert!</span>(<span class="macro">fallback !</span>= <span class="number">0</span>);
 <a href=#611 id=611 data-nosnippet>611</a>        <span class="kw">unsafe </span>{
 <a href=#612 id=612 data-nosnippet>612</a>            <span class="kw">let </span>handle = TimerHandle::from_usize(fallback);
 <a href=#613 id=613 data-nosnippet>613</a>            <span class="kw">let </span>ret = handle.clone();
@@ -622,4 +622,5 @@
 <a href=#622 id=622 data-nosnippet>622</a>        f.debug_struct(<span class="string">"TimerHandle"</span>).field(<span class="string">"inner"</span>, <span class="kw-2">&amp;</span><span class="string">"..."</span>).finish()
 <a href=#623 id=623 data-nosnippet>623</a>    }
 <a href=#624 id=624 data-nosnippet>624</a>}
-<a href=#625 id=625 data-nosnippet>625</a></code></pre></div></section></main></body></html>
+<a href=#625 id=625 data-nosnippet>625</a>
+</code></pre></div></section></main></body></html>
