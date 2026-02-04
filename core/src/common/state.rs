@@ -49,12 +49,12 @@ use crate::{
 /// A `Live` variant for [`State`]
 #[derive(Debug, Clone, clap::Args)]
 pub struct LiveState {
-    /// The url(s) to connect to. Can be provided multiple times for parallel state download.
+    /// The url(s) to connect to. Can be comma-separated (no spaces) for parallel download.
     #[arg(
 		short,
 		long,
 		value_parser = parse::url,
-		num_args = 1..,
+		value_delimiter = ',',
 		required = true,
 	)]
     pub uri: Vec<String>,
