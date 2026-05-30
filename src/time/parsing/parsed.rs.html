@@ -1,11 +1,11 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-0.3.45/src/parsing/parsed.rs`."><title>parsed.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="time" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="icon" href="https://avatars0.githubusercontent.com/u/55999857"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">time/parsing/</div>parsed.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Information parsed from an input and format description.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/time-0.3.47/src/parsing/parsed.rs`."><title>parsed.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="time" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="icon" href="https://avatars0.githubusercontent.com/u/55999857"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">time/parsing/</div>parsed.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Information parsed from an input and format description.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a></span><span class="kw">use </span>core::num::NonZero;
 <a href=#4 id=4 data-nosnippet>4</a>
 <a href=#5 id=5 data-nosnippet>5</a><span class="kw">use </span>deranged::{
-<a href=#6 id=6 data-nosnippet>6</a>    OptionRangedI128, OptionRangedI16, OptionRangedI32, OptionRangedI8, OptionRangedU16,
-<a href=#7 id=7 data-nosnippet>7</a>    OptionRangedU32, OptionRangedU8, RangedI128, RangedI16, RangedI32, RangedI8, RangedU16,
-<a href=#8 id=8 data-nosnippet>8</a>    RangedU32, RangedU8,
+<a href=#6 id=6 data-nosnippet>6</a>    OptionRangedI8, OptionRangedI16, OptionRangedI32, OptionRangedI128, OptionRangedU8,
+<a href=#7 id=7 data-nosnippet>7</a>    OptionRangedU16, OptionRangedU32, RangedI8, RangedI16, RangedI32, RangedI128, RangedU8,
+<a href=#8 id=8 data-nosnippet>8</a>    RangedU16, RangedU32,
 <a href=#9 id=9 data-nosnippet>9</a>};
 <a href=#10 id=10 data-nosnippet>10</a><span class="kw">use </span>num_conv::prelude::<span class="kw-2">*</span>;
 <a href=#11 id=11 data-nosnippet>11</a>
@@ -14,16 +14,16 @@
 <a href=#14 id=14 data-nosnippet>14</a><span class="kw">use </span><span class="kw">crate</span>::error::TryFromParsed::InsufficientInformation;
 <a href=#15 id=15 data-nosnippet>15</a><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 <a href=#16 id=16 data-nosnippet>16</a></span><span class="kw">use </span><span class="kw">crate</span>::format_description::OwnedFormatItem;
-<a href=#17 id=17 data-nosnippet>17</a><span class="kw">use </span><span class="kw">crate</span>::format_description::{modifier, BorrowedFormatItem, Component};
+<a href=#17 id=17 data-nosnippet>17</a><span class="kw">use </span><span class="kw">crate</span>::format_description::{BorrowedFormatItem, Component, Period, modifier};
 <a href=#18 id=18 data-nosnippet>18</a><span class="kw">use </span><span class="kw">crate</span>::internal_macros::{bug, const_try_opt};
-<a href=#19 id=19 data-nosnippet>19</a><span class="kw">use </span><span class="kw">crate</span>::parsing::component::{
-<a href=#20 id=20 data-nosnippet>20</a>    parse_day, parse_end, parse_hour, parse_ignore, parse_minute, parse_month, parse_offset_hour,
-<a href=#21 id=21 data-nosnippet>21</a>    parse_offset_minute, parse_offset_second, parse_ordinal, parse_period, parse_second,
-<a href=#22 id=22 data-nosnippet>22</a>    parse_subsecond, parse_unix_timestamp, parse_week_number, parse_weekday, parse_year, Period,
-<a href=#23 id=23 data-nosnippet>23</a>};
-<a href=#24 id=24 data-nosnippet>24</a><span class="kw">use </span><span class="kw">crate</span>::parsing::ParsedItem;
+<a href=#19 id=19 data-nosnippet>19</a><span class="kw">use </span><span class="kw">crate</span>::parsing::ParsedItem;
+<a href=#20 id=20 data-nosnippet>20</a><span class="kw">use </span><span class="kw">crate</span>::parsing::component::{
+<a href=#21 id=21 data-nosnippet>21</a>    parse_day, parse_end, parse_hour, parse_ignore, parse_minute, parse_month, parse_offset_hour,
+<a href=#22 id=22 data-nosnippet>22</a>    parse_offset_minute, parse_offset_second, parse_ordinal, parse_period, parse_second,
+<a href=#23 id=23 data-nosnippet>23</a>    parse_subsecond, parse_unix_timestamp, parse_week_number, parse_weekday, parse_year,
+<a href=#24 id=24 data-nosnippet>24</a>};
 <a href=#25 id=25 data-nosnippet>25</a><span class="kw">use </span>crate::{
-<a href=#26 id=26 data-nosnippet>26</a>    error, Date, Month, OffsetDateTime, PrimitiveDateTime, Time, UtcDateTime, UtcOffset, Weekday,
+<a href=#26 id=26 data-nosnippet>26</a>    Date, Month, OffsetDateTime, PrimitiveDateTime, Time, UtcDateTime, UtcOffset, Weekday, error,
 <a href=#27 id=27 data-nosnippet>27</a>};
 <a href=#28 id=28 data-nosnippet>28</a>
 <a href=#29 id=29 data-nosnippet>29</a><span class="doccomment">/// Sealed to prevent downstream implementations.
@@ -680,10 +680,10 @@
 <a href=#680 id=680 data-nosnippet>680</a>    </span>)]
 <a href=#681 id=681 data-nosnippet>681</a>    #[inline]
 <a href=#682 id=682 data-nosnippet>682</a>    </span><span class="kw">pub const fn </span>set_offset_minute(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: u8) -&gt; <span class="prelude-ty">Option</span>&lt;()&gt; {
-<a href=#683 id=683 data-nosnippet>683</a>        <span class="kw">if </span>value &gt; i8::MAX <span class="kw">as </span>u8 {
+<a href=#683 id=683 data-nosnippet>683</a>        <span class="kw">if </span>value &gt; i8::MAX.cast_unsigned() {
 <a href=#684 id=684 data-nosnippet>684</a>            <span class="prelude-val">None
 <a href=#685 id=685 data-nosnippet>685</a>        </span>} <span class="kw">else </span>{
-<a href=#686 id=686 data-nosnippet>686</a>            <span class="self">self</span>.set_offset_minute_signed(value <span class="kw">as </span>i8)
+<a href=#686 id=686 data-nosnippet>686</a>            <span class="self">self</span>.set_offset_minute_signed(value.cast_signed())
 <a href=#687 id=687 data-nosnippet>687</a>        }
 <a href=#688 id=688 data-nosnippet>688</a>    }
 <a href=#689 id=689 data-nosnippet>689</a>
@@ -695,10 +695,10 @@
 <a href=#695 id=695 data-nosnippet>695</a>    </span>)]
 <a href=#696 id=696 data-nosnippet>696</a>    #[inline]
 <a href=#697 id=697 data-nosnippet>697</a>    </span><span class="kw">pub const fn </span>set_offset_second(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: u8) -&gt; <span class="prelude-ty">Option</span>&lt;()&gt; {
-<a href=#698 id=698 data-nosnippet>698</a>        <span class="kw">if </span>value &gt; i8::MAX <span class="kw">as </span>u8 {
+<a href=#698 id=698 data-nosnippet>698</a>        <span class="kw">if </span>value &gt; i8::MAX.cast_unsigned() {
 <a href=#699 id=699 data-nosnippet>699</a>            <span class="prelude-val">None
 <a href=#700 id=700 data-nosnippet>700</a>        </span>} <span class="kw">else </span>{
-<a href=#701 id=701 data-nosnippet>701</a>            <span class="self">self</span>.set_offset_second_signed(value <span class="kw">as </span>i8)
+<a href=#701 id=701 data-nosnippet>701</a>            <span class="self">self</span>.set_offset_second_signed(value.cast_signed())
 <a href=#702 id=702 data-nosnippet>702</a>        }
 <a href=#703 id=703 data-nosnippet>703</a>    }
 <a href=#704 id=704 data-nosnippet>704</a>}
@@ -872,10 +872,10 @@
 <a href=#872 id=872 data-nosnippet>872</a>    </span>)]
 <a href=#873 id=873 data-nosnippet>873</a>    #[inline]
 <a href=#874 id=874 data-nosnippet>874</a>    </span><span class="kw">pub const fn </span>with_offset_minute(<span class="self">self</span>, value: u8) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
-<a href=#875 id=875 data-nosnippet>875</a>        <span class="kw">if </span>value &gt; i8::MAX <span class="kw">as </span>u8 {
+<a href=#875 id=875 data-nosnippet>875</a>        <span class="kw">if </span>value &gt; i8::MAX.cast_unsigned() {
 <a href=#876 id=876 data-nosnippet>876</a>            <span class="prelude-val">None
 <a href=#877 id=877 data-nosnippet>877</a>        </span>} <span class="kw">else </span>{
-<a href=#878 id=878 data-nosnippet>878</a>            <span class="self">self</span>.with_offset_minute_signed(value <span class="kw">as </span>i8)
+<a href=#878 id=878 data-nosnippet>878</a>            <span class="self">self</span>.with_offset_minute_signed(value.cast_signed())
 <a href=#879 id=879 data-nosnippet>879</a>        }
 <a href=#880 id=880 data-nosnippet>880</a>    }
 <a href=#881 id=881 data-nosnippet>881</a>
@@ -894,10 +894,10 @@
 <a href=#894 id=894 data-nosnippet>894</a>    </span>)]
 <a href=#895 id=895 data-nosnippet>895</a>    #[inline]
 <a href=#896 id=896 data-nosnippet>896</a>    </span><span class="kw">pub const fn </span>with_offset_second(<span class="self">self</span>, value: u8) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
-<a href=#897 id=897 data-nosnippet>897</a>        <span class="kw">if </span>value &gt; i8::MAX <span class="kw">as </span>u8 {
+<a href=#897 id=897 data-nosnippet>897</a>        <span class="kw">if </span>value &gt; i8::MAX.cast_unsigned() {
 <a href=#898 id=898 data-nosnippet>898</a>            <span class="prelude-val">None
 <a href=#899 id=899 data-nosnippet>899</a>        </span>} <span class="kw">else </span>{
-<a href=#900 id=900 data-nosnippet>900</a>            <span class="self">self</span>.with_offset_second_signed(value <span class="kw">as </span>i8)
+<a href=#900 id=900 data-nosnippet>900</a>            <span class="self">self</span>.with_offset_second_signed(value.cast_signed())
 <a href=#901 id=901 data-nosnippet>901</a>        }
 <a href=#902 id=902 data-nosnippet>902</a>    }
 <a href=#903 id=903 data-nosnippet>903</a>
@@ -1064,133 +1064,111 @@
 <a href=#1064 id=1064 data-nosnippet>1064</a>    <span class="kw">let </span>minute = minute.unwrap_or(<span class="number">0</span>);
 <a href=#1065 id=1065 data-nosnippet>1065</a>    <span class="kw">let </span>second = second.unwrap_or(<span class="number">0</span>);
 <a href=#1066 id=1066 data-nosnippet>1066</a>
-<a href=#1067 id=1067 data-nosnippet>1067</a>    UtcOffset::from_hms(hour, minute, second).map_err(|<span class="kw-2">mut </span>err| {
-<a href=#1068 id=1068 data-nosnippet>1068</a>        <span class="comment">// Provide the user a more accurate error.
-<a href=#1069 id=1069 data-nosnippet>1069</a>        </span><span class="kw">if </span>err.name == <span class="string">"hours" </span>{
-<a href=#1070 id=1070 data-nosnippet>1070</a>            err.name = <span class="string">"offset hour"</span>;
-<a href=#1071 id=1071 data-nosnippet>1071</a>        } <span class="kw">else if </span>err.name == <span class="string">"minutes" </span>{
-<a href=#1072 id=1072 data-nosnippet>1072</a>            err.name = <span class="string">"offset minute"</span>;
-<a href=#1073 id=1073 data-nosnippet>1073</a>        } <span class="kw">else if </span>err.name == <span class="string">"seconds" </span>{
-<a href=#1074 id=1074 data-nosnippet>1074</a>            err.name = <span class="string">"offset second"</span>;
-<a href=#1075 id=1075 data-nosnippet>1075</a>        }
-<a href=#1076 id=1076 data-nosnippet>1076</a>        err.into()
-<a href=#1077 id=1077 data-nosnippet>1077</a>    })
-<a href=#1078 id=1078 data-nosnippet>1078</a>}
-<a href=#1079 id=1079 data-nosnippet>1079</a>
-<a href=#1080 id=1080 data-nosnippet>1080</a><span class="kw">impl </span>TryFrom&lt;Parsed&gt; <span class="kw">for </span>UtcOffset {
-<a href=#1081 id=1081 data-nosnippet>1081</a>    <span class="kw">type </span>Error = error::TryFromParsed;
-<a href=#1082 id=1082 data-nosnippet>1082</a>
-<a href=#1083 id=1083 data-nosnippet>1083</a>    <span class="attr">#[inline]
-<a href=#1084 id=1084 data-nosnippet>1084</a>    </span><span class="kw">fn </span>try_from(parsed: Parsed) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
-<a href=#1085 id=1085 data-nosnippet>1085</a>        utc_offset_try_from_parsed::&lt;<span class="bool-val">true</span>&gt;(parsed)
-<a href=#1086 id=1086 data-nosnippet>1086</a>    }
-<a href=#1087 id=1087 data-nosnippet>1087</a>}
-<a href=#1088 id=1088 data-nosnippet>1088</a>
-<a href=#1089 id=1089 data-nosnippet>1089</a><span class="kw">impl </span>TryFrom&lt;Parsed&gt; <span class="kw">for </span>PrimitiveDateTime {
-<a href=#1090 id=1090 data-nosnippet>1090</a>    <span class="kw">type </span>Error = error::TryFromParsed;
-<a href=#1091 id=1091 data-nosnippet>1091</a>
-<a href=#1092 id=1092 data-nosnippet>1092</a>    <span class="attr">#[inline]
-<a href=#1093 id=1093 data-nosnippet>1093</a>    </span><span class="kw">fn </span>try_from(parsed: Parsed) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
-<a href=#1094 id=1094 data-nosnippet>1094</a>        <span class="prelude-val">Ok</span>(<span class="self">Self</span>::new(parsed.try_into()<span class="question-mark">?</span>, parsed.try_into()<span class="question-mark">?</span>))
-<a href=#1095 id=1095 data-nosnippet>1095</a>    }
-<a href=#1096 id=1096 data-nosnippet>1096</a>}
-<a href=#1097 id=1097 data-nosnippet>1097</a>
-<a href=#1098 id=1098 data-nosnippet>1098</a><span class="kw">impl </span>TryFrom&lt;Parsed&gt; <span class="kw">for </span>UtcDateTime {
-<a href=#1099 id=1099 data-nosnippet>1099</a>    <span class="kw">type </span>Error = error::TryFromParsed;
+<a href=#1067 id=1067 data-nosnippet>1067</a>    UtcOffset::from_hms(hour, minute, second).map_err(Into::into)
+<a href=#1068 id=1068 data-nosnippet>1068</a>}
+<a href=#1069 id=1069 data-nosnippet>1069</a>
+<a href=#1070 id=1070 data-nosnippet>1070</a><span class="kw">impl </span>TryFrom&lt;Parsed&gt; <span class="kw">for </span>UtcOffset {
+<a href=#1071 id=1071 data-nosnippet>1071</a>    <span class="kw">type </span>Error = error::TryFromParsed;
+<a href=#1072 id=1072 data-nosnippet>1072</a>
+<a href=#1073 id=1073 data-nosnippet>1073</a>    <span class="attr">#[inline]
+<a href=#1074 id=1074 data-nosnippet>1074</a>    </span><span class="kw">fn </span>try_from(parsed: Parsed) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+<a href=#1075 id=1075 data-nosnippet>1075</a>        utc_offset_try_from_parsed::&lt;<span class="bool-val">true</span>&gt;(parsed)
+<a href=#1076 id=1076 data-nosnippet>1076</a>    }
+<a href=#1077 id=1077 data-nosnippet>1077</a>}
+<a href=#1078 id=1078 data-nosnippet>1078</a>
+<a href=#1079 id=1079 data-nosnippet>1079</a><span class="kw">impl </span>TryFrom&lt;Parsed&gt; <span class="kw">for </span>PrimitiveDateTime {
+<a href=#1080 id=1080 data-nosnippet>1080</a>    <span class="kw">type </span>Error = error::TryFromParsed;
+<a href=#1081 id=1081 data-nosnippet>1081</a>
+<a href=#1082 id=1082 data-nosnippet>1082</a>    <span class="attr">#[inline]
+<a href=#1083 id=1083 data-nosnippet>1083</a>    </span><span class="kw">fn </span>try_from(parsed: Parsed) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+<a href=#1084 id=1084 data-nosnippet>1084</a>        <span class="prelude-val">Ok</span>(<span class="self">Self</span>::new(parsed.try_into()<span class="question-mark">?</span>, parsed.try_into()<span class="question-mark">?</span>))
+<a href=#1085 id=1085 data-nosnippet>1085</a>    }
+<a href=#1086 id=1086 data-nosnippet>1086</a>}
+<a href=#1087 id=1087 data-nosnippet>1087</a>
+<a href=#1088 id=1088 data-nosnippet>1088</a><span class="kw">impl </span>TryFrom&lt;Parsed&gt; <span class="kw">for </span>UtcDateTime {
+<a href=#1089 id=1089 data-nosnippet>1089</a>    <span class="kw">type </span>Error = error::TryFromParsed;
+<a href=#1090 id=1090 data-nosnippet>1090</a>
+<a href=#1091 id=1091 data-nosnippet>1091</a>    <span class="attr">#[inline]
+<a href=#1092 id=1092 data-nosnippet>1092</a>    </span><span class="kw">fn </span>try_from(<span class="kw-2">mut </span>parsed: Parsed) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+<a href=#1093 id=1093 data-nosnippet>1093</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(timestamp) = parsed.unix_timestamp_nanos() {
+<a href=#1094 id=1094 data-nosnippet>1094</a>            <span class="kw">let </span><span class="kw-2">mut </span>value = <span class="self">Self</span>::from_unix_timestamp_nanos(timestamp)<span class="question-mark">?</span>;
+<a href=#1095 id=1095 data-nosnippet>1095</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(subsecond) = parsed.subsecond() {
+<a href=#1096 id=1096 data-nosnippet>1096</a>                value = value.replace_nanosecond(subsecond)<span class="question-mark">?</span>;
+<a href=#1097 id=1097 data-nosnippet>1097</a>            }
+<a href=#1098 id=1098 data-nosnippet>1098</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(value);
+<a href=#1099 id=1099 data-nosnippet>1099</a>        }
 <a href=#1100 id=1100 data-nosnippet>1100</a>
-<a href=#1101 id=1101 data-nosnippet>1101</a>    <span class="attr">#[inline]
-<a href=#1102 id=1102 data-nosnippet>1102</a>    </span><span class="kw">fn </span>try_from(<span class="kw-2">mut </span>parsed: Parsed) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
-<a href=#1103 id=1103 data-nosnippet>1103</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(timestamp) = parsed.unix_timestamp_nanos() {
-<a href=#1104 id=1104 data-nosnippet>1104</a>            <span class="kw">let </span><span class="kw-2">mut </span>value = <span class="self">Self</span>::from_unix_timestamp_nanos(timestamp)<span class="question-mark">?</span>;
-<a href=#1105 id=1105 data-nosnippet>1105</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(subsecond) = parsed.subsecond() {
-<a href=#1106 id=1106 data-nosnippet>1106</a>                value = value.replace_nanosecond(subsecond)<span class="question-mark">?</span>;
+<a href=#1101 id=1101 data-nosnippet>1101</a>        <span class="comment">// Some well-known formats explicitly allow leap seconds. We don't currently support them,
+<a href=#1102 id=1102 data-nosnippet>1102</a>        // so treat it as the nearest preceding moment that can be represented. Because leap seconds
+<a href=#1103 id=1103 data-nosnippet>1103</a>        // always fall at the end of a month UTC, reject any that are at other times.
+<a href=#1104 id=1104 data-nosnippet>1104</a>        </span><span class="kw">let </span>leap_second_input = <span class="kw">if </span>parsed.leap_second_allowed &amp;&amp; parsed.second() == <span class="prelude-val">Some</span>(<span class="number">60</span>) {
+<a href=#1105 id=1105 data-nosnippet>1105</a>            <span class="kw">if </span>parsed.set_second(<span class="number">59</span>).is_none() {
+<a href=#1106 id=1106 data-nosnippet>1106</a>                <span class="macro">bug!</span>(<span class="string">"59 is a valid second"</span>);
 <a href=#1107 id=1107 data-nosnippet>1107</a>            }
-<a href=#1108 id=1108 data-nosnippet>1108</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(value);
-<a href=#1109 id=1109 data-nosnippet>1109</a>        }
-<a href=#1110 id=1110 data-nosnippet>1110</a>
-<a href=#1111 id=1111 data-nosnippet>1111</a>        <span class="comment">// Some well-known formats explicitly allow leap seconds. We don't currently support them,
-<a href=#1112 id=1112 data-nosnippet>1112</a>        // so treat it as the nearest preceding moment that can be represented. Because leap seconds
-<a href=#1113 id=1113 data-nosnippet>1113</a>        // always fall at the end of a month UTC, reject any that are at other times.
-<a href=#1114 id=1114 data-nosnippet>1114</a>        </span><span class="kw">let </span>leap_second_input = <span class="kw">if </span>parsed.leap_second_allowed &amp;&amp; parsed.second() == <span class="prelude-val">Some</span>(<span class="number">60</span>) {
-<a href=#1115 id=1115 data-nosnippet>1115</a>            <span class="kw">if </span>parsed.set_second(<span class="number">59</span>).is_none() {
-<a href=#1116 id=1116 data-nosnippet>1116</a>                <span class="macro">bug!</span>(<span class="string">"59 is a valid second"</span>);
-<a href=#1117 id=1117 data-nosnippet>1117</a>            }
-<a href=#1118 id=1118 data-nosnippet>1118</a>            <span class="kw">if </span>parsed.set_subsecond(<span class="number">999_999_999</span>).is_none() {
-<a href=#1119 id=1119 data-nosnippet>1119</a>                <span class="macro">bug!</span>(<span class="string">"999_999_999 is a valid subsecond"</span>);
-<a href=#1120 id=1120 data-nosnippet>1120</a>            }
-<a href=#1121 id=1121 data-nosnippet>1121</a>            <span class="bool-val">true
-<a href=#1122 id=1122 data-nosnippet>1122</a>        </span>} <span class="kw">else </span>{
-<a href=#1123 id=1123 data-nosnippet>1123</a>            <span class="bool-val">false
-<a href=#1124 id=1124 data-nosnippet>1124</a>        </span>};
-<a href=#1125 id=1125 data-nosnippet>1125</a>
-<a href=#1126 id=1126 data-nosnippet>1126</a>        <span class="kw">let </span>dt = OffsetDateTime::new_in_offset(
-<a href=#1127 id=1127 data-nosnippet>1127</a>            Date::try_from(parsed)<span class="question-mark">?</span>,
-<a href=#1128 id=1128 data-nosnippet>1128</a>            Time::try_from(parsed)<span class="question-mark">?</span>,
-<a href=#1129 id=1129 data-nosnippet>1129</a>            utc_offset_try_from_parsed::&lt;<span class="bool-val">false</span>&gt;(parsed)<span class="question-mark">?</span>,
-<a href=#1130 id=1130 data-nosnippet>1130</a>        )
-<a href=#1131 id=1131 data-nosnippet>1131</a>        .to_utc();
-<a href=#1132 id=1132 data-nosnippet>1132</a>
-<a href=#1133 id=1133 data-nosnippet>1133</a>        <span class="kw">if </span>leap_second_input &amp;&amp; !dt.is_valid_leap_second_stand_in() {
-<a href=#1134 id=1134 data-nosnippet>1134</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(error::TryFromParsed::ComponentRange(
-<a href=#1135 id=1135 data-nosnippet>1135</a>                error::ComponentRange {
-<a href=#1136 id=1136 data-nosnippet>1136</a>                    name: <span class="string">"second"</span>,
-<a href=#1137 id=1137 data-nosnippet>1137</a>                    minimum: <span class="number">0</span>,
-<a href=#1138 id=1138 data-nosnippet>1138</a>                    maximum: <span class="number">59</span>,
-<a href=#1139 id=1139 data-nosnippet>1139</a>                    value: <span class="number">60</span>,
-<a href=#1140 id=1140 data-nosnippet>1140</a>                    conditional_message: <span class="prelude-val">Some</span>(<span class="string">"because leap seconds are not supported"</span>),
-<a href=#1141 id=1141 data-nosnippet>1141</a>                },
-<a href=#1142 id=1142 data-nosnippet>1142</a>            ));
+<a href=#1108 id=1108 data-nosnippet>1108</a>            <span class="kw">if </span>parsed.set_subsecond(<span class="number">999_999_999</span>).is_none() {
+<a href=#1109 id=1109 data-nosnippet>1109</a>                <span class="macro">bug!</span>(<span class="string">"999_999_999 is a valid subsecond"</span>);
+<a href=#1110 id=1110 data-nosnippet>1110</a>            }
+<a href=#1111 id=1111 data-nosnippet>1111</a>            <span class="bool-val">true
+<a href=#1112 id=1112 data-nosnippet>1112</a>        </span>} <span class="kw">else </span>{
+<a href=#1113 id=1113 data-nosnippet>1113</a>            <span class="bool-val">false
+<a href=#1114 id=1114 data-nosnippet>1114</a>        </span>};
+<a href=#1115 id=1115 data-nosnippet>1115</a>
+<a href=#1116 id=1116 data-nosnippet>1116</a>        <span class="kw">let </span>dt = OffsetDateTime::new_in_offset(
+<a href=#1117 id=1117 data-nosnippet>1117</a>            Date::try_from(parsed)<span class="question-mark">?</span>,
+<a href=#1118 id=1118 data-nosnippet>1118</a>            Time::try_from(parsed)<span class="question-mark">?</span>,
+<a href=#1119 id=1119 data-nosnippet>1119</a>            utc_offset_try_from_parsed::&lt;<span class="bool-val">false</span>&gt;(parsed)<span class="question-mark">?</span>,
+<a href=#1120 id=1120 data-nosnippet>1120</a>        )
+<a href=#1121 id=1121 data-nosnippet>1121</a>        .to_utc();
+<a href=#1122 id=1122 data-nosnippet>1122</a>
+<a href=#1123 id=1123 data-nosnippet>1123</a>        <span class="kw">if </span>leap_second_input &amp;&amp; !dt.is_valid_leap_second_stand_in() {
+<a href=#1124 id=1124 data-nosnippet>1124</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(error::TryFromParsed::ComponentRange(
+<a href=#1125 id=1125 data-nosnippet>1125</a>                error::ComponentRange::conditional(<span class="string">"second"</span>),
+<a href=#1126 id=1126 data-nosnippet>1126</a>            ));
+<a href=#1127 id=1127 data-nosnippet>1127</a>        }
+<a href=#1128 id=1128 data-nosnippet>1128</a>        <span class="prelude-val">Ok</span>(dt)
+<a href=#1129 id=1129 data-nosnippet>1129</a>    }
+<a href=#1130 id=1130 data-nosnippet>1130</a>}
+<a href=#1131 id=1131 data-nosnippet>1131</a>
+<a href=#1132 id=1132 data-nosnippet>1132</a><span class="kw">impl </span>TryFrom&lt;Parsed&gt; <span class="kw">for </span>OffsetDateTime {
+<a href=#1133 id=1133 data-nosnippet>1133</a>    <span class="kw">type </span>Error = error::TryFromParsed;
+<a href=#1134 id=1134 data-nosnippet>1134</a>
+<a href=#1135 id=1135 data-nosnippet>1135</a>    <span class="attr">#[inline]
+<a href=#1136 id=1136 data-nosnippet>1136</a>    </span><span class="kw">fn </span>try_from(<span class="kw-2">mut </span>parsed: Parsed) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
+<a href=#1137 id=1137 data-nosnippet>1137</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(timestamp) = parsed.unix_timestamp_nanos() {
+<a href=#1138 id=1138 data-nosnippet>1138</a>            <span class="kw">let </span><span class="kw-2">mut </span>value = <span class="self">Self</span>::from_unix_timestamp_nanos(timestamp)<span class="question-mark">?</span>;
+<a href=#1139 id=1139 data-nosnippet>1139</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(subsecond) = parsed.subsecond() {
+<a href=#1140 id=1140 data-nosnippet>1140</a>                value = value.replace_nanosecond(subsecond)<span class="question-mark">?</span>;
+<a href=#1141 id=1141 data-nosnippet>1141</a>            }
+<a href=#1142 id=1142 data-nosnippet>1142</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(value);
 <a href=#1143 id=1143 data-nosnippet>1143</a>        }
-<a href=#1144 id=1144 data-nosnippet>1144</a>        <span class="prelude-val">Ok</span>(dt)
-<a href=#1145 id=1145 data-nosnippet>1145</a>    }
-<a href=#1146 id=1146 data-nosnippet>1146</a>}
-<a href=#1147 id=1147 data-nosnippet>1147</a>
-<a href=#1148 id=1148 data-nosnippet>1148</a><span class="kw">impl </span>TryFrom&lt;Parsed&gt; <span class="kw">for </span>OffsetDateTime {
-<a href=#1149 id=1149 data-nosnippet>1149</a>    <span class="kw">type </span>Error = error::TryFromParsed;
-<a href=#1150 id=1150 data-nosnippet>1150</a>
-<a href=#1151 id=1151 data-nosnippet>1151</a>    <span class="attr">#[inline]
-<a href=#1152 id=1152 data-nosnippet>1152</a>    </span><span class="kw">fn </span>try_from(<span class="kw-2">mut </span>parsed: Parsed) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, <span class="self">Self</span>::Error&gt; {
-<a href=#1153 id=1153 data-nosnippet>1153</a>        <span class="kw">if let </span><span class="prelude-val">Some</span>(timestamp) = parsed.unix_timestamp_nanos() {
-<a href=#1154 id=1154 data-nosnippet>1154</a>            <span class="kw">let </span><span class="kw-2">mut </span>value = <span class="self">Self</span>::from_unix_timestamp_nanos(timestamp)<span class="question-mark">?</span>;
-<a href=#1155 id=1155 data-nosnippet>1155</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(subsecond) = parsed.subsecond() {
-<a href=#1156 id=1156 data-nosnippet>1156</a>                value = value.replace_nanosecond(subsecond)<span class="question-mark">?</span>;
-<a href=#1157 id=1157 data-nosnippet>1157</a>            }
-<a href=#1158 id=1158 data-nosnippet>1158</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(value);
-<a href=#1159 id=1159 data-nosnippet>1159</a>        }
-<a href=#1160 id=1160 data-nosnippet>1160</a>
-<a href=#1161 id=1161 data-nosnippet>1161</a>        <span class="comment">// Some well-known formats explicitly allow leap seconds. We don't currently support them,
-<a href=#1162 id=1162 data-nosnippet>1162</a>        // so treat it as the nearest preceding moment that can be represented. Because leap seconds
-<a href=#1163 id=1163 data-nosnippet>1163</a>        // always fall at the end of a month UTC, reject any that are at other times.
-<a href=#1164 id=1164 data-nosnippet>1164</a>        </span><span class="kw">let </span>leap_second_input = <span class="kw">if </span>parsed.leap_second_allowed &amp;&amp; parsed.second() == <span class="prelude-val">Some</span>(<span class="number">60</span>) {
-<a href=#1165 id=1165 data-nosnippet>1165</a>            <span class="kw">if </span>parsed.set_second(<span class="number">59</span>).is_none() {
-<a href=#1166 id=1166 data-nosnippet>1166</a>                <span class="macro">bug!</span>(<span class="string">"59 is a valid second"</span>);
-<a href=#1167 id=1167 data-nosnippet>1167</a>            }
-<a href=#1168 id=1168 data-nosnippet>1168</a>            <span class="kw">if </span>parsed.set_subsecond(<span class="number">999_999_999</span>).is_none() {
-<a href=#1169 id=1169 data-nosnippet>1169</a>                <span class="macro">bug!</span>(<span class="string">"999_999_999 is a valid subsecond"</span>);
-<a href=#1170 id=1170 data-nosnippet>1170</a>            }
-<a href=#1171 id=1171 data-nosnippet>1171</a>            <span class="bool-val">true
-<a href=#1172 id=1172 data-nosnippet>1172</a>        </span>} <span class="kw">else </span>{
-<a href=#1173 id=1173 data-nosnippet>1173</a>            <span class="bool-val">false
-<a href=#1174 id=1174 data-nosnippet>1174</a>        </span>};
-<a href=#1175 id=1175 data-nosnippet>1175</a>
-<a href=#1176 id=1176 data-nosnippet>1176</a>        <span class="kw">let </span>dt = <span class="self">Self</span>::new_in_offset(
-<a href=#1177 id=1177 data-nosnippet>1177</a>            Date::try_from(parsed)<span class="question-mark">?</span>,
-<a href=#1178 id=1178 data-nosnippet>1178</a>            Time::try_from(parsed)<span class="question-mark">?</span>,
-<a href=#1179 id=1179 data-nosnippet>1179</a>            UtcOffset::try_from(parsed)<span class="question-mark">?</span>,
-<a href=#1180 id=1180 data-nosnippet>1180</a>        );
-<a href=#1181 id=1181 data-nosnippet>1181</a>
-<a href=#1182 id=1182 data-nosnippet>1182</a>        <span class="kw">if </span>leap_second_input &amp;&amp; !dt.is_valid_leap_second_stand_in() {
-<a href=#1183 id=1183 data-nosnippet>1183</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(error::TryFromParsed::ComponentRange(
-<a href=#1184 id=1184 data-nosnippet>1184</a>                error::ComponentRange {
-<a href=#1185 id=1185 data-nosnippet>1185</a>                    name: <span class="string">"second"</span>,
-<a href=#1186 id=1186 data-nosnippet>1186</a>                    minimum: <span class="number">0</span>,
-<a href=#1187 id=1187 data-nosnippet>1187</a>                    maximum: <span class="number">59</span>,
-<a href=#1188 id=1188 data-nosnippet>1188</a>                    value: <span class="number">60</span>,
-<a href=#1189 id=1189 data-nosnippet>1189</a>                    conditional_message: <span class="prelude-val">Some</span>(<span class="string">"because leap seconds are not supported"</span>),
-<a href=#1190 id=1190 data-nosnippet>1190</a>                },
-<a href=#1191 id=1191 data-nosnippet>1191</a>            ));
-<a href=#1192 id=1192 data-nosnippet>1192</a>        }
-<a href=#1193 id=1193 data-nosnippet>1193</a>        <span class="prelude-val">Ok</span>(dt)
-<a href=#1194 id=1194 data-nosnippet>1194</a>    }
-<a href=#1195 id=1195 data-nosnippet>1195</a>}
+<a href=#1144 id=1144 data-nosnippet>1144</a>
+<a href=#1145 id=1145 data-nosnippet>1145</a>        <span class="comment">// Some well-known formats explicitly allow leap seconds. We don't currently support them,
+<a href=#1146 id=1146 data-nosnippet>1146</a>        // so treat it as the nearest preceding moment that can be represented. Because leap seconds
+<a href=#1147 id=1147 data-nosnippet>1147</a>        // always fall at the end of a month UTC, reject any that are at other times.
+<a href=#1148 id=1148 data-nosnippet>1148</a>        </span><span class="kw">let </span>leap_second_input = <span class="kw">if </span>parsed.leap_second_allowed &amp;&amp; parsed.second() == <span class="prelude-val">Some</span>(<span class="number">60</span>) {
+<a href=#1149 id=1149 data-nosnippet>1149</a>            <span class="kw">if </span>parsed.set_second(<span class="number">59</span>).is_none() {
+<a href=#1150 id=1150 data-nosnippet>1150</a>                <span class="macro">bug!</span>(<span class="string">"59 is a valid second"</span>);
+<a href=#1151 id=1151 data-nosnippet>1151</a>            }
+<a href=#1152 id=1152 data-nosnippet>1152</a>            <span class="kw">if </span>parsed.set_subsecond(<span class="number">999_999_999</span>).is_none() {
+<a href=#1153 id=1153 data-nosnippet>1153</a>                <span class="macro">bug!</span>(<span class="string">"999_999_999 is a valid subsecond"</span>);
+<a href=#1154 id=1154 data-nosnippet>1154</a>            }
+<a href=#1155 id=1155 data-nosnippet>1155</a>            <span class="bool-val">true
+<a href=#1156 id=1156 data-nosnippet>1156</a>        </span>} <span class="kw">else </span>{
+<a href=#1157 id=1157 data-nosnippet>1157</a>            <span class="bool-val">false
+<a href=#1158 id=1158 data-nosnippet>1158</a>        </span>};
+<a href=#1159 id=1159 data-nosnippet>1159</a>
+<a href=#1160 id=1160 data-nosnippet>1160</a>        <span class="kw">let </span>dt = <span class="self">Self</span>::new_in_offset(
+<a href=#1161 id=1161 data-nosnippet>1161</a>            Date::try_from(parsed)<span class="question-mark">?</span>,
+<a href=#1162 id=1162 data-nosnippet>1162</a>            Time::try_from(parsed)<span class="question-mark">?</span>,
+<a href=#1163 id=1163 data-nosnippet>1163</a>            UtcOffset::try_from(parsed)<span class="question-mark">?</span>,
+<a href=#1164 id=1164 data-nosnippet>1164</a>        );
+<a href=#1165 id=1165 data-nosnippet>1165</a>
+<a href=#1166 id=1166 data-nosnippet>1166</a>        <span class="kw">if </span>leap_second_input &amp;&amp; !dt.is_valid_leap_second_stand_in() {
+<a href=#1167 id=1167 data-nosnippet>1167</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(error::TryFromParsed::ComponentRange(
+<a href=#1168 id=1168 data-nosnippet>1168</a>                error::ComponentRange::conditional(<span class="string">"second"</span>),
+<a href=#1169 id=1169 data-nosnippet>1169</a>            ));
+<a href=#1170 id=1170 data-nosnippet>1170</a>        }
+<a href=#1171 id=1171 data-nosnippet>1171</a>        <span class="prelude-val">Ok</span>(dt)
+<a href=#1172 id=1172 data-nosnippet>1172</a>    }
+<a href=#1173 id=1173 data-nosnippet>1173</a>}
 </code></pre></div></section></main></body></html>
