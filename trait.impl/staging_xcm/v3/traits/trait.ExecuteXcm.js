@@ -1,9 +1,9 @@
 (function() {
-    var implementors = Object.fromEntries([["staging_xcm",[]]]);
+    const implementors = Object.fromEntries([["staging_xcm",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":57,"fragment_lengths":[18]}
+//{"start":59,"fragment_lengths":[18]}

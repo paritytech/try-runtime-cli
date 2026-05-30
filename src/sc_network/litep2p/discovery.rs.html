@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/client/network/src/litep2p/discovery.rs`."><title>discovery.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_network/litep2p/</div>discovery.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/client/network/src/litep2p/discovery.rs`."><title>discovery.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_network" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sc_network/litep2p/</div>discovery.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -18,7 +18,7 @@
 <a href=#18 id=18 data-nosnippet>18</a>
 <a href=#19 id=19 data-nosnippet>19</a></span><span class="doccomment">//! libp2p-related discovery code for litep2p backend.
 <a href=#20 id=20 data-nosnippet>20</a>
-<a href=#21 id=21 data-nosnippet>21</a></span><span class="kw">use crate</span>::{
+<a href=#21 id=21 data-nosnippet>21</a></span><span class="kw">use </span>crate::{
 <a href=#22 id=22 data-nosnippet>22</a>	config::{
 <a href=#23 id=23 data-nosnippet>23</a>		NetworkConfiguration, ProtocolId, KADEMLIA_MAX_PROVIDER_KEYS, KADEMLIA_PROVIDER_RECORD_TTL,
 <a href=#24 id=24 data-nosnippet>24</a>		KADEMLIA_PROVIDER_REPUBLISH_INTERVAL,
@@ -496,7 +496,7 @@
 <a href=#496 id=496 data-nosnippet>496</a>				(<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; <span class="kw">return </span><span class="bool-val">true</span>,
 <a href=#497 id=497 data-nosnippet>497</a>				(<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(Protocol::P2p(<span class="kw">_</span>))) =&gt; <span class="kw">return </span><span class="bool-val">true</span>,
 <a href=#498 id=498 data-nosnippet>498</a>				(<span class="prelude-val">Some</span>(Protocol::P2p(<span class="kw">_</span>)), <span class="prelude-val">None</span>) =&gt; <span class="kw">return </span><span class="bool-val">true</span>,
-<a href=#499 id=499 data-nosnippet>499</a>				(known, observed) <span class="kw">if </span><span class="macro">known !</span>= observed =&gt; <span class="kw">return </span><span class="bool-val">false</span>,
+<a href=#499 id=499 data-nosnippet>499</a>				(known, observed) <span class="kw">if </span>known != observed =&gt; <span class="kw">return </span><span class="bool-val">false</span>,
 <a href=#500 id=500 data-nosnippet>500</a>				<span class="kw">_ </span>=&gt; {},
 <a href=#501 id=501 data-nosnippet>501</a>			}
 <a href=#502 id=502 data-nosnippet>502</a>		}
@@ -733,7 +733,7 @@
 <a href=#733 id=733 data-nosnippet>733</a>			})) =&gt; {
 <a href=#734 id=734 data-nosnippet>734</a>				<span class="kw">let </span>observed_address =
 <a href=#735 id=735 data-nosnippet>735</a>					<span class="kw">if let </span><span class="prelude-val">Some</span>(Protocol::P2p(peer_id)) = observed_address.iter().last() {
-<a href=#736 id=736 data-nosnippet>736</a>						<span class="kw">if </span><span class="macro">peer_id !</span>= <span class="kw-2">*</span>this.local_peer_id.as_ref() {
+<a href=#736 id=736 data-nosnippet>736</a>						<span class="kw">if </span>peer_id != <span class="kw-2">*</span>this.local_peer_id.as_ref() {
 <a href=#737 id=737 data-nosnippet>737</a>							<span class="macro">log::warn!</span>(
 <a href=#738 id=738 data-nosnippet>738</a>								target: LOG_TARGET,
 <a href=#739 id=739 data-nosnippet>739</a>								<span class="string">"Discovered external address for a peer that is not us: {observed_address}"</span>,
@@ -800,11 +800,11 @@
 <a href=#800 id=800 data-nosnippet>800</a>
 <a href=#801 id=801 data-nosnippet>801</a><span class="attr">#[cfg(test)]
 <a href=#802 id=802 data-nosnippet>802</a></span><span class="kw">mod </span>tests {
-<a href=#803 id=803 data-nosnippet>803</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#803 id=803 data-nosnippet>803</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#804 id=804 data-nosnippet>804</a>
 <a href=#805 id=805 data-nosnippet>805</a>	<span class="kw">use </span>std::sync::atomic::AtomicU32;
 <a href=#806 id=806 data-nosnippet>806</a>
-<a href=#807 id=807 data-nosnippet>807</a>	<span class="kw">use crate</span>::{
+<a href=#807 id=807 data-nosnippet>807</a>	<span class="kw">use </span>crate::{
 <a href=#808 id=808 data-nosnippet>808</a>		config::ProtocolId,
 <a href=#809 id=809 data-nosnippet>809</a>		peer_store::{PeerStore, PeerStoreProvider},
 <a href=#810 id=810 data-nosnippet>810</a>	};
@@ -907,7 +907,7 @@
 <a href=#907 id=907 data-nosnippet>907</a>			<span class="kw">let </span>future = <span class="kw">async move </span>{
 <a href=#908 id=908 data-nosnippet>908</a>				<span class="macro">log::info!</span>(target: LOG_TARGET, <span class="string">"{peer_id:?} starting loop"</span>);
 <a href=#909 id=909 data-nosnippet>909</a>
-<a href=#910 id=910 data-nosnippet>910</a>				<span class="kw">if </span><span class="macro">peer_id !</span>= first_peer {
+<a href=#910 id=910 data-nosnippet>910</a>				<span class="kw">if </span>peer_id != first_peer {
 <a href=#911 id=911 data-nosnippet>911</a>					<span class="macro">log::info!</span>(target: LOG_TARGET, <span class="string">"{peer_id:?} dialing {first_peer:?}"</span>);
 <a href=#912 id=912 data-nosnippet>912</a>					litep2p.dial(<span class="kw-2">&amp;</span>first_peer).<span class="kw">await</span>.unwrap();
 <a href=#913 id=913 data-nosnippet>913</a>				}

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustls-webpki-0.103.9/src/der.rs`."><title>der.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="webpki" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">webpki/</div>der.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2015 Brian Smith.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustls-webpki-0.103.9/src/der.rs`."><title>der.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="webpki" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">webpki/</div>der.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2015 Brian Smith.
 <a href=#2 id=2 data-nosnippet>2</a>//
 <a href=#3 id=3 data-nosnippet>3</a>// Permission to use, copy, modify, and/or distribute this software for any
 <a href=#4 id=4 data-nosnippet>4</a>// purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
 <a href=#16 id=16 data-nosnippet>16</a></span><span class="kw">use </span>alloc::vec::Vec;
 <a href=#17 id=17 data-nosnippet>17</a><span class="kw">use </span>core::marker::PhantomData;
 <a href=#18 id=18 data-nosnippet>18</a>
-<a href=#19 id=19 data-nosnippet>19</a><span class="kw">use crate</span>::{Error, error::DerTypeId};
+<a href=#19 id=19 data-nosnippet>19</a><span class="kw">use </span>crate::{Error, error::DerTypeId};
 <a href=#20 id=20 data-nosnippet>20</a>
 <a href=#21 id=21 data-nosnippet>21</a><span class="doccomment">/// Iterator to parse a sequence of DER-encoded values of type `T`.
 <a href=#22 id=22 data-nosnippet>22</a></span><span class="attr">#[derive(Debug)]
@@ -241,7 +241,7 @@
 <a href=#241 id=241 data-nosnippet>241</a>        // This will determine the smallest number of bytes we need to encode the length
 <a href=#242 id=242 data-nosnippet>242</a>        </span><span class="kw">let </span>leading_zero_bytes = size
 <a href=#243 id=243 data-nosnippet>243</a>            .iter()
-<a href=#244 id=244 data-nosnippet>244</a>            .position(|<span class="kw-2">&amp;</span>byte| <span class="macro">byte !</span>= <span class="number">0</span>)
+<a href=#244 id=244 data-nosnippet>244</a>            .position(|<span class="kw-2">&amp;</span>byte| byte != <span class="number">0</span>)
 <a href=#245 id=245 data-nosnippet>245</a>            .unwrap_or(size.len());
 <a href=#246 id=246 data-nosnippet>246</a>        <span class="macro">assert!</span>(leading_zero_bytes &lt; size.len());
 <a href=#247 id=247 data-nosnippet>247</a>        <span class="comment">// Number of bytes used - number of not needed bytes = smallest number needed
@@ -338,7 +338,7 @@
 <a href=#338 id=338 data-nosnippet>338</a>        Error::TrailingData(DerTypeId::BitString),
 <a href=#339 id=339 data-nosnippet>339</a>        |value| {
 <a href=#340 id=340 data-nosnippet>340</a>            <span class="kw">let </span>unused_bits_at_end = value.read_byte().map_err(|<span class="kw">_</span>| Error::BadDer)<span class="question-mark">?</span>;
-<a href=#341 id=341 data-nosnippet>341</a>            <span class="kw">if </span><span class="macro">unused_bits_at_end !</span>= <span class="number">0 </span>{
+<a href=#341 id=341 data-nosnippet>341</a>            <span class="kw">if </span>unused_bits_at_end != <span class="number">0 </span>{
 <a href=#342 id=342 data-nosnippet>342</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(Error::BadDer);
 <a href=#343 id=343 data-nosnippet>343</a>            }
 <a href=#344 id=344 data-nosnippet>344</a>            <span class="prelude-val">Ok</span>(value.read_bytes_to_end())
@@ -381,7 +381,7 @@
 <a href=#381 id=381 data-nosnippet>381</a>
 <a href=#382 id=382 data-nosnippet>382</a>        <span class="comment">// It's illegal to have more than 7 bits of padding. Similarly, if the raw bitflags
 <a href=#383 id=383 data-nosnippet>383</a>        // are empty there should be no padding.
-<a href=#384 id=384 data-nosnippet>384</a>        </span><span class="kw">if </span>padding_bits &gt; <span class="number">7 </span>|| (raw_bits.is_empty() &amp;&amp; <span class="macro">padding_bits !</span>= <span class="number">0</span>) {
+<a href=#384 id=384 data-nosnippet>384</a>        </span><span class="kw">if </span>padding_bits &gt; <span class="number">7 </span>|| (raw_bits.is_empty() &amp;&amp; padding_bits != <span class="number">0</span>) {
 <a href=#385 id=385 data-nosnippet>385</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::BadDer);
 <a href=#386 id=386 data-nosnippet>386</a>        }
 <a href=#387 id=387 data-nosnippet>387</a>
@@ -533,7 +533,7 @@
 <a href=#533 id=533 data-nosnippet>533</a>
 <a href=#534 id=534 data-nosnippet>534</a>    <span class="attr">#[test]
 <a href=#535 id=535 data-nosnippet>535</a>    </span><span class="kw">fn </span>test_optional_boolean() {
-<a href=#536 id=536 data-nosnippet>536</a>        <span class="kw">use super</span>::{Error, FromDer};
+<a href=#536 id=536 data-nosnippet>536</a>        <span class="kw">use </span>super::{Error, FromDer};
 <a href=#537 id=537 data-nosnippet>537</a>
 <a href=#538 id=538 data-nosnippet>538</a>        <span class="comment">// Empty input results in false
 <a href=#539 id=539 data-nosnippet>539</a>        </span><span class="macro">assert!</span>(!bool::from_der(<span class="kw-2">&amp;mut </span>bytes_reader(<span class="kw-2">&amp;</span>[])).unwrap());
@@ -556,7 +556,7 @@
 <a href=#556 id=556 data-nosnippet>556</a>
 <a href=#557 id=557 data-nosnippet>557</a>    <span class="attr">#[test]
 <a href=#558 id=558 data-nosnippet>558</a>    </span><span class="kw">fn </span>test_bit_string_with_no_unused_bits() {
-<a href=#559 id=559 data-nosnippet>559</a>        <span class="kw">use super</span>::{Error, bit_string_with_no_unused_bits};
+<a href=#559 id=559 data-nosnippet>559</a>        <span class="kw">use </span>super::{Error, bit_string_with_no_unused_bits};
 <a href=#560 id=560 data-nosnippet>560</a>
 <a href=#561 id=561 data-nosnippet>561</a>        <span class="comment">// Unexpected type
 <a href=#562 id=562 data-nosnippet>562</a>        </span><span class="macro">assert_eq!</span>(
@@ -598,7 +598,7 @@
 <a href=#598 id=598 data-nosnippet>598</a>
 <a href=#599 id=599 data-nosnippet>599</a>    <span class="attr">#[test]
 <a href=#600 id=600 data-nosnippet>600</a>    </span><span class="kw">fn </span>read_tag_and_get_value_default_limit() {
-<a href=#601 id=601 data-nosnippet>601</a>        <span class="kw">use super</span>::{Error, read_tag_and_get_value};
+<a href=#601 id=601 data-nosnippet>601</a>        <span class="kw">use </span>super::{Error, read_tag_and_get_value};
 <a href=#602 id=602 data-nosnippet>602</a>
 <a href=#603 id=603 data-nosnippet>603</a>        <span class="kw">let </span>inputs = <span class="kw-2">&amp;</span>[
 <a href=#604 id=604 data-nosnippet>604</a>            <span class="comment">// DER with short-form length encoded as three bytes.
@@ -620,7 +620,7 @@
 <a href=#620 id=620 data-nosnippet>620</a>
 <a href=#621 id=621 data-nosnippet>621</a>    <span class="attr">#[test]
 <a href=#622 id=622 data-nosnippet>622</a>    </span><span class="kw">fn </span>read_tag_and_get_value_limited_high_form() {
-<a href=#623 id=623 data-nosnippet>623</a>        <span class="kw">use super</span>::{Error, LONG_FORM_LEN_TWO_BYTES_MAX, read_tag_and_get_value_limited};
+<a href=#623 id=623 data-nosnippet>623</a>        <span class="kw">use </span>super::{Error, LONG_FORM_LEN_TWO_BYTES_MAX, read_tag_and_get_value_limited};
 <a href=#624 id=624 data-nosnippet>624</a>
 <a href=#625 id=625 data-nosnippet>625</a>        <span class="kw">let </span><span class="kw-2">mut </span>bytes = untrusted::Reader::new(untrusted::Input::from(<span class="kw-2">&amp;</span>[<span class="number">0xFF</span>]));
 <a href=#626 id=626 data-nosnippet>626</a>        <span class="comment">// read_tag_and_get_value_limited_high_form should reject DER with "high tag number form" tags.
@@ -632,7 +632,7 @@
 <a href=#632 id=632 data-nosnippet>632</a>
 <a href=#633 id=633 data-nosnippet>633</a>    <span class="attr">#[test]
 <a href=#634 id=634 data-nosnippet>634</a>    </span><span class="kw">fn </span>read_tag_and_get_value_limited_non_canonical() {
-<a href=#635 id=635 data-nosnippet>635</a>        <span class="kw">use super</span>::{Error, LONG_FORM_LEN_TWO_BYTES_MAX, read_tag_and_get_value_limited};
+<a href=#635 id=635 data-nosnippet>635</a>        <span class="kw">use </span>super::{Error, LONG_FORM_LEN_TWO_BYTES_MAX, read_tag_and_get_value_limited};
 <a href=#636 id=636 data-nosnippet>636</a>
 <a href=#637 id=637 data-nosnippet>637</a>        <span class="kw">let </span>inputs = <span class="kw-2">&amp;</span>[
 <a href=#638 id=638 data-nosnippet>638</a>            <span class="comment">// Two byte length, with expressed length &lt; 128.
@@ -658,7 +658,7 @@
 <a href=#658 id=658 data-nosnippet>658</a>    <span class="attr">#[test]
 <a href=#659 id=659 data-nosnippet>659</a>    #[cfg(feature = <span class="string">"alloc"</span>)]
 <a href=#660 id=660 data-nosnippet>660</a>    </span><span class="kw">fn </span>read_tag_and_get_value_limited_limits() {
-<a href=#661 id=661 data-nosnippet>661</a>        <span class="kw">use super</span>::{Error, read_tag_and_get_value_limited};
+<a href=#661 id=661 data-nosnippet>661</a>        <span class="kw">use </span>super::{Error, read_tag_and_get_value_limited};
 <a href=#662 id=662 data-nosnippet>662</a>
 <a href=#663 id=663 data-nosnippet>663</a>        <span class="kw">let </span>short_input = <span class="kw-2">&amp;</span>[<span class="number">0xFF</span>];
 <a href=#664 id=664 data-nosnippet>664</a>        <span class="kw">let </span>short_input_encoded = <span class="kw-2">&amp;</span>[
@@ -746,7 +746,7 @@
 <a href=#746 id=746 data-nosnippet>746</a>
 <a href=#747 id=747 data-nosnippet>747</a>    <span class="attr">#[test]
 <a href=#748 id=748 data-nosnippet>748</a>    </span><span class="kw">fn </span>misencoded_bit_string_flags() {
-<a href=#749 id=749 data-nosnippet>749</a>        <span class="kw">use super</span>::{Error, bit_string_flags};
+<a href=#749 id=749 data-nosnippet>749</a>        <span class="kw">use </span>super::{Error, bit_string_flags};
 <a href=#750 id=750 data-nosnippet>750</a>
 <a href=#751 id=751 data-nosnippet>751</a>        <span class="kw">let </span>bad_padding_example = untrusted::Input::from(<span class="kw-2">&amp;</span>[
 <a href=#752 id=752 data-nosnippet>752</a>            <span class="number">0x08</span>, <span class="comment">// 8 bit of padding (illegal!).
@@ -793,7 +793,7 @@
 <a href=#793 id=793 data-nosnippet>793</a>
 <a href=#794 id=794 data-nosnippet>794</a>    <span class="attr">#[test]
 <a href=#795 id=795 data-nosnippet>795</a>    </span><span class="kw">fn </span>test_small_nonnegative_integer() {
-<a href=#796 id=796 data-nosnippet>796</a>        <span class="kw">use super</span>::{Error, FromDer, Tag};
+<a href=#796 id=796 data-nosnippet>796</a>        <span class="kw">use </span>super::{Error, FromDer, Tag};
 <a href=#797 id=797 data-nosnippet>797</a>
 <a href=#798 id=798 data-nosnippet>798</a>        <span class="kw">for </span>value <span class="kw">in </span><span class="number">0</span>..=<span class="number">127 </span>{
 <a href=#799 id=799 data-nosnippet>799</a>            <span class="kw">let </span>data = [Tag::Integer.into(), <span class="number">1</span>, value];

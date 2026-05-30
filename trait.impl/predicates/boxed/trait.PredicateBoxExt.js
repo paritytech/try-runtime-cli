@@ -1,9 +1,9 @@
 (function() {
-    var implementors = Object.fromEntries([["mockall",[]],["predicates",[]]]);
+    const implementors = Object.fromEntries([["mockall",[]],["predicates",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":57,"fragment_lengths":[14,18]}
+//{"start":59,"fragment_lengths":[14,18]}

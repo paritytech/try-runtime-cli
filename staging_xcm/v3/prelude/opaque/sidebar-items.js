@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["Weight"]};
+window.SIDEBAR_ITEMS = {"enum":["AssetId","AssetInstance","Fungibility","Junction","Junctions","MultiAssetFilter","NetworkId","WildFungibility","WildMultiAsset"],"struct":["Weight"]};

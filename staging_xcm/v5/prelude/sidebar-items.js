@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["opaque"],"struct":["Weight"]};
+window.SIDEBAR_ITEMS = {"enum":["AssetFilter","AssetInstance","Fungibility","Junction","Junctions","NetworkId","WildAsset","WildFungibility"],"mod":["opaque"],"struct":["Weight"]};

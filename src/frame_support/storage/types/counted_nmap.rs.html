@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/frame/support/src/storage/types/counted_nmap.rs`."><title>counted_nmap.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/types/</div>counted_nmap.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/frame/support/src/storage/types/counted_nmap.rs`."><title>counted_nmap.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/types/</div>counted_nmap.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -17,7 +17,7 @@
 <a href=#17 id=17 data-nosnippet>17</a>
 <a href=#18 id=18 data-nosnippet>18</a></span><span class="doccomment">//! Counted storage n-map type.
 <a href=#19 id=19 data-nosnippet>19</a>
-<a href=#20 id=20 data-nosnippet>20</a></span><span class="kw">use crate</span>::{
+<a href=#20 id=20 data-nosnippet>20</a></span><span class="kw">use </span>crate::{
 <a href=#21 id=21 data-nosnippet>21</a>	storage::{
 <a href=#22 id=22 data-nosnippet>22</a>		types::{
 <a href=#23 id=23 data-nosnippet>23</a>			EncodeLikeTuple, HasKeyPrefix, HasReversibleKeyPrefix, OptionQuery, QueryKindTrait,
@@ -290,7 +290,7 @@
 <a href=#290 id=290 data-nosnippet>290</a>		</span>KArg: EncodeLikeTuple&lt;Key::KArg&gt; + TupleToEncodedIter,
 <a href=#291 id=291 data-nosnippet>291</a>		F: FnOnce(<span class="kw-2">&amp;mut </span>QueryKind::Query) -&gt; R,
 <a href=#292 id=292 data-nosnippet>292</a>	{
-<a href=#293 id=293 data-nosnippet>293</a>		<span class="self">Self</span>::try_mutate(key, |v| <span class="prelude-val">Ok</span>::&lt;R, Never&gt;(f(v)))
+<a href=#293 id=293 data-nosnippet>293</a>		<span class="self">Self</span>::try_mutate(key, |v| Ok::&lt;R, Never&gt;(f(v)))
 <a href=#294 id=294 data-nosnippet>294</a>			.expect(<span class="string">"`Never` can not be constructed; qed"</span>)
 <a href=#295 id=295 data-nosnippet>295</a>	}
 <a href=#296 id=296 data-nosnippet>296</a>
@@ -316,7 +316,7 @@
 <a href=#316 id=316 data-nosnippet>316</a>		</span>KArg: EncodeLikeTuple&lt;Key::KArg&gt; + TupleToEncodedIter,
 <a href=#317 id=317 data-nosnippet>317</a>		F: FnOnce(<span class="kw-2">&amp;mut </span><span class="prelude-ty">Option</span>&lt;Value&gt;) -&gt; R,
 <a href=#318 id=318 data-nosnippet>318</a>	{
-<a href=#319 id=319 data-nosnippet>319</a>		<span class="self">Self</span>::try_mutate_exists(key, |v| <span class="prelude-val">Ok</span>::&lt;R, Never&gt;(f(v)))
+<a href=#319 id=319 data-nosnippet>319</a>		<span class="self">Self</span>::try_mutate_exists(key, |v| Ok::&lt;R, Never&gt;(f(v)))
 <a href=#320 id=320 data-nosnippet>320</a>			.expect(<span class="string">"`Never` can not be constructed; qed"</span>)
 <a href=#321 id=321 data-nosnippet>321</a>	}
 <a href=#322 id=322 data-nosnippet>322</a>
@@ -683,8 +683,8 @@
 <a href=#683 id=683 data-nosnippet>683</a>
 <a href=#684 id=684 data-nosnippet>684</a><span class="attr">#[cfg(test)]
 <a href=#685 id=685 data-nosnippet>685</a></span><span class="kw">mod </span>test {
-<a href=#686 id=686 data-nosnippet>686</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
-<a href=#687 id=687 data-nosnippet>687</a>	<span class="kw">use crate</span>::{
+<a href=#686 id=686 data-nosnippet>686</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#687 id=687 data-nosnippet>687</a>	<span class="kw">use </span>crate::{
 <a href=#688 id=688 data-nosnippet>688</a>		hash::{StorageHasher <span class="kw">as _</span>, <span class="kw-2">*</span>},
 <a href=#689 id=689 data-nosnippet>689</a>		storage::types::{Key <span class="kw">as </span>NMapKey, ValueQuery},
 <a href=#690 id=690 data-nosnippet>690</a>	};
@@ -885,7 +885,7 @@
 <a href=#885 id=885 data-nosnippet>885</a>							key: scale_info::meta_type::&lt;u16&gt;(),
 <a href=#886 id=886 data-nosnippet>886</a>							value: scale_info::meta_type::&lt;u32&gt;(),
 <a href=#887 id=887 data-nosnippet>887</a>						},
-<a href=#888 id=888 data-nosnippet>888</a>						default: <span class="prelude-ty">Option</span>::&lt;u32&gt;::None.encode(),
+<a href=#888 id=888 data-nosnippet>888</a>						default: Option::&lt;u32&gt;::None.encode(),
 <a href=#889 id=889 data-nosnippet>889</a>						docs: <span class="macro">vec!</span>[],
 <a href=#890 id=890 data-nosnippet>890</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#891 id=891 data-nosnippet>891</a>					},
@@ -1149,7 +1149,7 @@
 <a href=#1149 id=1149 data-nosnippet>1149</a>							key: scale_info::meta_type::&lt;(u16, u8)&gt;(),
 <a href=#1150 id=1150 data-nosnippet>1150</a>							value: scale_info::meta_type::&lt;u32&gt;(),
 <a href=#1151 id=1151 data-nosnippet>1151</a>						},
-<a href=#1152 id=1152 data-nosnippet>1152</a>						default: <span class="prelude-ty">Option</span>::&lt;u32&gt;::None.encode(),
+<a href=#1152 id=1152 data-nosnippet>1152</a>						default: Option::&lt;u32&gt;::None.encode(),
 <a href=#1153 id=1153 data-nosnippet>1153</a>						docs: <span class="macro">vec!</span>[],
 <a href=#1154 id=1154 data-nosnippet>1154</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1155 id=1155 data-nosnippet>1155</a>					},
@@ -1448,7 +1448,7 @@
 <a href=#1448 id=1448 data-nosnippet>1448</a>							key: scale_info::meta_type::&lt;(u16, u16, u16)&gt;(),
 <a href=#1449 id=1449 data-nosnippet>1449</a>							value: scale_info::meta_type::&lt;u32&gt;(),
 <a href=#1450 id=1450 data-nosnippet>1450</a>						},
-<a href=#1451 id=1451 data-nosnippet>1451</a>						default: <span class="prelude-ty">Option</span>::&lt;u32&gt;::None.encode(),
+<a href=#1451 id=1451 data-nosnippet>1451</a>						default: Option::&lt;u32&gt;::None.encode(),
 <a href=#1452 id=1452 data-nosnippet>1452</a>						docs: <span class="macro">vec!</span>[],
 <a href=#1453 id=1453 data-nosnippet>1453</a>						deprecation_info: sp_metadata_ir::ItemDeprecationInfoIR::NotDeprecated,
 <a href=#1454 id=1454 data-nosnippet>1454</a>					},

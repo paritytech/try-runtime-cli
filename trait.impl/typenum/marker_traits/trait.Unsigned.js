@@ -1,9 +1,9 @@
 (function() {
-    var implementors = Object.fromEntries([["c2_chacha",[]],["cipher",[]],["typenum",[]]]);
+    const implementors = Object.fromEntries([["c2_chacha",[]],["cipher",[]],["typenum",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":57,"fragment_lengths":[16,14,15]}
+//{"start":59,"fragment_lengths":[16,14,15]}

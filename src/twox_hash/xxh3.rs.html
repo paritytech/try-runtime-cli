@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/twox-hash-1.6.3/src/xxh3.rs`."><title>xxh3.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="twox_hash" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">twox_hash/</div>xxh3.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! The in-progress XXH3 algorithm.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/twox-hash-1.6.3/src/xxh3.rs`."><title>xxh3.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="twox_hash" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">twox_hash/</div>xxh3.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! The in-progress XXH3 algorithm.
 <a href=#2 id=2 data-nosnippet>2</a>//!
 <a href=#3 id=3 data-nosnippet>3</a>//! Please read [the notes in original implementation][warning] to
 <a href=#4 id=4 data-nosnippet>4</a>//! learn about when to use these algorithms. Specifically, the
@@ -623,7 +623,7 @@
 <a href=#623 id=623 data-nosnippet>623</a>
 <a href=#624 id=624 data-nosnippet>624</a><span class="attr">#[cfg(target_feature = <span class="string">"avx2"</span>)]
 <a href=#625 id=625 data-nosnippet>625</a></span><span class="kw">mod </span>avx2 {
-<a href=#626 id=626 data-nosnippet>626</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#626 id=626 data-nosnippet>626</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#627 id=627 data-nosnippet>627</a>
 <a href=#628 id=628 data-nosnippet>628</a>    <span class="attr">#[target_feature(enable = <span class="string">"avx2"</span>)]
 <a href=#629 id=629 data-nosnippet>629</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>accumulate512(
@@ -679,7 +679,7 @@
 <a href=#679 id=679 data-nosnippet>679</a>
 <a href=#680 id=680 data-nosnippet>680</a><span class="attr">#[cfg(all(target_feature = <span class="string">"sse2"</span>, not(target_feature = <span class="string">"avx2"</span>)))]
 <a href=#681 id=681 data-nosnippet>681</a></span><span class="kw">mod </span>sse2 {
-<a href=#682 id=682 data-nosnippet>682</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#682 id=682 data-nosnippet>682</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#683 id=683 data-nosnippet>683</a>
 <a href=#684 id=684 data-nosnippet>684</a>    <span class="attr">#[target_feature(enable = <span class="string">"sse2"</span>)]
 <a href=#685 id=685 data-nosnippet>685</a>    #[allow(clippy::cast_ptr_alignment)]
@@ -737,7 +737,7 @@
 <a href=#737 id=737 data-nosnippet>737</a>
 <a href=#738 id=738 data-nosnippet>738</a><span class="attr">#[cfg(not(any(target_feature = <span class="string">"avx2"</span>, target_feature = <span class="string">"sse2"</span>)))]
 <a href=#739 id=739 data-nosnippet>739</a></span><span class="kw">mod </span>generic {
-<a href=#740 id=740 data-nosnippet>740</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#740 id=740 data-nosnippet>740</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#741 id=741 data-nosnippet>741</a>
 <a href=#742 id=742 data-nosnippet>742</a>    <span class="attr">#[inline(always)]
 <a href=#743 id=743 data-nosnippet>743</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>accumulate512(
@@ -1037,7 +1037,7 @@
 <a href=#1037 id=1037 data-nosnippet>1037</a>                <span class="kw-2">&amp;</span><span class="self">self</span>.secret[SECRET_MERGEACCS_START..],
 <a href=#1038 id=1038 data-nosnippet>1038</a>                (<span class="self">self</span>.total_len <span class="kw">as </span>u64).wrapping_mul(PRIME64_1),
 <a href=#1039 id=1039 data-nosnippet>1039</a>            )
-<a href=#1040 id=1040 data-nosnippet>1040</a>        } <span class="kw">else if </span><span class="self">self</span>.<span class="macro">seed !</span>= <span class="number">0 </span>{
+<a href=#1040 id=1040 data-nosnippet>1040</a>        } <span class="kw">else if </span><span class="self">self</span>.seed != <span class="number">0 </span>{
 <a href=#1041 id=1041 data-nosnippet>1041</a>            hash64_with_seed(<span class="kw-2">&amp;</span><span class="self">self</span>.buf, <span class="self">self</span>.seed)
 <a href=#1042 id=1042 data-nosnippet>1042</a>        } <span class="kw">else </span>{
 <a href=#1043 id=1043 data-nosnippet>1043</a>            hash64_with_secret(<span class="kw-2">&amp;</span><span class="self">self</span>.buf, <span class="kw-2">&amp;</span><span class="self">self</span>.secret[..<span class="self">self</span>.secret_limit() + STRIPE_LEN])
@@ -1067,7 +1067,7 @@
 <a href=#1067 id=1067 data-nosnippet>1067</a>            );
 <a href=#1068 id=1068 data-nosnippet>1068</a>
 <a href=#1069 id=1069 data-nosnippet>1069</a>            u128::from(low64) + (u128::from(high64) &lt;&lt; <span class="number">64</span>)
-<a href=#1070 id=1070 data-nosnippet>1070</a>        } <span class="kw">else if </span><span class="self">self</span>.<span class="macro">seed !</span>= <span class="number">0 </span>{
+<a href=#1070 id=1070 data-nosnippet>1070</a>        } <span class="kw">else if </span><span class="self">self</span>.seed != <span class="number">0 </span>{
 <a href=#1071 id=1071 data-nosnippet>1071</a>            hash128_with_seed(<span class="kw-2">&amp;</span><span class="self">self</span>.buf, <span class="self">self</span>.seed)
 <a href=#1072 id=1072 data-nosnippet>1072</a>        } <span class="kw">else </span>{
 <a href=#1073 id=1073 data-nosnippet>1073</a>            hash128_with_secret(<span class="kw-2">&amp;</span><span class="self">self</span>.buf, <span class="kw-2">&amp;</span><span class="self">self</span>.secret[..secret_limit + STRIPE_LEN])
@@ -1347,7 +1347,7 @@
 <a href=#1347 id=1347 data-nosnippet>1347</a></span><span class="kw">mod </span>tests {
 <a href=#1348 id=1348 data-nosnippet>1348</a>    <span class="kw">use </span>alloc::vec;
 <a href=#1349 id=1349 data-nosnippet>1349</a>
-<a href=#1350 id=1350 data-nosnippet>1350</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#1350 id=1350 data-nosnippet>1350</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#1351 id=1351 data-nosnippet>1351</a>
 <a href=#1352 id=1352 data-nosnippet>1352</a>    <span class="kw">const </span>PRIME: u64 = <span class="number">2654435761</span>;
 <a href=#1353 id=1353 data-nosnippet>1353</a>    <span class="kw">const </span>PRIME64: u64 = <span class="number">11400714785074694797</span>;

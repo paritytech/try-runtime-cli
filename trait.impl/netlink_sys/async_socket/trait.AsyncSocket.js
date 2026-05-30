@@ -1,9 +1,9 @@
 (function() {
-    var implementors = Object.fromEntries([["netlink_proto",[]],["netlink_sys",[]]]);
+    const implementors = Object.fromEntries([["netlink_proto",[]],["netlink_sys",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":57,"fragment_lengths":[20,19]}
+//{"start":59,"fragment_lengths":[20,19]}

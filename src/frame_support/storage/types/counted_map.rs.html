@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/frame/support/src/storage/types/counted_map.rs`."><title>counted_map.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/types/</div>counted_map.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/frame/support/src/storage/types/counted_map.rs`."><title>counted_map.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/types/</div>counted_map.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -17,7 +17,7 @@
 <a href=#17 id=17 data-nosnippet>17</a>
 <a href=#18 id=18 data-nosnippet>18</a></span><span class="doccomment">//! Storage counted map type.
 <a href=#19 id=19 data-nosnippet>19</a>
-<a href=#20 id=20 data-nosnippet>20</a></span><span class="kw">use crate</span>::{
+<a href=#20 id=20 data-nosnippet>20</a></span><span class="kw">use </span>crate::{
 <a href=#21 id=21 data-nosnippet>21</a>	storage::{
 <a href=#22 id=22 data-nosnippet>22</a>		generator::StorageMap <span class="kw">as _</span>,
 <a href=#23 id=23 data-nosnippet>23</a>		types::{
@@ -215,7 +215,7 @@
 <a href=#215 id=215 data-nosnippet>215</a>		key: KeyArg,
 <a href=#216 id=216 data-nosnippet>216</a>		f: F,
 <a href=#217 id=217 data-nosnippet>217</a>	) -&gt; R {
-<a href=#218 id=218 data-nosnippet>218</a>		<span class="self">Self</span>::try_mutate(key, |v| <span class="prelude-val">Ok</span>::&lt;R, Never&gt;(f(v)))
+<a href=#218 id=218 data-nosnippet>218</a>		<span class="self">Self</span>::try_mutate(key, |v| Ok::&lt;R, Never&gt;(f(v)))
 <a href=#219 id=219 data-nosnippet>219</a>			.expect(<span class="string">"`Never` can not be constructed; qed"</span>)
 <a href=#220 id=220 data-nosnippet>220</a>	}
 <a href=#221 id=221 data-nosnippet>221</a>
@@ -240,7 +240,7 @@
 <a href=#240 id=240 data-nosnippet>240</a>		key: KeyArg,
 <a href=#241 id=241 data-nosnippet>241</a>		f: F,
 <a href=#242 id=242 data-nosnippet>242</a>	) -&gt; R {
-<a href=#243 id=243 data-nosnippet>243</a>		<span class="self">Self</span>::try_mutate_exists(key, |v| <span class="prelude-val">Ok</span>::&lt;R, Never&gt;(f(v)))
+<a href=#243 id=243 data-nosnippet>243</a>		<span class="self">Self</span>::try_mutate_exists(key, |v| Ok::&lt;R, Never&gt;(f(v)))
 <a href=#244 id=244 data-nosnippet>244</a>			.expect(<span class="string">"`Never` can not be constructed; qed"</span>)
 <a href=#245 id=245 data-nosnippet>245</a>	}
 <a href=#246 id=246 data-nosnippet>246</a>
@@ -563,8 +563,8 @@
 <a href=#563 id=563 data-nosnippet>563</a>
 <a href=#564 id=564 data-nosnippet>564</a><span class="attr">#[cfg(test)]
 <a href=#565 id=565 data-nosnippet>565</a></span><span class="kw">mod </span>test {
-<a href=#566 id=566 data-nosnippet>566</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
-<a href=#567 id=567 data-nosnippet>567</a>	<span class="kw">use crate</span>::{
+<a href=#566 id=566 data-nosnippet>566</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#567 id=567 data-nosnippet>567</a>	<span class="kw">use </span>crate::{
 <a href=#568 id=568 data-nosnippet>568</a>		hash::<span class="kw-2">*</span>,
 <a href=#569 id=569 data-nosnippet>569</a>		storage::{bounded_vec::BoundedVec, types::ValueQuery},
 <a href=#570 id=570 data-nosnippet>570</a>		traits::ConstU32,
@@ -705,7 +705,7 @@
 <a href=#705 id=705 data-nosnippet>705</a>			</span>A::try_mutate(<span class="number">2</span>, |query| {
 <a href=#706 id=706 data-nosnippet>706</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, ADefault::get());
 <a href=#707 id=707 data-nosnippet>707</a>				<span class="kw-2">*</span>query = <span class="number">4</span>;
-<a href=#708 id=708 data-nosnippet>708</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Err(())
+<a href=#708 id=708 data-nosnippet>708</a>				Result::&lt;(), ()&gt;::Err(())
 <a href=#709 id=709 data-nosnippet>709</a>			})
 <a href=#710 id=710 data-nosnippet>710</a>			.err()
 <a href=#711 id=711 data-nosnippet>711</a>			.unwrap();
@@ -717,7 +717,7 @@
 <a href=#717 id=717 data-nosnippet>717</a>			</span>A::try_mutate(<span class="number">2</span>, |query| {
 <a href=#718 id=718 data-nosnippet>718</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, ADefault::get());
 <a href=#719 id=719 data-nosnippet>719</a>				<span class="kw-2">*</span>query = <span class="number">41</span>;
-<a href=#720 id=720 data-nosnippet>720</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Ok(())
+<a href=#720 id=720 data-nosnippet>720</a>				Result::&lt;(), ()&gt;::Ok(())
 <a href=#721 id=721 data-nosnippet>721</a>			})
 <a href=#722 id=722 data-nosnippet>722</a>			.unwrap();
 <a href=#723 id=723 data-nosnippet>723</a>
@@ -728,7 +728,7 @@
 <a href=#728 id=728 data-nosnippet>728</a>			</span>A::try_mutate(<span class="number">2</span>, |query| {
 <a href=#729 id=729 data-nosnippet>729</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, <span class="number">41</span>);
 <a href=#730 id=730 data-nosnippet>730</a>				<span class="kw-2">*</span>query = <span class="number">41</span>;
-<a href=#731 id=731 data-nosnippet>731</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Ok(())
+<a href=#731 id=731 data-nosnippet>731</a>				Result::&lt;(), ()&gt;::Ok(())
 <a href=#732 id=732 data-nosnippet>732</a>			})
 <a href=#733 id=733 data-nosnippet>733</a>			.unwrap();
 <a href=#734 id=734 data-nosnippet>734</a>
@@ -739,7 +739,7 @@
 <a href=#739 id=739 data-nosnippet>739</a>			</span>A::try_mutate_exists(<span class="number">1</span>, |query| {
 <a href=#740 id=740 data-nosnippet>740</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, <span class="prelude-val">None</span>);
 <a href=#741 id=741 data-nosnippet>741</a>				<span class="kw-2">*</span>query = <span class="prelude-val">Some</span>(<span class="number">4</span>);
-<a href=#742 id=742 data-nosnippet>742</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Err(())
+<a href=#742 id=742 data-nosnippet>742</a>				Result::&lt;(), ()&gt;::Err(())
 <a href=#743 id=743 data-nosnippet>743</a>			})
 <a href=#744 id=744 data-nosnippet>744</a>			.err()
 <a href=#745 id=745 data-nosnippet>745</a>			.unwrap();
@@ -751,7 +751,7 @@
 <a href=#751 id=751 data-nosnippet>751</a>			</span>A::try_mutate_exists(<span class="number">1</span>, |query| {
 <a href=#752 id=752 data-nosnippet>752</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, <span class="prelude-val">None</span>);
 <a href=#753 id=753 data-nosnippet>753</a>				<span class="kw-2">*</span>query = <span class="prelude-val">Some</span>(<span class="number">43</span>);
-<a href=#754 id=754 data-nosnippet>754</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Ok(())
+<a href=#754 id=754 data-nosnippet>754</a>				Result::&lt;(), ()&gt;::Ok(())
 <a href=#755 id=755 data-nosnippet>755</a>			})
 <a href=#756 id=756 data-nosnippet>756</a>			.unwrap();
 <a href=#757 id=757 data-nosnippet>757</a>
@@ -762,7 +762,7 @@
 <a href=#762 id=762 data-nosnippet>762</a>			</span>A::try_mutate_exists(<span class="number">1</span>, |query| {
 <a href=#763 id=763 data-nosnippet>763</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, <span class="prelude-val">Some</span>(<span class="number">43</span>));
 <a href=#764 id=764 data-nosnippet>764</a>				<span class="kw-2">*</span>query = <span class="prelude-val">Some</span>(<span class="number">45</span>);
-<a href=#765 id=765 data-nosnippet>765</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Ok(())
+<a href=#765 id=765 data-nosnippet>765</a>				Result::&lt;(), ()&gt;::Ok(())
 <a href=#766 id=766 data-nosnippet>766</a>			})
 <a href=#767 id=767 data-nosnippet>767</a>			.unwrap();
 <a href=#768 id=768 data-nosnippet>768</a>
@@ -773,7 +773,7 @@
 <a href=#773 id=773 data-nosnippet>773</a>			</span>A::try_mutate_exists(<span class="number">1</span>, |query| {
 <a href=#774 id=774 data-nosnippet>774</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, <span class="prelude-val">Some</span>(<span class="number">45</span>));
 <a href=#775 id=775 data-nosnippet>775</a>				<span class="kw-2">*</span>query = <span class="prelude-val">None</span>;
-<a href=#776 id=776 data-nosnippet>776</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Ok(())
+<a href=#776 id=776 data-nosnippet>776</a>				Result::&lt;(), ()&gt;::Ok(())
 <a href=#777 id=777 data-nosnippet>777</a>			})
 <a href=#778 id=778 data-nosnippet>778</a>			.unwrap();
 <a href=#779 id=779 data-nosnippet>779</a>
@@ -939,7 +939,7 @@
 <a href=#939 id=939 data-nosnippet>939</a>			</span>B::try_mutate(<span class="number">2</span>, |query| {
 <a href=#940 id=940 data-nosnippet>940</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, <span class="prelude-val">None</span>);
 <a href=#941 id=941 data-nosnippet>941</a>				<span class="kw-2">*</span>query = <span class="prelude-val">Some</span>(<span class="number">4</span>);
-<a href=#942 id=942 data-nosnippet>942</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Err(())
+<a href=#942 id=942 data-nosnippet>942</a>				Result::&lt;(), ()&gt;::Err(())
 <a href=#943 id=943 data-nosnippet>943</a>			})
 <a href=#944 id=944 data-nosnippet>944</a>			.err()
 <a href=#945 id=945 data-nosnippet>945</a>			.unwrap();
@@ -951,7 +951,7 @@
 <a href=#951 id=951 data-nosnippet>951</a>			</span>B::try_mutate(<span class="number">2</span>, |query| {
 <a href=#952 id=952 data-nosnippet>952</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, <span class="prelude-val">None</span>);
 <a href=#953 id=953 data-nosnippet>953</a>				<span class="kw-2">*</span>query = <span class="prelude-val">Some</span>(<span class="number">41</span>);
-<a href=#954 id=954 data-nosnippet>954</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Ok(())
+<a href=#954 id=954 data-nosnippet>954</a>				Result::&lt;(), ()&gt;::Ok(())
 <a href=#955 id=955 data-nosnippet>955</a>			})
 <a href=#956 id=956 data-nosnippet>956</a>			.unwrap();
 <a href=#957 id=957 data-nosnippet>957</a>
@@ -962,7 +962,7 @@
 <a href=#962 id=962 data-nosnippet>962</a>			</span>B::try_mutate(<span class="number">2</span>, |query| {
 <a href=#963 id=963 data-nosnippet>963</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, <span class="prelude-val">Some</span>(<span class="number">41</span>));
 <a href=#964 id=964 data-nosnippet>964</a>				<span class="kw-2">*</span>query = <span class="prelude-val">Some</span>(<span class="number">41</span>);
-<a href=#965 id=965 data-nosnippet>965</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Ok(())
+<a href=#965 id=965 data-nosnippet>965</a>				Result::&lt;(), ()&gt;::Ok(())
 <a href=#966 id=966 data-nosnippet>966</a>			})
 <a href=#967 id=967 data-nosnippet>967</a>			.unwrap();
 <a href=#968 id=968 data-nosnippet>968</a>
@@ -973,7 +973,7 @@
 <a href=#973 id=973 data-nosnippet>973</a>			</span>B::try_mutate(<span class="number">2</span>, |query| {
 <a href=#974 id=974 data-nosnippet>974</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, <span class="prelude-val">Some</span>(<span class="number">41</span>));
 <a href=#975 id=975 data-nosnippet>975</a>				<span class="kw-2">*</span>query = <span class="prelude-val">None</span>;
-<a href=#976 id=976 data-nosnippet>976</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Ok(())
+<a href=#976 id=976 data-nosnippet>976</a>				Result::&lt;(), ()&gt;::Ok(())
 <a href=#977 id=977 data-nosnippet>977</a>			})
 <a href=#978 id=978 data-nosnippet>978</a>			.unwrap();
 <a href=#979 id=979 data-nosnippet>979</a>
@@ -986,7 +986,7 @@
 <a href=#986 id=986 data-nosnippet>986</a>			</span>B::try_mutate_exists(<span class="number">1</span>, |query| {
 <a href=#987 id=987 data-nosnippet>987</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, <span class="prelude-val">None</span>);
 <a href=#988 id=988 data-nosnippet>988</a>				<span class="kw-2">*</span>query = <span class="prelude-val">Some</span>(<span class="number">4</span>);
-<a href=#989 id=989 data-nosnippet>989</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Err(())
+<a href=#989 id=989 data-nosnippet>989</a>				Result::&lt;(), ()&gt;::Err(())
 <a href=#990 id=990 data-nosnippet>990</a>			})
 <a href=#991 id=991 data-nosnippet>991</a>			.err()
 <a href=#992 id=992 data-nosnippet>992</a>			.unwrap();
@@ -998,7 +998,7 @@
 <a href=#998 id=998 data-nosnippet>998</a>			</span>B::try_mutate_exists(<span class="number">1</span>, |query| {
 <a href=#999 id=999 data-nosnippet>999</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, <span class="prelude-val">None</span>);
 <a href=#1000 id=1000 data-nosnippet>1000</a>				<span class="kw-2">*</span>query = <span class="prelude-val">Some</span>(<span class="number">43</span>);
-<a href=#1001 id=1001 data-nosnippet>1001</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Ok(())
+<a href=#1001 id=1001 data-nosnippet>1001</a>				Result::&lt;(), ()&gt;::Ok(())
 <a href=#1002 id=1002 data-nosnippet>1002</a>			})
 <a href=#1003 id=1003 data-nosnippet>1003</a>			.unwrap();
 <a href=#1004 id=1004 data-nosnippet>1004</a>
@@ -1009,7 +1009,7 @@
 <a href=#1009 id=1009 data-nosnippet>1009</a>			</span>B::try_mutate_exists(<span class="number">1</span>, |query| {
 <a href=#1010 id=1010 data-nosnippet>1010</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, <span class="prelude-val">Some</span>(<span class="number">43</span>));
 <a href=#1011 id=1011 data-nosnippet>1011</a>				<span class="kw-2">*</span>query = <span class="prelude-val">Some</span>(<span class="number">43</span>);
-<a href=#1012 id=1012 data-nosnippet>1012</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Ok(())
+<a href=#1012 id=1012 data-nosnippet>1012</a>				Result::&lt;(), ()&gt;::Ok(())
 <a href=#1013 id=1013 data-nosnippet>1013</a>			})
 <a href=#1014 id=1014 data-nosnippet>1014</a>			.unwrap();
 <a href=#1015 id=1015 data-nosnippet>1015</a>
@@ -1020,7 +1020,7 @@
 <a href=#1020 id=1020 data-nosnippet>1020</a>			</span>B::try_mutate_exists(<span class="number">1</span>, |query| {
 <a href=#1021 id=1021 data-nosnippet>1021</a>				<span class="macro">assert_eq!</span>(<span class="kw-2">*</span>query, <span class="prelude-val">Some</span>(<span class="number">43</span>));
 <a href=#1022 id=1022 data-nosnippet>1022</a>				<span class="kw-2">*</span>query = <span class="prelude-val">None</span>;
-<a href=#1023 id=1023 data-nosnippet>1023</a>				<span class="prelude-ty">Result</span>::&lt;(), ()&gt;::Ok(())
+<a href=#1023 id=1023 data-nosnippet>1023</a>				Result::&lt;(), ()&gt;::Ok(())
 <a href=#1024 id=1024 data-nosnippet>1024</a>			})
 <a href=#1025 id=1025 data-nosnippet>1025</a>			.unwrap();
 <a href=#1026 id=1026 data-nosnippet>1026</a>

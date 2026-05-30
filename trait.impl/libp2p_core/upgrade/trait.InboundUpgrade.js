@@ -1,9 +1,9 @@
 (function() {
-    var implementors = Object.fromEntries([["libp2p",[]],["libp2p_core",[]],["libp2p_swarm",[["impl&lt;T: <a class=\"trait\" href=\"libp2p_swarm/handler/trait.InboundUpgradeSend.html\" title=\"trait libp2p_swarm::handler::InboundUpgradeSend\">InboundUpgradeSend</a>&gt; <a class=\"trait\" href=\"libp2p_core/upgrade/trait.InboundUpgrade.html\" title=\"trait libp2p_core::upgrade::InboundUpgrade\">InboundUpgrade</a>&lt;<a class=\"struct\" href=\"libp2p_swarm/struct.Stream.html\" title=\"struct libp2p_swarm::Stream\">Stream</a>&gt; for <a class=\"struct\" href=\"libp2p_swarm/handler/struct.SendWrapper.html\" title=\"struct libp2p_swarm::handler::SendWrapper\">SendWrapper</a>&lt;T&gt;"]]]]);
+    const implementors = Object.fromEntries([["libp2p",[]],["libp2p_core",[]],["libp2p_swarm",[["impl&lt;T: <a class=\"trait\" href=\"libp2p_swarm/handler/trait.InboundUpgradeSend.html\" title=\"trait libp2p_swarm::handler::InboundUpgradeSend\">InboundUpgradeSend</a>&gt; <a class=\"trait\" href=\"libp2p_core/upgrade/trait.InboundUpgrade.html\" title=\"trait libp2p_core::upgrade::InboundUpgrade\">InboundUpgrade</a>&lt;<a class=\"struct\" href=\"libp2p_swarm/struct.Stream.html\" title=\"struct libp2p_swarm::Stream\">Stream</a>&gt; for <a class=\"struct\" href=\"libp2p_swarm/handler/struct.SendWrapper.html\" title=\"struct libp2p_swarm::handler::SendWrapper\">SendWrapper</a>&lt;T&gt;",0]]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":57,"fragment_lengths":[13,19,616]}
+//{"start":59,"fragment_lengths":[13,19,618]}

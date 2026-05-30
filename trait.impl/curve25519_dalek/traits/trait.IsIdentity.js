@@ -1,9 +1,9 @@
 (function() {
-    var implementors = Object.fromEntries([["curve25519_dalek",[]]]);
+    const implementors = Object.fromEntries([["curve25519_dalek",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":57,"fragment_lengths":[23]}
+//{"start":59,"fragment_lengths":[23]}

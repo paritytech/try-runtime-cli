@@ -1,8 +1,8 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/static_init-1.0.4/src/lazy.rs`."><title>lazy.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="static_init" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">static_init/</div>lazy.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::phase_locker::{
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/static_init-1.0.4/src/lazy.rs`."><title>lazy.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="static_init" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">static_init/</div>lazy.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::phase_locker::{
 <a href=#2 id=2 data-nosnippet>2</a>    SyncPhaseGuard, SyncPhaseLocker, SyncReadPhaseGuard, UnSyncPhaseGuard, UnSyncPhaseLocker,
 <a href=#3 id=3 data-nosnippet>3</a>    UnSyncReadPhaseGuard,
 <a href=#4 id=4 data-nosnippet>4</a>};
-<a href=#5 id=5 data-nosnippet>5</a><span class="kw">use crate</span>::{
+<a href=#5 id=5 data-nosnippet>5</a><span class="kw">use </span>crate::{
 <a href=#6 id=6 data-nosnippet>6</a>    generic_lazy::{
 <a href=#7 id=7 data-nosnippet>7</a>        <span class="self">self</span>, AccessError, DropedUnInited, GenericLazy, GenericLockedLazy, LazyData, LazyPolicy,
 <a href=#8 id=8 data-nosnippet>8</a>        Primed, UnInited,
@@ -14,7 +14,7 @@
 <a href=#14 id=14 data-nosnippet>14</a><span class="attr">#[cfg(feature = <span class="string">"thread_local"</span>)]
 <a href=#15 id=15 data-nosnippet>15</a></span><span class="kw">use </span><span class="kw">crate</span>::exit_sequentializer::ThreadExitSequentializer;
 <a href=#16 id=16 data-nosnippet>16</a>
-<a href=#17 id=17 data-nosnippet>17</a><span class="kw">use crate</span>::{exit_sequentializer::ExitSequentializer, lazy_sequentializer::SyncSequentializer};
+<a href=#17 id=17 data-nosnippet>17</a><span class="kw">use </span>crate::{exit_sequentializer::ExitSequentializer, lazy_sequentializer::SyncSequentializer};
 <a href=#18 id=18 data-nosnippet>18</a>
 <a href=#19 id=19 data-nosnippet>19</a><span class="kw">use </span>core::cell::Cell;
 <a href=#20 id=20 data-nosnippet>20</a><span class="kw">use </span>core::marker::PhantomData;
@@ -535,7 +535,7 @@
 <a href=#535 id=535 data-nosnippet>535</a>        <span class="attr">#[doc=<span class="macro-nonterminal">$doc</span>]
 <a href=#536 id=536 data-nosnippet>536</a>        </span>$(<span class="attr">#[cfg_attr(docsrs,doc(cfg(<span class="macro-nonterminal">$attr</span>)))]</span>)<span class="question-mark">?
 <a href=#537 id=537 data-nosnippet>537</a>        </span><span class="kw">pub struct </span><span class="macro-nonterminal">$tp</span>&lt;T, G = <span class="kw">fn</span>() -&gt; T&gt; {
-<a href=#538 id=538 data-nosnippet>538</a>            __private: GenericLazy&lt;<span class="macro-nonterminal">$data</span>, G, <span class="macro-nonterminal">$man</span>$(::&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;,
+<a href=#538 id=538 data-nosnippet>538</a>            __private: GenericLazy&lt;<span class="macro-nonterminal">$data</span>, G, <span class="macro-nonterminal">$man</span>$(::&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;,
 <a href=#539 id=539 data-nosnippet>539</a>        }
 <a href=#540 id=540 data-nosnippet>540</a>        <span class="kw">impl</span>&lt;T, G&gt; Phased <span class="kw">for </span><span class="macro-nonterminal">$tp</span>&lt;T, G&gt;
 <a href=#541 id=541 data-nosnippet>541</a>        <span class="comment">//where $data: $($static +)? LazyData&lt;Target=T&gt;,
@@ -785,7 +785,7 @@
 <a href=#785 id=785 data-nosnippet>785</a><span class="macro">macro_rules!</span> impl_mut_lazy {
 <a href=#786 id=786 data-nosnippet>786</a>    (<span class="macro-nonterminal">$mod</span>: ident $(:<span class="macro-nonterminal">$extension</span>:ident)<span class="question-mark">?</span>, <span class="macro-nonterminal">$tp</span>:ident, <span class="macro-nonterminal">$man</span>:ident$(&lt;<span class="macro-nonterminal">$x</span>:ident&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$checker</span>:ident, <span class="macro-nonterminal">$data</span>:ty, <span class="macro-nonterminal">$locker</span>:ty, <span class="macro-nonterminal">$gdw</span>: ident, <span class="macro-nonterminal">$gd</span>: ident $(,T: <span class="macro-nonterminal">$tr</span>: ident)<span class="question-mark">?</span>$(,G: <span class="macro-nonterminal">$trg</span>:ident)<span class="question-mark">?</span>, <span class="macro-nonterminal">$doc</span>:literal $(cfg(<span class="macro-nonterminal">$attr</span>:meta))<span class="question-mark">?</span>) =&gt; {
 <a href=#787 id=787 data-nosnippet>787</a>        <span class="kw">pub mod </span><span class="macro-nonterminal">$mod </span>{
-<a href=#788 id=788 data-nosnippet>788</a>            <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#788 id=788 data-nosnippet>788</a>            <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#789 id=789 data-nosnippet>789</a>        <span class="macro">impl_mut_lazy!</span> {@proc <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>,<span class="macro-nonterminal">$checker</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$locker</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>,<span class="macro-nonterminal">$doc </span>$(cfg(<span class="macro-nonterminal">$attr</span>))<span class="question-mark">?</span>}
 <a href=#790 id=790 data-nosnippet>790</a>        <span class="macro">impl_mut_lazy!</span> {@lock <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>}
 <a href=#791 id=791 data-nosnippet>791</a>        <span class="macro">impl_mut_lazy!</span> {@uninited <span class="macro-nonterminal">$tp</span>, <span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$data</span>, <span class="macro-nonterminal">$locker</span>}
@@ -796,7 +796,7 @@
 <a href=#796 id=796 data-nosnippet>796</a>    };
 <a href=#797 id=797 data-nosnippet>797</a>    (<span class="kw">static </span><span class="macro-nonterminal">$mod</span>: ident, <span class="macro-nonterminal">$tp</span>:ident, <span class="macro-nonterminal">$man</span>:ident$(&lt;<span class="macro-nonterminal">$x</span>:ident&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$checker</span>:ident, <span class="macro-nonterminal">$data</span>:ty, <span class="macro-nonterminal">$locker</span>: ty, <span class="macro-nonterminal">$gdw</span>: ident,<span class="macro-nonterminal">$gd</span>:ident  $(,T: <span class="macro-nonterminal">$tr</span>: ident)<span class="question-mark">?</span>$(,G: <span class="macro-nonterminal">$trg</span>:ident)<span class="question-mark">?</span>, <span class="macro-nonterminal">$doc</span>:literal $(cfg(<span class="macro-nonterminal">$attr</span>:meta))<span class="question-mark">?</span>) =&gt; {
 <a href=#798 id=798 data-nosnippet>798</a>        <span class="kw">pub mod </span><span class="macro-nonterminal">$mod </span>{
-<a href=#799 id=799 data-nosnippet>799</a>            <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#799 id=799 data-nosnippet>799</a>            <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#800 id=800 data-nosnippet>800</a>        <span class="macro">impl_mut_lazy!</span> {@proc <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>,<span class="macro-nonterminal">$checker</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$locker</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>,<span class="macro-nonterminal">$doc </span>$(cfg(<span class="macro-nonterminal">$attr</span>))<span class="question-mark">?</span>, <span class="lifetime">'static</span>}
 <a href=#801 id=801 data-nosnippet>801</a>        <span class="macro">impl_mut_lazy!</span> {@lock <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">? </span>, <span class="lifetime">'static</span>}
 <a href=#802 id=802 data-nosnippet>802</a>        <span class="macro">impl_mut_lazy!</span> {@uninited <span class="macro-nonterminal">$tp</span>, <span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$data</span>, <span class="macro-nonterminal">$locker</span>}
@@ -806,7 +806,7 @@
 <a href=#806 id=806 data-nosnippet>806</a>    };
 <a href=#807 id=807 data-nosnippet>807</a>    (const_static <span class="macro-nonterminal">$mod</span>: ident, <span class="macro-nonterminal">$tp</span>:ident, <span class="macro-nonterminal">$man</span>:ident$(&lt;<span class="macro-nonterminal">$x</span>:ident&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$checker</span>:ident, <span class="macro-nonterminal">$data</span>:ty, <span class="macro-nonterminal">$locker</span>: ty, <span class="macro-nonterminal">$gdw</span>: ident,<span class="macro-nonterminal">$gd</span>:ident  $(,T: <span class="macro-nonterminal">$tr</span>: ident)<span class="question-mark">?</span>$(,G: <span class="macro-nonterminal">$trg</span>:ident)<span class="question-mark">?</span>, <span class="macro-nonterminal">$doc</span>:literal $(cfg(<span class="macro-nonterminal">$attr</span>:meta))<span class="question-mark">?</span>) =&gt; {
 <a href=#808 id=808 data-nosnippet>808</a>        <span class="kw">pub mod </span><span class="macro-nonterminal">$mod </span>{
-<a href=#809 id=809 data-nosnippet>809</a>            <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#809 id=809 data-nosnippet>809</a>            <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#810 id=810 data-nosnippet>810</a>        <span class="macro">impl_mut_lazy!</span> {@proc <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>,<span class="macro-nonterminal">$checker</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$locker</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>,<span class="macro-nonterminal">$doc </span>$(cfg(<span class="macro-nonterminal">$attr</span>))<span class="question-mark">?</span>, <span class="lifetime">'static</span>}
 <a href=#811 id=811 data-nosnippet>811</a>        <span class="macro">impl_mut_lazy!</span> {@const_lock <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$checker</span>, <span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">? </span>, <span class="lifetime">'static</span>}
 <a href=#812 id=812 data-nosnippet>812</a>        <span class="macro">impl_mut_lazy!</span> {@prime <span class="macro-nonterminal">$tp</span>, <span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$data</span>, <span class="macro-nonterminal">$locker</span>}
@@ -816,7 +816,7 @@
 <a href=#816 id=816 data-nosnippet>816</a>    };
 <a href=#817 id=817 data-nosnippet>817</a>    (thread_local <span class="macro-nonterminal">$mod</span>: ident $(:<span class="macro-nonterminal">$extension</span>:ident)<span class="question-mark">?</span>, <span class="macro-nonterminal">$tp</span>:ident, <span class="macro-nonterminal">$man</span>:ident$(&lt;<span class="macro-nonterminal">$x</span>:ident&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$checker</span>:ident, <span class="macro-nonterminal">$data</span>:ty,<span class="macro-nonterminal">$locker</span>: ty,  <span class="macro-nonterminal">$gdw</span>: ident,<span class="macro-nonterminal">$gd</span>:ident  $(,T: <span class="macro-nonterminal">$tr</span>: ident)<span class="question-mark">?</span>$(,G: <span class="macro-nonterminal">$trg</span>:ident)<span class="question-mark">?</span>, <span class="macro-nonterminal">$doc</span>:literal $(cfg(<span class="macro-nonterminal">$attr</span>:meta))<span class="question-mark">?</span>) =&gt; {
 <a href=#818 id=818 data-nosnippet>818</a>        <span class="kw">pub mod </span><span class="macro-nonterminal">$mod </span>{
-<a href=#819 id=819 data-nosnippet>819</a>            <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#819 id=819 data-nosnippet>819</a>            <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#820 id=820 data-nosnippet>820</a>        <span class="macro">impl_mut_lazy!</span> {@proc <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>,<span class="macro-nonterminal">$checker</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$locker</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>,<span class="macro-nonterminal">$doc </span>$(cfg(<span class="macro-nonterminal">$attr</span>))<span class="question-mark">?</span>, <span class="kw">unsafe</span>}
 <a href=#821 id=821 data-nosnippet>821</a>        <span class="macro">impl_mut_lazy!</span> {@lock_thread_local <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>}
 <a href=#822 id=822 data-nosnippet>822</a>        <span class="macro">impl_mut_lazy!</span> {@uninited <span class="macro-nonterminal">$tp</span>, <span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$data</span>, <span class="macro-nonterminal">$locker</span>, <span class="kw">unsafe</span>}
@@ -827,7 +827,7 @@
 <a href=#827 id=827 data-nosnippet>827</a>    };
 <a href=#828 id=828 data-nosnippet>828</a>    (global <span class="macro-nonterminal">$mod</span>: ident, <span class="macro-nonterminal">$tp</span>:ident, <span class="macro-nonterminal">$man</span>:ident$(&lt;<span class="macro-nonterminal">$x</span>:ident&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$checker</span>:ident, <span class="macro-nonterminal">$data</span>:ty,<span class="macro-nonterminal">$locker</span>: ty,  <span class="macro-nonterminal">$gdw</span>: ident,<span class="macro-nonterminal">$gd</span>:ident$(,T: <span class="macro-nonterminal">$tr</span>: ident)<span class="question-mark">?</span>$(,G: <span class="macro-nonterminal">$trg</span>:ident)<span class="question-mark">?</span>, <span class="macro-nonterminal">$doc</span>:literal $(cfg(<span class="macro-nonterminal">$attr</span>:meta))<span class="question-mark">?</span>) =&gt; {
 <a href=#829 id=829 data-nosnippet>829</a>        <span class="kw">pub mod </span><span class="macro-nonterminal">$mod </span>{
-<a href=#830 id=830 data-nosnippet>830</a>            <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#830 id=830 data-nosnippet>830</a>            <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#831 id=831 data-nosnippet>831</a>        <span class="macro">impl_mut_lazy!</span> {@proc <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>,<span class="macro-nonterminal">$checker</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$locker</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>,<span class="macro-nonterminal">$doc </span>$(cfg(<span class="macro-nonterminal">$attr</span>))<span class="question-mark">?</span>, <span class="kw">unsafe</span>, <span class="lifetime">'static</span>}
 <a href=#832 id=832 data-nosnippet>832</a>        <span class="macro">impl_mut_lazy!</span> {@lock_global <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$checker</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>}
 <a href=#833 id=833 data-nosnippet>833</a>        <span class="macro">impl_mut_lazy!</span> {@uninited <span class="macro-nonterminal">$tp</span>, <span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$data</span>, <span class="macro-nonterminal">$locker</span>, <span class="kw">unsafe</span>}
@@ -837,7 +837,7 @@
 <a href=#837 id=837 data-nosnippet>837</a>    };
 <a href=#838 id=838 data-nosnippet>838</a>    (primed_static <span class="macro-nonterminal">$mod</span>: ident, <span class="macro-nonterminal">$tp</span>:ident, <span class="macro-nonterminal">$man</span>:ident$(&lt;<span class="macro-nonterminal">$x</span>:ident&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$checker</span>:ident, <span class="macro-nonterminal">$data</span>:ty, <span class="macro-nonterminal">$locker</span>:ty, <span class="macro-nonterminal">$gdw</span>: ident, <span class="macro-nonterminal">$gd</span>: ident $(,T: <span class="macro-nonterminal">$tr</span>: ident)<span class="question-mark">?</span>$(,G: <span class="macro-nonterminal">$trg</span>:ident)<span class="question-mark">?</span>, <span class="macro-nonterminal">$doc</span>:literal $(cfg(<span class="macro-nonterminal">$attr</span>:meta))<span class="question-mark">?</span>) =&gt; {
 <a href=#839 id=839 data-nosnippet>839</a>        <span class="kw">pub mod </span><span class="macro-nonterminal">$mod </span>{
-<a href=#840 id=840 data-nosnippet>840</a>            <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#840 id=840 data-nosnippet>840</a>            <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#841 id=841 data-nosnippet>841</a>        <span class="macro">impl_mut_lazy!</span> {@proc <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>,<span class="macro-nonterminal">$checker</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$locker</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>,<span class="macro-nonterminal">$doc </span>$(cfg(<span class="macro-nonterminal">$attr</span>))<span class="question-mark">?</span>, <span class="lifetime">'static</span>}
 <a href=#842 id=842 data-nosnippet>842</a>        <span class="macro">impl_mut_lazy!</span> {@lock <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>, <span class="lifetime">'static</span>}
 <a href=#843 id=843 data-nosnippet>843</a>        <span class="macro">impl_mut_lazy!</span> {@prime <span class="macro-nonterminal">$tp</span>, <span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$data</span>, <span class="macro-nonterminal">$locker</span>}
@@ -848,7 +848,7 @@
 <a href=#848 id=848 data-nosnippet>848</a>    };
 <a href=#849 id=849 data-nosnippet>849</a>    (global_primed_static <span class="macro-nonterminal">$mod</span>: ident, <span class="macro-nonterminal">$tp</span>:ident, <span class="macro-nonterminal">$man</span>:ident$(&lt;<span class="macro-nonterminal">$x</span>:ident&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$checker</span>:ident, <span class="macro-nonterminal">$data</span>:ty, <span class="macro-nonterminal">$locker</span>:ty, <span class="macro-nonterminal">$gdw</span>: ident, <span class="macro-nonterminal">$gd</span>: ident $(,T: <span class="macro-nonterminal">$tr</span>: ident)<span class="question-mark">?</span>$(,G: <span class="macro-nonterminal">$trg</span>:ident)<span class="question-mark">?</span>, <span class="macro-nonterminal">$doc</span>:literal $(cfg(<span class="macro-nonterminal">$attr</span>:meta))<span class="question-mark">?</span>) =&gt; {
 <a href=#850 id=850 data-nosnippet>850</a>        <span class="kw">pub mod </span><span class="macro-nonterminal">$mod </span>{
-<a href=#851 id=851 data-nosnippet>851</a>            <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#851 id=851 data-nosnippet>851</a>            <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#852 id=852 data-nosnippet>852</a>        <span class="macro">impl_mut_lazy!</span> {@proc <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>,<span class="macro-nonterminal">$checker</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$locker</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>,<span class="macro-nonterminal">$doc </span>$(cfg(<span class="macro-nonterminal">$attr</span>))<span class="question-mark">?</span>, <span class="lifetime">'static</span>}
 <a href=#853 id=853 data-nosnippet>853</a>        <span class="macro">impl_mut_lazy!</span> {@lock_global <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$checker</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>}
 <a href=#854 id=854 data-nosnippet>854</a>        <span class="macro">impl_mut_lazy!</span> {@prime <span class="macro-nonterminal">$tp</span>, <span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$data</span>, <span class="macro-nonterminal">$locker</span>}
@@ -859,7 +859,7 @@
 <a href=#859 id=859 data-nosnippet>859</a>    };
 <a href=#860 id=860 data-nosnippet>860</a>    (primed_thread_local <span class="macro-nonterminal">$mod</span>: ident, <span class="macro-nonterminal">$tp</span>:ident, <span class="macro-nonterminal">$man</span>:ident$(&lt;<span class="macro-nonterminal">$x</span>:ident&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$checker</span>:ident, <span class="macro-nonterminal">$data</span>:ty,<span class="macro-nonterminal">$locker</span>: ty,  <span class="macro-nonterminal">$gdw</span>: ident,<span class="macro-nonterminal">$gd</span>:ident  $(,T: <span class="macro-nonterminal">$tr</span>: ident)<span class="question-mark">?</span>$(,G: <span class="macro-nonterminal">$trg</span>:ident)<span class="question-mark">?</span>, <span class="macro-nonterminal">$doc</span>:literal $(cfg(<span class="macro-nonterminal">$attr</span>:meta))<span class="question-mark">?</span>) =&gt; {
 <a href=#861 id=861 data-nosnippet>861</a>        <span class="kw">pub mod </span><span class="macro-nonterminal">$mod </span>{
-<a href=#862 id=862 data-nosnippet>862</a>            <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#862 id=862 data-nosnippet>862</a>            <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#863 id=863 data-nosnippet>863</a>        <span class="macro">impl_mut_lazy!</span> {@proc <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>,<span class="macro-nonterminal">$checker</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$locker</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>,<span class="macro-nonterminal">$doc </span>$(cfg(<span class="macro-nonterminal">$attr</span>))<span class="question-mark">?</span>, <span class="kw">unsafe</span>}
 <a href=#864 id=864 data-nosnippet>864</a>        <span class="macro">impl_mut_lazy!</span> {@lock_thread_local <span class="macro-nonterminal">$tp</span>,<span class="macro-nonterminal">$data</span>,<span class="macro-nonterminal">$gdw</span>,<span class="macro-nonterminal">$gd</span>$(,T:<span class="macro-nonterminal">$tr</span>)<span class="question-mark">?</span>$(,G:<span class="macro-nonterminal">$trg</span>)<span class="question-mark">?</span>}
 <a href=#865 id=865 data-nosnippet>865</a>        <span class="macro">impl_mut_lazy!</span> {@prime <span class="macro-nonterminal">$tp</span>, <span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$data</span>, <span class="macro-nonterminal">$locker</span>, <span class="kw">unsafe</span>}
@@ -967,7 +967,7 @@
 <a href=#967 id=967 data-nosnippet>967</a>            /// Panics if the lazy was droped
 <a href=#968 id=968 data-nosnippet>968</a>            </span><span class="kw">pub fn </span>read(<span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="self">self</span>) -&gt; ReadGuard&lt;<span class="lifetime">'_</span>,T&gt; {
 <a href=#969 id=969 data-nosnippet>969</a>                    <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::read_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
-<a href=#970 id=970 data-nosnippet>970</a>                    <span class="macro">assert!</span>(&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(Phased::phase(<span class="kw-2">&amp;</span>l)));
+<a href=#970 id=970 data-nosnippet>970</a>                    <span class="macro">assert!</span>(&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(Phased::phase(<span class="kw-2">&amp;</span>l)));
 <a href=#971 id=971 data-nosnippet>971</a>                    ReadGuard(l)
 <a href=#972 id=972 data-nosnippet>972</a>            }
 <a href=#973 id=973 data-nosnippet>973</a>            <span class="doccomment">/// Returns some read lock if the lazy is not
@@ -980,7 +980,7 @@
 <a href=#980 id=980 data-nosnippet>980</a>            </span><span class="kw">pub fn </span>fast_read(<span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ReadGuard&lt;<span class="lifetime">'_</span>,T&gt;&gt; {
 <a href=#981 id=981 data-nosnippet>981</a>                    <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::fast_read_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#982 id=982 data-nosnippet>982</a>                    <span class="kw">if let </span><span class="prelude-val">Some</span>(l) = <span class="kw-2">&amp;</span>l {
-<a href=#983 id=983 data-nosnippet>983</a>                        <span class="macro">assert!</span>(&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(Phased::phase(l)));
+<a href=#983 id=983 data-nosnippet>983</a>                        <span class="macro">assert!</span>(&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(Phased::phase(l)));
 <a href=#984 id=984 data-nosnippet>984</a>                    }
 <a href=#985 id=985 data-nosnippet>985</a>                    l.map(ReadGuard)
 <a href=#986 id=986 data-nosnippet>986</a>            }
@@ -990,7 +990,7 @@
 <a href=#990 id=990 data-nosnippet>990</a>            </span><span class="kw">pub fn </span>primed_read(<span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;ReadGuard&lt;<span class="lifetime">'_</span>,T&gt;,ReadGuard&lt;<span class="lifetime">'_</span>,T&gt;&gt; {
 <a href=#991 id=991 data-nosnippet>991</a>               <span class="kw">let </span>l = <span class="kw">unsafe </span>{GenericLockedLazy::read_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#992 id=992 data-nosnippet>992</a>               <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
-<a href=#993 id=993 data-nosnippet>993</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(p) {
+<a href=#993 id=993 data-nosnippet>993</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(p) {
 <a href=#994 id=994 data-nosnippet>994</a>                   <span class="prelude-val">Ok</span>(ReadGuard(l))
 <a href=#995 id=995 data-nosnippet>995</a>               } <span class="kw">else </span>{
 <a href=#996 id=996 data-nosnippet>996</a>                   <span class="prelude-val">Err</span>(ReadGuard(l))
@@ -1104,7 +1104,7 @@
 <a href=#1104 id=1104 data-nosnippet>1104</a>            </span><span class="kw">pub fn </span>read(<span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="self">self</span>) -&gt; ReadGuard&lt;<span class="lifetime">'static</span>,T&gt; {
 <a href=#1105 id=1105 data-nosnippet>1105</a>                <span class="kw">if </span>inited::global_inited_hint() {
 <a href=#1106 id=1106 data-nosnippet>1106</a>                    <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::read_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
-<a href=#1107 id=1107 data-nosnippet>1107</a>                    <span class="macro">assert!</span>(&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(Phased::phase(<span class="kw-2">&amp;</span>l)));
+<a href=#1107 id=1107 data-nosnippet>1107</a>                    <span class="macro">assert!</span>(&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(Phased::phase(<span class="kw-2">&amp;</span>l)));
 <a href=#1108 id=1108 data-nosnippet>1108</a>                    ReadGuard(l)
 <a href=#1109 id=1109 data-nosnippet>1109</a>                } <span class="kw">else </span>{
 <a href=#1110 id=1110 data-nosnippet>1110</a>                    ReadGuard(GenericLockedLazy::init_then_read_lock(<span class="kw-2">&amp;</span><span class="self">self</span>.__private))
@@ -1121,7 +1121,7 @@
 <a href=#1121 id=1121 data-nosnippet>1121</a>                <span class="kw">if </span>inited::global_inited_hint() {
 <a href=#1122 id=1122 data-nosnippet>1122</a>                    <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::fast_read_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1123 id=1123 data-nosnippet>1123</a>                    <span class="kw">if let </span><span class="prelude-val">Some</span>(l) = <span class="kw-2">&amp;</span>l {
-<a href=#1124 id=1124 data-nosnippet>1124</a>                        <span class="macro">assert!</span>(&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(Phased::phase(l)));
+<a href=#1124 id=1124 data-nosnippet>1124</a>                        <span class="macro">assert!</span>(&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(Phased::phase(l)));
 <a href=#1125 id=1125 data-nosnippet>1125</a>                    }
 <a href=#1126 id=1126 data-nosnippet>1126</a>                    l
 <a href=#1127 id=1127 data-nosnippet>1127</a>                } <span class="kw">else </span>{
@@ -1134,7 +1134,7 @@
 <a href=#1134 id=1134 data-nosnippet>1134</a>                <span class="kw">if </span>inited::global_inited_hint() {
 <a href=#1135 id=1135 data-nosnippet>1135</a>                    <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::read_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1136 id=1136 data-nosnippet>1136</a>                    <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
-<a href=#1137 id=1137 data-nosnippet>1137</a>                    <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(p) {
+<a href=#1137 id=1137 data-nosnippet>1137</a>                    <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(p) {
 <a href=#1138 id=1138 data-nosnippet>1138</a>                        <span class="prelude-val">Ok</span>(l)
 <a href=#1139 id=1139 data-nosnippet>1139</a>                    } <span class="kw">else </span>{
 <a href=#1140 id=1140 data-nosnippet>1140</a>                        <span class="prelude-val">Err</span>(AccessError{phase:p})
@@ -1151,7 +1151,7 @@
 <a href=#1151 id=1151 data-nosnippet>1151</a>                    <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::fast_read_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1152 id=1152 data-nosnippet>1152</a>                    l.map(|l| {
 <a href=#1153 id=1153 data-nosnippet>1153</a>                        <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
-<a href=#1154 id=1154 data-nosnippet>1154</a>                        <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(p) {
+<a href=#1154 id=1154 data-nosnippet>1154</a>                        <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(p) {
 <a href=#1155 id=1155 data-nosnippet>1155</a>                            <span class="prelude-val">Ok</span>(l)
 <a href=#1156 id=1156 data-nosnippet>1156</a>                        } <span class="kw">else </span>{
 <a href=#1157 id=1157 data-nosnippet>1157</a>                            <span class="prelude-val">Err</span>(AccessError{phase:p})
@@ -1171,7 +1171,7 @@
 <a href=#1171 id=1171 data-nosnippet>1171</a>            </span><span class="kw">pub fn </span>write(<span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="self">self</span>) -&gt; WriteGuard&lt;<span class="lifetime">'static</span>,T&gt; {
 <a href=#1172 id=1172 data-nosnippet>1172</a>                WriteGuard(<span class="kw">if </span>inited::global_inited_hint() {
 <a href=#1173 id=1173 data-nosnippet>1173</a>                    <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::write_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
-<a href=#1174 id=1174 data-nosnippet>1174</a>                    <span class="macro">assert!</span>(&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(Phased::phase(<span class="kw-2">&amp;</span>l)));
+<a href=#1174 id=1174 data-nosnippet>1174</a>                    <span class="macro">assert!</span>(&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(Phased::phase(<span class="kw-2">&amp;</span>l)));
 <a href=#1175 id=1175 data-nosnippet>1175</a>                    l
 <a href=#1176 id=1176 data-nosnippet>1176</a>                } <span class="kw">else </span>{
 <a href=#1177 id=1177 data-nosnippet>1177</a>                    GenericLockedLazy::init_then_write_lock(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)
@@ -1189,7 +1189,7 @@
 <a href=#1189 id=1189 data-nosnippet>1189</a>                <span class="kw">if </span>inited::global_inited_hint() {
 <a href=#1190 id=1190 data-nosnippet>1190</a>                    <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::fast_write_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1191 id=1191 data-nosnippet>1191</a>                    <span class="kw">if let </span><span class="prelude-val">Some</span>(l) = <span class="kw-2">&amp;</span>l {
-<a href=#1192 id=1192 data-nosnippet>1192</a>                        <span class="macro">assert!</span>(&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(Phased::phase(l)));
+<a href=#1192 id=1192 data-nosnippet>1192</a>                        <span class="macro">assert!</span>(&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(Phased::phase(l)));
 <a href=#1193 id=1193 data-nosnippet>1193</a>                    }
 <a href=#1194 id=1194 data-nosnippet>1194</a>                    l
 <a href=#1195 id=1195 data-nosnippet>1195</a>                } <span class="kw">else </span>{
@@ -1202,7 +1202,7 @@
 <a href=#1202 id=1202 data-nosnippet>1202</a>                <span class="kw">if </span>inited::global_inited_hint() {
 <a href=#1203 id=1203 data-nosnippet>1203</a>                    <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::write_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1204 id=1204 data-nosnippet>1204</a>                    <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
-<a href=#1205 id=1205 data-nosnippet>1205</a>                    <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(p) {
+<a href=#1205 id=1205 data-nosnippet>1205</a>                    <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(p) {
 <a href=#1206 id=1206 data-nosnippet>1206</a>                        <span class="prelude-val">Ok</span>(l)
 <a href=#1207 id=1207 data-nosnippet>1207</a>                    } <span class="kw">else </span>{
 <a href=#1208 id=1208 data-nosnippet>1208</a>                        <span class="prelude-val">Err</span>(AccessError{phase:p})
@@ -1219,7 +1219,7 @@
 <a href=#1219 id=1219 data-nosnippet>1219</a>                    <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::fast_write_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1220 id=1220 data-nosnippet>1220</a>                    l.map(|l| {
 <a href=#1221 id=1221 data-nosnippet>1221</a>                        <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
-<a href=#1222 id=1222 data-nosnippet>1222</a>                        <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(p) {
+<a href=#1222 id=1222 data-nosnippet>1222</a>                        <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(p) {
 <a href=#1223 id=1223 data-nosnippet>1223</a>                            <span class="prelude-val">Ok</span>(l)
 <a href=#1224 id=1224 data-nosnippet>1224</a>                        } <span class="kw">else </span>{
 <a href=#1225 id=1225 data-nosnippet>1225</a>                            <span class="prelude-val">Err</span>(AccessError{phase:p})
@@ -1253,7 +1253,7 @@
 <a href=#1253 id=1253 data-nosnippet>1253</a>               <span class="prelude-ty">Result</span>&lt;ReadGuard&lt;<span class="lifetime">'static</span>,T&gt;,ReadGuard&lt;<span class="lifetime">'static</span>,T&gt;&gt; {
 <a href=#1254 id=1254 data-nosnippet>1254</a>               <span class="kw">let </span>l = <span class="kw">unsafe </span>{GenericLockedLazy::read_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1255 id=1255 data-nosnippet>1255</a>               <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
-<a href=#1256 id=1256 data-nosnippet>1256</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::is_accessible(p) {
+<a href=#1256 id=1256 data-nosnippet>1256</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::is_accessible(p) {
 <a href=#1257 id=1257 data-nosnippet>1257</a>                   <span class="prelude-val">Ok</span>(ReadGuard(l))
 <a href=#1258 id=1258 data-nosnippet>1258</a>               } <span class="kw">else </span>{
 <a href=#1259 id=1259 data-nosnippet>1259</a>                   <span class="prelude-val">Err</span>(ReadGuard(l))
@@ -1265,7 +1265,7 @@
 <a href=#1265 id=1265 data-nosnippet>1265</a>            </span><span class="kw">pub fn </span>primed_read(<span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;ReadGuard&lt;<span class="lifetime">'static</span>,T&gt;,ReadGuard&lt;<span class="lifetime">'static</span>,T&gt;&gt; {
 <a href=#1266 id=1266 data-nosnippet>1266</a>               <span class="kw">let </span>l = <span class="kw">unsafe </span>{GenericLockedLazy::init_then_read_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1267 id=1267 data-nosnippet>1267</a>               <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
-<a href=#1268 id=1268 data-nosnippet>1268</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::is_accessible(p) {
+<a href=#1268 id=1268 data-nosnippet>1268</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::is_accessible(p) {
 <a href=#1269 id=1269 data-nosnippet>1269</a>                   <span class="prelude-val">Ok</span>(ReadGuard(l))
 <a href=#1270 id=1270 data-nosnippet>1270</a>               } <span class="kw">else </span>{
 <a href=#1271 id=1271 data-nosnippet>1271</a>                   <span class="prelude-val">Err</span>(ReadGuard(l))
@@ -1277,7 +1277,7 @@
 <a href=#1277 id=1277 data-nosnippet>1277</a>            </span><span class="kw">pub fn </span>primed_write_non_initializing(<span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;WriteGuard&lt;<span class="lifetime">'static</span>,T&gt;,ReadGuard&lt;<span class="lifetime">'static</span>,T&gt;&gt; {
 <a href=#1278 id=1278 data-nosnippet>1278</a>               <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::write_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1279 id=1279 data-nosnippet>1279</a>               <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
-<a href=#1280 id=1280 data-nosnippet>1280</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::is_accessible(p) {
+<a href=#1280 id=1280 data-nosnippet>1280</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::is_accessible(p) {
 <a href=#1281 id=1281 data-nosnippet>1281</a>                   <span class="prelude-val">Ok</span>(WriteGuard(l))
 <a href=#1282 id=1282 data-nosnippet>1282</a>               } <span class="kw">else </span>{
 <a href=#1283 id=1283 data-nosnippet>1283</a>                   <span class="prelude-val">Err</span>(ReadGuard(l.into()))
@@ -1290,7 +1290,7 @@
 <a href=#1290 id=1290 data-nosnippet>1290</a>            </span><span class="kw">pub fn </span>primed_write(<span class="kw-2">&amp;</span><span class="lifetime">'static </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;WriteGuard&lt;<span class="lifetime">'static</span>,T&gt;,ReadGuard&lt;<span class="lifetime">'static</span>,T&gt;&gt; {
 <a href=#1291 id=1291 data-nosnippet>1291</a>               <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::init_then_write_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1292 id=1292 data-nosnippet>1292</a>               <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
-<a href=#1293 id=1293 data-nosnippet>1293</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::is_accessible(p) {
+<a href=#1293 id=1293 data-nosnippet>1293</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::is_accessible(p) {
 <a href=#1294 id=1294 data-nosnippet>1294</a>                   <span class="prelude-val">Ok</span>(WriteGuard(l))
 <a href=#1295 id=1295 data-nosnippet>1295</a>               } <span class="kw">else </span>{
 <a href=#1296 id=1296 data-nosnippet>1296</a>                   <span class="prelude-val">Err</span>(ReadGuard(l.into()))
@@ -1314,13 +1314,13 @@
 <a href=#1314 id=1314 data-nosnippet>1314</a>               <span class="kw">let </span>l = <span class="kw">unsafe </span>{GenericLockedLazy::read_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1315 id=1315 data-nosnippet>1315</a>               <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
 <a href=#1316 id=1316 data-nosnippet>1316</a>               <span class="kw">if </span>inited::global_inited_hint() {
-<a href=#1317 id=1317 data-nosnippet>1317</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(p) {
+<a href=#1317 id=1317 data-nosnippet>1317</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(p) {
 <a href=#1318 id=1318 data-nosnippet>1318</a>                      <span class="prelude-val">Ok</span>(ReadGuard(l))
 <a href=#1319 id=1319 data-nosnippet>1319</a>                  } <span class="kw">else </span>{
 <a href=#1320 id=1320 data-nosnippet>1320</a>                      <span class="prelude-val">Err</span>(ReadGuard(l))
 <a href=#1321 id=1321 data-nosnippet>1321</a>                  }
 <a href=#1322 id=1322 data-nosnippet>1322</a>               } <span class="kw">else </span>{
-<a href=#1323 id=1323 data-nosnippet>1323</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::is_accessible(p) {
+<a href=#1323 id=1323 data-nosnippet>1323</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::is_accessible(p) {
 <a href=#1324 id=1324 data-nosnippet>1324</a>                      <span class="prelude-val">Ok</span>(ReadGuard(l))
 <a href=#1325 id=1325 data-nosnippet>1325</a>                  } <span class="kw">else </span>{
 <a href=#1326 id=1326 data-nosnippet>1326</a>                      <span class="prelude-val">Err</span>(ReadGuard(l))
@@ -1334,13 +1334,13 @@
 <a href=#1334 id=1334 data-nosnippet>1334</a>               <span class="kw">let </span>l = <span class="kw">unsafe </span>{GenericLockedLazy::init_then_read_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1335 id=1335 data-nosnippet>1335</a>               <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
 <a href=#1336 id=1336 data-nosnippet>1336</a>               <span class="kw">if </span>inited::global_inited_hint() {
-<a href=#1337 id=1337 data-nosnippet>1337</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(p) {
+<a href=#1337 id=1337 data-nosnippet>1337</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(p) {
 <a href=#1338 id=1338 data-nosnippet>1338</a>                      <span class="prelude-val">Ok</span>(ReadGuard(l))
 <a href=#1339 id=1339 data-nosnippet>1339</a>                  } <span class="kw">else </span>{
 <a href=#1340 id=1340 data-nosnippet>1340</a>                      <span class="prelude-val">Err</span>(ReadGuard(l))
 <a href=#1341 id=1341 data-nosnippet>1341</a>                  }
 <a href=#1342 id=1342 data-nosnippet>1342</a>               } <span class="kw">else </span>{
-<a href=#1343 id=1343 data-nosnippet>1343</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::is_accessible(p) {
+<a href=#1343 id=1343 data-nosnippet>1343</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::is_accessible(p) {
 <a href=#1344 id=1344 data-nosnippet>1344</a>                      <span class="prelude-val">Ok</span>(ReadGuard(l))
 <a href=#1345 id=1345 data-nosnippet>1345</a>                  } <span class="kw">else </span>{
 <a href=#1346 id=1346 data-nosnippet>1346</a>                      <span class="prelude-val">Err</span>(ReadGuard(l))
@@ -1354,13 +1354,13 @@
 <a href=#1354 id=1354 data-nosnippet>1354</a>               <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::write_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1355 id=1355 data-nosnippet>1355</a>               <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
 <a href=#1356 id=1356 data-nosnippet>1356</a>               <span class="kw">if </span>inited::global_inited_hint() {
-<a href=#1357 id=1357 data-nosnippet>1357</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(p) {
+<a href=#1357 id=1357 data-nosnippet>1357</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(p) {
 <a href=#1358 id=1358 data-nosnippet>1358</a>                      <span class="prelude-val">Ok</span>(WriteGuard(l))
 <a href=#1359 id=1359 data-nosnippet>1359</a>                  } <span class="kw">else </span>{
 <a href=#1360 id=1360 data-nosnippet>1360</a>                      <span class="prelude-val">Err</span>(ReadGuard(l.into()))
 <a href=#1361 id=1361 data-nosnippet>1361</a>                  }
 <a href=#1362 id=1362 data-nosnippet>1362</a>               } <span class="kw">else </span>{
-<a href=#1363 id=1363 data-nosnippet>1363</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::is_accessible(p) {
+<a href=#1363 id=1363 data-nosnippet>1363</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::is_accessible(p) {
 <a href=#1364 id=1364 data-nosnippet>1364</a>                      <span class="prelude-val">Ok</span>(WriteGuard(l))
 <a href=#1365 id=1365 data-nosnippet>1365</a>                  } <span class="kw">else </span>{
 <a href=#1366 id=1366 data-nosnippet>1366</a>                      <span class="prelude-val">Err</span>(ReadGuard(l.into()))
@@ -1375,13 +1375,13 @@
 <a href=#1375 id=1375 data-nosnippet>1375</a>               <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::init_then_write_lock_unchecked(<span class="kw-2">&amp;</span><span class="self">self</span>.__private)};
 <a href=#1376 id=1376 data-nosnippet>1376</a>               <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
 <a href=#1377 id=1377 data-nosnippet>1377</a>               <span class="kw">if </span>inited::global_inited_hint() {
-<a href=#1378 id=1378 data-nosnippet>1378</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::initialized_is_accessible(p) {
+<a href=#1378 id=1378 data-nosnippet>1378</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::initialized_is_accessible(p) {
 <a href=#1379 id=1379 data-nosnippet>1379</a>                      <span class="prelude-val">Ok</span>(WriteGuard(l))
 <a href=#1380 id=1380 data-nosnippet>1380</a>                  } <span class="kw">else </span>{
 <a href=#1381 id=1381 data-nosnippet>1381</a>                      <span class="prelude-val">Err</span>(ReadGuard(l.into()))
 <a href=#1382 id=1382 data-nosnippet>1382</a>                  }
 <a href=#1383 id=1383 data-nosnippet>1383</a>               } <span class="kw">else </span>{
-<a href=#1384 id=1384 data-nosnippet>1384</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::is_accessible(p) {
+<a href=#1384 id=1384 data-nosnippet>1384</a>                  <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::is_accessible(p) {
 <a href=#1385 id=1385 data-nosnippet>1385</a>                      <span class="prelude-val">Ok</span>(WriteGuard(l))
 <a href=#1386 id=1386 data-nosnippet>1386</a>                  } <span class="kw">else </span>{
 <a href=#1387 id=1387 data-nosnippet>1387</a>                      <span class="prelude-val">Err</span>(ReadGuard(l.into()))
@@ -1404,7 +1404,7 @@
 <a href=#1404 id=1404 data-nosnippet>1404</a>            </span><span class="kw">pub fn </span>primed_read_non_initializing(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;ReadGuard&lt;<span class="lifetime">'_</span>,T&gt;,ReadGuard&lt;<span class="lifetime">'_</span>,T&gt;&gt; {
 <a href=#1405 id=1405 data-nosnippet>1405</a>               <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::read_lock_unchecked(as_static(<span class="kw-2">&amp;</span><span class="self">self</span>.__private))};
 <a href=#1406 id=1406 data-nosnippet>1406</a>               <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
-<a href=#1407 id=1407 data-nosnippet>1407</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::is_accessible(p) {
+<a href=#1407 id=1407 data-nosnippet>1407</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::is_accessible(p) {
 <a href=#1408 id=1408 data-nosnippet>1408</a>                   <span class="prelude-val">Ok</span>(ReadGuard(l))
 <a href=#1409 id=1409 data-nosnippet>1409</a>               } <span class="kw">else </span>{
 <a href=#1410 id=1410 data-nosnippet>1410</a>                   <span class="prelude-val">Err</span>(ReadGuard(l))
@@ -1416,7 +1416,7 @@
 <a href=#1416 id=1416 data-nosnippet>1416</a>            </span><span class="kw">pub fn </span>primed_read(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;ReadGuard&lt;<span class="lifetime">'_</span>,T&gt;,ReadGuard&lt;<span class="lifetime">'_</span>,T&gt;&gt; {
 <a href=#1417 id=1417 data-nosnippet>1417</a>               <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::init_then_read_lock_unchecked(as_static(<span class="kw-2">&amp;</span><span class="self">self</span>.__private))};
 <a href=#1418 id=1418 data-nosnippet>1418</a>               <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
-<a href=#1419 id=1419 data-nosnippet>1419</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::is_accessible(p) {
+<a href=#1419 id=1419 data-nosnippet>1419</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::is_accessible(p) {
 <a href=#1420 id=1420 data-nosnippet>1420</a>                   <span class="prelude-val">Ok</span>(ReadGuard(l))
 <a href=#1421 id=1421 data-nosnippet>1421</a>               } <span class="kw">else </span>{
 <a href=#1422 id=1422 data-nosnippet>1422</a>                   <span class="prelude-val">Err</span>(ReadGuard(l))
@@ -1428,7 +1428,7 @@
 <a href=#1428 id=1428 data-nosnippet>1428</a>            </span><span class="kw">pub fn </span>primed_write_non_initializing(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;WriteGuard&lt;<span class="lifetime">'_</span>,T&gt;,ReadGuard&lt;<span class="lifetime">'_</span>,T&gt;&gt; {
 <a href=#1429 id=1429 data-nosnippet>1429</a>               <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::write_lock_unchecked(as_static(<span class="kw-2">&amp;</span><span class="self">self</span>.__private))};
 <a href=#1430 id=1430 data-nosnippet>1430</a>               <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
-<a href=#1431 id=1431 data-nosnippet>1431</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::is_accessible(p) {
+<a href=#1431 id=1431 data-nosnippet>1431</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::is_accessible(p) {
 <a href=#1432 id=1432 data-nosnippet>1432</a>                   <span class="prelude-val">Ok</span>(WriteGuard(l))
 <a href=#1433 id=1433 data-nosnippet>1433</a>               } <span class="kw">else </span>{
 <a href=#1434 id=1434 data-nosnippet>1434</a>                   <span class="prelude-val">Err</span>(ReadGuard(l.into()))
@@ -1440,7 +1440,7 @@
 <a href=#1440 id=1440 data-nosnippet>1440</a>            </span><span class="kw">pub fn </span>primed_write(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;WriteGuard&lt;<span class="lifetime">'_</span>,T&gt;,ReadGuard&lt;<span class="lifetime">'_</span>,T&gt;&gt; {
 <a href=#1441 id=1441 data-nosnippet>1441</a>               <span class="kw">let </span>l = <span class="kw">unsafe</span>{GenericLockedLazy::init_then_write_lock_unchecked(as_static(<span class="kw-2">&amp;</span><span class="self">self</span>.__private))};
 <a href=#1442 id=1442 data-nosnippet>1442</a>               <span class="kw">let </span>p = Phased::phase(<span class="kw-2">&amp;</span>l);
-<a href=#1443 id=1443 data-nosnippet>1443</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;::is_accessible(p) {
+<a href=#1443 id=1443 data-nosnippet>1443</a>               <span class="kw">if </span>&lt;<span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;::is_accessible(p) {
 <a href=#1444 id=1444 data-nosnippet>1444</a>                   <span class="prelude-val">Ok</span>(WriteGuard(l))
 <a href=#1445 id=1445 data-nosnippet>1445</a>               } <span class="kw">else </span>{
 <a href=#1446 id=1446 data-nosnippet>1446</a>                   <span class="prelude-val">Err</span>(ReadGuard(l.into()))
@@ -1515,16 +1515,16 @@
 <a href=#1515 id=1515 data-nosnippet>1515</a>        <span class="attr">#[doc=<span class="macro-nonterminal">$doc</span>]
 <a href=#1516 id=1516 data-nosnippet>1516</a>        </span>$(<span class="attr">#[cfg_attr(docsrs,doc(cfg(<span class="macro-nonterminal">$attr</span>)))]</span>)<span class="question-mark">?
 <a href=#1517 id=1517 data-nosnippet>1517</a>        </span><span class="kw">pub struct </span><span class="macro-nonterminal">$tp</span>&lt;T, G = <span class="kw">fn</span>() -&gt; T&gt; {
-<a href=#1518 id=1518 data-nosnippet>1518</a>            __private: GenericLockedLazy&lt;<span class="macro-nonterminal">$data</span>, G, <span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$checker</span>::&lt;G&gt;&gt;,
+<a href=#1518 id=1518 data-nosnippet>1518</a>            __private: GenericLockedLazy&lt;<span class="macro-nonterminal">$data</span>, G, <span class="macro-nonterminal">$man</span>$(&lt;<span class="macro-nonterminal">$x</span>&gt;)<span class="question-mark">?</span>, <span class="macro-nonterminal">$checker:</span>:&lt;G&gt;&gt;,
 <a href=#1519 id=1519 data-nosnippet>1519</a>        }
 <a href=#1520 id=1520 data-nosnippet>1520</a>
 <a href=#1521 id=1521 data-nosnippet>1521</a>        <span class="attr">#[must_use=<span class="string">"If unused the write lock is immediatly released"</span>]
 <a href=#1522 id=1522 data-nosnippet>1522</a>        #[derive(Debug)]
-<a href=#1523 id=1523 data-nosnippet>1523</a>        </span><span class="kw">pub struct </span>WriteGuard&lt;<span class="lifetime">'a</span>,T&gt;(generic_lazy::WriteGuard&lt;<span class="macro-nonterminal">$gdw</span>::&lt;<span class="lifetime">'a</span>,<span class="macro-nonterminal">$data</span>&gt;&gt;);
+<a href=#1523 id=1523 data-nosnippet>1523</a>        </span><span class="kw">pub struct </span>WriteGuard&lt;<span class="lifetime">'a</span>,T&gt;(generic_lazy::WriteGuard&lt;<span class="macro-nonterminal">$gdw:</span>:&lt;<span class="lifetime">'a</span>,<span class="macro-nonterminal">$data</span>&gt;&gt;);
 <a href=#1524 id=1524 data-nosnippet>1524</a>
 <a href=#1525 id=1525 data-nosnippet>1525</a>        <span class="attr">#[must_use=<span class="string">"If unused the write lock is immediatly released"</span>]
 <a href=#1526 id=1526 data-nosnippet>1526</a>        #[derive(Debug)]
-<a href=#1527 id=1527 data-nosnippet>1527</a>        </span><span class="kw">pub struct </span>ReadGuard&lt;<span class="lifetime">'a</span>,T&gt;(generic_lazy::ReadGuard&lt;<span class="macro-nonterminal">$gd</span>::&lt;<span class="lifetime">'a</span>,<span class="macro-nonterminal">$data</span>&gt;&gt;);
+<a href=#1527 id=1527 data-nosnippet>1527</a>        </span><span class="kw">pub struct </span>ReadGuard&lt;<span class="lifetime">'a</span>,T&gt;(generic_lazy::ReadGuard&lt;<span class="macro-nonterminal">$gd:</span>:&lt;<span class="lifetime">'a</span>,<span class="macro-nonterminal">$data</span>&gt;&gt;);
 <a href=#1528 id=1528 data-nosnippet>1528</a>
 <a href=#1529 id=1529 data-nosnippet>1529</a>        <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>,T&gt; Clone <span class="kw">for </span>ReadGuard&lt;<span class="lifetime">'a</span>,T&gt; {
 <a href=#1530 id=1530 data-nosnippet>1530</a>            <span class="attr">#[inline(always)]

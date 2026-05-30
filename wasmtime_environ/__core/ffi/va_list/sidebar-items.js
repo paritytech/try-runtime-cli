@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["VaList","VaListImpl"],"trait":["VaArgSafe"]};
+window.SIDEBAR_ITEMS = {"struct":["VaList"],"trait":["VaArgSafe"]};

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.26.4/src/unistd.rs`."><title>unistd.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="nix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">nix/</div>unistd.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Safe wrappers around functions found in libc "unistd.h" header
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/nix-0.26.4/src/unistd.rs`."><title>unistd.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="nix" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">nix/</div>unistd.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Safe wrappers around functions found in libc "unistd.h" header
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a></span><span class="kw">use </span><span class="kw">crate</span>::errno::{<span class="self">self</span>, Errno};
 <a href=#4 id=4 data-nosnippet>4</a><span class="attr">#[cfg(not(target_os = <span class="string">"redox"</span>))]
@@ -20,7 +20,7 @@
 <a href=#20 id=20 data-nosnippet>20</a></span><span class="kw">use </span><span class="kw">crate</span>::sys::stat::FileFlag;
 <a href=#21 id=21 data-nosnippet>21</a><span class="attr">#[cfg(feature = <span class="string">"fs"</span>)]
 <a href=#22 id=22 data-nosnippet>22</a></span><span class="kw">use </span><span class="kw">crate</span>::sys::stat::Mode;
-<a href=#23 id=23 data-nosnippet>23</a><span class="kw">use crate</span>::{Error, NixPath, <span class="prelude-ty">Result</span>};
+<a href=#23 id=23 data-nosnippet>23</a><span class="kw">use </span>crate::{Error, NixPath, <span class="prelude-ty">Result</span>};
 <a href=#24 id=24 data-nosnippet>24</a><span class="attr">#[cfg(not(target_os = <span class="string">"redox"</span>))]
 <a href=#25 id=25 data-nosnippet>25</a></span><span class="kw">use </span>cfg_if::cfg_if;
 <a href=#26 id=26 data-nosnippet>26</a><span class="kw">use </span>libc::{
@@ -677,7 +677,7 @@
 <a href=#677 id=677 data-nosnippet>677</a>            } <span class="kw">else </span>{
 <a href=#678 id=678 data-nosnippet>678</a>                <span class="kw">let </span>error = Errno::last();
 <a href=#679 id=679 data-nosnippet>679</a>                <span class="comment">// ERANGE means buffer was too small to store directory name
-<a href=#680 id=680 data-nosnippet>680</a>                </span><span class="kw">if </span><span class="macro">error !</span>= Errno::ERANGE {
+<a href=#680 id=680 data-nosnippet>680</a>                </span><span class="kw">if </span>error != Errno::ERANGE {
 <a href=#681 id=681 data-nosnippet>681</a>                    <span class="kw">return </span><span class="prelude-val">Err</span>(error);
 <a href=#682 id=682 data-nosnippet>682</a>                }
 <a href=#683 id=683 data-nosnippet>683</a>           }
@@ -1819,7 +1819,7 @@
 <a href=#1819 id=1819 data-nosnippet>1819</a>    ///
 <a href=#1820 id=1820 data-nosnippet>1820</a>    /// Returns the leftover time of a previously set alarm if there was one.
 <a href=#1821 id=1821 data-nosnippet>1821</a>    </span><span class="kw">pub fn </span>set(secs: libc::c_uint) -&gt; <span class="prelude-ty">Option</span>&lt;libc::c_uint&gt; {
-<a href=#1822 id=1822 data-nosnippet>1822</a>        <span class="macro">assert!</span>(<span class="macro">secs !</span>= <span class="number">0</span>, <span class="string">"passing 0 to `alarm::set` is not allowed, to cancel an alarm use `alarm::cancel`"</span>);
+<a href=#1822 id=1822 data-nosnippet>1822</a>        <span class="macro">assert!</span>(secs != <span class="number">0</span>, <span class="string">"passing 0 to `alarm::set` is not allowed, to cancel an alarm use `alarm::cancel`"</span>);
 <a href=#1823 id=1823 data-nosnippet>1823</a>        alarm(secs)
 <a href=#1824 id=1824 data-nosnippet>1824</a>    }
 <a href=#1825 id=1825 data-nosnippet>1825</a>
@@ -1853,7 +1853,7 @@
 <a href=#1853 id=1853 data-nosnippet>1853</a>
 <a href=#1854 id=1854 data-nosnippet>1854</a>#[cfg(not(any(target_os = <span class="string">"redox"</span>, target_os = <span class="string">"haiku"</span>)))]
 <a href=#1855 id=1855 data-nosnippet>1855</a></span><span class="kw">pub mod </span>acct {
-<a href=#1856 id=1856 data-nosnippet>1856</a>    <span class="kw">use crate</span>::{<span class="prelude-ty">Result</span>, NixPath};
+<a href=#1856 id=1856 data-nosnippet>1856</a>    <span class="kw">use </span>crate::{<span class="prelude-ty">Result</span>, NixPath};
 <a href=#1857 id=1857 data-nosnippet>1857</a>    <span class="kw">use </span><span class="kw">crate</span>::errno::Errno;
 <a href=#1858 id=1858 data-nosnippet>1858</a>    <span class="kw">use </span>std::ptr;
 <a href=#1859 id=1859 data-nosnippet>1859</a>
@@ -2744,7 +2744,7 @@
 <a href=#2744 id=2744 data-nosnippet>2744</a>
 <a href=#2745 id=2745 data-nosnippet>2745</a>#[cfg(any(target_os = <span class="string">"android"</span>, target_os = <span class="string">"linux"</span>))]
 <a href=#2746 id=2746 data-nosnippet>2746</a></span><span class="kw">mod </span>pivot_root {
-<a href=#2747 id=2747 data-nosnippet>2747</a>    <span class="kw">use crate</span>::{<span class="prelude-ty">Result</span>, NixPath};
+<a href=#2747 id=2747 data-nosnippet>2747</a>    <span class="kw">use </span>crate::{<span class="prelude-ty">Result</span>, NixPath};
 <a href=#2748 id=2748 data-nosnippet>2748</a>    <span class="kw">use </span><span class="kw">crate</span>::errno::Errno;
 <a href=#2749 id=2749 data-nosnippet>2749</a>
 <a href=#2750 id=2750 data-nosnippet>2750</a>    <span class="kw">pub fn </span>pivot_root&lt;P1: <span class="question-mark">?</span>Sized + NixPath, P2: <span class="question-mark">?</span>Sized + NixPath&gt;(
@@ -2775,7 +2775,7 @@
 <a href=#2775 id=2775 data-nosnippet>2775</a>
 <a href=#2776 id=2776 data-nosnippet>2776</a>    </span><span class="kw">use </span><span class="kw">crate</span>::Result;
 <a href=#2777 id=2777 data-nosnippet>2777</a>    <span class="kw">use </span><span class="kw">crate</span>::errno::Errno;
-<a href=#2778 id=2778 data-nosnippet>2778</a>    <span class="kw">use super</span>::{Uid, Gid};
+<a href=#2778 id=2778 data-nosnippet>2778</a>    <span class="kw">use </span>super::{Uid, Gid};
 <a href=#2779 id=2779 data-nosnippet>2779</a>
 <a href=#2780 id=2780 data-nosnippet>2780</a>    <span class="doccomment">/// Sets the real, effective, and saved uid.
 <a href=#2781 id=2781 data-nosnippet>2781</a>    /// ([see setresuid(2)](https://man7.org/linux/man-pages/man2/setresuid.2.html))
@@ -2824,7 +2824,7 @@
 <a href=#2824 id=2824 data-nosnippet>2824</a>
 <a href=#2825 id=2825 data-nosnippet>2825</a>    </span><span class="kw">use </span><span class="kw">crate</span>::Result;
 <a href=#2826 id=2826 data-nosnippet>2826</a>    <span class="kw">use </span><span class="kw">crate</span>::errno::Errno;
-<a href=#2827 id=2827 data-nosnippet>2827</a>    <span class="kw">use super</span>::{Uid, Gid};
+<a href=#2827 id=2827 data-nosnippet>2827</a>    <span class="kw">use </span>super::{Uid, Gid};
 <a href=#2828 id=2828 data-nosnippet>2828</a>
 <a href=#2829 id=2829 data-nosnippet>2829</a>    <span class="doccomment">/// Real, effective and saved user IDs.
 <a href=#2830 id=2830 data-nosnippet>2830</a>    </span><span class="attr">#[derive(Debug, Copy, Clone, Eq, PartialEq)]
@@ -3325,7 +3325,7 @@
 <a href=#3325 id=3325 data-nosnippet>3325</a>    <span class="kw">let </span>c_buf = buf.as_mut_ptr() <span class="kw">as </span><span class="kw-2">*mut </span>libc::c_char;
 <a href=#3326 id=3326 data-nosnippet>3326</a>
 <a href=#3327 id=3327 data-nosnippet>3327</a>    <span class="kw">let </span>ret = <span class="kw">unsafe </span>{ libc::ttyname_r(fd, c_buf, buf.len()) };
-<a href=#3328 id=3328 data-nosnippet>3328</a>    <span class="kw">if </span><span class="macro">ret !</span>= <span class="number">0 </span>{
+<a href=#3328 id=3328 data-nosnippet>3328</a>    <span class="kw">if </span>ret != <span class="number">0 </span>{
 <a href=#3329 id=3329 data-nosnippet>3329</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(Errno::from_i32(ret));
 <a href=#3330 id=3330 data-nosnippet>3330</a>    }
 <a href=#3331 id=3331 data-nosnippet>3331</a>

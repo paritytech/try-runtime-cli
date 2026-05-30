@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/polkavm-common-0.30.0/src/program.rs`."><title>program.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkavm_common" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">polkavm_common/</div>program.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::abi::{VM_CODE_ADDRESS_ALIGNMENT, VM_MAXIMUM_CODE_SIZE, VM_MAXIMUM_IMPORT_COUNT, VM_MAXIMUM_JUMP_TABLE_ENTRIES};
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/polkavm-common-0.30.0/src/program.rs`."><title>program.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkavm_common" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">polkavm_common/</div>program.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::abi::{VM_CODE_ADDRESS_ALIGNMENT, VM_MAXIMUM_CODE_SIZE, VM_MAXIMUM_IMPORT_COUNT, VM_MAXIMUM_JUMP_TABLE_ENTRIES};
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span><span class="kw">crate</span>::cast::cast;
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span><span class="kw">crate</span>::utils::ArcBytes;
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span><span class="kw">crate</span>::varint::{read_simple_varint, read_varint, write_simple_varint, MAX_VARINT_LENGTH};
@@ -899,19 +899,19 @@
 <a href=#899 id=899 data-nosnippet>899</a>                <span class="kw">impl </span>ParsingVisitor <span class="kw">for </span><span class="macro-nonterminal">$visitor_ty </span>{
 <a href=#900 id=900 data-nosnippet>900</a>                    <span class="kw">type </span>ReturnTy = &lt;<span class="macro-nonterminal">$visitor_ty </span><span class="kw">as </span><span class="macro-nonterminal">$crate::program::InstructionVisitor</span>&gt;::ReturnTy;
 <a href=#901 id=901 data-nosnippet>901</a>
-<a href=#902 id=902 data-nosnippet>902</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_argless</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor</span>::<span class="macro-nonterminal">$name_argless</span>(<span class="self">self</span>) })+
-<a href=#903 id=903 data-nosnippet>903</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_imm</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg: RawReg, imm: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor</span>::<span class="macro-nonterminal">$name_reg_imm</span>(<span class="self">self</span>, reg, imm) })+
-<a href=#904 id=904 data-nosnippet>904</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_imm_offset</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg: RawReg, imm1: u32, imm2: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor</span>::<span class="macro-nonterminal">$name_reg_imm_offset</span>(<span class="self">self</span>, reg, imm1, imm2) })+
-<a href=#905 id=905 data-nosnippet>905</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_imm_imm</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg: RawReg, imm1: u32, imm2: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor</span>::<span class="macro-nonterminal">$name_reg_imm_imm</span>(<span class="self">self</span>, reg, imm1, imm2) })+
-<a href=#906 id=906 data-nosnippet>906</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_reg_imm</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg1: RawReg, reg2: RawReg, imm: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor</span>::<span class="macro-nonterminal">$name_reg_reg_imm</span>(<span class="self">self</span>, reg1, reg2, imm) })+
-<a href=#907 id=907 data-nosnippet>907</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_reg_offset</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg1: RawReg, reg2: RawReg, imm: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor</span>::<span class="macro-nonterminal">$name_reg_reg_offset</span>(<span class="self">self</span>, reg1, reg2, imm) })+
-<a href=#908 id=908 data-nosnippet>908</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_reg_reg</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg1: RawReg, reg2: RawReg, reg3: RawReg) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor</span>::<span class="macro-nonterminal">$name_reg_reg_reg</span>(<span class="self">self</span>, reg1, reg2, reg3) })+
-<a href=#909 id=909 data-nosnippet>909</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_offset</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, imm: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor</span>::<span class="macro-nonterminal">$name_offset</span>(<span class="self">self</span>, imm) })+
-<a href=#910 id=910 data-nosnippet>910</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_imm</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, imm: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor</span>::<span class="macro-nonterminal">$name_imm</span>(<span class="self">self</span>, imm) })+
-<a href=#911 id=911 data-nosnippet>911</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_imm_imm</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, imm1: u32, imm2: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor</span>::<span class="macro-nonterminal">$name_imm_imm</span>(<span class="self">self</span>, imm1, imm2) })+
-<a href=#912 id=912 data-nosnippet>912</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_reg</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg1: RawReg, reg2: RawReg) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor</span>::<span class="macro-nonterminal">$name_reg_reg</span>(<span class="self">self</span>, reg1, reg2) })+
-<a href=#913 id=913 data-nosnippet>913</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg1: RawReg, reg2: RawReg, imm1: u32, imm2: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor</span>::<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(<span class="self">self</span>, reg1, reg2, imm1, imm2) })+
-<a href=#914 id=914 data-nosnippet>914</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_imm64</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg: RawReg, imm: u64) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor</span>::<span class="macro-nonterminal">$name_reg_imm64</span>(<span class="self">self</span>, reg, imm) })+
+<a href=#902 id=902 data-nosnippet>902</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_argless</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor:</span>:<span class="macro-nonterminal">$name_argless</span>(<span class="self">self</span>) })+
+<a href=#903 id=903 data-nosnippet>903</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_imm</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg: RawReg, imm: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor:</span>:<span class="macro-nonterminal">$name_reg_imm</span>(<span class="self">self</span>, reg, imm) })+
+<a href=#904 id=904 data-nosnippet>904</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_imm_offset</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg: RawReg, imm1: u32, imm2: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor:</span>:<span class="macro-nonterminal">$name_reg_imm_offset</span>(<span class="self">self</span>, reg, imm1, imm2) })+
+<a href=#905 id=905 data-nosnippet>905</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_imm_imm</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg: RawReg, imm1: u32, imm2: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor:</span>:<span class="macro-nonterminal">$name_reg_imm_imm</span>(<span class="self">self</span>, reg, imm1, imm2) })+
+<a href=#906 id=906 data-nosnippet>906</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_reg_imm</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg1: RawReg, reg2: RawReg, imm: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor:</span>:<span class="macro-nonterminal">$name_reg_reg_imm</span>(<span class="self">self</span>, reg1, reg2, imm) })+
+<a href=#907 id=907 data-nosnippet>907</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_reg_offset</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg1: RawReg, reg2: RawReg, imm: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor:</span>:<span class="macro-nonterminal">$name_reg_reg_offset</span>(<span class="self">self</span>, reg1, reg2, imm) })+
+<a href=#908 id=908 data-nosnippet>908</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_reg_reg</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg1: RawReg, reg2: RawReg, reg3: RawReg) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor:</span>:<span class="macro-nonterminal">$name_reg_reg_reg</span>(<span class="self">self</span>, reg1, reg2, reg3) })+
+<a href=#909 id=909 data-nosnippet>909</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_offset</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, imm: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor:</span>:<span class="macro-nonterminal">$name_offset</span>(<span class="self">self</span>, imm) })+
+<a href=#910 id=910 data-nosnippet>910</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_imm</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, imm: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor:</span>:<span class="macro-nonterminal">$name_imm</span>(<span class="self">self</span>, imm) })+
+<a href=#911 id=911 data-nosnippet>911</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_imm_imm</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, imm1: u32, imm2: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor:</span>:<span class="macro-nonterminal">$name_imm_imm</span>(<span class="self">self</span>, imm1, imm2) })+
+<a href=#912 id=912 data-nosnippet>912</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_reg</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg1: RawReg, reg2: RawReg) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor:</span>:<span class="macro-nonterminal">$name_reg_reg</span>(<span class="self">self</span>, reg1, reg2) })+
+<a href=#913 id=913 data-nosnippet>913</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg1: RawReg, reg2: RawReg, imm1: u32, imm2: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor:</span>:<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(<span class="self">self</span>, reg1, reg2, imm1, imm2) })+
+<a href=#914 id=914 data-nosnippet>914</a>                    $(<span class="kw">fn </span><span class="macro-nonterminal">$name_reg_imm64</span>(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32, reg: RawReg, imm: u64) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor:</span>:<span class="macro-nonterminal">$name_reg_imm64</span>(<span class="self">self</span>, reg, imm) })+
 <a href=#915 id=915 data-nosnippet>915</a>
 <a href=#916 id=916 data-nosnippet>916</a>                    <span class="kw">fn </span>invalid(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _offset: u32, _args_length: u32) -&gt; <span class="self">Self</span>::ReturnTy { <span class="macro-nonterminal">$crate::program::InstructionVisitor::invalid</span>(<span class="self">self</span>) }
 <a href=#917 id=917 data-nosnippet>917</a>                }
@@ -982,57 +982,57 @@
 <a href=#982 id=982 data-nosnippet>982</a>        <span class="kw">impl </span>Instruction {
 <a href=#983 id=983 data-nosnippet>983</a>            <span class="kw">pub fn </span>visit&lt;T&gt;(<span class="self">self</span>, visitor: <span class="kw-2">&amp;mut </span>T) -&gt; T::ReturnTy <span class="kw">where </span>T: InstructionVisitor {
 <a href=#984 id=984 data-nosnippet>984</a>                <span class="kw">match </span><span class="self">self </span>{
-<a href=#985 id=985 data-nosnippet>985</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_argless </span>=&gt; visitor.<span class="macro-nonterminal">$name_argless</span>(),)+
-<a href=#986 id=986 data-nosnippet>986</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm</span>(reg, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm</span>(reg, imm),)+
-<a href=#987 id=987 data-nosnippet>987</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm_offset</span>(reg, imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm_offset</span>(reg, imm1, imm2),)+
-<a href=#988 id=988 data-nosnippet>988</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm_imm</span>(reg, imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm_imm</span>(reg, imm1, imm2),)+
-<a href=#989 id=989 data-nosnippet>989</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_imm</span>(reg1, reg2, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_imm</span>(reg1, reg2, imm),)+
-<a href=#990 id=990 data-nosnippet>990</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_offset</span>(reg1, reg2, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_offset</span>(reg1, reg2, imm),)+
-<a href=#991 id=991 data-nosnippet>991</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_reg</span>(reg1, reg2, reg3) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_reg</span>(reg1, reg2, reg3),)+
-<a href=#992 id=992 data-nosnippet>992</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_offset</span>(imm) =&gt; visitor.<span class="macro-nonterminal">$name_offset</span>(imm),)+
-<a href=#993 id=993 data-nosnippet>993</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_imm</span>(imm) =&gt; visitor.<span class="macro-nonterminal">$name_imm</span>(imm),)+
-<a href=#994 id=994 data-nosnippet>994</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_imm_imm</span>(imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_imm_imm</span>(imm1, imm2),)+
-<a href=#995 id=995 data-nosnippet>995</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg</span>(reg1, reg2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg</span>(reg1, reg2),)+
-<a href=#996 id=996 data-nosnippet>996</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(reg1, reg2, imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(reg1, reg2, imm1, imm2),)+
-<a href=#997 id=997 data-nosnippet>997</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm64</span>(reg, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm64</span>(reg, imm),)+
+<a href=#985 id=985 data-nosnippet>985</a>                    $(Self::<span class="macro-nonterminal">$name_argless </span>=&gt; visitor.<span class="macro-nonterminal">$name_argless</span>(),)+
+<a href=#986 id=986 data-nosnippet>986</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm</span>(reg, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm</span>(reg, imm),)+
+<a href=#987 id=987 data-nosnippet>987</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm_offset</span>(reg, imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm_offset</span>(reg, imm1, imm2),)+
+<a href=#988 id=988 data-nosnippet>988</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm_imm</span>(reg, imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm_imm</span>(reg, imm1, imm2),)+
+<a href=#989 id=989 data-nosnippet>989</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_imm</span>(reg1, reg2, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_imm</span>(reg1, reg2, imm),)+
+<a href=#990 id=990 data-nosnippet>990</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_offset</span>(reg1, reg2, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_offset</span>(reg1, reg2, imm),)+
+<a href=#991 id=991 data-nosnippet>991</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_reg</span>(reg1, reg2, reg3) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_reg</span>(reg1, reg2, reg3),)+
+<a href=#992 id=992 data-nosnippet>992</a>                    $(Self::<span class="macro-nonterminal">$name_offset</span>(imm) =&gt; visitor.<span class="macro-nonterminal">$name_offset</span>(imm),)+
+<a href=#993 id=993 data-nosnippet>993</a>                    $(Self::<span class="macro-nonterminal">$name_imm</span>(imm) =&gt; visitor.<span class="macro-nonterminal">$name_imm</span>(imm),)+
+<a href=#994 id=994 data-nosnippet>994</a>                    $(Self::<span class="macro-nonterminal">$name_imm_imm</span>(imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_imm_imm</span>(imm1, imm2),)+
+<a href=#995 id=995 data-nosnippet>995</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg</span>(reg1, reg2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg</span>(reg1, reg2),)+
+<a href=#996 id=996 data-nosnippet>996</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(reg1, reg2, imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(reg1, reg2, imm1, imm2),)+
+<a href=#997 id=997 data-nosnippet>997</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm64</span>(reg, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm64</span>(reg, imm),)+
 <a href=#998 id=998 data-nosnippet>998</a>                    <span class="self">Self</span>::invalid =&gt; visitor.invalid(),
 <a href=#999 id=999 data-nosnippet>999</a>                }
 <a href=#1000 id=1000 data-nosnippet>1000</a>            }
 <a href=#1001 id=1001 data-nosnippet>1001</a>
 <a href=#1002 id=1002 data-nosnippet>1002</a>            <span class="kw">pub fn </span>visit_parsing&lt;T&gt;(<span class="self">self</span>, offset: u32, args_length: u32, visitor: <span class="kw-2">&amp;mut </span>T) -&gt; T::ReturnTy <span class="kw">where </span>T: ParsingVisitor {
 <a href=#1003 id=1003 data-nosnippet>1003</a>                <span class="kw">match </span><span class="self">self </span>{
-<a href=#1004 id=1004 data-nosnippet>1004</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_argless </span>=&gt; visitor.<span class="macro-nonterminal">$name_argless</span>(offset, args_length),)+
-<a href=#1005 id=1005 data-nosnippet>1005</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm</span>(reg, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm</span>(offset, args_length, reg, imm),)+
-<a href=#1006 id=1006 data-nosnippet>1006</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm_offset</span>(reg, imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm_offset</span>(offset, args_length, reg, imm1, imm2),)+
-<a href=#1007 id=1007 data-nosnippet>1007</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm_imm</span>(reg, imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm_imm</span>(offset, args_length, reg, imm1, imm2),)+
-<a href=#1008 id=1008 data-nosnippet>1008</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_imm</span>(reg1, reg2, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_imm</span>(offset, args_length, reg1, reg2, imm),)+
-<a href=#1009 id=1009 data-nosnippet>1009</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_offset</span>(reg1, reg2, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_offset</span>(offset, args_length, reg1, reg2, imm),)+
-<a href=#1010 id=1010 data-nosnippet>1010</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_reg</span>(reg1, reg2, reg3) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_reg</span>(offset, args_length, reg1, reg2, reg3),)+
-<a href=#1011 id=1011 data-nosnippet>1011</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_offset</span>(imm) =&gt; visitor.<span class="macro-nonterminal">$name_offset</span>(offset, args_length, imm),)+
-<a href=#1012 id=1012 data-nosnippet>1012</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_imm</span>(imm) =&gt; visitor.<span class="macro-nonterminal">$name_imm</span>(offset, args_length, imm),)+
-<a href=#1013 id=1013 data-nosnippet>1013</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_imm_imm</span>(imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_imm_imm</span>(offset, args_length, imm1, imm2),)+
-<a href=#1014 id=1014 data-nosnippet>1014</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg</span>(reg1, reg2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg</span>(offset, args_length, reg1, reg2),)+
-<a href=#1015 id=1015 data-nosnippet>1015</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(reg1, reg2, imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(offset, args_length, reg1, reg2, imm1, imm2),)+
-<a href=#1016 id=1016 data-nosnippet>1016</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm64</span>(reg, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm64</span>(offset, args_length, reg, imm),)+
+<a href=#1004 id=1004 data-nosnippet>1004</a>                    $(Self::<span class="macro-nonterminal">$name_argless </span>=&gt; visitor.<span class="macro-nonterminal">$name_argless</span>(offset, args_length),)+
+<a href=#1005 id=1005 data-nosnippet>1005</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm</span>(reg, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm</span>(offset, args_length, reg, imm),)+
+<a href=#1006 id=1006 data-nosnippet>1006</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm_offset</span>(reg, imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm_offset</span>(offset, args_length, reg, imm1, imm2),)+
+<a href=#1007 id=1007 data-nosnippet>1007</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm_imm</span>(reg, imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm_imm</span>(offset, args_length, reg, imm1, imm2),)+
+<a href=#1008 id=1008 data-nosnippet>1008</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_imm</span>(reg1, reg2, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_imm</span>(offset, args_length, reg1, reg2, imm),)+
+<a href=#1009 id=1009 data-nosnippet>1009</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_offset</span>(reg1, reg2, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_offset</span>(offset, args_length, reg1, reg2, imm),)+
+<a href=#1010 id=1010 data-nosnippet>1010</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_reg</span>(reg1, reg2, reg3) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_reg</span>(offset, args_length, reg1, reg2, reg3),)+
+<a href=#1011 id=1011 data-nosnippet>1011</a>                    $(Self::<span class="macro-nonterminal">$name_offset</span>(imm) =&gt; visitor.<span class="macro-nonterminal">$name_offset</span>(offset, args_length, imm),)+
+<a href=#1012 id=1012 data-nosnippet>1012</a>                    $(Self::<span class="macro-nonterminal">$name_imm</span>(imm) =&gt; visitor.<span class="macro-nonterminal">$name_imm</span>(offset, args_length, imm),)+
+<a href=#1013 id=1013 data-nosnippet>1013</a>                    $(Self::<span class="macro-nonterminal">$name_imm_imm</span>(imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_imm_imm</span>(offset, args_length, imm1, imm2),)+
+<a href=#1014 id=1014 data-nosnippet>1014</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg</span>(reg1, reg2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg</span>(offset, args_length, reg1, reg2),)+
+<a href=#1015 id=1015 data-nosnippet>1015</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(reg1, reg2, imm1, imm2) =&gt; visitor.<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(offset, args_length, reg1, reg2, imm1, imm2),)+
+<a href=#1016 id=1016 data-nosnippet>1016</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm64</span>(reg, imm) =&gt; visitor.<span class="macro-nonterminal">$name_reg_imm64</span>(offset, args_length, reg, imm),)+
 <a href=#1017 id=1017 data-nosnippet>1017</a>                    <span class="self">Self</span>::invalid =&gt; visitor.invalid(offset, args_length),
 <a href=#1018 id=1018 data-nosnippet>1018</a>                }
 <a href=#1019 id=1019 data-nosnippet>1019</a>            }
 <a href=#1020 id=1020 data-nosnippet>1020</a>
 <a href=#1021 id=1021 data-nosnippet>1021</a>            <span class="kw">pub fn </span>serialize_into&lt;I&gt;(<span class="self">self</span>, isa: I, position: u32, buffer: <span class="kw-2">&amp;mut </span>[u8]) -&gt; usize <span class="kw">where </span>I: InstructionSet {
 <a href=#1022 id=1022 data-nosnippet>1022</a>                <span class="kw">match </span><span class="self">self </span>{
-<a href=#1023 id=1023 data-nosnippet>1023</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_argless </span>=&gt; <span class="self">Self</span>::serialize_argless(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_argless</span>).unwrap_or(UNUSED_RAW_OPCODE)),)+
-<a href=#1024 id=1024 data-nosnippet>1024</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm</span>(reg, imm) =&gt; <span class="self">Self</span>::serialize_reg_imm(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_imm</span>).unwrap_or(UNUSED_RAW_OPCODE), reg, imm),)+
-<a href=#1025 id=1025 data-nosnippet>1025</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm_offset</span>(reg, imm1, imm2) =&gt; <span class="self">Self</span>::serialize_reg_imm_offset(buffer, position, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_imm_offset</span>).unwrap_or(UNUSED_RAW_OPCODE), reg, imm1, imm2),)+
-<a href=#1026 id=1026 data-nosnippet>1026</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm_imm</span>(reg, imm1, imm2) =&gt; <span class="self">Self</span>::serialize_reg_imm_imm(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_imm_imm</span>).unwrap_or(UNUSED_RAW_OPCODE), reg, imm1, imm2),)+
-<a href=#1027 id=1027 data-nosnippet>1027</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_imm</span>(reg1, reg2, imm) =&gt; <span class="self">Self</span>::serialize_reg_reg_imm(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_reg_imm</span>).unwrap_or(UNUSED_RAW_OPCODE), reg1, reg2, imm),)+
-<a href=#1028 id=1028 data-nosnippet>1028</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_offset</span>(reg1, reg2, imm) =&gt; <span class="self">Self</span>::serialize_reg_reg_offset(buffer, position, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_reg_offset</span>).unwrap_or(UNUSED_RAW_OPCODE), reg1, reg2, imm),)+
-<a href=#1029 id=1029 data-nosnippet>1029</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_reg</span>(reg1, reg2, reg3) =&gt; <span class="self">Self</span>::serialize_reg_reg_reg(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_reg_reg</span>).unwrap_or(UNUSED_RAW_OPCODE), reg1, reg2, reg3),)+
-<a href=#1030 id=1030 data-nosnippet>1030</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_offset</span>(imm) =&gt; <span class="self">Self</span>::serialize_offset(buffer, position, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_offset</span>).unwrap_or(UNUSED_RAW_OPCODE), imm),)+
-<a href=#1031 id=1031 data-nosnippet>1031</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_imm</span>(imm) =&gt; <span class="self">Self</span>::serialize_imm(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_imm</span>).unwrap_or(UNUSED_RAW_OPCODE), imm),)+
-<a href=#1032 id=1032 data-nosnippet>1032</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_imm_imm</span>(imm1, imm2) =&gt; <span class="self">Self</span>::serialize_imm_imm(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_imm_imm</span>).unwrap_or(UNUSED_RAW_OPCODE), imm1, imm2),)+
-<a href=#1033 id=1033 data-nosnippet>1033</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg</span>(reg1, reg2) =&gt; <span class="self">Self</span>::serialize_reg_reg(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_reg</span>).unwrap_or(UNUSED_RAW_OPCODE), reg1, reg2),)+
-<a href=#1034 id=1034 data-nosnippet>1034</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(reg1, reg2, imm1, imm2) =&gt; <span class="self">Self</span>::serialize_reg_reg_imm_imm(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>).unwrap_or(UNUSED_RAW_OPCODE), reg1, reg2, imm1, imm2),)+
-<a href=#1035 id=1035 data-nosnippet>1035</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm64</span>(reg, imm) =&gt; <span class="self">Self</span>::serialize_reg_imm64(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_imm64</span>).unwrap_or(UNUSED_RAW_OPCODE), reg, imm),)+
+<a href=#1023 id=1023 data-nosnippet>1023</a>                    $(Self::<span class="macro-nonterminal">$name_argless </span>=&gt; <span class="self">Self</span>::serialize_argless(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_argless</span>).unwrap_or(UNUSED_RAW_OPCODE)),)+
+<a href=#1024 id=1024 data-nosnippet>1024</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm</span>(reg, imm) =&gt; <span class="self">Self</span>::serialize_reg_imm(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_imm</span>).unwrap_or(UNUSED_RAW_OPCODE), reg, imm),)+
+<a href=#1025 id=1025 data-nosnippet>1025</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm_offset</span>(reg, imm1, imm2) =&gt; <span class="self">Self</span>::serialize_reg_imm_offset(buffer, position, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_imm_offset</span>).unwrap_or(UNUSED_RAW_OPCODE), reg, imm1, imm2),)+
+<a href=#1026 id=1026 data-nosnippet>1026</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm_imm</span>(reg, imm1, imm2) =&gt; <span class="self">Self</span>::serialize_reg_imm_imm(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_imm_imm</span>).unwrap_or(UNUSED_RAW_OPCODE), reg, imm1, imm2),)+
+<a href=#1027 id=1027 data-nosnippet>1027</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_imm</span>(reg1, reg2, imm) =&gt; <span class="self">Self</span>::serialize_reg_reg_imm(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_reg_imm</span>).unwrap_or(UNUSED_RAW_OPCODE), reg1, reg2, imm),)+
+<a href=#1028 id=1028 data-nosnippet>1028</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_offset</span>(reg1, reg2, imm) =&gt; <span class="self">Self</span>::serialize_reg_reg_offset(buffer, position, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_reg_offset</span>).unwrap_or(UNUSED_RAW_OPCODE), reg1, reg2, imm),)+
+<a href=#1029 id=1029 data-nosnippet>1029</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_reg</span>(reg1, reg2, reg3) =&gt; <span class="self">Self</span>::serialize_reg_reg_reg(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_reg_reg</span>).unwrap_or(UNUSED_RAW_OPCODE), reg1, reg2, reg3),)+
+<a href=#1030 id=1030 data-nosnippet>1030</a>                    $(Self::<span class="macro-nonterminal">$name_offset</span>(imm) =&gt; <span class="self">Self</span>::serialize_offset(buffer, position, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_offset</span>).unwrap_or(UNUSED_RAW_OPCODE), imm),)+
+<a href=#1031 id=1031 data-nosnippet>1031</a>                    $(Self::<span class="macro-nonterminal">$name_imm</span>(imm) =&gt; <span class="self">Self</span>::serialize_imm(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_imm</span>).unwrap_or(UNUSED_RAW_OPCODE), imm),)+
+<a href=#1032 id=1032 data-nosnippet>1032</a>                    $(Self::<span class="macro-nonterminal">$name_imm_imm</span>(imm1, imm2) =&gt; <span class="self">Self</span>::serialize_imm_imm(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_imm_imm</span>).unwrap_or(UNUSED_RAW_OPCODE), imm1, imm2),)+
+<a href=#1033 id=1033 data-nosnippet>1033</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg</span>(reg1, reg2) =&gt; <span class="self">Self</span>::serialize_reg_reg(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_reg</span>).unwrap_or(UNUSED_RAW_OPCODE), reg1, reg2),)+
+<a href=#1034 id=1034 data-nosnippet>1034</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(reg1, reg2, imm1, imm2) =&gt; <span class="self">Self</span>::serialize_reg_reg_imm_imm(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>).unwrap_or(UNUSED_RAW_OPCODE), reg1, reg2, imm1, imm2),)+
+<a href=#1035 id=1035 data-nosnippet>1035</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm64</span>(reg, imm) =&gt; <span class="self">Self</span>::serialize_reg_imm64(buffer, isa.opcode_to_u8(Opcode::<span class="macro-nonterminal">$name_reg_imm64</span>).unwrap_or(UNUSED_RAW_OPCODE), reg, imm),)+
 <a href=#1036 id=1036 data-nosnippet>1036</a>                    <span class="self">Self</span>::invalid =&gt; <span class="self">Self</span>::serialize_argless(buffer, isa.opcode_to_u8(Opcode::trap).unwrap_or(UNUSED_RAW_OPCODE)),
 <a href=#1037 id=1037 data-nosnippet>1037</a>
 <a href=#1038 id=1038 data-nosnippet>1038</a>                }
@@ -1040,26 +1040,26 @@
 <a href=#1040 id=1040 data-nosnippet>1040</a>
 <a href=#1041 id=1041 data-nosnippet>1041</a>            <span class="kw">pub fn </span>opcode(<span class="self">self</span>) -&gt; Opcode {
 <a href=#1042 id=1042 data-nosnippet>1042</a>                <span class="kw">match </span><span class="self">self </span>{
-<a href=#1043 id=1043 data-nosnippet>1043</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_argless </span>=&gt; Opcode::<span class="macro-nonterminal">$name_argless</span>,)+
-<a href=#1044 id=1044 data-nosnippet>1044</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_imm</span>,)+
-<a href=#1045 id=1045 data-nosnippet>1045</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm_offset</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_imm_offset</span>,)+
-<a href=#1046 id=1046 data-nosnippet>1046</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm_imm</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_imm_imm</span>,)+
-<a href=#1047 id=1047 data-nosnippet>1047</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_imm</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_reg_imm</span>,)+
-<a href=#1048 id=1048 data-nosnippet>1048</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_offset</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_reg_offset</span>,)+
-<a href=#1049 id=1049 data-nosnippet>1049</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_reg</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_reg_reg</span>,)+
-<a href=#1050 id=1050 data-nosnippet>1050</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_offset</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_offset</span>,)+
-<a href=#1051 id=1051 data-nosnippet>1051</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_imm</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_imm</span>,)+
-<a href=#1052 id=1052 data-nosnippet>1052</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_imm_imm</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_imm_imm</span>,)+
-<a href=#1053 id=1053 data-nosnippet>1053</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_reg</span>,)+
-<a href=#1054 id=1054 data-nosnippet>1054</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>,)+
-<a href=#1055 id=1055 data-nosnippet>1055</a>                    $(<span class="self">Self</span>::<span class="macro-nonterminal">$name_reg_imm64</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_imm64</span>,)+
+<a href=#1043 id=1043 data-nosnippet>1043</a>                    $(Self::<span class="macro-nonterminal">$name_argless </span>=&gt; Opcode::<span class="macro-nonterminal">$name_argless</span>,)+
+<a href=#1044 id=1044 data-nosnippet>1044</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_imm</span>,)+
+<a href=#1045 id=1045 data-nosnippet>1045</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm_offset</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_imm_offset</span>,)+
+<a href=#1046 id=1046 data-nosnippet>1046</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm_imm</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_imm_imm</span>,)+
+<a href=#1047 id=1047 data-nosnippet>1047</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_imm</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_reg_imm</span>,)+
+<a href=#1048 id=1048 data-nosnippet>1048</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_offset</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_reg_offset</span>,)+
+<a href=#1049 id=1049 data-nosnippet>1049</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_reg</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_reg_reg</span>,)+
+<a href=#1050 id=1050 data-nosnippet>1050</a>                    $(Self::<span class="macro-nonterminal">$name_offset</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_offset</span>,)+
+<a href=#1051 id=1051 data-nosnippet>1051</a>                    $(Self::<span class="macro-nonterminal">$name_imm</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_imm</span>,)+
+<a href=#1052 id=1052 data-nosnippet>1052</a>                    $(Self::<span class="macro-nonterminal">$name_imm_imm</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_imm_imm</span>,)+
+<a href=#1053 id=1053 data-nosnippet>1053</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_reg</span>,)+
+<a href=#1054 id=1054 data-nosnippet>1054</a>                    $(Self::<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>,)+
+<a href=#1055 id=1055 data-nosnippet>1055</a>                    $(Self::<span class="macro-nonterminal">$name_reg_imm64</span>(..) =&gt; Opcode::<span class="macro-nonterminal">$name_reg_imm64</span>,)+
 <a href=#1056 id=1056 data-nosnippet>1056</a>                    <span class="self">Self</span>::invalid =&gt; Opcode::trap,
 <a href=#1057 id=1057 data-nosnippet>1057</a>                }
 <a href=#1058 id=1058 data-nosnippet>1058</a>            }
 <a href=#1059 id=1059 data-nosnippet>1059</a>        }
 <a href=#1060 id=1060 data-nosnippet>1060</a>
 <a href=#1061 id=1061 data-nosnippet>1061</a>        <span class="kw">pub mod </span>asm {
-<a href=#1062 id=1062 data-nosnippet>1062</a>            <span class="kw">use super</span>::{Instruction, Reg};
+<a href=#1062 id=1062 data-nosnippet>1062</a>            <span class="kw">use </span>super::{Instruction, Reg};
 <a href=#1063 id=1063 data-nosnippet>1063</a>
 <a href=#1064 id=1064 data-nosnippet>1064</a>            $(
 <a href=#1065 id=1065 data-nosnippet>1065</a>                <span class="kw">pub fn </span><span class="macro-nonterminal">$name_argless</span>() -&gt; Instruction {
@@ -1355,9 +1355,9 @@
 <a href=#1355 id=1355 data-nosnippet>1355</a>        }
 <a href=#1356 id=1356 data-nosnippet>1356</a>
 <a href=#1357 id=1357 data-nosnippet>1357</a>        <span class="attr">#[macro_export]
-<a href=#1358 id=1358 data-nosnippet>1358</a>        </span><span class="macro">macro_rules!</span> <span class="macro-nonterminal">$build_static_dispatch_table </span>{
+<a href=#1358 id=1358 data-nosnippet>1358</a>        </span>macro_rules! <span class="macro-nonterminal">$build_static_dispatch_table </span>{
 <a href=#1359 id=1359 data-nosnippet>1359</a>            (<span class="macro-nonterminal">$table_name</span>:ident, <span class="macro-nonterminal">$visitor_ty</span>:ident&lt;<span class="macro-nonterminal">$d</span>(<span class="macro-nonterminal">$visitor_ty_params</span>:tt),<span class="kw-2">*</span>&gt;) =&gt; {{
-<a href=#1360 id=1360 data-nosnippet>1360</a>                <span class="kw">use </span><span class="macro-nonterminal">$crate::program</span>::{
+<a href=#1360 id=1360 data-nosnippet>1360</a>                <span class="kw">use </span><span class="macro-nonterminal">$crate::program:</span>:{
 <a href=#1361 id=1361 data-nosnippet>1361</a>                    ParsingVisitor
 <a href=#1362 id=1362 data-nosnippet>1362</a>                };
 <a href=#1363 id=1363 data-nosnippet>1363</a>
@@ -1370,11 +1370,11 @@
 <a href=#1370 id=1370 data-nosnippet>1370</a>                <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; <span class="macro-nonterminal">$crate::program::OpcodeVisitor </span><span class="kw">for </span>DispatchTable&lt;<span class="lifetime">'a</span>&gt; {
 <a href=#1371 id=1371 data-nosnippet>1371</a>                    <span class="kw">type </span>State = <span class="macro-nonterminal">$visitor_ty</span>&lt;<span class="lifetime">'a</span>&gt;;
 <a href=#1372 id=1372 data-nosnippet>1372</a>                    <span class="kw">type </span>ReturnTy = ();
-<a href=#1373 id=1373 data-nosnippet>1373</a>                    <span class="kw">type </span>InstructionSet = <span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name</span>;
+<a href=#1373 id=1373 data-nosnippet>1373</a>                    <span class="kw">type </span>InstructionSet = <span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name</span>;
 <a href=#1374 id=1374 data-nosnippet>1374</a>
 <a href=#1375 id=1375 data-nosnippet>1375</a>                    <span class="attr">#[inline]
 <a href=#1376 id=1376 data-nosnippet>1376</a>                    </span><span class="kw">fn </span>instruction_set(<span class="self">self</span>) -&gt; <span class="self">Self</span>::InstructionSet {
-<a href=#1377 id=1377 data-nosnippet>1377</a>                        <span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name
+<a href=#1377 id=1377 data-nosnippet>1377</a>                        <span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name
 <a href=#1378 id=1378 data-nosnippet>1378</a>                    </span>}
 <a href=#1379 id=1379 data-nosnippet>1379</a>
 <a href=#1380 id=1380 data-nosnippet>1380</a>                    <span class="attr">#[inline]
@@ -1396,7 +1396,7 @@
 <a href=#1396 id=1396 data-nosnippet>1396</a>                            state.<span class="macro-nonterminal">$name_argless</span>(instruction_offset, skip)
 <a href=#1397 id=1397 data-nosnippet>1397</a>                        }
 <a href=#1398 id=1398 data-nosnippet>1398</a>
-<a href=#1399 id=1399 data-nosnippet>1399</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_argless</span>].is_some() {
+<a href=#1399 id=1399 data-nosnippet>1399</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_argless</span>].is_some() {
 <a href=#1400 id=1400 data-nosnippet>1400</a>                            table[<span class="macro-nonterminal">$value_argless</span>] = <span class="macro-nonterminal">$name_argless</span>;
 <a href=#1401 id=1401 data-nosnippet>1401</a>                        }
 <a href=#1402 id=1402 data-nosnippet>1402</a>                    })*
@@ -1408,7 +1408,7 @@
 <a href=#1408 id=1408 data-nosnippet>1408</a>                            state.<span class="macro-nonterminal">$name_reg_imm</span>(instruction_offset, skip, reg, imm)
 <a href=#1409 id=1409 data-nosnippet>1409</a>                        }
 <a href=#1410 id=1410 data-nosnippet>1410</a>
-<a href=#1411 id=1411 data-nosnippet>1411</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_imm</span>].is_some() {
+<a href=#1411 id=1411 data-nosnippet>1411</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_imm</span>].is_some() {
 <a href=#1412 id=1412 data-nosnippet>1412</a>                            table[<span class="macro-nonterminal">$value_reg_imm</span>] = <span class="macro-nonterminal">$name_reg_imm</span>;
 <a href=#1413 id=1413 data-nosnippet>1413</a>                        }
 <a href=#1414 id=1414 data-nosnippet>1414</a>                    })*
@@ -1420,7 +1420,7 @@
 <a href=#1420 id=1420 data-nosnippet>1420</a>                            state.<span class="macro-nonterminal">$name_reg_imm_offset</span>(instruction_offset, skip, reg, imm1, imm2)
 <a href=#1421 id=1421 data-nosnippet>1421</a>                        }
 <a href=#1422 id=1422 data-nosnippet>1422</a>
-<a href=#1423 id=1423 data-nosnippet>1423</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_imm_offset</span>].is_some() {
+<a href=#1423 id=1423 data-nosnippet>1423</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_imm_offset</span>].is_some() {
 <a href=#1424 id=1424 data-nosnippet>1424</a>                            table[<span class="macro-nonterminal">$value_reg_imm_offset</span>] = <span class="macro-nonterminal">$name_reg_imm_offset</span>;
 <a href=#1425 id=1425 data-nosnippet>1425</a>                        }
 <a href=#1426 id=1426 data-nosnippet>1426</a>                    })*
@@ -1432,7 +1432,7 @@
 <a href=#1432 id=1432 data-nosnippet>1432</a>                            state.<span class="macro-nonterminal">$name_reg_imm_imm</span>(instruction_offset, skip, reg, imm1, imm2)
 <a href=#1433 id=1433 data-nosnippet>1433</a>                        }
 <a href=#1434 id=1434 data-nosnippet>1434</a>
-<a href=#1435 id=1435 data-nosnippet>1435</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_imm_imm</span>].is_some() {
+<a href=#1435 id=1435 data-nosnippet>1435</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_imm_imm</span>].is_some() {
 <a href=#1436 id=1436 data-nosnippet>1436</a>                            table[<span class="macro-nonterminal">$value_reg_imm_imm</span>] = <span class="macro-nonterminal">$name_reg_imm_imm</span>;
 <a href=#1437 id=1437 data-nosnippet>1437</a>                        }
 <a href=#1438 id=1438 data-nosnippet>1438</a>                    })*
@@ -1444,7 +1444,7 @@
 <a href=#1444 id=1444 data-nosnippet>1444</a>                            state.<span class="macro-nonterminal">$name_reg_reg_imm</span>(instruction_offset, skip, reg1, reg2, imm)
 <a href=#1445 id=1445 data-nosnippet>1445</a>                        }
 <a href=#1446 id=1446 data-nosnippet>1446</a>
-<a href=#1447 id=1447 data-nosnippet>1447</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_reg_imm</span>].is_some() {
+<a href=#1447 id=1447 data-nosnippet>1447</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_reg_imm</span>].is_some() {
 <a href=#1448 id=1448 data-nosnippet>1448</a>                            table[<span class="macro-nonterminal">$value_reg_reg_imm</span>] = <span class="macro-nonterminal">$name_reg_reg_imm</span>;
 <a href=#1449 id=1449 data-nosnippet>1449</a>                        }
 <a href=#1450 id=1450 data-nosnippet>1450</a>                    })*
@@ -1456,7 +1456,7 @@
 <a href=#1456 id=1456 data-nosnippet>1456</a>                            state.<span class="macro-nonterminal">$name_reg_reg_offset</span>(instruction_offset, skip, reg1, reg2, imm)
 <a href=#1457 id=1457 data-nosnippet>1457</a>                        }
 <a href=#1458 id=1458 data-nosnippet>1458</a>
-<a href=#1459 id=1459 data-nosnippet>1459</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_reg_offset</span>].is_some() {
+<a href=#1459 id=1459 data-nosnippet>1459</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_reg_offset</span>].is_some() {
 <a href=#1460 id=1460 data-nosnippet>1460</a>                            table[<span class="macro-nonterminal">$value_reg_reg_offset</span>] = <span class="macro-nonterminal">$name_reg_reg_offset</span>;
 <a href=#1461 id=1461 data-nosnippet>1461</a>                        }
 <a href=#1462 id=1462 data-nosnippet>1462</a>                    })*
@@ -1468,7 +1468,7 @@
 <a href=#1468 id=1468 data-nosnippet>1468</a>                            state.<span class="macro-nonterminal">$name_reg_reg_reg</span>(instruction_offset, skip, reg1, reg2, reg3)
 <a href=#1469 id=1469 data-nosnippet>1469</a>                        }
 <a href=#1470 id=1470 data-nosnippet>1470</a>
-<a href=#1471 id=1471 data-nosnippet>1471</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_reg_reg</span>].is_some() {
+<a href=#1471 id=1471 data-nosnippet>1471</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_reg_reg</span>].is_some() {
 <a href=#1472 id=1472 data-nosnippet>1472</a>                            table[<span class="macro-nonterminal">$value_reg_reg_reg</span>] = <span class="macro-nonterminal">$name_reg_reg_reg</span>;
 <a href=#1473 id=1473 data-nosnippet>1473</a>                        }
 <a href=#1474 id=1474 data-nosnippet>1474</a>                    })*
@@ -1480,7 +1480,7 @@
 <a href=#1480 id=1480 data-nosnippet>1480</a>                            state.<span class="macro-nonterminal">$name_offset</span>(instruction_offset, skip, imm)
 <a href=#1481 id=1481 data-nosnippet>1481</a>                        }
 <a href=#1482 id=1482 data-nosnippet>1482</a>
-<a href=#1483 id=1483 data-nosnippet>1483</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_offset</span>].is_some() {
+<a href=#1483 id=1483 data-nosnippet>1483</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_offset</span>].is_some() {
 <a href=#1484 id=1484 data-nosnippet>1484</a>                            table[<span class="macro-nonterminal">$value_offset</span>] = <span class="macro-nonterminal">$name_offset</span>;
 <a href=#1485 id=1485 data-nosnippet>1485</a>                        }
 <a href=#1486 id=1486 data-nosnippet>1486</a>                    })*
@@ -1492,7 +1492,7 @@
 <a href=#1492 id=1492 data-nosnippet>1492</a>                            state.<span class="macro-nonterminal">$name_imm</span>(instruction_offset, skip, imm)
 <a href=#1493 id=1493 data-nosnippet>1493</a>                        }
 <a href=#1494 id=1494 data-nosnippet>1494</a>
-<a href=#1495 id=1495 data-nosnippet>1495</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_imm</span>].is_some() {
+<a href=#1495 id=1495 data-nosnippet>1495</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_imm</span>].is_some() {
 <a href=#1496 id=1496 data-nosnippet>1496</a>                            table[<span class="macro-nonterminal">$value_imm</span>] = <span class="macro-nonterminal">$name_imm</span>;
 <a href=#1497 id=1497 data-nosnippet>1497</a>                        }
 <a href=#1498 id=1498 data-nosnippet>1498</a>                    })*
@@ -1504,7 +1504,7 @@
 <a href=#1504 id=1504 data-nosnippet>1504</a>                            state.<span class="macro-nonterminal">$name_imm_imm</span>(instruction_offset, skip, imm1, imm2)
 <a href=#1505 id=1505 data-nosnippet>1505</a>                        }
 <a href=#1506 id=1506 data-nosnippet>1506</a>
-<a href=#1507 id=1507 data-nosnippet>1507</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_imm_imm</span>].is_some() {
+<a href=#1507 id=1507 data-nosnippet>1507</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_imm_imm</span>].is_some() {
 <a href=#1508 id=1508 data-nosnippet>1508</a>                            table[<span class="macro-nonterminal">$value_imm_imm</span>] = <span class="macro-nonterminal">$name_imm_imm</span>;
 <a href=#1509 id=1509 data-nosnippet>1509</a>                        }
 <a href=#1510 id=1510 data-nosnippet>1510</a>                    })*
@@ -1516,7 +1516,7 @@
 <a href=#1516 id=1516 data-nosnippet>1516</a>                            state.<span class="macro-nonterminal">$name_reg_reg</span>(instruction_offset, skip, reg1, reg2)
 <a href=#1517 id=1517 data-nosnippet>1517</a>                        }
 <a href=#1518 id=1518 data-nosnippet>1518</a>
-<a href=#1519 id=1519 data-nosnippet>1519</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_reg</span>].is_some() {
+<a href=#1519 id=1519 data-nosnippet>1519</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_reg</span>].is_some() {
 <a href=#1520 id=1520 data-nosnippet>1520</a>                            table[<span class="macro-nonterminal">$value_reg_reg</span>] = <span class="macro-nonterminal">$name_reg_reg</span>;
 <a href=#1521 id=1521 data-nosnippet>1521</a>                        }
 <a href=#1522 id=1522 data-nosnippet>1522</a>                    })*
@@ -1528,7 +1528,7 @@
 <a href=#1528 id=1528 data-nosnippet>1528</a>                            state.<span class="macro-nonterminal">$name_reg_reg_imm_imm</span>(instruction_offset, skip, reg1, reg2, imm1, imm2)
 <a href=#1529 id=1529 data-nosnippet>1529</a>                        }
 <a href=#1530 id=1530 data-nosnippet>1530</a>
-<a href=#1531 id=1531 data-nosnippet>1531</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_reg_imm_imm</span>].is_some() {
+<a href=#1531 id=1531 data-nosnippet>1531</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_reg_imm_imm</span>].is_some() {
 <a href=#1532 id=1532 data-nosnippet>1532</a>                            table[<span class="macro-nonterminal">$value_reg_reg_imm_imm</span>] = <span class="macro-nonterminal">$name_reg_reg_imm_imm</span>;
 <a href=#1533 id=1533 data-nosnippet>1533</a>                        }
 <a href=#1534 id=1534 data-nosnippet>1534</a>                    })*
@@ -1540,7 +1540,7 @@
 <a href=#1540 id=1540 data-nosnippet>1540</a>                            state.<span class="macro-nonterminal">$name_reg_imm64</span>(instruction_offset, skip, reg, imm)
 <a href=#1541 id=1541 data-nosnippet>1541</a>                        }
 <a href=#1542 id=1542 data-nosnippet>1542</a>
-<a href=#1543 id=1543 data-nosnippet>1543</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program</span>::<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_imm64</span>].is_some() {
+<a href=#1543 id=1543 data-nosnippet>1543</a>                        <span class="kw">if </span><span class="macro-nonterminal">$crate::program:</span>:<span class="macro-nonterminal">$isa_name::RAW_OPCODE_TO_ENUM_CONST</span>[<span class="macro-nonterminal">$value_reg_imm64</span>].is_some() {
 <a href=#1544 id=1544 data-nosnippet>1544</a>                            table[<span class="macro-nonterminal">$value_reg_imm64</span>] = <span class="macro-nonterminal">$name_reg_imm64</span>;
 <a href=#1545 id=1545 data-nosnippet>1545</a>                        }
 <a href=#1546 id=1546 data-nosnippet>1546</a>                    })*
@@ -3516,7 +3516,7 @@
 <a href=#3516 id=3516 data-nosnippet>3516</a>
 <a href=#3517 id=3517 data-nosnippet>3517</a>    <span class="kw">fn </span>store_indirect_u8(<span class="kw-2">&amp;mut </span><span class="self">self</span>, src: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3518 id=3518 data-nosnippet>3518</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3519 id=3519 data-nosnippet>3519</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
+<a href=#3519 id=3519 data-nosnippet>3519</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
 <a href=#3520 id=3520 data-nosnippet>3520</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3521 id=3521 data-nosnippet>3521</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"u8 [{base} + {offset}] = {src}"</span>)
 <a href=#3522 id=3522 data-nosnippet>3522</a>        } <span class="kw">else </span>{
@@ -3527,7 +3527,7 @@
 <a href=#3527 id=3527 data-nosnippet>3527</a>    <span class="kw">fn </span>store_indirect_u16(<span class="kw-2">&amp;mut </span><span class="self">self</span>, src: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3528 id=3528 data-nosnippet>3528</a>        <span class="kw">let </span>src = <span class="self">self</span>.format_reg(src);
 <a href=#3529 id=3529 data-nosnippet>3529</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3530 id=3530 data-nosnippet>3530</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
+<a href=#3530 id=3530 data-nosnippet>3530</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
 <a href=#3531 id=3531 data-nosnippet>3531</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3532 id=3532 data-nosnippet>3532</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"u16 [{base} + {offset}] = {src}"</span>)
 <a href=#3533 id=3533 data-nosnippet>3533</a>        } <span class="kw">else </span>{
@@ -3538,7 +3538,7 @@
 <a href=#3538 id=3538 data-nosnippet>3538</a>    <span class="kw">fn </span>store_indirect_u32(<span class="kw-2">&amp;mut </span><span class="self">self</span>, src: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3539 id=3539 data-nosnippet>3539</a>        <span class="kw">let </span>src = <span class="self">self</span>.format_reg(src);
 <a href=#3540 id=3540 data-nosnippet>3540</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3541 id=3541 data-nosnippet>3541</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
+<a href=#3541 id=3541 data-nosnippet>3541</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
 <a href=#3542 id=3542 data-nosnippet>3542</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3543 id=3543 data-nosnippet>3543</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"u32 [{base} + {offset}] = {src}"</span>)
 <a href=#3544 id=3544 data-nosnippet>3544</a>        } <span class="kw">else </span>{
@@ -3549,7 +3549,7 @@
 <a href=#3549 id=3549 data-nosnippet>3549</a>    <span class="kw">fn </span>store_indirect_u64(<span class="kw-2">&amp;mut </span><span class="self">self</span>, src: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3550 id=3550 data-nosnippet>3550</a>        <span class="kw">let </span>src = <span class="self">self</span>.format_reg(src);
 <a href=#3551 id=3551 data-nosnippet>3551</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3552 id=3552 data-nosnippet>3552</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
+<a href=#3552 id=3552 data-nosnippet>3552</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
 <a href=#3553 id=3553 data-nosnippet>3553</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3554 id=3554 data-nosnippet>3554</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"u64 [{base} + {offset}] = {src}"</span>)
 <a href=#3555 id=3555 data-nosnippet>3555</a>        } <span class="kw">else </span>{
@@ -3608,7 +3608,7 @@
 <a href=#3608 id=3608 data-nosnippet>3608</a>    <span class="kw">fn </span>load_indirect_u8(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3609 id=3609 data-nosnippet>3609</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3610 id=3610 data-nosnippet>3610</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3611 id=3611 data-nosnippet>3611</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
+<a href=#3611 id=3611 data-nosnippet>3611</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
 <a href=#3612 id=3612 data-nosnippet>3612</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3613 id=3613 data-nosnippet>3613</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = u8 [{} + {}]"</span>, dst, base, offset)
 <a href=#3614 id=3614 data-nosnippet>3614</a>        } <span class="kw">else </span>{
@@ -3619,7 +3619,7 @@
 <a href=#3619 id=3619 data-nosnippet>3619</a>    <span class="kw">fn </span>load_indirect_i8(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3620 id=3620 data-nosnippet>3620</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3621 id=3621 data-nosnippet>3621</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3622 id=3622 data-nosnippet>3622</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
+<a href=#3622 id=3622 data-nosnippet>3622</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
 <a href=#3623 id=3623 data-nosnippet>3623</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3624 id=3624 data-nosnippet>3624</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = i8 [{} + {}]"</span>, dst, base, offset)
 <a href=#3625 id=3625 data-nosnippet>3625</a>        } <span class="kw">else </span>{
@@ -3630,7 +3630,7 @@
 <a href=#3630 id=3630 data-nosnippet>3630</a>    <span class="kw">fn </span>load_indirect_u16(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3631 id=3631 data-nosnippet>3631</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3632 id=3632 data-nosnippet>3632</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3633 id=3633 data-nosnippet>3633</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
+<a href=#3633 id=3633 data-nosnippet>3633</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
 <a href=#3634 id=3634 data-nosnippet>3634</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3635 id=3635 data-nosnippet>3635</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = u16 [{} + {}]"</span>, dst, base, offset)
 <a href=#3636 id=3636 data-nosnippet>3636</a>        } <span class="kw">else </span>{
@@ -3641,7 +3641,7 @@
 <a href=#3641 id=3641 data-nosnippet>3641</a>    <span class="kw">fn </span>load_indirect_i16(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3642 id=3642 data-nosnippet>3642</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3643 id=3643 data-nosnippet>3643</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3644 id=3644 data-nosnippet>3644</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
+<a href=#3644 id=3644 data-nosnippet>3644</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
 <a href=#3645 id=3645 data-nosnippet>3645</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3646 id=3646 data-nosnippet>3646</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = i16 [{} + {}]"</span>, dst, base, offset)
 <a href=#3647 id=3647 data-nosnippet>3647</a>        } <span class="kw">else </span>{
@@ -3652,7 +3652,7 @@
 <a href=#3652 id=3652 data-nosnippet>3652</a>    <span class="kw">fn </span>load_indirect_u32(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3653 id=3653 data-nosnippet>3653</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3654 id=3654 data-nosnippet>3654</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3655 id=3655 data-nosnippet>3655</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
+<a href=#3655 id=3655 data-nosnippet>3655</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
 <a href=#3656 id=3656 data-nosnippet>3656</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3657 id=3657 data-nosnippet>3657</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = u32 [{} + {}]"</span>, dst, base, offset)
 <a href=#3658 id=3658 data-nosnippet>3658</a>        } <span class="kw">else </span>{
@@ -3663,7 +3663,7 @@
 <a href=#3663 id=3663 data-nosnippet>3663</a>    <span class="kw">fn </span>load_indirect_i32(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3664 id=3664 data-nosnippet>3664</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3665 id=3665 data-nosnippet>3665</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3666 id=3666 data-nosnippet>3666</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
+<a href=#3666 id=3666 data-nosnippet>3666</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
 <a href=#3667 id=3667 data-nosnippet>3667</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3668 id=3668 data-nosnippet>3668</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = i32 [{} + {}]"</span>, dst, base, offset)
 <a href=#3669 id=3669 data-nosnippet>3669</a>        } <span class="kw">else </span>{
@@ -3674,7 +3674,7 @@
 <a href=#3674 id=3674 data-nosnippet>3674</a>    <span class="kw">fn </span>load_indirect_u64(<span class="kw-2">&amp;mut </span><span class="self">self</span>, dst: RawReg, base: RawReg, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3675 id=3675 data-nosnippet>3675</a>        <span class="kw">let </span>dst = <span class="self">self</span>.format_reg(dst);
 <a href=#3676 id=3676 data-nosnippet>3676</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3677 id=3677 data-nosnippet>3677</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || <span class="macro">offset !</span>= <span class="number">0 </span>{
+<a href=#3677 id=3677 data-nosnippet>3677</a>        <span class="kw">if </span><span class="self">self</span>.format.prefer_unaliased || offset != <span class="number">0 </span>{
 <a href=#3678 id=3678 data-nosnippet>3678</a>            <span class="kw">let </span>offset = <span class="self">self</span>.format_imm(offset);
 <a href=#3679 id=3679 data-nosnippet>3679</a>            <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{} = u64 [{} + {}]"</span>, dst, base, offset)
 <a href=#3680 id=3680 data-nosnippet>3680</a>        } <span class="kw">else </span>{
@@ -3853,7 +3853,7 @@
 <a href=#3853 id=3853 data-nosnippet>3853</a>    <span class="kw">fn </span>load_imm_and_jump_indirect(<span class="kw-2">&amp;mut </span><span class="self">self</span>, ra: RawReg, base: RawReg, value: u32, offset: u32) -&gt; <span class="self">Self</span>::ReturnTy {
 <a href=#3854 id=3854 data-nosnippet>3854</a>        <span class="kw">let </span>ra = <span class="self">self</span>.format_reg(ra);
 <a href=#3855 id=3855 data-nosnippet>3855</a>        <span class="kw">let </span>base = <span class="self">self</span>.format_reg(base);
-<a href=#3856 id=3856 data-nosnippet>3856</a>        <span class="kw">if </span><span class="macro">ra !</span>= base {
+<a href=#3856 id=3856 data-nosnippet>3856</a>        <span class="kw">if </span>ra != base {
 <a href=#3857 id=3857 data-nosnippet>3857</a>            <span class="kw">if </span>!<span class="self">self</span>.format.prefer_unaliased &amp;&amp; offset == <span class="number">0 </span>{
 <a href=#3858 id=3858 data-nosnippet>3858</a>                <span class="macro">write!</span>(<span class="self">self</span>, <span class="string">"{ra} = {value}, jump [{base}]"</span>)
 <a href=#3859 id=3859 data-nosnippet>3859</a>            } <span class="kw">else </span>{
@@ -4190,7 +4190,7 @@
 <a href=#4190 id=4190 data-nosnippet>4190</a>    }
 <a href=#4191 id=4191 data-nosnippet>4191</a>
 <a href=#4192 id=4192 data-nosnippet>4192</a>    <span class="kw">fn </span>read_section_as_bytes(<span class="kw-2">&amp;mut </span><span class="self">self</span>, out_section: <span class="kw-2">&amp;mut </span>u8, expected_section: u8) -&gt; <span class="prelude-ty">Result</span>&lt;ArcBytes, ProgramParseError&gt; {
-<a href=#4193 id=4193 data-nosnippet>4193</a>        <span class="kw">if </span><span class="kw-2">*</span><span class="macro">out_section !</span>= expected_section {
+<a href=#4193 id=4193 data-nosnippet>4193</a>        <span class="kw">if </span><span class="kw-2">*</span>out_section != expected_section {
 <a href=#4194 id=4194 data-nosnippet>4194</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(ArcBytes::default());
 <a href=#4195 id=4195 data-nosnippet>4195</a>        }
 <a href=#4196 id=4196 data-nosnippet>4196</a>
@@ -5144,7 +5144,7 @@
 <a href=#5144 id=5144 data-nosnippet>5144</a>        };
 <a href=#5145 id=5145 data-nosnippet>5145</a>
 <a href=#5146 id=5146 data-nosnippet>5146</a>        <span class="kw">let </span>blob_len = BlobLen::from_le_bytes(reader.read_slice(BLOB_LEN_SIZE)<span class="question-mark">?</span>.try_into().unwrap());
-<a href=#5147 id=5147 data-nosnippet>5147</a>        <span class="kw">if </span><span class="macro">blob_len !</span>= blob.len() <span class="kw">as </span>u64 {
+<a href=#5147 id=5147 data-nosnippet>5147</a>        <span class="kw">if </span>blob_len != blob.len() <span class="kw">as </span>u64 {
 <a href=#5148 id=5148 data-nosnippet>5148</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(ProgramParseError(ProgramParseErrorKind::Other(
 <a href=#5149 id=5149 data-nosnippet>5149</a>                <span class="string">"blob size doesn't match the blob length metadata"</span>,
 <a href=#5150 id=5150 data-nosnippet>5150</a>            )));
@@ -5158,7 +5158,7 @@
 <a href=#5158 id=5158 data-nosnippet>5158</a>            parts.ro_data_size = reader.read_varint()<span class="question-mark">?</span>;
 <a href=#5159 id=5159 data-nosnippet>5159</a>            parts.rw_data_size = reader.read_varint()<span class="question-mark">?</span>;
 <a href=#5160 id=5160 data-nosnippet>5160</a>            parts.stack_size = reader.read_varint()<span class="question-mark">?</span>;
-<a href=#5161 id=5161 data-nosnippet>5161</a>            <span class="kw">if </span>position + section_length <span class="kw">as </span><span class="macro">usize !</span>= reader.position {
+<a href=#5161 id=5161 data-nosnippet>5161</a>            <span class="kw">if </span>position + section_length <span class="kw">as </span>usize != reader.position {
 <a href=#5162 id=5162 data-nosnippet>5162</a>                <span class="kw">return </span><span class="prelude-val">Err</span>(ProgramParseError(ProgramParseErrorKind::Other(
 <a href=#5163 id=5163 data-nosnippet>5163</a>                    <span class="string">"the memory config section contains more data than expected"</span>,
 <a href=#5164 id=5164 data-nosnippet>5164</a>                )));
@@ -5205,7 +5205,7 @@
 <a href=#5205 id=5205 data-nosnippet>5205</a>            section = reader.read_byte()<span class="question-mark">?</span>;
 <a href=#5206 id=5206 data-nosnippet>5206</a>        }
 <a href=#5207 id=5207 data-nosnippet>5207</a>
-<a href=#5208 id=5208 data-nosnippet>5208</a>        <span class="kw">if </span><span class="macro">section !</span>= SECTION_END_OF_FILE {
+<a href=#5208 id=5208 data-nosnippet>5208</a>        <span class="kw">if </span>section != SECTION_END_OF_FILE {
 <a href=#5209 id=5209 data-nosnippet>5209</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(ProgramParseError(ProgramParseErrorKind::UnexpectedSection {
 <a href=#5210 id=5210 data-nosnippet>5210</a>                offset: reader.position - <span class="number">1</span>,
 <a href=#5211 id=5211 data-nosnippet>5211</a>                section,
@@ -5326,7 +5326,7 @@
 <a href=#5326 id=5326 data-nosnippet>5326</a>                <span class="kw">let </span>last_byte = <span class="kw-2">*</span>blob.bitmask.last().unwrap();
 <a href=#5327 id=5327 data-nosnippet>5327</a>                <span class="kw">let </span>padding_bits = blob.bitmask.len() * <span class="number">8 </span>- blob.code.len();
 <a href=#5328 id=5328 data-nosnippet>5328</a>                <span class="kw">let </span>padding_mask = ((<span class="number">0b10000000_u8 </span><span class="kw">as </span>i8) &gt;&gt; (padding_bits - <span class="number">1</span>)) <span class="kw">as </span>u8;
-<a href=#5329 id=5329 data-nosnippet>5329</a>                <span class="kw">if </span>last_byte &amp; <span class="macro">padding_mask !</span>= <span class="number">0 </span>{
+<a href=#5329 id=5329 data-nosnippet>5329</a>                <span class="kw">if </span>last_byte &amp; padding_mask != <span class="number">0 </span>{
 <a href=#5330 id=5330 data-nosnippet>5330</a>                    <span class="kw">return </span><span class="prelude-val">Err</span>(ProgramParseError(ProgramParseErrorKind::Other(
 <a href=#5331 id=5331 data-nosnippet>5331</a>                        <span class="string">"the bitmask is padded with non-zero bits"</span>,
 <a href=#5332 id=5332 data-nosnippet>5332</a>                    )));
@@ -5622,7 +5622,7 @@
 <a href=#5622 id=5622 data-nosnippet>5622</a>        <span class="kw">const </span>ENTRY_SIZE: usize = <span class="number">12</span>;
 <a href=#5623 id=5623 data-nosnippet>5623</a>
 <a href=#5624 id=5624 data-nosnippet>5624</a>        <span class="kw">let </span>slice = <span class="kw-2">&amp;</span><span class="self">self</span>.debug_line_program_ranges;
-<a href=#5625 id=5625 data-nosnippet>5625</a>        <span class="kw">if </span>slice.len() % <span class="macro">ENTRY_SIZE !</span>= <span class="number">0 </span>{
+<a href=#5625 id=5625 data-nosnippet>5625</a>        <span class="kw">if </span>slice.len() % ENTRY_SIZE != <span class="number">0 </span>{
 <a href=#5626 id=5626 data-nosnippet>5626</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(ProgramParseError(ProgramParseErrorKind::Other(
 <a href=#5627 id=5627 data-nosnippet>5627</a>                <span class="string">"the debug function ranges section has an invalid size"</span>,
 <a href=#5628 id=5628 data-nosnippet>5628</a>            )));

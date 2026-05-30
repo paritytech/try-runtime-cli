@@ -1,9 +1,9 @@
 (function() {
-    var implementors = Object.fromEntries([["libp2p",[]],["libp2p_kad",[]]]);
+    const implementors = Object.fromEntries([["libp2p",[]],["libp2p_kad",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":57,"fragment_lengths":[13,18]}
+//{"start":59,"fragment_lengths":[13,18]}

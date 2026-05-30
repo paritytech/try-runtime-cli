@@ -1,9 +1,9 @@
 (function() {
-    var implementors = Object.fromEntries([["memory_db",[]],["sp_trie",[]]]);
+    const implementors = Object.fromEntries([["memory_db",[]],["sp_trie",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":57,"fragment_lengths":[16,15]}
+//{"start":59,"fragment_lengths":[16,15]}

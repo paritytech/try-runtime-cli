@@ -1,9 +1,9 @@
 (function() {
-    var implementors = Object.fromEntries([["sp_runtime_interface",[]]]);
+    const implementors = Object.fromEntries([["sp_runtime_interface",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":57,"fragment_lengths":[27]}
+//{"start":59,"fragment_lengths":[27]}

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bitcoin_hashes-0.14.1/src/sha256.rs`."><title>sha256.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bitcoin_hashes" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">bitcoin_hashes/</div>sha256.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// SPDX-License-Identifier: CC0-1.0
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/bitcoin_hashes-0.14.1/src/sha256.rs`."><title>sha256.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="bitcoin_hashes" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">bitcoin_hashes/</div>sha256.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// SPDX-License-Identifier: CC0-1.0
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a></span><span class="doccomment">//! SHA256 implementation.
 <a href=#4 id=4 data-nosnippet>4</a>//!
@@ -11,7 +11,7 @@
 <a href=#11 id=11 data-nosnippet>11</a><span class="kw">use </span>core::slice::SliceIndex;
 <a href=#12 id=12 data-nosnippet>12</a><span class="kw">use </span>core::{cmp, str};
 <a href=#13 id=13 data-nosnippet>13</a>
-<a href=#14 id=14 data-nosnippet>14</a><span class="kw">use crate</span>::{sha256d, FromSliceError, HashEngine <span class="kw">as _</span>};
+<a href=#14 id=14 data-nosnippet>14</a><span class="kw">use </span>crate::{sha256d, FromSliceError, HashEngine <span class="kw">as _</span>};
 <a href=#15 id=15 data-nosnippet>15</a>
 <a href=#16 id=16 data-nosnippet>16</a><span class="macro">crate::internal_macros::hash_type!</span> {
 <a href=#17 id=17 data-nosnippet>17</a>    <span class="number">256</span>,
@@ -200,7 +200,7 @@
 <a href=#200 id=200 data-nosnippet>200</a><span class="attr">#[cfg(feature = <span class="string">"small-hash"</span>)]
 <a href=#201 id=201 data-nosnippet>201</a>#[macro_use]
 <a href=#202 id=202 data-nosnippet>202</a></span><span class="kw">mod </span>small_hash {
-<a href=#203 id=203 data-nosnippet>203</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#203 id=203 data-nosnippet>203</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#204 id=204 data-nosnippet>204</a>
 <a href=#205 id=205 data-nosnippet>205</a>    <span class="attr">#[rustfmt::skip]
 <a href=#206 id=206 data-nosnippet>206</a>    </span><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">const fn </span>round(a: u32, b: u32, c: u32, d: u32, e: u32,
@@ -815,8 +815,8 @@
 <a href=#815 id=815 data-nosnippet>815</a>
 <a href=#816 id=816 data-nosnippet>816</a><span class="attr">#[cfg(test)]
 <a href=#817 id=817 data-nosnippet>817</a></span><span class="kw">mod </span>tests {
-<a href=#818 id=818 data-nosnippet>818</a>    <span class="kw">use crate</span>::{sha256, Hash <span class="kw">as _</span>, HashEngine};
-<a href=#819 id=819 data-nosnippet>819</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#818 id=818 data-nosnippet>818</a>    <span class="kw">use </span>crate::{sha256, Hash <span class="kw">as _</span>, HashEngine};
+<a href=#819 id=819 data-nosnippet>819</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#820 id=820 data-nosnippet>820</a>
 <a href=#821 id=821 data-nosnippet>821</a>    <span class="attr">#[test]
 <a href=#822 id=822 data-nosnippet>822</a>    #[cfg(feature = <span class="string">"alloc"</span>)]
@@ -1029,7 +1029,7 @@
 <a href=#1029 id=1029 data-nosnippet>1029</a>    </span><span class="kw">mod </span>wasm_tests {
 <a href=#1030 id=1030 data-nosnippet>1030</a>        <span class="kw">extern crate </span>wasm_bindgen_test;
 <a href=#1031 id=1031 data-nosnippet>1031</a>        <span class="kw">use </span><span class="self">self</span>::wasm_bindgen_test::<span class="kw-2">*</span>;
-<a href=#1032 id=1032 data-nosnippet>1032</a>        <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#1032 id=1032 data-nosnippet>1032</a>        <span class="kw">use </span>super::<span class="kw-2">*</span>;
 <a href=#1033 id=1033 data-nosnippet>1033</a>        <span class="attr">#[wasm_bindgen_test]
 <a href=#1034 id=1034 data-nosnippet>1034</a>        </span><span class="kw">fn </span>sha256_tests() {
 <a href=#1035 id=1035 data-nosnippet>1035</a>            test();
@@ -1043,7 +1043,7 @@
 <a href=#1043 id=1043 data-nosnippet>1043</a></span><span class="kw">mod </span>benches {
 <a href=#1044 id=1044 data-nosnippet>1044</a>    <span class="kw">use </span>test::Bencher;
 <a href=#1045 id=1045 data-nosnippet>1045</a>
-<a href=#1046 id=1046 data-nosnippet>1046</a>    <span class="kw">use crate</span>::{sha256, Hash, HashEngine};
+<a href=#1046 id=1046 data-nosnippet>1046</a>    <span class="kw">use </span>crate::{sha256, Hash, HashEngine};
 <a href=#1047 id=1047 data-nosnippet>1047</a>
 <a href=#1048 id=1048 data-nosnippet>1048</a>    <span class="attr">#[bench]
 <a href=#1049 id=1049 data-nosnippet>1049</a>    </span><span class="kw">pub fn </span>sha256_10(bh: <span class="kw-2">&amp;mut </span>Bencher) {
