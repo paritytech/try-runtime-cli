@@ -14,15 +14,18 @@ env:
   RUST_BACKTRACE: 1
   # pin nightly to avoid constantly throwing out cache
   TOOLCHAIN_FMT: nightly-2026-01-01
+  # must match polkadot-sdk's CI toolchain (see .github/env in polkadot-sdk)
+  TOOLCHAIN_STABLE: "1.93.0"
 
 jobs:
   doc:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Rust stable
+      - name: Install Rust ${{ env.TOOLCHAIN_STABLE }}
         uses: dtolnay/rust-toolchain@stable
         with:
+          toolchain: ${{ env.TOOLCHAIN_STABLE }}
           targets: wasm32-unknown-unknown
       - uses: Swatinem/rust-cache@v2
         with:
@@ -58,10 +61,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Rust stable
+      - name: Install Rust ${{ env.TOOLCHAIN_STABLE }}
         uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
+          toolchain: ${{ env.TOOLCHAIN_STABLE }}
           targets: wasm32-unknown-unknown
           components: rustfmt, clippy, rust-src
       - uses: Swatinem/rust-cache@v2
@@ -75,23 +78,22 @@ jobs:
       - name: cargo clippy
         uses: actions-rs-plus/clippy-check@v2
         with:
-          toolchain: stable
+          toolchain: ${{ env.TOOLCHAIN_STABLE }}
           args: --all-targets --all-features --locked --no-deps -- --deny warnings
 
   test:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        toolchain: [stable]
     runs-on: ${{ matrix.os }}
     env:
       RUSTFLAGS: "-Cdebug-assertions=y"
     steps:
       - uses: actions/checkout@v4
-      - name: Install Rust ${{ matrix.toolchain }}
+      - name: Install Rust ${{ env.TOOLCHAIN_STABLE }}
         uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: ${{ matrix.toolchain }}
+          toolchain: ${{ env.TOOLCHAIN_STABLE }}
           targets: wasm32-unknown-unknown
       - uses: Swatinem/rust-cache@v2
       - name: Install Protoc

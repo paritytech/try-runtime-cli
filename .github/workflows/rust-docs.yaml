@@ -1,5 +1,8 @@
 name: Update rust docs
 
+env:
+  TOOLCHAIN_STABLE: "1.93.0"
+
 on:
   push:
     branches:
@@ -27,10 +30,10 @@ jobs:
       - name: Install Rust Stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
+          toolchain: ${{ env.TOOLCHAIN_STABLE }}
           targets: wasm32-unknown-unknown
           components: rust-src
-        
+
       - name: Check if the README is up to date.
         run: |
           cargo install cargo-rdme --locked -q
