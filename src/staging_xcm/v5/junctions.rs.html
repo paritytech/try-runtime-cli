@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/polkadot/xcm/src/v5/junctions.rs`."><title>junctions.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="staging_xcm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">staging_xcm/v5/</div>junctions.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/polkadot/xcm/src/v5/junctions.rs`."><title>junctions.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="staging_xcm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">staging_xcm/v5/</div>junctions.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#2 id=2 data-nosnippet>2</a>// This file is part of Polkadot.
 <a href=#3 id=3 data-nosnippet>3</a>
 <a href=#4 id=4 data-nosnippet>4</a>// Polkadot is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 <a href=#16 id=16 data-nosnippet>16</a>
 <a href=#17 id=17 data-nosnippet>17</a></span><span class="doccomment">//! XCM `Junctions`/`InteriorLocation` datatype.
 <a href=#18 id=18 data-nosnippet>18</a>
-<a href=#19 id=19 data-nosnippet>19</a></span><span class="kw">use </span>super::{Junction, Location, NetworkId};
+<a href=#19 id=19 data-nosnippet>19</a></span><span class="kw">use super</span>::{Junction, Location, NetworkId};
 <a href=#20 id=20 data-nosnippet>20</a><span class="kw">use </span>alloc::sync::Arc;
 <a href=#21 id=21 data-nosnippet>21</a><span class="kw">use </span>codec::{Decode, DecodeWithMemTracking, Encode, MaxEncodedLen};
 <a href=#22 id=22 data-nosnippet>22</a><span class="kw">use </span>core::{mem, ops::Range, result};
@@ -70,7 +70,7 @@
 <a href=#70 id=70 data-nosnippet>70</a>	(<span class="macro-nonterminal">$count</span>:expr, <span class="macro-nonterminal">$variant</span>:ident) =&gt; {
 <a href=#71 id=71 data-nosnippet>71</a>		<span class="kw">impl </span>From&lt;[Junction; <span class="macro-nonterminal">$count</span>]&gt; <span class="kw">for </span>Junctions {
 <a href=#72 id=72 data-nosnippet>72</a>			<span class="kw">fn </span>from(junctions: [Junction; <span class="macro-nonterminal">$count</span>]) -&gt; <span class="self">Self </span>{
-<a href=#73 id=73 data-nosnippet>73</a>				Self::<span class="macro-nonterminal">$variant</span>(Arc::new(junctions))
+<a href=#73 id=73 data-nosnippet>73</a>				<span class="self">Self</span>::<span class="macro-nonterminal">$variant</span>(Arc::new(junctions))
 <a href=#74 id=74 data-nosnippet>74</a>			}
 <a href=#75 id=75 data-nosnippet>75</a>		}
 <a href=#76 id=76 data-nosnippet>76</a>		<span class="kw">impl </span>PartialEq&lt;[Junction; <span class="macro-nonterminal">$count</span>]&gt; <span class="kw">for </span>Junctions {
@@ -243,7 +243,7 @@
 <a href=#243 id=243 data-nosnippet>243</a>	/// junctions in `self`, implying that relative refers into a different global consensus.
 <a href=#244 id=244 data-nosnippet>244</a>	</span><span class="kw">pub fn </span>within_global(<span class="kw-2">mut </span><span class="self">self</span>, relative: Location) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, ()&gt; {
 <a href=#245 id=245 data-nosnippet>245</a>		<span class="kw">if </span><span class="self">self</span>.len() &lt;= relative.parent_count() <span class="kw">as </span>usize {
-<a href=#246 id=246 data-nosnippet>246</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(())
+<a href=#246 id=246 data-nosnippet>246</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(());
 <a href=#247 id=247 data-nosnippet>247</a>		}
 <a href=#248 id=248 data-nosnippet>248</a>		<span class="kw">for _ in </span><span class="number">0</span>..relative.parent_count() {
 <a href=#249 id=249 data-nosnippet>249</a>			<span class="self">self</span>.take_last();
@@ -508,7 +508,7 @@
 <a href=#508 id=508 data-nosnippet>508</a>	</span><span class="kw">pub fn </span>append_with(<span class="kw-2">&amp;mut </span><span class="self">self</span>, suffix: <span class="kw">impl </span>Into&lt;Junctions&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;(), Junctions&gt; {
 <a href=#509 id=509 data-nosnippet>509</a>		<span class="kw">let </span>suffix = suffix.into();
 <a href=#510 id=510 data-nosnippet>510</a>		<span class="kw">if </span><span class="self">self</span>.len().saturating_add(suffix.len()) &gt; MAX_JUNCTIONS {
-<a href=#511 id=511 data-nosnippet>511</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(suffix)
+<a href=#511 id=511 data-nosnippet>511</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(suffix);
 <a href=#512 id=512 data-nosnippet>512</a>		}
 <a href=#513 id=513 data-nosnippet>513</a>		<span class="kw">for </span>j <span class="kw">in </span>suffix.into_iter() {
 <a href=#514 id=514 data-nosnippet>514</a>			<span class="self">self</span>.push(j).expect(<span class="string">"Already checked the sum of the len()s; qed"</span>)
@@ -552,14 +552,14 @@
 <a href=#552 id=552 data-nosnippet>552</a>	/// ```
 <a href=#553 id=553 data-nosnippet>553</a>	</span><span class="kw">pub fn </span>match_and_split(<span class="kw-2">&amp;</span><span class="self">self</span>, prefix: <span class="kw-2">&amp;</span>Junctions) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Junction&gt; {
 <a href=#554 id=554 data-nosnippet>554</a>		<span class="kw">if </span>prefix.len() + <span class="number">1 </span>!= <span class="self">self</span>.len() {
-<a href=#555 id=555 data-nosnippet>555</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#556 id=556 data-nosnippet>556</a>		</span>}
+<a href=#555 id=555 data-nosnippet>555</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#556 id=556 data-nosnippet>556</a>		}
 <a href=#557 id=557 data-nosnippet>557</a>		<span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..prefix.len() {
 <a href=#558 id=558 data-nosnippet>558</a>			<span class="kw">if </span>prefix.at(i) != <span class="self">self</span>.at(i) {
-<a href=#559 id=559 data-nosnippet>559</a>				<span class="kw">return </span><span class="prelude-val">None
-<a href=#560 id=560 data-nosnippet>560</a>			</span>}
+<a href=#559 id=559 data-nosnippet>559</a>				<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#560 id=560 data-nosnippet>560</a>			}
 <a href=#561 id=561 data-nosnippet>561</a>		}
-<a href=#562 id=562 data-nosnippet>562</a>		<span class="kw">return </span><span class="self">self</span>.at(prefix.len())
+<a href=#562 id=562 data-nosnippet>562</a>		<span class="kw">return </span><span class="self">self</span>.at(prefix.len());
 <a href=#563 id=563 data-nosnippet>563</a>	}
 <a href=#564 id=564 data-nosnippet>564</a>
 <a href=#565 id=565 data-nosnippet>565</a>	<span class="kw">pub fn </span>starts_with(<span class="kw-2">&amp;</span><span class="self">self</span>, prefix: <span class="kw-2">&amp;</span>Junctions) -&gt; bool {
@@ -600,7 +600,7 @@
 <a href=#600 id=600 data-nosnippet>600</a>
 <a href=#601 id=601 data-nosnippet>601</a><span class="attr">#[cfg(test)]
 <a href=#602 id=602 data-nosnippet>602</a></span><span class="kw">mod </span>tests {
-<a href=#603 id=603 data-nosnippet>603</a>	<span class="kw">use </span>super::{<span class="kw">super</span>::prelude::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
+<a href=#603 id=603 data-nosnippet>603</a>	<span class="kw">use super</span>::{<span class="kw">super</span>::prelude::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
 <a href=#604 id=604 data-nosnippet>604</a>
 <a href=#605 id=605 data-nosnippet>605</a>	<span class="attr">#[test]
 <a href=#606 id=606 data-nosnippet>606</a>	</span><span class="kw">fn </span>inverting_works() {
@@ -697,7 +697,7 @@
 <a href=#697 id=697 data-nosnippet>697</a>
 <a href=#698 id=698 data-nosnippet>698</a>	<span class="attr">#[test]
 <a href=#699 id=699 data-nosnippet>699</a>	</span><span class="kw">fn </span>test_conversion() {
-<a href=#700 id=700 data-nosnippet>700</a>		<span class="kw">use </span>super::{Junction::<span class="kw-2">*</span>, NetworkId::<span class="kw-2">*</span>};
+<a href=#700 id=700 data-nosnippet>700</a>		<span class="kw">use super</span>::{Junction::<span class="kw-2">*</span>, NetworkId::<span class="kw-2">*</span>};
 <a href=#701 id=701 data-nosnippet>701</a>		<span class="kw">let </span>x: Junctions = GlobalConsensus(Polkadot).into();
 <a href=#702 id=702 data-nosnippet>702</a>		<span class="macro">assert_eq!</span>(x, Junctions::from([GlobalConsensus(Polkadot)]));
 <a href=#703 id=703 data-nosnippet>703</a>		<span class="kw">let </span>x: Junctions = Polkadot.into();

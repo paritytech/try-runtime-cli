@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-35.0.0/src/runtime/vm/mmap.rs`."><title>mmap.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="wasmtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">wasmtime/runtime/vm/</div>mmap.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Low-level abstraction for allocating and managing zero-filled pages
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-36.0.10/src/runtime/vm/mmap.rs`."><title>mmap.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="wasmtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasmtime/runtime/vm/</div>mmap.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Low-level abstraction for allocating and managing zero-filled pages
 <a href=#2 id=2 data-nosnippet>2</a>//! of memory.
 <a href=#3 id=3 data-nosnippet>3</a>
 <a href=#4 id=4 data-nosnippet>4</a></span><span class="kw">use </span><span class="kw">super</span>::HostAlignedByteCount;
@@ -187,7 +187,7 @@
 <a href=#187 id=187 data-nosnippet>187</a>            <span class="self">self</span>.len_aligned()
 <a href=#188 id=188 data-nosnippet>188</a>        );
 <a href=#189 id=189 data-nosnippet>189</a>
-<a href=#190 id=190 data-nosnippet>190</a>        <span class="self">self</span>.sys.make_accessible(start, len)
+<a href=#190 id=190 data-nosnippet>190</a>        <span class="kw">unsafe </span>{ <span class="self">self</span>.sys.make_accessible(start, len) }
 <a href=#191 id=191 data-nosnippet>191</a>    }
 <a href=#192 id=192 data-nosnippet>192</a>}
 <a href=#193 id=193 data-nosnippet>193</a>
@@ -231,227 +231,240 @@
 <a href=#231 id=231 data-nosnippet>231</a>    </span><span class="kw">pub unsafe fn </span>slice(<span class="kw-2">&amp;</span><span class="self">self</span>, range: Range&lt;usize&gt;) -&gt; <span class="kw-2">&amp;</span>[u8] {
 <a href=#232 id=232 data-nosnippet>232</a>        <span class="macro">assert!</span>(range.start &lt;= range.end);
 <a href=#233 id=233 data-nosnippet>233</a>        <span class="macro">assert!</span>(range.end &lt;= <span class="self">self</span>.len());
-<a href=#234 id=234 data-nosnippet>234</a>        core::slice::from_raw_parts(<span class="self">self</span>.as_ptr().add(range.start), range.end - range.start)
-<a href=#235 id=235 data-nosnippet>235</a>    }
-<a href=#236 id=236 data-nosnippet>236</a>
-<a href=#237 id=237 data-nosnippet>237</a>    <span class="doccomment">/// Return the allocated memory as a mutable slice of u8.
-<a href=#238 id=238 data-nosnippet>238</a>    ///
-<a href=#239 id=239 data-nosnippet>239</a>    /// # Safety
+<a href=#234 id=234 data-nosnippet>234</a>        <span class="kw">unsafe </span>{
+<a href=#235 id=235 data-nosnippet>235</a>            core::slice::from_raw_parts(<span class="self">self</span>.as_ptr().add(range.start), range.end - range.start)
+<a href=#236 id=236 data-nosnippet>236</a>        }
+<a href=#237 id=237 data-nosnippet>237</a>    }
+<a href=#238 id=238 data-nosnippet>238</a>
+<a href=#239 id=239 data-nosnippet>239</a>    <span class="doccomment">/// Return the allocated memory as a mutable slice of u8.
 <a href=#240 id=240 data-nosnippet>240</a>    ///
-<a href=#241 id=241 data-nosnippet>241</a>    /// The caller must ensure that the range of bytes is accessible to the
-<a href=#242 id=242 data-nosnippet>242</a>    /// program and additionally has previously been initialized.
-<a href=#243 id=243 data-nosnippet>243</a>    ///
-<a href=#244 id=244 data-nosnippet>244</a>    /// # Panics
+<a href=#241 id=241 data-nosnippet>241</a>    /// # Safety
+<a href=#242 id=242 data-nosnippet>242</a>    ///
+<a href=#243 id=243 data-nosnippet>243</a>    /// The caller must ensure that the range of bytes is accessible to the
+<a href=#244 id=244 data-nosnippet>244</a>    /// program and additionally has previously been initialized.
 <a href=#245 id=245 data-nosnippet>245</a>    ///
-<a href=#246 id=246 data-nosnippet>246</a>    /// Panics of the `range` provided is outside of the limits of this mmap.
-<a href=#247 id=247 data-nosnippet>247</a>    </span><span class="kw">pub unsafe fn </span>slice_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: Range&lt;usize&gt;) -&gt; <span class="kw-2">&amp;mut </span>[u8] {
-<a href=#248 id=248 data-nosnippet>248</a>        <span class="macro">assert!</span>(range.start &lt;= range.end);
-<a href=#249 id=249 data-nosnippet>249</a>        <span class="macro">assert!</span>(range.end &lt;= <span class="self">self</span>.len());
-<a href=#250 id=250 data-nosnippet>250</a>        core::slice::from_raw_parts_mut(<span class="self">self</span>.as_mut_ptr().add(range.start), range.end - range.start)
-<a href=#251 id=251 data-nosnippet>251</a>    }
-<a href=#252 id=252 data-nosnippet>252</a>
-<a href=#253 id=253 data-nosnippet>253</a>    <span class="doccomment">/// Return the allocated memory as a pointer to u8.
-<a href=#254 id=254 data-nosnippet>254</a>    </span><span class="attr">#[inline]
-<a href=#255 id=255 data-nosnippet>255</a>    </span><span class="kw">pub fn </span>as_ptr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*const </span>u8 {
-<a href=#256 id=256 data-nosnippet>256</a>        <span class="self">self</span>.sys.as_send_sync_ptr().as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>u8
-<a href=#257 id=257 data-nosnippet>257</a>    }
-<a href=#258 id=258 data-nosnippet>258</a>
-<a href=#259 id=259 data-nosnippet>259</a>    <span class="doccomment">/// Return the allocated memory as a mutable pointer to u8.
-<a href=#260 id=260 data-nosnippet>260</a>    </span><span class="attr">#[inline]
-<a href=#261 id=261 data-nosnippet>261</a>    </span><span class="kw">pub fn </span>as_mut_ptr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut </span>u8 {
-<a href=#262 id=262 data-nosnippet>262</a>        <span class="self">self</span>.sys.as_send_sync_ptr().as_ptr()
-<a href=#263 id=263 data-nosnippet>263</a>    }
-<a href=#264 id=264 data-nosnippet>264</a>
-<a href=#265 id=265 data-nosnippet>265</a>    <span class="doccomment">/// Return the allocated memory as a mutable pointer to u8.
-<a href=#266 id=266 data-nosnippet>266</a>    </span><span class="attr">#[inline]
-<a href=#267 id=267 data-nosnippet>267</a>    </span><span class="kw">pub fn </span>as_non_null(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; NonNull&lt;u8&gt; {
-<a href=#268 id=268 data-nosnippet>268</a>        <span class="self">self</span>.sys.as_send_sync_ptr().as_non_null()
-<a href=#269 id=269 data-nosnippet>269</a>    }
-<a href=#270 id=270 data-nosnippet>270</a>
-<a href=#271 id=271 data-nosnippet>271</a>    <span class="doccomment">/// Return the length of the allocated memory.
-<a href=#272 id=272 data-nosnippet>272</a>    ///
-<a href=#273 id=273 data-nosnippet>273</a>    /// This is the byte length of this entire mapping which includes both
-<a href=#274 id=274 data-nosnippet>274</a>    /// addressable and non-addressable memory.
-<a href=#275 id=275 data-nosnippet>275</a>    ///
-<a href=#276 id=276 data-nosnippet>276</a>    /// If the length is statically known to be page-aligned via the
-<a href=#277 id=277 data-nosnippet>277</a>    /// [`AlignedLength`] type parameter, use [`Self::len_aligned`].
-<a href=#278 id=278 data-nosnippet>278</a>    </span><span class="attr">#[inline]
-<a href=#279 id=279 data-nosnippet>279</a>    </span><span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-<a href=#280 id=280 data-nosnippet>280</a>        <span class="self">self</span>.sys.len()
-<a href=#281 id=281 data-nosnippet>281</a>    }
-<a href=#282 id=282 data-nosnippet>282</a>
-<a href=#283 id=283 data-nosnippet>283</a>    <span class="doccomment">/// Makes the specified `range` within this `Mmap` to be read/execute.
-<a href=#284 id=284 data-nosnippet>284</a>    ///
-<a href=#285 id=285 data-nosnippet>285</a>    /// # Unsafety
-<a href=#286 id=286 data-nosnippet>286</a>    ///
-<a href=#287 id=287 data-nosnippet>287</a>    /// This method is unsafe as it's generally not valid to simply make memory
-<a href=#288 id=288 data-nosnippet>288</a>    /// executable, so it's up to the caller to ensure that everything is in
-<a href=#289 id=289 data-nosnippet>289</a>    /// order and this doesn't overlap with other memory that should only be
-<a href=#290 id=290 data-nosnippet>290</a>    /// read or only read/write.
+<a href=#246 id=246 data-nosnippet>246</a>    /// # Panics
+<a href=#247 id=247 data-nosnippet>247</a>    ///
+<a href=#248 id=248 data-nosnippet>248</a>    /// Panics of the `range` provided is outside of the limits of this mmap.
+<a href=#249 id=249 data-nosnippet>249</a>    </span><span class="kw">pub unsafe fn </span>slice_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>, range: Range&lt;usize&gt;) -&gt; <span class="kw-2">&amp;mut </span>[u8] {
+<a href=#250 id=250 data-nosnippet>250</a>        <span class="macro">assert!</span>(range.start &lt;= range.end);
+<a href=#251 id=251 data-nosnippet>251</a>        <span class="macro">assert!</span>(range.end &lt;= <span class="self">self</span>.len());
+<a href=#252 id=252 data-nosnippet>252</a>        <span class="kw">unsafe </span>{
+<a href=#253 id=253 data-nosnippet>253</a>            core::slice::from_raw_parts_mut(
+<a href=#254 id=254 data-nosnippet>254</a>                <span class="self">self</span>.as_mut_ptr().add(range.start),
+<a href=#255 id=255 data-nosnippet>255</a>                range.end - range.start,
+<a href=#256 id=256 data-nosnippet>256</a>            )
+<a href=#257 id=257 data-nosnippet>257</a>        }
+<a href=#258 id=258 data-nosnippet>258</a>    }
+<a href=#259 id=259 data-nosnippet>259</a>
+<a href=#260 id=260 data-nosnippet>260</a>    <span class="doccomment">/// Return the allocated memory as a pointer to u8.
+<a href=#261 id=261 data-nosnippet>261</a>    </span><span class="attr">#[inline]
+<a href=#262 id=262 data-nosnippet>262</a>    </span><span class="kw">pub fn </span>as_ptr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*const </span>u8 {
+<a href=#263 id=263 data-nosnippet>263</a>        <span class="self">self</span>.sys.as_send_sync_ptr().as_ptr() <span class="kw">as </span><span class="kw-2">*const </span>u8
+<a href=#264 id=264 data-nosnippet>264</a>    }
+<a href=#265 id=265 data-nosnippet>265</a>
+<a href=#266 id=266 data-nosnippet>266</a>    <span class="doccomment">/// Return the allocated memory as a mutable pointer to u8.
+<a href=#267 id=267 data-nosnippet>267</a>    </span><span class="attr">#[inline]
+<a href=#268 id=268 data-nosnippet>268</a>    </span><span class="kw">pub fn </span>as_mut_ptr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut </span>u8 {
+<a href=#269 id=269 data-nosnippet>269</a>        <span class="self">self</span>.sys.as_send_sync_ptr().as_ptr()
+<a href=#270 id=270 data-nosnippet>270</a>    }
+<a href=#271 id=271 data-nosnippet>271</a>
+<a href=#272 id=272 data-nosnippet>272</a>    <span class="doccomment">/// Return the allocated memory as a mutable pointer to u8.
+<a href=#273 id=273 data-nosnippet>273</a>    </span><span class="attr">#[inline]
+<a href=#274 id=274 data-nosnippet>274</a>    </span><span class="kw">pub fn </span>as_non_null(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; NonNull&lt;u8&gt; {
+<a href=#275 id=275 data-nosnippet>275</a>        <span class="self">self</span>.sys.as_send_sync_ptr().as_non_null()
+<a href=#276 id=276 data-nosnippet>276</a>    }
+<a href=#277 id=277 data-nosnippet>277</a>
+<a href=#278 id=278 data-nosnippet>278</a>    <span class="doccomment">/// Return the length of the allocated memory.
+<a href=#279 id=279 data-nosnippet>279</a>    ///
+<a href=#280 id=280 data-nosnippet>280</a>    /// This is the byte length of this entire mapping which includes both
+<a href=#281 id=281 data-nosnippet>281</a>    /// addressable and non-addressable memory.
+<a href=#282 id=282 data-nosnippet>282</a>    ///
+<a href=#283 id=283 data-nosnippet>283</a>    /// If the length is statically known to be page-aligned via the
+<a href=#284 id=284 data-nosnippet>284</a>    /// [`AlignedLength`] type parameter, use [`Self::len_aligned`].
+<a href=#285 id=285 data-nosnippet>285</a>    </span><span class="attr">#[inline]
+<a href=#286 id=286 data-nosnippet>286</a>    </span><span class="kw">pub fn </span>len(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+<a href=#287 id=287 data-nosnippet>287</a>        <span class="self">self</span>.sys.len()
+<a href=#288 id=288 data-nosnippet>288</a>    }
+<a href=#289 id=289 data-nosnippet>289</a>
+<a href=#290 id=290 data-nosnippet>290</a>    <span class="doccomment">/// Makes the specified `range` within this `Mmap` to be read/execute.
 <a href=#291 id=291 data-nosnippet>291</a>    ///
-<a href=#292 id=292 data-nosnippet>292</a>    /// # Panics
+<a href=#292 id=292 data-nosnippet>292</a>    /// # Unsafety
 <a href=#293 id=293 data-nosnippet>293</a>    ///
-<a href=#294 id=294 data-nosnippet>294</a>    /// Panics of `range` is out-of-bounds or not page-aligned.
-<a href=#295 id=295 data-nosnippet>295</a>    </span><span class="kw">pub unsafe fn </span>make_executable(
-<a href=#296 id=296 data-nosnippet>296</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#297 id=297 data-nosnippet>297</a>        range: Range&lt;usize&gt;,
-<a href=#298 id=298 data-nosnippet>298</a>        enable_branch_protection: bool,
-<a href=#299 id=299 data-nosnippet>299</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#300 id=300 data-nosnippet>300</a>        <span class="macro">assert!</span>(range.start &lt;= <span class="self">self</span>.len());
-<a href=#301 id=301 data-nosnippet>301</a>        <span class="macro">assert!</span>(range.end &lt;= <span class="self">self</span>.len());
-<a href=#302 id=302 data-nosnippet>302</a>        <span class="macro">assert!</span>(range.start &lt;= range.end);
-<a href=#303 id=303 data-nosnippet>303</a>        <span class="macro">assert!</span>(
-<a href=#304 id=304 data-nosnippet>304</a>            range.start % <span class="kw">crate</span>::runtime::vm::host_page_size() == <span class="number">0</span>,
-<a href=#305 id=305 data-nosnippet>305</a>            <span class="string">"changing of protections isn't page-aligned"</span>,
-<a href=#306 id=306 data-nosnippet>306</a>        );
-<a href=#307 id=307 data-nosnippet>307</a>
-<a href=#308 id=308 data-nosnippet>308</a>        <span class="kw">if </span>range.start == range.end {
-<a href=#309 id=309 data-nosnippet>309</a>            <span class="comment">// A zero-sized mprotect (or equivalent) is allowed on some
-<a href=#310 id=310 data-nosnippet>310</a>            // platforms but not others (notably Windows). Treat it as a no-op
-<a href=#311 id=311 data-nosnippet>311</a>            // everywhere.
-<a href=#312 id=312 data-nosnippet>312</a>            </span><span class="kw">return </span><span class="prelude-val">Ok</span>(());
-<a href=#313 id=313 data-nosnippet>313</a>        }
+<a href=#294 id=294 data-nosnippet>294</a>    /// This method is unsafe as it's generally not valid to simply make memory
+<a href=#295 id=295 data-nosnippet>295</a>    /// executable, so it's up to the caller to ensure that everything is in
+<a href=#296 id=296 data-nosnippet>296</a>    /// order and this doesn't overlap with other memory that should only be
+<a href=#297 id=297 data-nosnippet>297</a>    /// read or only read/write.
+<a href=#298 id=298 data-nosnippet>298</a>    ///
+<a href=#299 id=299 data-nosnippet>299</a>    /// # Panics
+<a href=#300 id=300 data-nosnippet>300</a>    ///
+<a href=#301 id=301 data-nosnippet>301</a>    /// Panics of `range` is out-of-bounds or not page-aligned.
+<a href=#302 id=302 data-nosnippet>302</a>    </span><span class="kw">pub unsafe fn </span>make_executable(
+<a href=#303 id=303 data-nosnippet>303</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#304 id=304 data-nosnippet>304</a>        range: Range&lt;usize&gt;,
+<a href=#305 id=305 data-nosnippet>305</a>        enable_branch_protection: bool,
+<a href=#306 id=306 data-nosnippet>306</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#307 id=307 data-nosnippet>307</a>        <span class="macro">assert!</span>(range.start &lt;= <span class="self">self</span>.len());
+<a href=#308 id=308 data-nosnippet>308</a>        <span class="macro">assert!</span>(range.end &lt;= <span class="self">self</span>.len());
+<a href=#309 id=309 data-nosnippet>309</a>        <span class="macro">assert!</span>(range.start &lt;= range.end);
+<a href=#310 id=310 data-nosnippet>310</a>        <span class="macro">assert!</span>(
+<a href=#311 id=311 data-nosnippet>311</a>            range.start % <span class="kw">crate</span>::runtime::vm::host_page_size() == <span class="number">0</span>,
+<a href=#312 id=312 data-nosnippet>312</a>            <span class="string">"changing of protections isn't page-aligned"</span>,
+<a href=#313 id=313 data-nosnippet>313</a>        );
 <a href=#314 id=314 data-nosnippet>314</a>
-<a href=#315 id=315 data-nosnippet>315</a>        <span class="self">self</span>.sys
-<a href=#316 id=316 data-nosnippet>316</a>            .make_executable(range, enable_branch_protection)
-<a href=#317 id=317 data-nosnippet>317</a>            .context(<span class="string">"failed to make memory executable"</span>)
-<a href=#318 id=318 data-nosnippet>318</a>    }
-<a href=#319 id=319 data-nosnippet>319</a>
-<a href=#320 id=320 data-nosnippet>320</a>    <span class="doccomment">/// Makes the specified `range` within this `Mmap` to be readonly.
-<a href=#321 id=321 data-nosnippet>321</a>    </span><span class="kw">pub unsafe fn </span>make_readonly(<span class="kw-2">&amp;</span><span class="self">self</span>, range: Range&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#322 id=322 data-nosnippet>322</a>        <span class="macro">assert!</span>(range.start &lt;= <span class="self">self</span>.len());
-<a href=#323 id=323 data-nosnippet>323</a>        <span class="macro">assert!</span>(range.end &lt;= <span class="self">self</span>.len());
-<a href=#324 id=324 data-nosnippet>324</a>        <span class="macro">assert!</span>(range.start &lt;= range.end);
-<a href=#325 id=325 data-nosnippet>325</a>        <span class="macro">assert!</span>(
-<a href=#326 id=326 data-nosnippet>326</a>            range.start % <span class="kw">crate</span>::runtime::vm::host_page_size() == <span class="number">0</span>,
-<a href=#327 id=327 data-nosnippet>327</a>            <span class="string">"changing of protections isn't page-aligned"</span>,
-<a href=#328 id=328 data-nosnippet>328</a>        );
-<a href=#329 id=329 data-nosnippet>329</a>
-<a href=#330 id=330 data-nosnippet>330</a>        <span class="kw">if </span>range.start == range.end {
-<a href=#331 id=331 data-nosnippet>331</a>            <span class="comment">// A zero-sized mprotect (or equivalent) is allowed on some
-<a href=#332 id=332 data-nosnippet>332</a>            // platforms but not others (notably Windows). Treat it as a no-op
-<a href=#333 id=333 data-nosnippet>333</a>            // everywhere.
-<a href=#334 id=334 data-nosnippet>334</a>            </span><span class="kw">return </span><span class="prelude-val">Ok</span>(());
-<a href=#335 id=335 data-nosnippet>335</a>        }
-<a href=#336 id=336 data-nosnippet>336</a>
-<a href=#337 id=337 data-nosnippet>337</a>        <span class="self">self</span>.sys
-<a href=#338 id=338 data-nosnippet>338</a>            .make_readonly(range)
-<a href=#339 id=339 data-nosnippet>339</a>            .context(<span class="string">"failed to make memory readonly"</span>)
-<a href=#340 id=340 data-nosnippet>340</a>    }
-<a href=#341 id=341 data-nosnippet>341</a>}
-<a href=#342 id=342 data-nosnippet>342</a>
-<a href=#343 id=343 data-nosnippet>343</a><span class="kw">fn </span>_assert() {
-<a href=#344 id=344 data-nosnippet>344</a>    <span class="kw">fn </span>_assert_send_sync&lt;T: Send + Sync&gt;() {}
-<a href=#345 id=345 data-nosnippet>345</a>    _assert_send_sync::&lt;Mmap&lt;AlignedLength&gt;&gt;();
-<a href=#346 id=346 data-nosnippet>346</a>    _assert_send_sync::&lt;Mmap&lt;UnalignedLength&gt;&gt;();
-<a href=#347 id=347 data-nosnippet>347</a>}
-<a href=#348 id=348 data-nosnippet>348</a>
-<a href=#349 id=349 data-nosnippet>349</a><span class="kw">impl </span>From&lt;Mmap&lt;AlignedLength&gt;&gt; <span class="kw">for </span>Mmap&lt;UnalignedLength&gt; {
-<a href=#350 id=350 data-nosnippet>350</a>    <span class="kw">fn </span>from(mmap: Mmap&lt;AlignedLength&gt;) -&gt; Mmap&lt;UnalignedLength&gt; {
-<a href=#351 id=351 data-nosnippet>351</a>        mmap.into_unaligned()
-<a href=#352 id=352 data-nosnippet>352</a>    }
-<a href=#353 id=353 data-nosnippet>353</a>}
-<a href=#354 id=354 data-nosnippet>354</a>
-<a href=#355 id=355 data-nosnippet>355</a><span class="doccomment">/// A reference to an [`Mmap`], along with a host-page-aligned index within it.
-<a href=#356 id=356 data-nosnippet>356</a>///
-<a href=#357 id=357 data-nosnippet>357</a>/// The main invariant this type asserts is that the index is in bounds within
-<a href=#358 id=358 data-nosnippet>358</a>/// the `Mmap` (i.e. `self.mmap[self.offset]` is valid). In the future, this
-<a href=#359 id=359 data-nosnippet>359</a>/// type may also assert other invariants.
-<a href=#360 id=360 data-nosnippet>360</a></span><span class="attr">#[derive(Clone, Debug)]
-<a href=#361 id=361 data-nosnippet>361</a></span><span class="kw">pub struct </span>MmapOffset {
-<a href=#362 id=362 data-nosnippet>362</a>    mmap: Arc&lt;Mmap&lt;AlignedLength&gt;&gt;,
-<a href=#363 id=363 data-nosnippet>363</a>    offset: HostAlignedByteCount,
+<a href=#315 id=315 data-nosnippet>315</a>        <span class="kw">if </span>range.start == range.end {
+<a href=#316 id=316 data-nosnippet>316</a>            <span class="comment">// A zero-sized mprotect (or equivalent) is allowed on some
+<a href=#317 id=317 data-nosnippet>317</a>            // platforms but not others (notably Windows). Treat it as a no-op
+<a href=#318 id=318 data-nosnippet>318</a>            // everywhere.
+<a href=#319 id=319 data-nosnippet>319</a>            </span><span class="kw">return </span><span class="prelude-val">Ok</span>(());
+<a href=#320 id=320 data-nosnippet>320</a>        }
+<a href=#321 id=321 data-nosnippet>321</a>
+<a href=#322 id=322 data-nosnippet>322</a>        <span class="kw">unsafe </span>{
+<a href=#323 id=323 data-nosnippet>323</a>            <span class="self">self</span>.sys
+<a href=#324 id=324 data-nosnippet>324</a>                .make_executable(range, enable_branch_protection)
+<a href=#325 id=325 data-nosnippet>325</a>                .context(<span class="string">"failed to make memory executable"</span>)
+<a href=#326 id=326 data-nosnippet>326</a>        }
+<a href=#327 id=327 data-nosnippet>327</a>    }
+<a href=#328 id=328 data-nosnippet>328</a>
+<a href=#329 id=329 data-nosnippet>329</a>    <span class="doccomment">/// Makes the specified `range` within this `Mmap` to be readonly.
+<a href=#330 id=330 data-nosnippet>330</a>    </span><span class="kw">pub unsafe fn </span>make_readonly(<span class="kw-2">&amp;</span><span class="self">self</span>, range: Range&lt;usize&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#331 id=331 data-nosnippet>331</a>        <span class="macro">assert!</span>(range.start &lt;= <span class="self">self</span>.len());
+<a href=#332 id=332 data-nosnippet>332</a>        <span class="macro">assert!</span>(range.end &lt;= <span class="self">self</span>.len());
+<a href=#333 id=333 data-nosnippet>333</a>        <span class="macro">assert!</span>(range.start &lt;= range.end);
+<a href=#334 id=334 data-nosnippet>334</a>        <span class="macro">assert!</span>(
+<a href=#335 id=335 data-nosnippet>335</a>            range.start % <span class="kw">crate</span>::runtime::vm::host_page_size() == <span class="number">0</span>,
+<a href=#336 id=336 data-nosnippet>336</a>            <span class="string">"changing of protections isn't page-aligned"</span>,
+<a href=#337 id=337 data-nosnippet>337</a>        );
+<a href=#338 id=338 data-nosnippet>338</a>
+<a href=#339 id=339 data-nosnippet>339</a>        <span class="kw">if </span>range.start == range.end {
+<a href=#340 id=340 data-nosnippet>340</a>            <span class="comment">// A zero-sized mprotect (or equivalent) is allowed on some
+<a href=#341 id=341 data-nosnippet>341</a>            // platforms but not others (notably Windows). Treat it as a no-op
+<a href=#342 id=342 data-nosnippet>342</a>            // everywhere.
+<a href=#343 id=343 data-nosnippet>343</a>            </span><span class="kw">return </span><span class="prelude-val">Ok</span>(());
+<a href=#344 id=344 data-nosnippet>344</a>        }
+<a href=#345 id=345 data-nosnippet>345</a>
+<a href=#346 id=346 data-nosnippet>346</a>        <span class="kw">unsafe </span>{
+<a href=#347 id=347 data-nosnippet>347</a>            <span class="self">self</span>.sys
+<a href=#348 id=348 data-nosnippet>348</a>                .make_readonly(range)
+<a href=#349 id=349 data-nosnippet>349</a>                .context(<span class="string">"failed to make memory readonly"</span>)
+<a href=#350 id=350 data-nosnippet>350</a>        }
+<a href=#351 id=351 data-nosnippet>351</a>    }
+<a href=#352 id=352 data-nosnippet>352</a>}
+<a href=#353 id=353 data-nosnippet>353</a>
+<a href=#354 id=354 data-nosnippet>354</a><span class="kw">fn </span>_assert() {
+<a href=#355 id=355 data-nosnippet>355</a>    <span class="kw">fn </span>_assert_send_sync&lt;T: Send + Sync&gt;() {}
+<a href=#356 id=356 data-nosnippet>356</a>    _assert_send_sync::&lt;Mmap&lt;AlignedLength&gt;&gt;();
+<a href=#357 id=357 data-nosnippet>357</a>    _assert_send_sync::&lt;Mmap&lt;UnalignedLength&gt;&gt;();
+<a href=#358 id=358 data-nosnippet>358</a>}
+<a href=#359 id=359 data-nosnippet>359</a>
+<a href=#360 id=360 data-nosnippet>360</a><span class="kw">impl </span>From&lt;Mmap&lt;AlignedLength&gt;&gt; <span class="kw">for </span>Mmap&lt;UnalignedLength&gt; {
+<a href=#361 id=361 data-nosnippet>361</a>    <span class="kw">fn </span>from(mmap: Mmap&lt;AlignedLength&gt;) -&gt; Mmap&lt;UnalignedLength&gt; {
+<a href=#362 id=362 data-nosnippet>362</a>        mmap.into_unaligned()
+<a href=#363 id=363 data-nosnippet>363</a>    }
 <a href=#364 id=364 data-nosnippet>364</a>}
 <a href=#365 id=365 data-nosnippet>365</a>
-<a href=#366 id=366 data-nosnippet>366</a><span class="kw">impl </span>MmapOffset {
-<a href=#367 id=367 data-nosnippet>367</a>    <span class="attr">#[inline]
-<a href=#368 id=368 data-nosnippet>368</a>    </span><span class="kw">fn </span>new(mmap: Arc&lt;Mmap&lt;AlignedLength&gt;&gt;, offset: HostAlignedByteCount) -&gt; <span class="self">Self </span>{
-<a href=#369 id=369 data-nosnippet>369</a>        <span class="macro">assert!</span>(
-<a href=#370 id=370 data-nosnippet>370</a>            offset &lt;= mmap.len_aligned(),
-<a href=#371 id=371 data-nosnippet>371</a>            <span class="string">"offset {} is in bounds (&lt; {})"</span>,
-<a href=#372 id=372 data-nosnippet>372</a>            offset,
-<a href=#373 id=373 data-nosnippet>373</a>            mmap.len_aligned(),
-<a href=#374 id=374 data-nosnippet>374</a>        );
-<a href=#375 id=375 data-nosnippet>375</a>        <span class="self">Self </span>{ mmap, offset }
-<a href=#376 id=376 data-nosnippet>376</a>    }
-<a href=#377 id=377 data-nosnippet>377</a>
-<a href=#378 id=378 data-nosnippet>378</a>    <span class="doccomment">/// Returns the mmap this offset is within.
-<a href=#379 id=379 data-nosnippet>379</a>    </span><span class="attr">#[inline]
-<a href=#380 id=380 data-nosnippet>380</a>    </span><span class="kw">pub fn </span>mmap(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Arc&lt;Mmap&lt;AlignedLength&gt;&gt; {
-<a href=#381 id=381 data-nosnippet>381</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.mmap
-<a href=#382 id=382 data-nosnippet>382</a>    }
-<a href=#383 id=383 data-nosnippet>383</a>
-<a href=#384 id=384 data-nosnippet>384</a>    <span class="doccomment">/// Returns the host-page-aligned offset within the mmap.
-<a href=#385 id=385 data-nosnippet>385</a>    </span><span class="attr">#[inline]
-<a href=#386 id=386 data-nosnippet>386</a>    </span><span class="kw">pub fn </span>offset(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; HostAlignedByteCount {
-<a href=#387 id=387 data-nosnippet>387</a>        <span class="self">self</span>.offset
-<a href=#388 id=388 data-nosnippet>388</a>    }
-<a href=#389 id=389 data-nosnippet>389</a>
-<a href=#390 id=390 data-nosnippet>390</a>    <span class="doccomment">/// Returns the raw pointer in memory represented by this offset.
-<a href=#391 id=391 data-nosnippet>391</a>    </span><span class="attr">#[inline]
-<a href=#392 id=392 data-nosnippet>392</a>    </span><span class="kw">pub fn </span>as_mut_ptr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut </span>u8 {
-<a href=#393 id=393 data-nosnippet>393</a>        <span class="self">self</span>.as_non_null().as_ptr()
-<a href=#394 id=394 data-nosnippet>394</a>    }
-<a href=#395 id=395 data-nosnippet>395</a>
-<a href=#396 id=396 data-nosnippet>396</a>    <span class="doccomment">/// Returns the raw pointer in memory represented by this offset.
-<a href=#397 id=397 data-nosnippet>397</a>    </span><span class="attr">#[inline]
-<a href=#398 id=398 data-nosnippet>398</a>    </span><span class="kw">pub fn </span>as_non_null(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; NonNull&lt;u8&gt; {
-<a href=#399 id=399 data-nosnippet>399</a>        <span class="comment">// SAFETY: constructor checks that offset is within this allocation.
-<a href=#400 id=400 data-nosnippet>400</a>        </span><span class="kw">unsafe </span>{ <span class="self">self</span>.mmap().as_non_null().byte_add(<span class="self">self</span>.offset.byte_count()) }
-<a href=#401 id=401 data-nosnippet>401</a>    }
-<a href=#402 id=402 data-nosnippet>402</a>
-<a href=#403 id=403 data-nosnippet>403</a>    <span class="doccomment">/// Maps an image into the mmap with read/write permissions.
-<a href=#404 id=404 data-nosnippet>404</a>    ///
-<a href=#405 id=405 data-nosnippet>405</a>    /// The image is mapped at `self.mmap.as_ptr() + self.offset +
-<a href=#406 id=406 data-nosnippet>406</a>    /// memory_offset`.
-<a href=#407 id=407 data-nosnippet>407</a>    ///
-<a href=#408 id=408 data-nosnippet>408</a>    /// ## Safety
-<a href=#409 id=409 data-nosnippet>409</a>    ///
-<a href=#410 id=410 data-nosnippet>410</a>    /// The caller must ensure that noone else has a reference to this memory.
-<a href=#411 id=411 data-nosnippet>411</a>    </span><span class="kw">pub unsafe fn </span>map_image_at(
-<a href=#412 id=412 data-nosnippet>412</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#413 id=413 data-nosnippet>413</a>        image_source: <span class="kw-2">&amp;</span>MemoryImageSource,
-<a href=#414 id=414 data-nosnippet>414</a>        source_offset: u64,
-<a href=#415 id=415 data-nosnippet>415</a>        memory_offset: HostAlignedByteCount,
-<a href=#416 id=416 data-nosnippet>416</a>        memory_len: HostAlignedByteCount,
-<a href=#417 id=417 data-nosnippet>417</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#418 id=418 data-nosnippet>418</a>        <span class="kw">let </span>total_offset = <span class="self">self
-<a href=#419 id=419 data-nosnippet>419</a>            </span>.offset
-<a href=#420 id=420 data-nosnippet>420</a>            .checked_add(memory_offset)
-<a href=#421 id=421 data-nosnippet>421</a>            .expect(<span class="string">"self.offset + memory_offset is in bounds"</span>);
-<a href=#422 id=422 data-nosnippet>422</a>        <span class="self">self</span>.mmap
-<a href=#423 id=423 data-nosnippet>423</a>            .sys
-<a href=#424 id=424 data-nosnippet>424</a>            .map_image_at(image_source, source_offset, total_offset, memory_len)
-<a href=#425 id=425 data-nosnippet>425</a>    }
-<a href=#426 id=426 data-nosnippet>426</a>}
-<a href=#427 id=427 data-nosnippet>427</a>
-<a href=#428 id=428 data-nosnippet>428</a><span class="attr">#[cfg(test)]
-<a href=#429 id=429 data-nosnippet>429</a></span><span class="kw">mod </span>tests {
-<a href=#430 id=430 data-nosnippet>430</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
-<a href=#431 id=431 data-nosnippet>431</a>
-<a href=#432 id=432 data-nosnippet>432</a>    <span class="doccomment">/// Test zero-length calls to mprotect (or the OS equivalent).
-<a href=#433 id=433 data-nosnippet>433</a>    ///
-<a href=#434 id=434 data-nosnippet>434</a>    /// These should be treated as no-ops on all platforms. This test ensures
-<a href=#435 id=435 data-nosnippet>435</a>    /// that such calls at least don't error out.
-<a href=#436 id=436 data-nosnippet>436</a>    </span><span class="attr">#[test]
-<a href=#437 id=437 data-nosnippet>437</a>    </span><span class="kw">fn </span>mprotect_zero_length() {
-<a href=#438 id=438 data-nosnippet>438</a>        <span class="kw">let </span>page_size = HostAlignedByteCount::host_page_size();
-<a href=#439 id=439 data-nosnippet>439</a>        <span class="kw">let </span>pagex2 = page_size.checked_mul(<span class="number">2</span>).unwrap();
-<a href=#440 id=440 data-nosnippet>440</a>        <span class="kw">let </span>pagex3 = page_size.checked_mul(<span class="number">3</span>).unwrap();
-<a href=#441 id=441 data-nosnippet>441</a>        <span class="kw">let </span>pagex4 = page_size.checked_mul(<span class="number">4</span>).unwrap();
-<a href=#442 id=442 data-nosnippet>442</a>
-<a href=#443 id=443 data-nosnippet>443</a>        <span class="kw">let </span>mem = Mmap::accessible_reserved(pagex2, pagex4).expect(<span class="string">"allocated memory"</span>);
+<a href=#366 id=366 data-nosnippet>366</a><span class="doccomment">/// A reference to an [`Mmap`], along with a host-page-aligned index within it.
+<a href=#367 id=367 data-nosnippet>367</a>///
+<a href=#368 id=368 data-nosnippet>368</a>/// The main invariant this type asserts is that the index is in bounds within
+<a href=#369 id=369 data-nosnippet>369</a>/// the `Mmap` (i.e. `self.mmap[self.offset]` is valid). In the future, this
+<a href=#370 id=370 data-nosnippet>370</a>/// type may also assert other invariants.
+<a href=#371 id=371 data-nosnippet>371</a></span><span class="attr">#[derive(Clone, Debug)]
+<a href=#372 id=372 data-nosnippet>372</a></span><span class="kw">pub struct </span>MmapOffset {
+<a href=#373 id=373 data-nosnippet>373</a>    mmap: Arc&lt;Mmap&lt;AlignedLength&gt;&gt;,
+<a href=#374 id=374 data-nosnippet>374</a>    offset: HostAlignedByteCount,
+<a href=#375 id=375 data-nosnippet>375</a>}
+<a href=#376 id=376 data-nosnippet>376</a>
+<a href=#377 id=377 data-nosnippet>377</a><span class="kw">impl </span>MmapOffset {
+<a href=#378 id=378 data-nosnippet>378</a>    <span class="attr">#[inline]
+<a href=#379 id=379 data-nosnippet>379</a>    </span><span class="kw">fn </span>new(mmap: Arc&lt;Mmap&lt;AlignedLength&gt;&gt;, offset: HostAlignedByteCount) -&gt; <span class="self">Self </span>{
+<a href=#380 id=380 data-nosnippet>380</a>        <span class="macro">assert!</span>(
+<a href=#381 id=381 data-nosnippet>381</a>            offset &lt;= mmap.len_aligned(),
+<a href=#382 id=382 data-nosnippet>382</a>            <span class="string">"offset {} is in bounds (&lt; {})"</span>,
+<a href=#383 id=383 data-nosnippet>383</a>            offset,
+<a href=#384 id=384 data-nosnippet>384</a>            mmap.len_aligned(),
+<a href=#385 id=385 data-nosnippet>385</a>        );
+<a href=#386 id=386 data-nosnippet>386</a>        <span class="self">Self </span>{ mmap, offset }
+<a href=#387 id=387 data-nosnippet>387</a>    }
+<a href=#388 id=388 data-nosnippet>388</a>
+<a href=#389 id=389 data-nosnippet>389</a>    <span class="doccomment">/// Returns the mmap this offset is within.
+<a href=#390 id=390 data-nosnippet>390</a>    </span><span class="attr">#[inline]
+<a href=#391 id=391 data-nosnippet>391</a>    </span><span class="kw">pub fn </span>mmap(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Arc&lt;Mmap&lt;AlignedLength&gt;&gt; {
+<a href=#392 id=392 data-nosnippet>392</a>        <span class="kw-2">&amp;</span><span class="self">self</span>.mmap
+<a href=#393 id=393 data-nosnippet>393</a>    }
+<a href=#394 id=394 data-nosnippet>394</a>
+<a href=#395 id=395 data-nosnippet>395</a>    <span class="doccomment">/// Returns the host-page-aligned offset within the mmap.
+<a href=#396 id=396 data-nosnippet>396</a>    </span><span class="attr">#[inline]
+<a href=#397 id=397 data-nosnippet>397</a>    </span><span class="kw">pub fn </span>offset(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; HostAlignedByteCount {
+<a href=#398 id=398 data-nosnippet>398</a>        <span class="self">self</span>.offset
+<a href=#399 id=399 data-nosnippet>399</a>    }
+<a href=#400 id=400 data-nosnippet>400</a>
+<a href=#401 id=401 data-nosnippet>401</a>    <span class="doccomment">/// Returns the raw pointer in memory represented by this offset.
+<a href=#402 id=402 data-nosnippet>402</a>    </span><span class="attr">#[inline]
+<a href=#403 id=403 data-nosnippet>403</a>    </span><span class="kw">pub fn </span>as_mut_ptr(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut </span>u8 {
+<a href=#404 id=404 data-nosnippet>404</a>        <span class="self">self</span>.as_non_null().as_ptr()
+<a href=#405 id=405 data-nosnippet>405</a>    }
+<a href=#406 id=406 data-nosnippet>406</a>
+<a href=#407 id=407 data-nosnippet>407</a>    <span class="doccomment">/// Returns the raw pointer in memory represented by this offset.
+<a href=#408 id=408 data-nosnippet>408</a>    </span><span class="attr">#[inline]
+<a href=#409 id=409 data-nosnippet>409</a>    </span><span class="kw">pub fn </span>as_non_null(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; NonNull&lt;u8&gt; {
+<a href=#410 id=410 data-nosnippet>410</a>        <span class="comment">// SAFETY: constructor checks that offset is within this allocation.
+<a href=#411 id=411 data-nosnippet>411</a>        </span><span class="kw">unsafe </span>{ <span class="self">self</span>.mmap().as_non_null().byte_add(<span class="self">self</span>.offset.byte_count()) }
+<a href=#412 id=412 data-nosnippet>412</a>    }
+<a href=#413 id=413 data-nosnippet>413</a>
+<a href=#414 id=414 data-nosnippet>414</a>    <span class="doccomment">/// Maps an image into the mmap with read/write permissions.
+<a href=#415 id=415 data-nosnippet>415</a>    ///
+<a href=#416 id=416 data-nosnippet>416</a>    /// The image is mapped at `self.mmap.as_ptr() + self.offset +
+<a href=#417 id=417 data-nosnippet>417</a>    /// memory_offset`.
+<a href=#418 id=418 data-nosnippet>418</a>    ///
+<a href=#419 id=419 data-nosnippet>419</a>    /// ## Safety
+<a href=#420 id=420 data-nosnippet>420</a>    ///
+<a href=#421 id=421 data-nosnippet>421</a>    /// The caller must ensure that noone else has a reference to this memory.
+<a href=#422 id=422 data-nosnippet>422</a>    </span><span class="kw">pub unsafe fn </span>map_image_at(
+<a href=#423 id=423 data-nosnippet>423</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#424 id=424 data-nosnippet>424</a>        image_source: <span class="kw-2">&amp;</span>MemoryImageSource,
+<a href=#425 id=425 data-nosnippet>425</a>        source_offset: u64,
+<a href=#426 id=426 data-nosnippet>426</a>        memory_offset: HostAlignedByteCount,
+<a href=#427 id=427 data-nosnippet>427</a>        memory_len: HostAlignedByteCount,
+<a href=#428 id=428 data-nosnippet>428</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#429 id=429 data-nosnippet>429</a>        <span class="kw">let </span>total_offset = <span class="self">self
+<a href=#430 id=430 data-nosnippet>430</a>            </span>.offset
+<a href=#431 id=431 data-nosnippet>431</a>            .checked_add(memory_offset)
+<a href=#432 id=432 data-nosnippet>432</a>            .expect(<span class="string">"self.offset + memory_offset is in bounds"</span>);
+<a href=#433 id=433 data-nosnippet>433</a>        <span class="kw">unsafe </span>{
+<a href=#434 id=434 data-nosnippet>434</a>            <span class="self">self</span>.mmap
+<a href=#435 id=435 data-nosnippet>435</a>                .sys
+<a href=#436 id=436 data-nosnippet>436</a>                .map_image_at(image_source, source_offset, total_offset, memory_len)
+<a href=#437 id=437 data-nosnippet>437</a>        }
+<a href=#438 id=438 data-nosnippet>438</a>    }
+<a href=#439 id=439 data-nosnippet>439</a>}
+<a href=#440 id=440 data-nosnippet>440</a>
+<a href=#441 id=441 data-nosnippet>441</a><span class="attr">#[cfg(test)]
+<a href=#442 id=442 data-nosnippet>442</a></span><span class="kw">mod </span>tests {
+<a href=#443 id=443 data-nosnippet>443</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#444 id=444 data-nosnippet>444</a>
-<a href=#445 id=445 data-nosnippet>445</a>        <span class="kw">unsafe </span>{
-<a href=#446 id=446 data-nosnippet>446</a>            mem.make_accessible(pagex3, HostAlignedByteCount::ZERO)
-<a href=#447 id=447 data-nosnippet>447</a>                .expect(<span class="string">"make_accessible succeeded"</span>);
-<a href=#448 id=448 data-nosnippet>448</a>
-<a href=#449 id=449 data-nosnippet>449</a>            mem.make_executable(pagex3.byte_count()..pagex3.byte_count(), <span class="bool-val">false</span>)
-<a href=#450 id=450 data-nosnippet>450</a>                .expect(<span class="string">"make_executable succeeded"</span>);
-<a href=#451 id=451 data-nosnippet>451</a>
-<a href=#452 id=452 data-nosnippet>452</a>            mem.make_readonly(pagex3.byte_count()..pagex3.byte_count())
-<a href=#453 id=453 data-nosnippet>453</a>                .expect(<span class="string">"make_readonly succeeded"</span>);
-<a href=#454 id=454 data-nosnippet>454</a>        };
-<a href=#455 id=455 data-nosnippet>455</a>    }
-<a href=#456 id=456 data-nosnippet>456</a>}
+<a href=#445 id=445 data-nosnippet>445</a>    <span class="doccomment">/// Test zero-length calls to mprotect (or the OS equivalent).
+<a href=#446 id=446 data-nosnippet>446</a>    ///
+<a href=#447 id=447 data-nosnippet>447</a>    /// These should be treated as no-ops on all platforms. This test ensures
+<a href=#448 id=448 data-nosnippet>448</a>    /// that such calls at least don't error out.
+<a href=#449 id=449 data-nosnippet>449</a>    </span><span class="attr">#[test]
+<a href=#450 id=450 data-nosnippet>450</a>    </span><span class="kw">fn </span>mprotect_zero_length() {
+<a href=#451 id=451 data-nosnippet>451</a>        <span class="kw">let </span>page_size = HostAlignedByteCount::host_page_size();
+<a href=#452 id=452 data-nosnippet>452</a>        <span class="kw">let </span>pagex2 = page_size.checked_mul(<span class="number">2</span>).unwrap();
+<a href=#453 id=453 data-nosnippet>453</a>        <span class="kw">let </span>pagex3 = page_size.checked_mul(<span class="number">3</span>).unwrap();
+<a href=#454 id=454 data-nosnippet>454</a>        <span class="kw">let </span>pagex4 = page_size.checked_mul(<span class="number">4</span>).unwrap();
+<a href=#455 id=455 data-nosnippet>455</a>
+<a href=#456 id=456 data-nosnippet>456</a>        <span class="kw">let </span>mem = Mmap::accessible_reserved(pagex2, pagex4).expect(<span class="string">"allocated memory"</span>);
+<a href=#457 id=457 data-nosnippet>457</a>
+<a href=#458 id=458 data-nosnippet>458</a>        <span class="kw">unsafe </span>{
+<a href=#459 id=459 data-nosnippet>459</a>            mem.make_accessible(pagex3, HostAlignedByteCount::ZERO)
+<a href=#460 id=460 data-nosnippet>460</a>                .expect(<span class="string">"make_accessible succeeded"</span>);
+<a href=#461 id=461 data-nosnippet>461</a>
+<a href=#462 id=462 data-nosnippet>462</a>            mem.make_executable(pagex3.byte_count()..pagex3.byte_count(), <span class="bool-val">false</span>)
+<a href=#463 id=463 data-nosnippet>463</a>                .expect(<span class="string">"make_executable succeeded"</span>);
+<a href=#464 id=464 data-nosnippet>464</a>
+<a href=#465 id=465 data-nosnippet>465</a>            mem.make_readonly(pagex3.byte_count()..pagex3.byte_count())
+<a href=#466 id=466 data-nosnippet>466</a>                .expect(<span class="string">"make_readonly succeeded"</span>);
+<a href=#467 id=467 data-nosnippet>467</a>        };
+<a href=#468 id=468 data-nosnippet>468</a>    }
+<a href=#469 id=469 data-nosnippet>469</a>}
 </code></pre></div></section></main></body></html>

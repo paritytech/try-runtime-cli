@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-35.0.0/src/runtime/vm/instance/allocator.rs`."><title>allocator.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="wasmtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">wasmtime/runtime/vm/instance/</div>allocator.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-36.0.10/src/runtime/vm/instance/allocator.rs`."><title>allocator.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="wasmtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasmtime/runtime/vm/instance/</div>allocator.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span><span class="kw">crate</span>::runtime::vm::const_expr::{ConstEvalContext, ConstExprEvaluator};
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span><span class="kw">crate</span>::runtime::vm::imports::Imports;
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span><span class="kw">crate</span>::runtime::vm::instance::{Instance, InstanceHandle};
@@ -70,7 +70,7 @@
 <a href=#70 id=70 data-nosnippet>70</a>    </span><span class="kw">pub </span>store: StorePtr,
 <a href=#71 id=71 data-nosnippet>71</a>
 <a href=#72 id=72 data-nosnippet>72</a>    <span class="doccomment">/// Indicates '--wmemcheck' flag.
-<a href=#73 id=73 data-nosnippet>73</a>    </span><span class="attr">#[cfg_attr(not(feature = <span class="string">"wmemcheck"</span>), allow(dead_code))]
+<a href=#73 id=73 data-nosnippet>73</a>    </span><span class="attr">#[cfg(feature = <span class="string">"wmemcheck"</span>)]
 <a href=#74 id=74 data-nosnippet>74</a>    </span><span class="kw">pub </span>wmemcheck: bool,
 <a href=#75 id=75 data-nosnippet>75</a>
 <a href=#76 id=76 data-nosnippet>76</a>    <span class="doccomment">/// Request that the instance's memories be protected by a specific
@@ -122,7 +122,7 @@
 <a href=#122 id=122 data-nosnippet>122</a>    ///
 <a href=#123 id=123 data-nosnippet>123</a>    /// Safety: must not be used outside the original lifetime of the borrow.
 <a href=#124 id=124 data-nosnippet>124</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">unsafe fn </span>get(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span><span class="kw">dyn </span>VMStore&gt; {
-<a href=#125 id=125 data-nosnippet>125</a>        <span class="kw">let </span>ptr = <span class="self">self</span>.<span class="number">0</span><span class="question-mark">?</span>.as_mut();
+<a href=#125 id=125 data-nosnippet>125</a>        <span class="kw">let </span>ptr = <span class="kw">unsafe </span>{ <span class="self">self</span>.<span class="number">0</span><span class="question-mark">?</span>.as_mut() };
 <a href=#126 id=126 data-nosnippet>126</a>        <span class="prelude-val">Some</span>(ptr)
 <a href=#127 id=127 data-nosnippet>127</a>    }
 <a href=#128 id=128 data-nosnippet>128</a>}
@@ -253,662 +253,675 @@
 <a href=#253 id=253 data-nosnippet>253</a>    </span><span class="kw">fn </span>decrement_core_instance_count(<span class="kw-2">&amp;</span><span class="self">self</span>);
 <a href=#254 id=254 data-nosnippet>254</a>
 <a href=#255 id=255 data-nosnippet>255</a>    <span class="doccomment">/// Allocate a memory for an instance.
-<a href=#256 id=256 data-nosnippet>256</a>    ///
-<a href=#257 id=257 data-nosnippet>257</a>    /// # Unsafety
-<a href=#258 id=258 data-nosnippet>258</a>    ///
-<a href=#259 id=259 data-nosnippet>259</a>    /// The memory and its associated module must have already been validated by
-<a href=#260 id=260 data-nosnippet>260</a>    /// `Self::validate_memory` (or transtively via
-<a href=#261 id=261 data-nosnippet>261</a>    /// `Self::validate_{module,component}`) and passed that validation.
-<a href=#262 id=262 data-nosnippet>262</a>    </span><span class="kw">unsafe fn </span>allocate_memory(
-<a href=#263 id=263 data-nosnippet>263</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#264 id=264 data-nosnippet>264</a>        request: <span class="kw-2">&amp;mut </span>InstanceAllocationRequest,
-<a href=#265 id=265 data-nosnippet>265</a>        ty: <span class="kw-2">&amp;</span>wasmtime_environ::Memory,
-<a href=#266 id=266 data-nosnippet>266</a>        tunables: <span class="kw-2">&amp;</span>Tunables,
-<a href=#267 id=267 data-nosnippet>267</a>        memory_index: <span class="prelude-ty">Option</span>&lt;DefinedMemoryIndex&gt;,
-<a href=#268 id=268 data-nosnippet>268</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;(MemoryAllocationIndex, Memory)&gt;;
-<a href=#269 id=269 data-nosnippet>269</a>
-<a href=#270 id=270 data-nosnippet>270</a>    <span class="doccomment">/// Deallocate an instance's previously allocated memory.
-<a href=#271 id=271 data-nosnippet>271</a>    ///
-<a href=#272 id=272 data-nosnippet>272</a>    /// # Unsafety
-<a href=#273 id=273 data-nosnippet>273</a>    ///
-<a href=#274 id=274 data-nosnippet>274</a>    /// The memory must have previously been allocated by
-<a href=#275 id=275 data-nosnippet>275</a>    /// `Self::allocate_memory`, be at the given index, and must currently be
-<a href=#276 id=276 data-nosnippet>276</a>    /// allocated. It must never be used again.
-<a href=#277 id=277 data-nosnippet>277</a>    </span><span class="kw">unsafe fn </span>deallocate_memory(
-<a href=#278 id=278 data-nosnippet>278</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#279 id=279 data-nosnippet>279</a>        memory_index: <span class="prelude-ty">Option</span>&lt;DefinedMemoryIndex&gt;,
-<a href=#280 id=280 data-nosnippet>280</a>        allocation_index: MemoryAllocationIndex,
-<a href=#281 id=281 data-nosnippet>281</a>        memory: Memory,
-<a href=#282 id=282 data-nosnippet>282</a>    );
-<a href=#283 id=283 data-nosnippet>283</a>
-<a href=#284 id=284 data-nosnippet>284</a>    <span class="doccomment">/// Allocate a table for an instance.
-<a href=#285 id=285 data-nosnippet>285</a>    ///
-<a href=#286 id=286 data-nosnippet>286</a>    /// # Unsafety
-<a href=#287 id=287 data-nosnippet>287</a>    ///
-<a href=#288 id=288 data-nosnippet>288</a>    /// The table and its associated module must have already been validated by
-<a href=#289 id=289 data-nosnippet>289</a>    /// `Self::validate_module` and passed that validation.
-<a href=#290 id=290 data-nosnippet>290</a>    </span><span class="kw">unsafe fn </span>allocate_table(
-<a href=#291 id=291 data-nosnippet>291</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#292 id=292 data-nosnippet>292</a>        req: <span class="kw-2">&amp;mut </span>InstanceAllocationRequest,
-<a href=#293 id=293 data-nosnippet>293</a>        table: <span class="kw-2">&amp;</span>wasmtime_environ::Table,
-<a href=#294 id=294 data-nosnippet>294</a>        tunables: <span class="kw-2">&amp;</span>Tunables,
-<a href=#295 id=295 data-nosnippet>295</a>        table_index: DefinedTableIndex,
-<a href=#296 id=296 data-nosnippet>296</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;(TableAllocationIndex, Table)&gt;;
-<a href=#297 id=297 data-nosnippet>297</a>
-<a href=#298 id=298 data-nosnippet>298</a>    <span class="doccomment">/// Deallocate an instance's previously allocated table.
-<a href=#299 id=299 data-nosnippet>299</a>    ///
-<a href=#300 id=300 data-nosnippet>300</a>    /// # Unsafety
-<a href=#301 id=301 data-nosnippet>301</a>    ///
-<a href=#302 id=302 data-nosnippet>302</a>    /// The table must have previously been allocated by `Self::allocate_table`,
-<a href=#303 id=303 data-nosnippet>303</a>    /// be at the given index, and must currently be allocated. It must never be
-<a href=#304 id=304 data-nosnippet>304</a>    /// used again.
-<a href=#305 id=305 data-nosnippet>305</a>    </span><span class="kw">unsafe fn </span>deallocate_table(
-<a href=#306 id=306 data-nosnippet>306</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#307 id=307 data-nosnippet>307</a>        table_index: DefinedTableIndex,
-<a href=#308 id=308 data-nosnippet>308</a>        allocation_index: TableAllocationIndex,
-<a href=#309 id=309 data-nosnippet>309</a>        table: Table,
-<a href=#310 id=310 data-nosnippet>310</a>    );
-<a href=#311 id=311 data-nosnippet>311</a>
-<a href=#312 id=312 data-nosnippet>312</a>    <span class="doccomment">/// Allocates a fiber stack for calling async functions on.
-<a href=#313 id=313 data-nosnippet>313</a>    </span><span class="attr">#[cfg(feature = <span class="string">"async"</span>)]
-<a href=#314 id=314 data-nosnippet>314</a>    </span><span class="kw">fn </span>allocate_fiber_stack(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;wasmtime_fiber::FiberStack&gt;;
-<a href=#315 id=315 data-nosnippet>315</a>
-<a href=#316 id=316 data-nosnippet>316</a>    <span class="doccomment">/// Deallocates a fiber stack that was previously allocated with
-<a href=#317 id=317 data-nosnippet>317</a>    /// `allocate_fiber_stack`.
-<a href=#318 id=318 data-nosnippet>318</a>    ///
-<a href=#319 id=319 data-nosnippet>319</a>    /// # Safety
-<a href=#320 id=320 data-nosnippet>320</a>    ///
-<a href=#321 id=321 data-nosnippet>321</a>    /// The provided stack is required to have been allocated with
-<a href=#322 id=322 data-nosnippet>322</a>    /// `allocate_fiber_stack`.
-<a href=#323 id=323 data-nosnippet>323</a>    </span><span class="attr">#[cfg(feature = <span class="string">"async"</span>)]
-<a href=#324 id=324 data-nosnippet>324</a>    </span><span class="kw">unsafe fn </span>deallocate_fiber_stack(<span class="kw-2">&amp;</span><span class="self">self</span>, stack: wasmtime_fiber::FiberStack);
-<a href=#325 id=325 data-nosnippet>325</a>
-<a href=#326 id=326 data-nosnippet>326</a>    <span class="doccomment">/// Allocate a GC heap for allocating Wasm GC objects within.
+<a href=#256 id=256 data-nosnippet>256</a>    </span><span class="kw">fn </span>allocate_memory(
+<a href=#257 id=257 data-nosnippet>257</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#258 id=258 data-nosnippet>258</a>        request: <span class="kw-2">&amp;mut </span>InstanceAllocationRequest,
+<a href=#259 id=259 data-nosnippet>259</a>        ty: <span class="kw-2">&amp;</span>wasmtime_environ::Memory,
+<a href=#260 id=260 data-nosnippet>260</a>        tunables: <span class="kw-2">&amp;</span>Tunables,
+<a href=#261 id=261 data-nosnippet>261</a>        memory_index: <span class="prelude-ty">Option</span>&lt;DefinedMemoryIndex&gt;,
+<a href=#262 id=262 data-nosnippet>262</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;(MemoryAllocationIndex, Memory)&gt;;
+<a href=#263 id=263 data-nosnippet>263</a>
+<a href=#264 id=264 data-nosnippet>264</a>    <span class="doccomment">/// Deallocate an instance's previously allocated memory.
+<a href=#265 id=265 data-nosnippet>265</a>    ///
+<a href=#266 id=266 data-nosnippet>266</a>    /// # Unsafety
+<a href=#267 id=267 data-nosnippet>267</a>    ///
+<a href=#268 id=268 data-nosnippet>268</a>    /// The memory must have previously been allocated by
+<a href=#269 id=269 data-nosnippet>269</a>    /// `Self::allocate_memory`, be at the given index, and must currently be
+<a href=#270 id=270 data-nosnippet>270</a>    /// allocated. It must never be used again.
+<a href=#271 id=271 data-nosnippet>271</a>    </span><span class="kw">unsafe fn </span>deallocate_memory(
+<a href=#272 id=272 data-nosnippet>272</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#273 id=273 data-nosnippet>273</a>        memory_index: <span class="prelude-ty">Option</span>&lt;DefinedMemoryIndex&gt;,
+<a href=#274 id=274 data-nosnippet>274</a>        allocation_index: MemoryAllocationIndex,
+<a href=#275 id=275 data-nosnippet>275</a>        memory: Memory,
+<a href=#276 id=276 data-nosnippet>276</a>    );
+<a href=#277 id=277 data-nosnippet>277</a>
+<a href=#278 id=278 data-nosnippet>278</a>    <span class="doccomment">/// Allocate a table for an instance.
+<a href=#279 id=279 data-nosnippet>279</a>    </span><span class="kw">fn </span>allocate_table(
+<a href=#280 id=280 data-nosnippet>280</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#281 id=281 data-nosnippet>281</a>        req: <span class="kw-2">&amp;mut </span>InstanceAllocationRequest,
+<a href=#282 id=282 data-nosnippet>282</a>        table: <span class="kw-2">&amp;</span>wasmtime_environ::Table,
+<a href=#283 id=283 data-nosnippet>283</a>        tunables: <span class="kw-2">&amp;</span>Tunables,
+<a href=#284 id=284 data-nosnippet>284</a>        table_index: DefinedTableIndex,
+<a href=#285 id=285 data-nosnippet>285</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;(TableAllocationIndex, Table)&gt;;
+<a href=#286 id=286 data-nosnippet>286</a>
+<a href=#287 id=287 data-nosnippet>287</a>    <span class="doccomment">/// Deallocate an instance's previously allocated table.
+<a href=#288 id=288 data-nosnippet>288</a>    ///
+<a href=#289 id=289 data-nosnippet>289</a>    /// # Unsafety
+<a href=#290 id=290 data-nosnippet>290</a>    ///
+<a href=#291 id=291 data-nosnippet>291</a>    /// The table must have previously been allocated by `Self::allocate_table`,
+<a href=#292 id=292 data-nosnippet>292</a>    /// be at the given index, and must currently be allocated. It must never be
+<a href=#293 id=293 data-nosnippet>293</a>    /// used again.
+<a href=#294 id=294 data-nosnippet>294</a>    </span><span class="kw">unsafe fn </span>deallocate_table(
+<a href=#295 id=295 data-nosnippet>295</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#296 id=296 data-nosnippet>296</a>        table_index: DefinedTableIndex,
+<a href=#297 id=297 data-nosnippet>297</a>        allocation_index: TableAllocationIndex,
+<a href=#298 id=298 data-nosnippet>298</a>        table: Table,
+<a href=#299 id=299 data-nosnippet>299</a>    );
+<a href=#300 id=300 data-nosnippet>300</a>
+<a href=#301 id=301 data-nosnippet>301</a>    <span class="doccomment">/// Allocates a fiber stack for calling async functions on.
+<a href=#302 id=302 data-nosnippet>302</a>    </span><span class="attr">#[cfg(feature = <span class="string">"async"</span>)]
+<a href=#303 id=303 data-nosnippet>303</a>    </span><span class="kw">fn </span>allocate_fiber_stack(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;wasmtime_fiber::FiberStack&gt;;
+<a href=#304 id=304 data-nosnippet>304</a>
+<a href=#305 id=305 data-nosnippet>305</a>    <span class="doccomment">/// Deallocates a fiber stack that was previously allocated with
+<a href=#306 id=306 data-nosnippet>306</a>    /// `allocate_fiber_stack`.
+<a href=#307 id=307 data-nosnippet>307</a>    ///
+<a href=#308 id=308 data-nosnippet>308</a>    /// # Safety
+<a href=#309 id=309 data-nosnippet>309</a>    ///
+<a href=#310 id=310 data-nosnippet>310</a>    /// The provided stack is required to have been allocated with
+<a href=#311 id=311 data-nosnippet>311</a>    /// `allocate_fiber_stack`.
+<a href=#312 id=312 data-nosnippet>312</a>    </span><span class="attr">#[cfg(feature = <span class="string">"async"</span>)]
+<a href=#313 id=313 data-nosnippet>313</a>    </span><span class="kw">unsafe fn </span>deallocate_fiber_stack(<span class="kw-2">&amp;</span><span class="self">self</span>, stack: wasmtime_fiber::FiberStack);
+<a href=#314 id=314 data-nosnippet>314</a>
+<a href=#315 id=315 data-nosnippet>315</a>    <span class="doccomment">/// Allocate a GC heap for allocating Wasm GC objects within.
+<a href=#316 id=316 data-nosnippet>316</a>    </span><span class="attr">#[cfg(feature = <span class="string">"gc"</span>)]
+<a href=#317 id=317 data-nosnippet>317</a>    </span><span class="kw">fn </span>allocate_gc_heap(
+<a href=#318 id=318 data-nosnippet>318</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#319 id=319 data-nosnippet>319</a>        engine: <span class="kw-2">&amp;</span><span class="kw">crate</span>::Engine,
+<a href=#320 id=320 data-nosnippet>320</a>        gc_runtime: <span class="kw-2">&amp;</span><span class="kw">dyn </span>GcRuntime,
+<a href=#321 id=321 data-nosnippet>321</a>        memory_alloc_index: MemoryAllocationIndex,
+<a href=#322 id=322 data-nosnippet>322</a>        memory: Memory,
+<a href=#323 id=323 data-nosnippet>323</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;(GcHeapAllocationIndex, Box&lt;<span class="kw">dyn </span>GcHeap&gt;)&gt;;
+<a href=#324 id=324 data-nosnippet>324</a>
+<a href=#325 id=325 data-nosnippet>325</a>    <span class="doccomment">/// Deallocate a GC heap that was previously allocated with
+<a href=#326 id=326 data-nosnippet>326</a>    /// `allocate_gc_heap`.
 <a href=#327 id=327 data-nosnippet>327</a>    </span><span class="attr">#[cfg(feature = <span class="string">"gc"</span>)]
-<a href=#328 id=328 data-nosnippet>328</a>    </span><span class="kw">fn </span>allocate_gc_heap(
-<a href=#329 id=329 data-nosnippet>329</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#330 id=330 data-nosnippet>330</a>        engine: <span class="kw-2">&amp;</span><span class="kw">crate</span>::Engine,
-<a href=#331 id=331 data-nosnippet>331</a>        gc_runtime: <span class="kw-2">&amp;</span><span class="kw">dyn </span>GcRuntime,
-<a href=#332 id=332 data-nosnippet>332</a>        memory_alloc_index: MemoryAllocationIndex,
-<a href=#333 id=333 data-nosnippet>333</a>        memory: Memory,
-<a href=#334 id=334 data-nosnippet>334</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;(GcHeapAllocationIndex, Box&lt;<span class="kw">dyn </span>GcHeap&gt;)&gt;;
+<a href=#328 id=328 data-nosnippet>328</a>    #[must_use = <span class="string">"it is the caller's responsibility to deallocate the GC heap's underlying memory \
+<a href=#329 id=329 data-nosnippet>329</a>                  storage after the GC heap is deallocated"</span>]
+<a href=#330 id=330 data-nosnippet>330</a>    </span><span class="kw">fn </span>deallocate_gc_heap(
+<a href=#331 id=331 data-nosnippet>331</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#332 id=332 data-nosnippet>332</a>        allocation_index: GcHeapAllocationIndex,
+<a href=#333 id=333 data-nosnippet>333</a>        gc_heap: Box&lt;<span class="kw">dyn </span>GcHeap&gt;,
+<a href=#334 id=334 data-nosnippet>334</a>    ) -&gt; (MemoryAllocationIndex, Memory);
 <a href=#335 id=335 data-nosnippet>335</a>
-<a href=#336 id=336 data-nosnippet>336</a>    <span class="doccomment">/// Deallocate a GC heap that was previously allocated with
-<a href=#337 id=337 data-nosnippet>337</a>    /// `allocate_gc_heap`.
-<a href=#338 id=338 data-nosnippet>338</a>    </span><span class="attr">#[cfg(feature = <span class="string">"gc"</span>)]
-<a href=#339 id=339 data-nosnippet>339</a>    #[must_use = <span class="string">"it is the caller's responsibility to deallocate the GC heap's underlying memory \
-<a href=#340 id=340 data-nosnippet>340</a>                  storage after the GC heap is deallocated"</span>]
-<a href=#341 id=341 data-nosnippet>341</a>    </span><span class="kw">fn </span>deallocate_gc_heap(
-<a href=#342 id=342 data-nosnippet>342</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#343 id=343 data-nosnippet>343</a>        allocation_index: GcHeapAllocationIndex,
-<a href=#344 id=344 data-nosnippet>344</a>        gc_heap: Box&lt;<span class="kw">dyn </span>GcHeap&gt;,
-<a href=#345 id=345 data-nosnippet>345</a>    ) -&gt; (MemoryAllocationIndex, Memory);
-<a href=#346 id=346 data-nosnippet>346</a>
-<a href=#347 id=347 data-nosnippet>347</a>    <span class="doccomment">/// Purges all lingering resources related to `module` from within this
-<a href=#348 id=348 data-nosnippet>348</a>    /// allocator.
-<a href=#349 id=349 data-nosnippet>349</a>    ///
-<a href=#350 id=350 data-nosnippet>350</a>    /// Primarily present for the pooling allocator to remove mappings of
-<a href=#351 id=351 data-nosnippet>351</a>    /// this module from slots in linear memory.
-<a href=#352 id=352 data-nosnippet>352</a>    </span><span class="kw">fn </span>purge_module(<span class="kw-2">&amp;</span><span class="self">self</span>, module: CompiledModuleId);
-<a href=#353 id=353 data-nosnippet>353</a>
-<a href=#354 id=354 data-nosnippet>354</a>    <span class="doccomment">/// Use the next available protection key.
-<a href=#355 id=355 data-nosnippet>355</a>    ///
-<a href=#356 id=356 data-nosnippet>356</a>    /// The pooling allocator can use memory protection keys (MPK) for
-<a href=#357 id=357 data-nosnippet>357</a>    /// compressing the guard regions protecting against OOB. Each
-<a href=#358 id=358 data-nosnippet>358</a>    /// pool-allocated store needs its own key.
-<a href=#359 id=359 data-nosnippet>359</a>    </span><span class="kw">fn </span>next_available_pkey(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ProtectionKey&gt;;
-<a href=#360 id=360 data-nosnippet>360</a>
-<a href=#361 id=361 data-nosnippet>361</a>    <span class="doccomment">/// Restrict access to memory regions protected by `pkey`.
-<a href=#362 id=362 data-nosnippet>362</a>    ///
-<a href=#363 id=363 data-nosnippet>363</a>    /// This is useful for the pooling allocator, which can use memory
-<a href=#364 id=364 data-nosnippet>364</a>    /// protection keys (MPK). Note: this may still allow access to other
-<a href=#365 id=365 data-nosnippet>365</a>    /// protection keys, such as the default kernel key; see implementations of
-<a href=#366 id=366 data-nosnippet>366</a>    /// this.
-<a href=#367 id=367 data-nosnippet>367</a>    </span><span class="kw">fn </span>restrict_to_pkey(<span class="kw-2">&amp;</span><span class="self">self</span>, pkey: ProtectionKey);
-<a href=#368 id=368 data-nosnippet>368</a>
-<a href=#369 id=369 data-nosnippet>369</a>    <span class="doccomment">/// Allow access to memory regions protected by any protection key.
-<a href=#370 id=370 data-nosnippet>370</a>    </span><span class="kw">fn </span>allow_all_pkeys(<span class="kw-2">&amp;</span><span class="self">self</span>);
-<a href=#371 id=371 data-nosnippet>371</a>}
-<a href=#372 id=372 data-nosnippet>372</a>
-<a href=#373 id=373 data-nosnippet>373</a><span class="doccomment">/// A thing that can allocate instances.
-<a href=#374 id=374 data-nosnippet>374</a>///
-<a href=#375 id=375 data-nosnippet>375</a>/// Don't implement this trait directly, instead implement
-<a href=#376 id=376 data-nosnippet>376</a>/// `InstanceAllocatorImpl` and you'll get this trait for free via a blanket
-<a href=#377 id=377 data-nosnippet>377</a>/// impl.
-<a href=#378 id=378 data-nosnippet>378</a></span><span class="kw">pub trait </span>InstanceAllocator: InstanceAllocatorImpl {
-<a href=#379 id=379 data-nosnippet>379</a>    <span class="doccomment">/// Validate whether a component (including all of its contained core
-<a href=#380 id=380 data-nosnippet>380</a>    /// modules) is allocatable with this instance allocator.
-<a href=#381 id=381 data-nosnippet>381</a>    </span><span class="attr">#[cfg(feature = <span class="string">"component-model"</span>)]
-<a href=#382 id=382 data-nosnippet>382</a>    </span><span class="kw">fn </span>validate_component&lt;<span class="lifetime">'a</span>&gt;(
-<a href=#383 id=383 data-nosnippet>383</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#384 id=384 data-nosnippet>384</a>        component: <span class="kw-2">&amp;</span>Component,
-<a href=#385 id=385 data-nosnippet>385</a>        offsets: <span class="kw-2">&amp;</span>VMComponentOffsets&lt;HostPtr&gt;,
-<a href=#386 id=386 data-nosnippet>386</a>        get_module: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw">dyn </span>Fn(StaticModuleIndex) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Module,
-<a href=#387 id=387 data-nosnippet>387</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#388 id=388 data-nosnippet>388</a>        InstanceAllocatorImpl::validate_component_impl(<span class="self">self</span>, component, offsets, get_module)
-<a href=#389 id=389 data-nosnippet>389</a>    }
-<a href=#390 id=390 data-nosnippet>390</a>
-<a href=#391 id=391 data-nosnippet>391</a>    <span class="doccomment">/// Validate whether a core module is allocatable with this instance
-<a href=#392 id=392 data-nosnippet>392</a>    /// allocator.
-<a href=#393 id=393 data-nosnippet>393</a>    </span><span class="kw">fn </span>validate_module(<span class="kw-2">&amp;</span><span class="self">self</span>, module: <span class="kw-2">&amp;</span>Module, offsets: <span class="kw-2">&amp;</span>VMOffsets&lt;HostPtr&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#394 id=394 data-nosnippet>394</a>        InstanceAllocatorImpl::validate_module_impl(<span class="self">self</span>, module, offsets)
-<a href=#395 id=395 data-nosnippet>395</a>    }
-<a href=#396 id=396 data-nosnippet>396</a>
-<a href=#397 id=397 data-nosnippet>397</a>    <span class="doccomment">/// Validate whether a memory is allocatable with this instance allocator.
-<a href=#398 id=398 data-nosnippet>398</a>    </span><span class="attr">#[cfg(feature = <span class="string">"gc"</span>)]
-<a href=#399 id=399 data-nosnippet>399</a>    </span><span class="kw">fn </span>validate_memory(<span class="kw-2">&amp;</span><span class="self">self</span>, memory: <span class="kw-2">&amp;</span>wasmtime_environ::Memory) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#400 id=400 data-nosnippet>400</a>        InstanceAllocatorImpl::validate_memory_impl(<span class="self">self</span>, memory)
-<a href=#401 id=401 data-nosnippet>401</a>    }
-<a href=#402 id=402 data-nosnippet>402</a>
-<a href=#403 id=403 data-nosnippet>403</a>    <span class="doccomment">/// Allocates a fresh `InstanceHandle` for the `req` given.
-<a href=#404 id=404 data-nosnippet>404</a>    ///
-<a href=#405 id=405 data-nosnippet>405</a>    /// This will allocate memories and tables internally from this allocator
-<a href=#406 id=406 data-nosnippet>406</a>    /// and weave that altogether into a final and complete `InstanceHandle`
-<a href=#407 id=407 data-nosnippet>407</a>    /// ready to be registered with a store.
-<a href=#408 id=408 data-nosnippet>408</a>    ///
-<a href=#409 id=409 data-nosnippet>409</a>    /// Note that the returned instance must still have `.initialize(..)` called
-<a href=#410 id=410 data-nosnippet>410</a>    /// on it to complete the instantiation process.
-<a href=#411 id=411 data-nosnippet>411</a>    ///
-<a href=#412 id=412 data-nosnippet>412</a>    /// # Unsafety
-<a href=#413 id=413 data-nosnippet>413</a>    ///
-<a href=#414 id=414 data-nosnippet>414</a>    /// The request's associated module, memories, tables, and vmctx must have
-<a href=#415 id=415 data-nosnippet>415</a>    /// already have been validated by `Self::validate_module`.
-<a href=#416 id=416 data-nosnippet>416</a>    </span><span class="kw">unsafe fn </span>allocate_module(
-<a href=#417 id=417 data-nosnippet>417</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#418 id=418 data-nosnippet>418</a>        <span class="kw-2">mut </span>request: InstanceAllocationRequest,
-<a href=#419 id=419 data-nosnippet>419</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;InstanceHandle&gt; {
-<a href=#420 id=420 data-nosnippet>420</a>        <span class="kw">let </span>module = request.runtime_info.env_module();
-<a href=#421 id=421 data-nosnippet>421</a>
-<a href=#422 id=422 data-nosnippet>422</a>        <span class="attr">#[cfg(debug_assertions)]
-<a href=#423 id=423 data-nosnippet>423</a>        </span>InstanceAllocatorImpl::validate_module_impl(<span class="self">self</span>, module, request.runtime_info.offsets())
-<a href=#424 id=424 data-nosnippet>424</a>            .expect(<span class="string">"module should have already been validated before allocation"</span>);
-<a href=#425 id=425 data-nosnippet>425</a>
-<a href=#426 id=426 data-nosnippet>426</a>        <span class="self">self</span>.increment_core_instance_count()<span class="question-mark">?</span>;
-<a href=#427 id=427 data-nosnippet>427</a>
-<a href=#428 id=428 data-nosnippet>428</a>        <span class="kw">let </span>num_defined_memories = module.num_defined_memories();
-<a href=#429 id=429 data-nosnippet>429</a>        <span class="kw">let </span><span class="kw-2">mut </span>memories = PrimaryMap::with_capacity(num_defined_memories);
-<a href=#430 id=430 data-nosnippet>430</a>
-<a href=#431 id=431 data-nosnippet>431</a>        <span class="kw">let </span>num_defined_tables = module.num_defined_tables();
-<a href=#432 id=432 data-nosnippet>432</a>        <span class="kw">let </span><span class="kw-2">mut </span>tables = PrimaryMap::with_capacity(num_defined_tables);
-<a href=#433 id=433 data-nosnippet>433</a>
-<a href=#434 id=434 data-nosnippet>434</a>        <span class="kw">match </span>(|| {
-<a href=#435 id=435 data-nosnippet>435</a>            <span class="self">self</span>.allocate_memories(<span class="kw-2">&amp;mut </span>request, <span class="kw-2">&amp;mut </span>memories)<span class="question-mark">?</span>;
-<a href=#436 id=436 data-nosnippet>436</a>            <span class="self">self</span>.allocate_tables(<span class="kw-2">&amp;mut </span>request, <span class="kw-2">&amp;mut </span>tables)<span class="question-mark">?</span>;
-<a href=#437 id=437 data-nosnippet>437</a>            <span class="prelude-val">Ok</span>(())
-<a href=#438 id=438 data-nosnippet>438</a>        })() {
-<a href=#439 id=439 data-nosnippet>439</a>            <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">Ok</span>(Instance::new(request, memories, tables, <span class="kw-2">&amp;</span>module.memories)),
-<a href=#440 id=440 data-nosnippet>440</a>            <span class="prelude-val">Err</span>(e) =&gt; {
-<a href=#441 id=441 data-nosnippet>441</a>                <span class="self">self</span>.deallocate_memories(<span class="kw-2">&amp;mut </span>memories);
-<a href=#442 id=442 data-nosnippet>442</a>                <span class="self">self</span>.deallocate_tables(<span class="kw-2">&amp;mut </span>tables);
-<a href=#443 id=443 data-nosnippet>443</a>                <span class="self">self</span>.decrement_core_instance_count();
-<a href=#444 id=444 data-nosnippet>444</a>                <span class="prelude-val">Err</span>(e)
-<a href=#445 id=445 data-nosnippet>445</a>            }
-<a href=#446 id=446 data-nosnippet>446</a>        }
-<a href=#447 id=447 data-nosnippet>447</a>    }
-<a href=#448 id=448 data-nosnippet>448</a>
-<a href=#449 id=449 data-nosnippet>449</a>    <span class="doccomment">/// Deallocates the provided instance.
+<a href=#336 id=336 data-nosnippet>336</a>    <span class="doccomment">/// Purges all lingering resources related to `module` from within this
+<a href=#337 id=337 data-nosnippet>337</a>    /// allocator.
+<a href=#338 id=338 data-nosnippet>338</a>    ///
+<a href=#339 id=339 data-nosnippet>339</a>    /// Primarily present for the pooling allocator to remove mappings of
+<a href=#340 id=340 data-nosnippet>340</a>    /// this module from slots in linear memory.
+<a href=#341 id=341 data-nosnippet>341</a>    </span><span class="kw">fn </span>purge_module(<span class="kw-2">&amp;</span><span class="self">self</span>, module: CompiledModuleId);
+<a href=#342 id=342 data-nosnippet>342</a>
+<a href=#343 id=343 data-nosnippet>343</a>    <span class="doccomment">/// Use the next available protection key.
+<a href=#344 id=344 data-nosnippet>344</a>    ///
+<a href=#345 id=345 data-nosnippet>345</a>    /// The pooling allocator can use memory protection keys (MPK) for
+<a href=#346 id=346 data-nosnippet>346</a>    /// compressing the guard regions protecting against OOB. Each
+<a href=#347 id=347 data-nosnippet>347</a>    /// pool-allocated store needs its own key.
+<a href=#348 id=348 data-nosnippet>348</a>    </span><span class="kw">fn </span>next_available_pkey(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ProtectionKey&gt;;
+<a href=#349 id=349 data-nosnippet>349</a>
+<a href=#350 id=350 data-nosnippet>350</a>    <span class="doccomment">/// Restrict access to memory regions protected by `pkey`.
+<a href=#351 id=351 data-nosnippet>351</a>    ///
+<a href=#352 id=352 data-nosnippet>352</a>    /// This is useful for the pooling allocator, which can use memory
+<a href=#353 id=353 data-nosnippet>353</a>    /// protection keys (MPK). Note: this may still allow access to other
+<a href=#354 id=354 data-nosnippet>354</a>    /// protection keys, such as the default kernel key; see implementations of
+<a href=#355 id=355 data-nosnippet>355</a>    /// this.
+<a href=#356 id=356 data-nosnippet>356</a>    </span><span class="kw">fn </span>restrict_to_pkey(<span class="kw-2">&amp;</span><span class="self">self</span>, pkey: ProtectionKey);
+<a href=#357 id=357 data-nosnippet>357</a>
+<a href=#358 id=358 data-nosnippet>358</a>    <span class="doccomment">/// Allow access to memory regions protected by any protection key.
+<a href=#359 id=359 data-nosnippet>359</a>    </span><span class="kw">fn </span>allow_all_pkeys(<span class="kw-2">&amp;</span><span class="self">self</span>);
+<a href=#360 id=360 data-nosnippet>360</a>}
+<a href=#361 id=361 data-nosnippet>361</a>
+<a href=#362 id=362 data-nosnippet>362</a><span class="doccomment">/// A thing that can allocate instances.
+<a href=#363 id=363 data-nosnippet>363</a>///
+<a href=#364 id=364 data-nosnippet>364</a>/// Don't implement this trait directly, instead implement
+<a href=#365 id=365 data-nosnippet>365</a>/// `InstanceAllocatorImpl` and you'll get this trait for free via a blanket
+<a href=#366 id=366 data-nosnippet>366</a>/// impl.
+<a href=#367 id=367 data-nosnippet>367</a></span><span class="kw">pub trait </span>InstanceAllocator: InstanceAllocatorImpl {
+<a href=#368 id=368 data-nosnippet>368</a>    <span class="doccomment">/// Validate whether a component (including all of its contained core
+<a href=#369 id=369 data-nosnippet>369</a>    /// modules) is allocatable with this instance allocator.
+<a href=#370 id=370 data-nosnippet>370</a>    </span><span class="attr">#[cfg(feature = <span class="string">"component-model"</span>)]
+<a href=#371 id=371 data-nosnippet>371</a>    </span><span class="kw">fn </span>validate_component&lt;<span class="lifetime">'a</span>&gt;(
+<a href=#372 id=372 data-nosnippet>372</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#373 id=373 data-nosnippet>373</a>        component: <span class="kw-2">&amp;</span>Component,
+<a href=#374 id=374 data-nosnippet>374</a>        offsets: <span class="kw-2">&amp;</span>VMComponentOffsets&lt;HostPtr&gt;,
+<a href=#375 id=375 data-nosnippet>375</a>        get_module: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw">dyn </span>Fn(StaticModuleIndex) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Module,
+<a href=#376 id=376 data-nosnippet>376</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#377 id=377 data-nosnippet>377</a>        InstanceAllocatorImpl::validate_component_impl(<span class="self">self</span>, component, offsets, get_module)
+<a href=#378 id=378 data-nosnippet>378</a>    }
+<a href=#379 id=379 data-nosnippet>379</a>
+<a href=#380 id=380 data-nosnippet>380</a>    <span class="doccomment">/// Validate whether a core module is allocatable with this instance
+<a href=#381 id=381 data-nosnippet>381</a>    /// allocator.
+<a href=#382 id=382 data-nosnippet>382</a>    </span><span class="kw">fn </span>validate_module(<span class="kw-2">&amp;</span><span class="self">self</span>, module: <span class="kw-2">&amp;</span>Module, offsets: <span class="kw-2">&amp;</span>VMOffsets&lt;HostPtr&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#383 id=383 data-nosnippet>383</a>        InstanceAllocatorImpl::validate_module_impl(<span class="self">self</span>, module, offsets)
+<a href=#384 id=384 data-nosnippet>384</a>    }
+<a href=#385 id=385 data-nosnippet>385</a>
+<a href=#386 id=386 data-nosnippet>386</a>    <span class="doccomment">/// Validate whether a memory is allocatable with this instance allocator.
+<a href=#387 id=387 data-nosnippet>387</a>    </span><span class="attr">#[cfg(feature = <span class="string">"gc"</span>)]
+<a href=#388 id=388 data-nosnippet>388</a>    </span><span class="kw">fn </span>validate_memory(<span class="kw-2">&amp;</span><span class="self">self</span>, memory: <span class="kw-2">&amp;</span>wasmtime_environ::Memory) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#389 id=389 data-nosnippet>389</a>        InstanceAllocatorImpl::validate_memory_impl(<span class="self">self</span>, memory)
+<a href=#390 id=390 data-nosnippet>390</a>    }
+<a href=#391 id=391 data-nosnippet>391</a>
+<a href=#392 id=392 data-nosnippet>392</a>    <span class="doccomment">/// Allocates a fresh `InstanceHandle` for the `req` given.
+<a href=#393 id=393 data-nosnippet>393</a>    ///
+<a href=#394 id=394 data-nosnippet>394</a>    /// This will allocate memories and tables internally from this allocator
+<a href=#395 id=395 data-nosnippet>395</a>    /// and weave that altogether into a final and complete `InstanceHandle`
+<a href=#396 id=396 data-nosnippet>396</a>    /// ready to be registered with a store.
+<a href=#397 id=397 data-nosnippet>397</a>    ///
+<a href=#398 id=398 data-nosnippet>398</a>    /// Note that the returned instance must still have `.initialize(..)` called
+<a href=#399 id=399 data-nosnippet>399</a>    /// on it to complete the instantiation process.
+<a href=#400 id=400 data-nosnippet>400</a>    ///
+<a href=#401 id=401 data-nosnippet>401</a>    /// # Safety
+<a href=#402 id=402 data-nosnippet>402</a>    ///
+<a href=#403 id=403 data-nosnippet>403</a>    /// The `request` provided must be valid, e.g. the imports within are
+<a href=#404 id=404 data-nosnippet>404</a>    /// correctly sized/typed for the instance being created.
+<a href=#405 id=405 data-nosnippet>405</a>    </span><span class="kw">unsafe fn </span>allocate_module(
+<a href=#406 id=406 data-nosnippet>406</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#407 id=407 data-nosnippet>407</a>        <span class="kw-2">mut </span>request: InstanceAllocationRequest,
+<a href=#408 id=408 data-nosnippet>408</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;InstanceHandle&gt; {
+<a href=#409 id=409 data-nosnippet>409</a>        <span class="kw">let </span>module = request.runtime_info.env_module();
+<a href=#410 id=410 data-nosnippet>410</a>
+<a href=#411 id=411 data-nosnippet>411</a>        <span class="attr">#[cfg(debug_assertions)]
+<a href=#412 id=412 data-nosnippet>412</a>        </span>InstanceAllocatorImpl::validate_module_impl(<span class="self">self</span>, module, request.runtime_info.offsets())
+<a href=#413 id=413 data-nosnippet>413</a>            .expect(<span class="string">"module should have already been validated before allocation"</span>);
+<a href=#414 id=414 data-nosnippet>414</a>
+<a href=#415 id=415 data-nosnippet>415</a>        <span class="self">self</span>.increment_core_instance_count()<span class="question-mark">?</span>;
+<a href=#416 id=416 data-nosnippet>416</a>
+<a href=#417 id=417 data-nosnippet>417</a>        <span class="kw">let </span>num_defined_memories = module.num_defined_memories();
+<a href=#418 id=418 data-nosnippet>418</a>        <span class="kw">let </span><span class="kw-2">mut </span>memories = PrimaryMap::with_capacity(num_defined_memories);
+<a href=#419 id=419 data-nosnippet>419</a>
+<a href=#420 id=420 data-nosnippet>420</a>        <span class="kw">let </span>num_defined_tables = module.num_defined_tables();
+<a href=#421 id=421 data-nosnippet>421</a>        <span class="kw">let </span><span class="kw-2">mut </span>tables = PrimaryMap::with_capacity(num_defined_tables);
+<a href=#422 id=422 data-nosnippet>422</a>
+<a href=#423 id=423 data-nosnippet>423</a>        <span class="kw">match </span>(|| {
+<a href=#424 id=424 data-nosnippet>424</a>            <span class="self">self</span>.allocate_memories(<span class="kw-2">&amp;mut </span>request, <span class="kw-2">&amp;mut </span>memories)<span class="question-mark">?</span>;
+<a href=#425 id=425 data-nosnippet>425</a>            <span class="self">self</span>.allocate_tables(<span class="kw-2">&amp;mut </span>request, <span class="kw-2">&amp;mut </span>tables)<span class="question-mark">?</span>;
+<a href=#426 id=426 data-nosnippet>426</a>            <span class="prelude-val">Ok</span>(())
+<a href=#427 id=427 data-nosnippet>427</a>        })() {
+<a href=#428 id=428 data-nosnippet>428</a>            <span class="comment">// SAFETY: memories/tables were just allocated from the store within
+<a href=#429 id=429 data-nosnippet>429</a>            // `request` and this function's own contract requires that the
+<a href=#430 id=430 data-nosnippet>430</a>            // imports are valid.
+<a href=#431 id=431 data-nosnippet>431</a>            </span><span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="kw">unsafe </span>{ <span class="prelude-val">Ok</span>(Instance::new(request, memories, tables, <span class="kw-2">&amp;</span>module.memories)) },
+<a href=#432 id=432 data-nosnippet>432</a>            <span class="prelude-val">Err</span>(e) =&gt; {
+<a href=#433 id=433 data-nosnippet>433</a>                <span class="comment">// SAFETY: these were previously allocated by this allocator
+<a href=#434 id=434 data-nosnippet>434</a>                </span><span class="kw">unsafe </span>{
+<a href=#435 id=435 data-nosnippet>435</a>                    <span class="self">self</span>.deallocate_memories(<span class="kw-2">&amp;mut </span>memories);
+<a href=#436 id=436 data-nosnippet>436</a>                    <span class="self">self</span>.deallocate_tables(<span class="kw-2">&amp;mut </span>tables);
+<a href=#437 id=437 data-nosnippet>437</a>                }
+<a href=#438 id=438 data-nosnippet>438</a>                <span class="self">self</span>.decrement_core_instance_count();
+<a href=#439 id=439 data-nosnippet>439</a>                <span class="prelude-val">Err</span>(e)
+<a href=#440 id=440 data-nosnippet>440</a>            }
+<a href=#441 id=441 data-nosnippet>441</a>        }
+<a href=#442 id=442 data-nosnippet>442</a>    }
+<a href=#443 id=443 data-nosnippet>443</a>
+<a href=#444 id=444 data-nosnippet>444</a>    <span class="doccomment">/// Deallocates the provided instance.
+<a href=#445 id=445 data-nosnippet>445</a>    ///
+<a href=#446 id=446 data-nosnippet>446</a>    /// This will null-out the pointer within `handle` and otherwise reclaim
+<a href=#447 id=447 data-nosnippet>447</a>    /// resources such as tables, memories, and the instance memory itself.
+<a href=#448 id=448 data-nosnippet>448</a>    ///
+<a href=#449 id=449 data-nosnippet>449</a>    /// # Unsafety
 <a href=#450 id=450 data-nosnippet>450</a>    ///
-<a href=#451 id=451 data-nosnippet>451</a>    /// This will null-out the pointer within `handle` and otherwise reclaim
-<a href=#452 id=452 data-nosnippet>452</a>    /// resources such as tables, memories, and the instance memory itself.
-<a href=#453 id=453 data-nosnippet>453</a>    ///
-<a href=#454 id=454 data-nosnippet>454</a>    /// # Unsafety
-<a href=#455 id=455 data-nosnippet>455</a>    ///
-<a href=#456 id=456 data-nosnippet>456</a>    /// The instance must have previously been allocated by `Self::allocate`.
-<a href=#457 id=457 data-nosnippet>457</a>    </span><span class="kw">unsafe fn </span>deallocate_module(<span class="kw-2">&amp;</span><span class="self">self</span>, handle: <span class="kw-2">&amp;mut </span>InstanceHandle) {
-<a href=#458 id=458 data-nosnippet>458</a>        <span class="self">self</span>.deallocate_memories(handle.get_mut().memories_mut());
-<a href=#459 id=459 data-nosnippet>459</a>        <span class="self">self</span>.deallocate_tables(handle.get_mut().tables_mut());
+<a href=#451 id=451 data-nosnippet>451</a>    /// The instance must have previously been allocated by `Self::allocate`.
+<a href=#452 id=452 data-nosnippet>452</a>    </span><span class="kw">unsafe fn </span>deallocate_module(<span class="kw-2">&amp;</span><span class="self">self</span>, handle: <span class="kw-2">&amp;mut </span>InstanceHandle) {
+<a href=#453 id=453 data-nosnippet>453</a>        <span class="comment">// SAFETY: the contract of `deallocate_*` is itself a contract of this
+<a href=#454 id=454 data-nosnippet>454</a>        // function, that the memories/tables were previously allocated from
+<a href=#455 id=455 data-nosnippet>455</a>        // here.
+<a href=#456 id=456 data-nosnippet>456</a>        </span><span class="kw">unsafe </span>{
+<a href=#457 id=457 data-nosnippet>457</a>            <span class="self">self</span>.deallocate_memories(handle.get_mut().memories_mut());
+<a href=#458 id=458 data-nosnippet>458</a>            <span class="self">self</span>.deallocate_tables(handle.get_mut().tables_mut());
+<a href=#459 id=459 data-nosnippet>459</a>        }
 <a href=#460 id=460 data-nosnippet>460</a>
 <a href=#461 id=461 data-nosnippet>461</a>        <span class="self">self</span>.decrement_core_instance_count();
 <a href=#462 id=462 data-nosnippet>462</a>    }
 <a href=#463 id=463 data-nosnippet>463</a>
 <a href=#464 id=464 data-nosnippet>464</a>    <span class="doccomment">/// Allocate the memories for the given instance allocation request, pushing
 <a href=#465 id=465 data-nosnippet>465</a>    /// them into `memories`.
-<a href=#466 id=466 data-nosnippet>466</a>    ///
-<a href=#467 id=467 data-nosnippet>467</a>    /// # Unsafety
-<a href=#468 id=468 data-nosnippet>468</a>    ///
-<a href=#469 id=469 data-nosnippet>469</a>    /// The request's associated module and memories must have previously been
-<a href=#470 id=470 data-nosnippet>470</a>    /// validated by `Self::validate_module`.
-<a href=#471 id=471 data-nosnippet>471</a>    </span><span class="kw">unsafe fn </span>allocate_memories(
-<a href=#472 id=472 data-nosnippet>472</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#473 id=473 data-nosnippet>473</a>        request: <span class="kw-2">&amp;mut </span>InstanceAllocationRequest,
-<a href=#474 id=474 data-nosnippet>474</a>        memories: <span class="kw-2">&amp;mut </span>PrimaryMap&lt;DefinedMemoryIndex, (MemoryAllocationIndex, Memory)&gt;,
-<a href=#475 id=475 data-nosnippet>475</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#476 id=476 data-nosnippet>476</a>        <span class="kw">let </span>module = request.runtime_info.env_module();
-<a href=#477 id=477 data-nosnippet>477</a>
-<a href=#478 id=478 data-nosnippet>478</a>        <span class="attr">#[cfg(debug_assertions)]
-<a href=#479 id=479 data-nosnippet>479</a>        </span>InstanceAllocatorImpl::validate_module_impl(<span class="self">self</span>, module, request.runtime_info.offsets())
-<a href=#480 id=480 data-nosnippet>480</a>            .expect(<span class="string">"module should have already been validated before allocation"</span>);
+<a href=#466 id=466 data-nosnippet>466</a>    </span><span class="kw">fn </span>allocate_memories(
+<a href=#467 id=467 data-nosnippet>467</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#468 id=468 data-nosnippet>468</a>        request: <span class="kw-2">&amp;mut </span>InstanceAllocationRequest,
+<a href=#469 id=469 data-nosnippet>469</a>        memories: <span class="kw-2">&amp;mut </span>PrimaryMap&lt;DefinedMemoryIndex, (MemoryAllocationIndex, Memory)&gt;,
+<a href=#470 id=470 data-nosnippet>470</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#471 id=471 data-nosnippet>471</a>        <span class="kw">let </span>module = request.runtime_info.env_module();
+<a href=#472 id=472 data-nosnippet>472</a>
+<a href=#473 id=473 data-nosnippet>473</a>        <span class="attr">#[cfg(debug_assertions)]
+<a href=#474 id=474 data-nosnippet>474</a>        </span>InstanceAllocatorImpl::validate_module_impl(<span class="self">self</span>, module, request.runtime_info.offsets())
+<a href=#475 id=475 data-nosnippet>475</a>            .expect(<span class="string">"module should have already been validated before allocation"</span>);
+<a href=#476 id=476 data-nosnippet>476</a>
+<a href=#477 id=477 data-nosnippet>477</a>        <span class="kw">for </span>(memory_index, ty) <span class="kw">in </span>module.memories.iter().skip(module.num_imported_memories) {
+<a href=#478 id=478 data-nosnippet>478</a>            <span class="kw">let </span>memory_index = module
+<a href=#479 id=479 data-nosnippet>479</a>                .defined_memory_index(memory_index)
+<a href=#480 id=480 data-nosnippet>480</a>                .expect(<span class="string">"should be a defined memory since we skipped imported ones"</span>);
 <a href=#481 id=481 data-nosnippet>481</a>
-<a href=#482 id=482 data-nosnippet>482</a>        <span class="kw">for </span>(memory_index, ty) <span class="kw">in </span>module.memories.iter().skip(module.num_imported_memories) {
-<a href=#483 id=483 data-nosnippet>483</a>            <span class="kw">let </span>memory_index = module
-<a href=#484 id=484 data-nosnippet>484</a>                .defined_memory_index(memory_index)
-<a href=#485 id=485 data-nosnippet>485</a>                .expect(<span class="string">"should be a defined memory since we skipped imported ones"</span>);
-<a href=#486 id=486 data-nosnippet>486</a>
-<a href=#487 id=487 data-nosnippet>487</a>            memories.push(<span class="self">self</span>.allocate_memory(
-<a href=#488 id=488 data-nosnippet>488</a>                request,
-<a href=#489 id=489 data-nosnippet>489</a>                ty,
-<a href=#490 id=490 data-nosnippet>490</a>                request.tunables,
-<a href=#491 id=491 data-nosnippet>491</a>                <span class="prelude-val">Some</span>(memory_index),
-<a href=#492 id=492 data-nosnippet>492</a>            )<span class="question-mark">?</span>);
-<a href=#493 id=493 data-nosnippet>493</a>        }
-<a href=#494 id=494 data-nosnippet>494</a>
-<a href=#495 id=495 data-nosnippet>495</a>        <span class="prelude-val">Ok</span>(())
-<a href=#496 id=496 data-nosnippet>496</a>    }
-<a href=#497 id=497 data-nosnippet>497</a>
-<a href=#498 id=498 data-nosnippet>498</a>    <span class="doccomment">/// Deallocate all the memories in the given primary map.
-<a href=#499 id=499 data-nosnippet>499</a>    ///
-<a href=#500 id=500 data-nosnippet>500</a>    /// # Unsafety
-<a href=#501 id=501 data-nosnippet>501</a>    ///
-<a href=#502 id=502 data-nosnippet>502</a>    /// The memories must have previously been allocated by
-<a href=#503 id=503 data-nosnippet>503</a>    /// `Self::allocate_memories`.
-<a href=#504 id=504 data-nosnippet>504</a>    </span><span class="kw">unsafe fn </span>deallocate_memories(
-<a href=#505 id=505 data-nosnippet>505</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#506 id=506 data-nosnippet>506</a>        memories: <span class="kw-2">&amp;mut </span>PrimaryMap&lt;DefinedMemoryIndex, (MemoryAllocationIndex, Memory)&gt;,
-<a href=#507 id=507 data-nosnippet>507</a>    ) {
-<a href=#508 id=508 data-nosnippet>508</a>        <span class="kw">for </span>(memory_index, (allocation_index, memory)) <span class="kw">in </span>mem::take(memories) {
-<a href=#509 id=509 data-nosnippet>509</a>            <span class="comment">// Because deallocating memory is infallible, we don't need to worry
-<a href=#510 id=510 data-nosnippet>510</a>            // about leaking subsequent memories if the first memory failed to
-<a href=#511 id=511 data-nosnippet>511</a>            // deallocate. If deallocating memory ever becomes fallible, we will
-<a href=#512 id=512 data-nosnippet>512</a>            // need to be careful here!
-<a href=#513 id=513 data-nosnippet>513</a>            </span><span class="self">self</span>.deallocate_memory(<span class="prelude-val">Some</span>(memory_index), allocation_index, memory);
-<a href=#514 id=514 data-nosnippet>514</a>        }
-<a href=#515 id=515 data-nosnippet>515</a>    }
-<a href=#516 id=516 data-nosnippet>516</a>
-<a href=#517 id=517 data-nosnippet>517</a>    <span class="doccomment">/// Allocate tables for the given instance allocation request, pushing them
-<a href=#518 id=518 data-nosnippet>518</a>    /// into `tables`.
-<a href=#519 id=519 data-nosnippet>519</a>    ///
-<a href=#520 id=520 data-nosnippet>520</a>    /// # Unsafety
-<a href=#521 id=521 data-nosnippet>521</a>    ///
-<a href=#522 id=522 data-nosnippet>522</a>    /// The request's associated module and tables must have previously been
-<a href=#523 id=523 data-nosnippet>523</a>    /// validated by `Self::validate_module`.
-<a href=#524 id=524 data-nosnippet>524</a>    </span><span class="kw">unsafe fn </span>allocate_tables(
-<a href=#525 id=525 data-nosnippet>525</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#526 id=526 data-nosnippet>526</a>        request: <span class="kw-2">&amp;mut </span>InstanceAllocationRequest,
-<a href=#527 id=527 data-nosnippet>527</a>        tables: <span class="kw-2">&amp;mut </span>PrimaryMap&lt;DefinedTableIndex, (TableAllocationIndex, Table)&gt;,
-<a href=#528 id=528 data-nosnippet>528</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#529 id=529 data-nosnippet>529</a>        <span class="kw">let </span>module = request.runtime_info.env_module();
-<a href=#530 id=530 data-nosnippet>530</a>
-<a href=#531 id=531 data-nosnippet>531</a>        <span class="attr">#[cfg(debug_assertions)]
-<a href=#532 id=532 data-nosnippet>532</a>        </span>InstanceAllocatorImpl::validate_module_impl(<span class="self">self</span>, module, request.runtime_info.offsets())
-<a href=#533 id=533 data-nosnippet>533</a>            .expect(<span class="string">"module should have already been validated before allocation"</span>);
-<a href=#534 id=534 data-nosnippet>534</a>
-<a href=#535 id=535 data-nosnippet>535</a>        <span class="kw">for </span>(index, table) <span class="kw">in </span>module.tables.iter().skip(module.num_imported_tables) {
-<a href=#536 id=536 data-nosnippet>536</a>            <span class="kw">let </span>def_index = module
-<a href=#537 id=537 data-nosnippet>537</a>                .defined_table_index(index)
-<a href=#538 id=538 data-nosnippet>538</a>                .expect(<span class="string">"should be a defined table since we skipped imported ones"</span>);
-<a href=#539 id=539 data-nosnippet>539</a>
-<a href=#540 id=540 data-nosnippet>540</a>            tables.push(<span class="self">self</span>.allocate_table(request, table, request.tunables, def_index)<span class="question-mark">?</span>);
-<a href=#541 id=541 data-nosnippet>541</a>        }
-<a href=#542 id=542 data-nosnippet>542</a>
-<a href=#543 id=543 data-nosnippet>543</a>        <span class="prelude-val">Ok</span>(())
-<a href=#544 id=544 data-nosnippet>544</a>    }
-<a href=#545 id=545 data-nosnippet>545</a>
-<a href=#546 id=546 data-nosnippet>546</a>    <span class="doccomment">/// Deallocate all the tables in the given primary map.
-<a href=#547 id=547 data-nosnippet>547</a>    ///
-<a href=#548 id=548 data-nosnippet>548</a>    /// # Unsafety
-<a href=#549 id=549 data-nosnippet>549</a>    ///
-<a href=#550 id=550 data-nosnippet>550</a>    /// The tables must have previously been allocated by
-<a href=#551 id=551 data-nosnippet>551</a>    /// `Self::allocate_tables`.
-<a href=#552 id=552 data-nosnippet>552</a>    </span><span class="kw">unsafe fn </span>deallocate_tables(
-<a href=#553 id=553 data-nosnippet>553</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#554 id=554 data-nosnippet>554</a>        tables: <span class="kw-2">&amp;mut </span>PrimaryMap&lt;DefinedTableIndex, (TableAllocationIndex, Table)&gt;,
-<a href=#555 id=555 data-nosnippet>555</a>    ) {
-<a href=#556 id=556 data-nosnippet>556</a>        <span class="kw">for </span>(table_index, (allocation_index, table)) <span class="kw">in </span>mem::take(tables) {
-<a href=#557 id=557 data-nosnippet>557</a>            <span class="self">self</span>.deallocate_table(table_index, allocation_index, table);
-<a href=#558 id=558 data-nosnippet>558</a>        }
-<a href=#559 id=559 data-nosnippet>559</a>    }
-<a href=#560 id=560 data-nosnippet>560</a>}
-<a href=#561 id=561 data-nosnippet>561</a>
-<a href=#562 id=562 data-nosnippet>562</a><span class="comment">// Every `InstanceAllocatorImpl` is an `InstanceAllocator` when used
-<a href=#563 id=563 data-nosnippet>563</a>// correctly. Also, no one is allowed to override this trait's methods, they
-<a href=#564 id=564 data-nosnippet>564</a>// must use the defaults. This blanket impl provides both of those things.
-<a href=#565 id=565 data-nosnippet>565</a></span><span class="kw">impl</span>&lt;T: InstanceAllocatorImpl&gt; InstanceAllocator <span class="kw">for </span>T {}
-<a href=#566 id=566 data-nosnippet>566</a>
-<a href=#567 id=567 data-nosnippet>567</a><span class="kw">fn </span>check_table_init_bounds(
-<a href=#568 id=568 data-nosnippet>568</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
-<a href=#569 id=569 data-nosnippet>569</a>    instance: InstanceId,
-<a href=#570 id=570 data-nosnippet>570</a>    module: <span class="kw-2">&amp;</span>Module,
-<a href=#571 id=571 data-nosnippet>571</a>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#572 id=572 data-nosnippet>572</a>    <span class="kw">let </span><span class="kw-2">mut </span>const_evaluator = ConstExprEvaluator::default();
-<a href=#573 id=573 data-nosnippet>573</a>
-<a href=#574 id=574 data-nosnippet>574</a>    <span class="kw">for </span>segment <span class="kw">in </span>module.table_initialization.segments.iter() {
-<a href=#575 id=575 data-nosnippet>575</a>        <span class="kw">let </span>table = <span class="kw">unsafe </span>{ <span class="kw-2">&amp;*</span>store.instance_mut(instance).get_table(segment.table_index) };
-<a href=#576 id=576 data-nosnippet>576</a>        <span class="kw">let </span><span class="kw-2">mut </span>context = ConstEvalContext::new(instance);
-<a href=#577 id=577 data-nosnippet>577</a>        <span class="kw">let </span>start = <span class="kw">unsafe </span>{
-<a href=#578 id=578 data-nosnippet>578</a>            const_evaluator
-<a href=#579 id=579 data-nosnippet>579</a>                .eval(store, <span class="kw-2">&amp;mut </span>context, <span class="kw-2">&amp;</span>segment.offset)
-<a href=#580 id=580 data-nosnippet>580</a>                .expect(<span class="string">"const expression should be valid"</span>)
-<a href=#581 id=581 data-nosnippet>581</a>        };
-<a href=#582 id=582 data-nosnippet>582</a>        <span class="kw">let </span>start = usize::try_from(start.get_u32()).unwrap();
-<a href=#583 id=583 data-nosnippet>583</a>        <span class="kw">let </span>end = start.checked_add(usize::try_from(segment.elements.len()).unwrap());
-<a href=#584 id=584 data-nosnippet>584</a>
-<a href=#585 id=585 data-nosnippet>585</a>        <span class="kw">match </span>end {
-<a href=#586 id=586 data-nosnippet>586</a>            <span class="prelude-val">Some</span>(end) <span class="kw">if </span>end &lt;= table.size() =&gt; {
-<a href=#587 id=587 data-nosnippet>587</a>                <span class="comment">// Initializer is in bounds
-<a href=#588 id=588 data-nosnippet>588</a>            </span>}
-<a href=#589 id=589 data-nosnippet>589</a>            <span class="kw">_ </span>=&gt; {
-<a href=#590 id=590 data-nosnippet>590</a>                <span class="macro">bail!</span>(<span class="string">"table out of bounds: elements segment does not fit"</span>)
-<a href=#591 id=591 data-nosnippet>591</a>            }
-<a href=#592 id=592 data-nosnippet>592</a>        }
-<a href=#593 id=593 data-nosnippet>593</a>    }
+<a href=#482 id=482 data-nosnippet>482</a>            <span class="kw">let </span>memory = <span class="self">self</span>.allocate_memory(request, ty, request.tunables, <span class="prelude-val">Some</span>(memory_index))<span class="question-mark">?</span>;
+<a href=#483 id=483 data-nosnippet>483</a>            memories.push(memory);
+<a href=#484 id=484 data-nosnippet>484</a>        }
+<a href=#485 id=485 data-nosnippet>485</a>
+<a href=#486 id=486 data-nosnippet>486</a>        <span class="prelude-val">Ok</span>(())
+<a href=#487 id=487 data-nosnippet>487</a>    }
+<a href=#488 id=488 data-nosnippet>488</a>
+<a href=#489 id=489 data-nosnippet>489</a>    <span class="doccomment">/// Deallocate all the memories in the given primary map.
+<a href=#490 id=490 data-nosnippet>490</a>    ///
+<a href=#491 id=491 data-nosnippet>491</a>    /// # Unsafety
+<a href=#492 id=492 data-nosnippet>492</a>    ///
+<a href=#493 id=493 data-nosnippet>493</a>    /// The memories must have previously been allocated by
+<a href=#494 id=494 data-nosnippet>494</a>    /// `Self::allocate_memories`.
+<a href=#495 id=495 data-nosnippet>495</a>    </span><span class="kw">unsafe fn </span>deallocate_memories(
+<a href=#496 id=496 data-nosnippet>496</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#497 id=497 data-nosnippet>497</a>        memories: <span class="kw-2">&amp;mut </span>PrimaryMap&lt;DefinedMemoryIndex, (MemoryAllocationIndex, Memory)&gt;,
+<a href=#498 id=498 data-nosnippet>498</a>    ) {
+<a href=#499 id=499 data-nosnippet>499</a>        <span class="kw">for </span>(memory_index, (allocation_index, memory)) <span class="kw">in </span>mem::take(memories) {
+<a href=#500 id=500 data-nosnippet>500</a>            <span class="comment">// Because deallocating memory is infallible, we don't need to worry
+<a href=#501 id=501 data-nosnippet>501</a>            // about leaking subsequent memories if the first memory failed to
+<a href=#502 id=502 data-nosnippet>502</a>            // deallocate. If deallocating memory ever becomes fallible, we will
+<a href=#503 id=503 data-nosnippet>503</a>            // need to be careful here!
+<a href=#504 id=504 data-nosnippet>504</a>            //
+<a href=#505 id=505 data-nosnippet>505</a>            // SAFETY: the unsafe contract here is the same as the unsafe
+<a href=#506 id=506 data-nosnippet>506</a>            // contract of this function, that the memories were previously
+<a href=#507 id=507 data-nosnippet>507</a>            // allocated by this allocator.
+<a href=#508 id=508 data-nosnippet>508</a>            </span><span class="kw">unsafe </span>{
+<a href=#509 id=509 data-nosnippet>509</a>                <span class="self">self</span>.deallocate_memory(<span class="prelude-val">Some</span>(memory_index), allocation_index, memory);
+<a href=#510 id=510 data-nosnippet>510</a>            }
+<a href=#511 id=511 data-nosnippet>511</a>        }
+<a href=#512 id=512 data-nosnippet>512</a>    }
+<a href=#513 id=513 data-nosnippet>513</a>
+<a href=#514 id=514 data-nosnippet>514</a>    <span class="doccomment">/// Allocate tables for the given instance allocation request, pushing them
+<a href=#515 id=515 data-nosnippet>515</a>    /// into `tables`.
+<a href=#516 id=516 data-nosnippet>516</a>    </span><span class="kw">fn </span>allocate_tables(
+<a href=#517 id=517 data-nosnippet>517</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#518 id=518 data-nosnippet>518</a>        request: <span class="kw-2">&amp;mut </span>InstanceAllocationRequest,
+<a href=#519 id=519 data-nosnippet>519</a>        tables: <span class="kw-2">&amp;mut </span>PrimaryMap&lt;DefinedTableIndex, (TableAllocationIndex, Table)&gt;,
+<a href=#520 id=520 data-nosnippet>520</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#521 id=521 data-nosnippet>521</a>        <span class="kw">let </span>module = request.runtime_info.env_module();
+<a href=#522 id=522 data-nosnippet>522</a>
+<a href=#523 id=523 data-nosnippet>523</a>        <span class="attr">#[cfg(debug_assertions)]
+<a href=#524 id=524 data-nosnippet>524</a>        </span>InstanceAllocatorImpl::validate_module_impl(<span class="self">self</span>, module, request.runtime_info.offsets())
+<a href=#525 id=525 data-nosnippet>525</a>            .expect(<span class="string">"module should have already been validated before allocation"</span>);
+<a href=#526 id=526 data-nosnippet>526</a>
+<a href=#527 id=527 data-nosnippet>527</a>        <span class="kw">for </span>(index, table) <span class="kw">in </span>module.tables.iter().skip(module.num_imported_tables) {
+<a href=#528 id=528 data-nosnippet>528</a>            <span class="kw">let </span>def_index = module
+<a href=#529 id=529 data-nosnippet>529</a>                .defined_table_index(index)
+<a href=#530 id=530 data-nosnippet>530</a>                .expect(<span class="string">"should be a defined table since we skipped imported ones"</span>);
+<a href=#531 id=531 data-nosnippet>531</a>
+<a href=#532 id=532 data-nosnippet>532</a>            <span class="kw">let </span>table = <span class="self">self</span>.allocate_table(request, table, request.tunables, def_index)<span class="question-mark">?</span>;
+<a href=#533 id=533 data-nosnippet>533</a>            tables.push(table);
+<a href=#534 id=534 data-nosnippet>534</a>        }
+<a href=#535 id=535 data-nosnippet>535</a>
+<a href=#536 id=536 data-nosnippet>536</a>        <span class="prelude-val">Ok</span>(())
+<a href=#537 id=537 data-nosnippet>537</a>    }
+<a href=#538 id=538 data-nosnippet>538</a>
+<a href=#539 id=539 data-nosnippet>539</a>    <span class="doccomment">/// Deallocate all the tables in the given primary map.
+<a href=#540 id=540 data-nosnippet>540</a>    ///
+<a href=#541 id=541 data-nosnippet>541</a>    /// # Unsafety
+<a href=#542 id=542 data-nosnippet>542</a>    ///
+<a href=#543 id=543 data-nosnippet>543</a>    /// The tables must have previously been allocated by
+<a href=#544 id=544 data-nosnippet>544</a>    /// `Self::allocate_tables`.
+<a href=#545 id=545 data-nosnippet>545</a>    </span><span class="kw">unsafe fn </span>deallocate_tables(
+<a href=#546 id=546 data-nosnippet>546</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#547 id=547 data-nosnippet>547</a>        tables: <span class="kw-2">&amp;mut </span>PrimaryMap&lt;DefinedTableIndex, (TableAllocationIndex, Table)&gt;,
+<a href=#548 id=548 data-nosnippet>548</a>    ) {
+<a href=#549 id=549 data-nosnippet>549</a>        <span class="kw">for </span>(table_index, (allocation_index, table)) <span class="kw">in </span>mem::take(tables) {
+<a href=#550 id=550 data-nosnippet>550</a>            <span class="comment">// SAFETY: the tables here were allocated from this allocator per
+<a href=#551 id=551 data-nosnippet>551</a>            // the contract on this function itself.
+<a href=#552 id=552 data-nosnippet>552</a>            </span><span class="kw">unsafe </span>{
+<a href=#553 id=553 data-nosnippet>553</a>                <span class="self">self</span>.deallocate_table(table_index, allocation_index, table);
+<a href=#554 id=554 data-nosnippet>554</a>            }
+<a href=#555 id=555 data-nosnippet>555</a>        }
+<a href=#556 id=556 data-nosnippet>556</a>    }
+<a href=#557 id=557 data-nosnippet>557</a>}
+<a href=#558 id=558 data-nosnippet>558</a>
+<a href=#559 id=559 data-nosnippet>559</a><span class="comment">// Every `InstanceAllocatorImpl` is an `InstanceAllocator` when used
+<a href=#560 id=560 data-nosnippet>560</a>// correctly. Also, no one is allowed to override this trait's methods, they
+<a href=#561 id=561 data-nosnippet>561</a>// must use the defaults. This blanket impl provides both of those things.
+<a href=#562 id=562 data-nosnippet>562</a></span><span class="kw">impl</span>&lt;T: InstanceAllocatorImpl&gt; InstanceAllocator <span class="kw">for </span>T {}
+<a href=#563 id=563 data-nosnippet>563</a>
+<a href=#564 id=564 data-nosnippet>564</a><span class="kw">fn </span>check_table_init_bounds(
+<a href=#565 id=565 data-nosnippet>565</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
+<a href=#566 id=566 data-nosnippet>566</a>    instance: InstanceId,
+<a href=#567 id=567 data-nosnippet>567</a>    module: <span class="kw-2">&amp;</span>Module,
+<a href=#568 id=568 data-nosnippet>568</a>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#569 id=569 data-nosnippet>569</a>    <span class="kw">let </span><span class="kw-2">mut </span>const_evaluator = ConstExprEvaluator::default();
+<a href=#570 id=570 data-nosnippet>570</a>
+<a href=#571 id=571 data-nosnippet>571</a>    <span class="kw">for </span>segment <span class="kw">in </span>module.table_initialization.segments.iter() {
+<a href=#572 id=572 data-nosnippet>572</a>        <span class="kw">let </span><span class="kw-2">mut </span>context = ConstEvalContext::new(instance);
+<a href=#573 id=573 data-nosnippet>573</a>        <span class="kw">let </span>start = <span class="kw">unsafe </span>{
+<a href=#574 id=574 data-nosnippet>574</a>            const_evaluator
+<a href=#575 id=575 data-nosnippet>575</a>                .eval(store, <span class="kw-2">&amp;mut </span>context, <span class="kw-2">&amp;</span>segment.offset)
+<a href=#576 id=576 data-nosnippet>576</a>                .expect(<span class="string">"const expression should be valid"</span>)
+<a href=#577 id=577 data-nosnippet>577</a>        };
+<a href=#578 id=578 data-nosnippet>578</a>        <span class="kw">let </span>start = usize::try_from(start.get_u32()).unwrap();
+<a href=#579 id=579 data-nosnippet>579</a>        <span class="kw">let </span>end = start.checked_add(usize::try_from(segment.elements.len()).unwrap());
+<a href=#580 id=580 data-nosnippet>580</a>
+<a href=#581 id=581 data-nosnippet>581</a>        <span class="kw">let </span>table = store.instance_mut(instance).get_table(segment.table_index);
+<a href=#582 id=582 data-nosnippet>582</a>        <span class="kw">match </span>end {
+<a href=#583 id=583 data-nosnippet>583</a>            <span class="prelude-val">Some</span>(end) <span class="kw">if </span>end &lt;= table.size() =&gt; {
+<a href=#584 id=584 data-nosnippet>584</a>                <span class="comment">// Initializer is in bounds
+<a href=#585 id=585 data-nosnippet>585</a>            </span>}
+<a href=#586 id=586 data-nosnippet>586</a>            <span class="kw">_ </span>=&gt; {
+<a href=#587 id=587 data-nosnippet>587</a>                <span class="macro">bail!</span>(<span class="string">"table out of bounds: elements segment does not fit"</span>)
+<a href=#588 id=588 data-nosnippet>588</a>            }
+<a href=#589 id=589 data-nosnippet>589</a>        }
+<a href=#590 id=590 data-nosnippet>590</a>    }
+<a href=#591 id=591 data-nosnippet>591</a>
+<a href=#592 id=592 data-nosnippet>592</a>    <span class="prelude-val">Ok</span>(())
+<a href=#593 id=593 data-nosnippet>593</a>}
 <a href=#594 id=594 data-nosnippet>594</a>
-<a href=#595 id=595 data-nosnippet>595</a>    <span class="prelude-val">Ok</span>(())
-<a href=#596 id=596 data-nosnippet>596</a>}
-<a href=#597 id=597 data-nosnippet>597</a>
-<a href=#598 id=598 data-nosnippet>598</a><span class="kw">fn </span>initialize_tables(
-<a href=#599 id=599 data-nosnippet>599</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
-<a href=#600 id=600 data-nosnippet>600</a>    context: <span class="kw-2">&amp;mut </span>ConstEvalContext,
-<a href=#601 id=601 data-nosnippet>601</a>    const_evaluator: <span class="kw-2">&amp;mut </span>ConstExprEvaluator,
-<a href=#602 id=602 data-nosnippet>602</a>    module: <span class="kw-2">&amp;</span>Module,
-<a href=#603 id=603 data-nosnippet>603</a>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#604 id=604 data-nosnippet>604</a>    <span class="kw">for </span>(table, init) <span class="kw">in </span>module.table_initialization.initial_values.iter() {
-<a href=#605 id=605 data-nosnippet>605</a>        <span class="kw">match </span>init {
-<a href=#606 id=606 data-nosnippet>606</a>            <span class="comment">// Tables are always initially null-initialized at this time
-<a href=#607 id=607 data-nosnippet>607</a>            </span>TableInitialValue::Null { precomputed: <span class="kw">_ </span>} =&gt; {}
-<a href=#608 id=608 data-nosnippet>608</a>
-<a href=#609 id=609 data-nosnippet>609</a>            TableInitialValue::Expr(expr) =&gt; {
-<a href=#610 id=610 data-nosnippet>610</a>                <span class="kw">let </span>raw = <span class="kw">unsafe </span>{
-<a href=#611 id=611 data-nosnippet>611</a>                    const_evaluator
-<a href=#612 id=612 data-nosnippet>612</a>                        .eval(store, context, expr)
-<a href=#613 id=613 data-nosnippet>613</a>                        .expect(<span class="string">"const expression should be valid"</span>)
-<a href=#614 id=614 data-nosnippet>614</a>                };
-<a href=#615 id=615 data-nosnippet>615</a>                <span class="kw">let </span>idx = module.table_index(table);
-<a href=#616 id=616 data-nosnippet>616</a>                <span class="kw">let </span>table = <span class="kw">unsafe </span>{
-<a href=#617 id=617 data-nosnippet>617</a>                    store
-<a href=#618 id=618 data-nosnippet>618</a>                        .instance_mut(context.instance)
-<a href=#619 id=619 data-nosnippet>619</a>                        .get_defined_table(table)
-<a href=#620 id=620 data-nosnippet>620</a>                        .as_mut()
-<a href=#621 id=621 data-nosnippet>621</a>                        .unwrap()
-<a href=#622 id=622 data-nosnippet>622</a>                };
-<a href=#623 id=623 data-nosnippet>623</a>                <span class="kw">match </span>module.tables[idx].ref_type.heap_type.top() {
-<a href=#624 id=624 data-nosnippet>624</a>                    WasmHeapTopType::Extern =&gt; {
-<a href=#625 id=625 data-nosnippet>625</a>                        <span class="kw">let </span>gc_ref = VMGcRef::from_raw_u32(raw.get_externref());
-<a href=#626 id=626 data-nosnippet>626</a>                        <span class="kw">let </span>gc_store = store.gc_store_mut()<span class="question-mark">?</span>;
-<a href=#627 id=627 data-nosnippet>627</a>                        <span class="kw">let </span>items = (<span class="number">0</span>..table.size())
-<a href=#628 id=628 data-nosnippet>628</a>                            .map(|<span class="kw">_</span>| gc_ref.as_ref().map(|r| gc_store.clone_gc_ref(r)));
-<a href=#629 id=629 data-nosnippet>629</a>                        table.init_gc_refs(<span class="number">0</span>, items)<span class="question-mark">?</span>;
-<a href=#630 id=630 data-nosnippet>630</a>                    }
-<a href=#631 id=631 data-nosnippet>631</a>
-<a href=#632 id=632 data-nosnippet>632</a>                    WasmHeapTopType::Any =&gt; {
-<a href=#633 id=633 data-nosnippet>633</a>                        <span class="kw">let </span>gc_ref = VMGcRef::from_raw_u32(raw.get_anyref());
-<a href=#634 id=634 data-nosnippet>634</a>                        <span class="kw">let </span>gc_store = store.gc_store_mut()<span class="question-mark">?</span>;
-<a href=#635 id=635 data-nosnippet>635</a>                        <span class="kw">let </span>items = (<span class="number">0</span>..table.size())
-<a href=#636 id=636 data-nosnippet>636</a>                            .map(|<span class="kw">_</span>| gc_ref.as_ref().map(|r| gc_store.clone_gc_ref(r)));
-<a href=#637 id=637 data-nosnippet>637</a>                        table.init_gc_refs(<span class="number">0</span>, items)<span class="question-mark">?</span>;
-<a href=#638 id=638 data-nosnippet>638</a>                    }
-<a href=#639 id=639 data-nosnippet>639</a>
-<a href=#640 id=640 data-nosnippet>640</a>                    WasmHeapTopType::Func =&gt; {
-<a href=#641 id=641 data-nosnippet>641</a>                        <span class="kw">let </span>funcref = NonNull::new(raw.get_funcref().cast::&lt;VMFuncRef&gt;());
-<a href=#642 id=642 data-nosnippet>642</a>                        <span class="kw">let </span>items = (<span class="number">0</span>..table.size()).map(|<span class="kw">_</span>| funcref);
-<a href=#643 id=643 data-nosnippet>643</a>                        table.init_func(<span class="number">0</span>, items)<span class="question-mark">?</span>;
-<a href=#644 id=644 data-nosnippet>644</a>                    }
-<a href=#645 id=645 data-nosnippet>645</a>
-<a href=#646 id=646 data-nosnippet>646</a>                    WasmHeapTopType::Cont =&gt; <span class="macro">todo!</span>(), <span class="comment">// FIXME: #10248 stack switching support.
-<a href=#647 id=647 data-nosnippet>647</a>                </span>}
-<a href=#648 id=648 data-nosnippet>648</a>            }
-<a href=#649 id=649 data-nosnippet>649</a>        }
-<a href=#650 id=650 data-nosnippet>650</a>    }
-<a href=#651 id=651 data-nosnippet>651</a>
-<a href=#652 id=652 data-nosnippet>652</a>    <span class="comment">// Note: if the module's table initializer state is in
-<a href=#653 id=653 data-nosnippet>653</a>    // FuncTable mode, we will lazily initialize tables based on
-<a href=#654 id=654 data-nosnippet>654</a>    // any statically-precomputed image of FuncIndexes, but there
-<a href=#655 id=655 data-nosnippet>655</a>    // may still be "leftover segments" that could not be
-<a href=#656 id=656 data-nosnippet>656</a>    // incorporated. So we have a unified handler here that
-<a href=#657 id=657 data-nosnippet>657</a>    // iterates over all segments (Segments mode) or leftover
-<a href=#658 id=658 data-nosnippet>658</a>    // segments (FuncTable mode) to initialize.
-<a href=#659 id=659 data-nosnippet>659</a>    </span><span class="kw">for </span>segment <span class="kw">in </span>module.table_initialization.segments.iter() {
-<a href=#660 id=660 data-nosnippet>660</a>        <span class="kw">let </span>start = <span class="kw">unsafe </span>{
-<a href=#661 id=661 data-nosnippet>661</a>            const_evaluator
-<a href=#662 id=662 data-nosnippet>662</a>                .eval(store, context, <span class="kw-2">&amp;</span>segment.offset)
-<a href=#663 id=663 data-nosnippet>663</a>                .expect(<span class="string">"const expression should be valid"</span>)
-<a href=#664 id=664 data-nosnippet>664</a>        };
-<a href=#665 id=665 data-nosnippet>665</a>        Instance::table_init_segment(
-<a href=#666 id=666 data-nosnippet>666</a>            store,
-<a href=#667 id=667 data-nosnippet>667</a>            context.instance,
-<a href=#668 id=668 data-nosnippet>668</a>            const_evaluator,
-<a href=#669 id=669 data-nosnippet>669</a>            segment.table_index,
-<a href=#670 id=670 data-nosnippet>670</a>            <span class="kw-2">&amp;</span>segment.elements,
-<a href=#671 id=671 data-nosnippet>671</a>            start.get_u64(),
-<a href=#672 id=672 data-nosnippet>672</a>            <span class="number">0</span>,
-<a href=#673 id=673 data-nosnippet>673</a>            segment.elements.len(),
-<a href=#674 id=674 data-nosnippet>674</a>        )<span class="question-mark">?</span>;
-<a href=#675 id=675 data-nosnippet>675</a>    }
-<a href=#676 id=676 data-nosnippet>676</a>
-<a href=#677 id=677 data-nosnippet>677</a>    <span class="prelude-val">Ok</span>(())
-<a href=#678 id=678 data-nosnippet>678</a>}
-<a href=#679 id=679 data-nosnippet>679</a>
-<a href=#680 id=680 data-nosnippet>680</a><span class="kw">fn </span>get_memory_init_start(
-<a href=#681 id=681 data-nosnippet>681</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
-<a href=#682 id=682 data-nosnippet>682</a>    init: <span class="kw-2">&amp;</span>MemoryInitializer,
-<a href=#683 id=683 data-nosnippet>683</a>    instance: InstanceId,
-<a href=#684 id=684 data-nosnippet>684</a>) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
-<a href=#685 id=685 data-nosnippet>685</a>    <span class="kw">let </span><span class="kw-2">mut </span>context = ConstEvalContext::new(instance);
-<a href=#686 id=686 data-nosnippet>686</a>    <span class="kw">let </span><span class="kw-2">mut </span>const_evaluator = ConstExprEvaluator::default();
-<a href=#687 id=687 data-nosnippet>687</a>    <span class="kw">unsafe </span>{ const_evaluator.eval(store, <span class="kw-2">&amp;mut </span>context, <span class="kw-2">&amp;</span>init.offset) }.map(|v| {
-<a href=#688 id=688 data-nosnippet>688</a>        <span class="kw">match </span>store.instance(instance).env_module().memories[init.memory_index].idx_type {
-<a href=#689 id=689 data-nosnippet>689</a>            wasmtime_environ::IndexType::I32 =&gt; v.get_u32().into(),
-<a href=#690 id=690 data-nosnippet>690</a>            wasmtime_environ::IndexType::I64 =&gt; v.get_u64(),
-<a href=#691 id=691 data-nosnippet>691</a>        }
-<a href=#692 id=692 data-nosnippet>692</a>    })
-<a href=#693 id=693 data-nosnippet>693</a>}
-<a href=#694 id=694 data-nosnippet>694</a>
-<a href=#695 id=695 data-nosnippet>695</a><span class="kw">fn </span>check_memory_init_bounds(
-<a href=#696 id=696 data-nosnippet>696</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
-<a href=#697 id=697 data-nosnippet>697</a>    instance: InstanceId,
-<a href=#698 id=698 data-nosnippet>698</a>    initializers: <span class="kw-2">&amp;</span>[MemoryInitializer],
-<a href=#699 id=699 data-nosnippet>699</a>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#700 id=700 data-nosnippet>700</a>    <span class="kw">for </span>init <span class="kw">in </span>initializers {
-<a href=#701 id=701 data-nosnippet>701</a>        <span class="kw">let </span>memory = store.instance_mut(instance).get_memory(init.memory_index);
-<a href=#702 id=702 data-nosnippet>702</a>        <span class="kw">let </span>start = get_memory_init_start(store, init, instance)<span class="question-mark">?</span>;
-<a href=#703 id=703 data-nosnippet>703</a>        <span class="kw">let </span>end = usize::try_from(start)
-<a href=#704 id=704 data-nosnippet>704</a>            .ok()
-<a href=#705 id=705 data-nosnippet>705</a>            .and_then(|start| start.checked_add(init.data.len()));
-<a href=#706 id=706 data-nosnippet>706</a>
-<a href=#707 id=707 data-nosnippet>707</a>        <span class="kw">match </span>end {
-<a href=#708 id=708 data-nosnippet>708</a>            <span class="prelude-val">Some</span>(end) <span class="kw">if </span>end &lt;= memory.current_length() =&gt; {
-<a href=#709 id=709 data-nosnippet>709</a>                <span class="comment">// Initializer is in bounds
-<a href=#710 id=710 data-nosnippet>710</a>            </span>}
-<a href=#711 id=711 data-nosnippet>711</a>            <span class="kw">_ </span>=&gt; {
-<a href=#712 id=712 data-nosnippet>712</a>                <span class="macro">bail!</span>(<span class="string">"memory out of bounds: data segment does not fit"</span>)
-<a href=#713 id=713 data-nosnippet>713</a>            }
-<a href=#714 id=714 data-nosnippet>714</a>        }
-<a href=#715 id=715 data-nosnippet>715</a>    }
-<a href=#716 id=716 data-nosnippet>716</a>
-<a href=#717 id=717 data-nosnippet>717</a>    <span class="prelude-val">Ok</span>(())
-<a href=#718 id=718 data-nosnippet>718</a>}
+<a href=#595 id=595 data-nosnippet>595</a><span class="kw">fn </span>initialize_tables(
+<a href=#596 id=596 data-nosnippet>596</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
+<a href=#597 id=597 data-nosnippet>597</a>    context: <span class="kw-2">&amp;mut </span>ConstEvalContext,
+<a href=#598 id=598 data-nosnippet>598</a>    const_evaluator: <span class="kw-2">&amp;mut </span>ConstExprEvaluator,
+<a href=#599 id=599 data-nosnippet>599</a>    module: <span class="kw-2">&amp;</span>Module,
+<a href=#600 id=600 data-nosnippet>600</a>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#601 id=601 data-nosnippet>601</a>    <span class="kw">for </span>(table, init) <span class="kw">in </span>module.table_initialization.initial_values.iter() {
+<a href=#602 id=602 data-nosnippet>602</a>        <span class="kw">match </span>init {
+<a href=#603 id=603 data-nosnippet>603</a>            <span class="comment">// Tables are always initially null-initialized at this time
+<a href=#604 id=604 data-nosnippet>604</a>            </span>TableInitialValue::Null { precomputed: <span class="kw">_ </span>} =&gt; {}
+<a href=#605 id=605 data-nosnippet>605</a>
+<a href=#606 id=606 data-nosnippet>606</a>            TableInitialValue::Expr(expr) =&gt; {
+<a href=#607 id=607 data-nosnippet>607</a>                <span class="kw">let </span>raw = <span class="kw">unsafe </span>{
+<a href=#608 id=608 data-nosnippet>608</a>                    const_evaluator
+<a href=#609 id=609 data-nosnippet>609</a>                        .eval(store, context, expr)
+<a href=#610 id=610 data-nosnippet>610</a>                        .expect(<span class="string">"const expression should be valid"</span>)
+<a href=#611 id=611 data-nosnippet>611</a>                };
+<a href=#612 id=612 data-nosnippet>612</a>                <span class="kw">let </span>idx = module.table_index(table);
+<a href=#613 id=613 data-nosnippet>613</a>                <span class="kw">match </span>module.tables[idx].ref_type.heap_type.top() {
+<a href=#614 id=614 data-nosnippet>614</a>                    WasmHeapTopType::Extern =&gt; {
+<a href=#615 id=615 data-nosnippet>615</a>                        store.gc_store_mut()<span class="question-mark">?</span>;
+<a href=#616 id=616 data-nosnippet>616</a>                        <span class="kw">let </span>(gc_store, instance) =
+<a href=#617 id=617 data-nosnippet>617</a>                            store.optional_gc_store_and_instance_mut(context.instance);
+<a href=#618 id=618 data-nosnippet>618</a>                        <span class="kw">let </span>gc_store = gc_store.unwrap();
+<a href=#619 id=619 data-nosnippet>619</a>                        <span class="kw">let </span>table = instance.get_defined_table(table);
+<a href=#620 id=620 data-nosnippet>620</a>                        <span class="kw">let </span>gc_ref = VMGcRef::from_raw_u32(raw.get_externref());
+<a href=#621 id=621 data-nosnippet>621</a>                        <span class="kw">let </span>items = (<span class="number">0</span>..table.size())
+<a href=#622 id=622 data-nosnippet>622</a>                            .map(|<span class="kw">_</span>| gc_ref.as_ref().map(|r| gc_store.clone_gc_ref(r)));
+<a href=#623 id=623 data-nosnippet>623</a>                        table.init_gc_refs(<span class="number">0</span>, items)<span class="question-mark">?</span>;
+<a href=#624 id=624 data-nosnippet>624</a>                    }
+<a href=#625 id=625 data-nosnippet>625</a>
+<a href=#626 id=626 data-nosnippet>626</a>                    WasmHeapTopType::Any =&gt; {
+<a href=#627 id=627 data-nosnippet>627</a>                        store.gc_store_mut()<span class="question-mark">?</span>;
+<a href=#628 id=628 data-nosnippet>628</a>                        <span class="kw">let </span>(gc_store, instance) =
+<a href=#629 id=629 data-nosnippet>629</a>                            store.optional_gc_store_and_instance_mut(context.instance);
+<a href=#630 id=630 data-nosnippet>630</a>                        <span class="kw">let </span>gc_store = gc_store.unwrap();
+<a href=#631 id=631 data-nosnippet>631</a>                        <span class="kw">let </span>table = instance.get_defined_table(table);
+<a href=#632 id=632 data-nosnippet>632</a>                        <span class="kw">let </span>gc_ref = VMGcRef::from_raw_u32(raw.get_anyref());
+<a href=#633 id=633 data-nosnippet>633</a>                        <span class="kw">let </span>items = (<span class="number">0</span>..table.size())
+<a href=#634 id=634 data-nosnippet>634</a>                            .map(|<span class="kw">_</span>| gc_ref.as_ref().map(|r| gc_store.clone_gc_ref(r)));
+<a href=#635 id=635 data-nosnippet>635</a>                        table.init_gc_refs(<span class="number">0</span>, items)<span class="question-mark">?</span>;
+<a href=#636 id=636 data-nosnippet>636</a>                    }
+<a href=#637 id=637 data-nosnippet>637</a>
+<a href=#638 id=638 data-nosnippet>638</a>                    WasmHeapTopType::Exn =&gt; {
+<a href=#639 id=639 data-nosnippet>639</a>                        store.gc_store_mut()<span class="question-mark">?</span>;
+<a href=#640 id=640 data-nosnippet>640</a>                        <span class="kw">let </span>(gc_store, instance) =
+<a href=#641 id=641 data-nosnippet>641</a>                            store.optional_gc_store_and_instance_mut(context.instance);
+<a href=#642 id=642 data-nosnippet>642</a>                        <span class="kw">let </span>gc_store = gc_store.unwrap();
+<a href=#643 id=643 data-nosnippet>643</a>                        <span class="kw">let </span>table = instance.get_defined_table(table);
+<a href=#644 id=644 data-nosnippet>644</a>                        <span class="kw">let </span>gc_ref = VMGcRef::from_raw_u32(raw.get_exnref());
+<a href=#645 id=645 data-nosnippet>645</a>                        <span class="kw">let </span>items = (<span class="number">0</span>..table.size())
+<a href=#646 id=646 data-nosnippet>646</a>                            .map(|<span class="kw">_</span>| gc_ref.as_ref().map(|r| gc_store.clone_gc_ref(r)));
+<a href=#647 id=647 data-nosnippet>647</a>                        table.init_gc_refs(<span class="number">0</span>, items)<span class="question-mark">?</span>;
+<a href=#648 id=648 data-nosnippet>648</a>                    }
+<a href=#649 id=649 data-nosnippet>649</a>
+<a href=#650 id=650 data-nosnippet>650</a>                    WasmHeapTopType::Func =&gt; {
+<a href=#651 id=651 data-nosnippet>651</a>                        <span class="kw">let </span>table = store
+<a href=#652 id=652 data-nosnippet>652</a>                            .instance_mut(context.instance)
+<a href=#653 id=653 data-nosnippet>653</a>                            .get_defined_table(table);
+<a href=#654 id=654 data-nosnippet>654</a>                        <span class="kw">let </span>funcref = NonNull::new(raw.get_funcref().cast::&lt;VMFuncRef&gt;());
+<a href=#655 id=655 data-nosnippet>655</a>                        <span class="kw">let </span>items = (<span class="number">0</span>..table.size()).map(|<span class="kw">_</span>| funcref);
+<a href=#656 id=656 data-nosnippet>656</a>                        table.init_func(<span class="number">0</span>, items)<span class="question-mark">?</span>;
+<a href=#657 id=657 data-nosnippet>657</a>                    }
+<a href=#658 id=658 data-nosnippet>658</a>
+<a href=#659 id=659 data-nosnippet>659</a>                    WasmHeapTopType::Cont =&gt; <span class="macro">todo!</span>(), <span class="comment">// FIXME: #10248 stack switching support.
+<a href=#660 id=660 data-nosnippet>660</a>                </span>}
+<a href=#661 id=661 data-nosnippet>661</a>            }
+<a href=#662 id=662 data-nosnippet>662</a>        }
+<a href=#663 id=663 data-nosnippet>663</a>    }
+<a href=#664 id=664 data-nosnippet>664</a>
+<a href=#665 id=665 data-nosnippet>665</a>    <span class="comment">// Note: if the module's table initializer state is in
+<a href=#666 id=666 data-nosnippet>666</a>    // FuncTable mode, we will lazily initialize tables based on
+<a href=#667 id=667 data-nosnippet>667</a>    // any statically-precomputed image of FuncIndexes, but there
+<a href=#668 id=668 data-nosnippet>668</a>    // may still be "leftover segments" that could not be
+<a href=#669 id=669 data-nosnippet>669</a>    // incorporated. So we have a unified handler here that
+<a href=#670 id=670 data-nosnippet>670</a>    // iterates over all segments (Segments mode) or leftover
+<a href=#671 id=671 data-nosnippet>671</a>    // segments (FuncTable mode) to initialize.
+<a href=#672 id=672 data-nosnippet>672</a>    </span><span class="kw">for </span>segment <span class="kw">in </span>module.table_initialization.segments.iter() {
+<a href=#673 id=673 data-nosnippet>673</a>        <span class="kw">let </span>start = <span class="kw">unsafe </span>{
+<a href=#674 id=674 data-nosnippet>674</a>            const_evaluator
+<a href=#675 id=675 data-nosnippet>675</a>                .eval(store, context, <span class="kw-2">&amp;</span>segment.offset)
+<a href=#676 id=676 data-nosnippet>676</a>                .expect(<span class="string">"const expression should be valid"</span>)
+<a href=#677 id=677 data-nosnippet>677</a>        };
+<a href=#678 id=678 data-nosnippet>678</a>        Instance::table_init_segment(
+<a href=#679 id=679 data-nosnippet>679</a>            store,
+<a href=#680 id=680 data-nosnippet>680</a>            context.instance,
+<a href=#681 id=681 data-nosnippet>681</a>            const_evaluator,
+<a href=#682 id=682 data-nosnippet>682</a>            segment.table_index,
+<a href=#683 id=683 data-nosnippet>683</a>            <span class="kw-2">&amp;</span>segment.elements,
+<a href=#684 id=684 data-nosnippet>684</a>            start.get_u64(),
+<a href=#685 id=685 data-nosnippet>685</a>            <span class="number">0</span>,
+<a href=#686 id=686 data-nosnippet>686</a>            segment.elements.len(),
+<a href=#687 id=687 data-nosnippet>687</a>        )<span class="question-mark">?</span>;
+<a href=#688 id=688 data-nosnippet>688</a>    }
+<a href=#689 id=689 data-nosnippet>689</a>
+<a href=#690 id=690 data-nosnippet>690</a>    <span class="prelude-val">Ok</span>(())
+<a href=#691 id=691 data-nosnippet>691</a>}
+<a href=#692 id=692 data-nosnippet>692</a>
+<a href=#693 id=693 data-nosnippet>693</a><span class="kw">fn </span>get_memory_init_start(
+<a href=#694 id=694 data-nosnippet>694</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
+<a href=#695 id=695 data-nosnippet>695</a>    init: <span class="kw-2">&amp;</span>MemoryInitializer,
+<a href=#696 id=696 data-nosnippet>696</a>    instance: InstanceId,
+<a href=#697 id=697 data-nosnippet>697</a>) -&gt; <span class="prelude-ty">Result</span>&lt;u64&gt; {
+<a href=#698 id=698 data-nosnippet>698</a>    <span class="kw">let </span><span class="kw-2">mut </span>context = ConstEvalContext::new(instance);
+<a href=#699 id=699 data-nosnippet>699</a>    <span class="kw">let </span><span class="kw-2">mut </span>const_evaluator = ConstExprEvaluator::default();
+<a href=#700 id=700 data-nosnippet>700</a>    <span class="kw">unsafe </span>{ const_evaluator.eval(store, <span class="kw-2">&amp;mut </span>context, <span class="kw-2">&amp;</span>init.offset) }.map(|v| {
+<a href=#701 id=701 data-nosnippet>701</a>        <span class="kw">match </span>store.instance(instance).env_module().memories[init.memory_index].idx_type {
+<a href=#702 id=702 data-nosnippet>702</a>            wasmtime_environ::IndexType::I32 =&gt; v.get_u32().into(),
+<a href=#703 id=703 data-nosnippet>703</a>            wasmtime_environ::IndexType::I64 =&gt; v.get_u64(),
+<a href=#704 id=704 data-nosnippet>704</a>        }
+<a href=#705 id=705 data-nosnippet>705</a>    })
+<a href=#706 id=706 data-nosnippet>706</a>}
+<a href=#707 id=707 data-nosnippet>707</a>
+<a href=#708 id=708 data-nosnippet>708</a><span class="kw">fn </span>check_memory_init_bounds(
+<a href=#709 id=709 data-nosnippet>709</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
+<a href=#710 id=710 data-nosnippet>710</a>    instance: InstanceId,
+<a href=#711 id=711 data-nosnippet>711</a>    initializers: <span class="kw-2">&amp;</span>[MemoryInitializer],
+<a href=#712 id=712 data-nosnippet>712</a>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#713 id=713 data-nosnippet>713</a>    <span class="kw">for </span>init <span class="kw">in </span>initializers {
+<a href=#714 id=714 data-nosnippet>714</a>        <span class="kw">let </span>memory = store.instance_mut(instance).get_memory(init.memory_index);
+<a href=#715 id=715 data-nosnippet>715</a>        <span class="kw">let </span>start = get_memory_init_start(store, init, instance)<span class="question-mark">?</span>;
+<a href=#716 id=716 data-nosnippet>716</a>        <span class="kw">let </span>end = usize::try_from(start)
+<a href=#717 id=717 data-nosnippet>717</a>            .ok()
+<a href=#718 id=718 data-nosnippet>718</a>            .and_then(|start| start.checked_add(init.data.len()));
 <a href=#719 id=719 data-nosnippet>719</a>
-<a href=#720 id=720 data-nosnippet>720</a><span class="kw">fn </span>initialize_memories(
-<a href=#721 id=721 data-nosnippet>721</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
-<a href=#722 id=722 data-nosnippet>722</a>    context: <span class="kw-2">&amp;mut </span>ConstEvalContext,
-<a href=#723 id=723 data-nosnippet>723</a>    const_evaluator: <span class="kw-2">&amp;mut </span>ConstExprEvaluator,
-<a href=#724 id=724 data-nosnippet>724</a>    module: <span class="kw-2">&amp;</span>Module,
-<a href=#725 id=725 data-nosnippet>725</a>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#726 id=726 data-nosnippet>726</a>    <span class="comment">// Delegates to the `init_memory` method which is sort of a duplicate of
-<a href=#727 id=727 data-nosnippet>727</a>    // `instance.memory_init_segment` but is used at compile-time in other
-<a href=#728 id=728 data-nosnippet>728</a>    // contexts so is shared here to have only one method of memory
-<a href=#729 id=729 data-nosnippet>729</a>    // initialization.
-<a href=#730 id=730 data-nosnippet>730</a>    //
-<a href=#731 id=731 data-nosnippet>731</a>    // This call to `init_memory` notably implements all the bells and whistles
-<a href=#732 id=732 data-nosnippet>732</a>    // so errors only happen if an out-of-bounds segment is found, in which case
-<a href=#733 id=733 data-nosnippet>733</a>    // a trap is returned.
-<a href=#734 id=734 data-nosnippet>734</a>
-<a href=#735 id=735 data-nosnippet>735</a>    </span><span class="kw">struct </span>InitMemoryAtInstantiation&lt;<span class="lifetime">'a</span>&gt; {
-<a href=#736 id=736 data-nosnippet>736</a>        module: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Module,
-<a href=#737 id=737 data-nosnippet>737</a>        store: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>StoreOpaque,
-<a href=#738 id=738 data-nosnippet>738</a>        context: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>ConstEvalContext,
-<a href=#739 id=739 data-nosnippet>739</a>        const_evaluator: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>ConstExprEvaluator,
-<a href=#740 id=740 data-nosnippet>740</a>    }
-<a href=#741 id=741 data-nosnippet>741</a>
-<a href=#742 id=742 data-nosnippet>742</a>    <span class="kw">impl </span>InitMemory <span class="kw">for </span>InitMemoryAtInstantiation&lt;<span class="lifetime">'_</span>&gt; {
-<a href=#743 id=743 data-nosnippet>743</a>        <span class="kw">fn </span>memory_size_in_bytes(
-<a href=#744 id=744 data-nosnippet>744</a>            <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-<a href=#745 id=745 data-nosnippet>745</a>            memory: wasmtime_environ::MemoryIndex,
-<a href=#746 id=746 data-nosnippet>746</a>        ) -&gt; <span class="prelude-ty">Result</span>&lt;u64, SizeOverflow&gt; {
-<a href=#747 id=747 data-nosnippet>747</a>            <span class="kw">let </span>len = <span class="self">self
-<a href=#748 id=748 data-nosnippet>748</a>                </span>.store
-<a href=#749 id=749 data-nosnippet>749</a>                .instance(<span class="self">self</span>.context.instance)
-<a href=#750 id=750 data-nosnippet>750</a>                .get_memory(memory)
-<a href=#751 id=751 data-nosnippet>751</a>                .current_length();
-<a href=#752 id=752 data-nosnippet>752</a>            <span class="kw">let </span>len = u64::try_from(len).unwrap();
-<a href=#753 id=753 data-nosnippet>753</a>            <span class="prelude-val">Ok</span>(len)
-<a href=#754 id=754 data-nosnippet>754</a>        }
-<a href=#755 id=755 data-nosnippet>755</a>
-<a href=#756 id=756 data-nosnippet>756</a>        <span class="kw">fn </span>eval_offset(
+<a href=#720 id=720 data-nosnippet>720</a>        <span class="kw">match </span>end {
+<a href=#721 id=721 data-nosnippet>721</a>            <span class="prelude-val">Some</span>(end) <span class="kw">if </span>end &lt;= memory.current_length() =&gt; {
+<a href=#722 id=722 data-nosnippet>722</a>                <span class="comment">// Initializer is in bounds
+<a href=#723 id=723 data-nosnippet>723</a>            </span>}
+<a href=#724 id=724 data-nosnippet>724</a>            <span class="kw">_ </span>=&gt; {
+<a href=#725 id=725 data-nosnippet>725</a>                <span class="macro">bail!</span>(<span class="string">"memory out of bounds: data segment does not fit"</span>)
+<a href=#726 id=726 data-nosnippet>726</a>            }
+<a href=#727 id=727 data-nosnippet>727</a>        }
+<a href=#728 id=728 data-nosnippet>728</a>    }
+<a href=#729 id=729 data-nosnippet>729</a>
+<a href=#730 id=730 data-nosnippet>730</a>    <span class="prelude-val">Ok</span>(())
+<a href=#731 id=731 data-nosnippet>731</a>}
+<a href=#732 id=732 data-nosnippet>732</a>
+<a href=#733 id=733 data-nosnippet>733</a><span class="kw">fn </span>initialize_memories(
+<a href=#734 id=734 data-nosnippet>734</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
+<a href=#735 id=735 data-nosnippet>735</a>    context: <span class="kw-2">&amp;mut </span>ConstEvalContext,
+<a href=#736 id=736 data-nosnippet>736</a>    const_evaluator: <span class="kw-2">&amp;mut </span>ConstExprEvaluator,
+<a href=#737 id=737 data-nosnippet>737</a>    module: <span class="kw-2">&amp;</span>Module,
+<a href=#738 id=738 data-nosnippet>738</a>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#739 id=739 data-nosnippet>739</a>    <span class="comment">// Delegates to the `init_memory` method which is sort of a duplicate of
+<a href=#740 id=740 data-nosnippet>740</a>    // `instance.memory_init_segment` but is used at compile-time in other
+<a href=#741 id=741 data-nosnippet>741</a>    // contexts so is shared here to have only one method of memory
+<a href=#742 id=742 data-nosnippet>742</a>    // initialization.
+<a href=#743 id=743 data-nosnippet>743</a>    //
+<a href=#744 id=744 data-nosnippet>744</a>    // This call to `init_memory` notably implements all the bells and whistles
+<a href=#745 id=745 data-nosnippet>745</a>    // so errors only happen if an out-of-bounds segment is found, in which case
+<a href=#746 id=746 data-nosnippet>746</a>    // a trap is returned.
+<a href=#747 id=747 data-nosnippet>747</a>
+<a href=#748 id=748 data-nosnippet>748</a>    </span><span class="kw">struct </span>InitMemoryAtInstantiation&lt;<span class="lifetime">'a</span>&gt; {
+<a href=#749 id=749 data-nosnippet>749</a>        module: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Module,
+<a href=#750 id=750 data-nosnippet>750</a>        store: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>StoreOpaque,
+<a href=#751 id=751 data-nosnippet>751</a>        context: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>ConstEvalContext,
+<a href=#752 id=752 data-nosnippet>752</a>        const_evaluator: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>ConstExprEvaluator,
+<a href=#753 id=753 data-nosnippet>753</a>    }
+<a href=#754 id=754 data-nosnippet>754</a>
+<a href=#755 id=755 data-nosnippet>755</a>    <span class="kw">impl </span>InitMemory <span class="kw">for </span>InitMemoryAtInstantiation&lt;<span class="lifetime">'_</span>&gt; {
+<a href=#756 id=756 data-nosnippet>756</a>        <span class="kw">fn </span>memory_size_in_bytes(
 <a href=#757 id=757 data-nosnippet>757</a>            <span class="kw-2">&amp;mut </span><span class="self">self</span>,
 <a href=#758 id=758 data-nosnippet>758</a>            memory: wasmtime_environ::MemoryIndex,
-<a href=#759 id=759 data-nosnippet>759</a>            expr: <span class="kw-2">&amp;</span>wasmtime_environ::ConstExpr,
-<a href=#760 id=760 data-nosnippet>760</a>        ) -&gt; <span class="prelude-ty">Option</span>&lt;u64&gt; {
-<a href=#761 id=761 data-nosnippet>761</a>            <span class="kw">let </span>val = <span class="kw">unsafe </span>{ <span class="self">self</span>.const_evaluator.eval(<span class="self">self</span>.store, <span class="self">self</span>.context, expr) }
-<a href=#762 id=762 data-nosnippet>762</a>                .expect(<span class="string">"const expression should be valid"</span>);
-<a href=#763 id=763 data-nosnippet>763</a>            <span class="prelude-val">Some</span>(
-<a href=#764 id=764 data-nosnippet>764</a>                <span class="kw">match </span><span class="self">self
-<a href=#765 id=765 data-nosnippet>765</a>                    </span>.store
-<a href=#766 id=766 data-nosnippet>766</a>                    .instance(<span class="self">self</span>.context.instance)
-<a href=#767 id=767 data-nosnippet>767</a>                    .env_module()
-<a href=#768 id=768 data-nosnippet>768</a>                    .memories[memory]
-<a href=#769 id=769 data-nosnippet>769</a>                    .idx_type
-<a href=#770 id=770 data-nosnippet>770</a>                {
-<a href=#771 id=771 data-nosnippet>771</a>                    wasmtime_environ::IndexType::I32 =&gt; val.get_u32().into(),
-<a href=#772 id=772 data-nosnippet>772</a>                    wasmtime_environ::IndexType::I64 =&gt; val.get_u64(),
-<a href=#773 id=773 data-nosnippet>773</a>                },
-<a href=#774 id=774 data-nosnippet>774</a>            )
-<a href=#775 id=775 data-nosnippet>775</a>        }
-<a href=#776 id=776 data-nosnippet>776</a>
-<a href=#777 id=777 data-nosnippet>777</a>        <span class="kw">fn </span>write(
-<a href=#778 id=778 data-nosnippet>778</a>            <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-<a href=#779 id=779 data-nosnippet>779</a>            memory_index: wasmtime_environ::MemoryIndex,
-<a href=#780 id=780 data-nosnippet>780</a>            init: <span class="kw-2">&amp;</span>wasmtime_environ::StaticMemoryInitializer,
-<a href=#781 id=781 data-nosnippet>781</a>        ) -&gt; bool {
-<a href=#782 id=782 data-nosnippet>782</a>            <span class="comment">// If this initializer applies to a defined memory but that memory
-<a href=#783 id=783 data-nosnippet>783</a>            // doesn't need initialization, due to something like copy-on-write
-<a href=#784 id=784 data-nosnippet>784</a>            // pre-initializing it via mmap magic, then this initializer can be
-<a href=#785 id=785 data-nosnippet>785</a>            // skipped entirely.
-<a href=#786 id=786 data-nosnippet>786</a>            </span><span class="kw">let </span>instance = <span class="self">self</span>.store.instance_mut(<span class="self">self</span>.context.instance);
-<a href=#787 id=787 data-nosnippet>787</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(memory_index) = <span class="self">self</span>.module.defined_memory_index(memory_index) {
-<a href=#788 id=788 data-nosnippet>788</a>                <span class="kw">if </span>!instance.memories[memory_index].<span class="number">1</span>.needs_init() {
-<a href=#789 id=789 data-nosnippet>789</a>                    <span class="kw">return </span><span class="bool-val">true</span>;
-<a href=#790 id=790 data-nosnippet>790</a>                }
-<a href=#791 id=791 data-nosnippet>791</a>            }
-<a href=#792 id=792 data-nosnippet>792</a>            <span class="kw">let </span>memory = instance.get_memory(memory_index);
-<a href=#793 id=793 data-nosnippet>793</a>
-<a href=#794 id=794 data-nosnippet>794</a>            <span class="kw">unsafe </span>{
-<a href=#795 id=795 data-nosnippet>795</a>                <span class="kw">let </span>src = instance.wasm_data(init.data.clone());
-<a href=#796 id=796 data-nosnippet>796</a>                <span class="kw">let </span>offset = usize::try_from(init.offset).unwrap();
-<a href=#797 id=797 data-nosnippet>797</a>                <span class="kw">let </span>dst = memory.base.as_ptr().add(offset);
-<a href=#798 id=798 data-nosnippet>798</a>
-<a href=#799 id=799 data-nosnippet>799</a>                <span class="macro">assert!</span>(offset + src.len() &lt;= memory.current_length());
-<a href=#800 id=800 data-nosnippet>800</a>
-<a href=#801 id=801 data-nosnippet>801</a>                <span class="comment">// FIXME audit whether this is safe in the presence of shared
-<a href=#802 id=802 data-nosnippet>802</a>                // memory
-<a href=#803 id=803 data-nosnippet>803</a>                // (https://github.com/bytecodealliance/wasmtime/issues/4203).
-<a href=#804 id=804 data-nosnippet>804</a>                </span>ptr::copy_nonoverlapping(src.as_ptr(), dst, src.len())
-<a href=#805 id=805 data-nosnippet>805</a>            }
-<a href=#806 id=806 data-nosnippet>806</a>            <span class="bool-val">true
-<a href=#807 id=807 data-nosnippet>807</a>        </span>}
-<a href=#808 id=808 data-nosnippet>808</a>    }
-<a href=#809 id=809 data-nosnippet>809</a>
-<a href=#810 id=810 data-nosnippet>810</a>    <span class="kw">let </span>ok = module
-<a href=#811 id=811 data-nosnippet>811</a>        .memory_initialization
-<a href=#812 id=812 data-nosnippet>812</a>        .init_memory(<span class="kw-2">&amp;mut </span>InitMemoryAtInstantiation {
-<a href=#813 id=813 data-nosnippet>813</a>            module,
-<a href=#814 id=814 data-nosnippet>814</a>            store,
-<a href=#815 id=815 data-nosnippet>815</a>            context,
-<a href=#816 id=816 data-nosnippet>816</a>            const_evaluator,
-<a href=#817 id=817 data-nosnippet>817</a>        });
-<a href=#818 id=818 data-nosnippet>818</a>    <span class="kw">if </span>!ok {
-<a href=#819 id=819 data-nosnippet>819</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(Trap::MemoryOutOfBounds.into());
-<a href=#820 id=820 data-nosnippet>820</a>    }
-<a href=#821 id=821 data-nosnippet>821</a>
-<a href=#822 id=822 data-nosnippet>822</a>    <span class="prelude-val">Ok</span>(())
-<a href=#823 id=823 data-nosnippet>823</a>}
-<a href=#824 id=824 data-nosnippet>824</a>
-<a href=#825 id=825 data-nosnippet>825</a><span class="kw">fn </span>check_init_bounds(store: <span class="kw-2">&amp;mut </span>StoreOpaque, instance: InstanceId, module: <span class="kw-2">&amp;</span>Module) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#826 id=826 data-nosnippet>826</a>    check_table_init_bounds(store, instance, module)<span class="question-mark">?</span>;
-<a href=#827 id=827 data-nosnippet>827</a>
-<a href=#828 id=828 data-nosnippet>828</a>    <span class="kw">match </span><span class="kw-2">&amp;</span>module.memory_initialization {
-<a href=#829 id=829 data-nosnippet>829</a>        MemoryInitialization::Segmented(initializers) =&gt; {
-<a href=#830 id=830 data-nosnippet>830</a>            check_memory_init_bounds(store, instance, initializers)<span class="question-mark">?</span>;
-<a href=#831 id=831 data-nosnippet>831</a>        }
-<a href=#832 id=832 data-nosnippet>832</a>        <span class="comment">// Statically validated already to have everything in-bounds.
-<a href=#833 id=833 data-nosnippet>833</a>        </span>MemoryInitialization::Static { .. } =&gt; {}
-<a href=#834 id=834 data-nosnippet>834</a>    }
-<a href=#835 id=835 data-nosnippet>835</a>
-<a href=#836 id=836 data-nosnippet>836</a>    <span class="prelude-val">Ok</span>(())
-<a href=#837 id=837 data-nosnippet>837</a>}
-<a href=#838 id=838 data-nosnippet>838</a>
-<a href=#839 id=839 data-nosnippet>839</a><span class="kw">fn </span>initialize_globals(
-<a href=#840 id=840 data-nosnippet>840</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
-<a href=#841 id=841 data-nosnippet>841</a>    context: <span class="kw-2">&amp;mut </span>ConstEvalContext,
-<a href=#842 id=842 data-nosnippet>842</a>    const_evaluator: <span class="kw-2">&amp;mut </span>ConstExprEvaluator,
-<a href=#843 id=843 data-nosnippet>843</a>    module: <span class="kw-2">&amp;</span>Module,
-<a href=#844 id=844 data-nosnippet>844</a>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#845 id=845 data-nosnippet>845</a>    <span class="macro">assert!</span>(core::ptr::eq(
-<a href=#846 id=846 data-nosnippet>846</a>        <span class="kw-2">&amp;**</span>store.instance(context.instance).env_module(),
-<a href=#847 id=847 data-nosnippet>847</a>        module
-<a href=#848 id=848 data-nosnippet>848</a>    ));
-<a href=#849 id=849 data-nosnippet>849</a>
-<a href=#850 id=850 data-nosnippet>850</a>    <span class="kw">let </span><span class="kw-2">mut </span>store = AutoAssertNoGc::new(store);
+<a href=#759 id=759 data-nosnippet>759</a>        ) -&gt; <span class="prelude-ty">Result</span>&lt;u64, SizeOverflow&gt; {
+<a href=#760 id=760 data-nosnippet>760</a>            <span class="kw">let </span>len = <span class="self">self
+<a href=#761 id=761 data-nosnippet>761</a>                </span>.store
+<a href=#762 id=762 data-nosnippet>762</a>                .instance(<span class="self">self</span>.context.instance)
+<a href=#763 id=763 data-nosnippet>763</a>                .get_memory(memory)
+<a href=#764 id=764 data-nosnippet>764</a>                .current_length();
+<a href=#765 id=765 data-nosnippet>765</a>            <span class="kw">let </span>len = u64::try_from(len).unwrap();
+<a href=#766 id=766 data-nosnippet>766</a>            <span class="prelude-val">Ok</span>(len)
+<a href=#767 id=767 data-nosnippet>767</a>        }
+<a href=#768 id=768 data-nosnippet>768</a>
+<a href=#769 id=769 data-nosnippet>769</a>        <span class="kw">fn </span>eval_offset(
+<a href=#770 id=770 data-nosnippet>770</a>            <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#771 id=771 data-nosnippet>771</a>            memory: wasmtime_environ::MemoryIndex,
+<a href=#772 id=772 data-nosnippet>772</a>            expr: <span class="kw-2">&amp;</span>wasmtime_environ::ConstExpr,
+<a href=#773 id=773 data-nosnippet>773</a>        ) -&gt; <span class="prelude-ty">Option</span>&lt;u64&gt; {
+<a href=#774 id=774 data-nosnippet>774</a>            <span class="kw">let </span>val = <span class="kw">unsafe </span>{ <span class="self">self</span>.const_evaluator.eval(<span class="self">self</span>.store, <span class="self">self</span>.context, expr) }
+<a href=#775 id=775 data-nosnippet>775</a>                .expect(<span class="string">"const expression should be valid"</span>);
+<a href=#776 id=776 data-nosnippet>776</a>            <span class="prelude-val">Some</span>(
+<a href=#777 id=777 data-nosnippet>777</a>                <span class="kw">match </span><span class="self">self
+<a href=#778 id=778 data-nosnippet>778</a>                    </span>.store
+<a href=#779 id=779 data-nosnippet>779</a>                    .instance(<span class="self">self</span>.context.instance)
+<a href=#780 id=780 data-nosnippet>780</a>                    .env_module()
+<a href=#781 id=781 data-nosnippet>781</a>                    .memories[memory]
+<a href=#782 id=782 data-nosnippet>782</a>                    .idx_type
+<a href=#783 id=783 data-nosnippet>783</a>                {
+<a href=#784 id=784 data-nosnippet>784</a>                    wasmtime_environ::IndexType::I32 =&gt; val.get_u32().into(),
+<a href=#785 id=785 data-nosnippet>785</a>                    wasmtime_environ::IndexType::I64 =&gt; val.get_u64(),
+<a href=#786 id=786 data-nosnippet>786</a>                },
+<a href=#787 id=787 data-nosnippet>787</a>            )
+<a href=#788 id=788 data-nosnippet>788</a>        }
+<a href=#789 id=789 data-nosnippet>789</a>
+<a href=#790 id=790 data-nosnippet>790</a>        <span class="kw">fn </span>write(
+<a href=#791 id=791 data-nosnippet>791</a>            <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#792 id=792 data-nosnippet>792</a>            memory_index: wasmtime_environ::MemoryIndex,
+<a href=#793 id=793 data-nosnippet>793</a>            init: <span class="kw-2">&amp;</span>wasmtime_environ::StaticMemoryInitializer,
+<a href=#794 id=794 data-nosnippet>794</a>        ) -&gt; bool {
+<a href=#795 id=795 data-nosnippet>795</a>            <span class="comment">// If this initializer applies to a defined memory but that memory
+<a href=#796 id=796 data-nosnippet>796</a>            // doesn't need initialization, due to something like copy-on-write
+<a href=#797 id=797 data-nosnippet>797</a>            // pre-initializing it via mmap magic, then this initializer can be
+<a href=#798 id=798 data-nosnippet>798</a>            // skipped entirely.
+<a href=#799 id=799 data-nosnippet>799</a>            </span><span class="kw">let </span>instance = <span class="self">self</span>.store.instance_mut(<span class="self">self</span>.context.instance);
+<a href=#800 id=800 data-nosnippet>800</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(memory_index) = <span class="self">self</span>.module.defined_memory_index(memory_index) {
+<a href=#801 id=801 data-nosnippet>801</a>                <span class="kw">if </span>!instance.memories[memory_index].<span class="number">1</span>.needs_init() {
+<a href=#802 id=802 data-nosnippet>802</a>                    <span class="kw">return </span><span class="bool-val">true</span>;
+<a href=#803 id=803 data-nosnippet>803</a>                }
+<a href=#804 id=804 data-nosnippet>804</a>            }
+<a href=#805 id=805 data-nosnippet>805</a>            <span class="kw">let </span>memory = instance.get_memory(memory_index);
+<a href=#806 id=806 data-nosnippet>806</a>
+<a href=#807 id=807 data-nosnippet>807</a>            <span class="kw">unsafe </span>{
+<a href=#808 id=808 data-nosnippet>808</a>                <span class="kw">let </span>src = instance.wasm_data(init.data.clone());
+<a href=#809 id=809 data-nosnippet>809</a>                <span class="kw">let </span>offset = usize::try_from(init.offset).unwrap();
+<a href=#810 id=810 data-nosnippet>810</a>                <span class="kw">let </span>dst = memory.base.as_ptr().add(offset);
+<a href=#811 id=811 data-nosnippet>811</a>
+<a href=#812 id=812 data-nosnippet>812</a>                <span class="macro">assert!</span>(offset + src.len() &lt;= memory.current_length());
+<a href=#813 id=813 data-nosnippet>813</a>
+<a href=#814 id=814 data-nosnippet>814</a>                <span class="comment">// FIXME audit whether this is safe in the presence of shared
+<a href=#815 id=815 data-nosnippet>815</a>                // memory
+<a href=#816 id=816 data-nosnippet>816</a>                // (https://github.com/bytecodealliance/wasmtime/issues/4203).
+<a href=#817 id=817 data-nosnippet>817</a>                </span>ptr::copy_nonoverlapping(src.as_ptr(), dst, src.len())
+<a href=#818 id=818 data-nosnippet>818</a>            }
+<a href=#819 id=819 data-nosnippet>819</a>            <span class="bool-val">true
+<a href=#820 id=820 data-nosnippet>820</a>        </span>}
+<a href=#821 id=821 data-nosnippet>821</a>    }
+<a href=#822 id=822 data-nosnippet>822</a>
+<a href=#823 id=823 data-nosnippet>823</a>    <span class="kw">let </span>ok = module
+<a href=#824 id=824 data-nosnippet>824</a>        .memory_initialization
+<a href=#825 id=825 data-nosnippet>825</a>        .init_memory(<span class="kw-2">&amp;mut </span>InitMemoryAtInstantiation {
+<a href=#826 id=826 data-nosnippet>826</a>            module,
+<a href=#827 id=827 data-nosnippet>827</a>            store,
+<a href=#828 id=828 data-nosnippet>828</a>            context,
+<a href=#829 id=829 data-nosnippet>829</a>            const_evaluator,
+<a href=#830 id=830 data-nosnippet>830</a>        });
+<a href=#831 id=831 data-nosnippet>831</a>    <span class="kw">if </span>!ok {
+<a href=#832 id=832 data-nosnippet>832</a>        <span class="kw">return </span><span class="prelude-val">Err</span>(Trap::MemoryOutOfBounds.into());
+<a href=#833 id=833 data-nosnippet>833</a>    }
+<a href=#834 id=834 data-nosnippet>834</a>
+<a href=#835 id=835 data-nosnippet>835</a>    <span class="prelude-val">Ok</span>(())
+<a href=#836 id=836 data-nosnippet>836</a>}
+<a href=#837 id=837 data-nosnippet>837</a>
+<a href=#838 id=838 data-nosnippet>838</a><span class="kw">fn </span>check_init_bounds(store: <span class="kw-2">&amp;mut </span>StoreOpaque, instance: InstanceId, module: <span class="kw-2">&amp;</span>Module) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#839 id=839 data-nosnippet>839</a>    check_table_init_bounds(store, instance, module)<span class="question-mark">?</span>;
+<a href=#840 id=840 data-nosnippet>840</a>
+<a href=#841 id=841 data-nosnippet>841</a>    <span class="kw">match </span><span class="kw-2">&amp;</span>module.memory_initialization {
+<a href=#842 id=842 data-nosnippet>842</a>        MemoryInitialization::Segmented(initializers) =&gt; {
+<a href=#843 id=843 data-nosnippet>843</a>            check_memory_init_bounds(store, instance, initializers)<span class="question-mark">?</span>;
+<a href=#844 id=844 data-nosnippet>844</a>        }
+<a href=#845 id=845 data-nosnippet>845</a>        <span class="comment">// Statically validated already to have everything in-bounds.
+<a href=#846 id=846 data-nosnippet>846</a>        </span>MemoryInitialization::Static { .. } =&gt; {}
+<a href=#847 id=847 data-nosnippet>847</a>    }
+<a href=#848 id=848 data-nosnippet>848</a>
+<a href=#849 id=849 data-nosnippet>849</a>    <span class="prelude-val">Ok</span>(())
+<a href=#850 id=850 data-nosnippet>850</a>}
 <a href=#851 id=851 data-nosnippet>851</a>
-<a href=#852 id=852 data-nosnippet>852</a>    <span class="kw">for </span>(index, init) <span class="kw">in </span>module.global_initializers.iter() {
-<a href=#853 id=853 data-nosnippet>853</a>        <span class="kw">let </span>raw = <span class="kw">unsafe </span>{
-<a href=#854 id=854 data-nosnippet>854</a>            const_evaluator
-<a href=#855 id=855 data-nosnippet>855</a>                .eval(<span class="kw-2">&amp;mut </span>store, context, init)
-<a href=#856 id=856 data-nosnippet>856</a>                .expect(<span class="string">"should be a valid const expr"</span>)
-<a href=#857 id=857 data-nosnippet>857</a>        };
-<a href=#858 id=858 data-nosnippet>858</a>
-<a href=#859 id=859 data-nosnippet>859</a>        <span class="kw">let </span>instance = store.instance_mut(context.instance);
-<a href=#860 id=860 data-nosnippet>860</a>        <span class="kw">let </span>to = instance.global_ptr(index);
-<a href=#861 id=861 data-nosnippet>861</a>        <span class="kw">let </span>wasm_ty = module.globals[module.global_index(index)].wasm_ty;
+<a href=#852 id=852 data-nosnippet>852</a><span class="kw">fn </span>initialize_globals(
+<a href=#853 id=853 data-nosnippet>853</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
+<a href=#854 id=854 data-nosnippet>854</a>    context: <span class="kw-2">&amp;mut </span>ConstEvalContext,
+<a href=#855 id=855 data-nosnippet>855</a>    const_evaluator: <span class="kw-2">&amp;mut </span>ConstExprEvaluator,
+<a href=#856 id=856 data-nosnippet>856</a>    module: <span class="kw-2">&amp;</span>Module,
+<a href=#857 id=857 data-nosnippet>857</a>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#858 id=858 data-nosnippet>858</a>    <span class="macro">assert!</span>(core::ptr::eq(
+<a href=#859 id=859 data-nosnippet>859</a>        <span class="kw-2">&amp;**</span>store.instance(context.instance).env_module(),
+<a href=#860 id=860 data-nosnippet>860</a>        module
+<a href=#861 id=861 data-nosnippet>861</a>    ));
 <a href=#862 id=862 data-nosnippet>862</a>
-<a href=#863 id=863 data-nosnippet>863</a>        <span class="attr">#[cfg(feature = <span class="string">"wmemcheck"</span>)]
-<a href=#864 id=864 data-nosnippet>864</a>        </span><span class="kw">if </span>index.as_u32() == <span class="number">0 </span>&amp;&amp; wasm_ty == wasmtime_environ::WasmValType::I32 {
-<a href=#865 id=865 data-nosnippet>865</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(wmemcheck) = instance.wmemcheck_state_mut() {
-<a href=#866 id=866 data-nosnippet>866</a>                <span class="kw">let </span>size = usize::try_from(raw.get_i32()).unwrap();
-<a href=#867 id=867 data-nosnippet>867</a>                wmemcheck.set_stack_size(size);
-<a href=#868 id=868 data-nosnippet>868</a>            }
-<a href=#869 id=869 data-nosnippet>869</a>        }
-<a href=#870 id=870 data-nosnippet>870</a>
-<a href=#871 id=871 data-nosnippet>871</a>        <span class="comment">// This write is safe because we know we have the correct module for
-<a href=#872 id=872 data-nosnippet>872</a>        // this instance and its vmctx due to the assert above.
-<a href=#873 id=873 data-nosnippet>873</a>        </span><span class="kw">unsafe </span>{
-<a href=#874 id=874 data-nosnippet>874</a>            to.write(VMGlobalDefinition::from_val_raw(<span class="kw-2">&amp;mut </span>store, wasm_ty, raw)<span class="question-mark">?</span>);
-<a href=#875 id=875 data-nosnippet>875</a>        };
-<a href=#876 id=876 data-nosnippet>876</a>    }
-<a href=#877 id=877 data-nosnippet>877</a>    <span class="prelude-val">Ok</span>(())
-<a href=#878 id=878 data-nosnippet>878</a>}
-<a href=#879 id=879 data-nosnippet>879</a>
-<a href=#880 id=880 data-nosnippet>880</a><span class="kw">pub fn </span>initialize_instance(
-<a href=#881 id=881 data-nosnippet>881</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
-<a href=#882 id=882 data-nosnippet>882</a>    instance: InstanceId,
-<a href=#883 id=883 data-nosnippet>883</a>    module: <span class="kw-2">&amp;</span>Module,
-<a href=#884 id=884 data-nosnippet>884</a>    is_bulk_memory: bool,
-<a href=#885 id=885 data-nosnippet>885</a>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
-<a href=#886 id=886 data-nosnippet>886</a>    <span class="comment">// If bulk memory is not enabled, bounds check the data and element segments before
-<a href=#887 id=887 data-nosnippet>887</a>    // making any changes. With bulk memory enabled, initializers are processed
-<a href=#888 id=888 data-nosnippet>888</a>    // in-order and side effects are observed up to the point of an out-of-bounds
-<a href=#889 id=889 data-nosnippet>889</a>    // initializer, so the early checking is not desired.
-<a href=#890 id=890 data-nosnippet>890</a>    </span><span class="kw">if </span>!is_bulk_memory {
-<a href=#891 id=891 data-nosnippet>891</a>        check_init_bounds(store, instance, module)<span class="question-mark">?</span>;
-<a href=#892 id=892 data-nosnippet>892</a>    }
-<a href=#893 id=893 data-nosnippet>893</a>
-<a href=#894 id=894 data-nosnippet>894</a>    <span class="kw">let </span><span class="kw-2">mut </span>context = ConstEvalContext::new(instance);
-<a href=#895 id=895 data-nosnippet>895</a>    <span class="kw">let </span><span class="kw-2">mut </span>const_evaluator = ConstExprEvaluator::default();
-<a href=#896 id=896 data-nosnippet>896</a>
-<a href=#897 id=897 data-nosnippet>897</a>    initialize_globals(store, <span class="kw-2">&amp;mut </span>context, <span class="kw-2">&amp;mut </span>const_evaluator, module)<span class="question-mark">?</span>;
-<a href=#898 id=898 data-nosnippet>898</a>    initialize_tables(store, <span class="kw-2">&amp;mut </span>context, <span class="kw-2">&amp;mut </span>const_evaluator, module)<span class="question-mark">?</span>;
-<a href=#899 id=899 data-nosnippet>899</a>    initialize_memories(store, <span class="kw-2">&amp;mut </span>context, <span class="kw-2">&amp;mut </span>const_evaluator, <span class="kw-2">&amp;</span>module)<span class="question-mark">?</span>;
-<a href=#900 id=900 data-nosnippet>900</a>
-<a href=#901 id=901 data-nosnippet>901</a>    <span class="prelude-val">Ok</span>(())
-<a href=#902 id=902 data-nosnippet>902</a>}
-<a href=#903 id=903 data-nosnippet>903</a>
-<a href=#904 id=904 data-nosnippet>904</a><span class="attr">#[cfg(test)]
-<a href=#905 id=905 data-nosnippet>905</a></span><span class="kw">mod </span>tests {
-<a href=#906 id=906 data-nosnippet>906</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
-<a href=#907 id=907 data-nosnippet>907</a>
-<a href=#908 id=908 data-nosnippet>908</a>    <span class="attr">#[test]
-<a href=#909 id=909 data-nosnippet>909</a>    </span><span class="kw">fn </span>allocator_traits_are_object_safe() {
-<a href=#910 id=910 data-nosnippet>910</a>        <span class="kw">fn </span>_instance_allocator(<span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw">dyn </span>InstanceAllocatorImpl) {}
-<a href=#911 id=911 data-nosnippet>911</a>        <span class="kw">fn </span>_instance_allocator_ext(<span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw">dyn </span>InstanceAllocator) {}
-<a href=#912 id=912 data-nosnippet>912</a>    }
-<a href=#913 id=913 data-nosnippet>913</a>}
+<a href=#863 id=863 data-nosnippet>863</a>    <span class="kw">let </span><span class="kw-2">mut </span>store = AutoAssertNoGc::new(store);
+<a href=#864 id=864 data-nosnippet>864</a>
+<a href=#865 id=865 data-nosnippet>865</a>    <span class="kw">for </span>(index, init) <span class="kw">in </span>module.global_initializers.iter() {
+<a href=#866 id=866 data-nosnippet>866</a>        <span class="kw">let </span>raw = <span class="kw">unsafe </span>{
+<a href=#867 id=867 data-nosnippet>867</a>            const_evaluator
+<a href=#868 id=868 data-nosnippet>868</a>                .eval(<span class="kw-2">&amp;mut </span>store, context, init)
+<a href=#869 id=869 data-nosnippet>869</a>                .expect(<span class="string">"should be a valid const expr"</span>)
+<a href=#870 id=870 data-nosnippet>870</a>        };
+<a href=#871 id=871 data-nosnippet>871</a>
+<a href=#872 id=872 data-nosnippet>872</a>        <span class="kw">let </span>instance = store.instance_mut(context.instance);
+<a href=#873 id=873 data-nosnippet>873</a>        <span class="kw">let </span>to = instance.global_ptr(index);
+<a href=#874 id=874 data-nosnippet>874</a>        <span class="kw">let </span>wasm_ty = module.globals[module.global_index(index)].wasm_ty;
+<a href=#875 id=875 data-nosnippet>875</a>
+<a href=#876 id=876 data-nosnippet>876</a>        <span class="attr">#[cfg(feature = <span class="string">"wmemcheck"</span>)]
+<a href=#877 id=877 data-nosnippet>877</a>        </span><span class="kw">if </span>index.as_u32() == <span class="number">0 </span>&amp;&amp; wasm_ty == wasmtime_environ::WasmValType::I32 {
+<a href=#878 id=878 data-nosnippet>878</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(wmemcheck) = instance.wmemcheck_state_mut() {
+<a href=#879 id=879 data-nosnippet>879</a>                <span class="kw">let </span>size = usize::try_from(raw.get_i32()).unwrap();
+<a href=#880 id=880 data-nosnippet>880</a>                wmemcheck.set_stack_size(size);
+<a href=#881 id=881 data-nosnippet>881</a>            }
+<a href=#882 id=882 data-nosnippet>882</a>        }
+<a href=#883 id=883 data-nosnippet>883</a>
+<a href=#884 id=884 data-nosnippet>884</a>        <span class="comment">// This write is safe because we know we have the correct module for
+<a href=#885 id=885 data-nosnippet>885</a>        // this instance and its vmctx due to the assert above.
+<a href=#886 id=886 data-nosnippet>886</a>        </span><span class="kw">unsafe </span>{
+<a href=#887 id=887 data-nosnippet>887</a>            to.write(VMGlobalDefinition::from_val_raw(<span class="kw-2">&amp;mut </span>store, wasm_ty, raw)<span class="question-mark">?</span>);
+<a href=#888 id=888 data-nosnippet>888</a>        };
+<a href=#889 id=889 data-nosnippet>889</a>    }
+<a href=#890 id=890 data-nosnippet>890</a>    <span class="prelude-val">Ok</span>(())
+<a href=#891 id=891 data-nosnippet>891</a>}
+<a href=#892 id=892 data-nosnippet>892</a>
+<a href=#893 id=893 data-nosnippet>893</a><span class="kw">pub fn </span>initialize_instance(
+<a href=#894 id=894 data-nosnippet>894</a>    store: <span class="kw-2">&amp;mut </span>StoreOpaque,
+<a href=#895 id=895 data-nosnippet>895</a>    instance: InstanceId,
+<a href=#896 id=896 data-nosnippet>896</a>    module: <span class="kw-2">&amp;</span>Module,
+<a href=#897 id=897 data-nosnippet>897</a>    is_bulk_memory: bool,
+<a href=#898 id=898 data-nosnippet>898</a>) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#899 id=899 data-nosnippet>899</a>    <span class="comment">// If bulk memory is not enabled, bounds check the data and element segments before
+<a href=#900 id=900 data-nosnippet>900</a>    // making any changes. With bulk memory enabled, initializers are processed
+<a href=#901 id=901 data-nosnippet>901</a>    // in-order and side effects are observed up to the point of an out-of-bounds
+<a href=#902 id=902 data-nosnippet>902</a>    // initializer, so the early checking is not desired.
+<a href=#903 id=903 data-nosnippet>903</a>    </span><span class="kw">if </span>!is_bulk_memory {
+<a href=#904 id=904 data-nosnippet>904</a>        check_init_bounds(store, instance, module)<span class="question-mark">?</span>;
+<a href=#905 id=905 data-nosnippet>905</a>    }
+<a href=#906 id=906 data-nosnippet>906</a>
+<a href=#907 id=907 data-nosnippet>907</a>    <span class="kw">let </span><span class="kw-2">mut </span>context = ConstEvalContext::new(instance);
+<a href=#908 id=908 data-nosnippet>908</a>    <span class="kw">let </span><span class="kw-2">mut </span>const_evaluator = ConstExprEvaluator::default();
+<a href=#909 id=909 data-nosnippet>909</a>
+<a href=#910 id=910 data-nosnippet>910</a>    initialize_globals(store, <span class="kw-2">&amp;mut </span>context, <span class="kw-2">&amp;mut </span>const_evaluator, module)<span class="question-mark">?</span>;
+<a href=#911 id=911 data-nosnippet>911</a>    initialize_tables(store, <span class="kw-2">&amp;mut </span>context, <span class="kw-2">&amp;mut </span>const_evaluator, module)<span class="question-mark">?</span>;
+<a href=#912 id=912 data-nosnippet>912</a>    initialize_memories(store, <span class="kw-2">&amp;mut </span>context, <span class="kw-2">&amp;mut </span>const_evaluator, <span class="kw-2">&amp;</span>module)<span class="question-mark">?</span>;
+<a href=#913 id=913 data-nosnippet>913</a>
+<a href=#914 id=914 data-nosnippet>914</a>    <span class="prelude-val">Ok</span>(())
+<a href=#915 id=915 data-nosnippet>915</a>}
+<a href=#916 id=916 data-nosnippet>916</a>
+<a href=#917 id=917 data-nosnippet>917</a><span class="attr">#[cfg(test)]
+<a href=#918 id=918 data-nosnippet>918</a></span><span class="kw">mod </span>tests {
+<a href=#919 id=919 data-nosnippet>919</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#920 id=920 data-nosnippet>920</a>
+<a href=#921 id=921 data-nosnippet>921</a>    <span class="attr">#[test]
+<a href=#922 id=922 data-nosnippet>922</a>    </span><span class="kw">fn </span>allocator_traits_are_object_safe() {
+<a href=#923 id=923 data-nosnippet>923</a>        <span class="kw">fn </span>_instance_allocator(<span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw">dyn </span>InstanceAllocatorImpl) {}
+<a href=#924 id=924 data-nosnippet>924</a>        <span class="kw">fn </span>_instance_allocator_ext(<span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="kw">dyn </span>InstanceAllocator) {}
+<a href=#925 id=925 data-nosnippet>925</a>    }
+<a href=#926 id=926 data-nosnippet>926</a>}
 </code></pre></div></section></main></body></html>

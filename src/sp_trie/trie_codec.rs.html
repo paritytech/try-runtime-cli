@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/primitives/trie/src/trie_codec.rs`."><title>trie_codec.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_trie" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sp_trie/</div>trie_codec.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/primitives/trie/src/trie_codec.rs`."><title>trie_codec.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_trie" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sp_trie/</div>trie_codec.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -20,7 +20,7 @@
 <a href=#20 id=20 data-nosnippet>20</a>//! This uses compact proof from trie crate and extends
 <a href=#21 id=21 data-nosnippet>21</a>//! it to substrate specific layout and child trie system.
 <a href=#22 id=22 data-nosnippet>22</a>
-<a href=#23 id=23 data-nosnippet>23</a></span><span class="kw">use </span>crate::{CompactProof, HashDBT, TrieConfiguration, TrieHash, EMPTY_PREFIX};
+<a href=#23 id=23 data-nosnippet>23</a></span><span class="kw">use crate</span>::{CompactProof, HashDBT, TrieConfiguration, TrieHash, EMPTY_PREFIX};
 <a href=#24 id=24 data-nosnippet>24</a><span class="kw">use </span>alloc::{boxed::Box, vec::Vec};
 <a href=#25 id=25 data-nosnippet>25</a><span class="kw">use </span>trie_db::{CError, Trie};
 <a href=#26 id=26 data-nosnippet>26</a>
@@ -69,8 +69,8 @@
 <a href=#69 id=69 data-nosnippet>69</a>	<span class="kw">let </span>(top_root, _nb_used) = trie_db::decode_compact_from_iter::&lt;L, <span class="kw">_</span>, <span class="kw">_</span>&gt;(db, <span class="kw-2">&amp;mut </span>nodes_iter)<span class="question-mark">?</span>;
 <a href=#70 id=70 data-nosnippet>70</a>
 <a href=#71 id=71 data-nosnippet>71</a>	<span class="comment">// Only check root if expected root is passed as argument.
-<a href=#72 id=72 data-nosnippet>72</a>	</span><span class="kw">if let </span><span class="prelude-val">Some</span>(expected_root) = expected_root.filter(|expected| <span class="kw-2">*</span>expected != <span class="kw-2">&amp;</span>top_root) {
-<a href=#73 id=73 data-nosnippet>73</a>		<span class="kw">return </span><span class="prelude-val">Err</span>(Error::RootMismatch(top_root, <span class="kw-2">*</span>expected_root))
+<a href=#72 id=72 data-nosnippet>72</a>	</span><span class="kw">if let </span><span class="prelude-val">Some</span>(expected_root) = expected_root.filter(|expected| <span class="kw-2">*</span><span class="macro">expected !</span>= <span class="kw-2">&amp;</span>top_root) {
+<a href=#73 id=73 data-nosnippet>73</a>		<span class="kw">return </span><span class="prelude-val">Err</span>(Error::RootMismatch(top_root, <span class="kw-2">*</span>expected_root));
 <a href=#74 id=74 data-nosnippet>74</a>	}
 <a href=#75 id=75 data-nosnippet>75</a>
 <a href=#76 id=76 data-nosnippet>76</a>	<span class="kw">let </span><span class="kw-2">mut </span>child_tries = Vec::new();
@@ -90,7 +90,7 @@
 <a href=#90 id=90 data-nosnippet>90</a>						</span><span class="kw">let </span><span class="kw-2">mut </span>root = TrieHash::&lt;L&gt;::default();
 <a href=#91 id=91 data-nosnippet>91</a>						<span class="comment">// still in a proof so prevent panic
 <a href=#92 id=92 data-nosnippet>92</a>						</span><span class="kw">if </span>root.as_mut().len() != value.as_slice().len() {
-<a href=#93 id=93 data-nosnippet>93</a>							<span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidChildRoot(key, value))
+<a href=#93 id=93 data-nosnippet>93</a>							<span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidChildRoot(key, value));
 <a href=#94 id=94 data-nosnippet>94</a>						}
 <a href=#95 id=95 data-nosnippet>95</a>						root.as_mut().copy_from_slice(value.as_ref());
 <a href=#96 id=96 data-nosnippet>96</a>						child_tries.push(root);
@@ -108,7 +108,7 @@
 <a href=#108 id=108 data-nosnippet>108</a>	}
 <a href=#109 id=109 data-nosnippet>109</a>
 <a href=#110 id=110 data-nosnippet>110</a>	<span class="kw">if </span>!HashDBT::&lt;L::Hash, <span class="kw">_</span>&gt;::contains(db, <span class="kw-2">&amp;</span>top_root, EMPTY_PREFIX) {
-<a href=#111 id=111 data-nosnippet>111</a>		<span class="kw">return </span><span class="prelude-val">Err</span>(Error::IncompleteProof)
+<a href=#111 id=111 data-nosnippet>111</a>		<span class="kw">return </span><span class="prelude-val">Err</span>(Error::IncompleteProof);
 <a href=#112 id=112 data-nosnippet>112</a>	}
 <a href=#113 id=113 data-nosnippet>113</a>
 <a href=#114 id=114 data-nosnippet>114</a>	<span class="kw">let </span><span class="kw-2">mut </span>previous_extracted_child_trie = <span class="prelude-val">None</span>;
@@ -130,11 +130,11 @@
 <a href=#130 id=130 data-nosnippet>130</a>	<span class="kw">if let </span><span class="prelude-val">Some</span>(child_root) = previous_extracted_child_trie {
 <a href=#131 id=131 data-nosnippet>131</a>		<span class="comment">// A child root was read from proof but is not present
 <a href=#132 id=132 data-nosnippet>132</a>		// in top trie.
-<a href=#133 id=133 data-nosnippet>133</a>		</span><span class="kw">return </span><span class="prelude-val">Err</span>(Error::ExtraneousChildProof(child_root))
+<a href=#133 id=133 data-nosnippet>133</a>		</span><span class="kw">return </span><span class="prelude-val">Err</span>(Error::ExtraneousChildProof(child_root));
 <a href=#134 id=134 data-nosnippet>134</a>	}
 <a href=#135 id=135 data-nosnippet>135</a>
 <a href=#136 id=136 data-nosnippet>136</a>	<span class="kw">if </span>nodes_iter.next().is_some() {
-<a href=#137 id=137 data-nosnippet>137</a>		<span class="kw">return </span><span class="prelude-val">Err</span>(Error::ExtraneousChildNode)
+<a href=#137 id=137 data-nosnippet>137</a>		<span class="kw">return </span><span class="prelude-val">Err</span>(Error::ExtraneousChildNode);
 <a href=#138 id=138 data-nosnippet>138</a>	}
 <a href=#139 id=139 data-nosnippet>139</a>
 <a href=#140 id=140 data-nosnippet>140</a>	<span class="prelude-val">Ok</span>(top_root)
@@ -169,7 +169,7 @@
 <a href=#169 id=169 data-nosnippet>169</a>						<span class="kw">let </span><span class="kw-2">mut </span>root = TrieHash::&lt;L&gt;::default();
 <a href=#170 id=170 data-nosnippet>170</a>						<span class="kw">if </span>root.as_mut().len() != value.as_slice().len() {
 <a href=#171 id=171 data-nosnippet>171</a>							<span class="comment">// some child trie root in top trie are not an encoded hash.
-<a href=#172 id=172 data-nosnippet>172</a>							</span><span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidChildRoot(key.to_vec(), value.to_vec()))
+<a href=#172 id=172 data-nosnippet>172</a>							</span><span class="kw">return </span><span class="prelude-val">Err</span>(Error::InvalidChildRoot(key.to_vec(), value.to_vec()));
 <a href=#173 id=173 data-nosnippet>173</a>						}
 <a href=#174 id=174 data-nosnippet>174</a>						root.as_mut().copy_from_slice(value.as_ref());
 <a href=#175 id=175 data-nosnippet>175</a>						child_tries.push(root);
@@ -192,8 +192,8 @@
 <a href=#192 id=192 data-nosnippet>192</a>		<span class="kw">if </span>!HashDBT::&lt;L::Hash, <span class="kw">_</span>&gt;::contains(partial_db, <span class="kw-2">&amp;</span>child_root, EMPTY_PREFIX) {
 <a href=#193 id=193 data-nosnippet>193</a>			<span class="comment">// child proof are allowed to be missing (unused root can be included
 <a href=#194 id=194 data-nosnippet>194</a>			// due to trie structure modification).
-<a href=#195 id=195 data-nosnippet>195</a>			</span><span class="kw">continue
-<a href=#196 id=196 data-nosnippet>196</a>		</span>}
+<a href=#195 id=195 data-nosnippet>195</a>			</span><span class="kw">continue</span>;
+<a href=#196 id=196 data-nosnippet>196</a>		}
 <a href=#197 id=197 data-nosnippet>197</a>
 <a href=#198 id=198 data-nosnippet>198</a>		<span class="kw">let </span>trie = <span class="kw">crate</span>::TrieDBBuilder::&lt;L&gt;::new(partial_db, <span class="kw-2">&amp;</span>child_root).build();
 <a href=#199 id=199 data-nosnippet>199</a>		<span class="kw">let </span>child_proof = trie_db::encode_compact::&lt;L&gt;(<span class="kw-2">&amp;</span>trie)<span class="question-mark">?</span>;
@@ -206,8 +206,8 @@
 <a href=#206 id=206 data-nosnippet>206</a>
 <a href=#207 id=207 data-nosnippet>207</a><span class="attr">#[cfg(test)]
 <a href=#208 id=208 data-nosnippet>208</a></span><span class="kw">mod </span>tests {
-<a href=#209 id=209 data-nosnippet>209</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
-<a href=#210 id=210 data-nosnippet>210</a>	<span class="kw">use </span>crate::{delta_trie_root, recorder::IgnoredNodes, HashDB, StorageProof};
+<a href=#209 id=209 data-nosnippet>209</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#210 id=210 data-nosnippet>210</a>	<span class="kw">use crate</span>::{delta_trie_root, recorder::IgnoredNodes, HashDB, StorageProof};
 <a href=#211 id=211 data-nosnippet>211</a>	<span class="kw">use </span>codec::Encode;
 <a href=#212 id=212 data-nosnippet>212</a>	<span class="kw">use </span>hash_db::AsHashDB;
 <a href=#213 id=213 data-nosnippet>213</a>	<span class="kw">use </span>sp_core::{Blake2Hasher, H256};

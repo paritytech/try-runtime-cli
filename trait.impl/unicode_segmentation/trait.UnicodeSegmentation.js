@@ -1,9 +1,9 @@
 (function() {
-    const implementors = Object.fromEntries([["unicode_segmentation",[]]]);
+    var implementors = Object.fromEntries([["unicode_segmentation",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":59,"fragment_lengths":[27]}
+//{"start":57,"fragment_lengths":[27]}

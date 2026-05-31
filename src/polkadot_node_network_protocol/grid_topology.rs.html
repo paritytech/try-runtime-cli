@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/polkadot/node/network/protocol/src/grid_topology.rs`."><title>grid_topology.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkadot_node_network_protocol" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">polkadot_node_network_protocol/</div>grid_topology.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/polkadot/node/network/protocol/src/grid_topology.rs`."><title>grid_topology.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="polkadot_node_network_protocol" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">polkadot_node_network_protocol/</div>grid_topology.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#2 id=2 data-nosnippet>2</a>// This file is part of Polkadot.
 <a href=#3 id=3 data-nosnippet>3</a>
 <a href=#4 id=4 data-nosnippet>4</a>// Polkadot is free software: you can redistribute it and/or modify
@@ -114,8 +114,8 @@
 <a href=#114 id=114 data-nosnippet>114</a>	/// Returns `None` if the validator index is out of bounds.
 <a href=#115 id=115 data-nosnippet>115</a>	</span><span class="kw">pub fn </span>compute_grid_neighbors_for(<span class="kw-2">&amp;</span><span class="self">self</span>, v: ValidatorIndex) -&gt; <span class="prelude-ty">Option</span>&lt;GridNeighbors&gt; {
 <a href=#116 id=116 data-nosnippet>116</a>		<span class="kw">if </span><span class="self">self</span>.shuffled_indices.len() != <span class="self">self</span>.canonical_shuffling.len() {
-<a href=#117 id=117 data-nosnippet>117</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#118 id=118 data-nosnippet>118</a>		</span>}
+<a href=#117 id=117 data-nosnippet>117</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#118 id=118 data-nosnippet>118</a>		}
 <a href=#119 id=119 data-nosnippet>119</a>		<span class="kw">let </span>shuffled_val_index = <span class="kw-2">*</span><span class="self">self</span>.shuffled_indices.get(v.<span class="number">0 </span><span class="kw">as </span>usize)<span class="question-mark">?</span>;
 <a href=#120 id=120 data-nosnippet>120</a>
 <a href=#121 id=121 data-nosnippet>121</a>		<span class="kw">let </span>neighbors = matrix_neighbors(shuffled_val_index, <span class="self">self</span>.shuffled_indices.len())<span class="question-mark">?</span>;
@@ -157,8 +157,8 @@
 <a href=#157 id=157 data-nosnippet>157</a>	len: usize,
 <a href=#158 id=158 data-nosnippet>158</a>) -&gt; <span class="prelude-ty">Option</span>&lt;MatrixNeighbors&lt;<span class="kw">impl </span>Iterator&lt;Item = usize&gt;, <span class="kw">impl </span>Iterator&lt;Item = usize&gt;&gt;&gt; {
 <a href=#159 id=159 data-nosnippet>159</a>	<span class="kw">if </span>val_index &gt;= len {
-<a href=#160 id=160 data-nosnippet>160</a>		<span class="kw">return </span><span class="prelude-val">None
-<a href=#161 id=161 data-nosnippet>161</a>	</span>}
+<a href=#160 id=160 data-nosnippet>160</a>		<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#161 id=161 data-nosnippet>161</a>	}
 <a href=#162 id=162 data-nosnippet>162</a>
 <a href=#163 id=163 data-nosnippet>163</a>	<span class="comment">// e.g. for size 11 the matrix would be
 <a href=#164 id=164 data-nosnippet>164</a>	//
@@ -176,8 +176,8 @@
 <a href=#176 id=176 data-nosnippet>176</a>	<span class="kw">let </span>column_neighbors = (our_column..len).step_by(sqrt);
 <a href=#177 id=177 data-nosnippet>177</a>
 <a href=#178 id=178 data-nosnippet>178</a>	<span class="prelude-val">Some</span>(MatrixNeighbors {
-<a href=#179 id=179 data-nosnippet>179</a>		row_neighbors: row_neighbors.filter(<span class="kw">move </span>|i| <span class="kw-2">*</span>i != val_index),
-<a href=#180 id=180 data-nosnippet>180</a>		column_neighbors: column_neighbors.filter(<span class="kw">move </span>|i| <span class="kw-2">*</span>i != val_index),
+<a href=#179 id=179 data-nosnippet>179</a>		row_neighbors: row_neighbors.filter(<span class="kw">move </span>|i| <span class="kw-2">*</span><span class="macro">i !</span>= val_index),
+<a href=#180 id=180 data-nosnippet>180</a>		column_neighbors: column_neighbors.filter(<span class="kw">move </span>|i| <span class="kw-2">*</span><span class="macro">i !</span>= val_index),
 <a href=#181 id=181 data-nosnippet>181</a>	})
 <a href=#182 id=182 data-nosnippet>182</a>}
 <a href=#183 id=183 data-nosnippet>183</a>
@@ -214,7 +214,7 @@
 <a href=#214 id=214 data-nosnippet>214</a>		local: bool,
 <a href=#215 id=215 data-nosnippet>215</a>	) -&gt; RequiredRouting {
 <a href=#216 id=216 data-nosnippet>216</a>		<span class="kw">if </span>local {
-<a href=#217 id=217 data-nosnippet>217</a>			<span class="kw">return </span>RequiredRouting::GridXY
+<a href=#217 id=217 data-nosnippet>217</a>			<span class="kw">return </span>RequiredRouting::GridXY;
 <a href=#218 id=218 data-nosnippet>218</a>		}
 <a href=#219 id=219 data-nosnippet>219</a>
 <a href=#220 id=220 data-nosnippet>220</a>		<span class="kw">let </span>grid_x = <span class="self">self</span>.validator_indices_x.contains(<span class="kw-2">&amp;</span>originator);
@@ -233,7 +233,7 @@
 <a href=#233 id=233 data-nosnippet>233</a>	/// we're meant to send the message to.
 <a href=#234 id=234 data-nosnippet>234</a>	</span><span class="kw">pub fn </span>required_routing_by_peer_id(<span class="kw-2">&amp;</span><span class="self">self</span>, originator: PeerId, local: bool) -&gt; RequiredRouting {
 <a href=#235 id=235 data-nosnippet>235</a>		<span class="kw">if </span>local {
-<a href=#236 id=236 data-nosnippet>236</a>			<span class="kw">return </span>RequiredRouting::GridXY
+<a href=#236 id=236 data-nosnippet>236</a>			<span class="kw">return </span>RequiredRouting::GridXY;
 <a href=#237 id=237 data-nosnippet>237</a>		}
 <a href=#238 id=238 data-nosnippet>238</a>
 <a href=#239 id=239 data-nosnippet>239</a>		<span class="kw">let </span>grid_x = <span class="self">self</span>.peers_x.contains(<span class="kw-2">&amp;</span>originator);
@@ -460,11 +460,11 @@
 <a href=#460 id=460 data-nosnippet>460</a>	</span><span class="kw">pub fn </span>get_topology(<span class="kw-2">&amp;</span><span class="self">self</span>, idx: SessionIndex) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>SessionGridTopologyEntry&gt; {
 <a href=#461 id=461 data-nosnippet>461</a>		<span class="kw">if let </span><span class="prelude-val">Some</span>(prev_topology) = <span class="kw-2">&amp;</span><span class="self">self</span>.prev_topology {
 <a href=#462 id=462 data-nosnippet>462</a>			<span class="kw">if </span>idx == prev_topology.session_index {
-<a href=#463 id=463 data-nosnippet>463</a>				<span class="kw">return </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>prev_topology.entry)
+<a href=#463 id=463 data-nosnippet>463</a>				<span class="kw">return </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>prev_topology.entry);
 <a href=#464 id=464 data-nosnippet>464</a>			}
 <a href=#465 id=465 data-nosnippet>465</a>		}
 <a href=#466 id=466 data-nosnippet>466</a>		<span class="kw">if </span><span class="self">self</span>.current_topology.session_index == idx {
-<a href=#467 id=467 data-nosnippet>467</a>			<span class="kw">return </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.current_topology.entry)
+<a href=#467 id=467 data-nosnippet>467</a>			<span class="kw">return </span><span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.current_topology.entry);
 <a href=#468 id=468 data-nosnippet>468</a>		}
 <a href=#469 id=469 data-nosnippet>469</a>
 <a href=#470 id=470 data-nosnippet>470</a>		<span class="prelude-val">None
@@ -600,7 +600,7 @@
 <a href=#600 id=600 data-nosnippet>600</a>
 <a href=#601 id=601 data-nosnippet>601</a><span class="attr">#[cfg(test)]
 <a href=#602 id=602 data-nosnippet>602</a></span><span class="kw">mod </span>tests {
-<a href=#603 id=603 data-nosnippet>603</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#603 id=603 data-nosnippet>603</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#604 id=604 data-nosnippet>604</a>	<span class="kw">use </span>rand::SeedableRng;
 <a href=#605 id=605 data-nosnippet>605</a>	<span class="kw">use </span>rand_chacha::ChaCha12Rng;
 <a href=#606 id=606 data-nosnippet>606</a>

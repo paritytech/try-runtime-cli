@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/client/api/src/notifications/registry.rs`."><title>registry.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_client_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sc_client_api/notifications/</div>registry.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/client/api/src/notifications/registry.rs`."><title>registry.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sc_client_api" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_client_api/notifications/</div>registry.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -16,7 +16,7 @@
 <a href=#16 id=16 data-nosnippet>16</a>// You should have received a copy of the GNU General Public License
 <a href=#17 id=17 data-nosnippet>17</a>// along with this program. If not, see &lt;https://www.gnu.org/licenses/&gt;.
 <a href=#18 id=18 data-nosnippet>18</a>
-<a href=#19 id=19 data-nosnippet>19</a></span><span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#19 id=19 data-nosnippet>19</a></span><span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#20 id=20 data-nosnippet>20</a>
 <a href=#21 id=21 data-nosnippet>21</a><span class="kw">use </span>sp_core::hexdisplay::HexDisplay;
 <a href=#22 id=22 data-nosnippet>22</a>
@@ -183,8 +183,8 @@
 <a href=#183 id=183 data-nosnippet>183</a>
 <a href=#184 id=184 data-nosnippet>184</a>		<span class="comment">// early exit if no listeners
 <a href=#185 id=185 data-nosnippet>185</a>		</span><span class="kw">if </span>!has_wildcard &amp;&amp; <span class="self">self</span>.listeners.is_empty() &amp;&amp; <span class="self">self</span>.child_listeners.is_empty() {
-<a href=#186 id=186 data-nosnippet>186</a>			<span class="kw">return
-<a href=#187 id=187 data-nosnippet>187</a>		</span>}
+<a href=#186 id=186 data-nosnippet>186</a>			<span class="kw">return</span>;
+<a href=#187 id=187 data-nosnippet>187</a>		}
 <a href=#188 id=188 data-nosnippet>188</a>
 <a href=#189 id=189 data-nosnippet>189</a>		<span class="kw">let </span><span class="kw-2">mut </span>subscribers = <span class="self">self</span>.wildcard_listeners.clone();
 <a href=#190 id=190 data-nosnippet>190</a>		<span class="kw">let </span><span class="kw-2">mut </span>changes = Vec::new();
@@ -229,8 +229,8 @@
 <a href=#229 id=229 data-nosnippet>229</a>
 <a href=#230 id=230 data-nosnippet>230</a>		<span class="comment">// Don't send empty notifications
 <a href=#231 id=231 data-nosnippet>231</a>		</span><span class="kw">if </span>changes.is_empty() &amp;&amp; child_changes.is_empty() {
-<a href=#232 id=232 data-nosnippet>232</a>			<span class="kw">return
-<a href=#233 id=233 data-nosnippet>233</a>		</span>}
+<a href=#232 id=232 data-nosnippet>232</a>			<span class="kw">return</span>;
+<a href=#233 id=233 data-nosnippet>233</a>		}
 <a href=#234 id=234 data-nosnippet>234</a>
 <a href=#235 id=235 data-nosnippet>235</a>		<span class="kw">let </span>changes = Arc::&lt;[<span class="kw">_</span>]&gt;::from(changes);
 <a href=#236 id=236 data-nosnippet>236</a>		<span class="kw">let </span>child_changes = Arc::&lt;[<span class="kw">_</span>]&gt;::from(child_changes);
@@ -299,7 +299,7 @@
 <a href=#299 id=299 data-nosnippet>299</a>			<span class="prelude-val">None </span>=&gt; {
 <a href=#300 id=300 data-nosnippet>300</a>				wildcards.remove(<span class="kw-2">&amp;</span>subscriber);
 <a href=#301 id=301 data-nosnippet>301</a>			},
-<a href=#302 id=302 data-nosnippet>302</a>			<span class="prelude-val">Some</span>(filters) =&gt;
+<a href=#302 id=302 data-nosnippet>302</a>			<span class="prelude-val">Some</span>(filters) =&gt; {
 <a href=#303 id=303 data-nosnippet>303</a>				<span class="kw">for </span>key <span class="kw">in </span>filters.iter() {
 <a href=#304 id=304 data-nosnippet>304</a>					<span class="kw">let </span>remove_key = <span class="kw">match </span>listeners.get_mut(key) {
 <a href=#305 id=305 data-nosnippet>305</a>						<span class="prelude-val">Some</span>(<span class="kw-2">ref mut </span>set) =&gt; {
@@ -312,55 +312,56 @@
 <a href=#312 id=312 data-nosnippet>312</a>					<span class="kw">if </span>remove_key {
 <a href=#313 id=313 data-nosnippet>313</a>						listeners.remove(key);
 <a href=#314 id=314 data-nosnippet>314</a>					}
-<a href=#315 id=315 data-nosnippet>315</a>				},
-<a href=#316 id=316 data-nosnippet>316</a>		}
-<a href=#317 id=317 data-nosnippet>317</a>	}
-<a href=#318 id=318 data-nosnippet>318</a>
-<a href=#319 id=319 data-nosnippet>319</a>	<span class="kw">fn </span>listen_from(
-<a href=#320 id=320 data-nosnippet>320</a>		current_id: SubscriberId,
-<a href=#321 id=321 data-nosnippet>321</a>		filter_keys: <span class="prelude-ty">Option</span>&lt;<span class="kw">impl </span>AsRef&lt;[StorageKey]&gt;&gt;,
-<a href=#322 id=322 data-nosnippet>322</a>		listeners: <span class="kw-2">&amp;mut </span>HashMap&lt;StorageKey, FnvHashSet&lt;SubscriberId&gt;&gt;,
-<a href=#323 id=323 data-nosnippet>323</a>		wildcards: <span class="kw-2">&amp;mut </span>FnvHashSet&lt;SubscriberId&gt;,
-<a href=#324 id=324 data-nosnippet>324</a>	) -&gt; Keys {
-<a href=#325 id=325 data-nosnippet>325</a>		<span class="kw">match </span>filter_keys {
-<a href=#326 id=326 data-nosnippet>326</a>			<span class="prelude-val">None </span>=&gt; {
-<a href=#327 id=327 data-nosnippet>327</a>				wildcards.insert(current_id);
-<a href=#328 id=328 data-nosnippet>328</a>				<span class="prelude-val">None
-<a href=#329 id=329 data-nosnippet>329</a>			</span>},
-<a href=#330 id=330 data-nosnippet>330</a>			<span class="prelude-val">Some</span>(keys) =&gt; <span class="prelude-val">Some</span>(
-<a href=#331 id=331 data-nosnippet>331</a>				keys.as_ref()
-<a href=#332 id=332 data-nosnippet>332</a>					.iter()
-<a href=#333 id=333 data-nosnippet>333</a>					.map(|key| {
-<a href=#334 id=334 data-nosnippet>334</a>						listeners.entry(key.clone()).or_default().insert(current_id);
-<a href=#335 id=335 data-nosnippet>335</a>						key.clone()
-<a href=#336 id=336 data-nosnippet>336</a>					})
-<a href=#337 id=337 data-nosnippet>337</a>					.collect(),
-<a href=#338 id=338 data-nosnippet>338</a>			),
-<a href=#339 id=339 data-nosnippet>339</a>		}
-<a href=#340 id=340 data-nosnippet>340</a>	}
-<a href=#341 id=341 data-nosnippet>341</a>}
-<a href=#342 id=342 data-nosnippet>342</a>
-<a href=#343 id=343 data-nosnippet>343</a><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>PrintKeys&lt;<span class="lifetime">'a</span>&gt;(<span class="kw">pub </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>Keys);
-<a href=#344 id=344 data-nosnippet>344</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; std::fmt::Debug <span class="kw">for </span>PrintKeys&lt;<span class="lifetime">'a</span>&gt; {
-<a href=#345 id=345 data-nosnippet>345</a>	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>std::fmt::Formatter) -&gt; std::fmt::Result {
-<a href=#346 id=346 data-nosnippet>346</a>		<span class="kw">if let </span><span class="prelude-val">Some</span>(keys) = <span class="self">self</span>.<span class="number">0 </span>{
-<a href=#347 id=347 data-nosnippet>347</a>			fmt.debug_list().entries(keys.iter().map(HexDisplay::from)).finish()
-<a href=#348 id=348 data-nosnippet>348</a>		} <span class="kw">else </span>{
-<a href=#349 id=349 data-nosnippet>349</a>			<span class="macro">write!</span>(fmt, <span class="string">"None"</span>)
-<a href=#350 id=350 data-nosnippet>350</a>		}
-<a href=#351 id=351 data-nosnippet>351</a>	}
-<a href=#352 id=352 data-nosnippet>352</a>}
-<a href=#353 id=353 data-nosnippet>353</a>
-<a href=#354 id=354 data-nosnippet>354</a><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>PrintChildKeys&lt;<span class="lifetime">'a</span>&gt;(<span class="kw">pub </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>ChildKeys);
-<a href=#355 id=355 data-nosnippet>355</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; std::fmt::Debug <span class="kw">for </span>PrintChildKeys&lt;<span class="lifetime">'a</span>&gt; {
-<a href=#356 id=356 data-nosnippet>356</a>	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>std::fmt::Formatter) -&gt; std::fmt::Result {
-<a href=#357 id=357 data-nosnippet>357</a>		<span class="kw">if let </span><span class="prelude-val">Some</span>(map) = <span class="self">self</span>.<span class="number">0 </span>{
-<a href=#358 id=358 data-nosnippet>358</a>			fmt.debug_map()
-<a href=#359 id=359 data-nosnippet>359</a>				.entries(map.iter().map(|(key, values)| (HexDisplay::from(key), PrintKeys(values))))
-<a href=#360 id=360 data-nosnippet>360</a>				.finish()
-<a href=#361 id=361 data-nosnippet>361</a>		} <span class="kw">else </span>{
-<a href=#362 id=362 data-nosnippet>362</a>			<span class="macro">write!</span>(fmt, <span class="string">"None"</span>)
-<a href=#363 id=363 data-nosnippet>363</a>		}
-<a href=#364 id=364 data-nosnippet>364</a>	}
-<a href=#365 id=365 data-nosnippet>365</a>}
+<a href=#315 id=315 data-nosnippet>315</a>				}
+<a href=#316 id=316 data-nosnippet>316</a>			},
+<a href=#317 id=317 data-nosnippet>317</a>		}
+<a href=#318 id=318 data-nosnippet>318</a>	}
+<a href=#319 id=319 data-nosnippet>319</a>
+<a href=#320 id=320 data-nosnippet>320</a>	<span class="kw">fn </span>listen_from(
+<a href=#321 id=321 data-nosnippet>321</a>		current_id: SubscriberId,
+<a href=#322 id=322 data-nosnippet>322</a>		filter_keys: <span class="prelude-ty">Option</span>&lt;<span class="kw">impl </span>AsRef&lt;[StorageKey]&gt;&gt;,
+<a href=#323 id=323 data-nosnippet>323</a>		listeners: <span class="kw-2">&amp;mut </span>HashMap&lt;StorageKey, FnvHashSet&lt;SubscriberId&gt;&gt;,
+<a href=#324 id=324 data-nosnippet>324</a>		wildcards: <span class="kw-2">&amp;mut </span>FnvHashSet&lt;SubscriberId&gt;,
+<a href=#325 id=325 data-nosnippet>325</a>	) -&gt; Keys {
+<a href=#326 id=326 data-nosnippet>326</a>		<span class="kw">match </span>filter_keys {
+<a href=#327 id=327 data-nosnippet>327</a>			<span class="prelude-val">None </span>=&gt; {
+<a href=#328 id=328 data-nosnippet>328</a>				wildcards.insert(current_id);
+<a href=#329 id=329 data-nosnippet>329</a>				<span class="prelude-val">None
+<a href=#330 id=330 data-nosnippet>330</a>			</span>},
+<a href=#331 id=331 data-nosnippet>331</a>			<span class="prelude-val">Some</span>(keys) =&gt; <span class="prelude-val">Some</span>(
+<a href=#332 id=332 data-nosnippet>332</a>				keys.as_ref()
+<a href=#333 id=333 data-nosnippet>333</a>					.iter()
+<a href=#334 id=334 data-nosnippet>334</a>					.map(|key| {
+<a href=#335 id=335 data-nosnippet>335</a>						listeners.entry(key.clone()).or_default().insert(current_id);
+<a href=#336 id=336 data-nosnippet>336</a>						key.clone()
+<a href=#337 id=337 data-nosnippet>337</a>					})
+<a href=#338 id=338 data-nosnippet>338</a>					.collect(),
+<a href=#339 id=339 data-nosnippet>339</a>			),
+<a href=#340 id=340 data-nosnippet>340</a>		}
+<a href=#341 id=341 data-nosnippet>341</a>	}
+<a href=#342 id=342 data-nosnippet>342</a>}
+<a href=#343 id=343 data-nosnippet>343</a>
+<a href=#344 id=344 data-nosnippet>344</a><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>PrintKeys&lt;<span class="lifetime">'a</span>&gt;(<span class="kw">pub </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>Keys);
+<a href=#345 id=345 data-nosnippet>345</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; std::fmt::Debug <span class="kw">for </span>PrintKeys&lt;<span class="lifetime">'a</span>&gt; {
+<a href=#346 id=346 data-nosnippet>346</a>	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>std::fmt::Formatter) -&gt; std::fmt::Result {
+<a href=#347 id=347 data-nosnippet>347</a>		<span class="kw">if let </span><span class="prelude-val">Some</span>(keys) = <span class="self">self</span>.<span class="number">0 </span>{
+<a href=#348 id=348 data-nosnippet>348</a>			fmt.debug_list().entries(keys.iter().map(HexDisplay::from)).finish()
+<a href=#349 id=349 data-nosnippet>349</a>		} <span class="kw">else </span>{
+<a href=#350 id=350 data-nosnippet>350</a>			<span class="macro">write!</span>(fmt, <span class="string">"None"</span>)
+<a href=#351 id=351 data-nosnippet>351</a>		}
+<a href=#352 id=352 data-nosnippet>352</a>	}
+<a href=#353 id=353 data-nosnippet>353</a>}
+<a href=#354 id=354 data-nosnippet>354</a>
+<a href=#355 id=355 data-nosnippet>355</a><span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>PrintChildKeys&lt;<span class="lifetime">'a</span>&gt;(<span class="kw">pub </span><span class="kw-2">&amp;</span><span class="lifetime">'a </span>ChildKeys);
+<a href=#356 id=356 data-nosnippet>356</a><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>&gt; std::fmt::Debug <span class="kw">for </span>PrintChildKeys&lt;<span class="lifetime">'a</span>&gt; {
+<a href=#357 id=357 data-nosnippet>357</a>	<span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>std::fmt::Formatter) -&gt; std::fmt::Result {
+<a href=#358 id=358 data-nosnippet>358</a>		<span class="kw">if let </span><span class="prelude-val">Some</span>(map) = <span class="self">self</span>.<span class="number">0 </span>{
+<a href=#359 id=359 data-nosnippet>359</a>			fmt.debug_map()
+<a href=#360 id=360 data-nosnippet>360</a>				.entries(map.iter().map(|(key, values)| (HexDisplay::from(key), PrintKeys(values))))
+<a href=#361 id=361 data-nosnippet>361</a>				.finish()
+<a href=#362 id=362 data-nosnippet>362</a>		} <span class="kw">else </span>{
+<a href=#363 id=363 data-nosnippet>363</a>			<span class="macro">write!</span>(fmt, <span class="string">"None"</span>)
+<a href=#364 id=364 data-nosnippet>364</a>		}
+<a href=#365 id=365 data-nosnippet>365</a>	}
+<a href=#366 id=366 data-nosnippet>366</a>}
 </code></pre></div></section></main></body></html>

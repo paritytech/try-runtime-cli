@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["NeighbourTableAttribute","NeighbourTableParameter"],"struct":["NeighbourTableConfig","NeighbourTableConfigBuffer","NeighbourTableHeader","NeighbourTableMessage","NeighbourTableMessageBuffer","NeighbourTableStats","NeighbourTableStatsBuffer"]};

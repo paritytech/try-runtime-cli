@@ -1,9 +1,9 @@
 (function() {
-    const implementors = Object.fromEntries([["sc_service",[["impl <a class=\"trait\" href=\"sp_core/traits/trait.SpawnNamed.html\" title=\"trait sp_core::traits::SpawnNamed\">SpawnNamed</a> for <a class=\"struct\" href=\"sc_service/struct.SpawnTaskHandle.html\" title=\"struct sc_service::SpawnTaskHandle\">SpawnTaskHandle</a>",0]]],["sp_core",[]]]);
+    var implementors = Object.fromEntries([["sc_rpc_server",[["impl <a class=\"trait\" href=\"sp_core/traits/trait.SpawnNamed.html\" title=\"trait sp_core::traits::SpawnNamed\">SpawnNamed</a> for <a class=\"struct\" href=\"sc_rpc_server/struct.RpcSpawnHandle.html\" title=\"struct sc_rpc_server::RpcSpawnHandle\">RpcSpawnHandle</a>"]]],["sc_service",[["impl <a class=\"trait\" href=\"sp_core/traits/trait.SpawnNamed.html\" title=\"trait sp_core::traits::SpawnNamed\">SpawnNamed</a> for <a class=\"struct\" href=\"sc_service/struct.SpawnTaskHandle.html\" title=\"struct sc_service::SpawnTaskHandle\">SpawnTaskHandle</a>"]]],["sp_core",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":59,"fragment_lengths":[288,15]}
+//{"start":57,"fragment_lengths":[292,287,15]}

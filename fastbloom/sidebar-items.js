@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["expected_density","expected_false_pos","optimal_hashes","optimal_size"],"struct":["AtomicBloomFilter","AtomicBuilderWithBits","AtomicBuilderWithFalsePositiveRate","BloomFilter","BuilderWithBits","BuilderWithFalsePositiveRate"],"type":["DefaultHasher"]};

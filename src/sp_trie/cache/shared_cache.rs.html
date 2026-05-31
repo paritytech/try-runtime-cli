@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/primitives/trie/src/cache/shared_cache.rs`."><title>shared_cache.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sp_trie" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sp_trie/cache/</div>shared_cache.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/primitives/trie/src/cache/shared_cache.rs`."><title>shared_cache.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sp_trie" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sp_trie/cache/</div>shared_cache.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -15,9 +15,9 @@
 <a href=#15 id=15 data-nosnippet>15</a>// See the License for the specific language governing permissions and
 <a href=#16 id=16 data-nosnippet>16</a>// limitations under the License.
 <a href=#17 id=17 data-nosnippet>17</a>
-<a href=#18 id=18 data-nosnippet>18</a></span><span class="doccomment">///! Provides the [`SharedNodeCache`], the [`SharedValueCache`] and the [`SharedTrieCache`]
-<a href=#19 id=19 data-nosnippet>19</a>///! that combines both caches and is exported to the outside.
-<a href=#20 id=20 data-nosnippet>20</a></span><span class="kw">use </span>super::{
+<a href=#18 id=18 data-nosnippet>18</a></span><span class="doccomment">/// ! Provides the [`SharedNodeCache`], the [`SharedValueCache`] and the [`SharedTrieCache`]
+<a href=#19 id=19 data-nosnippet>19</a>/// ! that combines both caches and is exported to the outside.
+<a href=#20 id=20 data-nosnippet>20</a></span><span class="kw">use super</span>::{
 <a href=#21 id=21 data-nosnippet>21</a>	metrics::Metrics, CacheSize, LocalNodeCacheConfig, LocalNodeCacheLimiter,
 <a href=#22 id=22 data-nosnippet>22</a>	LocalValueCacheConfig, LocalValueCacheLimiter, NodeCached, TrieHitStats, TrieHitStatsSnapshot,
 <a href=#23 id=23 data-nosnippet>23</a>};
@@ -91,8 +91,8 @@
 <a href=#91 id=91 data-nosnippet>91</a>		<span class="kw">let </span>new_item_heap_size = node.size_in_bytes() - std::mem::size_of::&lt;NodeOwned&lt;H&gt;&gt;();
 <a href=#92 id=92 data-nosnippet>92</a>		<span class="kw">if </span>new_item_heap_size &gt; <span class="self">self</span>.max_heap_size {
 <a href=#93 id=93 data-nosnippet>93</a>			<span class="comment">// Item's too big to add even if the cache's empty; bail.
-<a href=#94 id=94 data-nosnippet>94</a>			</span><span class="kw">return </span><span class="prelude-val">None
-<a href=#95 id=95 data-nosnippet>95</a>		</span>}
+<a href=#94 id=94 data-nosnippet>94</a>			</span><span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#95 id=95 data-nosnippet>95</a>		}
 <a href=#96 id=96 data-nosnippet>96</a>
 <a href=#97 id=97 data-nosnippet>97</a>		<span class="self">self</span>.heap_size += new_item_heap_size;
 <a href=#98 id=98 data-nosnippet>98</a>		<span class="prelude-val">Some</span>((key, node))
@@ -112,8 +112,8 @@
 <a href=#112 id=112 data-nosnippet>112</a>		<span class="kw">let </span>new_item_heap_size = new_node.size_in_bytes() - std::mem::size_of::&lt;NodeOwned&lt;H&gt;&gt;();
 <a href=#113 id=113 data-nosnippet>113</a>		<span class="kw">if </span>new_item_heap_size &gt; <span class="self">self</span>.max_heap_size {
 <a href=#114 id=114 data-nosnippet>114</a>			<span class="comment">// Item's too big to add even if the cache's empty; bail.
-<a href=#115 id=115 data-nosnippet>115</a>			</span><span class="kw">return </span><span class="bool-val">false
-<a href=#116 id=116 data-nosnippet>116</a>		</span>}
+<a href=#115 id=115 data-nosnippet>115</a>			</span><span class="kw">return </span><span class="bool-val">false</span>;
+<a href=#116 id=116 data-nosnippet>116</a>		}
 <a href=#117 id=117 data-nosnippet>117</a>
 <a href=#118 id=118 data-nosnippet>118</a>		<span class="kw">let </span>old_item_heap_size = old_node.size_in_bytes() - std::mem::size_of::&lt;NodeOwned&lt;H&gt;&gt;();
 <a href=#119 id=119 data-nosnippet>119</a>		<span class="self">self</span>.heap_size = <span class="self">self</span>.heap_size - old_item_heap_size + new_item_heap_size;
@@ -189,8 +189,8 @@
 <a href=#189 id=189 data-nosnippet>189</a>				<span class="kw">let </span>new_item_heap_size = key.storage_key.len();
 <a href=#190 id=190 data-nosnippet>190</a>				<span class="kw">if </span>new_item_heap_size &gt; <span class="self">self</span>.max_heap_size {
 <a href=#191 id=191 data-nosnippet>191</a>					<span class="comment">// Item's too big to add even if the cache's empty; bail.
-<a href=#192 id=192 data-nosnippet>192</a>					</span><span class="kw">return </span><span class="prelude-val">None
-<a href=#193 id=193 data-nosnippet>193</a>				</span>}
+<a href=#192 id=192 data-nosnippet>192</a>					</span><span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#193 id=193 data-nosnippet>193</a>				}
 <a href=#194 id=194 data-nosnippet>194</a>
 <a href=#195 id=195 data-nosnippet>195</a>				<span class="self">self</span>.heap_size += new_item_heap_size;
 <a href=#196 id=196 data-nosnippet>196</a>				entry.insert(());
@@ -292,11 +292,11 @@
 <a href=#292 id=292 data-nosnippet>292</a>
 <a href=#293 id=293 data-nosnippet>293</a>					<span class="kw">if </span>access_count &gt;= config.shared_node_cache_max_promoted_keys {
 <a href=#294 id=294 data-nosnippet>294</a>						<span class="comment">// Stop when we've promoted a large enough number of items.
-<a href=#295 id=295 data-nosnippet>295</a>						</span><span class="kw">break
-<a href=#296 id=296 data-nosnippet>296</a>					</span>}
+<a href=#295 id=295 data-nosnippet>295</a>						</span><span class="kw">break</span>;
+<a href=#296 id=296 data-nosnippet>296</a>					}
 <a href=#297 id=297 data-nosnippet>297</a>
-<a href=#298 id=298 data-nosnippet>298</a>					<span class="kw">continue
-<a href=#299 id=299 data-nosnippet>299</a>				</span>}
+<a href=#298 id=298 data-nosnippet>298</a>					<span class="kw">continue</span>;
+<a href=#299 id=299 data-nosnippet>299</a>				}
 <a href=#300 id=300 data-nosnippet>300</a>			}
 <a href=#301 id=301 data-nosnippet>301</a>
 <a href=#302 id=302 data-nosnippet>302</a>			<span class="self">self</span>.lru.insert(key, cached_node.node);
@@ -304,8 +304,8 @@
 <a href=#304 id=304 data-nosnippet>304</a>
 <a href=#305 id=305 data-nosnippet>305</a>			<span class="kw">if </span><span class="self">self</span>.lru.limiter().items_evicted &gt; <span class="self">self</span>.lru.limiter().max_items_evicted {
 <a href=#306 id=306 data-nosnippet>306</a>				<span class="comment">// Stop when we've evicted a big enough chunk of the shared cache.
-<a href=#307 id=307 data-nosnippet>307</a>				</span><span class="kw">break
-<a href=#308 id=308 data-nosnippet>308</a>			</span>}
+<a href=#307 id=307 data-nosnippet>307</a>				</span><span class="kw">break</span>;
+<a href=#308 id=308 data-nosnippet>308</a>			}
 <a href=#309 id=309 data-nosnippet>309</a>		}
 <a href=#310 id=310 data-nosnippet>310</a>
 <a href=#311 id=311 data-nosnippet>311</a>		metrics.as_ref().map(|m| {
@@ -557,8 +557,8 @@
 <a href=#557 id=557 data-nosnippet>557</a>
 <a href=#558 id=558 data-nosnippet>558</a>			<span class="kw">if </span><span class="self">self</span>.lru.limiter().items_evicted &gt; <span class="self">self</span>.lru.limiter().max_items_evicted {
 <a href=#559 id=559 data-nosnippet>559</a>				<span class="comment">// Stop when we've evicted a big enough chunk of the shared cache.
-<a href=#560 id=560 data-nosnippet>560</a>				</span><span class="kw">break
-<a href=#561 id=561 data-nosnippet>561</a>			</span>}
+<a href=#560 id=560 data-nosnippet>560</a>				</span><span class="kw">break</span>;
+<a href=#561 id=561 data-nosnippet>561</a>			}
 <a href=#562 id=562 data-nosnippet>562</a>		}
 <a href=#563 id=563 data-nosnippet>563</a>
 <a href=#564 id=564 data-nosnippet>564</a>		metrics.as_ref().map(|m| {
@@ -860,7 +860,7 @@
 <a href=#860 id=860 data-nosnippet>860</a>
 <a href=#861 id=861 data-nosnippet>861</a><span class="attr">#[cfg(test)]
 <a href=#862 id=862 data-nosnippet>862</a></span><span class="kw">mod </span>tests {
-<a href=#863 id=863 data-nosnippet>863</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#863 id=863 data-nosnippet>863</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#864 id=864 data-nosnippet>864</a>	<span class="kw">use </span>sp_core::H256 <span class="kw">as </span>Hash;
 <a href=#865 id=865 data-nosnippet>865</a>
 <a href=#866 id=866 data-nosnippet>866</a>	<span class="attr">#[test]

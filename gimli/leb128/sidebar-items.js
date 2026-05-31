@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["read"]};
+window.SIDEBAR_ITEMS = {"mod":["read","write"]};

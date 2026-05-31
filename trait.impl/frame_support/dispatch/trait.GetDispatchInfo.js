@@ -1,9 +1,9 @@
 (function() {
-    const implementors = Object.fromEntries([["frame_support",[]],["frame_system",[["impl&lt;T: <a class=\"trait\" href=\"frame_system/pallet/trait.Config.html\" title=\"trait frame_system::pallet::Config\">Config</a>&gt; <a class=\"trait\" href=\"frame_support/dispatch/trait.GetDispatchInfo.html\" title=\"trait frame_support::dispatch::GetDispatchInfo\">GetDispatchInfo</a> for <a class=\"enum\" href=\"frame_system/pallet/enum.Call.html\" title=\"enum frame_system::pallet::Call\">Call</a>&lt;T&gt;",0]]]]);
+    var implementors = Object.fromEntries([["frame_support",[]],["frame_system",[["impl&lt;T: <a class=\"trait\" href=\"frame_system/pallet/trait.Config.html\" title=\"trait frame_system::pallet::Config\">Config</a>&gt; <a class=\"trait\" href=\"frame_support/dispatch/trait.GetDispatchInfo.html\" title=\"trait frame_support::dispatch::GetDispatchInfo\">GetDispatchInfo</a> for <a class=\"enum\" href=\"frame_system/pallet/enum.Call.html\" title=\"enum frame_system::pallet::Call\">Call</a>&lt;T&gt;"]]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":59,"fragment_lengths":[20,443]}
+//{"start":57,"fragment_lengths":[20,441]}

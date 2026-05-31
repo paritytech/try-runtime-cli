@@ -1,9 +1,9 @@
 (function() {
-    const implementors = Object.fromEntries([["sc_consensus_epochs",[]]]);
+    var implementors = Object.fromEntries([["sc_consensus_epochs",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":59,"fragment_lengths":[26]}
+//{"start":57,"fragment_lengths":[26]}

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/litep2p-0.12.3/src/protocol/libp2p/kademlia/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">litep2p/protocol/libp2p/kademlia/</div>mod.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2023 litep2p developers
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/litep2p-0.14.0/src/protocol/libp2p/kademlia/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">litep2p/protocol/libp2p/kademlia/</div>mod.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2023 litep2p developers
 <a href=#2 id=2 data-nosnippet>2</a>//
 <a href=#3 id=3 data-nosnippet>3</a>// Permission is hereby granted, free of charge, to any person obtaining a
 <a href=#4 id=4 data-nosnippet>4</a>// copy of this software and associated documentation files (the "Software"),
@@ -20,7 +20,7 @@
 <a href=#20 id=20 data-nosnippet>20</a>
 <a href=#21 id=21 data-nosnippet>21</a></span><span class="doccomment">//! [`/ipfs/kad/1.0.0`](https://github.com/libp2p/specs/blob/master/kad-dht/README.md) implementation.
 <a href=#22 id=22 data-nosnippet>22</a>
-<a href=#23 id=23 data-nosnippet>23</a></span><span class="kw">use </span>crate::{
+<a href=#23 id=23 data-nosnippet>23</a></span><span class="kw">use crate</span>::{
 <a href=#24 id=24 data-nosnippet>24</a>    error::{Error, ImmediateDialError, SubstreamError},
 <a href=#25 id=25 data-nosnippet>25</a>    protocol::{
 <a href=#26 id=26 data-nosnippet>26</a>        libp2p::kademlia::{
@@ -428,7 +428,7 @@
 <a href=#428 id=428 data-nosnippet>428</a>    /// the mode was set to manual.
 <a href=#429 id=429 data-nosnippet>429</a>    </span><span class="kw">async fn </span>update_routing_table(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peers: <span class="kw-2">&amp;</span>[KademliaPeer]) {
 <a href=#430 id=430 data-nosnippet>430</a>        <span class="kw">let </span>peers: Vec&lt;<span class="kw">_</span>&gt; =
-<a href=#431 id=431 data-nosnippet>431</a>            peers.iter().filter(|peer| peer.peer != <span class="self">self</span>.service.local_peer_id()).collect();
+<a href=#431 id=431 data-nosnippet>431</a>            peers.iter().filter(|peer| peer.<span class="macro">peer !</span>= <span class="self">self</span>.service.local_peer_id()).collect();
 <a href=#432 id=432 data-nosnippet>432</a>
 <a href=#433 id=433 data-nosnippet>433</a>        <span class="comment">// inform user about the routing table update, regardless of what the routing table update
 <a href=#434 id=434 data-nosnippet>434</a>        // mode is
@@ -1413,38 +1413,38 @@
 <a href=#1413 id=1413 data-nosnippet>1413</a>
 <a href=#1414 id=1414 data-nosnippet>1414</a><span class="attr">#[cfg(test)]
 <a href=#1415 id=1415 data-nosnippet>1415</a></span><span class="kw">mod </span>tests {
-<a href=#1416 id=1416 data-nosnippet>1416</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
-<a href=#1417 id=1417 data-nosnippet>1417</a>    <span class="kw">use </span>crate::{
+<a href=#1416 id=1416 data-nosnippet>1416</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#1417 id=1417 data-nosnippet>1417</a>    <span class="kw">use crate</span>::{
 <a href=#1418 id=1418 data-nosnippet>1418</a>        codec::ProtocolCodec,
 <a href=#1419 id=1419 data-nosnippet>1419</a>        transport::{
-<a href=#1420 id=1420 data-nosnippet>1420</a>            manager::{TransportManager, TransportManagerBuilder},
+<a href=#1420 id=1420 data-nosnippet>1420</a>            manager::{SubstreamKeepAlive, TransportManager, TransportManagerBuilder},
 <a href=#1421 id=1421 data-nosnippet>1421</a>            KEEP_ALIVE_TIMEOUT,
 <a href=#1422 id=1422 data-nosnippet>1422</a>        },
 <a href=#1423 id=1423 data-nosnippet>1423</a>        types::protocol::ProtocolName,
 <a href=#1424 id=1424 data-nosnippet>1424</a>        ConnectionId,
 <a href=#1425 id=1425 data-nosnippet>1425</a>    };
 <a href=#1426 id=1426 data-nosnippet>1426</a>    <span class="kw">use </span>multiaddr::Protocol;
-<a href=#1427 id=1427 data-nosnippet>1427</a>    <span class="kw">use </span>multihash::Multihash;
-<a href=#1428 id=1428 data-nosnippet>1428</a>    <span class="kw">use </span>std::str::FromStr;
-<a href=#1429 id=1429 data-nosnippet>1429</a>    <span class="kw">use </span>tokio::sync::mpsc::channel;
-<a href=#1430 id=1430 data-nosnippet>1430</a>
-<a href=#1431 id=1431 data-nosnippet>1431</a>    <span class="attr">#[allow(unused)]
-<a href=#1432 id=1432 data-nosnippet>1432</a>    </span><span class="kw">struct </span>Context {
-<a href=#1433 id=1433 data-nosnippet>1433</a>        _cmd_tx: Sender&lt;KademliaCommand&gt;,
-<a href=#1434 id=1434 data-nosnippet>1434</a>        event_rx: Receiver&lt;KademliaEvent&gt;,
-<a href=#1435 id=1435 data-nosnippet>1435</a>    }
-<a href=#1436 id=1436 data-nosnippet>1436</a>
-<a href=#1437 id=1437 data-nosnippet>1437</a>    <span class="kw">fn </span>make_kademlia() -&gt; (Kademlia, Context, TransportManager) {
-<a href=#1438 id=1438 data-nosnippet>1438</a>        <span class="kw">let </span>manager = TransportManagerBuilder::new().build();
-<a href=#1439 id=1439 data-nosnippet>1439</a>
-<a href=#1440 id=1440 data-nosnippet>1440</a>        <span class="kw">let </span>peer = PeerId::random();
-<a href=#1441 id=1441 data-nosnippet>1441</a>        <span class="kw">let </span>(transport_service, _tx) = TransportService::new(
-<a href=#1442 id=1442 data-nosnippet>1442</a>            peer,
-<a href=#1443 id=1443 data-nosnippet>1443</a>            ProtocolName::from(<span class="string">"/kad/1"</span>),
-<a href=#1444 id=1444 data-nosnippet>1444</a>            Vec::new(),
-<a href=#1445 id=1445 data-nosnippet>1445</a>            Default::default(),
-<a href=#1446 id=1446 data-nosnippet>1446</a>            manager.transport_manager_handle(),
-<a href=#1447 id=1447 data-nosnippet>1447</a>            KEEP_ALIVE_TIMEOUT,
+<a href=#1427 id=1427 data-nosnippet>1427</a>    <span class="kw">use </span>std::str::FromStr;
+<a href=#1428 id=1428 data-nosnippet>1428</a>    <span class="kw">use </span>tokio::sync::mpsc::channel;
+<a href=#1429 id=1429 data-nosnippet>1429</a>
+<a href=#1430 id=1430 data-nosnippet>1430</a>    <span class="attr">#[allow(unused)]
+<a href=#1431 id=1431 data-nosnippet>1431</a>    </span><span class="kw">struct </span>Context {
+<a href=#1432 id=1432 data-nosnippet>1432</a>        _cmd_tx: Sender&lt;KademliaCommand&gt;,
+<a href=#1433 id=1433 data-nosnippet>1433</a>        event_rx: Receiver&lt;KademliaEvent&gt;,
+<a href=#1434 id=1434 data-nosnippet>1434</a>    }
+<a href=#1435 id=1435 data-nosnippet>1435</a>
+<a href=#1436 id=1436 data-nosnippet>1436</a>    <span class="kw">fn </span>make_kademlia() -&gt; (Kademlia, Context, TransportManager) {
+<a href=#1437 id=1437 data-nosnippet>1437</a>        <span class="kw">let </span>manager = TransportManagerBuilder::new().build();
+<a href=#1438 id=1438 data-nosnippet>1438</a>
+<a href=#1439 id=1439 data-nosnippet>1439</a>        <span class="kw">let </span>peer = PeerId::random();
+<a href=#1440 id=1440 data-nosnippet>1440</a>        <span class="kw">let </span>(transport_service, _tx) = TransportService::new(
+<a href=#1441 id=1441 data-nosnippet>1441</a>            peer,
+<a href=#1442 id=1442 data-nosnippet>1442</a>            ProtocolName::from(<span class="string">"/kad/1"</span>),
+<a href=#1443 id=1443 data-nosnippet>1443</a>            Vec::new(),
+<a href=#1444 id=1444 data-nosnippet>1444</a>            Default::default(),
+<a href=#1445 id=1445 data-nosnippet>1445</a>            manager.transport_manager_handle(),
+<a href=#1446 id=1446 data-nosnippet>1446</a>            KEEP_ALIVE_TIMEOUT,
+<a href=#1447 id=1447 data-nosnippet>1447</a>            SubstreamKeepAlive::Yes,
 <a href=#1448 id=1448 data-nosnippet>1448</a>        );
 <a href=#1449 id=1449 data-nosnippet>1449</a>        <span class="kw">let </span>(event_tx, event_rx) = channel(<span class="number">64</span>);
 <a href=#1450 id=1450 data-nosnippet>1450</a>        <span class="kw">let </span>(_cmd_tx, cmd_rx) = channel(<span class="number">64</span>);
@@ -1565,15 +1565,15 @@
 <a href=#1565 id=1565 data-nosnippet>1565</a>        <span class="kw">let </span>(<span class="kw-2">mut </span>kademlia, _context, _manager) = make_kademlia();
 <a href=#1566 id=1566 data-nosnippet>1566</a>
 <a href=#1567 id=1567 data-nosnippet>1567</a>        <span class="kw">let </span>peer = PeerId::random();
-<a href=#1568 id=1568 data-nosnippet>1568</a>        <span class="kw">let </span>address_a = Multiaddr::from_str(<span class="string">"/dns/domain1.com/tcp/30333"</span>).unwrap().with(
-<a href=#1569 id=1569 data-nosnippet>1569</a>            Protocol::P2p(Multihash::from_bytes(<span class="kw-2">&amp;</span>peer.to_bytes()).unwrap()),
-<a href=#1570 id=1570 data-nosnippet>1570</a>        );
-<a href=#1571 id=1571 data-nosnippet>1571</a>        <span class="kw">let </span>address_b = Multiaddr::from_str(<span class="string">"/dns/domain1.com/tcp/30334"</span>).unwrap().with(
-<a href=#1572 id=1572 data-nosnippet>1572</a>            Protocol::P2p(Multihash::from_bytes(<span class="kw-2">&amp;</span>peer.to_bytes()).unwrap()),
-<a href=#1573 id=1573 data-nosnippet>1573</a>        );
-<a href=#1574 id=1574 data-nosnippet>1574</a>        <span class="kw">let </span>address_c = Multiaddr::from_str(<span class="string">"/dns/domain1.com/tcp/30339"</span>).unwrap().with(
-<a href=#1575 id=1575 data-nosnippet>1575</a>            Protocol::P2p(Multihash::from_bytes(<span class="kw-2">&amp;</span>peer.to_bytes()).unwrap()),
-<a href=#1576 id=1576 data-nosnippet>1576</a>        );
+<a href=#1568 id=1568 data-nosnippet>1568</a>        <span class="kw">let </span>address_a = Multiaddr::from_str(<span class="string">"/dns/domain1.com/tcp/30333"</span>)
+<a href=#1569 id=1569 data-nosnippet>1569</a>            .unwrap()
+<a href=#1570 id=1570 data-nosnippet>1570</a>            .with(Protocol::P2p(peer.into()));
+<a href=#1571 id=1571 data-nosnippet>1571</a>        <span class="kw">let </span>address_b = Multiaddr::from_str(<span class="string">"/dns/domain1.com/tcp/30334"</span>)
+<a href=#1572 id=1572 data-nosnippet>1572</a>            .unwrap()
+<a href=#1573 id=1573 data-nosnippet>1573</a>            .with(Protocol::P2p(peer.into()));
+<a href=#1574 id=1574 data-nosnippet>1574</a>        <span class="kw">let </span>address_c = Multiaddr::from_str(<span class="string">"/dns/domain1.com/tcp/30339"</span>)
+<a href=#1575 id=1575 data-nosnippet>1575</a>            .unwrap()
+<a href=#1576 id=1576 data-nosnippet>1576</a>            .with(Protocol::P2p(peer.into()));
 <a href=#1577 id=1577 data-nosnippet>1577</a>
 <a href=#1578 id=1578 data-nosnippet>1578</a>        <span class="comment">// Added only with address a.
 <a href=#1579 id=1579 data-nosnippet>1579</a>        </span>kademlia.routing_table.add_known_peer(

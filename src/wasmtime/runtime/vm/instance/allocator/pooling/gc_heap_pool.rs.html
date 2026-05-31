@@ -1,8 +1,8 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-35.0.0/src/runtime/vm/instance/allocator/pooling/gc_heap_pool.rs`."><title>gc_heap_pool.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../../../../../" data-static-root-path="../../../../../../../static.files/" data-current-crate="wasmtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../../../../src-files.js"></script><script defer src="../../../../../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../../../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">wasmtime/runtime/vm/instance/allocator/pooling/</div>gc_heap_pool.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">super</span>::GcHeapAllocationIndex;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-36.0.10/src/runtime/vm/instance/allocator/pooling/gc_heap_pool.rs`."><title>gc_heap_pool.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../../../../" data-static-root-path="../../../../../../../static.files/" data-current-crate="wasmtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../../../../src-files.js"></script><script defer src="../../../../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasmtime/runtime/vm/instance/allocator/pooling/</div>gc_heap_pool.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">super</span>::GcHeapAllocationIndex;
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span><span class="kw">super</span>::index_allocator::{SimpleIndexAllocator, SlotId};
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span><span class="kw">crate</span>::runtime::vm::{GcHeap, GcRuntime, PoolingInstanceAllocatorConfig, <span class="prelude-ty">Result</span>};
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span><span class="kw">crate</span>::vm::{Memory, MemoryAllocationIndex};
-<a href=#5 id=5 data-nosnippet>5</a><span class="kw">use </span>crate::{Engine, prelude::<span class="kw-2">*</span>};
+<a href=#5 id=5 data-nosnippet>5</a><span class="kw">use crate</span>::{Engine, prelude::<span class="kw-2">*</span>};
 <a href=#6 id=6 data-nosnippet>6</a><span class="kw">use </span>std::sync::Mutex;
 <a href=#7 id=7 data-nosnippet>7</a>
 <a href=#8 id=8 data-nosnippet>8</a><span class="kw">enum </span>HeapSlot {
@@ -73,70 +73,69 @@
 <a href=#73 id=73 data-nosnippet>73</a>    }
 <a href=#74 id=74 data-nosnippet>74</a>
 <a href=#75 id=75 data-nosnippet>75</a>    <span class="doccomment">/// Are there zero slots in use right now?
-<a href=#76 id=76 data-nosnippet>76</a>    </span><span class="attr">#[allow(unused)] </span><span class="comment">// some cfgs don't use this
-<a href=#77 id=77 data-nosnippet>77</a>    </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-<a href=#78 id=78 data-nosnippet>78</a>        <span class="self">self</span>.index_allocator.is_empty()
-<a href=#79 id=79 data-nosnippet>79</a>    }
-<a href=#80 id=80 data-nosnippet>80</a>
-<a href=#81 id=81 data-nosnippet>81</a>    <span class="doccomment">/// Allocate a single table for the given instance allocation request.
-<a href=#82 id=82 data-nosnippet>82</a>    </span><span class="kw">pub fn </span>allocate(
-<a href=#83 id=83 data-nosnippet>83</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#84 id=84 data-nosnippet>84</a>        engine: <span class="kw-2">&amp;</span>Engine,
-<a href=#85 id=85 data-nosnippet>85</a>        gc_runtime: <span class="kw-2">&amp;</span><span class="kw">dyn </span>GcRuntime,
-<a href=#86 id=86 data-nosnippet>86</a>        memory_alloc_index: MemoryAllocationIndex,
-<a href=#87 id=87 data-nosnippet>87</a>        memory: Memory,
-<a href=#88 id=88 data-nosnippet>88</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;(GcHeapAllocationIndex, Box&lt;<span class="kw">dyn </span>GcHeap&gt;)&gt; {
-<a href=#89 id=89 data-nosnippet>89</a>        <span class="kw">let </span>allocation_index = <span class="self">self
-<a href=#90 id=90 data-nosnippet>90</a>            </span>.index_allocator
-<a href=#91 id=91 data-nosnippet>91</a>            .alloc()
-<a href=#92 id=92 data-nosnippet>92</a>            .map(|slot| GcHeapAllocationIndex(slot.<span class="number">0</span>))
-<a href=#93 id=93 data-nosnippet>93</a>            .ok_or_else(|| {
-<a href=#94 id=94 data-nosnippet>94</a>                <span class="macro">anyhow!</span>(
-<a href=#95 id=95 data-nosnippet>95</a>                    <span class="string">"maximum concurrent GC heap limit of {} reached"</span>,
-<a href=#96 id=96 data-nosnippet>96</a>                    <span class="self">self</span>.max_gc_heaps
-<a href=#97 id=97 data-nosnippet>97</a>                )
-<a href=#98 id=98 data-nosnippet>98</a>            })<span class="question-mark">?</span>;
-<a href=#99 id=99 data-nosnippet>99</a>        <span class="macro">debug_assert_ne!</span>(allocation_index, GcHeapAllocationIndex::default());
-<a href=#100 id=100 data-nosnippet>100</a>
-<a href=#101 id=101 data-nosnippet>101</a>        <span class="kw">let </span><span class="kw-2">mut </span>heap = <span class="kw">match </span>{
-<a href=#102 id=102 data-nosnippet>102</a>            <span class="kw">let </span><span class="kw-2">mut </span>heaps = <span class="self">self</span>.heaps.lock().unwrap();
-<a href=#103 id=103 data-nosnippet>103</a>            heaps[allocation_index.index()].alloc(memory_alloc_index)
-<a href=#104 id=104 data-nosnippet>104</a>        } {
-<a href=#105 id=105 data-nosnippet>105</a>            <span class="comment">// If we already have a heap at this slot, reuse it.
-<a href=#106 id=106 data-nosnippet>106</a>            </span><span class="prelude-val">Some</span>(heap) =&gt; heap,
-<a href=#107 id=107 data-nosnippet>107</a>            <span class="comment">// Otherwise, we haven't forced this slot's lazily allocated heap
-<a href=#108 id=108 data-nosnippet>108</a>            // yet. So do that now.
-<a href=#109 id=109 data-nosnippet>109</a>            </span><span class="prelude-val">None </span>=&gt; gc_runtime.new_gc_heap(engine)<span class="question-mark">?</span>,
-<a href=#110 id=110 data-nosnippet>110</a>        };
-<a href=#111 id=111 data-nosnippet>111</a>
-<a href=#112 id=112 data-nosnippet>112</a>        <span class="macro">debug_assert!</span>(!heap.is_attached());
-<a href=#113 id=113 data-nosnippet>113</a>        heap.attach(memory);
-<a href=#114 id=114 data-nosnippet>114</a>
-<a href=#115 id=115 data-nosnippet>115</a>        <span class="prelude-val">Ok</span>((allocation_index, heap))
-<a href=#116 id=116 data-nosnippet>116</a>    }
-<a href=#117 id=117 data-nosnippet>117</a>
-<a href=#118 id=118 data-nosnippet>118</a>    <span class="doccomment">/// Deallocate a previously-allocated GC heap.
-<a href=#119 id=119 data-nosnippet>119</a>    </span><span class="kw">pub fn </span>deallocate(
-<a href=#120 id=120 data-nosnippet>120</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#121 id=121 data-nosnippet>121</a>        allocation_index: GcHeapAllocationIndex,
-<a href=#122 id=122 data-nosnippet>122</a>        <span class="kw-2">mut </span>heap: Box&lt;<span class="kw">dyn </span>GcHeap&gt;,
-<a href=#123 id=123 data-nosnippet>123</a>    ) -&gt; (MemoryAllocationIndex, Memory) {
-<a href=#124 id=124 data-nosnippet>124</a>        <span class="macro">debug_assert_ne!</span>(allocation_index, GcHeapAllocationIndex::default());
-<a href=#125 id=125 data-nosnippet>125</a>
-<a href=#126 id=126 data-nosnippet>126</a>        <span class="kw">let </span>memory = heap.detach();
-<a href=#127 id=127 data-nosnippet>127</a>
-<a href=#128 id=128 data-nosnippet>128</a>        <span class="comment">// NB: Replace the heap before freeing the index. If we did it in the
-<a href=#129 id=129 data-nosnippet>129</a>        // opposite order, a concurrent allocation request could reallocate the
-<a href=#130 id=130 data-nosnippet>130</a>        // index before we have replaced the heap.
-<a href=#131 id=131 data-nosnippet>131</a>
-<a href=#132 id=132 data-nosnippet>132</a>        </span><span class="kw">let </span>memory_alloc_index = {
-<a href=#133 id=133 data-nosnippet>133</a>            <span class="kw">let </span><span class="kw-2">mut </span>heaps = <span class="self">self</span>.heaps.lock().unwrap();
-<a href=#134 id=134 data-nosnippet>134</a>            heaps[allocation_index.index()].dealloc(heap)
-<a href=#135 id=135 data-nosnippet>135</a>        };
-<a href=#136 id=136 data-nosnippet>136</a>
-<a href=#137 id=137 data-nosnippet>137</a>        <span class="self">self</span>.index_allocator.free(SlotId(allocation_index.<span class="number">0</span>));
-<a href=#138 id=138 data-nosnippet>138</a>
-<a href=#139 id=139 data-nosnippet>139</a>        (memory_alloc_index, memory)
-<a href=#140 id=140 data-nosnippet>140</a>    }
-<a href=#141 id=141 data-nosnippet>141</a>}
+<a href=#76 id=76 data-nosnippet>76</a>    </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
+<a href=#77 id=77 data-nosnippet>77</a>        <span class="self">self</span>.index_allocator.is_empty()
+<a href=#78 id=78 data-nosnippet>78</a>    }
+<a href=#79 id=79 data-nosnippet>79</a>
+<a href=#80 id=80 data-nosnippet>80</a>    <span class="doccomment">/// Allocate a single table for the given instance allocation request.
+<a href=#81 id=81 data-nosnippet>81</a>    </span><span class="kw">pub fn </span>allocate(
+<a href=#82 id=82 data-nosnippet>82</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#83 id=83 data-nosnippet>83</a>        engine: <span class="kw-2">&amp;</span>Engine,
+<a href=#84 id=84 data-nosnippet>84</a>        gc_runtime: <span class="kw-2">&amp;</span><span class="kw">dyn </span>GcRuntime,
+<a href=#85 id=85 data-nosnippet>85</a>        memory_alloc_index: MemoryAllocationIndex,
+<a href=#86 id=86 data-nosnippet>86</a>        memory: Memory,
+<a href=#87 id=87 data-nosnippet>87</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;(GcHeapAllocationIndex, Box&lt;<span class="kw">dyn </span>GcHeap&gt;)&gt; {
+<a href=#88 id=88 data-nosnippet>88</a>        <span class="kw">let </span>allocation_index = <span class="self">self
+<a href=#89 id=89 data-nosnippet>89</a>            </span>.index_allocator
+<a href=#90 id=90 data-nosnippet>90</a>            .alloc()
+<a href=#91 id=91 data-nosnippet>91</a>            .map(|slot| GcHeapAllocationIndex(slot.<span class="number">0</span>))
+<a href=#92 id=92 data-nosnippet>92</a>            .ok_or_else(|| {
+<a href=#93 id=93 data-nosnippet>93</a>                <span class="macro">anyhow!</span>(
+<a href=#94 id=94 data-nosnippet>94</a>                    <span class="string">"maximum concurrent GC heap limit of {} reached"</span>,
+<a href=#95 id=95 data-nosnippet>95</a>                    <span class="self">self</span>.max_gc_heaps
+<a href=#96 id=96 data-nosnippet>96</a>                )
+<a href=#97 id=97 data-nosnippet>97</a>            })<span class="question-mark">?</span>;
+<a href=#98 id=98 data-nosnippet>98</a>        <span class="macro">debug_assert_ne!</span>(allocation_index, GcHeapAllocationIndex::default());
+<a href=#99 id=99 data-nosnippet>99</a>
+<a href=#100 id=100 data-nosnippet>100</a>        <span class="kw">let </span><span class="kw-2">mut </span>heap = <span class="kw">match </span>{
+<a href=#101 id=101 data-nosnippet>101</a>            <span class="kw">let </span><span class="kw-2">mut </span>heaps = <span class="self">self</span>.heaps.lock().unwrap();
+<a href=#102 id=102 data-nosnippet>102</a>            heaps[allocation_index.index()].alloc(memory_alloc_index)
+<a href=#103 id=103 data-nosnippet>103</a>        } {
+<a href=#104 id=104 data-nosnippet>104</a>            <span class="comment">// If we already have a heap at this slot, reuse it.
+<a href=#105 id=105 data-nosnippet>105</a>            </span><span class="prelude-val">Some</span>(heap) =&gt; heap,
+<a href=#106 id=106 data-nosnippet>106</a>            <span class="comment">// Otherwise, we haven't forced this slot's lazily allocated heap
+<a href=#107 id=107 data-nosnippet>107</a>            // yet. So do that now.
+<a href=#108 id=108 data-nosnippet>108</a>            </span><span class="prelude-val">None </span>=&gt; gc_runtime.new_gc_heap(engine)<span class="question-mark">?</span>,
+<a href=#109 id=109 data-nosnippet>109</a>        };
+<a href=#110 id=110 data-nosnippet>110</a>
+<a href=#111 id=111 data-nosnippet>111</a>        <span class="macro">debug_assert!</span>(!heap.is_attached());
+<a href=#112 id=112 data-nosnippet>112</a>        heap.attach(memory);
+<a href=#113 id=113 data-nosnippet>113</a>
+<a href=#114 id=114 data-nosnippet>114</a>        <span class="prelude-val">Ok</span>((allocation_index, heap))
+<a href=#115 id=115 data-nosnippet>115</a>    }
+<a href=#116 id=116 data-nosnippet>116</a>
+<a href=#117 id=117 data-nosnippet>117</a>    <span class="doccomment">/// Deallocate a previously-allocated GC heap.
+<a href=#118 id=118 data-nosnippet>118</a>    </span><span class="kw">pub fn </span>deallocate(
+<a href=#119 id=119 data-nosnippet>119</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#120 id=120 data-nosnippet>120</a>        allocation_index: GcHeapAllocationIndex,
+<a href=#121 id=121 data-nosnippet>121</a>        <span class="kw-2">mut </span>heap: Box&lt;<span class="kw">dyn </span>GcHeap&gt;,
+<a href=#122 id=122 data-nosnippet>122</a>    ) -&gt; (MemoryAllocationIndex, Memory) {
+<a href=#123 id=123 data-nosnippet>123</a>        <span class="macro">debug_assert_ne!</span>(allocation_index, GcHeapAllocationIndex::default());
+<a href=#124 id=124 data-nosnippet>124</a>
+<a href=#125 id=125 data-nosnippet>125</a>        <span class="kw">let </span>memory = heap.detach();
+<a href=#126 id=126 data-nosnippet>126</a>
+<a href=#127 id=127 data-nosnippet>127</a>        <span class="comment">// NB: Replace the heap before freeing the index. If we did it in the
+<a href=#128 id=128 data-nosnippet>128</a>        // opposite order, a concurrent allocation request could reallocate the
+<a href=#129 id=129 data-nosnippet>129</a>        // index before we have replaced the heap.
+<a href=#130 id=130 data-nosnippet>130</a>
+<a href=#131 id=131 data-nosnippet>131</a>        </span><span class="kw">let </span>memory_alloc_index = {
+<a href=#132 id=132 data-nosnippet>132</a>            <span class="kw">let </span><span class="kw-2">mut </span>heaps = <span class="self">self</span>.heaps.lock().unwrap();
+<a href=#133 id=133 data-nosnippet>133</a>            heaps[allocation_index.index()].dealloc(heap)
+<a href=#134 id=134 data-nosnippet>134</a>        };
+<a href=#135 id=135 data-nosnippet>135</a>
+<a href=#136 id=136 data-nosnippet>136</a>        <span class="self">self</span>.index_allocator.free(SlotId(allocation_index.<span class="number">0</span>));
+<a href=#137 id=137 data-nosnippet>137</a>
+<a href=#138 id=138 data-nosnippet>138</a>        (memory_alloc_index, memory)
+<a href=#139 id=139 data-nosnippet>139</a>    }
+<a href=#140 id=140 data-nosnippet>140</a>}
 </code></pre></div></section></main></body></html>

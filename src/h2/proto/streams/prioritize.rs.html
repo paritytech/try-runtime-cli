@@ -1,5 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/h2-0.4.13/src/proto/streams/prioritize.rs`."><title>prioritize.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="h2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">h2/proto/streams/</div>prioritize.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">super</span>::store::Resolve;
-<a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span>super::<span class="kw-2">*</span>;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/h2-0.4.14/src/proto/streams/prioritize.rs`."><title>prioritize.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="h2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">h2/proto/streams/</div>prioritize.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">super</span>::store::Resolve;
+<a href=#2 id=2 data-nosnippet>2</a><span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#3 id=3 data-nosnippet>3</a>
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span><span class="kw">crate</span>::frame::Reason;
 <a href=#5 id=5 data-nosnippet>5</a>
@@ -442,505 +442,501 @@
 <a href=#442 id=442 data-nosnippet>442</a>            </span><span class="kw">return</span>;
 <a href=#443 id=443 data-nosnippet>443</a>        }
 <a href=#444 id=444 data-nosnippet>444</a>
-<a href=#445 id=445 data-nosnippet>445</a>        <span class="comment">// If the stream has requested capacity, then it must be in the
-<a href=#446 id=446 data-nosnippet>446</a>        // streaming state (more data could be sent) or there is buffered data
-<a href=#447 id=447 data-nosnippet>447</a>        // waiting to be sent.
-<a href=#448 id=448 data-nosnippet>448</a>        </span><span class="macro">debug_assert!</span>(
-<a href=#449 id=449 data-nosnippet>449</a>            stream.state.is_send_streaming() || stream.buffered_send_data &gt; <span class="number">0</span>,
-<a href=#450 id=450 data-nosnippet>450</a>            <span class="string">"state={:?}"</span>,
-<a href=#451 id=451 data-nosnippet>451</a>            stream.state
-<a href=#452 id=452 data-nosnippet>452</a>        );
-<a href=#453 id=453 data-nosnippet>453</a>
-<a href=#454 id=454 data-nosnippet>454</a>        <span class="comment">// The amount of currently available capacity on the connection
-<a href=#455 id=455 data-nosnippet>455</a>        </span><span class="kw">let </span>conn_available = <span class="self">self</span>.flow.available().as_size();
-<a href=#456 id=456 data-nosnippet>456</a>
-<a href=#457 id=457 data-nosnippet>457</a>        <span class="comment">// First check if capacity is immediately available
-<a href=#458 id=458 data-nosnippet>458</a>        </span><span class="kw">if </span>conn_available &gt; <span class="number">0 </span>{
-<a href=#459 id=459 data-nosnippet>459</a>            <span class="comment">// The amount of capacity to assign to the stream
-<a href=#460 id=460 data-nosnippet>460</a>            // TODO: Should prioritization factor into this?
-<a href=#461 id=461 data-nosnippet>461</a>            </span><span class="kw">let </span>assign = cmp::min(conn_available, additional);
-<a href=#462 id=462 data-nosnippet>462</a>
-<a href=#463 id=463 data-nosnippet>463</a>            <span class="macro">tracing::trace!</span>(capacity = assign, <span class="string">"assigning"</span>);
-<a href=#464 id=464 data-nosnippet>464</a>
-<a href=#465 id=465 data-nosnippet>465</a>            <span class="comment">// Assign the capacity to the stream
-<a href=#466 id=466 data-nosnippet>466</a>            </span>stream.assign_capacity(assign, <span class="self">self</span>.max_buffer_size);
-<a href=#467 id=467 data-nosnippet>467</a>
-<a href=#468 id=468 data-nosnippet>468</a>            <span class="comment">// Claim the capacity from the connection
-<a href=#469 id=469 data-nosnippet>469</a>            // TODO: proper error handling
-<a href=#470 id=470 data-nosnippet>470</a>            </span><span class="kw">let </span>_res = <span class="self">self</span>.flow.claim_capacity(assign);
-<a href=#471 id=471 data-nosnippet>471</a>            <span class="macro">debug_assert!</span>(_res.is_ok());
-<a href=#472 id=472 data-nosnippet>472</a>        }
-<a href=#473 id=473 data-nosnippet>473</a>
-<a href=#474 id=474 data-nosnippet>474</a>        <span class="macro">tracing::trace!</span>(
-<a href=#475 id=475 data-nosnippet>475</a>            available = %stream.send_flow.available(),
-<a href=#476 id=476 data-nosnippet>476</a>            requested = stream.requested_send_capacity,
-<a href=#477 id=477 data-nosnippet>477</a>            buffered = stream.buffered_send_data,
-<a href=#478 id=478 data-nosnippet>478</a>            has_unavailable = %stream.send_flow.has_unavailable()
-<a href=#479 id=479 data-nosnippet>479</a>        );
-<a href=#480 id=480 data-nosnippet>480</a>
-<a href=#481 id=481 data-nosnippet>481</a>        <span class="kw">if </span>stream.send_flow.available() &lt; stream.requested_send_capacity <span class="kw">as </span>usize
-<a href=#482 id=482 data-nosnippet>482</a>            &amp;&amp; stream.send_flow.has_unavailable()
-<a href=#483 id=483 data-nosnippet>483</a>        {
-<a href=#484 id=484 data-nosnippet>484</a>            <span class="comment">// The stream requires additional capacity and the stream's
-<a href=#485 id=485 data-nosnippet>485</a>            // window has available capacity, but the connection window
-<a href=#486 id=486 data-nosnippet>486</a>            // does not.
-<a href=#487 id=487 data-nosnippet>487</a>            //
-<a href=#488 id=488 data-nosnippet>488</a>            // In this case, the stream needs to be queued up for when the
-<a href=#489 id=489 data-nosnippet>489</a>            // connection has more capacity.
-<a href=#490 id=490 data-nosnippet>490</a>            </span><span class="self">self</span>.pending_capacity.push(stream);
-<a href=#491 id=491 data-nosnippet>491</a>        }
-<a href=#492 id=492 data-nosnippet>492</a>
-<a href=#493 id=493 data-nosnippet>493</a>        <span class="comment">// If data is buffered and the stream is send ready, then
-<a href=#494 id=494 data-nosnippet>494</a>        // schedule the stream for execution
-<a href=#495 id=495 data-nosnippet>495</a>        </span><span class="kw">if </span>stream.buffered_send_data &gt; <span class="number">0 </span>&amp;&amp; stream.is_send_ready() {
-<a href=#496 id=496 data-nosnippet>496</a>            <span class="comment">// TODO: This assertion isn't *exactly* correct. There can still be
-<a href=#497 id=497 data-nosnippet>497</a>            // buffered send data while the stream's pending send queue is
-<a href=#498 id=498 data-nosnippet>498</a>            // empty. This can happen when a large data frame is in the process
-<a href=#499 id=499 data-nosnippet>499</a>            // of being **partially** sent. Once the window has been sent, the
-<a href=#500 id=500 data-nosnippet>500</a>            // data frame will be returned to the prioritization layer to be
-<a href=#501 id=501 data-nosnippet>501</a>            // re-scheduled.
-<a href=#502 id=502 data-nosnippet>502</a>            //
-<a href=#503 id=503 data-nosnippet>503</a>            // That said, it would be nice to figure out how to make this
-<a href=#504 id=504 data-nosnippet>504</a>            // assertion correctly.
-<a href=#505 id=505 data-nosnippet>505</a>            //
-<a href=#506 id=506 data-nosnippet>506</a>            // debug_assert!(!stream.pending_send.is_empty());
+<a href=#445 id=445 data-nosnippet>445</a>        <span class="comment">// The stream may have been reset or closed since capacity was requested.
+<a href=#446 id=446 data-nosnippet>446</a>        </span><span class="kw">if </span>!stream.state.is_send_streaming() &amp;&amp; stream.buffered_send_data == <span class="number">0 </span>{
+<a href=#447 id=447 data-nosnippet>447</a>            <span class="kw">return</span>;
+<a href=#448 id=448 data-nosnippet>448</a>        }
+<a href=#449 id=449 data-nosnippet>449</a>
+<a href=#450 id=450 data-nosnippet>450</a>        <span class="comment">// The amount of currently available capacity on the connection
+<a href=#451 id=451 data-nosnippet>451</a>        </span><span class="kw">let </span>conn_available = <span class="self">self</span>.flow.available().as_size();
+<a href=#452 id=452 data-nosnippet>452</a>
+<a href=#453 id=453 data-nosnippet>453</a>        <span class="comment">// First check if capacity is immediately available
+<a href=#454 id=454 data-nosnippet>454</a>        </span><span class="kw">if </span>conn_available &gt; <span class="number">0 </span>{
+<a href=#455 id=455 data-nosnippet>455</a>            <span class="comment">// The amount of capacity to assign to the stream
+<a href=#456 id=456 data-nosnippet>456</a>            // TODO: Should prioritization factor into this?
+<a href=#457 id=457 data-nosnippet>457</a>            </span><span class="kw">let </span>assign = cmp::min(conn_available, additional);
+<a href=#458 id=458 data-nosnippet>458</a>
+<a href=#459 id=459 data-nosnippet>459</a>            <span class="macro">tracing::trace!</span>(capacity = assign, <span class="string">"assigning"</span>);
+<a href=#460 id=460 data-nosnippet>460</a>
+<a href=#461 id=461 data-nosnippet>461</a>            <span class="comment">// Assign the capacity to the stream
+<a href=#462 id=462 data-nosnippet>462</a>            </span>stream.assign_capacity(assign, <span class="self">self</span>.max_buffer_size);
+<a href=#463 id=463 data-nosnippet>463</a>
+<a href=#464 id=464 data-nosnippet>464</a>            <span class="comment">// Claim the capacity from the connection
+<a href=#465 id=465 data-nosnippet>465</a>            // TODO: proper error handling
+<a href=#466 id=466 data-nosnippet>466</a>            </span><span class="kw">let </span>_res = <span class="self">self</span>.flow.claim_capacity(assign);
+<a href=#467 id=467 data-nosnippet>467</a>            <span class="macro">debug_assert!</span>(_res.is_ok());
+<a href=#468 id=468 data-nosnippet>468</a>        }
+<a href=#469 id=469 data-nosnippet>469</a>
+<a href=#470 id=470 data-nosnippet>470</a>        <span class="macro">tracing::trace!</span>(
+<a href=#471 id=471 data-nosnippet>471</a>            available = %stream.send_flow.available(),
+<a href=#472 id=472 data-nosnippet>472</a>            requested = stream.requested_send_capacity,
+<a href=#473 id=473 data-nosnippet>473</a>            buffered = stream.buffered_send_data,
+<a href=#474 id=474 data-nosnippet>474</a>            has_unavailable = %stream.send_flow.has_unavailable()
+<a href=#475 id=475 data-nosnippet>475</a>        );
+<a href=#476 id=476 data-nosnippet>476</a>
+<a href=#477 id=477 data-nosnippet>477</a>        <span class="kw">if </span>stream.send_flow.available() &lt; stream.requested_send_capacity <span class="kw">as </span>usize
+<a href=#478 id=478 data-nosnippet>478</a>            &amp;&amp; stream.send_flow.has_unavailable()
+<a href=#479 id=479 data-nosnippet>479</a>        {
+<a href=#480 id=480 data-nosnippet>480</a>            <span class="comment">// The stream requires additional capacity and the stream's
+<a href=#481 id=481 data-nosnippet>481</a>            // window has available capacity, but the connection window
+<a href=#482 id=482 data-nosnippet>482</a>            // does not.
+<a href=#483 id=483 data-nosnippet>483</a>            //
+<a href=#484 id=484 data-nosnippet>484</a>            // In this case, the stream needs to be queued up for when the
+<a href=#485 id=485 data-nosnippet>485</a>            // connection has more capacity.
+<a href=#486 id=486 data-nosnippet>486</a>            </span><span class="self">self</span>.pending_capacity.push(stream);
+<a href=#487 id=487 data-nosnippet>487</a>        }
+<a href=#488 id=488 data-nosnippet>488</a>
+<a href=#489 id=489 data-nosnippet>489</a>        <span class="comment">// If data is buffered and the stream is send ready, then
+<a href=#490 id=490 data-nosnippet>490</a>        // schedule the stream for execution
+<a href=#491 id=491 data-nosnippet>491</a>        </span><span class="kw">if </span>stream.buffered_send_data &gt; <span class="number">0 </span>&amp;&amp; stream.is_send_ready() {
+<a href=#492 id=492 data-nosnippet>492</a>            <span class="comment">// TODO: This assertion isn't *exactly* correct. There can still be
+<a href=#493 id=493 data-nosnippet>493</a>            // buffered send data while the stream's pending send queue is
+<a href=#494 id=494 data-nosnippet>494</a>            // empty. This can happen when a large data frame is in the process
+<a href=#495 id=495 data-nosnippet>495</a>            // of being **partially** sent. Once the window has been sent, the
+<a href=#496 id=496 data-nosnippet>496</a>            // data frame will be returned to the prioritization layer to be
+<a href=#497 id=497 data-nosnippet>497</a>            // re-scheduled.
+<a href=#498 id=498 data-nosnippet>498</a>            //
+<a href=#499 id=499 data-nosnippet>499</a>            // That said, it would be nice to figure out how to make this
+<a href=#500 id=500 data-nosnippet>500</a>            // assertion correctly.
+<a href=#501 id=501 data-nosnippet>501</a>            //
+<a href=#502 id=502 data-nosnippet>502</a>            // debug_assert!(!stream.pending_send.is_empty());
+<a href=#503 id=503 data-nosnippet>503</a>
+<a href=#504 id=504 data-nosnippet>504</a>            </span><span class="self">self</span>.pending_send.push(stream);
+<a href=#505 id=505 data-nosnippet>505</a>        }
+<a href=#506 id=506 data-nosnippet>506</a>    }
 <a href=#507 id=507 data-nosnippet>507</a>
-<a href=#508 id=508 data-nosnippet>508</a>            </span><span class="self">self</span>.pending_send.push(stream);
-<a href=#509 id=509 data-nosnippet>509</a>        }
-<a href=#510 id=510 data-nosnippet>510</a>    }
-<a href=#511 id=511 data-nosnippet>511</a>
-<a href=#512 id=512 data-nosnippet>512</a>    <span class="kw">pub fn </span>poll_complete&lt;T, B&gt;(
-<a href=#513 id=513 data-nosnippet>513</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-<a href=#514 id=514 data-nosnippet>514</a>        cx: <span class="kw-2">&amp;mut </span>Context,
-<a href=#515 id=515 data-nosnippet>515</a>        buffer: <span class="kw-2">&amp;mut </span>Buffer&lt;Frame&lt;B&gt;&gt;,
-<a href=#516 id=516 data-nosnippet>516</a>        store: <span class="kw-2">&amp;mut </span>Store,
-<a href=#517 id=517 data-nosnippet>517</a>        counts: <span class="kw-2">&amp;mut </span>Counts,
-<a href=#518 id=518 data-nosnippet>518</a>        dst: <span class="kw-2">&amp;mut </span>Codec&lt;T, Prioritized&lt;B&gt;&gt;,
-<a href=#519 id=519 data-nosnippet>519</a>    ) -&gt; Poll&lt;io::Result&lt;()&gt;&gt;
-<a href=#520 id=520 data-nosnippet>520</a>    <span class="kw">where
-<a href=#521 id=521 data-nosnippet>521</a>        </span>T: AsyncWrite + Unpin,
-<a href=#522 id=522 data-nosnippet>522</a>        B: Buf,
-<a href=#523 id=523 data-nosnippet>523</a>    {
-<a href=#524 id=524 data-nosnippet>524</a>        <span class="comment">// Ensure codec is ready
-<a href=#525 id=525 data-nosnippet>525</a>        </span><span class="macro">ready!</span>(dst.poll_ready(cx))<span class="question-mark">?</span>;
-<a href=#526 id=526 data-nosnippet>526</a>
-<a href=#527 id=527 data-nosnippet>527</a>        <span class="comment">// Reclaim any frame that has previously been written
-<a href=#528 id=528 data-nosnippet>528</a>        </span><span class="self">self</span>.reclaim_frame(buffer, store, dst);
-<a href=#529 id=529 data-nosnippet>529</a>
-<a href=#530 id=530 data-nosnippet>530</a>        <span class="comment">// The max frame length
-<a href=#531 id=531 data-nosnippet>531</a>        </span><span class="kw">let </span>max_frame_len = dst.max_send_frame_size();
-<a href=#532 id=532 data-nosnippet>532</a>
-<a href=#533 id=533 data-nosnippet>533</a>        <span class="macro">tracing::trace!</span>(<span class="string">"poll_complete"</span>);
-<a href=#534 id=534 data-nosnippet>534</a>
-<a href=#535 id=535 data-nosnippet>535</a>        <span class="kw">loop </span>{
-<a href=#536 id=536 data-nosnippet>536</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>stream) = <span class="self">self</span>.pop_pending_open(store, counts) {
-<a href=#537 id=537 data-nosnippet>537</a>                <span class="self">self</span>.pending_send.push_front(<span class="kw-2">&amp;mut </span>stream);
-<a href=#538 id=538 data-nosnippet>538</a>                <span class="self">self</span>.try_assign_capacity(<span class="kw-2">&amp;mut </span>stream);
-<a href=#539 id=539 data-nosnippet>539</a>            }
+<a href=#508 id=508 data-nosnippet>508</a>    <span class="kw">pub fn </span>poll_complete&lt;T, B&gt;(
+<a href=#509 id=509 data-nosnippet>509</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#510 id=510 data-nosnippet>510</a>        cx: <span class="kw-2">&amp;mut </span>Context,
+<a href=#511 id=511 data-nosnippet>511</a>        buffer: <span class="kw-2">&amp;mut </span>Buffer&lt;Frame&lt;B&gt;&gt;,
+<a href=#512 id=512 data-nosnippet>512</a>        store: <span class="kw-2">&amp;mut </span>Store,
+<a href=#513 id=513 data-nosnippet>513</a>        counts: <span class="kw-2">&amp;mut </span>Counts,
+<a href=#514 id=514 data-nosnippet>514</a>        dst: <span class="kw-2">&amp;mut </span>Codec&lt;T, Prioritized&lt;B&gt;&gt;,
+<a href=#515 id=515 data-nosnippet>515</a>    ) -&gt; Poll&lt;io::Result&lt;()&gt;&gt;
+<a href=#516 id=516 data-nosnippet>516</a>    <span class="kw">where
+<a href=#517 id=517 data-nosnippet>517</a>        </span>T: AsyncWrite + Unpin,
+<a href=#518 id=518 data-nosnippet>518</a>        B: Buf,
+<a href=#519 id=519 data-nosnippet>519</a>    {
+<a href=#520 id=520 data-nosnippet>520</a>        <span class="comment">// Ensure codec is ready
+<a href=#521 id=521 data-nosnippet>521</a>        </span><span class="macro">ready!</span>(dst.poll_ready(cx))<span class="question-mark">?</span>;
+<a href=#522 id=522 data-nosnippet>522</a>
+<a href=#523 id=523 data-nosnippet>523</a>        <span class="comment">// Reclaim any frame that has previously been written
+<a href=#524 id=524 data-nosnippet>524</a>        </span><span class="self">self</span>.reclaim_frame(buffer, store, dst);
+<a href=#525 id=525 data-nosnippet>525</a>
+<a href=#526 id=526 data-nosnippet>526</a>        <span class="comment">// The max frame length
+<a href=#527 id=527 data-nosnippet>527</a>        </span><span class="kw">let </span>max_frame_len = dst.max_send_frame_size();
+<a href=#528 id=528 data-nosnippet>528</a>
+<a href=#529 id=529 data-nosnippet>529</a>        <span class="macro">tracing::trace!</span>(<span class="string">"poll_complete"</span>);
+<a href=#530 id=530 data-nosnippet>530</a>
+<a href=#531 id=531 data-nosnippet>531</a>        <span class="kw">loop </span>{
+<a href=#532 id=532 data-nosnippet>532</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>stream) = <span class="self">self</span>.pop_pending_open(store, counts) {
+<a href=#533 id=533 data-nosnippet>533</a>                <span class="self">self</span>.pending_send.push_front(<span class="kw-2">&amp;mut </span>stream);
+<a href=#534 id=534 data-nosnippet>534</a>                <span class="self">self</span>.try_assign_capacity(<span class="kw-2">&amp;mut </span>stream);
+<a href=#535 id=535 data-nosnippet>535</a>            }
+<a href=#536 id=536 data-nosnippet>536</a>
+<a href=#537 id=537 data-nosnippet>537</a>            <span class="kw">match </span><span class="self">self</span>.pop_frame(buffer, store, max_frame_len, counts) {
+<a href=#538 id=538 data-nosnippet>538</a>                <span class="prelude-val">Some</span>(frame) =&gt; {
+<a href=#539 id=539 data-nosnippet>539</a>                    <span class="macro">tracing::trace!</span>(<span class="question-mark">?</span>frame, <span class="string">"writing"</span>);
 <a href=#540 id=540 data-nosnippet>540</a>
-<a href=#541 id=541 data-nosnippet>541</a>            <span class="kw">match </span><span class="self">self</span>.pop_frame(buffer, store, max_frame_len, counts) {
-<a href=#542 id=542 data-nosnippet>542</a>                <span class="prelude-val">Some</span>(frame) =&gt; {
-<a href=#543 id=543 data-nosnippet>543</a>                    <span class="macro">tracing::trace!</span>(<span class="question-mark">?</span>frame, <span class="string">"writing"</span>);
-<a href=#544 id=544 data-nosnippet>544</a>
-<a href=#545 id=545 data-nosnippet>545</a>                    <span class="macro">debug_assert_eq!</span>(<span class="self">self</span>.in_flight_data_frame, InFlightData::Nothing);
-<a href=#546 id=546 data-nosnippet>546</a>                    <span class="kw">if let </span>Frame::Data(<span class="kw-2">ref </span>frame) = frame {
-<a href=#547 id=547 data-nosnippet>547</a>                        <span class="self">self</span>.in_flight_data_frame = InFlightData::DataFrame(frame.payload().stream);
-<a href=#548 id=548 data-nosnippet>548</a>                    }
-<a href=#549 id=549 data-nosnippet>549</a>                    dst.buffer(frame).expect(<span class="string">"invalid frame"</span>);
-<a href=#550 id=550 data-nosnippet>550</a>
-<a href=#551 id=551 data-nosnippet>551</a>                    <span class="comment">// Ensure the codec is ready to try the loop again.
-<a href=#552 id=552 data-nosnippet>552</a>                    </span><span class="macro">ready!</span>(dst.poll_ready(cx))<span class="question-mark">?</span>;
-<a href=#553 id=553 data-nosnippet>553</a>
-<a href=#554 id=554 data-nosnippet>554</a>                    <span class="comment">// Because, always try to reclaim...
-<a href=#555 id=555 data-nosnippet>555</a>                    </span><span class="self">self</span>.reclaim_frame(buffer, store, dst);
-<a href=#556 id=556 data-nosnippet>556</a>                }
-<a href=#557 id=557 data-nosnippet>557</a>                <span class="prelude-val">None </span>=&gt; {
-<a href=#558 id=558 data-nosnippet>558</a>                    <span class="comment">// Try to flush the codec.
-<a href=#559 id=559 data-nosnippet>559</a>                    </span><span class="macro">ready!</span>(dst.flush(cx))<span class="question-mark">?</span>;
-<a href=#560 id=560 data-nosnippet>560</a>
-<a href=#561 id=561 data-nosnippet>561</a>                    <span class="comment">// This might release a data frame...
-<a href=#562 id=562 data-nosnippet>562</a>                    </span><span class="kw">if </span>!<span class="self">self</span>.reclaim_frame(buffer, store, dst) {
-<a href=#563 id=563 data-nosnippet>563</a>                        <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(()));
-<a href=#564 id=564 data-nosnippet>564</a>                    }
-<a href=#565 id=565 data-nosnippet>565</a>
-<a href=#566 id=566 data-nosnippet>566</a>                    <span class="comment">// No need to poll ready as poll_complete() does this for
-<a href=#567 id=567 data-nosnippet>567</a>                    // us...
-<a href=#568 id=568 data-nosnippet>568</a>                </span>}
-<a href=#569 id=569 data-nosnippet>569</a>            }
-<a href=#570 id=570 data-nosnippet>570</a>        }
-<a href=#571 id=571 data-nosnippet>571</a>    }
-<a href=#572 id=572 data-nosnippet>572</a>
-<a href=#573 id=573 data-nosnippet>573</a>    <span class="doccomment">/// Tries to reclaim a pending data frame from the codec.
-<a href=#574 id=574 data-nosnippet>574</a>    ///
-<a href=#575 id=575 data-nosnippet>575</a>    /// Returns true if a frame was reclaimed.
-<a href=#576 id=576 data-nosnippet>576</a>    ///
-<a href=#577 id=577 data-nosnippet>577</a>    /// When a data frame is written to the codec, it may not be written in its
-<a href=#578 id=578 data-nosnippet>578</a>    /// entirety (large chunks are split up into potentially many data frames).
-<a href=#579 id=579 data-nosnippet>579</a>    /// In this case, the stream needs to be reprioritized.
-<a href=#580 id=580 data-nosnippet>580</a>    </span><span class="kw">fn </span>reclaim_frame&lt;T, B&gt;(
-<a href=#581 id=581 data-nosnippet>581</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-<a href=#582 id=582 data-nosnippet>582</a>        buffer: <span class="kw-2">&amp;mut </span>Buffer&lt;Frame&lt;B&gt;&gt;,
-<a href=#583 id=583 data-nosnippet>583</a>        store: <span class="kw-2">&amp;mut </span>Store,
-<a href=#584 id=584 data-nosnippet>584</a>        dst: <span class="kw-2">&amp;mut </span>Codec&lt;T, Prioritized&lt;B&gt;&gt;,
-<a href=#585 id=585 data-nosnippet>585</a>    ) -&gt; bool
-<a href=#586 id=586 data-nosnippet>586</a>    <span class="kw">where
-<a href=#587 id=587 data-nosnippet>587</a>        </span>B: Buf,
-<a href=#588 id=588 data-nosnippet>588</a>    {
-<a href=#589 id=589 data-nosnippet>589</a>        <span class="kw">let </span>span = <span class="macro">tracing::trace_span!</span>(<span class="string">"try_reclaim_frame"</span>);
-<a href=#590 id=590 data-nosnippet>590</a>        <span class="kw">let </span>_e = span.enter();
-<a href=#591 id=591 data-nosnippet>591</a>
-<a href=#592 id=592 data-nosnippet>592</a>        <span class="comment">// First check if there are any data chunks to take back
-<a href=#593 id=593 data-nosnippet>593</a>        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(frame) = dst.take_last_data_frame() {
-<a href=#594 id=594 data-nosnippet>594</a>            <span class="self">self</span>.reclaim_frame_inner(buffer, store, frame)
-<a href=#595 id=595 data-nosnippet>595</a>        } <span class="kw">else </span>{
-<a href=#596 id=596 data-nosnippet>596</a>            <span class="bool-val">false
-<a href=#597 id=597 data-nosnippet>597</a>        </span>}
-<a href=#598 id=598 data-nosnippet>598</a>    }
-<a href=#599 id=599 data-nosnippet>599</a>
-<a href=#600 id=600 data-nosnippet>600</a>    <span class="kw">fn </span>reclaim_frame_inner&lt;B&gt;(
-<a href=#601 id=601 data-nosnippet>601</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-<a href=#602 id=602 data-nosnippet>602</a>        buffer: <span class="kw-2">&amp;mut </span>Buffer&lt;Frame&lt;B&gt;&gt;,
-<a href=#603 id=603 data-nosnippet>603</a>        store: <span class="kw-2">&amp;mut </span>Store,
-<a href=#604 id=604 data-nosnippet>604</a>        frame: frame::Data&lt;Prioritized&lt;B&gt;&gt;,
-<a href=#605 id=605 data-nosnippet>605</a>    ) -&gt; bool
-<a href=#606 id=606 data-nosnippet>606</a>    <span class="kw">where
-<a href=#607 id=607 data-nosnippet>607</a>        </span>B: Buf,
-<a href=#608 id=608 data-nosnippet>608</a>    {
-<a href=#609 id=609 data-nosnippet>609</a>        <span class="macro">tracing::trace!</span>(
-<a href=#610 id=610 data-nosnippet>610</a>            <span class="question-mark">?</span>frame,
-<a href=#611 id=611 data-nosnippet>611</a>            sz = frame.payload().inner.get_ref().remaining(),
-<a href=#612 id=612 data-nosnippet>612</a>            <span class="string">"reclaimed"
-<a href=#613 id=613 data-nosnippet>613</a>        </span>);
-<a href=#614 id=614 data-nosnippet>614</a>
-<a href=#615 id=615 data-nosnippet>615</a>        <span class="kw">let </span><span class="kw-2">mut </span>eos = <span class="bool-val">false</span>;
-<a href=#616 id=616 data-nosnippet>616</a>        <span class="kw">let </span>key = frame.payload().stream;
-<a href=#617 id=617 data-nosnippet>617</a>
-<a href=#618 id=618 data-nosnippet>618</a>        <span class="kw">match </span>mem::replace(<span class="kw-2">&amp;mut </span><span class="self">self</span>.in_flight_data_frame, InFlightData::Nothing) {
-<a href=#619 id=619 data-nosnippet>619</a>            InFlightData::Nothing =&gt; <span class="macro">panic!</span>(<span class="string">"wasn't expecting a frame to reclaim"</span>),
-<a href=#620 id=620 data-nosnippet>620</a>            InFlightData::Drop =&gt; {
-<a href=#621 id=621 data-nosnippet>621</a>                <span class="macro">tracing::trace!</span>(<span class="string">"not reclaiming frame for cancelled stream"</span>);
-<a href=#622 id=622 data-nosnippet>622</a>                <span class="kw">return </span><span class="bool-val">false</span>;
-<a href=#623 id=623 data-nosnippet>623</a>            }
-<a href=#624 id=624 data-nosnippet>624</a>            InFlightData::DataFrame(k) =&gt; {
-<a href=#625 id=625 data-nosnippet>625</a>                <span class="macro">debug_assert_eq!</span>(k, key);
-<a href=#626 id=626 data-nosnippet>626</a>            }
-<a href=#627 id=627 data-nosnippet>627</a>        }
-<a href=#628 id=628 data-nosnippet>628</a>
-<a href=#629 id=629 data-nosnippet>629</a>        <span class="kw">let </span><span class="kw-2">mut </span>frame = frame.map(|prioritized| {
-<a href=#630 id=630 data-nosnippet>630</a>            <span class="comment">// TODO: Ensure fully written
-<a href=#631 id=631 data-nosnippet>631</a>            </span>eos = prioritized.end_of_stream;
-<a href=#632 id=632 data-nosnippet>632</a>            prioritized.inner.into_inner()
-<a href=#633 id=633 data-nosnippet>633</a>        });
-<a href=#634 id=634 data-nosnippet>634</a>
-<a href=#635 id=635 data-nosnippet>635</a>        <span class="kw">if </span>frame.payload().has_remaining() {
-<a href=#636 id=636 data-nosnippet>636</a>            <span class="kw">let </span><span class="kw-2">mut </span>stream = store.resolve(key);
+<a href=#541 id=541 data-nosnippet>541</a>                    <span class="macro">debug_assert_eq!</span>(<span class="self">self</span>.in_flight_data_frame, InFlightData::Nothing);
+<a href=#542 id=542 data-nosnippet>542</a>                    <span class="kw">if let </span>Frame::Data(<span class="kw-2">ref </span>frame) = frame {
+<a href=#543 id=543 data-nosnippet>543</a>                        <span class="self">self</span>.in_flight_data_frame = InFlightData::DataFrame(frame.payload().stream);
+<a href=#544 id=544 data-nosnippet>544</a>                    }
+<a href=#545 id=545 data-nosnippet>545</a>                    dst.buffer(frame).expect(<span class="string">"invalid frame"</span>);
+<a href=#546 id=546 data-nosnippet>546</a>
+<a href=#547 id=547 data-nosnippet>547</a>                    <span class="comment">// Ensure the codec is ready to try the loop again.
+<a href=#548 id=548 data-nosnippet>548</a>                    </span><span class="macro">ready!</span>(dst.poll_ready(cx))<span class="question-mark">?</span>;
+<a href=#549 id=549 data-nosnippet>549</a>
+<a href=#550 id=550 data-nosnippet>550</a>                    <span class="comment">// Because, always try to reclaim...
+<a href=#551 id=551 data-nosnippet>551</a>                    </span><span class="self">self</span>.reclaim_frame(buffer, store, dst);
+<a href=#552 id=552 data-nosnippet>552</a>                }
+<a href=#553 id=553 data-nosnippet>553</a>                <span class="prelude-val">None </span>=&gt; {
+<a href=#554 id=554 data-nosnippet>554</a>                    <span class="comment">// Try to flush the codec.
+<a href=#555 id=555 data-nosnippet>555</a>                    </span><span class="macro">ready!</span>(dst.flush(cx))<span class="question-mark">?</span>;
+<a href=#556 id=556 data-nosnippet>556</a>
+<a href=#557 id=557 data-nosnippet>557</a>                    <span class="comment">// This might release a data frame...
+<a href=#558 id=558 data-nosnippet>558</a>                    </span><span class="kw">if </span>!<span class="self">self</span>.reclaim_frame(buffer, store, dst) {
+<a href=#559 id=559 data-nosnippet>559</a>                        <span class="kw">return </span>Poll::Ready(<span class="prelude-val">Ok</span>(()));
+<a href=#560 id=560 data-nosnippet>560</a>                    }
+<a href=#561 id=561 data-nosnippet>561</a>
+<a href=#562 id=562 data-nosnippet>562</a>                    <span class="comment">// No need to poll ready as poll_complete() does this for
+<a href=#563 id=563 data-nosnippet>563</a>                    // us...
+<a href=#564 id=564 data-nosnippet>564</a>                </span>}
+<a href=#565 id=565 data-nosnippet>565</a>            }
+<a href=#566 id=566 data-nosnippet>566</a>        }
+<a href=#567 id=567 data-nosnippet>567</a>    }
+<a href=#568 id=568 data-nosnippet>568</a>
+<a href=#569 id=569 data-nosnippet>569</a>    <span class="doccomment">/// Tries to reclaim a pending data frame from the codec.
+<a href=#570 id=570 data-nosnippet>570</a>    ///
+<a href=#571 id=571 data-nosnippet>571</a>    /// Returns true if a frame was reclaimed.
+<a href=#572 id=572 data-nosnippet>572</a>    ///
+<a href=#573 id=573 data-nosnippet>573</a>    /// When a data frame is written to the codec, it may not be written in its
+<a href=#574 id=574 data-nosnippet>574</a>    /// entirety (large chunks are split up into potentially many data frames).
+<a href=#575 id=575 data-nosnippet>575</a>    /// In this case, the stream needs to be reprioritized.
+<a href=#576 id=576 data-nosnippet>576</a>    </span><span class="kw">fn </span>reclaim_frame&lt;T, B&gt;(
+<a href=#577 id=577 data-nosnippet>577</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#578 id=578 data-nosnippet>578</a>        buffer: <span class="kw-2">&amp;mut </span>Buffer&lt;Frame&lt;B&gt;&gt;,
+<a href=#579 id=579 data-nosnippet>579</a>        store: <span class="kw-2">&amp;mut </span>Store,
+<a href=#580 id=580 data-nosnippet>580</a>        dst: <span class="kw-2">&amp;mut </span>Codec&lt;T, Prioritized&lt;B&gt;&gt;,
+<a href=#581 id=581 data-nosnippet>581</a>    ) -&gt; bool
+<a href=#582 id=582 data-nosnippet>582</a>    <span class="kw">where
+<a href=#583 id=583 data-nosnippet>583</a>        </span>B: Buf,
+<a href=#584 id=584 data-nosnippet>584</a>    {
+<a href=#585 id=585 data-nosnippet>585</a>        <span class="kw">let </span>span = <span class="macro">tracing::trace_span!</span>(<span class="string">"try_reclaim_frame"</span>);
+<a href=#586 id=586 data-nosnippet>586</a>        <span class="kw">let </span>_e = span.enter();
+<a href=#587 id=587 data-nosnippet>587</a>
+<a href=#588 id=588 data-nosnippet>588</a>        <span class="comment">// First check if there are any data chunks to take back
+<a href=#589 id=589 data-nosnippet>589</a>        </span><span class="kw">if let </span><span class="prelude-val">Some</span>(frame) = dst.take_last_data_frame() {
+<a href=#590 id=590 data-nosnippet>590</a>            <span class="self">self</span>.reclaim_frame_inner(buffer, store, frame)
+<a href=#591 id=591 data-nosnippet>591</a>        } <span class="kw">else </span>{
+<a href=#592 id=592 data-nosnippet>592</a>            <span class="bool-val">false
+<a href=#593 id=593 data-nosnippet>593</a>        </span>}
+<a href=#594 id=594 data-nosnippet>594</a>    }
+<a href=#595 id=595 data-nosnippet>595</a>
+<a href=#596 id=596 data-nosnippet>596</a>    <span class="kw">fn </span>reclaim_frame_inner&lt;B&gt;(
+<a href=#597 id=597 data-nosnippet>597</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#598 id=598 data-nosnippet>598</a>        buffer: <span class="kw-2">&amp;mut </span>Buffer&lt;Frame&lt;B&gt;&gt;,
+<a href=#599 id=599 data-nosnippet>599</a>        store: <span class="kw-2">&amp;mut </span>Store,
+<a href=#600 id=600 data-nosnippet>600</a>        frame: frame::Data&lt;Prioritized&lt;B&gt;&gt;,
+<a href=#601 id=601 data-nosnippet>601</a>    ) -&gt; bool
+<a href=#602 id=602 data-nosnippet>602</a>    <span class="kw">where
+<a href=#603 id=603 data-nosnippet>603</a>        </span>B: Buf,
+<a href=#604 id=604 data-nosnippet>604</a>    {
+<a href=#605 id=605 data-nosnippet>605</a>        <span class="macro">tracing::trace!</span>(
+<a href=#606 id=606 data-nosnippet>606</a>            <span class="question-mark">?</span>frame,
+<a href=#607 id=607 data-nosnippet>607</a>            sz = frame.payload().inner.get_ref().remaining(),
+<a href=#608 id=608 data-nosnippet>608</a>            <span class="string">"reclaimed"
+<a href=#609 id=609 data-nosnippet>609</a>        </span>);
+<a href=#610 id=610 data-nosnippet>610</a>
+<a href=#611 id=611 data-nosnippet>611</a>        <span class="kw">let </span><span class="kw-2">mut </span>eos = <span class="bool-val">false</span>;
+<a href=#612 id=612 data-nosnippet>612</a>        <span class="kw">let </span>key = frame.payload().stream;
+<a href=#613 id=613 data-nosnippet>613</a>
+<a href=#614 id=614 data-nosnippet>614</a>        <span class="kw">match </span>mem::replace(<span class="kw-2">&amp;mut </span><span class="self">self</span>.in_flight_data_frame, InFlightData::Nothing) {
+<a href=#615 id=615 data-nosnippet>615</a>            InFlightData::Nothing =&gt; <span class="macro">panic!</span>(<span class="string">"wasn't expecting a frame to reclaim"</span>),
+<a href=#616 id=616 data-nosnippet>616</a>            InFlightData::Drop =&gt; {
+<a href=#617 id=617 data-nosnippet>617</a>                <span class="macro">tracing::trace!</span>(<span class="string">"not reclaiming frame for cancelled stream"</span>);
+<a href=#618 id=618 data-nosnippet>618</a>                <span class="kw">return </span><span class="bool-val">false</span>;
+<a href=#619 id=619 data-nosnippet>619</a>            }
+<a href=#620 id=620 data-nosnippet>620</a>            InFlightData::DataFrame(k) =&gt; {
+<a href=#621 id=621 data-nosnippet>621</a>                <span class="macro">debug_assert_eq!</span>(k, key);
+<a href=#622 id=622 data-nosnippet>622</a>            }
+<a href=#623 id=623 data-nosnippet>623</a>        }
+<a href=#624 id=624 data-nosnippet>624</a>
+<a href=#625 id=625 data-nosnippet>625</a>        <span class="kw">let </span><span class="kw-2">mut </span>frame = frame.map(|prioritized| {
+<a href=#626 id=626 data-nosnippet>626</a>            <span class="comment">// TODO: Ensure fully written
+<a href=#627 id=627 data-nosnippet>627</a>            </span>eos = prioritized.end_of_stream;
+<a href=#628 id=628 data-nosnippet>628</a>            prioritized.inner.into_inner()
+<a href=#629 id=629 data-nosnippet>629</a>        });
+<a href=#630 id=630 data-nosnippet>630</a>
+<a href=#631 id=631 data-nosnippet>631</a>        <span class="kw">if </span>frame.payload().has_remaining() {
+<a href=#632 id=632 data-nosnippet>632</a>            <span class="kw">let </span><span class="kw-2">mut </span>stream = store.resolve(key);
+<a href=#633 id=633 data-nosnippet>633</a>
+<a href=#634 id=634 data-nosnippet>634</a>            <span class="kw">if </span>eos {
+<a href=#635 id=635 data-nosnippet>635</a>                frame.set_end_stream(<span class="bool-val">true</span>);
+<a href=#636 id=636 data-nosnippet>636</a>            }
 <a href=#637 id=637 data-nosnippet>637</a>
-<a href=#638 id=638 data-nosnippet>638</a>            <span class="kw">if </span>eos {
-<a href=#639 id=639 data-nosnippet>639</a>                frame.set_end_stream(<span class="bool-val">true</span>);
-<a href=#640 id=640 data-nosnippet>640</a>            }
-<a href=#641 id=641 data-nosnippet>641</a>
-<a href=#642 id=642 data-nosnippet>642</a>            <span class="self">self</span>.push_back_frame(frame.into(), buffer, <span class="kw-2">&amp;mut </span>stream);
-<a href=#643 id=643 data-nosnippet>643</a>
-<a href=#644 id=644 data-nosnippet>644</a>            <span class="kw">return </span><span class="bool-val">true</span>;
-<a href=#645 id=645 data-nosnippet>645</a>        }
-<a href=#646 id=646 data-nosnippet>646</a>
-<a href=#647 id=647 data-nosnippet>647</a>        <span class="bool-val">false
-<a href=#648 id=648 data-nosnippet>648</a>    </span>}
-<a href=#649 id=649 data-nosnippet>649</a>
-<a href=#650 id=650 data-nosnippet>650</a>    <span class="doccomment">/// Push the frame to the front of the stream's deque, scheduling the
-<a href=#651 id=651 data-nosnippet>651</a>    /// stream if needed.
-<a href=#652 id=652 data-nosnippet>652</a>    </span><span class="kw">fn </span>push_back_frame&lt;B&gt;(
-<a href=#653 id=653 data-nosnippet>653</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-<a href=#654 id=654 data-nosnippet>654</a>        frame: Frame&lt;B&gt;,
-<a href=#655 id=655 data-nosnippet>655</a>        buffer: <span class="kw-2">&amp;mut </span>Buffer&lt;Frame&lt;B&gt;&gt;,
-<a href=#656 id=656 data-nosnippet>656</a>        stream: <span class="kw-2">&amp;mut </span>store::Ptr,
-<a href=#657 id=657 data-nosnippet>657</a>    ) {
-<a href=#658 id=658 data-nosnippet>658</a>        <span class="comment">// Push the frame to the front of the stream's deque
-<a href=#659 id=659 data-nosnippet>659</a>        </span>stream.pending_send.push_front(buffer, frame);
-<a href=#660 id=660 data-nosnippet>660</a>
-<a href=#661 id=661 data-nosnippet>661</a>        <span class="comment">// If needed, schedule the sender
-<a href=#662 id=662 data-nosnippet>662</a>        </span><span class="kw">if </span>stream.send_flow.available() &gt; <span class="number">0 </span>{
-<a href=#663 id=663 data-nosnippet>663</a>            <span class="macro">debug_assert!</span>(!stream.pending_send.is_empty());
-<a href=#664 id=664 data-nosnippet>664</a>            <span class="self">self</span>.pending_send.push(stream);
-<a href=#665 id=665 data-nosnippet>665</a>        }
-<a href=#666 id=666 data-nosnippet>666</a>    }
+<a href=#638 id=638 data-nosnippet>638</a>            <span class="self">self</span>.push_back_frame(frame.into(), buffer, <span class="kw-2">&amp;mut </span>stream);
+<a href=#639 id=639 data-nosnippet>639</a>
+<a href=#640 id=640 data-nosnippet>640</a>            <span class="kw">return </span><span class="bool-val">true</span>;
+<a href=#641 id=641 data-nosnippet>641</a>        }
+<a href=#642 id=642 data-nosnippet>642</a>
+<a href=#643 id=643 data-nosnippet>643</a>        <span class="bool-val">false
+<a href=#644 id=644 data-nosnippet>644</a>    </span>}
+<a href=#645 id=645 data-nosnippet>645</a>
+<a href=#646 id=646 data-nosnippet>646</a>    <span class="doccomment">/// Push the frame to the front of the stream's deque, scheduling the
+<a href=#647 id=647 data-nosnippet>647</a>    /// stream if needed.
+<a href=#648 id=648 data-nosnippet>648</a>    </span><span class="kw">fn </span>push_back_frame&lt;B&gt;(
+<a href=#649 id=649 data-nosnippet>649</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#650 id=650 data-nosnippet>650</a>        frame: Frame&lt;B&gt;,
+<a href=#651 id=651 data-nosnippet>651</a>        buffer: <span class="kw-2">&amp;mut </span>Buffer&lt;Frame&lt;B&gt;&gt;,
+<a href=#652 id=652 data-nosnippet>652</a>        stream: <span class="kw-2">&amp;mut </span>store::Ptr,
+<a href=#653 id=653 data-nosnippet>653</a>    ) {
+<a href=#654 id=654 data-nosnippet>654</a>        <span class="comment">// Push the frame to the front of the stream's deque
+<a href=#655 id=655 data-nosnippet>655</a>        </span>stream.pending_send.push_front(buffer, frame);
+<a href=#656 id=656 data-nosnippet>656</a>
+<a href=#657 id=657 data-nosnippet>657</a>        <span class="comment">// If needed, schedule the sender
+<a href=#658 id=658 data-nosnippet>658</a>        </span><span class="kw">if </span>stream.send_flow.available() &gt; <span class="number">0 </span>{
+<a href=#659 id=659 data-nosnippet>659</a>            <span class="macro">debug_assert!</span>(!stream.pending_send.is_empty());
+<a href=#660 id=660 data-nosnippet>660</a>            <span class="self">self</span>.pending_send.push(stream);
+<a href=#661 id=661 data-nosnippet>661</a>        }
+<a href=#662 id=662 data-nosnippet>662</a>    }
+<a href=#663 id=663 data-nosnippet>663</a>
+<a href=#664 id=664 data-nosnippet>664</a>    <span class="kw">pub fn </span>clear_queue&lt;B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buffer: <span class="kw-2">&amp;mut </span>Buffer&lt;Frame&lt;B&gt;&gt;, stream: <span class="kw-2">&amp;mut </span>store::Ptr) {
+<a href=#665 id=665 data-nosnippet>665</a>        <span class="kw">let </span>span = <span class="macro">tracing::trace_span!</span>(<span class="string">"clear_queue"</span>, <span class="question-mark">?</span>stream.id);
+<a href=#666 id=666 data-nosnippet>666</a>        <span class="kw">let </span>_e = span.enter();
 <a href=#667 id=667 data-nosnippet>667</a>
-<a href=#668 id=668 data-nosnippet>668</a>    <span class="kw">pub fn </span>clear_queue&lt;B&gt;(<span class="kw-2">&amp;mut </span><span class="self">self</span>, buffer: <span class="kw-2">&amp;mut </span>Buffer&lt;Frame&lt;B&gt;&gt;, stream: <span class="kw-2">&amp;mut </span>store::Ptr) {
-<a href=#669 id=669 data-nosnippet>669</a>        <span class="kw">let </span>span = <span class="macro">tracing::trace_span!</span>(<span class="string">"clear_queue"</span>, <span class="question-mark">?</span>stream.id);
-<a href=#670 id=670 data-nosnippet>670</a>        <span class="kw">let </span>_e = span.enter();
-<a href=#671 id=671 data-nosnippet>671</a>
-<a href=#672 id=672 data-nosnippet>672</a>        <span class="comment">// TODO: make this more efficient?
-<a href=#673 id=673 data-nosnippet>673</a>        </span><span class="kw">while let </span><span class="prelude-val">Some</span>(frame) = stream.pending_send.pop_front(buffer) {
-<a href=#674 id=674 data-nosnippet>674</a>            <span class="macro">tracing::trace!</span>(<span class="question-mark">?</span>frame, <span class="string">"dropping"</span>);
-<a href=#675 id=675 data-nosnippet>675</a>        }
-<a href=#676 id=676 data-nosnippet>676</a>
-<a href=#677 id=677 data-nosnippet>677</a>        stream.buffered_send_data = <span class="number">0</span>;
-<a href=#678 id=678 data-nosnippet>678</a>        stream.requested_send_capacity = <span class="number">0</span>;
-<a href=#679 id=679 data-nosnippet>679</a>        <span class="kw">if let </span>InFlightData::DataFrame(key) = <span class="self">self</span>.in_flight_data_frame {
-<a href=#680 id=680 data-nosnippet>680</a>            <span class="kw">if </span>stream.key() == key {
-<a href=#681 id=681 data-nosnippet>681</a>                <span class="comment">// This stream could get cleaned up now - don't allow the buffered frame to get reclaimed.
-<a href=#682 id=682 data-nosnippet>682</a>                </span><span class="self">self</span>.in_flight_data_frame = InFlightData::Drop;
-<a href=#683 id=683 data-nosnippet>683</a>            }
-<a href=#684 id=684 data-nosnippet>684</a>        }
-<a href=#685 id=685 data-nosnippet>685</a>    }
-<a href=#686 id=686 data-nosnippet>686</a>
-<a href=#687 id=687 data-nosnippet>687</a>    <span class="kw">pub fn </span>clear_pending_send(<span class="kw-2">&amp;mut </span><span class="self">self</span>, store: <span class="kw-2">&amp;mut </span>Store, counts: <span class="kw-2">&amp;mut </span>Counts) {
-<a href=#688 id=688 data-nosnippet>688</a>        <span class="kw">while let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>stream) = <span class="self">self</span>.pending_send.pop(store) {
-<a href=#689 id=689 data-nosnippet>689</a>            <span class="kw">let </span>is_pending_reset = stream.is_pending_reset_expiration();
-<a href=#690 id=690 data-nosnippet>690</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(reason) = stream.state.get_scheduled_reset() {
-<a href=#691 id=691 data-nosnippet>691</a>                stream.set_reset(reason, Initiator::Library);
-<a href=#692 id=692 data-nosnippet>692</a>            }
-<a href=#693 id=693 data-nosnippet>693</a>            counts.transition_after(stream, is_pending_reset);
-<a href=#694 id=694 data-nosnippet>694</a>        }
-<a href=#695 id=695 data-nosnippet>695</a>    }
-<a href=#696 id=696 data-nosnippet>696</a>
-<a href=#697 id=697 data-nosnippet>697</a>    <span class="kw">pub fn </span>clear_pending_open(<span class="kw-2">&amp;mut </span><span class="self">self</span>, store: <span class="kw-2">&amp;mut </span>Store, counts: <span class="kw-2">&amp;mut </span>Counts) {
-<a href=#698 id=698 data-nosnippet>698</a>        <span class="kw">while let </span><span class="prelude-val">Some</span>(stream) = <span class="self">self</span>.pending_open.pop(store) {
-<a href=#699 id=699 data-nosnippet>699</a>            <span class="kw">let </span>is_pending_reset = stream.is_pending_reset_expiration();
-<a href=#700 id=700 data-nosnippet>700</a>            counts.transition_after(stream, is_pending_reset);
-<a href=#701 id=701 data-nosnippet>701</a>        }
-<a href=#702 id=702 data-nosnippet>702</a>    }
-<a href=#703 id=703 data-nosnippet>703</a>
-<a href=#704 id=704 data-nosnippet>704</a>    <span class="kw">fn </span>pop_frame&lt;B&gt;(
-<a href=#705 id=705 data-nosnippet>705</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-<a href=#706 id=706 data-nosnippet>706</a>        buffer: <span class="kw-2">&amp;mut </span>Buffer&lt;Frame&lt;B&gt;&gt;,
-<a href=#707 id=707 data-nosnippet>707</a>        store: <span class="kw-2">&amp;mut </span>Store,
-<a href=#708 id=708 data-nosnippet>708</a>        max_len: usize,
-<a href=#709 id=709 data-nosnippet>709</a>        counts: <span class="kw-2">&amp;mut </span>Counts,
-<a href=#710 id=710 data-nosnippet>710</a>    ) -&gt; <span class="prelude-ty">Option</span>&lt;Frame&lt;Prioritized&lt;B&gt;&gt;&gt;
-<a href=#711 id=711 data-nosnippet>711</a>    <span class="kw">where
-<a href=#712 id=712 data-nosnippet>712</a>        </span>B: Buf,
-<a href=#713 id=713 data-nosnippet>713</a>    {
-<a href=#714 id=714 data-nosnippet>714</a>        <span class="kw">let </span>span = <span class="macro">tracing::trace_span!</span>(<span class="string">"pop_frame"</span>);
-<a href=#715 id=715 data-nosnippet>715</a>        <span class="kw">let </span>_e = span.enter();
-<a href=#716 id=716 data-nosnippet>716</a>
-<a href=#717 id=717 data-nosnippet>717</a>        <span class="kw">loop </span>{
-<a href=#718 id=718 data-nosnippet>718</a>            <span class="kw">match </span><span class="self">self</span>.pending_send.pop(store) {
-<a href=#719 id=719 data-nosnippet>719</a>                <span class="prelude-val">Some</span>(<span class="kw-2">mut </span>stream) =&gt; {
-<a href=#720 id=720 data-nosnippet>720</a>                    <span class="kw">let </span>span = <span class="macro">tracing::trace_span!</span>(<span class="string">"popped"</span>, <span class="question-mark">?</span>stream.id, <span class="question-mark">?</span>stream.state);
-<a href=#721 id=721 data-nosnippet>721</a>                    <span class="kw">let </span>_e = span.enter();
-<a href=#722 id=722 data-nosnippet>722</a>
-<a href=#723 id=723 data-nosnippet>723</a>                    <span class="comment">// It's possible that this stream, besides having data to send,
-<a href=#724 id=724 data-nosnippet>724</a>                    // is also queued to send a reset, and thus is already in the queue
-<a href=#725 id=725 data-nosnippet>725</a>                    // to wait for "some time" after a reset.
-<a href=#726 id=726 data-nosnippet>726</a>                    //
-<a href=#727 id=727 data-nosnippet>727</a>                    // To be safe, we just always ask the stream.
-<a href=#728 id=728 data-nosnippet>728</a>                    </span><span class="kw">let </span>is_pending_reset = stream.is_pending_reset_expiration();
-<a href=#729 id=729 data-nosnippet>729</a>
-<a href=#730 id=730 data-nosnippet>730</a>                    <span class="macro">tracing::trace!</span>(is_pending_reset);
-<a href=#731 id=731 data-nosnippet>731</a>
-<a href=#732 id=732 data-nosnippet>732</a>                    <span class="kw">let </span>frame = <span class="kw">match </span>stream.pending_send.pop_front(buffer) {
-<a href=#733 id=733 data-nosnippet>733</a>                        <span class="prelude-val">Some</span>(Frame::Data(<span class="kw-2">mut </span>frame)) =&gt; {
-<a href=#734 id=734 data-nosnippet>734</a>                            <span class="comment">// Get the amount of capacity remaining for stream's
-<a href=#735 id=735 data-nosnippet>735</a>                            // window.
-<a href=#736 id=736 data-nosnippet>736</a>                            </span><span class="kw">let </span>stream_capacity = stream.send_flow.available();
-<a href=#737 id=737 data-nosnippet>737</a>                            <span class="kw">let </span>sz = frame.payload().remaining();
-<a href=#738 id=738 data-nosnippet>738</a>
-<a href=#739 id=739 data-nosnippet>739</a>                            <span class="macro">tracing::trace!</span>(
-<a href=#740 id=740 data-nosnippet>740</a>                                sz,
-<a href=#741 id=741 data-nosnippet>741</a>                                eos = frame.is_end_stream(),
-<a href=#742 id=742 data-nosnippet>742</a>                                window = %stream_capacity,
-<a href=#743 id=743 data-nosnippet>743</a>                                available = %stream.send_flow.available(),
-<a href=#744 id=744 data-nosnippet>744</a>                                requested = stream.requested_send_capacity,
-<a href=#745 id=745 data-nosnippet>745</a>                                buffered = stream.buffered_send_data,
-<a href=#746 id=746 data-nosnippet>746</a>                                <span class="string">"data frame"
-<a href=#747 id=747 data-nosnippet>747</a>                            </span>);
-<a href=#748 id=748 data-nosnippet>748</a>
-<a href=#749 id=749 data-nosnippet>749</a>                            <span class="comment">// Zero length data frames always have capacity to
-<a href=#750 id=750 data-nosnippet>750</a>                            // be sent.
-<a href=#751 id=751 data-nosnippet>751</a>                            </span><span class="kw">if </span>sz &gt; <span class="number">0 </span>&amp;&amp; stream_capacity == <span class="number">0 </span>{
-<a href=#752 id=752 data-nosnippet>752</a>                                <span class="macro">tracing::trace!</span>(<span class="string">"stream capacity is 0"</span>);
-<a href=#753 id=753 data-nosnippet>753</a>
-<a href=#754 id=754 data-nosnippet>754</a>                                <span class="comment">// Ensure that the stream is waiting for
-<a href=#755 id=755 data-nosnippet>755</a>                                // connection level capacity
-<a href=#756 id=756 data-nosnippet>756</a>                                //
-<a href=#757 id=757 data-nosnippet>757</a>                                // TODO: uncomment
-<a href=#758 id=758 data-nosnippet>758</a>                                // debug_assert!(stream.is_pending_send_capacity);
-<a href=#759 id=759 data-nosnippet>759</a>
-<a href=#760 id=760 data-nosnippet>760</a>                                // The stream has no more capacity, this can
-<a href=#761 id=761 data-nosnippet>761</a>                                // happen if the remote reduced the stream
-<a href=#762 id=762 data-nosnippet>762</a>                                // window. In this case, we need to buffer the
-<a href=#763 id=763 data-nosnippet>763</a>                                // frame and wait for a window update...
-<a href=#764 id=764 data-nosnippet>764</a>                                </span>stream.pending_send.push_front(buffer, frame.into());
-<a href=#765 id=765 data-nosnippet>765</a>
-<a href=#766 id=766 data-nosnippet>766</a>                                <span class="kw">continue</span>;
-<a href=#767 id=767 data-nosnippet>767</a>                            }
-<a href=#768 id=768 data-nosnippet>768</a>
-<a href=#769 id=769 data-nosnippet>769</a>                            <span class="comment">// Only send up to the max frame length
-<a href=#770 id=770 data-nosnippet>770</a>                            </span><span class="kw">let </span>len = cmp::min(sz, max_len);
+<a href=#668 id=668 data-nosnippet>668</a>        <span class="comment">// TODO: make this more efficient?
+<a href=#669 id=669 data-nosnippet>669</a>        </span><span class="kw">while let </span><span class="prelude-val">Some</span>(frame) = stream.pending_send.pop_front(buffer) {
+<a href=#670 id=670 data-nosnippet>670</a>            <span class="macro">tracing::trace!</span>(<span class="question-mark">?</span>frame, <span class="string">"dropping"</span>);
+<a href=#671 id=671 data-nosnippet>671</a>        }
+<a href=#672 id=672 data-nosnippet>672</a>
+<a href=#673 id=673 data-nosnippet>673</a>        stream.buffered_send_data = <span class="number">0</span>;
+<a href=#674 id=674 data-nosnippet>674</a>        stream.requested_send_capacity = <span class="number">0</span>;
+<a href=#675 id=675 data-nosnippet>675</a>        <span class="kw">if let </span>InFlightData::DataFrame(key) = <span class="self">self</span>.in_flight_data_frame {
+<a href=#676 id=676 data-nosnippet>676</a>            <span class="kw">if </span>stream.key() == key {
+<a href=#677 id=677 data-nosnippet>677</a>                <span class="comment">// This stream could get cleaned up now - don't allow the buffered frame to get reclaimed.
+<a href=#678 id=678 data-nosnippet>678</a>                </span><span class="self">self</span>.in_flight_data_frame = InFlightData::Drop;
+<a href=#679 id=679 data-nosnippet>679</a>            }
+<a href=#680 id=680 data-nosnippet>680</a>        }
+<a href=#681 id=681 data-nosnippet>681</a>    }
+<a href=#682 id=682 data-nosnippet>682</a>
+<a href=#683 id=683 data-nosnippet>683</a>    <span class="kw">pub fn </span>clear_pending_send(<span class="kw-2">&amp;mut </span><span class="self">self</span>, store: <span class="kw-2">&amp;mut </span>Store, counts: <span class="kw-2">&amp;mut </span>Counts) {
+<a href=#684 id=684 data-nosnippet>684</a>        <span class="kw">while let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>stream) = <span class="self">self</span>.pending_send.pop(store) {
+<a href=#685 id=685 data-nosnippet>685</a>            <span class="kw">let </span>is_pending_reset = stream.is_pending_reset_expiration();
+<a href=#686 id=686 data-nosnippet>686</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(reason) = stream.state.get_scheduled_reset() {
+<a href=#687 id=687 data-nosnippet>687</a>                stream.set_reset(reason, Initiator::Library);
+<a href=#688 id=688 data-nosnippet>688</a>            }
+<a href=#689 id=689 data-nosnippet>689</a>            counts.transition_after(stream, is_pending_reset);
+<a href=#690 id=690 data-nosnippet>690</a>        }
+<a href=#691 id=691 data-nosnippet>691</a>    }
+<a href=#692 id=692 data-nosnippet>692</a>
+<a href=#693 id=693 data-nosnippet>693</a>    <span class="kw">pub fn </span>clear_pending_open(<span class="kw-2">&amp;mut </span><span class="self">self</span>, store: <span class="kw-2">&amp;mut </span>Store, counts: <span class="kw-2">&amp;mut </span>Counts) {
+<a href=#694 id=694 data-nosnippet>694</a>        <span class="kw">while let </span><span class="prelude-val">Some</span>(stream) = <span class="self">self</span>.pending_open.pop(store) {
+<a href=#695 id=695 data-nosnippet>695</a>            <span class="kw">let </span>is_pending_reset = stream.is_pending_reset_expiration();
+<a href=#696 id=696 data-nosnippet>696</a>            counts.transition_after(stream, is_pending_reset);
+<a href=#697 id=697 data-nosnippet>697</a>        }
+<a href=#698 id=698 data-nosnippet>698</a>    }
+<a href=#699 id=699 data-nosnippet>699</a>
+<a href=#700 id=700 data-nosnippet>700</a>    <span class="kw">fn </span>pop_frame&lt;B&gt;(
+<a href=#701 id=701 data-nosnippet>701</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#702 id=702 data-nosnippet>702</a>        buffer: <span class="kw-2">&amp;mut </span>Buffer&lt;Frame&lt;B&gt;&gt;,
+<a href=#703 id=703 data-nosnippet>703</a>        store: <span class="kw-2">&amp;mut </span>Store,
+<a href=#704 id=704 data-nosnippet>704</a>        max_len: usize,
+<a href=#705 id=705 data-nosnippet>705</a>        counts: <span class="kw-2">&amp;mut </span>Counts,
+<a href=#706 id=706 data-nosnippet>706</a>    ) -&gt; <span class="prelude-ty">Option</span>&lt;Frame&lt;Prioritized&lt;B&gt;&gt;&gt;
+<a href=#707 id=707 data-nosnippet>707</a>    <span class="kw">where
+<a href=#708 id=708 data-nosnippet>708</a>        </span>B: Buf,
+<a href=#709 id=709 data-nosnippet>709</a>    {
+<a href=#710 id=710 data-nosnippet>710</a>        <span class="kw">let </span>span = <span class="macro">tracing::trace_span!</span>(<span class="string">"pop_frame"</span>);
+<a href=#711 id=711 data-nosnippet>711</a>        <span class="kw">let </span>_e = span.enter();
+<a href=#712 id=712 data-nosnippet>712</a>
+<a href=#713 id=713 data-nosnippet>713</a>        <span class="kw">loop </span>{
+<a href=#714 id=714 data-nosnippet>714</a>            <span class="kw">match </span><span class="self">self</span>.pending_send.pop(store) {
+<a href=#715 id=715 data-nosnippet>715</a>                <span class="prelude-val">Some</span>(<span class="kw-2">mut </span>stream) =&gt; {
+<a href=#716 id=716 data-nosnippet>716</a>                    <span class="kw">let </span>span = <span class="macro">tracing::trace_span!</span>(<span class="string">"popped"</span>, <span class="question-mark">?</span>stream.id, <span class="question-mark">?</span>stream.state);
+<a href=#717 id=717 data-nosnippet>717</a>                    <span class="kw">let </span>_e = span.enter();
+<a href=#718 id=718 data-nosnippet>718</a>
+<a href=#719 id=719 data-nosnippet>719</a>                    <span class="comment">// It's possible that this stream, besides having data to send,
+<a href=#720 id=720 data-nosnippet>720</a>                    // is also queued to send a reset, and thus is already in the queue
+<a href=#721 id=721 data-nosnippet>721</a>                    // to wait for "some time" after a reset.
+<a href=#722 id=722 data-nosnippet>722</a>                    //
+<a href=#723 id=723 data-nosnippet>723</a>                    // To be safe, we just always ask the stream.
+<a href=#724 id=724 data-nosnippet>724</a>                    </span><span class="kw">let </span>is_pending_reset = stream.is_pending_reset_expiration();
+<a href=#725 id=725 data-nosnippet>725</a>
+<a href=#726 id=726 data-nosnippet>726</a>                    <span class="macro">tracing::trace!</span>(is_pending_reset);
+<a href=#727 id=727 data-nosnippet>727</a>
+<a href=#728 id=728 data-nosnippet>728</a>                    <span class="kw">let </span>frame = <span class="kw">match </span>stream.pending_send.pop_front(buffer) {
+<a href=#729 id=729 data-nosnippet>729</a>                        <span class="prelude-val">Some</span>(Frame::Data(<span class="kw-2">mut </span>frame)) =&gt; {
+<a href=#730 id=730 data-nosnippet>730</a>                            <span class="comment">// Get the amount of capacity remaining for stream's
+<a href=#731 id=731 data-nosnippet>731</a>                            // window.
+<a href=#732 id=732 data-nosnippet>732</a>                            </span><span class="kw">let </span>stream_capacity = stream.send_flow.available();
+<a href=#733 id=733 data-nosnippet>733</a>                            <span class="kw">let </span>sz = frame.payload().remaining();
+<a href=#734 id=734 data-nosnippet>734</a>
+<a href=#735 id=735 data-nosnippet>735</a>                            <span class="macro">tracing::trace!</span>(
+<a href=#736 id=736 data-nosnippet>736</a>                                sz,
+<a href=#737 id=737 data-nosnippet>737</a>                                eos = frame.is_end_stream(),
+<a href=#738 id=738 data-nosnippet>738</a>                                window = %stream_capacity,
+<a href=#739 id=739 data-nosnippet>739</a>                                available = %stream.send_flow.available(),
+<a href=#740 id=740 data-nosnippet>740</a>                                requested = stream.requested_send_capacity,
+<a href=#741 id=741 data-nosnippet>741</a>                                buffered = stream.buffered_send_data,
+<a href=#742 id=742 data-nosnippet>742</a>                                <span class="string">"data frame"
+<a href=#743 id=743 data-nosnippet>743</a>                            </span>);
+<a href=#744 id=744 data-nosnippet>744</a>
+<a href=#745 id=745 data-nosnippet>745</a>                            <span class="comment">// Zero length data frames always have capacity to
+<a href=#746 id=746 data-nosnippet>746</a>                            // be sent.
+<a href=#747 id=747 data-nosnippet>747</a>                            </span><span class="kw">if </span>sz &gt; <span class="number">0 </span>&amp;&amp; stream_capacity == <span class="number">0 </span>{
+<a href=#748 id=748 data-nosnippet>748</a>                                <span class="macro">tracing::trace!</span>(<span class="string">"stream capacity is 0"</span>);
+<a href=#749 id=749 data-nosnippet>749</a>
+<a href=#750 id=750 data-nosnippet>750</a>                                <span class="comment">// Ensure that the stream is waiting for
+<a href=#751 id=751 data-nosnippet>751</a>                                // connection level capacity
+<a href=#752 id=752 data-nosnippet>752</a>                                //
+<a href=#753 id=753 data-nosnippet>753</a>                                // TODO: uncomment
+<a href=#754 id=754 data-nosnippet>754</a>                                // debug_assert!(stream.is_pending_send_capacity);
+<a href=#755 id=755 data-nosnippet>755</a>
+<a href=#756 id=756 data-nosnippet>756</a>                                // The stream has no more capacity, this can
+<a href=#757 id=757 data-nosnippet>757</a>                                // happen if the remote reduced the stream
+<a href=#758 id=758 data-nosnippet>758</a>                                // window. In this case, we need to buffer the
+<a href=#759 id=759 data-nosnippet>759</a>                                // frame and wait for a window update...
+<a href=#760 id=760 data-nosnippet>760</a>                                </span>stream.pending_send.push_front(buffer, frame.into());
+<a href=#761 id=761 data-nosnippet>761</a>
+<a href=#762 id=762 data-nosnippet>762</a>                                <span class="kw">continue</span>;
+<a href=#763 id=763 data-nosnippet>763</a>                            }
+<a href=#764 id=764 data-nosnippet>764</a>
+<a href=#765 id=765 data-nosnippet>765</a>                            <span class="comment">// Only send up to the max frame length
+<a href=#766 id=766 data-nosnippet>766</a>                            </span><span class="kw">let </span>len = cmp::min(sz, max_len);
+<a href=#767 id=767 data-nosnippet>767</a>
+<a href=#768 id=768 data-nosnippet>768</a>                            <span class="comment">// Only send up to the stream's window capacity
+<a href=#769 id=769 data-nosnippet>769</a>                            </span><span class="kw">let </span>len =
+<a href=#770 id=770 data-nosnippet>770</a>                                cmp::min(len, stream_capacity.as_size() <span class="kw">as </span>usize) <span class="kw">as </span>WindowSize;
 <a href=#771 id=771 data-nosnippet>771</a>
-<a href=#772 id=772 data-nosnippet>772</a>                            <span class="comment">// Only send up to the stream's window capacity
-<a href=#773 id=773 data-nosnippet>773</a>                            </span><span class="kw">let </span>len =
-<a href=#774 id=774 data-nosnippet>774</a>                                cmp::min(len, stream_capacity.as_size() <span class="kw">as </span>usize) <span class="kw">as </span>WindowSize;
+<a href=#772 id=772 data-nosnippet>772</a>                            <span class="comment">// There *must* be be enough connection level
+<a href=#773 id=773 data-nosnippet>773</a>                            // capacity at this point.
+<a href=#774 id=774 data-nosnippet>774</a>                            </span><span class="macro">debug_assert!</span>(len &lt;= <span class="self">self</span>.flow.window_size());
 <a href=#775 id=775 data-nosnippet>775</a>
-<a href=#776 id=776 data-nosnippet>776</a>                            <span class="comment">// There *must* be be enough connection level
-<a href=#777 id=777 data-nosnippet>777</a>                            // capacity at this point.
-<a href=#778 id=778 data-nosnippet>778</a>                            </span><span class="macro">debug_assert!</span>(len &lt;= <span class="self">self</span>.flow.window_size());
-<a href=#779 id=779 data-nosnippet>779</a>
-<a href=#780 id=780 data-nosnippet>780</a>                            <span class="comment">// Check if the stream level window the peer knows is available. In some
-<a href=#781 id=781 data-nosnippet>781</a>                            // scenarios, maybe the window we know is available but the window which
-<a href=#782 id=782 data-nosnippet>782</a>                            // peer knows is not.
-<a href=#783 id=783 data-nosnippet>783</a>                            </span><span class="kw">if </span>len &gt; <span class="number">0 </span>&amp;&amp; len &gt; stream.send_flow.window_size() {
-<a href=#784 id=784 data-nosnippet>784</a>                                stream.pending_send.push_front(buffer, frame.into());
-<a href=#785 id=785 data-nosnippet>785</a>                                <span class="kw">continue</span>;
-<a href=#786 id=786 data-nosnippet>786</a>                            }
-<a href=#787 id=787 data-nosnippet>787</a>
-<a href=#788 id=788 data-nosnippet>788</a>                            <span class="macro">tracing::trace!</span>(len, <span class="string">"sending data frame"</span>);
+<a href=#776 id=776 data-nosnippet>776</a>                            <span class="comment">// Check if the stream level window the peer knows is available. In some
+<a href=#777 id=777 data-nosnippet>777</a>                            // scenarios, maybe the window we know is available but the window which
+<a href=#778 id=778 data-nosnippet>778</a>                            // peer knows is not.
+<a href=#779 id=779 data-nosnippet>779</a>                            </span><span class="kw">if </span>len &gt; <span class="number">0 </span>&amp;&amp; len &gt; stream.send_flow.window_size() {
+<a href=#780 id=780 data-nosnippet>780</a>                                stream.pending_send.push_front(buffer, frame.into());
+<a href=#781 id=781 data-nosnippet>781</a>                                <span class="kw">continue</span>;
+<a href=#782 id=782 data-nosnippet>782</a>                            }
+<a href=#783 id=783 data-nosnippet>783</a>
+<a href=#784 id=784 data-nosnippet>784</a>                            <span class="macro">tracing::trace!</span>(len, <span class="string">"sending data frame"</span>);
+<a href=#785 id=785 data-nosnippet>785</a>
+<a href=#786 id=786 data-nosnippet>786</a>                            <span class="comment">// Update the flow control
+<a href=#787 id=787 data-nosnippet>787</a>                            </span><span class="macro">tracing::trace_span!</span>(<span class="string">"updating stream flow"</span>).in_scope(|| {
+<a href=#788 id=788 data-nosnippet>788</a>                                stream.send_data(len, <span class="self">self</span>.max_buffer_size);
 <a href=#789 id=789 data-nosnippet>789</a>
-<a href=#790 id=790 data-nosnippet>790</a>                            <span class="comment">// Update the flow control
-<a href=#791 id=791 data-nosnippet>791</a>                            </span><span class="macro">tracing::trace_span!</span>(<span class="string">"updating stream flow"</span>).in_scope(|| {
-<a href=#792 id=792 data-nosnippet>792</a>                                stream.send_data(len, <span class="self">self</span>.max_buffer_size);
-<a href=#793 id=793 data-nosnippet>793</a>
-<a href=#794 id=794 data-nosnippet>794</a>                                <span class="comment">// Assign the capacity back to the connection that
-<a href=#795 id=795 data-nosnippet>795</a>                                // was just consumed from the stream in the previous
-<a href=#796 id=796 data-nosnippet>796</a>                                // line.
-<a href=#797 id=797 data-nosnippet>797</a>                                // TODO: proper error handling
-<a href=#798 id=798 data-nosnippet>798</a>                                </span><span class="kw">let </span>_res = <span class="self">self</span>.flow.assign_capacity(len);
-<a href=#799 id=799 data-nosnippet>799</a>                                <span class="macro">debug_assert!</span>(_res.is_ok());
-<a href=#800 id=800 data-nosnippet>800</a>                            });
-<a href=#801 id=801 data-nosnippet>801</a>
-<a href=#802 id=802 data-nosnippet>802</a>                            <span class="kw">let </span>(eos, len) = <span class="macro">tracing::trace_span!</span>(<span class="string">"updating connection flow"</span>)
-<a href=#803 id=803 data-nosnippet>803</a>                                .in_scope(|| {
-<a href=#804 id=804 data-nosnippet>804</a>                                    <span class="comment">// TODO: proper error handling
-<a href=#805 id=805 data-nosnippet>805</a>                                    </span><span class="kw">let </span>_res = <span class="self">self</span>.flow.send_data(len);
-<a href=#806 id=806 data-nosnippet>806</a>                                    <span class="macro">debug_assert!</span>(_res.is_ok());
-<a href=#807 id=807 data-nosnippet>807</a>
-<a href=#808 id=808 data-nosnippet>808</a>                                    <span class="comment">// Wrap the frame's data payload to ensure that the
-<a href=#809 id=809 data-nosnippet>809</a>                                    // correct amount of data gets written.
-<a href=#810 id=810 data-nosnippet>810</a>
-<a href=#811 id=811 data-nosnippet>811</a>                                    </span><span class="kw">let </span>eos = frame.is_end_stream();
-<a href=#812 id=812 data-nosnippet>812</a>                                    <span class="kw">let </span>len = len <span class="kw">as </span>usize;
-<a href=#813 id=813 data-nosnippet>813</a>
-<a href=#814 id=814 data-nosnippet>814</a>                                    <span class="kw">if </span>frame.payload().remaining() &gt; len {
-<a href=#815 id=815 data-nosnippet>815</a>                                        frame.set_end_stream(<span class="bool-val">false</span>);
-<a href=#816 id=816 data-nosnippet>816</a>                                    }
-<a href=#817 id=817 data-nosnippet>817</a>                                    (eos, len)
-<a href=#818 id=818 data-nosnippet>818</a>                                });
-<a href=#819 id=819 data-nosnippet>819</a>
-<a href=#820 id=820 data-nosnippet>820</a>                            Frame::Data(frame.map(|buf| Prioritized {
-<a href=#821 id=821 data-nosnippet>821</a>                                inner: buf.take(len),
-<a href=#822 id=822 data-nosnippet>822</a>                                end_of_stream: eos,
-<a href=#823 id=823 data-nosnippet>823</a>                                stream: stream.key(),
-<a href=#824 id=824 data-nosnippet>824</a>                            }))
-<a href=#825 id=825 data-nosnippet>825</a>                        }
-<a href=#826 id=826 data-nosnippet>826</a>                        <span class="prelude-val">Some</span>(Frame::PushPromise(pp)) =&gt; {
-<a href=#827 id=827 data-nosnippet>827</a>                            <span class="kw">let </span><span class="kw-2">mut </span>pushed =
-<a href=#828 id=828 data-nosnippet>828</a>                                stream.store_mut().find_mut(<span class="kw-2">&amp;</span>pp.promised_id()).unwrap();
-<a href=#829 id=829 data-nosnippet>829</a>                            pushed.is_pending_push = <span class="bool-val">false</span>;
-<a href=#830 id=830 data-nosnippet>830</a>                            <span class="comment">// Transition stream from pending_push to pending_open
-<a href=#831 id=831 data-nosnippet>831</a>                            // if possible
-<a href=#832 id=832 data-nosnippet>832</a>                            </span><span class="kw">if </span>!pushed.pending_send.is_empty() {
-<a href=#833 id=833 data-nosnippet>833</a>                                <span class="kw">if </span>counts.can_inc_num_send_streams() {
-<a href=#834 id=834 data-nosnippet>834</a>                                    counts.inc_num_send_streams(<span class="kw-2">&amp;mut </span>pushed);
-<a href=#835 id=835 data-nosnippet>835</a>                                    <span class="self">self</span>.pending_send.push(<span class="kw-2">&amp;mut </span>pushed);
-<a href=#836 id=836 data-nosnippet>836</a>                                } <span class="kw">else </span>{
-<a href=#837 id=837 data-nosnippet>837</a>                                    <span class="self">self</span>.queue_open(<span class="kw-2">&amp;mut </span>pushed);
-<a href=#838 id=838 data-nosnippet>838</a>                                }
-<a href=#839 id=839 data-nosnippet>839</a>                            }
-<a href=#840 id=840 data-nosnippet>840</a>                            Frame::PushPromise(pp)
-<a href=#841 id=841 data-nosnippet>841</a>                        }
-<a href=#842 id=842 data-nosnippet>842</a>                        <span class="prelude-val">Some</span>(frame) =&gt; frame.map(|<span class="kw">_</span>| {
-<a href=#843 id=843 data-nosnippet>843</a>                            <span class="macro">unreachable!</span>(
-<a href=#844 id=844 data-nosnippet>844</a>                                <span class="string">"Frame::map closure will only be called \
-<a href=#845 id=845 data-nosnippet>845</a>                                 on DATA frames."
-<a href=#846 id=846 data-nosnippet>846</a>                            </span>)
-<a href=#847 id=847 data-nosnippet>847</a>                        }),
-<a href=#848 id=848 data-nosnippet>848</a>                        <span class="prelude-val">None </span>=&gt; {
-<a href=#849 id=849 data-nosnippet>849</a>                            <span class="kw">if let </span><span class="prelude-val">Some</span>(reason) = stream.state.get_scheduled_reset() {
-<a href=#850 id=850 data-nosnippet>850</a>                                stream.set_reset(reason, Initiator::Library);
-<a href=#851 id=851 data-nosnippet>851</a>
-<a href=#852 id=852 data-nosnippet>852</a>                                <span class="kw">let </span>frame = frame::Reset::new(stream.id, reason);
-<a href=#853 id=853 data-nosnippet>853</a>                                Frame::Reset(frame)
-<a href=#854 id=854 data-nosnippet>854</a>                            } <span class="kw">else </span>{
-<a href=#855 id=855 data-nosnippet>855</a>                                <span class="comment">// If the stream receives a RESET from the peer, it may have
-<a href=#856 id=856 data-nosnippet>856</a>                                // had data buffered to be sent, but all the frames are cleared
-<a href=#857 id=857 data-nosnippet>857</a>                                // in clear_queue(). Instead of doing O(N) traversal through queue
-<a href=#858 id=858 data-nosnippet>858</a>                                // to remove, lets just ignore the stream here.
-<a href=#859 id=859 data-nosnippet>859</a>                                </span><span class="macro">tracing::trace!</span>(<span class="string">"removing dangling stream from pending_send"</span>);
-<a href=#860 id=860 data-nosnippet>860</a>                                <span class="comment">// Since this should only happen as a consequence of `clear_queue`,
-<a href=#861 id=861 data-nosnippet>861</a>                                // we must be in a closed state of some kind.
-<a href=#862 id=862 data-nosnippet>862</a>                                </span><span class="macro">debug_assert!</span>(stream.state.is_closed());
-<a href=#863 id=863 data-nosnippet>863</a>                                counts.transition_after(stream, is_pending_reset);
-<a href=#864 id=864 data-nosnippet>864</a>                                <span class="kw">continue</span>;
-<a href=#865 id=865 data-nosnippet>865</a>                            }
-<a href=#866 id=866 data-nosnippet>866</a>                        }
-<a href=#867 id=867 data-nosnippet>867</a>                    };
-<a href=#868 id=868 data-nosnippet>868</a>
-<a href=#869 id=869 data-nosnippet>869</a>                    <span class="macro">tracing::trace!</span>(<span class="string">"pop_frame; frame={:?}"</span>, frame);
-<a href=#870 id=870 data-nosnippet>870</a>
-<a href=#871 id=871 data-nosnippet>871</a>                    <span class="kw">if </span><span class="macro">cfg!</span>(debug_assertions) &amp;&amp; stream.state.is_idle() {
-<a href=#872 id=872 data-nosnippet>872</a>                        <span class="macro">debug_assert!</span>(stream.id &gt; <span class="self">self</span>.last_opened_id);
-<a href=#873 id=873 data-nosnippet>873</a>                        <span class="self">self</span>.last_opened_id = stream.id;
-<a href=#874 id=874 data-nosnippet>874</a>                    }
-<a href=#875 id=875 data-nosnippet>875</a>
-<a href=#876 id=876 data-nosnippet>876</a>                    <span class="kw">if </span>!stream.pending_send.is_empty() || stream.state.is_scheduled_reset() {
-<a href=#877 id=877 data-nosnippet>877</a>                        <span class="comment">// TODO: Only requeue the sender IF it is ready to send
-<a href=#878 id=878 data-nosnippet>878</a>                        // the next frame. i.e. don't requeue it if the next
-<a href=#879 id=879 data-nosnippet>879</a>                        // frame is a data frame and the stream does not have
-<a href=#880 id=880 data-nosnippet>880</a>                        // any more capacity.
-<a href=#881 id=881 data-nosnippet>881</a>                        </span><span class="self">self</span>.pending_send.push(<span class="kw-2">&amp;mut </span>stream);
-<a href=#882 id=882 data-nosnippet>882</a>                    }
-<a href=#883 id=883 data-nosnippet>883</a>
-<a href=#884 id=884 data-nosnippet>884</a>                    counts.transition_after(stream, is_pending_reset);
-<a href=#885 id=885 data-nosnippet>885</a>
-<a href=#886 id=886 data-nosnippet>886</a>                    <span class="kw">return </span><span class="prelude-val">Some</span>(frame);
-<a href=#887 id=887 data-nosnippet>887</a>                }
-<a href=#888 id=888 data-nosnippet>888</a>                <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
-<a href=#889 id=889 data-nosnippet>889</a>            }
-<a href=#890 id=890 data-nosnippet>890</a>        }
-<a href=#891 id=891 data-nosnippet>891</a>    }
-<a href=#892 id=892 data-nosnippet>892</a>
-<a href=#893 id=893 data-nosnippet>893</a>    <span class="kw">fn </span>pop_pending_open&lt;<span class="lifetime">'s</span>&gt;(
-<a href=#894 id=894 data-nosnippet>894</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-<a href=#895 id=895 data-nosnippet>895</a>        store: <span class="kw-2">&amp;</span><span class="lifetime">'s </span><span class="kw-2">mut </span>Store,
-<a href=#896 id=896 data-nosnippet>896</a>        counts: <span class="kw-2">&amp;mut </span>Counts,
-<a href=#897 id=897 data-nosnippet>897</a>    ) -&gt; <span class="prelude-ty">Option</span>&lt;store::Ptr&lt;<span class="lifetime">'s</span>&gt;&gt; {
-<a href=#898 id=898 data-nosnippet>898</a>        <span class="macro">tracing::trace!</span>(<span class="string">"schedule_pending_open"</span>);
-<a href=#899 id=899 data-nosnippet>899</a>        <span class="comment">// check for any pending open streams
-<a href=#900 id=900 data-nosnippet>900</a>        </span><span class="kw">if </span>counts.can_inc_num_send_streams() {
-<a href=#901 id=901 data-nosnippet>901</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>stream) = <span class="self">self</span>.pending_open.pop(store) {
-<a href=#902 id=902 data-nosnippet>902</a>                <span class="macro">tracing::trace!</span>(<span class="string">"schedule_pending_open; stream={:?}"</span>, stream.id);
-<a href=#903 id=903 data-nosnippet>903</a>
-<a href=#904 id=904 data-nosnippet>904</a>                counts.inc_num_send_streams(<span class="kw-2">&amp;mut </span>stream);
-<a href=#905 id=905 data-nosnippet>905</a>                stream.notify_send();
-<a href=#906 id=906 data-nosnippet>906</a>                <span class="kw">return </span><span class="prelude-val">Some</span>(stream);
-<a href=#907 id=907 data-nosnippet>907</a>            }
-<a href=#908 id=908 data-nosnippet>908</a>        }
+<a href=#790 id=790 data-nosnippet>790</a>                                <span class="comment">// Assign the capacity back to the connection that
+<a href=#791 id=791 data-nosnippet>791</a>                                // was just consumed from the stream in the previous
+<a href=#792 id=792 data-nosnippet>792</a>                                // line.
+<a href=#793 id=793 data-nosnippet>793</a>                                // TODO: proper error handling
+<a href=#794 id=794 data-nosnippet>794</a>                                </span><span class="kw">let </span>_res = <span class="self">self</span>.flow.assign_capacity(len);
+<a href=#795 id=795 data-nosnippet>795</a>                                <span class="macro">debug_assert!</span>(_res.is_ok());
+<a href=#796 id=796 data-nosnippet>796</a>                            });
+<a href=#797 id=797 data-nosnippet>797</a>
+<a href=#798 id=798 data-nosnippet>798</a>                            <span class="kw">let </span>(eos, len) = <span class="macro">tracing::trace_span!</span>(<span class="string">"updating connection flow"</span>)
+<a href=#799 id=799 data-nosnippet>799</a>                                .in_scope(|| {
+<a href=#800 id=800 data-nosnippet>800</a>                                    <span class="comment">// TODO: proper error handling
+<a href=#801 id=801 data-nosnippet>801</a>                                    </span><span class="kw">let </span>_res = <span class="self">self</span>.flow.send_data(len);
+<a href=#802 id=802 data-nosnippet>802</a>                                    <span class="macro">debug_assert!</span>(_res.is_ok());
+<a href=#803 id=803 data-nosnippet>803</a>
+<a href=#804 id=804 data-nosnippet>804</a>                                    <span class="comment">// Wrap the frame's data payload to ensure that the
+<a href=#805 id=805 data-nosnippet>805</a>                                    // correct amount of data gets written.
+<a href=#806 id=806 data-nosnippet>806</a>
+<a href=#807 id=807 data-nosnippet>807</a>                                    </span><span class="kw">let </span>eos = frame.is_end_stream();
+<a href=#808 id=808 data-nosnippet>808</a>                                    <span class="kw">let </span>len = len <span class="kw">as </span>usize;
+<a href=#809 id=809 data-nosnippet>809</a>
+<a href=#810 id=810 data-nosnippet>810</a>                                    <span class="kw">if </span>frame.payload().remaining() &gt; len {
+<a href=#811 id=811 data-nosnippet>811</a>                                        frame.set_end_stream(<span class="bool-val">false</span>);
+<a href=#812 id=812 data-nosnippet>812</a>                                    }
+<a href=#813 id=813 data-nosnippet>813</a>                                    (eos, len)
+<a href=#814 id=814 data-nosnippet>814</a>                                });
+<a href=#815 id=815 data-nosnippet>815</a>
+<a href=#816 id=816 data-nosnippet>816</a>                            Frame::Data(frame.map(|buf| Prioritized {
+<a href=#817 id=817 data-nosnippet>817</a>                                inner: buf.take(len),
+<a href=#818 id=818 data-nosnippet>818</a>                                end_of_stream: eos,
+<a href=#819 id=819 data-nosnippet>819</a>                                stream: stream.key(),
+<a href=#820 id=820 data-nosnippet>820</a>                            }))
+<a href=#821 id=821 data-nosnippet>821</a>                        }
+<a href=#822 id=822 data-nosnippet>822</a>                        <span class="prelude-val">Some</span>(Frame::PushPromise(pp)) =&gt; {
+<a href=#823 id=823 data-nosnippet>823</a>                            <span class="kw">let </span><span class="kw-2">mut </span>pushed =
+<a href=#824 id=824 data-nosnippet>824</a>                                stream.store_mut().find_mut(<span class="kw-2">&amp;</span>pp.promised_id()).unwrap();
+<a href=#825 id=825 data-nosnippet>825</a>                            pushed.is_pending_push = <span class="bool-val">false</span>;
+<a href=#826 id=826 data-nosnippet>826</a>                            <span class="comment">// Transition stream from pending_push to pending_open
+<a href=#827 id=827 data-nosnippet>827</a>                            // if possible
+<a href=#828 id=828 data-nosnippet>828</a>                            </span><span class="kw">if </span>!pushed.pending_send.is_empty() {
+<a href=#829 id=829 data-nosnippet>829</a>                                <span class="kw">if </span>counts.can_inc_num_send_streams() {
+<a href=#830 id=830 data-nosnippet>830</a>                                    counts.inc_num_send_streams(<span class="kw-2">&amp;mut </span>pushed);
+<a href=#831 id=831 data-nosnippet>831</a>                                    <span class="self">self</span>.pending_send.push(<span class="kw-2">&amp;mut </span>pushed);
+<a href=#832 id=832 data-nosnippet>832</a>                                } <span class="kw">else </span>{
+<a href=#833 id=833 data-nosnippet>833</a>                                    <span class="self">self</span>.queue_open(<span class="kw-2">&amp;mut </span>pushed);
+<a href=#834 id=834 data-nosnippet>834</a>                                }
+<a href=#835 id=835 data-nosnippet>835</a>                            }
+<a href=#836 id=836 data-nosnippet>836</a>                            Frame::PushPromise(pp)
+<a href=#837 id=837 data-nosnippet>837</a>                        }
+<a href=#838 id=838 data-nosnippet>838</a>                        <span class="prelude-val">Some</span>(frame) =&gt; frame.map(|<span class="kw">_</span>| {
+<a href=#839 id=839 data-nosnippet>839</a>                            <span class="macro">unreachable!</span>(
+<a href=#840 id=840 data-nosnippet>840</a>                                <span class="string">"Frame::map closure will only be called \
+<a href=#841 id=841 data-nosnippet>841</a>                                 on DATA frames."
+<a href=#842 id=842 data-nosnippet>842</a>                            </span>)
+<a href=#843 id=843 data-nosnippet>843</a>                        }),
+<a href=#844 id=844 data-nosnippet>844</a>                        <span class="prelude-val">None </span>=&gt; {
+<a href=#845 id=845 data-nosnippet>845</a>                            <span class="kw">if let </span><span class="prelude-val">Some</span>(reason) = stream.state.get_scheduled_reset() {
+<a href=#846 id=846 data-nosnippet>846</a>                                stream.set_reset(reason, Initiator::Library);
+<a href=#847 id=847 data-nosnippet>847</a>
+<a href=#848 id=848 data-nosnippet>848</a>                                <span class="kw">let </span>frame = frame::Reset::new(stream.id, reason);
+<a href=#849 id=849 data-nosnippet>849</a>                                Frame::Reset(frame)
+<a href=#850 id=850 data-nosnippet>850</a>                            } <span class="kw">else </span>{
+<a href=#851 id=851 data-nosnippet>851</a>                                <span class="comment">// If the stream receives a RESET from the peer, it may have
+<a href=#852 id=852 data-nosnippet>852</a>                                // had data buffered to be sent, but all the frames are cleared
+<a href=#853 id=853 data-nosnippet>853</a>                                // in clear_queue(). Instead of doing O(N) traversal through queue
+<a href=#854 id=854 data-nosnippet>854</a>                                // to remove, lets just ignore the stream here.
+<a href=#855 id=855 data-nosnippet>855</a>                                </span><span class="macro">tracing::trace!</span>(<span class="string">"removing dangling stream from pending_send"</span>);
+<a href=#856 id=856 data-nosnippet>856</a>                                <span class="comment">// Since this should only happen as a consequence of `clear_queue`,
+<a href=#857 id=857 data-nosnippet>857</a>                                // we must be in a closed state of some kind.
+<a href=#858 id=858 data-nosnippet>858</a>                                </span><span class="macro">debug_assert!</span>(stream.state.is_closed());
+<a href=#859 id=859 data-nosnippet>859</a>                                counts.transition_after(stream, is_pending_reset);
+<a href=#860 id=860 data-nosnippet>860</a>                                <span class="kw">continue</span>;
+<a href=#861 id=861 data-nosnippet>861</a>                            }
+<a href=#862 id=862 data-nosnippet>862</a>                        }
+<a href=#863 id=863 data-nosnippet>863</a>                    };
+<a href=#864 id=864 data-nosnippet>864</a>
+<a href=#865 id=865 data-nosnippet>865</a>                    <span class="macro">tracing::trace!</span>(<span class="string">"pop_frame; frame={:?}"</span>, frame);
+<a href=#866 id=866 data-nosnippet>866</a>
+<a href=#867 id=867 data-nosnippet>867</a>                    <span class="kw">if </span><span class="macro">cfg!</span>(debug_assertions) &amp;&amp; stream.state.is_idle() {
+<a href=#868 id=868 data-nosnippet>868</a>                        <span class="macro">debug_assert!</span>(stream.id &gt; <span class="self">self</span>.last_opened_id);
+<a href=#869 id=869 data-nosnippet>869</a>                        <span class="self">self</span>.last_opened_id = stream.id;
+<a href=#870 id=870 data-nosnippet>870</a>                    }
+<a href=#871 id=871 data-nosnippet>871</a>
+<a href=#872 id=872 data-nosnippet>872</a>                    <span class="kw">if </span>!stream.pending_send.is_empty() || stream.state.is_scheduled_reset() {
+<a href=#873 id=873 data-nosnippet>873</a>                        <span class="comment">// TODO: Only requeue the sender IF it is ready to send
+<a href=#874 id=874 data-nosnippet>874</a>                        // the next frame. i.e. don't requeue it if the next
+<a href=#875 id=875 data-nosnippet>875</a>                        // frame is a data frame and the stream does not have
+<a href=#876 id=876 data-nosnippet>876</a>                        // any more capacity.
+<a href=#877 id=877 data-nosnippet>877</a>                        </span><span class="self">self</span>.pending_send.push(<span class="kw-2">&amp;mut </span>stream);
+<a href=#878 id=878 data-nosnippet>878</a>                    }
+<a href=#879 id=879 data-nosnippet>879</a>
+<a href=#880 id=880 data-nosnippet>880</a>                    counts.transition_after(stream, is_pending_reset);
+<a href=#881 id=881 data-nosnippet>881</a>
+<a href=#882 id=882 data-nosnippet>882</a>                    <span class="kw">return </span><span class="prelude-val">Some</span>(frame);
+<a href=#883 id=883 data-nosnippet>883</a>                }
+<a href=#884 id=884 data-nosnippet>884</a>                <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
+<a href=#885 id=885 data-nosnippet>885</a>            }
+<a href=#886 id=886 data-nosnippet>886</a>        }
+<a href=#887 id=887 data-nosnippet>887</a>    }
+<a href=#888 id=888 data-nosnippet>888</a>
+<a href=#889 id=889 data-nosnippet>889</a>    <span class="kw">fn </span>pop_pending_open&lt;<span class="lifetime">'s</span>&gt;(
+<a href=#890 id=890 data-nosnippet>890</a>        <span class="kw-2">&amp;mut </span><span class="self">self</span>,
+<a href=#891 id=891 data-nosnippet>891</a>        store: <span class="kw-2">&amp;</span><span class="lifetime">'s </span><span class="kw-2">mut </span>Store,
+<a href=#892 id=892 data-nosnippet>892</a>        counts: <span class="kw-2">&amp;mut </span>Counts,
+<a href=#893 id=893 data-nosnippet>893</a>    ) -&gt; <span class="prelude-ty">Option</span>&lt;store::Ptr&lt;<span class="lifetime">'s</span>&gt;&gt; {
+<a href=#894 id=894 data-nosnippet>894</a>        <span class="macro">tracing::trace!</span>(<span class="string">"schedule_pending_open"</span>);
+<a href=#895 id=895 data-nosnippet>895</a>        <span class="comment">// check for any pending open streams
+<a href=#896 id=896 data-nosnippet>896</a>        </span><span class="kw">if </span>counts.can_inc_num_send_streams() {
+<a href=#897 id=897 data-nosnippet>897</a>            <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">mut </span>stream) = <span class="self">self</span>.pending_open.pop(store) {
+<a href=#898 id=898 data-nosnippet>898</a>                <span class="macro">tracing::trace!</span>(<span class="string">"schedule_pending_open; stream={:?}"</span>, stream.id);
+<a href=#899 id=899 data-nosnippet>899</a>
+<a href=#900 id=900 data-nosnippet>900</a>                counts.inc_num_send_streams(<span class="kw-2">&amp;mut </span>stream);
+<a href=#901 id=901 data-nosnippet>901</a>                stream.notify_send();
+<a href=#902 id=902 data-nosnippet>902</a>                <span class="kw">return </span><span class="prelude-val">Some</span>(stream);
+<a href=#903 id=903 data-nosnippet>903</a>            }
+<a href=#904 id=904 data-nosnippet>904</a>        }
+<a href=#905 id=905 data-nosnippet>905</a>
+<a href=#906 id=906 data-nosnippet>906</a>        <span class="prelude-val">None
+<a href=#907 id=907 data-nosnippet>907</a>    </span>}
+<a href=#908 id=908 data-nosnippet>908</a>}
 <a href=#909 id=909 data-nosnippet>909</a>
-<a href=#910 id=910 data-nosnippet>910</a>        <span class="prelude-val">None
-<a href=#911 id=911 data-nosnippet>911</a>    </span>}
-<a href=#912 id=912 data-nosnippet>912</a>}
-<a href=#913 id=913 data-nosnippet>913</a>
-<a href=#914 id=914 data-nosnippet>914</a><span class="comment">// ===== impl Prioritized =====
-<a href=#915 id=915 data-nosnippet>915</a>
-<a href=#916 id=916 data-nosnippet>916</a></span><span class="kw">impl</span>&lt;B&gt; Buf <span class="kw">for </span>Prioritized&lt;B&gt;
-<a href=#917 id=917 data-nosnippet>917</a><span class="kw">where
-<a href=#918 id=918 data-nosnippet>918</a>    </span>B: Buf,
-<a href=#919 id=919 data-nosnippet>919</a>{
-<a href=#920 id=920 data-nosnippet>920</a>    <span class="kw">fn </span>remaining(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-<a href=#921 id=921 data-nosnippet>921</a>        <span class="self">self</span>.inner.remaining()
+<a href=#910 id=910 data-nosnippet>910</a><span class="comment">// ===== impl Prioritized =====
+<a href=#911 id=911 data-nosnippet>911</a>
+<a href=#912 id=912 data-nosnippet>912</a></span><span class="kw">impl</span>&lt;B&gt; Buf <span class="kw">for </span>Prioritized&lt;B&gt;
+<a href=#913 id=913 data-nosnippet>913</a><span class="kw">where
+<a href=#914 id=914 data-nosnippet>914</a>    </span>B: Buf,
+<a href=#915 id=915 data-nosnippet>915</a>{
+<a href=#916 id=916 data-nosnippet>916</a>    <span class="kw">fn </span>remaining(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+<a href=#917 id=917 data-nosnippet>917</a>        <span class="self">self</span>.inner.remaining()
+<a href=#918 id=918 data-nosnippet>918</a>    }
+<a href=#919 id=919 data-nosnippet>919</a>
+<a href=#920 id=920 data-nosnippet>920</a>    <span class="kw">fn </span>chunk(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
+<a href=#921 id=921 data-nosnippet>921</a>        <span class="self">self</span>.inner.chunk()
 <a href=#922 id=922 data-nosnippet>922</a>    }
 <a href=#923 id=923 data-nosnippet>923</a>
-<a href=#924 id=924 data-nosnippet>924</a>    <span class="kw">fn </span>chunk(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>[u8] {
-<a href=#925 id=925 data-nosnippet>925</a>        <span class="self">self</span>.inner.chunk()
+<a href=#924 id=924 data-nosnippet>924</a>    <span class="kw">fn </span>chunks_vectored&lt;<span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>, dst: <span class="kw-2">&amp;mut </span>[std::io::IoSlice&lt;<span class="lifetime">'a</span>&gt;]) -&gt; usize {
+<a href=#925 id=925 data-nosnippet>925</a>        <span class="self">self</span>.inner.chunks_vectored(dst)
 <a href=#926 id=926 data-nosnippet>926</a>    }
 <a href=#927 id=927 data-nosnippet>927</a>
-<a href=#928 id=928 data-nosnippet>928</a>    <span class="kw">fn </span>chunks_vectored&lt;<span class="lifetime">'a</span>&gt;(<span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>, dst: <span class="kw-2">&amp;mut </span>[std::io::IoSlice&lt;<span class="lifetime">'a</span>&gt;]) -&gt; usize {
-<a href=#929 id=929 data-nosnippet>929</a>        <span class="self">self</span>.inner.chunks_vectored(dst)
+<a href=#928 id=928 data-nosnippet>928</a>    <span class="kw">fn </span>advance(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cnt: usize) {
+<a href=#929 id=929 data-nosnippet>929</a>        <span class="self">self</span>.inner.advance(cnt)
 <a href=#930 id=930 data-nosnippet>930</a>    }
-<a href=#931 id=931 data-nosnippet>931</a>
-<a href=#932 id=932 data-nosnippet>932</a>    <span class="kw">fn </span>advance(<span class="kw-2">&amp;mut </span><span class="self">self</span>, cnt: usize) {
-<a href=#933 id=933 data-nosnippet>933</a>        <span class="self">self</span>.inner.advance(cnt)
-<a href=#934 id=934 data-nosnippet>934</a>    }
-<a href=#935 id=935 data-nosnippet>935</a>}
-<a href=#936 id=936 data-nosnippet>936</a>
-<a href=#937 id=937 data-nosnippet>937</a><span class="kw">impl</span>&lt;B: Buf&gt; fmt::Debug <span class="kw">for </span>Prioritized&lt;B&gt; {
-<a href=#938 id=938 data-nosnippet>938</a>    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-<a href=#939 id=939 data-nosnippet>939</a>        fmt.debug_struct(<span class="string">"Prioritized"</span>)
-<a href=#940 id=940 data-nosnippet>940</a>            .field(<span class="string">"remaining"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.inner.get_ref().remaining())
-<a href=#941 id=941 data-nosnippet>941</a>            .field(<span class="string">"end_of_stream"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.end_of_stream)
-<a href=#942 id=942 data-nosnippet>942</a>            .field(<span class="string">"stream"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.stream)
-<a href=#943 id=943 data-nosnippet>943</a>            .finish()
-<a href=#944 id=944 data-nosnippet>944</a>    }
-<a href=#945 id=945 data-nosnippet>945</a>}
+<a href=#931 id=931 data-nosnippet>931</a>}
+<a href=#932 id=932 data-nosnippet>932</a>
+<a href=#933 id=933 data-nosnippet>933</a><span class="kw">impl</span>&lt;B: Buf&gt; fmt::Debug <span class="kw">for </span>Prioritized&lt;B&gt; {
+<a href=#934 id=934 data-nosnippet>934</a>    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, fmt: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+<a href=#935 id=935 data-nosnippet>935</a>        fmt.debug_struct(<span class="string">"Prioritized"</span>)
+<a href=#936 id=936 data-nosnippet>936</a>            .field(<span class="string">"remaining"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.inner.get_ref().remaining())
+<a href=#937 id=937 data-nosnippet>937</a>            .field(<span class="string">"end_of_stream"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.end_of_stream)
+<a href=#938 id=938 data-nosnippet>938</a>            .field(<span class="string">"stream"</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.stream)
+<a href=#939 id=939 data-nosnippet>939</a>            .finish()
+<a href=#940 id=940 data-nosnippet>940</a>    }
+<a href=#941 id=941 data-nosnippet>941</a>}
 </code></pre></div></section></main></body></html>

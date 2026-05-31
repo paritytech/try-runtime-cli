@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["ROUTE_HEADER_LEN"],"mod":["nlas"],"struct":["RouteFlags","RouteHeader","RouteMessage","RouteMessageBuffer"]};

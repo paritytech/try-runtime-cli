@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/frame/support/src/storage/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/</div>mod.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/frame/support/src/storage/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/</div>mod.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -17,7 +17,7 @@
 <a href=#17 id=17 data-nosnippet>17</a>
 <a href=#18 id=18 data-nosnippet>18</a></span><span class="doccomment">//! Stuff to do with the runtime's storage.
 <a href=#19 id=19 data-nosnippet>19</a>
-<a href=#20 id=20 data-nosnippet>20</a></span><span class="kw">use </span>crate::{
+<a href=#20 id=20 data-nosnippet>20</a></span><span class="kw">use crate</span>::{
 <a href=#21 id=21 data-nosnippet>21</a>	hash::{ReversibleStorageHasher, StorageHasher},
 <a href=#22 id=22 data-nosnippet>22</a>	storage::types::{
 <a href=#23 id=23 data-nosnippet>23</a>		EncodeLikeTuple, HasKeyPrefix, HasReversibleKeyPrefix, KeyGenerator,
@@ -27,16 +27,16 @@
 <a href=#27 id=27 data-nosnippet>27</a><span class="kw">use </span>alloc::{collections::btree_set::BTreeSet, vec::Vec};
 <a href=#28 id=28 data-nosnippet>28</a><span class="kw">use </span>codec::{Decode, Encode, EncodeLike, FullCodec, FullEncode};
 <a href=#29 id=29 data-nosnippet>29</a><span class="kw">use </span>core::marker::PhantomData;
-<a href=#30 id=30 data-nosnippet>30</a><span class="kw">use </span>sp_core::storage::ChildInfo;
-<a href=#31 id=31 data-nosnippet>31</a><span class="kw">use </span>sp_runtime::generic::{Digest, DigestItem};
-<a href=#32 id=32 data-nosnippet>32</a>
-<a href=#33 id=33 data-nosnippet>33</a><span class="kw">pub use </span>self::{
-<a href=#34 id=34 data-nosnippet>34</a>	stream_iter::StorageStreamIter,
-<a href=#35 id=35 data-nosnippet>35</a>	transactional::{
-<a href=#36 id=36 data-nosnippet>36</a>		in_storage_layer, with_storage_layer, with_transaction, with_transaction_unchecked,
-<a href=#37 id=37 data-nosnippet>37</a>	},
-<a href=#38 id=38 data-nosnippet>38</a>	types::StorageEntryMetadataBuilder,
-<a href=#39 id=39 data-nosnippet>39</a>};
+<a href=#30 id=30 data-nosnippet>30</a><span class="kw">use </span>sp_runtime::generic::{Digest, DigestItem};
+<a href=#31 id=31 data-nosnippet>31</a>
+<a href=#32 id=32 data-nosnippet>32</a><span class="kw">pub use </span><span class="self">self</span>::{
+<a href=#33 id=33 data-nosnippet>33</a>	stream_iter::StorageStreamIter,
+<a href=#34 id=34 data-nosnippet>34</a>	transactional::{
+<a href=#35 id=35 data-nosnippet>35</a>		in_storage_layer, with_storage_layer, with_transaction, with_transaction_unchecked,
+<a href=#36 id=36 data-nosnippet>36</a>	},
+<a href=#37 id=37 data-nosnippet>37</a>	types::StorageEntryMetadataBuilder,
+<a href=#38 id=38 data-nosnippet>38</a>};
+<a href=#39 id=39 data-nosnippet>39</a><span class="kw">pub use </span>sp_core::storage::ChildInfo;
 <a href=#40 id=40 data-nosnippet>40</a><span class="kw">pub use </span>sp_runtime::TransactionOutcome;
 <a href=#41 id=41 data-nosnippet>41</a><span class="kw">pub use </span>types::Key;
 <a href=#42 id=42 data-nosnippet>42</a>
@@ -1101,8 +1101,8 @@
 <a href=#1101 id=1101 data-nosnippet>1101</a>								<span class="string">"next_key returned a key with no value at {:?}"</span>,
 <a href=#1102 id=1102 data-nosnippet>1102</a>								<span class="self">self</span>.previous_key,
 <a href=#1103 id=1103 data-nosnippet>1103</a>							);
-<a href=#1104 id=1104 data-nosnippet>1104</a>							<span class="kw">continue
-<a href=#1105 id=1105 data-nosnippet>1105</a>						</span>},
+<a href=#1104 id=1104 data-nosnippet>1104</a>							<span class="kw">continue</span>;
+<a href=#1105 id=1105 data-nosnippet>1105</a>						},
 <a href=#1106 id=1106 data-nosnippet>1106</a>					};
 <a href=#1107 id=1107 data-nosnippet>1107</a>					<span class="kw">if </span><span class="self">self</span>.drain {
 <a href=#1108 id=1108 data-nosnippet>1108</a>						unhashed::kill(<span class="kw-2">&amp;</span><span class="self">self</span>.previous_key);
@@ -1117,14 +1117,14 @@
 <a href=#1117 id=1117 data-nosnippet>1117</a>								<span class="self">self</span>.previous_key,
 <a href=#1118 id=1118 data-nosnippet>1118</a>								e,
 <a href=#1119 id=1119 data-nosnippet>1119</a>							);
-<a href=#1120 id=1120 data-nosnippet>1120</a>							<span class="kw">continue
-<a href=#1121 id=1121 data-nosnippet>1121</a>						</span>},
+<a href=#1120 id=1120 data-nosnippet>1120</a>							<span class="kw">continue</span>;
+<a href=#1121 id=1121 data-nosnippet>1121</a>						},
 <a href=#1122 id=1122 data-nosnippet>1122</a>					};
 <a href=#1123 id=1123 data-nosnippet>1123</a>
 <a href=#1124 id=1124 data-nosnippet>1124</a>					<span class="prelude-val">Some</span>(item)
 <a href=#1125 id=1125 data-nosnippet>1125</a>				},
 <a href=#1126 id=1126 data-nosnippet>1126</a>				<span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
-<a href=#1127 id=1127 data-nosnippet>1127</a>			}
+<a href=#1127 id=1127 data-nosnippet>1127</a>			};
 <a href=#1128 id=1128 data-nosnippet>1128</a>		}
 <a href=#1129 id=1129 data-nosnippet>1129</a>	}
 <a href=#1130 id=1130 data-nosnippet>1130</a>}
@@ -1199,13 +1199,13 @@
 <a href=#1199 id=1199 data-nosnippet>1199</a>					<span class="prelude-val">Ok</span>(item) =&gt; <span class="kw">return </span><span class="prelude-val">Some</span>(item),
 <a href=#1200 id=1200 data-nosnippet>1200</a>					<span class="prelude-val">Err</span>(e) =&gt; {
 <a href=#1201 id=1201 data-nosnippet>1201</a>						<span class="macro">log::error!</span>(<span class="string">"key failed to decode at {:?}: {:?}"</span>, <span class="self">self</span>.previous_key, e);
-<a href=#1202 id=1202 data-nosnippet>1202</a>						<span class="kw">continue
-<a href=#1203 id=1203 data-nosnippet>1203</a>					</span>},
+<a href=#1202 id=1202 data-nosnippet>1202</a>						<span class="kw">continue</span>;
+<a href=#1203 id=1203 data-nosnippet>1203</a>					},
 <a href=#1204 id=1204 data-nosnippet>1204</a>				}
 <a href=#1205 id=1205 data-nosnippet>1205</a>			}
 <a href=#1206 id=1206 data-nosnippet>1206</a>
-<a href=#1207 id=1207 data-nosnippet>1207</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#1208 id=1208 data-nosnippet>1208</a>		</span>}
+<a href=#1207 id=1207 data-nosnippet>1207</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#1208 id=1208 data-nosnippet>1208</a>		}
 <a href=#1209 id=1209 data-nosnippet>1209</a>	}
 <a href=#1210 id=1210 data-nosnippet>1210</a>}
 <a href=#1211 id=1211 data-nosnippet>1211</a>
@@ -1314,8 +1314,8 @@
 <a href=#1314 id=1314 data-nosnippet>1314</a>								<span class="string">"next_key returned a key with no value at {:?}"</span>,
 <a href=#1315 id=1315 data-nosnippet>1315</a>								<span class="self">self</span>.previous_key,
 <a href=#1316 id=1316 data-nosnippet>1316</a>							);
-<a href=#1317 id=1317 data-nosnippet>1317</a>							<span class="kw">continue
-<a href=#1318 id=1318 data-nosnippet>1318</a>						</span>},
+<a href=#1317 id=1317 data-nosnippet>1317</a>							<span class="kw">continue</span>;
+<a href=#1318 id=1318 data-nosnippet>1318</a>						},
 <a href=#1319 id=1319 data-nosnippet>1319</a>					};
 <a href=#1320 id=1320 data-nosnippet>1320</a>					<span class="kw">if </span><span class="self">self</span>.drain {
 <a href=#1321 id=1321 data-nosnippet>1321</a>						child::kill(<span class="kw-2">&amp;</span><span class="self">self</span>.child_info, <span class="kw-2">&amp;</span><span class="self">self</span>.previous_key)
@@ -1329,14 +1329,14 @@
 <a href=#1329 id=1329 data-nosnippet>1329</a>								<span class="self">self</span>.previous_key,
 <a href=#1330 id=1330 data-nosnippet>1330</a>								e,
 <a href=#1331 id=1331 data-nosnippet>1331</a>							);
-<a href=#1332 id=1332 data-nosnippet>1332</a>							<span class="kw">continue
-<a href=#1333 id=1333 data-nosnippet>1333</a>						</span>},
+<a href=#1332 id=1332 data-nosnippet>1332</a>							<span class="kw">continue</span>;
+<a href=#1333 id=1333 data-nosnippet>1333</a>						},
 <a href=#1334 id=1334 data-nosnippet>1334</a>					};
 <a href=#1335 id=1335 data-nosnippet>1335</a>
 <a href=#1336 id=1336 data-nosnippet>1336</a>					<span class="prelude-val">Some</span>(item)
 <a href=#1337 id=1337 data-nosnippet>1337</a>				},
 <a href=#1338 id=1338 data-nosnippet>1338</a>				<span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
-<a href=#1339 id=1339 data-nosnippet>1339</a>			}
+<a href=#1339 id=1339 data-nosnippet>1339</a>			};
 <a href=#1340 id=1340 data-nosnippet>1340</a>		}
 <a href=#1341 id=1341 data-nosnippet>1341</a>	}
 <a href=#1342 id=1342 data-nosnippet>1342</a>}
@@ -1458,8 +1458,8 @@
 <a href=#1458 id=1458 data-nosnippet>1458</a>				},
 <a href=#1459 id=1459 data-nosnippet>1459</a>				<span class="prelude-val">None </span>=&gt; {
 <a href=#1460 id=1460 data-nosnippet>1460</a>					<span class="macro">log::error!</span>(<span class="string">"old key failed to decode at {:?}"</span>, previous_key);
-<a href=#1461 id=1461 data-nosnippet>1461</a>					<span class="kw">continue
-<a href=#1462 id=1462 data-nosnippet>1462</a>				</span>},
+<a href=#1461 id=1461 data-nosnippet>1461</a>					<span class="kw">continue</span>;
+<a href=#1462 id=1462 data-nosnippet>1462</a>				},
 <a href=#1463 id=1463 data-nosnippet>1463</a>			}
 <a href=#1464 id=1464 data-nosnippet>1464</a>		}
 <a href=#1465 id=1465 data-nosnippet>1465</a>	}
@@ -1516,7 +1516,7 @@
 <a href=#1516 id=1516 data-nosnippet>1516</a><span class="doccomment">/// Provides `Sealed` trait to prevent implementing trait `StorageAppend` &amp; `StorageDecodeLength`
 <a href=#1517 id=1517 data-nosnippet>1517</a>/// &amp; `EncodeLikeTuple` outside of this crate.
 <a href=#1518 id=1518 data-nosnippet>1518</a></span><span class="kw">mod </span>private {
-<a href=#1519 id=1519 data-nosnippet>1519</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#1519 id=1519 data-nosnippet>1519</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#1520 id=1520 data-nosnippet>1520</a>	<span class="kw">use </span>bounded_vec::BoundedVec;
 <a href=#1521 id=1521 data-nosnippet>1521</a>	<span class="kw">use </span>weak_bounded_vec::WeakBoundedVec;
 <a href=#1522 id=1522 data-nosnippet>1522</a>
@@ -1749,8 +1749,8 @@
 <a href=#1749 id=1749 data-nosnippet>1749</a>
 <a href=#1750 id=1750 data-nosnippet>1750</a><span class="attr">#[cfg(test)]
 <a href=#1751 id=1751 data-nosnippet>1751</a></span><span class="kw">mod </span>test {
-<a href=#1752 id=1752 data-nosnippet>1752</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
-<a href=#1753 id=1753 data-nosnippet>1753</a>	<span class="kw">use </span>crate::{assert_ok, hash::Identity, pallet_prelude::NMapKey, Twox128};
+<a href=#1752 id=1752 data-nosnippet>1752</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
+<a href=#1753 id=1753 data-nosnippet>1753</a>	<span class="kw">use crate</span>::{assert_ok, hash::Identity, pallet_prelude::NMapKey, Twox128};
 <a href=#1754 id=1754 data-nosnippet>1754</a>	<span class="kw">use </span>bounded_vec::BoundedVec;
 <a href=#1755 id=1755 data-nosnippet>1755</a>	<span class="kw">use </span>frame_support::traits::ConstU32;
 <a href=#1756 id=1756 data-nosnippet>1756</a>	<span class="kw">use </span>generator::StorageValue <span class="kw">as _</span>;
@@ -1873,7 +1873,7 @@
 <a href=#1873 id=1873 data-nosnippet>1873</a>	<span class="attr">#[test]
 <a href=#1874 id=1874 data-nosnippet>1874</a>	</span><span class="kw">fn </span>key_prefix_iterator_works() {
 <a href=#1875 id=1875 data-nosnippet>1875</a>		TestExternalities::default().execute_with(|| {
-<a href=#1876 id=1876 data-nosnippet>1876</a>			<span class="kw">use </span>crate::{hash::Twox64Concat, storage::generator::StorageMap};
+<a href=#1876 id=1876 data-nosnippet>1876</a>			<span class="kw">use crate</span>::{hash::Twox64Concat, storage::generator::StorageMap};
 <a href=#1877 id=1877 data-nosnippet>1877</a>			<span class="kw">struct </span>MyStorageMap;
 <a href=#1878 id=1878 data-nosnippet>1878</a>			<span class="kw">impl </span>StorageMap&lt;u64, u64&gt; <span class="kw">for </span>MyStorageMap {
 <a href=#1879 id=1879 data-nosnippet>1879</a>				<span class="kw">type </span>Query = u64;
@@ -1929,7 +1929,7 @@
 <a href=#1929 id=1929 data-nosnippet>1929</a>	<span class="attr">#[test]
 <a href=#1930 id=1930 data-nosnippet>1930</a>	</span><span class="kw">fn </span>prefix_iterator_pagination_works() {
 <a href=#1931 id=1931 data-nosnippet>1931</a>		TestExternalities::default().execute_with(|| {
-<a href=#1932 id=1932 data-nosnippet>1932</a>			<span class="kw">use </span>crate::{hash::Identity, storage::generator::map::StorageMap};
+<a href=#1932 id=1932 data-nosnippet>1932</a>			<span class="kw">use crate</span>::{hash::Identity, storage::generator::map::StorageMap};
 <a href=#1933 id=1933 data-nosnippet>1933</a>			<span class="attr">#[<span class="kw">crate</span>::storage_alias]
 <a href=#1934 id=1934 data-nosnippet>1934</a>			</span><span class="kw">type </span>MyStorageMap = StorageMap&lt;MyModule, Identity, u64, u64&gt;;
 <a href=#1935 id=1935 data-nosnippet>1935</a>

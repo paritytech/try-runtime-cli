@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/client/network/sync/src/justification_requests.rs`."><title>justification_requests.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network_sync" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sc_network_sync/</div>justification_requests.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/client/network/sync/src/justification_requests.rs`."><title>justification_requests.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_network_sync" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_network_sync/</div>justification_requests.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -20,7 +20,7 @@
 <a href=#20 id=20 data-nosnippet>20</a>//! from peers taking into account forks and their finalization (dropping pending requests
 <a href=#21 id=21 data-nosnippet>21</a>//! that don't make sense after one of the forks is finalized).
 <a href=#22 id=22 data-nosnippet>22</a>
-<a href=#23 id=23 data-nosnippet>23</a></span><span class="kw">use </span>crate::{
+<a href=#23 id=23 data-nosnippet>23</a></span><span class="kw">use crate</span>::{
 <a href=#24 id=24 data-nosnippet>24</a>	strategy::chain_sync::{PeerSync, PeerSyncState},
 <a href=#25 id=25 data-nosnippet>25</a>	LOG_TARGET,
 <a href=#26 id=26 data-nosnippet>26</a>};
@@ -202,7 +202,7 @@
 <a href=#202 id=202 data-nosnippet>202</a>						metrics.importing.inc();
 <a href=#203 id=203 data-nosnippet>203</a>					}
 <a href=#204 id=204 data-nosnippet>204</a>				}
-<a href=#205 id=205 data-nosnippet>205</a>				<span class="kw">return </span><span class="prelude-val">Some</span>((who, request.<span class="number">0</span>, request.<span class="number">1</span>, r))
+<a href=#205 id=205 data-nosnippet>205</a>				<span class="kw">return </span><span class="prelude-val">Some</span>((who, request.<span class="number">0</span>, request.<span class="number">1</span>, r));
 <a href=#206 id=206 data-nosnippet>206</a>			} <span class="kw">else </span>{
 <a href=#207 id=207 data-nosnippet>207</a>				<span class="macro">trace!</span>(target: LOG_TARGET,
 <a href=#208 id=208 data-nosnippet>208</a>					<span class="string">"Empty {} response from {:?} for {:?}"</span>,
@@ -237,7 +237,7 @@
 <a href=#237 id=237 data-nosnippet>237</a>		<span class="kw">let </span>request = (<span class="kw-2">*</span>best_finalized_hash, best_finalized_number);
 <a href=#238 id=238 data-nosnippet>238</a>
 <a href=#239 id=239 data-nosnippet>239</a>		<span class="kw">if </span><span class="self">self</span>.try_finalize_root::&lt;()&gt;(request, <span class="prelude-val">Ok</span>(request), <span class="bool-val">false</span>) {
-<a href=#240 id=240 data-nosnippet>240</a>			<span class="kw">return </span><span class="prelude-val">Ok</span>(())
+<a href=#240 id=240 data-nosnippet>240</a>			<span class="kw">return </span><span class="prelude-val">Ok</span>(());
 <a href=#241 id=241 data-nosnippet>241</a>		}
 <a href=#242 id=242 data-nosnippet>242</a>
 <a href=#243 id=243 data-nosnippet>243</a>		<span class="kw">if </span>best_finalized_number &gt; <span class="self">self</span>.best_seen_finalized_number {
@@ -282,8 +282,8 @@
 <a href=#282 id=282 data-nosnippet>282</a>		reschedule_on_failure: bool,
 <a href=#283 id=283 data-nosnippet>283</a>	) -&gt; bool {
 <a href=#284 id=284 data-nosnippet>284</a>		<span class="kw">if </span>!<span class="self">self</span>.importing_requests.remove(<span class="kw-2">&amp;</span>request) {
-<a href=#285 id=285 data-nosnippet>285</a>			<span class="kw">return </span><span class="bool-val">false
-<a href=#286 id=286 data-nosnippet>286</a>		</span>}
+<a href=#285 id=285 data-nosnippet>285</a>			<span class="kw">return </span><span class="bool-val">false</span>;
+<a href=#286 id=286 data-nosnippet>286</a>		}
 <a href=#287 id=287 data-nosnippet>287</a>		<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = <span class="kw-2">&amp;</span><span class="self">self</span>.metrics {
 <a href=#288 id=288 data-nosnippet>288</a>			metrics.importing.dec();
 <a href=#289 id=289 data-nosnippet>289</a>		}
@@ -297,8 +297,8 @@
 <a href=#297 id=297 data-nosnippet>297</a>						metrics.pending.inc();
 <a href=#298 id=298 data-nosnippet>298</a>					}
 <a href=#299 id=299 data-nosnippet>299</a>				}
-<a href=#300 id=300 data-nosnippet>300</a>				<span class="kw">return </span><span class="bool-val">true
-<a href=#301 id=301 data-nosnippet>301</a>			</span>},
+<a href=#300 id=300 data-nosnippet>300</a>				<span class="kw">return </span><span class="bool-val">true</span>;
+<a href=#301 id=301 data-nosnippet>301</a>			},
 <a href=#302 id=302 data-nosnippet>302</a>		};
 <a href=#303 id=303 data-nosnippet>303</a>
 <a href=#304 id=304 data-nosnippet>304</a>		<span class="kw">if </span><span class="self">self</span>.tree.finalize_root(<span class="kw-2">&amp;</span>finalized_hash).is_none() {
@@ -306,8 +306,8 @@
 <a href=#306 id=306 data-nosnippet>306</a>				<span class="string">"‼️ Imported {:?} {:?} which isn't a root in the tree: {:?}"</span>,
 <a href=#307 id=307 data-nosnippet>307</a>				finalized_hash, finalized_number, <span class="self">self</span>.tree.roots().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
 <a href=#308 id=308 data-nosnippet>308</a>			);
-<a href=#309 id=309 data-nosnippet>309</a>			<span class="kw">return </span><span class="bool-val">true
-<a href=#310 id=310 data-nosnippet>310</a>		</span>}
+<a href=#309 id=309 data-nosnippet>309</a>			<span class="kw">return </span><span class="bool-val">true</span>;
+<a href=#310 id=310 data-nosnippet>310</a>		}
 <a href=#311 id=311 data-nosnippet>311</a>
 <a href=#312 id=312 data-nosnippet>312</a>		<span class="self">self</span>.failed_requests.clear();
 <a href=#313 id=313 data-nosnippet>313</a>		<span class="self">self</span>.active_requests.clear();
@@ -369,8 +369,8 @@
 <a href=#369 id=369 data-nosnippet>369</a>		peers: <span class="kw-2">&amp;</span>HashMap&lt;PeerId, PeerSync&lt;B&gt;&gt;,
 <a href=#370 id=370 data-nosnippet>370</a>	) -&gt; <span class="prelude-ty">Option</span>&lt;(PeerId, ExtraRequest&lt;B&gt;)&gt; {
 <a href=#371 id=371 data-nosnippet>371</a>		<span class="kw">if </span><span class="self">self</span>.remaining == <span class="number">0 </span>{
-<a href=#372 id=372 data-nosnippet>372</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#373 id=373 data-nosnippet>373</a>		</span>}
+<a href=#372 id=372 data-nosnippet>372</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#373 id=373 data-nosnippet>373</a>		}
 <a href=#374 id=374 data-nosnippet>374</a>
 <a href=#375 id=375 data-nosnippet>375</a>		<span class="comment">// clean up previously failed requests so we can retry again
 <a href=#376 id=376 data-nosnippet>376</a>		</span><span class="kw">for </span>requests <span class="kw">in </span><span class="self">self</span>.extras.failed_requests.values_mut() {
@@ -393,12 +393,12 @@
 <a href=#393 id=393 data-nosnippet>393</a>				<span class="comment">// only ask peers that have synced at least up to the block number that we're asking
 <a href=#394 id=394 data-nosnippet>394</a>				// the extra for
 <a href=#395 id=395 data-nosnippet>395</a>				</span><span class="kw">if </span>sync.best_number &lt; request.<span class="number">1 </span>{
-<a href=#396 id=396 data-nosnippet>396</a>					<span class="kw">continue
-<a href=#397 id=397 data-nosnippet>397</a>				</span>}
+<a href=#396 id=396 data-nosnippet>396</a>					<span class="kw">continue</span>;
+<a href=#397 id=397 data-nosnippet>397</a>				}
 <a href=#398 id=398 data-nosnippet>398</a>				<span class="comment">// don't request to any peers that already have pending requests
 <a href=#399 id=399 data-nosnippet>399</a>				</span><span class="kw">if </span><span class="self">self</span>.extras.active_requests.contains_key(peer) {
-<a href=#400 id=400 data-nosnippet>400</a>					<span class="kw">continue
-<a href=#401 id=401 data-nosnippet>401</a>				</span>}
+<a href=#400 id=400 data-nosnippet>400</a>					<span class="kw">continue</span>;
+<a href=#401 id=401 data-nosnippet>401</a>				}
 <a href=#402 id=402 data-nosnippet>402</a>				<span class="comment">// only ask if the same request has not failed for this peer before
 <a href=#403 id=403 data-nosnippet>403</a>				</span><span class="kw">if </span><span class="self">self
 <a href=#404 id=404 data-nosnippet>404</a>					</span>.extras
@@ -407,8 +407,8 @@
 <a href=#407 id=407 data-nosnippet>407</a>					.map(|rr| rr.iter().any(|i| <span class="kw-2">&amp;</span>i.<span class="number">0 </span>== peer))
 <a href=#408 id=408 data-nosnippet>408</a>					.unwrap_or(<span class="bool-val">false</span>)
 <a href=#409 id=409 data-nosnippet>409</a>				{
-<a href=#410 id=410 data-nosnippet>410</a>					<span class="kw">continue
-<a href=#411 id=411 data-nosnippet>411</a>				</span>}
+<a href=#410 id=410 data-nosnippet>410</a>					<span class="kw">continue</span>;
+<a href=#411 id=411 data-nosnippet>411</a>				}
 <a href=#412 id=412 data-nosnippet>412</a>				<span class="self">self</span>.extras.active_requests.insert(<span class="kw-2">*</span>peer, request);
 <a href=#413 id=413 data-nosnippet>413</a>				<span class="kw">if let </span><span class="prelude-val">Some</span>(metrics) = <span class="kw-2">&amp;</span><span class="self">self</span>.extras.metrics {
 <a href=#414 id=414 data-nosnippet>414</a>					metrics.active.inc();
@@ -419,7 +419,7 @@
 <a href=#419 id=419 data-nosnippet>419</a>					<span class="self">self</span>.extras.request_type_name, peer, request,
 <a href=#420 id=420 data-nosnippet>420</a>				);
 <a href=#421 id=421 data-nosnippet>421</a>
-<a href=#422 id=422 data-nosnippet>422</a>				<span class="kw">return </span><span class="prelude-val">Some</span>((<span class="kw-2">*</span>peer, request))
+<a href=#422 id=422 data-nosnippet>422</a>				<span class="kw">return </span><span class="prelude-val">Some</span>((<span class="kw-2">*</span>peer, request));
 <a href=#423 id=423 data-nosnippet>423</a>			}
 <a href=#424 id=424 data-nosnippet>424</a>
 <a href=#425 id=425 data-nosnippet>425</a>			<span class="self">self</span>.extras.pending_requests.push_back(request);
@@ -429,8 +429,8 @@
 <a href=#429 id=429 data-nosnippet>429</a>			<span class="self">self</span>.remaining -= <span class="number">1</span>;
 <a href=#430 id=430 data-nosnippet>430</a>
 <a href=#431 id=431 data-nosnippet>431</a>			<span class="kw">if </span><span class="self">self</span>.remaining == <span class="number">0 </span>{
-<a href=#432 id=432 data-nosnippet>432</a>				<span class="kw">break
-<a href=#433 id=433 data-nosnippet>433</a>			</span>}
+<a href=#432 id=432 data-nosnippet>432</a>				<span class="kw">break</span>;
+<a href=#433 id=433 data-nosnippet>433</a>			}
 <a href=#434 id=434 data-nosnippet>434</a>		}
 <a href=#435 id=435 data-nosnippet>435</a>
 <a href=#436 id=436 data-nosnippet>436</a>		<span class="prelude-val">None
@@ -439,7 +439,7 @@
 <a href=#439 id=439 data-nosnippet>439</a>
 <a href=#440 id=440 data-nosnippet>440</a><span class="attr">#[cfg(test)]
 <a href=#441 id=441 data-nosnippet>441</a></span><span class="kw">mod </span>tests {
-<a href=#442 id=442 data-nosnippet>442</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#442 id=442 data-nosnippet>442</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#443 id=443 data-nosnippet>443</a>	<span class="kw">use </span><span class="kw">crate</span>::strategy::chain_sync::PeerSync;
 <a href=#444 id=444 data-nosnippet>444</a>	<span class="kw">use </span>quickcheck::{Arbitrary, Gen, QuickCheck};
 <a href=#445 id=445 data-nosnippet>445</a>	<span class="kw">use </span>sp_blockchain::Error <span class="kw">as </span>ClientError;

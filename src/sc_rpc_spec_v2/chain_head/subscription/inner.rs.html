@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/client/rpc-spec-v2/src/chain_head/subscription/inner.rs`."><title>inner.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="sc_rpc_spec_v2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sc_rpc_spec_v2/chain_head/subscription/</div>inner.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/client/rpc-spec-v2/src/chain_head/subscription/inner.rs`."><title>inner.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="sc_rpc_spec_v2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_rpc_spec_v2/chain_head/subscription/</div>inner.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -138,8 +138,8 @@
 <a href=#138 id=138 data-nosnippet>138</a>		<span class="kw">let </span>num_ops = std::cmp::min(<span class="self">self</span>.semaphore.available_permits(), to_reserve);
 <a href=#139 id=139 data-nosnippet>139</a>
 <a href=#140 id=140 data-nosnippet>140</a>		<span class="kw">if </span>num_ops == <span class="number">0 </span>{
-<a href=#141 id=141 data-nosnippet>141</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#142 id=142 data-nosnippet>142</a>		</span>}
+<a href=#141 id=141 data-nosnippet>141</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#142 id=142 data-nosnippet>142</a>		}
 <a href=#143 id=143 data-nosnippet>143</a>
 <a href=#144 id=144 data-nosnippet>144</a>		<span class="kw">let </span>permits = Arc::clone(<span class="kw-2">&amp;</span><span class="self">self</span>.semaphore)
 <a href=#145 id=145 data-nosnippet>145</a>			.try_acquire_many_owned(num_ops.try_into().ok()<span class="question-mark">?</span>)
@@ -360,8 +360,8 @@
 <a href=#360 id=360 data-nosnippet>360</a>
 <a href=#361 id=361 data-nosnippet>361</a>				<span class="comment">// Cannot unpin a block twice.
 <a href=#362 id=362 data-nosnippet>362</a>				</span><span class="kw">if </span>block_state.state_machine.was_unpinned() {
-<a href=#363 id=363 data-nosnippet>363</a>					<span class="kw">return </span><span class="bool-val">false
-<a href=#364 id=364 data-nosnippet>364</a>				</span>}
+<a href=#363 id=363 data-nosnippet>363</a>					<span class="kw">return </span><span class="bool-val">false</span>;
+<a href=#364 id=364 data-nosnippet>364</a>				}
 <a href=#365 id=365 data-nosnippet>365</a>
 <a href=#366 id=366 data-nosnippet>366</a>				block_state.state_machine.advance_unpin();
 <a href=#367 id=367 data-nosnippet>367</a>				<span class="comment">// Block was registered twice and unpin was called.
@@ -383,8 +383,8 @@
 <a href=#383 id=383 data-nosnippet>383</a>	</span><span class="kw">fn </span>contains_block(<span class="kw-2">&amp;</span><span class="self">self</span>, hash: Block::Hash) -&gt; bool {
 <a href=#384 id=384 data-nosnippet>384</a>		<span class="kw">let </span><span class="prelude-val">Some</span>(state) = <span class="self">self</span>.blocks.get(<span class="kw-2">&amp;</span>hash) <span class="kw">else </span>{
 <a href=#385 id=385 data-nosnippet>385</a>			<span class="comment">// Block was not tracked.
-<a href=#386 id=386 data-nosnippet>386</a>			</span><span class="kw">return </span><span class="bool-val">false
-<a href=#387 id=387 data-nosnippet>387</a>		</span>};
+<a href=#386 id=386 data-nosnippet>386</a>			</span><span class="kw">return </span><span class="bool-val">false</span>;
+<a href=#387 id=387 data-nosnippet>387</a>		};
 <a href=#388 id=388 data-nosnippet>388</a>
 <a href=#389 id=389 data-nosnippet>389</a>		<span class="comment">// Subscription no longer contains the block if `unpin` was called.
 <a href=#390 id=390 data-nosnippet>390</a>		</span>!state.state_machine.was_unpinned()
@@ -582,8 +582,8 @@
 <a href=#582 id=582 data-nosnippet>582</a>	/// Returns true if the given subscription is also terminated.
 <a href=#583 id=583 data-nosnippet>583</a>	</span><span class="kw">fn </span>ensure_block_space(<span class="kw-2">&amp;mut </span><span class="self">self</span>, request_sub_id: <span class="kw-2">&amp;</span>str) -&gt; bool {
 <a href=#584 id=584 data-nosnippet>584</a>		<span class="kw">if </span><span class="self">self</span>.global_blocks.len() &lt; <span class="self">self</span>.global_max_pinned_blocks {
-<a href=#585 id=585 data-nosnippet>585</a>			<span class="kw">return </span><span class="bool-val">false
-<a href=#586 id=586 data-nosnippet>586</a>		</span>}
+<a href=#585 id=585 data-nosnippet>585</a>			<span class="kw">return </span><span class="bool-val">false</span>;
+<a href=#586 id=586 data-nosnippet>586</a>		}
 <a href=#587 id=587 data-nosnippet>587</a>
 <a href=#588 id=588 data-nosnippet>588</a>		<span class="comment">// Terminate all subscriptions that have blocks older than
 <a href=#589 id=589 data-nosnippet>589</a>		// the specified pin duration.
@@ -613,7 +613,7 @@
 <a href=#613 id=613 data-nosnippet>613</a>
 <a href=#614 id=614 data-nosnippet>614</a>		<span class="comment">// Make sure we have enough space after first pass of terminating subscriptions.
 <a href=#615 id=615 data-nosnippet>615</a>		</span><span class="kw">if </span><span class="self">self</span>.global_blocks.len() &lt; <span class="self">self</span>.global_max_pinned_blocks {
-<a href=#616 id=616 data-nosnippet>616</a>			<span class="kw">return </span>is_terminated
+<a href=#616 id=616 data-nosnippet>616</a>			<span class="kw">return </span>is_terminated;
 <a href=#617 id=617 data-nosnippet>617</a>		}
 <a href=#618 id=618 data-nosnippet>618</a>
 <a href=#619 id=619 data-nosnippet>619</a>		<span class="comment">// Sanity check: cannot uphold `chainHead` guarantees anymore. We have not
@@ -625,7 +625,7 @@
 <a href=#625 id=625 data-nosnippet>625</a>			}
 <a href=#626 id=626 data-nosnippet>626</a>			<span class="self">self</span>.remove_subscription(<span class="kw-2">&amp;</span>sub_id);
 <a href=#627 id=627 data-nosnippet>627</a>		}
-<a href=#628 id=628 data-nosnippet>628</a>		<span class="kw">return </span>is_terminated
+<a href=#628 id=628 data-nosnippet>628</a>		<span class="kw">return </span>is_terminated;
 <a href=#629 id=629 data-nosnippet>629</a>	}
 <a href=#630 id=630 data-nosnippet>630</a>
 <a href=#631 id=631 data-nosnippet>631</a>	<span class="kw">pub fn </span>pin_block(
@@ -634,20 +634,20 @@
 <a href=#634 id=634 data-nosnippet>634</a>		hash: Block::Hash,
 <a href=#635 id=635 data-nosnippet>635</a>	) -&gt; <span class="prelude-ty">Result</span>&lt;bool, SubscriptionManagementError&gt; {
 <a href=#636 id=636 data-nosnippet>636</a>		<span class="kw">let </span><span class="prelude-val">Some</span>(sub) = <span class="self">self</span>.subs.get_mut(sub_id) <span class="kw">else </span>{
-<a href=#637 id=637 data-nosnippet>637</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::SubscriptionAbsent)
+<a href=#637 id=637 data-nosnippet>637</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::SubscriptionAbsent);
 <a href=#638 id=638 data-nosnippet>638</a>		};
 <a href=#639 id=639 data-nosnippet>639</a>
 <a href=#640 id=640 data-nosnippet>640</a>		<span class="comment">// Block was already registered for this subscription and therefore
 <a href=#641 id=641 data-nosnippet>641</a>		// globally tracked.
 <a href=#642 id=642 data-nosnippet>642</a>		</span><span class="kw">if </span>!sub.register_block(hash) {
-<a href=#643 id=643 data-nosnippet>643</a>			<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
+<a href=#643 id=643 data-nosnippet>643</a>			<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="bool-val">false</span>);
 <a href=#644 id=644 data-nosnippet>644</a>		}
 <a href=#645 id=645 data-nosnippet>645</a>
 <a href=#646 id=646 data-nosnippet>646</a>		<span class="comment">// Ensure we have enough space only if the hash is not globally registered.
 <a href=#647 id=647 data-nosnippet>647</a>		</span><span class="kw">if </span>!<span class="self">self</span>.global_blocks.contains_key(<span class="kw-2">&amp;</span>hash) {
 <a href=#648 id=648 data-nosnippet>648</a>			<span class="comment">// Subscription ID was terminated while ensuring enough space.
 <a href=#649 id=649 data-nosnippet>649</a>			</span><span class="kw">if </span><span class="self">self</span>.ensure_block_space(sub_id) {
-<a href=#650 id=650 data-nosnippet>650</a>				<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::ExceededLimits)
+<a href=#650 id=650 data-nosnippet>650</a>				<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::ExceededLimits);
 <a href=#651 id=651 data-nosnippet>651</a>			}
 <a href=#652 id=652 data-nosnippet>652</a>		}
 <a href=#653 id=653 data-nosnippet>653</a>
@@ -718,14 +718,14 @@
 <a href=#718 id=718 data-nosnippet>718</a>		<span class="self">Self</span>::ensure_hash_uniqueness(hashes.clone())<span class="question-mark">?</span>;
 <a href=#719 id=719 data-nosnippet>719</a>
 <a href=#720 id=720 data-nosnippet>720</a>		<span class="kw">let </span><span class="prelude-val">Some</span>(sub) = <span class="self">self</span>.subs.get_mut(sub_id) <span class="kw">else </span>{
-<a href=#721 id=721 data-nosnippet>721</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::SubscriptionAbsent)
+<a href=#721 id=721 data-nosnippet>721</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::SubscriptionAbsent);
 <a href=#722 id=722 data-nosnippet>722</a>		};
 <a href=#723 id=723 data-nosnippet>723</a>
 <a href=#724 id=724 data-nosnippet>724</a>		<span class="comment">// Ensure that all blocks are part of the subscription before removing individual
 <a href=#725 id=725 data-nosnippet>725</a>		// blocks.
 <a href=#726 id=726 data-nosnippet>726</a>		</span><span class="kw">for </span>hash <span class="kw">in </span>hashes.clone() {
 <a href=#727 id=727 data-nosnippet>727</a>			<span class="kw">if </span>!sub.contains_block(hash) {
-<a href=#728 id=728 data-nosnippet>728</a>				<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::BlockHashAbsent)
+<a href=#728 id=728 data-nosnippet>728</a>				<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::BlockHashAbsent);
 <a href=#729 id=729 data-nosnippet>729</a>			}
 <a href=#730 id=730 data-nosnippet>730</a>		}
 <a href=#731 id=731 data-nosnippet>731</a>
@@ -752,16 +752,16 @@
 <a href=#752 id=752 data-nosnippet>752</a>		to_reserve: usize,
 <a href=#753 id=753 data-nosnippet>753</a>	) -&gt; <span class="prelude-ty">Result</span>&lt;BlockGuard&lt;Block, BE&gt;, SubscriptionManagementError&gt; {
 <a href=#754 id=754 data-nosnippet>754</a>		<span class="kw">let </span><span class="prelude-val">Some</span>(sub) = <span class="self">self</span>.subs.get_mut(sub_id) <span class="kw">else </span>{
-<a href=#755 id=755 data-nosnippet>755</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::SubscriptionAbsent)
+<a href=#755 id=755 data-nosnippet>755</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::SubscriptionAbsent);
 <a href=#756 id=756 data-nosnippet>756</a>		};
 <a href=#757 id=757 data-nosnippet>757</a>
 <a href=#758 id=758 data-nosnippet>758</a>		<span class="kw">if </span>!sub.contains_block(hash) {
-<a href=#759 id=759 data-nosnippet>759</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::BlockHashAbsent)
+<a href=#759 id=759 data-nosnippet>759</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::BlockHashAbsent);
 <a href=#760 id=760 data-nosnippet>760</a>		}
 <a href=#761 id=761 data-nosnippet>761</a>
 <a href=#762 id=762 data-nosnippet>762</a>		<span class="kw">let </span><span class="prelude-val">Some</span>(operation) = sub.register_operation(to_reserve) <span class="kw">else </span>{
 <a href=#763 id=763 data-nosnippet>763</a>			<span class="comment">// Error when the server cannot execute at least one operation.
-<a href=#764 id=764 data-nosnippet>764</a>			</span><span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::ExceededLimits)
+<a href=#764 id=764 data-nosnippet>764</a>			</span><span class="kw">return </span><span class="prelude-val">Err</span>(SubscriptionManagementError::ExceededLimits);
 <a href=#765 id=765 data-nosnippet>765</a>		};
 <a href=#766 id=766 data-nosnippet>766</a>
 <a href=#767 id=767 data-nosnippet>767</a>		BlockGuard::new(
@@ -781,7 +781,7 @@
 <a href=#781 id=781 data-nosnippet>781</a>
 <a href=#782 id=782 data-nosnippet>782</a><span class="attr">#[cfg(test)]
 <a href=#783 id=783 data-nosnippet>783</a></span><span class="kw">mod </span>tests {
-<a href=#784 id=784 data-nosnippet>784</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#784 id=784 data-nosnippet>784</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#785 id=785 data-nosnippet>785</a>	<span class="kw">use </span>jsonrpsee::ConnectionId;
 <a href=#786 id=786 data-nosnippet>786</a>	<span class="kw">use </span>sc_block_builder::BlockBuilderBuilder;
 <a href=#787 id=787 data-nosnippet>787</a>	<span class="kw">use </span>sc_service::client::new_with_backend;

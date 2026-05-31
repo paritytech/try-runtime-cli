@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/frame/support/procedural/src/pallet/parse/helper.rs`."><title>helper.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">frame_support_procedural/pallet/parse/</div>helper.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/frame/support/procedural/src/pallet/parse/helper.rs`."><title>helper.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support_procedural" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support_procedural/pallet/parse/</div>helper.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -60,7 +60,7 @@
 <a href=#60 id=60 data-nosnippet>60</a>	<span class="kw">let </span><span class="prelude-val">Some</span>(index) = attrs.iter().position(|attr| {
 <a href=#61 id=61 data-nosnippet>61</a>		attr.path().segments.first().map_or(<span class="bool-val">false</span>, |segment| segment.ident == <span class="string">"pallet"</span>)
 <a href=#62 id=62 data-nosnippet>62</a>	}) <span class="kw">else </span>{
-<a href=#63 id=63 data-nosnippet>63</a>		<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
+<a href=#63 id=63 data-nosnippet>63</a>		<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
 <a href=#64 id=64 data-nosnippet>64</a>	};
 <a href=#65 id=65 data-nosnippet>65</a>
 <a href=#66 id=66 data-nosnippet>66</a>	<span class="kw">let </span>pallet_attr = attrs.remove(index);
@@ -162,7 +162,7 @@
 <a href=#162 id=162 data-nosnippet>162</a>		<span class="macro">syn::parenthesized!</span>(content <span class="kw">in </span>input);
 <a href=#163 id=163 data-nosnippet>163</a>		<span class="kw">if </span>!content.is_empty() {
 <a href=#164 id=164 data-nosnippet>164</a>			<span class="kw">let </span>msg = <span class="string">"unexpected tokens, expected nothing inside parenthesis as `()`"</span>;
-<a href=#165 id=165 data-nosnippet>165</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(content.span(), msg))
+<a href=#165 id=165 data-nosnippet>165</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(content.span(), msg));
 <a href=#166 id=166 data-nosnippet>166</a>		}
 <a href=#167 id=167 data-nosnippet>167</a>		<span class="prelude-val">Ok</span>(<span class="self">Self</span>)
 <a href=#168 id=168 data-nosnippet>168</a>	}
@@ -173,9 +173,9 @@
 <a href=#173 id=173 data-nosnippet>173</a><span class="kw">impl </span>syn::parse::Parse <span class="kw">for </span>StaticLifetime {
 <a href=#174 id=174 data-nosnippet>174</a>	<span class="kw">fn </span>parse(input: syn::parse::ParseStream) -&gt; syn::Result&lt;<span class="self">Self</span>&gt; {
 <a href=#175 id=175 data-nosnippet>175</a>		<span class="kw">let </span>lifetime = input.parse::&lt;syn::Lifetime&gt;()<span class="question-mark">?</span>;
-<a href=#176 id=176 data-nosnippet>176</a>		<span class="kw">if </span>lifetime.ident != <span class="string">"static" </span>{
+<a href=#176 id=176 data-nosnippet>176</a>		<span class="kw">if </span>lifetime.<span class="macro">ident !</span>= <span class="string">"static" </span>{
 <a href=#177 id=177 data-nosnippet>177</a>			<span class="kw">let </span>msg = <span class="string">"unexpected tokens, expected `static`"</span>;
-<a href=#178 id=178 data-nosnippet>178</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(lifetime.ident.span(), msg))
+<a href=#178 id=178 data-nosnippet>178</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(lifetime.ident.span(), msg));
 <a href=#179 id=179 data-nosnippet>179</a>		}
 <a href=#180 id=180 data-nosnippet>180</a>		<span class="prelude-val">Ok</span>(<span class="self">Self</span>)
 <a href=#181 id=181 data-nosnippet>181</a>	}
@@ -273,7 +273,7 @@
 <a href=#273 id=273 data-nosnippet>273</a>	<span class="kw">impl </span>syn::parse::Parse <span class="kw">for </span>Checker {
 <a href=#274 id=274 data-nosnippet>274</a>		<span class="kw">fn </span>parse(input: syn::parse::ParseStream) -&gt; syn::Result&lt;<span class="self">Self</span>&gt; {
 <a href=#275 id=275 data-nosnippet>275</a>			<span class="kw">if </span>input.is_empty() {
-<a href=#276 id=276 data-nosnippet>276</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">None</span>))
+<a href=#276 id=276 data-nosnippet>276</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">None</span>));
 <a href=#277 id=277 data-nosnippet>277</a>			}
 <a href=#278 id=278 data-nosnippet>278</a>
 <a href=#279 id=279 data-nosnippet>279</a>			<span class="kw">let </span><span class="kw-2">mut </span>instance_usage = InstanceUsage { span: input.span(), has_instance: <span class="bool-val">false </span>};
@@ -281,7 +281,7 @@
 <a href=#281 id=281 data-nosnippet>281</a>			input.parse::&lt;keyword::T&gt;()<span class="question-mark">?</span>;
 <a href=#282 id=282 data-nosnippet>282</a>
 <a href=#283 id=283 data-nosnippet>283</a>			<span class="kw">if </span>input.is_empty() {
-<a href=#284 id=284 data-nosnippet>284</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">Some</span>(instance_usage)))
+<a href=#284 id=284 data-nosnippet>284</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">Some</span>(instance_usage)));
 <a href=#285 id=285 data-nosnippet>285</a>			}
 <a href=#286 id=286 data-nosnippet>286</a>
 <a href=#287 id=287 data-nosnippet>287</a>			<span class="kw">let </span>lookahead = input.lookahead1();
@@ -298,7 +298,7 @@
 <a href=#298 id=298 data-nosnippet>298</a>				input.parse::&lt;keyword::Config&gt;()<span class="question-mark">?</span>;
 <a href=#299 id=299 data-nosnippet>299</a>
 <a href=#300 id=300 data-nosnippet>300</a>				<span class="kw">if </span>input.is_empty() {
-<a href=#301 id=301 data-nosnippet>301</a>					<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">Some</span>(instance_usage)))
+<a href=#301 id=301 data-nosnippet>301</a>					<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">Some</span>(instance_usage)));
 <a href=#302 id=302 data-nosnippet>302</a>				}
 <a href=#303 id=303 data-nosnippet>303</a>
 <a href=#304 id=304 data-nosnippet>304</a>				instance_usage.has_instance = <span class="bool-val">true</span>;
@@ -440,7 +440,7 @@
 <a href=#440 id=440 data-nosnippet>440</a>			input.parse::&lt;keyword::T&gt;()<span class="question-mark">?</span>;
 <a href=#441 id=441 data-nosnippet>441</a>
 <a href=#442 id=442 data-nosnippet>442</a>			<span class="kw">if </span>input.is_empty() {
-<a href=#443 id=443 data-nosnippet>443</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(instance_usage))
+<a href=#443 id=443 data-nosnippet>443</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(instance_usage));
 <a href=#444 id=444 data-nosnippet>444</a>			}
 <a href=#445 id=445 data-nosnippet>445</a>
 <a href=#446 id=446 data-nosnippet>446</a>			<span class="kw">let </span>lookahead = input.lookahead1();
@@ -457,7 +457,7 @@
 <a href=#457 id=457 data-nosnippet>457</a>				input.parse::&lt;keyword::Config&gt;()<span class="question-mark">?</span>;
 <a href=#458 id=458 data-nosnippet>458</a>
 <a href=#459 id=459 data-nosnippet>459</a>				<span class="kw">if </span>input.is_empty() {
-<a href=#460 id=460 data-nosnippet>460</a>					<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(instance_usage))
+<a href=#460 id=460 data-nosnippet>460</a>					<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(instance_usage));
 <a href=#461 id=461 data-nosnippet>461</a>				}
 <a href=#462 id=462 data-nosnippet>462</a>
 <a href=#463 id=463 data-nosnippet>463</a>				instance_usage.has_instance = <span class="bool-val">true</span>;
@@ -517,10 +517,10 @@
 <a href=#517 id=517 data-nosnippet>517</a>					input.parse::&lt;keyword::I&gt;()<span class="question-mark">?</span>;
 <a href=#518 id=518 data-nosnippet>518</a>				}
 <a href=#519 id=519 data-nosnippet>519</a>				input.parse::&lt;<span class="macro">syn::Token!</span>[&gt;]&gt;()<span class="question-mark">?</span>;
-<a href=#520 id=520 data-nosnippet>520</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">Some</span>(instance_usage)))
+<a href=#520 id=520 data-nosnippet>520</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">Some</span>(instance_usage)));
 <a href=#521 id=521 data-nosnippet>521</a>			} <span class="kw">else </span>{
 <a href=#522 id=522 data-nosnippet>522</a>				input.parse::&lt;keyword::BuildGenesisConfig&gt;()<span class="question-mark">?</span>;
-<a href=#523 id=523 data-nosnippet>523</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">None</span>))
+<a href=#523 id=523 data-nosnippet>523</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">None</span>));
 <a href=#524 id=524 data-nosnippet>524</a>			}
 <a href=#525 id=525 data-nosnippet>525</a>		}
 <a href=#526 id=526 data-nosnippet>526</a>	}
@@ -554,7 +554,7 @@
 <a href=#554 id=554 data-nosnippet>554</a>	<span class="kw">impl </span>syn::parse::Parse <span class="kw">for </span>Checker {
 <a href=#555 id=555 data-nosnippet>555</a>		<span class="kw">fn </span>parse(input: syn::parse::ParseStream) -&gt; syn::Result&lt;<span class="self">Self</span>&gt; {
 <a href=#556 id=556 data-nosnippet>556</a>			<span class="kw">if </span>input.is_empty() {
-<a href=#557 id=557 data-nosnippet>557</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">None</span>))
+<a href=#557 id=557 data-nosnippet>557</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">None</span>));
 <a href=#558 id=558 data-nosnippet>558</a>			}
 <a href=#559 id=559 data-nosnippet>559</a>
 <a href=#560 id=560 data-nosnippet>560</a>			input.parse::&lt;keyword::T&gt;()<span class="question-mark">?</span>;
@@ -564,7 +564,7 @@
 <a href=#564 id=564 data-nosnippet>564</a>			<span class="kw">let </span><span class="kw-2">mut </span>instance_usage = InstanceUsage { span: input.span(), has_instance: <span class="bool-val">false </span>};
 <a href=#565 id=565 data-nosnippet>565</a>
 <a href=#566 id=566 data-nosnippet>566</a>			<span class="kw">if </span>input.is_empty() {
-<a href=#567 id=567 data-nosnippet>567</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">Some</span>(instance_usage)))
+<a href=#567 id=567 data-nosnippet>567</a>				<span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="self">Self</span>(<span class="prelude-val">Some</span>(instance_usage)));
 <a href=#568 id=568 data-nosnippet>568</a>			}
 <a href=#569 id=569 data-nosnippet>569</a>
 <a href=#570 id=570 data-nosnippet>570</a>			instance_usage.has_instance = <span class="bool-val">true</span>;
@@ -609,7 +609,7 @@
 <a href=#609 id=609 data-nosnippet>609</a>	<span class="kw">let </span>syn::ReturnType::Type(<span class="kw">_</span>, type_) = <span class="kw-2">&amp;</span>sig.output <span class="kw">else </span>{
 <a href=#610 id=610 data-nosnippet>610</a>		<span class="kw">let </span>msg = <span class="string">"Invalid pallet::call, require return type \
 <a href=#611 id=611 data-nosnippet>611</a>			DispatchResultWithPostInfo"</span>;
-<a href=#612 id=612 data-nosnippet>612</a>		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(sig.span(), msg))
+<a href=#612 id=612 data-nosnippet>612</a>		<span class="kw">return </span><span class="prelude-val">Err</span>(syn::Error::new(sig.span(), msg));
 <a href=#613 id=613 data-nosnippet>613</a>	};
 <a href=#614 id=614 data-nosnippet>614</a>
 <a href=#615 id=615 data-nosnippet>615</a>	<span class="kw">pub struct </span>Checker(CallReturnType);

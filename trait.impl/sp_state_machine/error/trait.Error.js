@@ -1,9 +1,9 @@
 (function() {
-    const implementors = Object.fromEntries([["sp_state_machine",[]]]);
+    var implementors = Object.fromEntries([["sp_state_machine",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":59,"fragment_lengths":[23]}
+//{"start":57,"fragment_lengths":[23]}

@@ -1,9 +1,9 @@
 (function() {
-    const implementors = Object.fromEntries([["polkadot_node_primitives",[]]]);
+    var implementors = Object.fromEntries([["polkadot_node_primitives",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":59,"fragment_lengths":[31]}
+//{"start":57,"fragment_lengths":[31]}

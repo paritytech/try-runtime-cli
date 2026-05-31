@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rand_chacha-0.9.0/src/chacha.rs`."><title>chacha.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rand_chacha" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="icon" href="https://www.rust-lang.org/favicon.ico"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">rand_chacha/</div>chacha.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2018 Developers of the Rand project.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rand_chacha-0.9.0/src/chacha.rs`."><title>chacha.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="rand_chacha" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="icon" href="https://www.rust-lang.org/favicon.ico"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rand_chacha/</div>chacha.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2018 Developers of the Rand project.
 <a href=#2 id=2 data-nosnippet>2</a>//
 <a href=#3 id=3 data-nosnippet>3</a>// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or
 <a href=#4 id=4 data-nosnippet>4</a>// https://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license
@@ -262,8 +262,8 @@
 <a href=#262 id=262 data-nosnippet>262</a>
 <a href=#263 id=263 data-nosnippet>263</a>        <span class="kw">impl </span>PartialEq&lt;<span class="macro-nonterminal">$ChaChaXRng</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$ChaChaXRng </span>{
 <a href=#264 id=264 data-nosnippet>264</a>            <span class="kw">fn </span>eq(<span class="kw-2">&amp;</span><span class="self">self</span>, rhs: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$ChaChaXRng</span>) -&gt; bool {
-<a href=#265 id=265 data-nosnippet>265</a>                <span class="kw">let </span>a: <span class="macro-nonterminal">$abst:</span>:<span class="macro-nonterminal">$ChaChaXRng </span>= <span class="self">self</span>.into();
-<a href=#266 id=266 data-nosnippet>266</a>                <span class="kw">let </span>b: <span class="macro-nonterminal">$abst:</span>:<span class="macro-nonterminal">$ChaChaXRng </span>= rhs.into();
+<a href=#265 id=265 data-nosnippet>265</a>                <span class="kw">let </span>a: <span class="macro-nonterminal">$abst</span>::<span class="macro-nonterminal">$ChaChaXRng </span>= <span class="self">self</span>.into();
+<a href=#266 id=266 data-nosnippet>266</a>                <span class="kw">let </span>b: <span class="macro-nonterminal">$abst</span>::<span class="macro-nonterminal">$ChaChaXRng </span>= rhs.into();
 <a href=#267 id=267 data-nosnippet>267</a>                a == b
 <a href=#268 id=268 data-nosnippet>268</a>            }
 <a href=#269 id=269 data-nosnippet>269</a>        }
@@ -275,7 +275,7 @@
 <a href=#275 id=275 data-nosnippet>275</a>            <span class="kw">where
 <a href=#276 id=276 data-nosnippet>276</a>                </span>S: Serializer,
 <a href=#277 id=277 data-nosnippet>277</a>            {
-<a href=#278 id=278 data-nosnippet>278</a>                <span class="macro-nonterminal">$abst:</span>:<span class="macro-nonterminal">$ChaChaXRng::from</span>(<span class="self">self</span>).serialize(s)
+<a href=#278 id=278 data-nosnippet>278</a>                <span class="macro-nonterminal">$abst</span>::<span class="macro-nonterminal">$ChaChaXRng::from</span>(<span class="self">self</span>).serialize(s)
 <a href=#279 id=279 data-nosnippet>279</a>            }
 <a href=#280 id=280 data-nosnippet>280</a>        }
 <a href=#281 id=281 data-nosnippet>281</a>        <span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
@@ -284,7 +284,7 @@
 <a href=#284 id=284 data-nosnippet>284</a>            <span class="kw">where
 <a href=#285 id=285 data-nosnippet>285</a>                </span>D: Deserializer&lt;<span class="lifetime">'de</span>&gt;,
 <a href=#286 id=286 data-nosnippet>286</a>            {
-<a href=#287 id=287 data-nosnippet>287</a>                <span class="macro-nonterminal">$abst:</span>:<span class="macro-nonterminal">$ChaChaXRng::deserialize</span>(d).map(|x| <span class="self">Self</span>::from(<span class="kw-2">&amp;</span>x))
+<a href=#287 id=287 data-nosnippet>287</a>                <span class="macro-nonterminal">$abst</span>::<span class="macro-nonterminal">$ChaChaXRng::deserialize</span>(d).map(|x| <span class="self">Self</span>::from(<span class="kw-2">&amp;</span>x))
 <a href=#288 id=288 data-nosnippet>288</a>            }
 <a href=#289 id=289 data-nosnippet>289</a>        }
 <a href=#290 id=290 data-nosnippet>290</a>
@@ -303,10 +303,10 @@
 <a href=#303 id=303 data-nosnippet>303</a>                word_pos: u128,
 <a href=#304 id=304 data-nosnippet>304</a>            }
 <a href=#305 id=305 data-nosnippet>305</a>
-<a href=#306 id=306 data-nosnippet>306</a>            <span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span>super::<span class="macro-nonterminal">$ChaChaXRng</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$ChaChaXRng </span>{
+<a href=#306 id=306 data-nosnippet>306</a>            <span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span><span class="kw">super</span>::<span class="macro-nonterminal">$ChaChaXRng</span>&gt; <span class="kw">for </span><span class="macro-nonterminal">$ChaChaXRng </span>{
 <a href=#307 id=307 data-nosnippet>307</a>                <span class="comment">// Forget all information about the input except what is necessary to determine the
 <a href=#308 id=308 data-nosnippet>308</a>                // outputs of any sequence of pub API calls.
-<a href=#309 id=309 data-nosnippet>309</a>                </span><span class="kw">fn </span>from(r: <span class="kw-2">&amp;</span>super::<span class="macro-nonterminal">$ChaChaXRng</span>) -&gt; <span class="self">Self </span>{
+<a href=#309 id=309 data-nosnippet>309</a>                </span><span class="kw">fn </span>from(r: <span class="kw-2">&amp;</span><span class="kw">super</span>::<span class="macro-nonterminal">$ChaChaXRng</span>) -&gt; <span class="self">Self </span>{
 <a href=#310 id=310 data-nosnippet>310</a>                    <span class="self">Self </span>{
 <a href=#311 id=311 data-nosnippet>311</a>                        seed: r.get_seed(),
 <a href=#312 id=312 data-nosnippet>312</a>                        stream: r.get_stream(),
@@ -315,7 +315,7 @@
 <a href=#315 id=315 data-nosnippet>315</a>                }
 <a href=#316 id=316 data-nosnippet>316</a>            }
 <a href=#317 id=317 data-nosnippet>317</a>
-<a href=#318 id=318 data-nosnippet>318</a>            <span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$ChaChaXRng</span>&gt; <span class="kw">for </span>super::<span class="macro-nonterminal">$ChaChaXRng </span>{
+<a href=#318 id=318 data-nosnippet>318</a>            <span class="kw">impl </span>From&lt;<span class="kw-2">&amp;</span><span class="macro-nonterminal">$ChaChaXRng</span>&gt; <span class="kw">for super</span>::<span class="macro-nonterminal">$ChaChaXRng </span>{
 <a href=#319 id=319 data-nosnippet>319</a>                <span class="comment">// Construct one of the possible concrete RNGs realizing an abstract state.
 <a href=#320 id=320 data-nosnippet>320</a>                </span><span class="kw">fn </span>from(a: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$ChaChaXRng</span>) -&gt; <span class="self">Self </span>{
 <a href=#321 id=321 data-nosnippet>321</a>                    <span class="kw">use </span>rand_core::SeedableRng;
@@ -356,7 +356,7 @@
 <a href=#356 id=356 data-nosnippet>356</a>    <span class="kw">use </span>rand_core::{RngCore, SeedableRng};
 <a href=#357 id=357 data-nosnippet>357</a>
 <a href=#358 id=358 data-nosnippet>358</a>    <span class="attr">#[cfg(feature = <span class="string">"serde"</span>)]
-<a href=#359 id=359 data-nosnippet>359</a>    </span><span class="kw">use </span>super::{ChaCha12Rng, ChaCha20Rng, ChaCha8Rng};
+<a href=#359 id=359 data-nosnippet>359</a>    </span><span class="kw">use super</span>::{ChaCha12Rng, ChaCha20Rng, ChaCha8Rng};
 <a href=#360 id=360 data-nosnippet>360</a>
 <a href=#361 id=361 data-nosnippet>361</a>    <span class="kw">type </span>ChaChaRng = <span class="kw">super</span>::ChaCha20Rng;
 <a href=#362 id=362 data-nosnippet>362</a>
@@ -612,7 +612,7 @@
 <a href=#612 id=612 data-nosnippet>612</a>
 <a href=#613 id=613 data-nosnippet>613</a>    <span class="attr">#[test]
 <a href=#614 id=614 data-nosnippet>614</a>    </span><span class="kw">fn </span>test_chacha_word_pos_wrap_exact() {
-<a href=#615 id=615 data-nosnippet>615</a>        <span class="kw">use </span>super::{BLOCK_WORDS, BUF_BLOCKS};
+<a href=#615 id=615 data-nosnippet>615</a>        <span class="kw">use super</span>::{BLOCK_WORDS, BUF_BLOCKS};
 <a href=#616 id=616 data-nosnippet>616</a>        <span class="kw">let </span><span class="kw-2">mut </span>rng = ChaChaRng::from_seed(Default::default());
 <a href=#617 id=617 data-nosnippet>617</a>        <span class="comment">// refilling the buffer in set_word_pos will wrap the block counter to 0
 <a href=#618 id=618 data-nosnippet>618</a>        </span><span class="kw">let </span>last_block = (<span class="number">1 </span>&lt;&lt; <span class="number">68</span>) - u128::from(BUF_BLOCKS * BLOCK_WORDS);

@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["Error"],"struct":["StatementStore"],"trait":["StatementApiServer"]};
+window.SIDEBAR_ITEMS = {"enum":["Error"],"struct":["StatementStore"],"trait":["StatementApiServer","StatementStoreApi"]};

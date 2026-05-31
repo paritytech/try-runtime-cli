@@ -1,9 +1,9 @@
 (function() {
-    const implementors = Object.fromEntries([["tower_http",[]]]);
+    var implementors = Object.fromEntries([["tower_http",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":59,"fragment_lengths":[17]}
+//{"start":57,"fragment_lengths":[17]}

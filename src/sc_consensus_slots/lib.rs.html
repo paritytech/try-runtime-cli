@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/client/consensus/slots/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_consensus_slots" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sc_consensus_slots/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/client/consensus/slots/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_consensus_slots" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_consensus_slots/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -214,8 +214,8 @@
 <a href=#214 id=214 data-nosnippet>214</a>			Either::Left((<span class="prelude-val">Err</span>(err), <span class="kw">_</span>)) =&gt; {
 <a href=#215 id=215 data-nosnippet>215</a>				<span class="macro">warn!</span>(target: log_target, <span class="string">"Proposing failed: {}"</span>, err);
 <a href=#216 id=216 data-nosnippet>216</a>
-<a href=#217 id=217 data-nosnippet>217</a>				<span class="kw">return </span><span class="prelude-val">None
-<a href=#218 id=218 data-nosnippet>218</a>			</span>},
+<a href=#217 id=217 data-nosnippet>217</a>				<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#218 id=218 data-nosnippet>218</a>			},
 <a href=#219 id=219 data-nosnippet>219</a>			Either::Right(<span class="kw">_</span>) =&gt; {
 <a href=#220 id=220 data-nosnippet>220</a>				<span class="macro">info!</span>(
 <a href=#221 id=221 data-nosnippet>221</a>					target: log_target,
@@ -234,8 +234,8 @@
 <a href=#234 id=234 data-nosnippet>234</a>					<span class="string">"slot" </span>=&gt; <span class="kw-2">*</span>slot,
 <a href=#235 id=235 data-nosnippet>235</a>				);
 <a href=#236 id=236 data-nosnippet>236</a>
-<a href=#237 id=237 data-nosnippet>237</a>				<span class="kw">return </span><span class="prelude-val">None
-<a href=#238 id=238 data-nosnippet>238</a>			</span>},
+<a href=#237 id=237 data-nosnippet>237</a>				<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#238 id=238 data-nosnippet>238</a>			},
 <a href=#239 id=239 data-nosnippet>239</a>		};
 <a href=#240 id=240 data-nosnippet>240</a>
 <a href=#241 id=241 data-nosnippet>241</a>		<span class="prelude-val">Some</span>(proposal)
@@ -260,8 +260,8 @@
 <a href=#260 id=260 data-nosnippet>260</a>					err,
 <a href=#261 id=261 data-nosnippet>261</a>				);
 <a href=#262 id=262 data-nosnippet>262</a>
-<a href=#263 id=263 data-nosnippet>263</a>				<span class="kw">return </span><span class="prelude-val">None
-<a href=#264 id=264 data-nosnippet>264</a>			</span>},
+<a href=#263 id=263 data-nosnippet>263</a>				<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#264 id=264 data-nosnippet>264</a>			},
 <a href=#265 id=265 data-nosnippet>265</a>			Either::Left(<span class="kw">_</span>) =&gt; {
 <a href=#266 id=266 data-nosnippet>266</a>				<span class="macro">warn!</span>(
 <a href=#267 id=267 data-nosnippet>267</a>					target: logging_target,
@@ -270,8 +270,8 @@
 <a href=#270 id=270 data-nosnippet>270</a>					slot_info.chain_head.hash(),
 <a href=#271 id=271 data-nosnippet>271</a>				);
 <a href=#272 id=272 data-nosnippet>272</a>
-<a href=#273 id=273 data-nosnippet>273</a>				<span class="kw">return </span><span class="prelude-val">None
-<a href=#274 id=274 data-nosnippet>274</a>			</span>},
+<a href=#273 id=273 data-nosnippet>273</a>				<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#274 id=274 data-nosnippet>274</a>			},
 <a href=#275 id=275 data-nosnippet>275</a>		};
 <a href=#276 id=276 data-nosnippet>276</a>
 <a href=#277 id=277 data-nosnippet>277</a>		<span class="prelude-val">Some</span>(inherent_data)
@@ -294,8 +294,8 @@
 <a href=#294 id=294 data-nosnippet>294</a>				<span class="string">"Skipping proposal slot {} since there's no time left to propose"</span>, slot,
 <a href=#295 id=295 data-nosnippet>295</a>			);
 <a href=#296 id=296 data-nosnippet>296</a>
-<a href=#297 id=297 data-nosnippet>297</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#298 id=298 data-nosnippet>298</a>		</span>} <span class="kw">else </span>{
+<a href=#297 id=297 data-nosnippet>297</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#298 id=298 data-nosnippet>298</a>		} <span class="kw">else </span>{
 <a href=#299 id=299 data-nosnippet>299</a>			Instant::now() + proposing_remaining_duration
 <a href=#300 id=300 data-nosnippet>300</a>		};
 <a href=#301 id=301 data-nosnippet>301</a>
@@ -317,8 +317,8 @@
 <a href=#317 id=317 data-nosnippet>317</a>					<span class="string">"err" </span>=&gt; <span class="question-mark">?</span>err,
 <a href=#318 id=318 data-nosnippet>318</a>				);
 <a href=#319 id=319 data-nosnippet>319</a>
-<a href=#320 id=320 data-nosnippet>320</a>				<span class="kw">return </span><span class="prelude-val">None
-<a href=#321 id=321 data-nosnippet>321</a>			</span>},
+<a href=#320 id=320 data-nosnippet>320</a>				<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#321 id=321 data-nosnippet>321</a>			},
 <a href=#322 id=322 data-nosnippet>322</a>		};
 <a href=#323 id=323 data-nosnippet>323</a>
 <a href=#324 id=324 data-nosnippet>324</a>		<span class="self">self</span>.notify_slot(<span class="kw-2">&amp;</span>slot_info.chain_head, slot, <span class="kw-2">&amp;</span>aux_data);
@@ -337,14 +337,14 @@
 <a href=#337 id=337 data-nosnippet>337</a>				<span class="string">"authorities_len" </span>=&gt; authorities_len,
 <a href=#338 id=338 data-nosnippet>338</a>			);
 <a href=#339 id=339 data-nosnippet>339</a>
-<a href=#340 id=340 data-nosnippet>340</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#341 id=341 data-nosnippet>341</a>		</span>}
+<a href=#340 id=340 data-nosnippet>340</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#341 id=341 data-nosnippet>341</a>		}
 <a href=#342 id=342 data-nosnippet>342</a>
 <a href=#343 id=343 data-nosnippet>343</a>		<span class="kw">let </span>claim = <span class="self">self</span>.claim_slot(<span class="kw-2">&amp;</span>slot_info.chain_head, slot, <span class="kw-2">&amp;</span>aux_data).<span class="kw">await</span><span class="question-mark">?</span>;
 <a href=#344 id=344 data-nosnippet>344</a>
 <a href=#345 id=345 data-nosnippet>345</a>		<span class="kw">if </span><span class="self">self</span>.should_backoff(slot, <span class="kw-2">&amp;</span>slot_info.chain_head) {
-<a href=#346 id=346 data-nosnippet>346</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#347 id=347 data-nosnippet>347</a>		</span>}
+<a href=#346 id=346 data-nosnippet>346</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#347 id=347 data-nosnippet>347</a>		}
 <a href=#348 id=348 data-nosnippet>348</a>
 <a href=#349 id=349 data-nosnippet>349</a>		<span class="macro">debug!</span>(target: logging_target, <span class="string">"Starting authorship at slot: {slot}"</span>);
 <a href=#350 id=350 data-nosnippet>350</a>
@@ -363,8 +363,8 @@
 <a href=#363 id=363 data-nosnippet>363</a>					<span class="string">"err" </span>=&gt; <span class="question-mark">?</span>err
 <a href=#364 id=364 data-nosnippet>364</a>				);
 <a href=#365 id=365 data-nosnippet>365</a>
-<a href=#366 id=366 data-nosnippet>366</a>				<span class="kw">return </span><span class="prelude-val">None
-<a href=#367 id=367 data-nosnippet>367</a>			</span>},
+<a href=#366 id=366 data-nosnippet>366</a>				<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#367 id=367 data-nosnippet>367</a>			},
 <a href=#368 id=368 data-nosnippet>368</a>		};
 <a href=#369 id=369 data-nosnippet>369</a>
 <a href=#370 id=370 data-nosnippet>370</a>		<span class="kw">let </span>proposal = <span class="self">self</span>.propose(proposer, <span class="kw-2">&amp;</span>claim, slot_info, end_proposing_at).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -390,8 +390,8 @@
 <a href=#390 id=390 data-nosnippet>390</a>			<span class="prelude-val">Err</span>(err) =&gt; {
 <a href=#391 id=391 data-nosnippet>391</a>				<span class="macro">warn!</span>(target: logging_target, <span class="string">"Failed to create block import params: {}"</span>, err);
 <a href=#392 id=392 data-nosnippet>392</a>
-<a href=#393 id=393 data-nosnippet>393</a>				<span class="kw">return </span><span class="prelude-val">None
-<a href=#394 id=394 data-nosnippet>394</a>			</span>},
+<a href=#393 id=393 data-nosnippet>393</a>				<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#394 id=394 data-nosnippet>394</a>			},
 <a href=#395 id=395 data-nosnippet>395</a>		};
 <a href=#396 id=396 data-nosnippet>396</a>
 <a href=#397 id=397 data-nosnippet>397</a>		<span class="macro">info!</span>(
@@ -592,7 +592,7 @@
 <a href=#592 id=592 data-nosnippet>592</a>
 <a href=#593 id=593 data-nosnippet>593</a>	<span class="comment">// If parent is genesis block, we don't require any lenience factor.
 <a href=#594 id=594 data-nosnippet>594</a>	</span><span class="kw">if </span>slot_info.chain_head.number().is_zero() {
-<a href=#595 id=595 data-nosnippet>595</a>		<span class="kw">return </span>proposing_duration
+<a href=#595 id=595 data-nosnippet>595</a>		<span class="kw">return </span>proposing_duration;
 <a href=#596 id=596 data-nosnippet>596</a>	}
 <a href=#597 id=597 data-nosnippet>597</a>
 <a href=#598 id=598 data-nosnippet>598</a>	<span class="kw">let </span>parent_slot = <span class="kw">match </span>parent_slot {
@@ -755,8 +755,8 @@
 <a href=#755 id=755 data-nosnippet>755</a>	) -&gt; bool {
 <a href=#756 id=756 data-nosnippet>756</a>		<span class="comment">// This should not happen, but we want to keep the previous behaviour if it does.
 <a href=#757 id=757 data-nosnippet>757</a>		</span><span class="kw">if </span>slot_now &lt;= chain_head_slot {
-<a href=#758 id=758 data-nosnippet>758</a>			<span class="kw">return </span><span class="bool-val">false
-<a href=#759 id=759 data-nosnippet>759</a>		</span>}
+<a href=#758 id=758 data-nosnippet>758</a>			<span class="kw">return </span><span class="bool-val">false</span>;
+<a href=#759 id=759 data-nosnippet>759</a>		}
 <a href=#760 id=760 data-nosnippet>760</a>
 <a href=#761 id=761 data-nosnippet>761</a>		<span class="comment">// There can be race between getting the finalized number and getting the best number.
 <a href=#762 id=762 data-nosnippet>762</a>		// So, better be safe than sorry.
@@ -797,7 +797,7 @@
 <a href=#797 id=797 data-nosnippet>797</a>
 <a href=#798 id=798 data-nosnippet>798</a><span class="attr">#[cfg(test)]
 <a href=#799 id=799 data-nosnippet>799</a></span><span class="kw">mod </span>test {
-<a href=#800 id=800 data-nosnippet>800</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#800 id=800 data-nosnippet>800</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#801 id=801 data-nosnippet>801</a>	<span class="kw">use </span>sp_runtime::traits::NumberFor;
 <a href=#802 id=802 data-nosnippet>802</a>	<span class="kw">use </span>std::time::{Duration, Instant};
 <a href=#803 id=803 data-nosnippet>803</a>	<span class="kw">use </span>substrate_test_runtime_client::runtime::{Block, Header};

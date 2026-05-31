@@ -1,9 +1,9 @@
 (function() {
-    const implementors = Object.fromEntries([["sc_cli",[]]]);
+    var implementors = Object.fromEntries([["sc_cli",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":59,"fragment_lengths":[13]}
+//{"start":57,"fragment_lengths":[13]}

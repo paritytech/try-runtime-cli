@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"derive":["Multihash"],"enum":["Code","Error"],"trait":["MultihashDigest"],"type":["Multihash"]};
+window.SIDEBAR_ITEMS = {"derive":["MultihashDigest"],"enum":["Code"],"struct":["Error","Multihash"],"trait":["MultihashDigest"]};

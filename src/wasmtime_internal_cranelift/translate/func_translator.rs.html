@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-internal-cranelift-35.0.0/src/translate/func_translator.rs`."><title>func_translator.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="wasmtime_internal_cranelift" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">wasmtime_internal_cranelift/translate/</div>func_translator.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Stand-alone WebAssembly to Cranelift IR translator.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-internal-cranelift-36.0.10/src/translate/func_translator.rs`."><title>func_translator.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="wasmtime_internal_cranelift" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasmtime_internal_cranelift/translate/</div>func_translator.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! Stand-alone WebAssembly to Cranelift IR translator.
 <a href=#2 id=2 data-nosnippet>2</a>//!
 <a href=#3 id=3 data-nosnippet>3</a>//! This module defines the `FuncTranslator` type which can translate a single WebAssembly
 <a href=#4 id=4 data-nosnippet>4</a>//! function to Cranelift IR guided by a `FuncEnvironment` which provides information about the
@@ -7,7 +7,7 @@
 <a href=#7 id=7 data-nosnippet>7</a></span><span class="kw">use </span><span class="kw">crate</span>::func_environ::FuncEnvironment;
 <a href=#8 id=8 data-nosnippet>8</a><span class="kw">use </span><span class="kw">crate</span>::translate::TargetEnvironment;
 <a href=#9 id=9 data-nosnippet>9</a><span class="kw">use </span><span class="kw">crate</span>::translate::code_translator::{bitcast_wasm_returns, translate_operator};
-<a href=#10 id=10 data-nosnippet>10</a><span class="kw">use </span><span class="kw">crate</span>::translate::state::FuncTranslationState;
+<a href=#10 id=10 data-nosnippet>10</a><span class="kw">use </span><span class="kw">crate</span>::translate::stack::FuncTranslationStacks;
 <a href=#11 id=11 data-nosnippet>11</a><span class="kw">use </span><span class="kw">crate</span>::translate::translation_utils::get_vmctx_value_label;
 <a href=#12 id=12 data-nosnippet>12</a><span class="kw">use </span>cranelift_codegen::entity::EntityRef;
 <a href=#13 id=13 data-nosnippet>13</a><span class="kw">use </span>cranelift_codegen::ir::{<span class="self">self</span>, Block, InstBuilder, ValueLabel};
@@ -23,7 +23,7 @@
 <a href=#23 id=23 data-nosnippet>23</a>/// functions which will reduce heap allocation traffic.
 <a href=#24 id=24 data-nosnippet>24</a></span><span class="kw">pub struct </span>FuncTranslator {
 <a href=#25 id=25 data-nosnippet>25</a>    func_ctx: FunctionBuilderContext,
-<a href=#26 id=26 data-nosnippet>26</a>    state: FuncTranslationState,
+<a href=#26 id=26 data-nosnippet>26</a>    state: FuncTranslationStacks,
 <a href=#27 id=27 data-nosnippet>27</a>}
 <a href=#28 id=28 data-nosnippet>28</a>
 <a href=#29 id=29 data-nosnippet>29</a><span class="kw">impl </span>FuncTranslator {
@@ -31,7 +31,7 @@
 <a href=#31 id=31 data-nosnippet>31</a>    </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
 <a href=#32 id=32 data-nosnippet>32</a>        <span class="self">Self </span>{
 <a href=#33 id=33 data-nosnippet>33</a>            func_ctx: FunctionBuilderContext::new(),
-<a href=#34 id=34 data-nosnippet>34</a>            state: FuncTranslationState::new(),
+<a href=#34 id=34 data-nosnippet>34</a>            state: FuncTranslationStacks::new(),
 <a href=#35 id=35 data-nosnippet>35</a>        }
 <a href=#36 id=36 data-nosnippet>36</a>    }
 <a href=#37 id=37 data-nosnippet>37</a>
@@ -234,13 +234,13 @@
 <a href=#234 id=234 data-nosnippet>234</a>    validator: <span class="kw-2">&amp;mut </span>FuncValidator&lt;<span class="kw">impl </span>WasmModuleResources&gt;,
 <a href=#235 id=235 data-nosnippet>235</a>    reader: BinaryReader,
 <a href=#236 id=236 data-nosnippet>236</a>    builder: <span class="kw-2">&amp;mut </span>FunctionBuilder,
-<a href=#237 id=237 data-nosnippet>237</a>    state: <span class="kw-2">&amp;mut </span>FuncTranslationState,
+<a href=#237 id=237 data-nosnippet>237</a>    stack: <span class="kw-2">&amp;mut </span>FuncTranslationStacks,
 <a href=#238 id=238 data-nosnippet>238</a>    environ: <span class="kw-2">&amp;mut </span>FuncEnvironment&lt;<span class="lifetime">'_</span>&gt;,
 <a href=#239 id=239 data-nosnippet>239</a>) -&gt; WasmResult&lt;()&gt; {
 <a href=#240 id=240 data-nosnippet>240</a>    <span class="comment">// The control stack is initialized with a single block representing the whole function.
-<a href=#241 id=241 data-nosnippet>241</a>    </span><span class="macro">debug_assert_eq!</span>(state.control_stack.len(), <span class="number">1</span>, <span class="string">"State not initialized"</span>);
+<a href=#241 id=241 data-nosnippet>241</a>    </span><span class="macro">debug_assert_eq!</span>(stack.control_stack.len(), <span class="number">1</span>, <span class="string">"State not initialized"</span>);
 <a href=#242 id=242 data-nosnippet>242</a>
-<a href=#243 id=243 data-nosnippet>243</a>    environ.before_translate_function(builder, state)<span class="question-mark">?</span>;
+<a href=#243 id=243 data-nosnippet>243</a>    environ.before_translate_function(builder, stack)<span class="question-mark">?</span>;
 <a href=#244 id=244 data-nosnippet>244</a>
 <a href=#245 id=245 data-nosnippet>245</a>    <span class="kw">let </span><span class="kw-2">mut </span>reader = OperatorsReader::new(reader);
 <a href=#246 id=246 data-nosnippet>246</a>    <span class="kw">let </span><span class="kw-2">mut </span>operand_types = <span class="macro">vec!</span>[];
@@ -253,11 +253,11 @@
 <a href=#253 id=253 data-nosnippet>253</a>        <span class="kw">let </span>operand_types =
 <a href=#254 id=254 data-nosnippet>254</a>            validate_op_and_get_operand_types(validator, environ, <span class="kw-2">&amp;mut </span>operand_types, <span class="kw-2">&amp;</span>op, pos)<span class="question-mark">?</span>;
 <a href=#255 id=255 data-nosnippet>255</a>
-<a href=#256 id=256 data-nosnippet>256</a>        environ.before_translate_operator(<span class="kw-2">&amp;</span>op, operand_types, builder, state)<span class="question-mark">?</span>;
-<a href=#257 id=257 data-nosnippet>257</a>        translate_operator(validator, <span class="kw-2">&amp;</span>op, operand_types, builder, state, environ)<span class="question-mark">?</span>;
-<a href=#258 id=258 data-nosnippet>258</a>        environ.after_translate_operator(<span class="kw-2">&amp;</span>op, operand_types, builder, state)<span class="question-mark">?</span>;
+<a href=#256 id=256 data-nosnippet>256</a>        environ.before_translate_operator(<span class="kw-2">&amp;</span>op, operand_types, builder, stack)<span class="question-mark">?</span>;
+<a href=#257 id=257 data-nosnippet>257</a>        translate_operator(validator, <span class="kw-2">&amp;</span>op, operand_types, builder, stack, environ)<span class="question-mark">?</span>;
+<a href=#258 id=258 data-nosnippet>258</a>        environ.after_translate_operator(<span class="kw-2">&amp;</span>op, operand_types, builder, stack)<span class="question-mark">?</span>;
 <a href=#259 id=259 data-nosnippet>259</a>    }
-<a href=#260 id=260 data-nosnippet>260</a>    environ.after_translate_function(builder, state)<span class="question-mark">?</span>;
+<a href=#260 id=260 data-nosnippet>260</a>    environ.after_translate_function(builder, stack)<span class="question-mark">?</span>;
 <a href=#261 id=261 data-nosnippet>261</a>    reader.finish()<span class="question-mark">?</span>;
 <a href=#262 id=262 data-nosnippet>262</a>
 <a href=#263 id=263 data-nosnippet>263</a>    <span class="comment">// The final `End` operator left us in the exit block where we need to manually add a return
@@ -265,17 +265,17 @@
 <a href=#265 id=265 data-nosnippet>265</a>    //
 <a href=#266 id=266 data-nosnippet>266</a>    // If the exit block is unreachable, it may not have the correct arguments, so we would
 <a href=#267 id=267 data-nosnippet>267</a>    // generate a return instruction that doesn't match the signature.
-<a href=#268 id=268 data-nosnippet>268</a>    </span><span class="kw">if </span>state.reachable {
+<a href=#268 id=268 data-nosnippet>268</a>    </span><span class="kw">if </span>stack.reachable {
 <a href=#269 id=269 data-nosnippet>269</a>        <span class="kw">if </span>!builder.is_unreachable() {
-<a href=#270 id=270 data-nosnippet>270</a>            environ.handle_before_return(<span class="kw-2">&amp;</span>state.stack, builder);
-<a href=#271 id=271 data-nosnippet>271</a>            bitcast_wasm_returns(<span class="kw-2">&amp;mut </span>state.stack, builder);
-<a href=#272 id=272 data-nosnippet>272</a>            builder.ins().return_(<span class="kw-2">&amp;</span>state.stack);
+<a href=#270 id=270 data-nosnippet>270</a>            environ.handle_before_return(<span class="kw-2">&amp;</span>stack.stack, builder);
+<a href=#271 id=271 data-nosnippet>271</a>            bitcast_wasm_returns(<span class="kw-2">&amp;mut </span>stack.stack, builder);
+<a href=#272 id=272 data-nosnippet>272</a>            builder.ins().return_(<span class="kw-2">&amp;</span>stack.stack);
 <a href=#273 id=273 data-nosnippet>273</a>        }
 <a href=#274 id=274 data-nosnippet>274</a>    }
 <a href=#275 id=275 data-nosnippet>275</a>
 <a href=#276 id=276 data-nosnippet>276</a>    <span class="comment">// Discard any remaining values on the stack. Either we just returned them,
 <a href=#277 id=277 data-nosnippet>277</a>    // or the end of the function is unreachable.
-<a href=#278 id=278 data-nosnippet>278</a>    </span>state.stack.clear();
+<a href=#278 id=278 data-nosnippet>278</a>    </span>stack.stack.clear();
 <a href=#279 id=279 data-nosnippet>279</a>
 <a href=#280 id=280 data-nosnippet>280</a>    <span class="prelude-val">Ok</span>(())
 <a href=#281 id=281 data-nosnippet>281</a>}

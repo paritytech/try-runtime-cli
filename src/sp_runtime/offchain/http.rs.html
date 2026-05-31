@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/primitives/runtime/src/offchain/http.rs`."><title>http.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sp_runtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sp_runtime/offchain/</div>http.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/primitives/runtime/src/offchain/http.rs`."><title>http.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sp_runtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sp_runtime/offchain/</div>http.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -84,7 +84,7 @@
 <a href=#84 id=84 data-nosnippet>84</a>}
 <a href=#85 id=85 data-nosnippet>85</a>
 <a href=#86 id=86 data-nosnippet>86</a><span class="kw">mod </span>header {
-<a href=#87 id=87 data-nosnippet>87</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#87 id=87 data-nosnippet>87</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#88 id=88 data-nosnippet>88</a>
 <a href=#89 id=89 data-nosnippet>89</a>	<span class="doccomment">/// A header type.
 <a href=#90 id=90 data-nosnippet>90</a>	</span><span class="attr">#[derive(Clone, PartialEq, Eq, Debug)]
@@ -399,8 +399,8 @@
 <a href=#399 id=399 data-nosnippet>399</a>
 <a href=#400 id=400 data-nosnippet>400</a>	<span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>::Item&gt; {
 <a href=#401 id=401 data-nosnippet>401</a>		<span class="kw">if </span><span class="self">self</span>.error.is_some() {
-<a href=#402 id=402 data-nosnippet>402</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#403 id=403 data-nosnippet>403</a>		</span>}
+<a href=#402 id=402 data-nosnippet>402</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#403 id=403 data-nosnippet>403</a>		}
 <a href=#404 id=404 data-nosnippet>404</a>
 <a href=#405 id=405 data-nosnippet>405</a>		<span class="kw">if </span><span class="self">self</span>.filled_up_to.is_none() {
 <a href=#406 id=406 data-nosnippet>406</a>			<span class="kw">let </span>result =
@@ -408,8 +408,8 @@
 <a href=#408 id=408 data-nosnippet>408</a>			<span class="kw">match </span>result {
 <a href=#409 id=409 data-nosnippet>409</a>				<span class="prelude-val">Err</span>(e) =&gt; {
 <a href=#410 id=410 data-nosnippet>410</a>					<span class="self">self</span>.error = <span class="prelude-val">Some</span>(e);
-<a href=#411 id=411 data-nosnippet>411</a>					<span class="kw">return </span><span class="prelude-val">None
-<a href=#412 id=412 data-nosnippet>412</a>				</span>},
+<a href=#411 id=411 data-nosnippet>411</a>					<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#412 id=412 data-nosnippet>412</a>				},
 <a href=#413 id=413 data-nosnippet>413</a>				<span class="prelude-val">Ok</span>(<span class="number">0</span>) =&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
 <a href=#414 id=414 data-nosnippet>414</a>				<span class="prelude-val">Ok</span>(size) =&gt; {
 <a href=#415 id=415 data-nosnippet>415</a>					<span class="self">self</span>.position = <span class="number">0</span>;
@@ -420,7 +420,7 @@
 <a href=#420 id=420 data-nosnippet>420</a>
 <a href=#421 id=421 data-nosnippet>421</a>		<span class="kw">if </span><span class="prelude-val">Some</span>(<span class="self">self</span>.position) == <span class="self">self</span>.filled_up_to {
 <a href=#422 id=422 data-nosnippet>422</a>			<span class="self">self</span>.filled_up_to = <span class="prelude-val">None</span>;
-<a href=#423 id=423 data-nosnippet>423</a>			<span class="kw">return </span><span class="self">self</span>.next()
+<a href=#423 id=423 data-nosnippet>423</a>			<span class="kw">return </span><span class="self">self</span>.next();
 <a href=#424 id=424 data-nosnippet>424</a>		}
 <a href=#425 id=425 data-nosnippet>425</a>
 <a href=#426 id=426 data-nosnippet>426</a>		<span class="kw">let </span>result = <span class="self">self</span>.buffer[<span class="self">self</span>.position];
@@ -447,7 +447,7 @@
 <a href=#447 id=447 data-nosnippet>447</a>		<span class="kw">let </span>raw = name.as_bytes();
 <a href=#448 id=448 data-nosnippet>448</a>		<span class="kw">for </span>(key, val) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.raw {
 <a href=#449 id=449 data-nosnippet>449</a>			<span class="kw">if </span><span class="kw-2">&amp;**</span>key == raw {
-<a href=#450 id=450 data-nosnippet>450</a>				<span class="kw">return </span>str::from_utf8(val).ok()
+<a href=#450 id=450 data-nosnippet>450</a>				<span class="kw">return </span>str::from_utf8(val).ok();
 <a href=#451 id=451 data-nosnippet>451</a>			}
 <a href=#452 id=452 data-nosnippet>452</a>		}
 <a href=#453 id=453 data-nosnippet>453</a>		<span class="prelude-val">None
@@ -488,7 +488,7 @@
 <a href=#488 id=488 data-nosnippet>488</a>
 <a href=#489 id=489 data-nosnippet>489</a><span class="attr">#[cfg(test)]
 <a href=#490 id=490 data-nosnippet>490</a></span><span class="kw">mod </span>tests {
-<a href=#491 id=491 data-nosnippet>491</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#491 id=491 data-nosnippet>491</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#492 id=492 data-nosnippet>492</a>	<span class="kw">use </span>sp_core::offchain::{testing, OffchainWorkerExt};
 <a href=#493 id=493 data-nosnippet>493</a>	<span class="kw">use </span>sp_io::TestExternalities;
 <a href=#494 id=494 data-nosnippet>494</a>

@@ -1,9 +1,9 @@
 (function() {
-    const implementors = Object.fromEntries([["cumulus_primitives_core",[]],["polkadot_primitives",[]],["sp_runtime",[]]]);
+    var implementors = Object.fromEntries([["cumulus_primitives_core",[]],["polkadot_primitives",[]],["sp_runtime",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":59,"fragment_lengths":[30,27,18]}
+//{"start":57,"fragment_lengths":[30,27,18]}

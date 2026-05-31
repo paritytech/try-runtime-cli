@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["LINK_HEADER_LEN"],"mod":["nlas"],"struct":["LinkHeader","LinkMessage","LinkMessageBuffer"]};

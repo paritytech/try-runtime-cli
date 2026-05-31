@@ -1,11 +1,11 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/jiff-0.2.18/src/fmt/friendly/parser.rs`."><title>parser.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="jiff" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">jiff/fmt/friendly/</div>parser.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span>crate::{
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/jiff-0.2.28/src/fmt/friendly/parser.rs`."><title>parser.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="jiff" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">jiff/fmt/friendly/</div>parser.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use crate</span>::{
 <a href=#2 id=2 data-nosnippet>2</a>    error::{fmt::friendly::Error <span class="kw">as </span>E, ErrorContext},
 <a href=#3 id=3 data-nosnippet>3</a>    fmt::{
 <a href=#4 id=4 data-nosnippet>4</a>        friendly::parser_label,
 <a href=#5 id=5 data-nosnippet>5</a>        util::{parse_temporal_fraction, DurationUnits},
 <a href=#6 id=6 data-nosnippet>6</a>        Parsed,
 <a href=#7 id=7 data-nosnippet>7</a>    },
-<a href=#8 id=8 data-nosnippet>8</a>    util::{c::Sign, parse},
+<a href=#8 id=8 data-nosnippet>8</a>    util::{b::Sign, parse},
 <a href=#9 id=9 data-nosnippet>9</a>    Error, SignedDuration, Span, Unit,
 <a href=#10 id=10 data-nosnippet>10</a>};
 <a href=#11 id=11 data-nosnippet>11</a>
@@ -434,7 +434,7 @@
 <a href=#434 id=434 data-nosnippet>434</a>        <span class="kw">let </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>first, tail)) = input.split_first() <span class="kw">else </span>{
 <a href=#435 id=435 data-nosnippet>435</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(Parsed { input, value: <span class="prelude-val">None </span>});
 <a href=#436 id=436 data-nosnippet>436</a>        };
-<a href=#437 id=437 data-nosnippet>437</a>        <span class="kw">if </span>first != <span class="string">b':' </span>{
+<a href=#437 id=437 data-nosnippet>437</a>        <span class="kw">if </span><span class="macro">first !</span>= <span class="string">b':' </span>{
 <a href=#438 id=438 data-nosnippet>438</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(Parsed { input, value: <span class="prelude-val">None </span>});
 <a href=#439 id=439 data-nosnippet>439</a>        }
 <a href=#440 id=440 data-nosnippet>440</a>        <span class="kw">let </span>Parsed { input, value } = <span class="self">self</span>.parse_hms(tail, hour)<span class="question-mark">?</span>;
@@ -461,7 +461,7 @@
 <a href=#461 id=461 data-nosnippet>461</a>
 <a href=#462 id=462 data-nosnippet>462</a>        <span class="kw">let </span>(<span class="kw-2">&amp;</span>first, input) =
 <a href=#463 id=463 data-nosnippet>463</a>            input.split_first().ok_or(E::ExpectedColonAfterMinute)<span class="question-mark">?</span>;
-<a href=#464 id=464 data-nosnippet>464</a>        <span class="kw">if </span>first != <span class="string">b':' </span>{
+<a href=#464 id=464 data-nosnippet>464</a>        <span class="kw">if </span><span class="macro">first !</span>= <span class="string">b':' </span>{
 <a href=#465 id=465 data-nosnippet>465</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(Error::from(E::ExpectedColonAfterMinute));
 <a href=#466 id=466 data-nosnippet>466</a>        }
 <a href=#467 id=467 data-nosnippet>467</a>
@@ -596,7 +596,7 @@
 <a href=#596 id=596 data-nosnippet>596</a>        <span class="kw">let </span><span class="prelude-val">Some</span>((<span class="kw-2">&amp;</span>first, tail)) = input.split_first() <span class="kw">else </span>{
 <a href=#597 id=597 data-nosnippet>597</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(Parsed { value: (), input });
 <a href=#598 id=598 data-nosnippet>598</a>        };
-<a href=#599 id=599 data-nosnippet>599</a>        <span class="kw">if </span>first != <span class="string">b',' </span>{
+<a href=#599 id=599 data-nosnippet>599</a>        <span class="kw">if </span><span class="macro">first !</span>= <span class="string">b',' </span>{
 <a href=#600 id=600 data-nosnippet>600</a>            <span class="kw">return </span><span class="prelude-val">Ok</span>(Parsed { value: (), input });
 <a href=#601 id=601 data-nosnippet>601</a>        }
 <a href=#602 id=602 data-nosnippet>602</a>
@@ -642,7 +642,7 @@
 <a href=#642 id=642 data-nosnippet>642</a><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 <a href=#643 id=643 data-nosnippet>643</a>#[cfg(test)]
 <a href=#644 id=644 data-nosnippet>644</a></span><span class="kw">mod </span>tests {
-<a href=#645 id=645 data-nosnippet>645</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#645 id=645 data-nosnippet>645</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#646 id=646 data-nosnippet>646</a>
 <a href=#647 id=647 data-nosnippet>647</a>    <span class="attr">#[test]
 <a href=#648 id=648 data-nosnippet>648</a>    </span><span class="kw">fn </span>parse_span_basic() {
@@ -822,38 +822,38 @@
 <a href=#822 id=822 data-nosnippet>822</a>
 <a href=#823 id=823 data-nosnippet>823</a>        <span class="macro">insta::assert_snapshot!</span>(
 <a href=#824 id=824 data-nosnippet>824</a>            p(<span class="string">"19999 years"</span>),
-<a href=#825 id=825 data-nosnippet>825</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for year unit on span: parameter 'years' with value 19999 is not in the required range of -19998..=19998"#</span>,
+<a href=#825 id=825 data-nosnippet>825</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for year unit on span: parameter 'years' is not in the required range of -19998..=19998"#</span>,
 <a href=#826 id=826 data-nosnippet>826</a>        );
 <a href=#827 id=827 data-nosnippet>827</a>        <span class="macro">insta::assert_snapshot!</span>(
 <a href=#828 id=828 data-nosnippet>828</a>            p(<span class="string">"19999 years ago"</span>),
-<a href=#829 id=829 data-nosnippet>829</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for year unit on span: parameter 'years' with value -19999 is not in the required range of -19998..=19998"#</span>,
+<a href=#829 id=829 data-nosnippet>829</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for year unit on span: parameter 'years' is not in the required range of -19998..=19998"#</span>,
 <a href=#830 id=830 data-nosnippet>830</a>        );
 <a href=#831 id=831 data-nosnippet>831</a>
 <a href=#832 id=832 data-nosnippet>832</a>        <span class="macro">insta::assert_snapshot!</span>(
 <a href=#833 id=833 data-nosnippet>833</a>            p(<span class="string">"239977 months"</span>),
-<a href=#834 id=834 data-nosnippet>834</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for month unit on span: parameter 'months' with value 239977 is not in the required range of -239976..=239976"#</span>,
+<a href=#834 id=834 data-nosnippet>834</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for month unit on span: parameter 'months' is not in the required range of -239976..=239976"#</span>,
 <a href=#835 id=835 data-nosnippet>835</a>        );
 <a href=#836 id=836 data-nosnippet>836</a>        <span class="macro">insta::assert_snapshot!</span>(
 <a href=#837 id=837 data-nosnippet>837</a>            p(<span class="string">"239977 months ago"</span>),
-<a href=#838 id=838 data-nosnippet>838</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for month unit on span: parameter 'months' with value -239977 is not in the required range of -239976..=239976"#</span>,
+<a href=#838 id=838 data-nosnippet>838</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for month unit on span: parameter 'months' is not in the required range of -239976..=239976"#</span>,
 <a href=#839 id=839 data-nosnippet>839</a>        );
 <a href=#840 id=840 data-nosnippet>840</a>
 <a href=#841 id=841 data-nosnippet>841</a>        <span class="macro">insta::assert_snapshot!</span>(
 <a href=#842 id=842 data-nosnippet>842</a>            p(<span class="string">"1043498 weeks"</span>),
-<a href=#843 id=843 data-nosnippet>843</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for week unit on span: parameter 'weeks' with value 1043498 is not in the required range of -1043497..=1043497"#</span>,
+<a href=#843 id=843 data-nosnippet>843</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for week unit on span: parameter 'weeks' is not in the required range of -1043497..=1043497"#</span>,
 <a href=#844 id=844 data-nosnippet>844</a>        );
 <a href=#845 id=845 data-nosnippet>845</a>        <span class="macro">insta::assert_snapshot!</span>(
 <a href=#846 id=846 data-nosnippet>846</a>            p(<span class="string">"1043498 weeks ago"</span>),
-<a href=#847 id=847 data-nosnippet>847</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for week unit on span: parameter 'weeks' with value -1043498 is not in the required range of -1043497..=1043497"#</span>,
+<a href=#847 id=847 data-nosnippet>847</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for week unit on span: parameter 'weeks' is not in the required range of -1043497..=1043497"#</span>,
 <a href=#848 id=848 data-nosnippet>848</a>        );
 <a href=#849 id=849 data-nosnippet>849</a>
 <a href=#850 id=850 data-nosnippet>850</a>        <span class="macro">insta::assert_snapshot!</span>(
 <a href=#851 id=851 data-nosnippet>851</a>            p(<span class="string">"7304485 days"</span>),
-<a href=#852 id=852 data-nosnippet>852</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for day unit on span: parameter 'days' with value 7304485 is not in the required range of -7304484..=7304484"#</span>,
+<a href=#852 id=852 data-nosnippet>852</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for day unit on span: parameter 'days' is not in the required range of -7304484..=7304484"#</span>,
 <a href=#853 id=853 data-nosnippet>853</a>        );
 <a href=#854 id=854 data-nosnippet>854</a>        <span class="macro">insta::assert_snapshot!</span>(
 <a href=#855 id=855 data-nosnippet>855</a>            p(<span class="string">"7304485 days ago"</span>),
-<a href=#856 id=856 data-nosnippet>856</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for day unit on span: parameter 'days' with value -7304485 is not in the required range of -7304484..=7304484"#</span>,
+<a href=#856 id=856 data-nosnippet>856</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for day unit on span: parameter 'days' is not in the required range of -7304484..=7304484"#</span>,
 <a href=#857 id=857 data-nosnippet>857</a>        );
 <a href=#858 id=858 data-nosnippet>858</a>
 <a href=#859 id=859 data-nosnippet>859</a>        <span class="macro">insta::assert_snapshot!</span>(
@@ -862,7 +862,7 @@
 <a href=#862 id=862 data-nosnippet>862</a>        );
 <a href=#863 id=863 data-nosnippet>863</a>        <span class="macro">insta::assert_snapshot!</span>(
 <a href=#864 id=864 data-nosnippet>864</a>            p(<span class="string">"9223372036854775808 nanoseconds ago"</span>),
-<a href=#865 id=865 data-nosnippet>865</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for nanosecond unit on span: parameter 'nanoseconds' with value -9223372036854775808 is not in the required range of -9223372036854775807..=9223372036854775807"#</span>,
+<a href=#865 id=865 data-nosnippet>865</a>            @<span class="string">r#"failed to parse input in the "friendly" duration format: failed to set value for nanosecond unit on span: parameter 'nanoseconds' is not in the required range of -9223372036854775807..=9223372036854775807"#</span>,
 <a href=#866 id=866 data-nosnippet>866</a>        );
 <a href=#867 id=867 data-nosnippet>867</a>    }
 <a href=#868 id=868 data-nosnippet>868</a>

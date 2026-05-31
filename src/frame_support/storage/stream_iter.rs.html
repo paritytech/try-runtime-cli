@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/frame/support/src/storage/stream_iter.rs`."><title>stream_iter.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/</div>stream_iter.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/frame/support/src/storage/stream_iter.rs`."><title>stream_iter.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/</div>stream_iter.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -15,13 +15,13 @@
 <a href=#15 id=15 data-nosnippet>15</a>// See the License for the specific language governing permissions and
 <a href=#16 id=16 data-nosnippet>16</a>// limitations under the License.
 <a href=#17 id=17 data-nosnippet>17</a>
-<a href=#18 id=18 data-nosnippet>18</a></span><span class="kw">use </span>crate::{BoundedBTreeMap, BoundedBTreeSet, BoundedVec, WeakBoundedVec};
+<a href=#18 id=18 data-nosnippet>18</a></span><span class="kw">use crate</span>::{BoundedBTreeMap, BoundedBTreeSet, BoundedVec, WeakBoundedVec};
 <a href=#19 id=19 data-nosnippet>19</a><span class="kw">use </span>alloc::vec::Vec;
 <a href=#20 id=20 data-nosnippet>20</a><span class="kw">use </span>codec::Decode;
 <a href=#21 id=21 data-nosnippet>21</a>
 <a href=#22 id=22 data-nosnippet>22</a><span class="doccomment">/// Provides the sealed trait `StreamIter`.
 <a href=#23 id=23 data-nosnippet>23</a></span><span class="kw">mod </span>private {
-<a href=#24 id=24 data-nosnippet>24</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#24 id=24 data-nosnippet>24</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#25 id=25 data-nosnippet>25</a>
 <a href=#26 id=26 data-nosnippet>26</a>	<span class="doccomment">/// Used as marker trait for types that support stream iteration.
 <a href=#27 id=27 data-nosnippet>27</a>	</span><span class="kw">pub trait </span>StreamIter {
@@ -177,8 +177,8 @@
 <a href=#177 id=177 data-nosnippet>177</a>
 <a href=#178 id=178 data-nosnippet>178</a>	<span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;T&gt; {
 <a href=#179 id=179 data-nosnippet>179</a>		<span class="kw">if </span><span class="self">self</span>.read &gt;= <span class="self">self</span>.length {
-<a href=#180 id=180 data-nosnippet>180</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#181 id=181 data-nosnippet>181</a>		</span>}
+<a href=#180 id=180 data-nosnippet>180</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#181 id=181 data-nosnippet>181</a>		}
 <a href=#182 id=182 data-nosnippet>182</a>
 <a href=#183 id=183 data-nosnippet>183</a>		<span class="kw">match </span>codec::Decode::decode(<span class="kw-2">&amp;mut </span><span class="self">self</span>.input) {
 <a href=#184 id=184 data-nosnippet>184</a>			<span class="prelude-val">Ok</span>(r) =&gt; {
@@ -314,7 +314,7 @@
 <a href=#314 id=314 data-nosnippet>314</a>			sp_io::storage::read(<span class="kw-2">&amp;</span><span class="self">self</span>.key, <span class="kw-2">&amp;mut </span>out_remaining, <span class="self">self</span>.offset)
 <a href=#315 id=315 data-nosnippet>315</a>		{
 <a href=#316 id=316 data-nosnippet>316</a>			<span class="kw">if </span>(length_minus_offset <span class="kw">as </span>usize) &lt; out_remaining.len() {
-<a href=#317 id=317 data-nosnippet>317</a>				<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Not enough data to fill the buffer"</span>.into())
+<a href=#317 id=317 data-nosnippet>317</a>				<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Not enough data to fill the buffer"</span>.into());
 <a href=#318 id=318 data-nosnippet>318</a>			}
 <a href=#319 id=319 data-nosnippet>319</a>
 <a href=#320 id=320 data-nosnippet>320</a>			<span class="self">self</span>.ensure_total_length_did_not_change(length_minus_offset)<span class="question-mark">?</span>;
@@ -371,7 +371,7 @@
 <a href=#371 id=371 data-nosnippet>371</a>		<span class="comment">// If there is still data left to be read from the state.
 <a href=#372 id=372 data-nosnippet>372</a>		</span><span class="kw">if </span><span class="self">self</span>.offset &lt; <span class="self">self</span>.total_length {
 <a href=#373 id=373 data-nosnippet>373</a>			<span class="kw">if </span>into.len() &gt; <span class="self">self</span>.buffer.capacity() {
-<a href=#374 id=374 data-nosnippet>374</a>				<span class="kw">return </span><span class="self">self</span>.read_big_item(into)
+<a href=#374 id=374 data-nosnippet>374</a>				<span class="kw">return </span><span class="self">self</span>.read_big_item(into);
 <a href=#375 id=375 data-nosnippet>375</a>			} <span class="kw">else if </span><span class="self">self</span>.buffer_pos + into.len() &gt; <span class="self">self</span>.buffer.len() {
 <a href=#376 id=376 data-nosnippet>376</a>				<span class="self">self</span>.fill_buffer()<span class="question-mark">?</span>;
 <a href=#377 id=377 data-nosnippet>377</a>			}
@@ -380,7 +380,7 @@
 <a href=#380 id=380 data-nosnippet>380</a>		<span class="comment">// Guard against `fill_buffer` not reading enough data or just not having enough data
 <a href=#381 id=381 data-nosnippet>381</a>		// anymore.
 <a href=#382 id=382 data-nosnippet>382</a>		</span><span class="kw">if </span>into.len() + <span class="self">self</span>.buffer_pos &gt; <span class="self">self</span>.buffer.len() {
-<a href=#383 id=383 data-nosnippet>383</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Not enough data to fill the buffer"</span>.into())
+<a href=#383 id=383 data-nosnippet>383</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">"Not enough data to fill the buffer"</span>.into());
 <a href=#384 id=384 data-nosnippet>384</a>		}
 <a href=#385 id=385 data-nosnippet>385</a>
 <a href=#386 id=386 data-nosnippet>386</a>		<span class="kw">let </span>end = <span class="self">self</span>.buffer_pos + into.len();
@@ -393,7 +393,7 @@
 <a href=#393 id=393 data-nosnippet>393</a>
 <a href=#394 id=394 data-nosnippet>394</a><span class="attr">#[cfg(test)]
 <a href=#395 id=395 data-nosnippet>395</a></span><span class="kw">mod </span>tests {
-<a href=#396 id=396 data-nosnippet>396</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#396 id=396 data-nosnippet>396</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#397 id=397 data-nosnippet>397</a>	<span class="kw">use </span>codec::{Compact, CompactLen, Encode, Input};
 <a href=#398 id=398 data-nosnippet>398</a>
 <a href=#399 id=399 data-nosnippet>399</a>	<span class="attr">#[<span class="kw">crate</span>::storage_alias]
@@ -592,76 +592,82 @@
 <a href=#592 id=592 data-nosnippet>592</a>		sp_io::TestExternalities::default().execute_with(|| {
 <a href=#593 id=593 data-nosnippet>593</a>			<span class="kw">const </span>BUFFER_SIZE: usize = <span class="number">300</span>;
 <a href=#594 id=594 data-nosnippet>594</a>			<span class="comment">// Ensure that the capacity isn't dividable by `300`.
-<a href=#595 id=595 data-nosnippet>595</a>			</span><span class="macro">assert!</span>(STORAGE_INPUT_BUFFER_CAPACITY % BUFFER_SIZE != <span class="number">0</span>, <span class="string">"Please update buffer size"</span>);
-<a href=#596 id=596 data-nosnippet>596</a>			<span class="comment">// Create some items where the last item is partially in the inner buffer so that
-<a href=#597 id=597 data-nosnippet>597</a>			// we need to fill the buffer to read the entire item.
-<a href=#598 id=598 data-nosnippet>598</a>			</span><span class="kw">let </span>data: Vec&lt;Vec&lt;u8&gt;&gt; = (<span class="number">0</span>..=(STORAGE_INPUT_BUFFER_CAPACITY / BUFFER_SIZE))
-<a href=#599 id=599 data-nosnippet>599</a>				.into_iter()
-<a href=#600 id=600 data-nosnippet>600</a>				.map(|i| <span class="macro">vec!</span>[i <span class="kw">as </span>u8; BUFFER_SIZE])
-<a href=#601 id=601 data-nosnippet>601</a>				.collect::&lt;Vec&lt;Vec&lt;u8&gt;&gt;&gt;();
-<a href=#602 id=602 data-nosnippet>602</a>			TestVecVecU8::put(<span class="kw-2">&amp;</span>data);
-<a href=#603 id=603 data-nosnippet>603</a>
-<a href=#604 id=604 data-nosnippet>604</a>			<span class="macro">assert_eq!</span>(data, TestVecVecU8::stream_iter().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;());
-<a href=#605 id=605 data-nosnippet>605</a>
-<a href=#606 id=606 data-nosnippet>606</a>			<span class="kw">let </span><span class="kw-2">mut </span>input = StorageInput::new(TestVecVecU8::hashed_key().into());
-<a href=#607 id=607 data-nosnippet>607</a>
-<a href=#608 id=608 data-nosnippet>608</a>			Compact::&lt;u32&gt;::decode(<span class="kw-2">&amp;mut </span>input).unwrap();
-<a href=#609 id=609 data-nosnippet>609</a>
-<a href=#610 id=610 data-nosnippet>610</a>			(<span class="number">0</span>..data.len() - <span class="number">1</span>).into_iter().for_each(|<span class="kw">_</span>| {
-<a href=#611 id=611 data-nosnippet>611</a>				Vec::&lt;u8&gt;::decode(<span class="kw-2">&amp;mut </span>input).unwrap();
-<a href=#612 id=612 data-nosnippet>612</a>			});
-<a href=#613 id=613 data-nosnippet>613</a>
-<a href=#614 id=614 data-nosnippet>614</a>			<span class="comment">// Try reading a more data than there should be left.
-<a href=#615 id=615 data-nosnippet>615</a>			</span><span class="kw">let </span><span class="kw-2">mut </span>result_buffer = <span class="macro">vec!</span>[<span class="number">0</span>; BUFFER_SIZE * <span class="number">2</span>];
-<a href=#616 id=616 data-nosnippet>616</a>			<span class="macro">assert!</span>(input
-<a href=#617 id=617 data-nosnippet>617</a>				.read(<span class="kw-2">&amp;mut </span>result_buffer)
-<a href=#618 id=618 data-nosnippet>618</a>				.unwrap_err()
-<a href=#619 id=619 data-nosnippet>619</a>				.to_string()
-<a href=#620 id=620 data-nosnippet>620</a>				.contains(<span class="string">"Not enough data to fill the buffer"</span>));
-<a href=#621 id=621 data-nosnippet>621</a>		})
-<a href=#622 id=622 data-nosnippet>622</a>	}
-<a href=#623 id=623 data-nosnippet>623</a>
-<a href=#624 id=624 data-nosnippet>624</a>	<span class="attr">#[test]
-<a href=#625 id=625 data-nosnippet>625</a>	</span><span class="kw">fn </span>detect_value_deleted_in_state() {
-<a href=#626 id=626 data-nosnippet>626</a>		sp_io::TestExternalities::default().execute_with(|| {
-<a href=#627 id=627 data-nosnippet>627</a>			<span class="kw">let </span>data: Vec&lt;Vec&lt;u8&gt;&gt; = <span class="macro">vec!</span>[<span class="macro">vec!</span>[<span class="number">0</span>; <span class="number">20</span>], <span class="macro">vec!</span>[<span class="number">1</span>; STORAGE_INPUT_BUFFER_CAPACITY * <span class="number">2</span>]];
-<a href=#628 id=628 data-nosnippet>628</a>			TestVecVecU8::put(<span class="kw-2">&amp;</span>data);
-<a href=#629 id=629 data-nosnippet>629</a>
-<a href=#630 id=630 data-nosnippet>630</a>			<span class="kw">let </span><span class="kw-2">mut </span>input = StorageInput::new(TestVecVecU8::hashed_key().into());
-<a href=#631 id=631 data-nosnippet>631</a>			TestVecVecU8::kill();
+<a href=#595 id=595 data-nosnippet>595</a>			</span><span class="macro">assert!</span>(
+<a href=#596 id=596 data-nosnippet>596</a>				!STORAGE_INPUT_BUFFER_CAPACITY.is_multiple_of(BUFFER_SIZE),
+<a href=#597 id=597 data-nosnippet>597</a>				<span class="string">"Please update buffer size"
+<a href=#598 id=598 data-nosnippet>598</a>			</span>);
+<a href=#599 id=599 data-nosnippet>599</a>			<span class="comment">// Create some items where the last item is partially in the inner buffer so that
+<a href=#600 id=600 data-nosnippet>600</a>			// we need to fill the buffer to read the entire item.
+<a href=#601 id=601 data-nosnippet>601</a>			</span><span class="kw">let </span>data: Vec&lt;Vec&lt;u8&gt;&gt; = (<span class="number">0</span>..=(STORAGE_INPUT_BUFFER_CAPACITY / BUFFER_SIZE))
+<a href=#602 id=602 data-nosnippet>602</a>				.into_iter()
+<a href=#603 id=603 data-nosnippet>603</a>				.map(|i| <span class="macro">vec!</span>[i <span class="kw">as </span>u8; BUFFER_SIZE])
+<a href=#604 id=604 data-nosnippet>604</a>				.collect::&lt;Vec&lt;Vec&lt;u8&gt;&gt;&gt;();
+<a href=#605 id=605 data-nosnippet>605</a>			TestVecVecU8::put(<span class="kw-2">&amp;</span>data);
+<a href=#606 id=606 data-nosnippet>606</a>
+<a href=#607 id=607 data-nosnippet>607</a>			<span class="macro">assert_eq!</span>(data, TestVecVecU8::stream_iter().collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;());
+<a href=#608 id=608 data-nosnippet>608</a>
+<a href=#609 id=609 data-nosnippet>609</a>			<span class="kw">let </span><span class="kw-2">mut </span>input = StorageInput::new(TestVecVecU8::hashed_key().into());
+<a href=#610 id=610 data-nosnippet>610</a>
+<a href=#611 id=611 data-nosnippet>611</a>			Compact::&lt;u32&gt;::decode(<span class="kw-2">&amp;mut </span>input).unwrap();
+<a href=#612 id=612 data-nosnippet>612</a>
+<a href=#613 id=613 data-nosnippet>613</a>			(<span class="number">0</span>..data.len() - <span class="number">1</span>).into_iter().for_each(|<span class="kw">_</span>| {
+<a href=#614 id=614 data-nosnippet>614</a>				Vec::&lt;u8&gt;::decode(<span class="kw-2">&amp;mut </span>input).unwrap();
+<a href=#615 id=615 data-nosnippet>615</a>			});
+<a href=#616 id=616 data-nosnippet>616</a>
+<a href=#617 id=617 data-nosnippet>617</a>			<span class="comment">// Try reading a more data than there should be left.
+<a href=#618 id=618 data-nosnippet>618</a>			</span><span class="kw">let </span><span class="kw-2">mut </span>result_buffer = <span class="macro">vec!</span>[<span class="number">0</span>; BUFFER_SIZE * <span class="number">2</span>];
+<a href=#619 id=619 data-nosnippet>619</a>			<span class="macro">assert!</span>(input
+<a href=#620 id=620 data-nosnippet>620</a>				.read(<span class="kw-2">&amp;mut </span>result_buffer)
+<a href=#621 id=621 data-nosnippet>621</a>				.unwrap_err()
+<a href=#622 id=622 data-nosnippet>622</a>				.to_string()
+<a href=#623 id=623 data-nosnippet>623</a>				.contains(<span class="string">"Not enough data to fill the buffer"</span>));
+<a href=#624 id=624 data-nosnippet>624</a>		})
+<a href=#625 id=625 data-nosnippet>625</a>	}
+<a href=#626 id=626 data-nosnippet>626</a>
+<a href=#627 id=627 data-nosnippet>627</a>	<span class="attr">#[test]
+<a href=#628 id=628 data-nosnippet>628</a>	</span><span class="kw">fn </span>detect_value_deleted_in_state() {
+<a href=#629 id=629 data-nosnippet>629</a>		sp_io::TestExternalities::default().execute_with(|| {
+<a href=#630 id=630 data-nosnippet>630</a>			<span class="kw">let </span>data: Vec&lt;Vec&lt;u8&gt;&gt; = <span class="macro">vec!</span>[<span class="macro">vec!</span>[<span class="number">0</span>; <span class="number">20</span>], <span class="macro">vec!</span>[<span class="number">1</span>; STORAGE_INPUT_BUFFER_CAPACITY * <span class="number">2</span>]];
+<a href=#631 id=631 data-nosnippet>631</a>			TestVecVecU8::put(<span class="kw-2">&amp;</span>data);
 <a href=#632 id=632 data-nosnippet>632</a>
-<a href=#633 id=633 data-nosnippet>633</a>			Compact::&lt;u32&gt;::decode(<span class="kw-2">&amp;mut </span>input).unwrap();
-<a href=#634 id=634 data-nosnippet>634</a>			Vec::&lt;u8&gt;::decode(<span class="kw-2">&amp;mut </span>input).unwrap();
+<a href=#633 id=633 data-nosnippet>633</a>			<span class="kw">let </span><span class="kw-2">mut </span>input = StorageInput::new(TestVecVecU8::hashed_key().into());
+<a href=#634 id=634 data-nosnippet>634</a>			TestVecVecU8::kill();
 <a href=#635 id=635 data-nosnippet>635</a>
-<a href=#636 id=636 data-nosnippet>636</a>			<span class="macro">assert!</span>(Vec::&lt;u8&gt;::decode(<span class="kw-2">&amp;mut </span>input)
-<a href=#637 id=637 data-nosnippet>637</a>				.unwrap_err()
-<a href=#638 id=638 data-nosnippet>638</a>				.to_string()
-<a href=#639 id=639 data-nosnippet>639</a>				.contains(<span class="string">"Value doesn't exist in the state?"</span>));
-<a href=#640 id=640 data-nosnippet>640</a>
-<a href=#641 id=641 data-nosnippet>641</a>			<span class="kw">const </span>BUFFER_SIZE: usize = <span class="number">300</span>;
-<a href=#642 id=642 data-nosnippet>642</a>			<span class="comment">// Ensure that the capacity isn't dividable by `300`.
-<a href=#643 id=643 data-nosnippet>643</a>			</span><span class="macro">assert!</span>(STORAGE_INPUT_BUFFER_CAPACITY % BUFFER_SIZE != <span class="number">0</span>, <span class="string">"Please update buffer size"</span>);
-<a href=#644 id=644 data-nosnippet>644</a>			<span class="comment">// Create some items where the last item is partially in the inner buffer so that
-<a href=#645 id=645 data-nosnippet>645</a>			// we need to fill the buffer to read the entire item.
-<a href=#646 id=646 data-nosnippet>646</a>			</span><span class="kw">let </span>data: Vec&lt;Vec&lt;u8&gt;&gt; = (<span class="number">0</span>..=(STORAGE_INPUT_BUFFER_CAPACITY / BUFFER_SIZE))
-<a href=#647 id=647 data-nosnippet>647</a>				.into_iter()
-<a href=#648 id=648 data-nosnippet>648</a>				.map(|i| <span class="macro">vec!</span>[i <span class="kw">as </span>u8; BUFFER_SIZE])
-<a href=#649 id=649 data-nosnippet>649</a>				.collect::&lt;Vec&lt;Vec&lt;u8&gt;&gt;&gt;();
-<a href=#650 id=650 data-nosnippet>650</a>			TestVecVecU8::put(<span class="kw-2">&amp;</span>data);
-<a href=#651 id=651 data-nosnippet>651</a>
-<a href=#652 id=652 data-nosnippet>652</a>			<span class="kw">let </span><span class="kw-2">mut </span>input = StorageInput::new(TestVecVecU8::hashed_key().into());
-<a href=#653 id=653 data-nosnippet>653</a>			TestVecVecU8::kill();
-<a href=#654 id=654 data-nosnippet>654</a>
-<a href=#655 id=655 data-nosnippet>655</a>			Compact::&lt;u32&gt;::decode(<span class="kw-2">&amp;mut </span>input).unwrap();
-<a href=#656 id=656 data-nosnippet>656</a>			(<span class="number">0</span>..data.len() - <span class="number">1</span>).into_iter().for_each(|<span class="kw">_</span>| {
-<a href=#657 id=657 data-nosnippet>657</a>				Vec::&lt;u8&gt;::decode(<span class="kw-2">&amp;mut </span>input).unwrap();
-<a href=#658 id=658 data-nosnippet>658</a>			});
-<a href=#659 id=659 data-nosnippet>659</a>
-<a href=#660 id=660 data-nosnippet>660</a>			<span class="macro">assert!</span>(Vec::&lt;u8&gt;::decode(<span class="kw-2">&amp;mut </span>input)
-<a href=#661 id=661 data-nosnippet>661</a>				.unwrap_err()
-<a href=#662 id=662 data-nosnippet>662</a>				.to_string()
-<a href=#663 id=663 data-nosnippet>663</a>				.contains(<span class="string">"Value doesn't exist in the state?"</span>));
-<a href=#664 id=664 data-nosnippet>664</a>		})
-<a href=#665 id=665 data-nosnippet>665</a>	}
-<a href=#666 id=666 data-nosnippet>666</a>}
+<a href=#636 id=636 data-nosnippet>636</a>			Compact::&lt;u32&gt;::decode(<span class="kw-2">&amp;mut </span>input).unwrap();
+<a href=#637 id=637 data-nosnippet>637</a>			Vec::&lt;u8&gt;::decode(<span class="kw-2">&amp;mut </span>input).unwrap();
+<a href=#638 id=638 data-nosnippet>638</a>
+<a href=#639 id=639 data-nosnippet>639</a>			<span class="macro">assert!</span>(Vec::&lt;u8&gt;::decode(<span class="kw-2">&amp;mut </span>input)
+<a href=#640 id=640 data-nosnippet>640</a>				.unwrap_err()
+<a href=#641 id=641 data-nosnippet>641</a>				.to_string()
+<a href=#642 id=642 data-nosnippet>642</a>				.contains(<span class="string">"Value doesn't exist in the state?"</span>));
+<a href=#643 id=643 data-nosnippet>643</a>
+<a href=#644 id=644 data-nosnippet>644</a>			<span class="kw">const </span>BUFFER_SIZE: usize = <span class="number">300</span>;
+<a href=#645 id=645 data-nosnippet>645</a>			<span class="comment">// Ensure that the capacity isn't dividable by `300`.
+<a href=#646 id=646 data-nosnippet>646</a>			</span><span class="macro">assert!</span>(
+<a href=#647 id=647 data-nosnippet>647</a>				!STORAGE_INPUT_BUFFER_CAPACITY.is_multiple_of(BUFFER_SIZE),
+<a href=#648 id=648 data-nosnippet>648</a>				<span class="string">"Please update buffer size"
+<a href=#649 id=649 data-nosnippet>649</a>			</span>);
+<a href=#650 id=650 data-nosnippet>650</a>			<span class="comment">// Create some items where the last item is partially in the inner buffer so that
+<a href=#651 id=651 data-nosnippet>651</a>			// we need to fill the buffer to read the entire item.
+<a href=#652 id=652 data-nosnippet>652</a>			</span><span class="kw">let </span>data: Vec&lt;Vec&lt;u8&gt;&gt; = (<span class="number">0</span>..=(STORAGE_INPUT_BUFFER_CAPACITY / BUFFER_SIZE))
+<a href=#653 id=653 data-nosnippet>653</a>				.into_iter()
+<a href=#654 id=654 data-nosnippet>654</a>				.map(|i| <span class="macro">vec!</span>[i <span class="kw">as </span>u8; BUFFER_SIZE])
+<a href=#655 id=655 data-nosnippet>655</a>				.collect::&lt;Vec&lt;Vec&lt;u8&gt;&gt;&gt;();
+<a href=#656 id=656 data-nosnippet>656</a>			TestVecVecU8::put(<span class="kw-2">&amp;</span>data);
+<a href=#657 id=657 data-nosnippet>657</a>
+<a href=#658 id=658 data-nosnippet>658</a>			<span class="kw">let </span><span class="kw-2">mut </span>input = StorageInput::new(TestVecVecU8::hashed_key().into());
+<a href=#659 id=659 data-nosnippet>659</a>			TestVecVecU8::kill();
+<a href=#660 id=660 data-nosnippet>660</a>
+<a href=#661 id=661 data-nosnippet>661</a>			Compact::&lt;u32&gt;::decode(<span class="kw-2">&amp;mut </span>input).unwrap();
+<a href=#662 id=662 data-nosnippet>662</a>			(<span class="number">0</span>..data.len() - <span class="number">1</span>).into_iter().for_each(|<span class="kw">_</span>| {
+<a href=#663 id=663 data-nosnippet>663</a>				Vec::&lt;u8&gt;::decode(<span class="kw-2">&amp;mut </span>input).unwrap();
+<a href=#664 id=664 data-nosnippet>664</a>			});
+<a href=#665 id=665 data-nosnippet>665</a>
+<a href=#666 id=666 data-nosnippet>666</a>			<span class="macro">assert!</span>(Vec::&lt;u8&gt;::decode(<span class="kw-2">&amp;mut </span>input)
+<a href=#667 id=667 data-nosnippet>667</a>				.unwrap_err()
+<a href=#668 id=668 data-nosnippet>668</a>				.to_string()
+<a href=#669 id=669 data-nosnippet>669</a>				.contains(<span class="string">"Value doesn't exist in the state?"</span>));
+<a href=#670 id=670 data-nosnippet>670</a>		})
+<a href=#671 id=671 data-nosnippet>671</a>	}
+<a href=#672 id=672 data-nosnippet>672</a>}
 </code></pre></div></section></main></body></html>

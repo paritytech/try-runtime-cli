@@ -1,9 +1,9 @@
 (function() {
-    const implementors = Object.fromEntries([["fixedbitset",[]]]);
+    var implementors = Object.fromEntries([["fixedbitset",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":59,"fragment_lengths":[18]}
+//{"start":57,"fragment_lengths":[18]}

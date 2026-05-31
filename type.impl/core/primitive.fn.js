@@ -1,9 +1,9 @@
 (function() {
-    var type_impls = Object.fromEntries([["tikv_jemalloc_sys",[]]]);
+    var type_impls = Object.fromEntries([["keccak",[]],["tikv_jemalloc_sys",[]]]);
     if (window.register_type_impls) {
         window.register_type_impls(type_impls);
     } else {
         window.pending_type_impls = type_impls;
     }
 })()
-//{"start":55,"fragment_lengths":[24]}
+//{"start":55,"fragment_lengths":[13,25]}

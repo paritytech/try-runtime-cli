@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/polkadot/xcm/src/v3/multilocation.rs`."><title>multilocation.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="staging_xcm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">staging_xcm/v3/</div>multilocation.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/polkadot/xcm/src/v3/multilocation.rs`."><title>multilocation.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="staging_xcm" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">staging_xcm/v3/</div>multilocation.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#2 id=2 data-nosnippet>2</a>// This file is part of Polkadot.
 <a href=#3 id=3 data-nosnippet>3</a>
 <a href=#4 id=4 data-nosnippet>4</a>// Polkadot is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 <a href=#16 id=16 data-nosnippet>16</a>
 <a href=#17 id=17 data-nosnippet>17</a></span><span class="doccomment">//! XCM `MultiLocation` datatype.
 <a href=#18 id=18 data-nosnippet>18</a>
-<a href=#19 id=19 data-nosnippet>19</a></span><span class="kw">use </span>super::{Junction, Junctions};
-<a href=#20 id=20 data-nosnippet>20</a><span class="kw">use </span>crate::{v4::Location <span class="kw">as </span>NewMultiLocation, VersionedLocation};
+<a href=#19 id=19 data-nosnippet>19</a></span><span class="kw">use super</span>::{Junction, Junctions};
+<a href=#20 id=20 data-nosnippet>20</a><span class="kw">use crate</span>::{v4::Location <span class="kw">as </span>NewMultiLocation, VersionedLocation};
 <a href=#21 id=21 data-nosnippet>21</a><span class="kw">use </span>codec::{Decode, DecodeWithMemTracking, Encode, MaxEncodedLen};
 <a href=#22 id=22 data-nosnippet>22</a><span class="kw">use </span>core::result;
 <a href=#23 id=23 data-nosnippet>23</a><span class="kw">use </span>scale_info::TypeInfo;
@@ -229,8 +229,8 @@
 <a href=#229 id=229 data-nosnippet>229</a>	</span><span class="kw">pub fn </span>at(<span class="kw-2">&amp;</span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Junction&gt; {
 <a href=#230 id=230 data-nosnippet>230</a>		<span class="kw">let </span>num_parents = <span class="self">self</span>.parents <span class="kw">as </span>usize;
 <a href=#231 id=231 data-nosnippet>231</a>		<span class="kw">if </span>i &lt; num_parents {
-<a href=#232 id=232 data-nosnippet>232</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#233 id=233 data-nosnippet>233</a>		</span>}
+<a href=#232 id=232 data-nosnippet>232</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#233 id=233 data-nosnippet>233</a>		}
 <a href=#234 id=234 data-nosnippet>234</a>		<span class="self">self</span>.interior.at(i - num_parents)
 <a href=#235 id=235 data-nosnippet>235</a>	}
 <a href=#236 id=236 data-nosnippet>236</a>
@@ -239,8 +239,8 @@
 <a href=#239 id=239 data-nosnippet>239</a>	</span><span class="kw">pub fn </span>at_mut(<span class="kw-2">&amp;mut </span><span class="self">self</span>, i: usize) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;mut </span>Junction&gt; {
 <a href=#240 id=240 data-nosnippet>240</a>		<span class="kw">let </span>num_parents = <span class="self">self</span>.parents <span class="kw">as </span>usize;
 <a href=#241 id=241 data-nosnippet>241</a>		<span class="kw">if </span>i &lt; num_parents {
-<a href=#242 id=242 data-nosnippet>242</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#243 id=243 data-nosnippet>243</a>		</span>}
+<a href=#242 id=242 data-nosnippet>242</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#243 id=243 data-nosnippet>243</a>		}
 <a href=#244 id=244 data-nosnippet>244</a>		<span class="self">self</span>.interior.at_mut(i - num_parents)
 <a href=#245 id=245 data-nosnippet>245</a>	}
 <a href=#246 id=246 data-nosnippet>246</a>
@@ -276,9 +276,9 @@
 <a href=#276 id=276 data-nosnippet>276</a>	/// assert_eq!(m.match_and_split(&amp;MultiLocation::new(1, Here)), None);
 <a href=#277 id=277 data-nosnippet>277</a>	/// ```
 <a href=#278 id=278 data-nosnippet>278</a>	</span><span class="kw">pub fn </span>match_and_split(<span class="kw-2">&amp;</span><span class="self">self</span>, prefix: <span class="kw-2">&amp;</span>MultiLocation) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Junction&gt; {
-<a href=#279 id=279 data-nosnippet>279</a>		<span class="kw">if </span><span class="self">self</span>.parents != prefix.parents {
-<a href=#280 id=280 data-nosnippet>280</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#281 id=281 data-nosnippet>281</a>		</span>}
+<a href=#279 id=279 data-nosnippet>279</a>		<span class="kw">if </span><span class="self">self</span>.<span class="macro">parents !</span>= prefix.parents {
+<a href=#280 id=280 data-nosnippet>280</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#281 id=281 data-nosnippet>281</a>		}
 <a href=#282 id=282 data-nosnippet>282</a>		<span class="self">self</span>.interior.match_and_split(<span class="kw-2">&amp;</span>prefix.interior)
 <a href=#283 id=283 data-nosnippet>283</a>	}
 <a href=#284 id=284 data-nosnippet>284</a>
@@ -341,12 +341,12 @@
 <a href=#341 id=341 data-nosnippet>341</a>		<span class="kw">let </span>prepend_interior = prefix.interior.len().saturating_sub(<span class="self">self</span>.parents <span class="kw">as </span>usize);
 <a href=#342 id=342 data-nosnippet>342</a>		<span class="kw">let </span>final_interior = <span class="self">self</span>.interior.len().saturating_add(prepend_interior);
 <a href=#343 id=343 data-nosnippet>343</a>		<span class="kw">if </span>final_interior &gt; <span class="kw">super</span>::junctions::MAX_JUNCTIONS {
-<a href=#344 id=344 data-nosnippet>344</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(prefix)
+<a href=#344 id=344 data-nosnippet>344</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(prefix);
 <a href=#345 id=345 data-nosnippet>345</a>		}
 <a href=#346 id=346 data-nosnippet>346</a>		<span class="kw">let </span>suffix_parents = (<span class="self">self</span>.parents <span class="kw">as </span>usize).saturating_sub(prefix.interior.len());
 <a href=#347 id=347 data-nosnippet>347</a>		<span class="kw">let </span>final_parents = (prefix.parents <span class="kw">as </span>usize).saturating_add(suffix_parents);
 <a href=#348 id=348 data-nosnippet>348</a>		<span class="kw">if </span>final_parents &gt; <span class="number">255 </span>{
-<a href=#349 id=349 data-nosnippet>349</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(prefix)
+<a href=#349 id=349 data-nosnippet>349</a>			<span class="kw">return </span><span class="prelude-val">Err</span>(prefix);
 <a href=#350 id=350 data-nosnippet>350</a>		}
 <a href=#351 id=351 data-nosnippet>351</a>
 <a href=#352 id=352 data-nosnippet>352</a>		<span class="comment">// cancel out the final item on the prefix interior for one of the suffix's parents.
@@ -433,8 +433,8 @@
 <a href=#433 id=433 data-nosnippet>433</a>	</span><span class="kw">pub fn </span>simplify(<span class="kw-2">&amp;mut </span><span class="self">self</span>, context: <span class="kw-2">&amp;</span>Junctions) {
 <a href=#434 id=434 data-nosnippet>434</a>		<span class="kw">if </span>context.len() &lt; <span class="self">self</span>.parents <span class="kw">as </span>usize {
 <a href=#435 id=435 data-nosnippet>435</a>			<span class="comment">// Not enough context
-<a href=#436 id=436 data-nosnippet>436</a>			</span><span class="kw">return
-<a href=#437 id=437 data-nosnippet>437</a>		</span>}
+<a href=#436 id=436 data-nosnippet>436</a>			</span><span class="kw">return</span>;
+<a href=#437 id=437 data-nosnippet>437</a>		}
 <a href=#438 id=438 data-nosnippet>438</a>		<span class="kw">while </span><span class="self">self</span>.parents &gt; <span class="number">0 </span>{
 <a href=#439 id=439 data-nosnippet>439</a>			<span class="kw">let </span>maybe = context.at(context.len() - (<span class="self">self</span>.parents <span class="kw">as </span>usize));
 <a href=#440 id=440 data-nosnippet>440</a>			<span class="kw">match </span>(<span class="self">self</span>.interior.first(), maybe) {
@@ -454,7 +454,7 @@
 <a href=#454 id=454 data-nosnippet>454</a>		</span><span class="kw">while let </span><span class="prelude-val">Some</span>(j) = clone.last() {
 <a href=#455 id=455 data-nosnippet>455</a>			<span class="kw">if </span><span class="macro">matches!</span>(j, Junction::Parachain(<span class="kw">_</span>) | Junction::GlobalConsensus(<span class="kw">_</span>)) {
 <a href=#456 id=456 data-nosnippet>456</a>				<span class="comment">// return chain subsection
-<a href=#457 id=457 data-nosnippet>457</a>				</span><span class="kw">return </span>clone
+<a href=#457 id=457 data-nosnippet>457</a>				</span><span class="kw">return </span>clone;
 <a href=#458 id=458 data-nosnippet>458</a>			} <span class="kw">else </span>{
 <a href=#459 id=459 data-nosnippet>459</a>				(clone, <span class="kw">_</span>) = clone.split_last_interior();
 <a href=#460 id=460 data-nosnippet>460</a>			}
@@ -529,10 +529,10 @@
 <a href=#529 id=529 data-nosnippet>529</a>	</span><span class="kw">fn </span>conversion_works() {
 <a href=#530 id=530 data-nosnippet>530</a>		<span class="kw">let </span>x: MultiLocation = Parent.into();
 <a href=#531 id=531 data-nosnippet>531</a>		<span class="macro">assert_eq!</span>(x, MultiLocation { parents: <span class="number">1</span>, interior: Here });
-<a href=#532 id=532 data-nosnippet>532</a>		<span class="comment">//		let x: MultiLocation = (Parent,).into();
-<a href=#533 id=533 data-nosnippet>533</a>		//		assert_eq!(x, MultiLocation { parents: 1, interior: Here });
-<a href=#534 id=534 data-nosnippet>534</a>		//		let x: MultiLocation = (Parent, Parent).into();
-<a href=#535 id=535 data-nosnippet>535</a>		//		assert_eq!(x, MultiLocation { parents: 2, interior: Here });
+<a href=#532 id=532 data-nosnippet>532</a>		<span class="comment">// 		let x: MultiLocation = (Parent,).into();
+<a href=#533 id=533 data-nosnippet>533</a>		// 		assert_eq!(x, MultiLocation { parents: 1, interior: Here });
+<a href=#534 id=534 data-nosnippet>534</a>		// 		let x: MultiLocation = (Parent, Parent).into();
+<a href=#535 id=535 data-nosnippet>535</a>		// 		assert_eq!(x, MultiLocation { parents: 2, interior: Here });
 <a href=#536 id=536 data-nosnippet>536</a>		</span><span class="kw">let </span>x: MultiLocation = (Parent, Parent, OnlyChild).into();
 <a href=#537 id=537 data-nosnippet>537</a>		<span class="macro">assert_eq!</span>(x, MultiLocation { parents: <span class="number">2</span>, interior: OnlyChild.into() });
 <a href=#538 id=538 data-nosnippet>538</a>		<span class="kw">let </span>x: MultiLocation = OnlyChild.into();

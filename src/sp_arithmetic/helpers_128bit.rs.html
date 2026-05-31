@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/primitives/arithmetic/src/helpers_128bit.rs`."><title>helpers_128bit.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_arithmetic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sp_arithmetic/</div>helpers_128bit.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/primitives/arithmetic/src/helpers_128bit.rs`."><title>helpers_128bit.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_arithmetic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sp_arithmetic/</div>helpers_128bit.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// Some code is based upon Derek Dreery's IntegerSquareRoot impl, used under license.
@@ -21,7 +21,7 @@
 <a href=#21 id=21 data-nosnippet>21</a>//! assumptions of a bigger type (u128) being available, or simply create a per-thing and use the
 <a href=#22 id=22 data-nosnippet>22</a>//! multiplication implementation provided there.
 <a href=#23 id=23 data-nosnippet>23</a>
-<a href=#24 id=24 data-nosnippet>24</a></span><span class="kw">use </span>crate::{biguint, Rounding};
+<a href=#24 id=24 data-nosnippet>24</a></span><span class="kw">use crate</span>::{biguint, Rounding};
 <a href=#25 id=25 data-nosnippet>25</a><span class="kw">use </span>core::cmp::{max, min};
 <a href=#26 id=26 data-nosnippet>26</a>
 <a href=#27 id=27 data-nosnippet>27</a><span class="doccomment">/// Helper gcd function used in Rational128 implementation.
@@ -155,7 +155,7 @@
 <a href=#155 id=155 data-nosnippet>155</a>
 <a href=#156 id=156 data-nosnippet>156</a>		<span class="kw">pub const fn </span>div(<span class="kw-2">mut </span><span class="self">self</span>, rhs: u128) -&gt; (<span class="self">Self</span>, u128) {
 <a href=#157 id=157 data-nosnippet>157</a>			<span class="kw">if </span>rhs == <span class="number">1 </span>{
-<a href=#158 id=158 data-nosnippet>158</a>				<span class="kw">return </span>(<span class="self">self</span>, <span class="number">0</span>)
+<a href=#158 id=158 data-nosnippet>158</a>				<span class="kw">return </span>(<span class="self">self</span>, <span class="number">0</span>);
 <a href=#159 id=159 data-nosnippet>159</a>			}
 <a href=#160 id=160 data-nosnippet>160</a>
 <a href=#161 id=161 data-nosnippet>161</a>			<span class="comment">// (self === a; rhs === b)
@@ -170,7 +170,7 @@
 <a href=#170 id=170 data-nosnippet>170</a>			<span class="comment">// x = current result
 <a href=#171 id=171 data-nosnippet>171</a>			// a = next number
 <a href=#172 id=172 data-nosnippet>172</a>			</span><span class="kw">let </span><span class="kw-2">mut </span>x = <span class="self">Self</span>::zero();
-<a href=#173 id=173 data-nosnippet>173</a>			<span class="kw">while </span><span class="self">self</span>.high != <span class="number">0 </span>{
+<a href=#173 id=173 data-nosnippet>173</a>			<span class="kw">while </span><span class="self">self</span>.<span class="macro">high !</span>= <span class="number">0 </span>{
 <a href=#174 id=174 data-nosnippet>174</a>				<span class="comment">// x += a.low * q
 <a href=#175 id=175 data-nosnippet>175</a>				</span>x = x.add(<span class="self">Self</span>::product_of(<span class="self">self</span>.high, q));
 <a href=#176 id=176 data-nosnippet>176</a>				<span class="comment">// a = a.low * r + a.high
@@ -192,8 +192,8 @@
 <a href=#192 id=192 data-nosnippet>192</a>) -&gt; <span class="prelude-ty">Option</span>&lt;u128&gt; {
 <a href=#193 id=193 data-nosnippet>193</a>	<span class="kw">use </span>double128::Double128;
 <a href=#194 id=194 data-nosnippet>194</a>	<span class="kw">if </span>c == <span class="number">0 </span>{
-<a href=#195 id=195 data-nosnippet>195</a>		<span class="kw">return </span><span class="prelude-val">None
-<a href=#196 id=196 data-nosnippet>196</a>	</span>}
+<a href=#195 id=195 data-nosnippet>195</a>		<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#196 id=196 data-nosnippet>196</a>	}
 <a href=#197 id=197 data-nosnippet>197</a>	<span class="kw">let </span>(result, remainder) = Double128::product_of(a, b).div(c);
 <a href=#198 id=198 data-nosnippet>198</a>	<span class="kw">let </span><span class="kw-2">mut </span>result: u128 = <span class="kw">match </span>result.try_into_u128() {
 <a href=#199 id=199 data-nosnippet>199</a>		<span class="prelude-val">Ok</span>(v) =&gt; v,
@@ -217,8 +217,8 @@
 <a href=#217 id=217 data-nosnippet>217</a><span class="kw">pub const fn </span>sqrt(<span class="kw-2">mut </span>n: u128) -&gt; u128 {
 <a href=#218 id=218 data-nosnippet>218</a>	<span class="comment">// Modified from https://github.com/derekdreery/integer-sqrt-rs (Apache/MIT).
 <a href=#219 id=219 data-nosnippet>219</a>	</span><span class="kw">if </span>n == <span class="number">0 </span>{
-<a href=#220 id=220 data-nosnippet>220</a>		<span class="kw">return </span><span class="number">0
-<a href=#221 id=221 data-nosnippet>221</a>	</span>}
+<a href=#220 id=220 data-nosnippet>220</a>		<span class="kw">return </span><span class="number">0</span>;
+<a href=#221 id=221 data-nosnippet>221</a>	}
 <a href=#222 id=222 data-nosnippet>222</a>
 <a href=#223 id=223 data-nosnippet>223</a>	<span class="comment">// Compute bit, the largest power of 4 &lt;= n
 <a href=#224 id=224 data-nosnippet>224</a>	</span><span class="kw">let </span>max_shift: u32 = <span class="number">0u128</span>.leading_zeros() - <span class="number">1</span>;
@@ -229,7 +229,7 @@
 <a href=#229 id=229 data-nosnippet>229</a>	// https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Binary_numeral_system_(base_2)
 <a href=#230 id=230 data-nosnippet>230</a>	// Note that result/bit are logically unsigned (even if T is signed).
 <a href=#231 id=231 data-nosnippet>231</a>	</span><span class="kw">let </span><span class="kw-2">mut </span>result = <span class="number">0u128</span>;
-<a href=#232 id=232 data-nosnippet>232</a>	<span class="kw">while </span>bit != <span class="number">0 </span>{
+<a href=#232 id=232 data-nosnippet>232</a>	<span class="kw">while </span><span class="macro">bit !</span>= <span class="number">0 </span>{
 <a href=#233 id=233 data-nosnippet>233</a>		<span class="kw">if </span>n &gt;= result + bit {
 <a href=#234 id=234 data-nosnippet>234</a>			n -= result + bit;
 <a href=#235 id=235 data-nosnippet>235</a>			result = (result &gt;&gt; <span class="number">1</span>) + bit;
@@ -243,7 +243,7 @@
 <a href=#243 id=243 data-nosnippet>243</a>
 <a href=#244 id=244 data-nosnippet>244</a><span class="attr">#[cfg(test)]
 <a href=#245 id=245 data-nosnippet>245</a></span><span class="kw">mod </span>tests {
-<a href=#246 id=246 data-nosnippet>246</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#246 id=246 data-nosnippet>246</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#247 id=247 data-nosnippet>247</a>	<span class="kw">use </span>codec::{Decode, Encode};
 <a href=#248 id=248 data-nosnippet>248</a>	<span class="kw">use </span>multiply_by_rational_with_rounding <span class="kw">as </span>mulrat;
 <a href=#249 id=249 data-nosnippet>249</a>	<span class="kw">use </span>Rounding::<span class="kw-2">*</span>;

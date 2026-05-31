@@ -1,12 +1,12 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-environ-35.0.0/src/compile/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="wasmtime_environ" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">wasmtime_environ/compile/</div>mod.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! A `Compilation` contains the compiled function bodies for a WebAssembly
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-environ-36.0.10/src/compile/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="wasmtime_environ" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../static.files/src-script-813739b1.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasmtime_environ/compile/</div>mod.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! A `Compilation` contains the compiled function bodies for a WebAssembly
 <a href=#2 id=2 data-nosnippet>2</a>//! module.
 <a href=#3 id=3 data-nosnippet>3</a>
 <a href=#4 id=4 data-nosnippet>4</a></span><span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
-<a href=#5 id=5 data-nosnippet>5</a><span class="kw">use </span>crate::{
+<a href=#5 id=5 data-nosnippet>5</a><span class="kw">use crate</span>::{
 <a href=#6 id=6 data-nosnippet>6</a>    BuiltinFunctionIndex, DefinedFuncIndex, FlagValue, FuncIndex, FunctionLoc, ObjectKind,
 <a href=#7 id=7 data-nosnippet>7</a>    PrimaryMap, StaticModuleIndex, TripleExt, WasmError, WasmFuncType,
 <a href=#8 id=8 data-nosnippet>8</a>};
-<a href=#9 id=9 data-nosnippet>9</a><span class="kw">use </span>crate::{Tunables, obj};
+<a href=#9 id=9 data-nosnippet>9</a><span class="kw">use crate</span>::{Tunables, obj};
 <a href=#10 id=10 data-nosnippet>10</a><span class="kw">use </span>anyhow::Result;
 <a href=#11 id=11 data-nosnippet>11</a><span class="kw">use </span>object::write::{Object, SymbolId};
 <a href=#12 id=12 data-nosnippet>12</a><span class="kw">use </span>object::{Architecture, BinaryFormat, FileFlags};
@@ -180,7 +180,7 @@
 <a href=#180 id=180 data-nosnippet>180</a></span><span class="kw">pub struct </span>CompiledFunctionBody {
 <a href=#181 id=181 data-nosnippet>181</a>    <span class="doccomment">/// The code. This is whatever type the `Compiler` implementation wants it
 <a href=#182 id=182 data-nosnippet>182</a>    /// to be, we just shepherd it around.
-<a href=#183 id=183 data-nosnippet>183</a>    </span><span class="kw">pub </span>code: Box&lt;<span class="kw">dyn </span>Any + Send&gt;,
+<a href=#183 id=183 data-nosnippet>183</a>    </span><span class="kw">pub </span>code: Box&lt;<span class="kw">dyn </span>Any + Send + Sync&gt;,
 <a href=#184 id=184 data-nosnippet>184</a>    <span class="doccomment">/// Whether the compiled function needs a GC heap to run; that is, whether
 <a href=#185 id=185 data-nosnippet>185</a>    /// it reads a struct field, allocates, an array, or etc...
 <a href=#186 id=186 data-nosnippet>186</a>    </span><span class="kw">pub </span>needs_gc_heap: bool,
@@ -188,219 +188,314 @@
 <a href=#188 id=188 data-nosnippet>188</a>
 <a href=#189 id=189 data-nosnippet>189</a><span class="doccomment">/// An implementation of a compiler which can compile WebAssembly functions to
 <a href=#190 id=190 data-nosnippet>190</a>/// machine code and perform other miscellaneous tasks needed by the JIT runtime.
-<a href=#191 id=191 data-nosnippet>191</a></span><span class="kw">pub trait </span>Compiler: Send + Sync {
-<a href=#192 id=192 data-nosnippet>192</a>    <span class="doccomment">/// Compiles the function `index` within `translation`.
-<a href=#193 id=193 data-nosnippet>193</a>    ///
-<a href=#194 id=194 data-nosnippet>194</a>    /// The body of the function is available in `data` and configuration
-<a href=#195 id=195 data-nosnippet>195</a>    /// values are also passed in via `tunables`. Type information in
-<a href=#196 id=196 data-nosnippet>196</a>    /// `translation` is all relative to `types`.
-<a href=#197 id=197 data-nosnippet>197</a>    </span><span class="kw">fn </span>compile_function(
-<a href=#198 id=198 data-nosnippet>198</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#199 id=199 data-nosnippet>199</a>        translation: <span class="kw-2">&amp;</span>ModuleTranslation&lt;<span class="lifetime">'_</span>&gt;,
-<a href=#200 id=200 data-nosnippet>200</a>        index: DefinedFuncIndex,
-<a href=#201 id=201 data-nosnippet>201</a>        data: FunctionBodyData&lt;<span class="lifetime">'_</span>&gt;,
-<a href=#202 id=202 data-nosnippet>202</a>        types: <span class="kw-2">&amp;</span>ModuleTypesBuilder,
-<a href=#203 id=203 data-nosnippet>203</a>        symbol: <span class="kw-2">&amp;</span>str,
-<a href=#204 id=204 data-nosnippet>204</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;CompiledFunctionBody, CompileError&gt;;
-<a href=#205 id=205 data-nosnippet>205</a>
-<a href=#206 id=206 data-nosnippet>206</a>    <span class="doccomment">/// Compile a trampoline for an array-call host function caller calling the
-<a href=#207 id=207 data-nosnippet>207</a>    /// `index`th Wasm function.
-<a href=#208 id=208 data-nosnippet>208</a>    ///
-<a href=#209 id=209 data-nosnippet>209</a>    /// The trampoline should save the necessary state to record the
-<a href=#210 id=210 data-nosnippet>210</a>    /// host-to-Wasm transition (e.g. registers used for fast stack walking).
-<a href=#211 id=211 data-nosnippet>211</a>    </span><span class="kw">fn </span>compile_array_to_wasm_trampoline(
-<a href=#212 id=212 data-nosnippet>212</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#213 id=213 data-nosnippet>213</a>        translation: <span class="kw-2">&amp;</span>ModuleTranslation&lt;<span class="lifetime">'_</span>&gt;,
-<a href=#214 id=214 data-nosnippet>214</a>        types: <span class="kw-2">&amp;</span>ModuleTypesBuilder,
-<a href=#215 id=215 data-nosnippet>215</a>        index: DefinedFuncIndex,
-<a href=#216 id=216 data-nosnippet>216</a>        symbol: <span class="kw-2">&amp;</span>str,
-<a href=#217 id=217 data-nosnippet>217</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;CompiledFunctionBody, CompileError&gt;;
-<a href=#218 id=218 data-nosnippet>218</a>
-<a href=#219 id=219 data-nosnippet>219</a>    <span class="doccomment">/// Compile a trampoline for a Wasm caller calling a array callee with the
-<a href=#220 id=220 data-nosnippet>220</a>    /// given signature.
-<a href=#221 id=221 data-nosnippet>221</a>    ///
-<a href=#222 id=222 data-nosnippet>222</a>    /// The trampoline should save the necessary state to record the
-<a href=#223 id=223 data-nosnippet>223</a>    /// Wasm-to-host transition (e.g. registers used for fast stack walking).
-<a href=#224 id=224 data-nosnippet>224</a>    </span><span class="kw">fn </span>compile_wasm_to_array_trampoline(
-<a href=#225 id=225 data-nosnippet>225</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#226 id=226 data-nosnippet>226</a>        wasm_func_ty: <span class="kw-2">&amp;</span>WasmFuncType,
-<a href=#227 id=227 data-nosnippet>227</a>        symbol: <span class="kw-2">&amp;</span>str,
-<a href=#228 id=228 data-nosnippet>228</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;CompiledFunctionBody, CompileError&gt;;
-<a href=#229 id=229 data-nosnippet>229</a>
-<a href=#230 id=230 data-nosnippet>230</a>    <span class="doccomment">/// Creates a trampoline that can be used to call Wasmtime's implementation
-<a href=#231 id=231 data-nosnippet>231</a>    /// of the builtin function specified by `index`.
-<a href=#232 id=232 data-nosnippet>232</a>    ///
-<a href=#233 id=233 data-nosnippet>233</a>    /// The trampoline created can technically have any ABI but currently has
-<a href=#234 id=234 data-nosnippet>234</a>    /// the native ABI. This will then perform all the necessary duties of an
-<a href=#235 id=235 data-nosnippet>235</a>    /// exit trampoline from wasm and then perform the actual dispatch to the
-<a href=#236 id=236 data-nosnippet>236</a>    /// builtin function. Builtin functions in Wasmtime are stored in an array
-<a href=#237 id=237 data-nosnippet>237</a>    /// in all `VMContext` pointers, so the call to the host is an indirect
-<a href=#238 id=238 data-nosnippet>238</a>    /// call.
-<a href=#239 id=239 data-nosnippet>239</a>    </span><span class="kw">fn </span>compile_wasm_to_builtin(
-<a href=#240 id=240 data-nosnippet>240</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#241 id=241 data-nosnippet>241</a>        index: BuiltinFunctionIndex,
-<a href=#242 id=242 data-nosnippet>242</a>        symbol: <span class="kw-2">&amp;</span>str,
-<a href=#243 id=243 data-nosnippet>243</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;CompiledFunctionBody, CompileError&gt;;
-<a href=#244 id=244 data-nosnippet>244</a>
-<a href=#245 id=245 data-nosnippet>245</a>    <span class="doccomment">/// Returns the list of relocations required for a function from one of the
-<a href=#246 id=246 data-nosnippet>246</a>    /// previous `compile_*` functions above.
-<a href=#247 id=247 data-nosnippet>247</a>    </span><span class="kw">fn </span>compiled_function_relocation_targets&lt;<span class="lifetime">'a</span>&gt;(
-<a href=#248 id=248 data-nosnippet>248</a>        <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>,
-<a href=#249 id=249 data-nosnippet>249</a>        func: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw">dyn </span>Any,
-<a href=#250 id=250 data-nosnippet>250</a>    ) -&gt; Box&lt;<span class="kw">dyn </span>Iterator&lt;Item = RelocationTarget&gt; + <span class="lifetime">'a</span>&gt;;
-<a href=#251 id=251 data-nosnippet>251</a>
-<a href=#252 id=252 data-nosnippet>252</a>    <span class="doccomment">/// Appends a list of compiled functions to an in-memory object.
-<a href=#253 id=253 data-nosnippet>253</a>    ///
-<a href=#254 id=254 data-nosnippet>254</a>    /// This function will receive the same `Box&lt;dyn Any&gt;` produced as part of
-<a href=#255 id=255 data-nosnippet>255</a>    /// compilation from functions like `compile_function`,
-<a href=#256 id=256 data-nosnippet>256</a>    /// `compile_host_to_wasm_trampoline`, and other component-related shims.
-<a href=#257 id=257 data-nosnippet>257</a>    /// Internally this will take all of these functions and add information to
-<a href=#258 id=258 data-nosnippet>258</a>    /// the object such as:
-<a href=#259 id=259 data-nosnippet>259</a>    ///
-<a href=#260 id=260 data-nosnippet>260</a>    /// * Compiled code in a `.text` section
-<a href=#261 id=261 data-nosnippet>261</a>    /// * Unwind information in Wasmtime-specific sections
-<a href=#262 id=262 data-nosnippet>262</a>    /// * Relocations, if necessary, for the text section
-<a href=#263 id=263 data-nosnippet>263</a>    ///
-<a href=#264 id=264 data-nosnippet>264</a>    /// Each function is accompanied with its desired symbol name and the return
-<a href=#265 id=265 data-nosnippet>265</a>    /// value of this function is the symbol for each function as well as where
-<a href=#266 id=266 data-nosnippet>266</a>    /// each function was placed within the object.
-<a href=#267 id=267 data-nosnippet>267</a>    ///
-<a href=#268 id=268 data-nosnippet>268</a>    /// The `resolve_reloc` argument is intended to resolving relocations
-<a href=#269 id=269 data-nosnippet>269</a>    /// between function, chiefly resolving intra-module calls within one core
-<a href=#270 id=270 data-nosnippet>270</a>    /// wasm module. The closure here takes two arguments:
-<a href=#271 id=271 data-nosnippet>271</a>    ///
-<a href=#272 id=272 data-nosnippet>272</a>    /// 1. First, the index within `funcs` that is being resolved,
-<a href=#273 id=273 data-nosnippet>273</a>    ///
-<a href=#274 id=274 data-nosnippet>274</a>    /// 2. and next the `RelocationTarget` which is the relocation target to
-<a href=#275 id=275 data-nosnippet>275</a>    ///    resolve.
-<a href=#276 id=276 data-nosnippet>276</a>    ///
-<a href=#277 id=277 data-nosnippet>277</a>    /// The return value is an index within `funcs` that the relocation points
-<a href=#278 id=278 data-nosnippet>278</a>    /// to.
-<a href=#279 id=279 data-nosnippet>279</a>    </span><span class="kw">fn </span>append_code(
-<a href=#280 id=280 data-nosnippet>280</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#281 id=281 data-nosnippet>281</a>        obj: <span class="kw-2">&amp;mut </span>Object&lt;<span class="lifetime">'static</span>&gt;,
-<a href=#282 id=282 data-nosnippet>282</a>        funcs: <span class="kw-2">&amp;</span>[(String, Box&lt;<span class="kw">dyn </span>Any + Send&gt;)],
-<a href=#283 id=283 data-nosnippet>283</a>        resolve_reloc: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn(usize, RelocationTarget) -&gt; usize,
-<a href=#284 id=284 data-nosnippet>284</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;(SymbolId, FunctionLoc)&gt;&gt;;
-<a href=#285 id=285 data-nosnippet>285</a>
-<a href=#286 id=286 data-nosnippet>286</a>    <span class="doccomment">/// Creates a new `Object` file which is used to build the results of a
-<a href=#287 id=287 data-nosnippet>287</a>    /// compilation into.
-<a href=#288 id=288 data-nosnippet>288</a>    ///
-<a href=#289 id=289 data-nosnippet>289</a>    /// The returned object file will have an appropriate
-<a href=#290 id=290 data-nosnippet>290</a>    /// architecture/endianness for `self.triple()`, but at this time it is
-<a href=#291 id=291 data-nosnippet>291</a>    /// always an ELF file, regardless of target platform.
-<a href=#292 id=292 data-nosnippet>292</a>    </span><span class="kw">fn </span>object(<span class="kw-2">&amp;</span><span class="self">self</span>, kind: ObjectKind) -&gt; <span class="prelude-ty">Result</span>&lt;Object&lt;<span class="lifetime">'static</span>&gt;&gt; {
-<a href=#293 id=293 data-nosnippet>293</a>        <span class="kw">use </span>target_lexicon::Architecture::<span class="kw-2">*</span>;
-<a href=#294 id=294 data-nosnippet>294</a>
-<a href=#295 id=295 data-nosnippet>295</a>        <span class="kw">let </span>triple = <span class="self">self</span>.triple();
-<a href=#296 id=296 data-nosnippet>296</a>        <span class="kw">let </span>(arch, flags) = <span class="kw">match </span>triple.architecture {
-<a href=#297 id=297 data-nosnippet>297</a>            X86_32(<span class="kw">_</span>) =&gt; (Architecture::I386, <span class="number">0</span>),
-<a href=#298 id=298 data-nosnippet>298</a>            X86_64 =&gt; (Architecture::X86_64, <span class="number">0</span>),
-<a href=#299 id=299 data-nosnippet>299</a>            Arm(<span class="kw">_</span>) =&gt; (Architecture::Arm, <span class="number">0</span>),
-<a href=#300 id=300 data-nosnippet>300</a>            Aarch64(<span class="kw">_</span>) =&gt; (Architecture::Aarch64, <span class="number">0</span>),
-<a href=#301 id=301 data-nosnippet>301</a>            S390x =&gt; (Architecture::S390x, <span class="number">0</span>),
-<a href=#302 id=302 data-nosnippet>302</a>            Riscv64(<span class="kw">_</span>) =&gt; (Architecture::Riscv64, <span class="number">0</span>),
-<a href=#303 id=303 data-nosnippet>303</a>            <span class="comment">// XXX: the `object` crate won't successfully build an object
-<a href=#304 id=304 data-nosnippet>304</a>            // with relocations and such if it doesn't know the
-<a href=#305 id=305 data-nosnippet>305</a>            // architecture, so just pretend we are riscv64. Yolo!
-<a href=#306 id=306 data-nosnippet>306</a>            //
-<a href=#307 id=307 data-nosnippet>307</a>            // Also note that we add some flags to `e_flags` in the object file
-<a href=#308 id=308 data-nosnippet>308</a>            // to indicate that it's pulley, not actually riscv64. This is used
-<a href=#309 id=309 data-nosnippet>309</a>            // by `wasmtime objdump` for example.
-<a href=#310 id=310 data-nosnippet>310</a>            </span>Pulley32 | Pulley32be =&gt; (Architecture::Riscv64, obj::EF_WASMTIME_PULLEY32),
-<a href=#311 id=311 data-nosnippet>311</a>            Pulley64 | Pulley64be =&gt; (Architecture::Riscv64, obj::EF_WASMTIME_PULLEY64),
-<a href=#312 id=312 data-nosnippet>312</a>            architecture =&gt; {
-<a href=#313 id=313 data-nosnippet>313</a>                <span class="macro">anyhow::bail!</span>(<span class="string">"target architecture {:?} is unsupported"</span>, architecture,);
-<a href=#314 id=314 data-nosnippet>314</a>            }
-<a href=#315 id=315 data-nosnippet>315</a>        };
-<a href=#316 id=316 data-nosnippet>316</a>        <span class="kw">let </span><span class="kw-2">mut </span>obj = Object::new(
-<a href=#317 id=317 data-nosnippet>317</a>            BinaryFormat::Elf,
-<a href=#318 id=318 data-nosnippet>318</a>            arch,
-<a href=#319 id=319 data-nosnippet>319</a>            <span class="kw">match </span>triple.endianness().unwrap() {
-<a href=#320 id=320 data-nosnippet>320</a>                target_lexicon::Endianness::Little =&gt; object::Endianness::Little,
-<a href=#321 id=321 data-nosnippet>321</a>                target_lexicon::Endianness::Big =&gt; object::Endianness::Big,
-<a href=#322 id=322 data-nosnippet>322</a>            },
-<a href=#323 id=323 data-nosnippet>323</a>        );
-<a href=#324 id=324 data-nosnippet>324</a>        obj.flags = FileFlags::Elf {
-<a href=#325 id=325 data-nosnippet>325</a>            os_abi: obj::ELFOSABI_WASMTIME,
-<a href=#326 id=326 data-nosnippet>326</a>            e_flags: flags
-<a href=#327 id=327 data-nosnippet>327</a>                | <span class="kw">match </span>kind {
-<a href=#328 id=328 data-nosnippet>328</a>                    ObjectKind::Module =&gt; obj::EF_WASMTIME_MODULE,
-<a href=#329 id=329 data-nosnippet>329</a>                    ObjectKind::Component =&gt; obj::EF_WASMTIME_COMPONENT,
-<a href=#330 id=330 data-nosnippet>330</a>                },
-<a href=#331 id=331 data-nosnippet>331</a>            abi_version: <span class="number">0</span>,
-<a href=#332 id=332 data-nosnippet>332</a>        };
-<a href=#333 id=333 data-nosnippet>333</a>        <span class="prelude-val">Ok</span>(obj)
-<a href=#334 id=334 data-nosnippet>334</a>    }
-<a href=#335 id=335 data-nosnippet>335</a>
-<a href=#336 id=336 data-nosnippet>336</a>    <span class="doccomment">/// Returns the target triple that this compiler is compiling for.
-<a href=#337 id=337 data-nosnippet>337</a>    </span><span class="kw">fn </span>triple(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>target_lexicon::Triple;
-<a href=#338 id=338 data-nosnippet>338</a>
-<a href=#339 id=339 data-nosnippet>339</a>    <span class="doccomment">/// Returns the alignment necessary to align values to the page size of the
-<a href=#340 id=340 data-nosnippet>340</a>    /// compilation target. Note that this may be an upper-bound where the
-<a href=#341 id=341 data-nosnippet>341</a>    /// alignment is larger than necessary for some platforms since it may
-<a href=#342 id=342 data-nosnippet>342</a>    /// depend on the platform's runtime configuration.
-<a href=#343 id=343 data-nosnippet>343</a>    </span><span class="kw">fn </span>page_size_align(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
-<a href=#344 id=344 data-nosnippet>344</a>        <span class="comment">// Conservatively assume the max-of-all-supported-hosts for pulley
-<a href=#345 id=345 data-nosnippet>345</a>        // and round up to 64k.
-<a href=#346 id=346 data-nosnippet>346</a>        </span><span class="kw">if </span><span class="self">self</span>.triple().is_pulley() {
-<a href=#347 id=347 data-nosnippet>347</a>            <span class="kw">return </span><span class="number">0x10000</span>;
-<a href=#348 id=348 data-nosnippet>348</a>        }
-<a href=#349 id=349 data-nosnippet>349</a>
-<a href=#350 id=350 data-nosnippet>350</a>        <span class="kw">use </span>target_lexicon::<span class="kw-2">*</span>;
-<a href=#351 id=351 data-nosnippet>351</a>        <span class="kw">match </span>(<span class="self">self</span>.triple().operating_system, <span class="self">self</span>.triple().architecture) {
-<a href=#352 id=352 data-nosnippet>352</a>            (
-<a href=#353 id=353 data-nosnippet>353</a>                OperatingSystem::MacOSX { .. }
-<a href=#354 id=354 data-nosnippet>354</a>                | OperatingSystem::Darwin(<span class="kw">_</span>)
-<a href=#355 id=355 data-nosnippet>355</a>                | OperatingSystem::IOS(<span class="kw">_</span>)
-<a href=#356 id=356 data-nosnippet>356</a>                | OperatingSystem::TvOS(<span class="kw">_</span>),
-<a href=#357 id=357 data-nosnippet>357</a>                Architecture::Aarch64(..),
-<a href=#358 id=358 data-nosnippet>358</a>            ) =&gt; <span class="number">0x4000</span>,
-<a href=#359 id=359 data-nosnippet>359</a>            <span class="comment">// 64 KB is the maximal page size (i.e. memory translation granule size)
-<a href=#360 id=360 data-nosnippet>360</a>            // supported by the architecture and is used on some platforms.
-<a href=#361 id=361 data-nosnippet>361</a>            </span>(<span class="kw">_</span>, Architecture::Aarch64(..)) =&gt; <span class="number">0x10000</span>,
-<a href=#362 id=362 data-nosnippet>362</a>            <span class="kw">_ </span>=&gt; <span class="number">0x1000</span>,
-<a href=#363 id=363 data-nosnippet>363</a>        }
-<a href=#364 id=364 data-nosnippet>364</a>    }
-<a href=#365 id=365 data-nosnippet>365</a>
-<a href=#366 id=366 data-nosnippet>366</a>    <span class="doccomment">/// Returns a list of configured settings for this compiler.
-<a href=#367 id=367 data-nosnippet>367</a>    </span><span class="kw">fn </span>flags(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, FlagValue&lt;<span class="lifetime">'static</span>&gt;)&gt;;
-<a href=#368 id=368 data-nosnippet>368</a>
-<a href=#369 id=369 data-nosnippet>369</a>    <span class="doccomment">/// Same as [`Compiler::flags`], but ISA-specific (a cranelift-ism)
-<a href=#370 id=370 data-nosnippet>370</a>    </span><span class="kw">fn </span>isa_flags(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, FlagValue&lt;<span class="lifetime">'static</span>&gt;)&gt;;
-<a href=#371 id=371 data-nosnippet>371</a>
-<a href=#372 id=372 data-nosnippet>372</a>    <span class="doccomment">/// Get a flag indicating whether branch protection is enabled.
-<a href=#373 id=373 data-nosnippet>373</a>    </span><span class="kw">fn </span>is_branch_protection_enabled(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool;
-<a href=#374 id=374 data-nosnippet>374</a>
-<a href=#375 id=375 data-nosnippet>375</a>    <span class="doccomment">/// Returns a suitable compiler usable for component-related compilations.
-<a href=#376 id=376 data-nosnippet>376</a>    ///
-<a href=#377 id=377 data-nosnippet>377</a>    /// Note that the `ComponentCompiler` trait can also be implemented for
-<a href=#378 id=378 data-nosnippet>378</a>    /// `Self` in which case this function would simply return `self`.
-<a href=#379 id=379 data-nosnippet>379</a>    </span><span class="attr">#[cfg(feature = <span class="string">"component-model"</span>)]
-<a href=#380 id=380 data-nosnippet>380</a>    </span><span class="kw">fn </span>component_compiler(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw">dyn </span><span class="kw">crate</span>::component::ComponentCompiler;
-<a href=#381 id=381 data-nosnippet>381</a>
-<a href=#382 id=382 data-nosnippet>382</a>    <span class="doccomment">/// Appends generated DWARF sections to the `obj` specified.
-<a href=#383 id=383 data-nosnippet>383</a>    ///
-<a href=#384 id=384 data-nosnippet>384</a>    /// The `translations` track all compiled functions and `get_func` can be
-<a href=#385 id=385 data-nosnippet>385</a>    /// used to acquire the metadata for a particular function within a module.
-<a href=#386 id=386 data-nosnippet>386</a>    </span><span class="kw">fn </span>append_dwarf&lt;<span class="lifetime">'a</span>&gt;(
-<a href=#387 id=387 data-nosnippet>387</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
-<a href=#388 id=388 data-nosnippet>388</a>        obj: <span class="kw-2">&amp;mut </span>Object&lt;<span class="lifetime">'_</span>&gt;,
-<a href=#389 id=389 data-nosnippet>389</a>        translations: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>PrimaryMap&lt;StaticModuleIndex, ModuleTranslation&lt;<span class="lifetime">'a</span>&gt;&gt;,
-<a href=#390 id=390 data-nosnippet>390</a>        get_func: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw">dyn </span>Fn(
-<a href=#391 id=391 data-nosnippet>391</a>            StaticModuleIndex,
-<a href=#392 id=392 data-nosnippet>392</a>            DefinedFuncIndex,
-<a href=#393 id=393 data-nosnippet>393</a>        ) -&gt; (SymbolId, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>(<span class="kw">dyn </span>Any + Send)),
-<a href=#394 id=394 data-nosnippet>394</a>        dwarf_package_bytes: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]&gt;,
-<a href=#395 id=395 data-nosnippet>395</a>        tunables: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Tunables,
-<a href=#396 id=396 data-nosnippet>396</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
+<a href=#191 id=191 data-nosnippet>191</a>///
+<a href=#192 id=192 data-nosnippet>192</a>/// The diagram below depicts typical usage of this trait:
+<a href=#193 id=193 data-nosnippet>193</a>///
+<a href=#194 id=194 data-nosnippet>194</a>/// ```ignore
+<a href=#195 id=195 data-nosnippet>195</a>///                     +------+
+<a href=#196 id=196 data-nosnippet>196</a>///                     | Wasm |
+<a href=#197 id=197 data-nosnippet>197</a>///                     +------+
+<a href=#198 id=198 data-nosnippet>198</a>///                        |
+<a href=#199 id=199 data-nosnippet>199</a>///                        |
+<a href=#200 id=200 data-nosnippet>200</a>///           Compiler::compile_function()
+<a href=#201 id=201 data-nosnippet>201</a>///                        |
+<a href=#202 id=202 data-nosnippet>202</a>///                        |
+<a href=#203 id=203 data-nosnippet>203</a>///                        V
+<a href=#204 id=204 data-nosnippet>204</a>///             +----------------------+
+<a href=#205 id=205 data-nosnippet>205</a>///             | CompiledFunctionBody |
+<a href=#206 id=206 data-nosnippet>206</a>///             +----------------------+
+<a href=#207 id=207 data-nosnippet>207</a>///               |                  |
+<a href=#208 id=208 data-nosnippet>208</a>///               |                  |
+<a href=#209 id=209 data-nosnippet>209</a>///               |                When
+<a href=#210 id=210 data-nosnippet>210</a>///               |       Compiler::inlining_compiler()
+<a href=#211 id=211 data-nosnippet>211</a>///               |               is some
+<a href=#212 id=212 data-nosnippet>212</a>///               |                  |
+<a href=#213 id=213 data-nosnippet>213</a>///             When                 |
+<a href=#214 id=214 data-nosnippet>214</a>/// Compiler::inlining_compiler()    |-----------------.
+<a href=#215 id=215 data-nosnippet>215</a>///             is none              |                 |
+<a href=#216 id=216 data-nosnippet>216</a>///               |                  |                 |
+<a href=#217 id=217 data-nosnippet>217</a>///               |           Optionally call          |
+<a href=#218 id=218 data-nosnippet>218</a>///               |        InliningCompiler::inline()  |
+<a href=#219 id=219 data-nosnippet>219</a>///               |                  |                 |
+<a href=#220 id=220 data-nosnippet>220</a>///               |                  |                 |
+<a href=#221 id=221 data-nosnippet>221</a>///               |                  |-----------------'
+<a href=#222 id=222 data-nosnippet>222</a>///               |                  |
+<a href=#223 id=223 data-nosnippet>223</a>///               |                  |
+<a href=#224 id=224 data-nosnippet>224</a>///               |                  V
+<a href=#225 id=225 data-nosnippet>225</a>///               |     InliningCompiler::finish_compiling()
+<a href=#226 id=226 data-nosnippet>226</a>///               |                  |
+<a href=#227 id=227 data-nosnippet>227</a>///               |                  |
+<a href=#228 id=228 data-nosnippet>228</a>///               |------------------'
+<a href=#229 id=229 data-nosnippet>229</a>///               |
+<a href=#230 id=230 data-nosnippet>230</a>///               |
+<a href=#231 id=231 data-nosnippet>231</a>///   Compiler::append_code()
+<a href=#232 id=232 data-nosnippet>232</a>///               |
+<a href=#233 id=233 data-nosnippet>233</a>///               |
+<a href=#234 id=234 data-nosnippet>234</a>///               V
+<a href=#235 id=235 data-nosnippet>235</a>///           +--------+
+<a href=#236 id=236 data-nosnippet>236</a>///           | Object |
+<a href=#237 id=237 data-nosnippet>237</a>///           +--------+
+<a href=#238 id=238 data-nosnippet>238</a>/// ```
+<a href=#239 id=239 data-nosnippet>239</a></span><span class="kw">pub trait </span>Compiler: Send + Sync {
+<a href=#240 id=240 data-nosnippet>240</a>    <span class="doccomment">/// Get this compiler's inliner.
+<a href=#241 id=241 data-nosnippet>241</a>    ///
+<a href=#242 id=242 data-nosnippet>242</a>    /// Consumers of this trait **must** check for when when this method returns
+<a href=#243 id=243 data-nosnippet>243</a>    /// `Some(_)`, and **must** call `InliningCompiler::finish_compiling` on all
+<a href=#244 id=244 data-nosnippet>244</a>    /// `CompiledFunctionBody`s produced by this compiler in that case before
+<a href=#245 id=245 data-nosnippet>245</a>    /// passing the the compiled functions to `Compiler::append_code`, even if
+<a href=#246 id=246 data-nosnippet>246</a>    /// the consumer does not actually intend to do any inlining. This allows
+<a href=#247 id=247 data-nosnippet>247</a>    /// implementations of the trait to only translate to an internal
+<a href=#248 id=248 data-nosnippet>248</a>    /// representation in `Compiler::compile_*` methods so that they can then
+<a href=#249 id=249 data-nosnippet>249</a>    /// perform inlining afterwards if the consumer desires, and then finally
+<a href=#250 id=250 data-nosnippet>250</a>    /// proceed with compilng that internal representation to native code in
+<a href=#251 id=251 data-nosnippet>251</a>    /// `InliningCompiler::finish_compiling`.
+<a href=#252 id=252 data-nosnippet>252</a>    </span><span class="kw">fn </span>inlining_compiler(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="kw">dyn </span>InliningCompiler&gt;;
+<a href=#253 id=253 data-nosnippet>253</a>
+<a href=#254 id=254 data-nosnippet>254</a>    <span class="doccomment">/// Compiles the function `index` within `translation`.
+<a href=#255 id=255 data-nosnippet>255</a>    ///
+<a href=#256 id=256 data-nosnippet>256</a>    /// The body of the function is available in `data` and configuration
+<a href=#257 id=257 data-nosnippet>257</a>    /// values are also passed in via `tunables`. Type information in
+<a href=#258 id=258 data-nosnippet>258</a>    /// `translation` is all relative to `types`.
+<a href=#259 id=259 data-nosnippet>259</a>    </span><span class="kw">fn </span>compile_function(
+<a href=#260 id=260 data-nosnippet>260</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#261 id=261 data-nosnippet>261</a>        translation: <span class="kw-2">&amp;</span>ModuleTranslation&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#262 id=262 data-nosnippet>262</a>        index: DefinedFuncIndex,
+<a href=#263 id=263 data-nosnippet>263</a>        data: FunctionBodyData&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#264 id=264 data-nosnippet>264</a>        types: <span class="kw-2">&amp;</span>ModuleTypesBuilder,
+<a href=#265 id=265 data-nosnippet>265</a>        symbol: <span class="kw-2">&amp;</span>str,
+<a href=#266 id=266 data-nosnippet>266</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;CompiledFunctionBody, CompileError&gt;;
+<a href=#267 id=267 data-nosnippet>267</a>
+<a href=#268 id=268 data-nosnippet>268</a>    <span class="doccomment">/// Compile a trampoline for an array-call host function caller calling the
+<a href=#269 id=269 data-nosnippet>269</a>    /// `index`th Wasm function.
+<a href=#270 id=270 data-nosnippet>270</a>    ///
+<a href=#271 id=271 data-nosnippet>271</a>    /// The trampoline should save the necessary state to record the
+<a href=#272 id=272 data-nosnippet>272</a>    /// host-to-Wasm transition (e.g. registers used for fast stack walking).
+<a href=#273 id=273 data-nosnippet>273</a>    </span><span class="kw">fn </span>compile_array_to_wasm_trampoline(
+<a href=#274 id=274 data-nosnippet>274</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#275 id=275 data-nosnippet>275</a>        translation: <span class="kw-2">&amp;</span>ModuleTranslation&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#276 id=276 data-nosnippet>276</a>        types: <span class="kw-2">&amp;</span>ModuleTypesBuilder,
+<a href=#277 id=277 data-nosnippet>277</a>        index: DefinedFuncIndex,
+<a href=#278 id=278 data-nosnippet>278</a>        symbol: <span class="kw-2">&amp;</span>str,
+<a href=#279 id=279 data-nosnippet>279</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;CompiledFunctionBody, CompileError&gt;;
+<a href=#280 id=280 data-nosnippet>280</a>
+<a href=#281 id=281 data-nosnippet>281</a>    <span class="doccomment">/// Compile a trampoline for a Wasm caller calling a array callee with the
+<a href=#282 id=282 data-nosnippet>282</a>    /// given signature.
+<a href=#283 id=283 data-nosnippet>283</a>    ///
+<a href=#284 id=284 data-nosnippet>284</a>    /// The trampoline should save the necessary state to record the
+<a href=#285 id=285 data-nosnippet>285</a>    /// Wasm-to-host transition (e.g. registers used for fast stack walking).
+<a href=#286 id=286 data-nosnippet>286</a>    </span><span class="kw">fn </span>compile_wasm_to_array_trampoline(
+<a href=#287 id=287 data-nosnippet>287</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#288 id=288 data-nosnippet>288</a>        wasm_func_ty: <span class="kw-2">&amp;</span>WasmFuncType,
+<a href=#289 id=289 data-nosnippet>289</a>        symbol: <span class="kw-2">&amp;</span>str,
+<a href=#290 id=290 data-nosnippet>290</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;CompiledFunctionBody, CompileError&gt;;
+<a href=#291 id=291 data-nosnippet>291</a>
+<a href=#292 id=292 data-nosnippet>292</a>    <span class="doccomment">/// Creates a trampoline that can be used to call Wasmtime's implementation
+<a href=#293 id=293 data-nosnippet>293</a>    /// of the builtin function specified by `index`.
+<a href=#294 id=294 data-nosnippet>294</a>    ///
+<a href=#295 id=295 data-nosnippet>295</a>    /// The trampoline created can technically have any ABI but currently has
+<a href=#296 id=296 data-nosnippet>296</a>    /// the native ABI. This will then perform all the necessary duties of an
+<a href=#297 id=297 data-nosnippet>297</a>    /// exit trampoline from wasm and then perform the actual dispatch to the
+<a href=#298 id=298 data-nosnippet>298</a>    /// builtin function. Builtin functions in Wasmtime are stored in an array
+<a href=#299 id=299 data-nosnippet>299</a>    /// in all `VMContext` pointers, so the call to the host is an indirect
+<a href=#300 id=300 data-nosnippet>300</a>    /// call.
+<a href=#301 id=301 data-nosnippet>301</a>    </span><span class="kw">fn </span>compile_wasm_to_builtin(
+<a href=#302 id=302 data-nosnippet>302</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#303 id=303 data-nosnippet>303</a>        index: BuiltinFunctionIndex,
+<a href=#304 id=304 data-nosnippet>304</a>        symbol: <span class="kw-2">&amp;</span>str,
+<a href=#305 id=305 data-nosnippet>305</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;CompiledFunctionBody, CompileError&gt;;
+<a href=#306 id=306 data-nosnippet>306</a>
+<a href=#307 id=307 data-nosnippet>307</a>    <span class="doccomment">/// Returns the list of relocations required for a function from one of the
+<a href=#308 id=308 data-nosnippet>308</a>    /// previous `compile_*` functions above.
+<a href=#309 id=309 data-nosnippet>309</a>    </span><span class="kw">fn </span>compiled_function_relocation_targets&lt;<span class="lifetime">'a</span>&gt;(
+<a href=#310 id=310 data-nosnippet>310</a>        <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="self">self</span>,
+<a href=#311 id=311 data-nosnippet>311</a>        func: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw">dyn </span>Any,
+<a href=#312 id=312 data-nosnippet>312</a>    ) -&gt; Box&lt;<span class="kw">dyn </span>Iterator&lt;Item = RelocationTarget&gt; + <span class="lifetime">'a</span>&gt;;
+<a href=#313 id=313 data-nosnippet>313</a>
+<a href=#314 id=314 data-nosnippet>314</a>    <span class="doccomment">/// Appends a list of compiled functions to an in-memory object.
+<a href=#315 id=315 data-nosnippet>315</a>    ///
+<a href=#316 id=316 data-nosnippet>316</a>    /// This function will receive the same `Box&lt;dyn Any&gt;` produced as part of
+<a href=#317 id=317 data-nosnippet>317</a>    /// compilation from functions like `compile_function`,
+<a href=#318 id=318 data-nosnippet>318</a>    /// `compile_host_to_wasm_trampoline`, and other component-related shims.
+<a href=#319 id=319 data-nosnippet>319</a>    /// Internally this will take all of these functions and add information to
+<a href=#320 id=320 data-nosnippet>320</a>    /// the object such as:
+<a href=#321 id=321 data-nosnippet>321</a>    ///
+<a href=#322 id=322 data-nosnippet>322</a>    /// * Compiled code in a `.text` section
+<a href=#323 id=323 data-nosnippet>323</a>    /// * Unwind information in Wasmtime-specific sections
+<a href=#324 id=324 data-nosnippet>324</a>    /// * Relocations, if necessary, for the text section
+<a href=#325 id=325 data-nosnippet>325</a>    ///
+<a href=#326 id=326 data-nosnippet>326</a>    /// Each function is accompanied with its desired symbol name and the return
+<a href=#327 id=327 data-nosnippet>327</a>    /// value of this function is the symbol for each function as well as where
+<a href=#328 id=328 data-nosnippet>328</a>    /// each function was placed within the object.
+<a href=#329 id=329 data-nosnippet>329</a>    ///
+<a href=#330 id=330 data-nosnippet>330</a>    /// The `resolve_reloc` argument is intended to resolving relocations
+<a href=#331 id=331 data-nosnippet>331</a>    /// between function, chiefly resolving intra-module calls within one core
+<a href=#332 id=332 data-nosnippet>332</a>    /// wasm module. The closure here takes two arguments:
+<a href=#333 id=333 data-nosnippet>333</a>    ///
+<a href=#334 id=334 data-nosnippet>334</a>    /// 1. First, the index within `funcs` that is being resolved,
+<a href=#335 id=335 data-nosnippet>335</a>    ///
+<a href=#336 id=336 data-nosnippet>336</a>    /// 2. and next the `RelocationTarget` which is the relocation target to
+<a href=#337 id=337 data-nosnippet>337</a>    ///    resolve.
+<a href=#338 id=338 data-nosnippet>338</a>    ///
+<a href=#339 id=339 data-nosnippet>339</a>    /// The return value is an index within `funcs` that the relocation points
+<a href=#340 id=340 data-nosnippet>340</a>    /// to.
+<a href=#341 id=341 data-nosnippet>341</a>    </span><span class="kw">fn </span>append_code(
+<a href=#342 id=342 data-nosnippet>342</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#343 id=343 data-nosnippet>343</a>        obj: <span class="kw-2">&amp;mut </span>Object&lt;<span class="lifetime">'static</span>&gt;,
+<a href=#344 id=344 data-nosnippet>344</a>        funcs: <span class="kw-2">&amp;</span>[(String, Box&lt;<span class="kw">dyn </span>Any + Send + Sync&gt;)],
+<a href=#345 id=345 data-nosnippet>345</a>        resolve_reloc: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn(usize, RelocationTarget) -&gt; usize,
+<a href=#346 id=346 data-nosnippet>346</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;(SymbolId, FunctionLoc)&gt;&gt;;
+<a href=#347 id=347 data-nosnippet>347</a>
+<a href=#348 id=348 data-nosnippet>348</a>    <span class="doccomment">/// Creates a new `Object` file which is used to build the results of a
+<a href=#349 id=349 data-nosnippet>349</a>    /// compilation into.
+<a href=#350 id=350 data-nosnippet>350</a>    ///
+<a href=#351 id=351 data-nosnippet>351</a>    /// The returned object file will have an appropriate
+<a href=#352 id=352 data-nosnippet>352</a>    /// architecture/endianness for `self.triple()`, but at this time it is
+<a href=#353 id=353 data-nosnippet>353</a>    /// always an ELF file, regardless of target platform.
+<a href=#354 id=354 data-nosnippet>354</a>    </span><span class="kw">fn </span>object(<span class="kw-2">&amp;</span><span class="self">self</span>, kind: ObjectKind) -&gt; <span class="prelude-ty">Result</span>&lt;Object&lt;<span class="lifetime">'static</span>&gt;&gt; {
+<a href=#355 id=355 data-nosnippet>355</a>        <span class="kw">use </span>target_lexicon::Architecture::<span class="kw-2">*</span>;
+<a href=#356 id=356 data-nosnippet>356</a>
+<a href=#357 id=357 data-nosnippet>357</a>        <span class="kw">let </span>triple = <span class="self">self</span>.triple();
+<a href=#358 id=358 data-nosnippet>358</a>        <span class="kw">let </span>(arch, flags) = <span class="kw">match </span>triple.architecture {
+<a href=#359 id=359 data-nosnippet>359</a>            X86_32(<span class="kw">_</span>) =&gt; (Architecture::I386, <span class="number">0</span>),
+<a href=#360 id=360 data-nosnippet>360</a>            X86_64 =&gt; (Architecture::X86_64, <span class="number">0</span>),
+<a href=#361 id=361 data-nosnippet>361</a>            Arm(<span class="kw">_</span>) =&gt; (Architecture::Arm, <span class="number">0</span>),
+<a href=#362 id=362 data-nosnippet>362</a>            Aarch64(<span class="kw">_</span>) =&gt; (Architecture::Aarch64, <span class="number">0</span>),
+<a href=#363 id=363 data-nosnippet>363</a>            S390x =&gt; (Architecture::S390x, <span class="number">0</span>),
+<a href=#364 id=364 data-nosnippet>364</a>            Riscv64(<span class="kw">_</span>) =&gt; (Architecture::Riscv64, <span class="number">0</span>),
+<a href=#365 id=365 data-nosnippet>365</a>            <span class="comment">// XXX: the `object` crate won't successfully build an object
+<a href=#366 id=366 data-nosnippet>366</a>            // with relocations and such if it doesn't know the
+<a href=#367 id=367 data-nosnippet>367</a>            // architecture, so just pretend we are riscv64. Yolo!
+<a href=#368 id=368 data-nosnippet>368</a>            //
+<a href=#369 id=369 data-nosnippet>369</a>            // Also note that we add some flags to `e_flags` in the object file
+<a href=#370 id=370 data-nosnippet>370</a>            // to indicate that it's pulley, not actually riscv64. This is used
+<a href=#371 id=371 data-nosnippet>371</a>            // by `wasmtime objdump` for example.
+<a href=#372 id=372 data-nosnippet>372</a>            </span>Pulley32 | Pulley32be =&gt; (Architecture::Riscv64, obj::EF_WASMTIME_PULLEY32),
+<a href=#373 id=373 data-nosnippet>373</a>            Pulley64 | Pulley64be =&gt; (Architecture::Riscv64, obj::EF_WASMTIME_PULLEY64),
+<a href=#374 id=374 data-nosnippet>374</a>            architecture =&gt; {
+<a href=#375 id=375 data-nosnippet>375</a>                <span class="macro">anyhow::bail!</span>(<span class="string">"target architecture {:?} is unsupported"</span>, architecture,);
+<a href=#376 id=376 data-nosnippet>376</a>            }
+<a href=#377 id=377 data-nosnippet>377</a>        };
+<a href=#378 id=378 data-nosnippet>378</a>        <span class="kw">let </span><span class="kw-2">mut </span>obj = Object::new(
+<a href=#379 id=379 data-nosnippet>379</a>            BinaryFormat::Elf,
+<a href=#380 id=380 data-nosnippet>380</a>            arch,
+<a href=#381 id=381 data-nosnippet>381</a>            <span class="kw">match </span>triple.endianness().unwrap() {
+<a href=#382 id=382 data-nosnippet>382</a>                target_lexicon::Endianness::Little =&gt; object::Endianness::Little,
+<a href=#383 id=383 data-nosnippet>383</a>                target_lexicon::Endianness::Big =&gt; object::Endianness::Big,
+<a href=#384 id=384 data-nosnippet>384</a>            },
+<a href=#385 id=385 data-nosnippet>385</a>        );
+<a href=#386 id=386 data-nosnippet>386</a>        obj.flags = FileFlags::Elf {
+<a href=#387 id=387 data-nosnippet>387</a>            os_abi: obj::ELFOSABI_WASMTIME,
+<a href=#388 id=388 data-nosnippet>388</a>            e_flags: flags
+<a href=#389 id=389 data-nosnippet>389</a>                | <span class="kw">match </span>kind {
+<a href=#390 id=390 data-nosnippet>390</a>                    ObjectKind::Module =&gt; obj::EF_WASMTIME_MODULE,
+<a href=#391 id=391 data-nosnippet>391</a>                    ObjectKind::Component =&gt; obj::EF_WASMTIME_COMPONENT,
+<a href=#392 id=392 data-nosnippet>392</a>                },
+<a href=#393 id=393 data-nosnippet>393</a>            abi_version: <span class="number">0</span>,
+<a href=#394 id=394 data-nosnippet>394</a>        };
+<a href=#395 id=395 data-nosnippet>395</a>        <span class="prelude-val">Ok</span>(obj)
+<a href=#396 id=396 data-nosnippet>396</a>    }
 <a href=#397 id=397 data-nosnippet>397</a>
-<a href=#398 id=398 data-nosnippet>398</a>    <span class="doccomment">/// Creates a new System V Common Information Entry for the ISA.
-<a href=#399 id=399 data-nosnippet>399</a>    ///
-<a href=#400 id=400 data-nosnippet>400</a>    /// Returns `None` if the ISA does not support System V unwind information.
-<a href=#401 id=401 data-nosnippet>401</a>    </span><span class="kw">fn </span>create_systemv_cie(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;gimli::write::CommonInformationEntry&gt; {
-<a href=#402 id=402 data-nosnippet>402</a>        <span class="comment">// By default, an ISA cannot create a System V CIE.
-<a href=#403 id=403 data-nosnippet>403</a>        </span><span class="prelude-val">None
-<a href=#404 id=404 data-nosnippet>404</a>    </span>}
-<a href=#405 id=405 data-nosnippet>405</a>}
+<a href=#398 id=398 data-nosnippet>398</a>    <span class="doccomment">/// Returns the target triple that this compiler is compiling for.
+<a href=#399 id=399 data-nosnippet>399</a>    </span><span class="kw">fn </span>triple(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>target_lexicon::Triple;
+<a href=#400 id=400 data-nosnippet>400</a>
+<a href=#401 id=401 data-nosnippet>401</a>    <span class="doccomment">/// Returns the alignment necessary to align values to the page size of the
+<a href=#402 id=402 data-nosnippet>402</a>    /// compilation target. Note that this may be an upper-bound where the
+<a href=#403 id=403 data-nosnippet>403</a>    /// alignment is larger than necessary for some platforms since it may
+<a href=#404 id=404 data-nosnippet>404</a>    /// depend on the platform's runtime configuration.
+<a href=#405 id=405 data-nosnippet>405</a>    </span><span class="kw">fn </span>page_size_align(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u64 {
+<a href=#406 id=406 data-nosnippet>406</a>        <span class="comment">// Conservatively assume the max-of-all-supported-hosts for pulley
+<a href=#407 id=407 data-nosnippet>407</a>        // and round up to 64k.
+<a href=#408 id=408 data-nosnippet>408</a>        </span><span class="kw">if </span><span class="self">self</span>.triple().is_pulley() {
+<a href=#409 id=409 data-nosnippet>409</a>            <span class="kw">return </span><span class="number">0x10000</span>;
+<a href=#410 id=410 data-nosnippet>410</a>        }
+<a href=#411 id=411 data-nosnippet>411</a>
+<a href=#412 id=412 data-nosnippet>412</a>        <span class="kw">use </span>target_lexicon::<span class="kw-2">*</span>;
+<a href=#413 id=413 data-nosnippet>413</a>        <span class="kw">match </span>(<span class="self">self</span>.triple().operating_system, <span class="self">self</span>.triple().architecture) {
+<a href=#414 id=414 data-nosnippet>414</a>            (
+<a href=#415 id=415 data-nosnippet>415</a>                OperatingSystem::MacOSX { .. }
+<a href=#416 id=416 data-nosnippet>416</a>                | OperatingSystem::Darwin(<span class="kw">_</span>)
+<a href=#417 id=417 data-nosnippet>417</a>                | OperatingSystem::IOS(<span class="kw">_</span>)
+<a href=#418 id=418 data-nosnippet>418</a>                | OperatingSystem::TvOS(<span class="kw">_</span>),
+<a href=#419 id=419 data-nosnippet>419</a>                Architecture::Aarch64(..),
+<a href=#420 id=420 data-nosnippet>420</a>            ) =&gt; <span class="number">0x4000</span>,
+<a href=#421 id=421 data-nosnippet>421</a>            <span class="comment">// 64 KB is the maximal page size (i.e. memory translation granule size)
+<a href=#422 id=422 data-nosnippet>422</a>            // supported by the architecture and is used on some platforms.
+<a href=#423 id=423 data-nosnippet>423</a>            </span>(<span class="kw">_</span>, Architecture::Aarch64(..)) =&gt; <span class="number">0x10000</span>,
+<a href=#424 id=424 data-nosnippet>424</a>            <span class="kw">_ </span>=&gt; <span class="number">0x1000</span>,
+<a href=#425 id=425 data-nosnippet>425</a>        }
+<a href=#426 id=426 data-nosnippet>426</a>    }
+<a href=#427 id=427 data-nosnippet>427</a>
+<a href=#428 id=428 data-nosnippet>428</a>    <span class="doccomment">/// Returns a list of configured settings for this compiler.
+<a href=#429 id=429 data-nosnippet>429</a>    </span><span class="kw">fn </span>flags(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, FlagValue&lt;<span class="lifetime">'static</span>&gt;)&gt;;
+<a href=#430 id=430 data-nosnippet>430</a>
+<a href=#431 id=431 data-nosnippet>431</a>    <span class="doccomment">/// Same as [`Compiler::flags`], but ISA-specific (a cranelift-ism)
+<a href=#432 id=432 data-nosnippet>432</a>    </span><span class="kw">fn </span>isa_flags(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;(<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, FlagValue&lt;<span class="lifetime">'static</span>&gt;)&gt;;
+<a href=#433 id=433 data-nosnippet>433</a>
+<a href=#434 id=434 data-nosnippet>434</a>    <span class="doccomment">/// Get a flag indicating whether branch protection is enabled.
+<a href=#435 id=435 data-nosnippet>435</a>    </span><span class="kw">fn </span>is_branch_protection_enabled(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool;
+<a href=#436 id=436 data-nosnippet>436</a>
+<a href=#437 id=437 data-nosnippet>437</a>    <span class="doccomment">/// Returns a suitable compiler usable for component-related compilations.
+<a href=#438 id=438 data-nosnippet>438</a>    ///
+<a href=#439 id=439 data-nosnippet>439</a>    /// Note that the `ComponentCompiler` trait can also be implemented for
+<a href=#440 id=440 data-nosnippet>440</a>    /// `Self` in which case this function would simply return `self`.
+<a href=#441 id=441 data-nosnippet>441</a>    </span><span class="attr">#[cfg(feature = <span class="string">"component-model"</span>)]
+<a href=#442 id=442 data-nosnippet>442</a>    </span><span class="kw">fn </span>component_compiler(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw">dyn </span><span class="kw">crate</span>::component::ComponentCompiler;
+<a href=#443 id=443 data-nosnippet>443</a>
+<a href=#444 id=444 data-nosnippet>444</a>    <span class="doccomment">/// Appends generated DWARF sections to the `obj` specified.
+<a href=#445 id=445 data-nosnippet>445</a>    ///
+<a href=#446 id=446 data-nosnippet>446</a>    /// The `translations` track all compiled functions and `get_func` can be
+<a href=#447 id=447 data-nosnippet>447</a>    /// used to acquire the metadata for a particular function within a module.
+<a href=#448 id=448 data-nosnippet>448</a>    </span><span class="kw">fn </span>append_dwarf&lt;<span class="lifetime">'a</span>&gt;(
+<a href=#449 id=449 data-nosnippet>449</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#450 id=450 data-nosnippet>450</a>        obj: <span class="kw-2">&amp;mut </span>Object&lt;<span class="lifetime">'_</span>&gt;,
+<a href=#451 id=451 data-nosnippet>451</a>        translations: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>PrimaryMap&lt;StaticModuleIndex, ModuleTranslation&lt;<span class="lifetime">'a</span>&gt;&gt;,
+<a href=#452 id=452 data-nosnippet>452</a>        get_func: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw">dyn </span>Fn(
+<a href=#453 id=453 data-nosnippet>453</a>            StaticModuleIndex,
+<a href=#454 id=454 data-nosnippet>454</a>            DefinedFuncIndex,
+<a href=#455 id=455 data-nosnippet>455</a>        ) -&gt; (SymbolId, <span class="kw-2">&amp;</span><span class="lifetime">'a </span>(<span class="kw">dyn </span>Any + Send + Sync)),
+<a href=#456 id=456 data-nosnippet>456</a>        dwarf_package_bytes: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>[u8]&gt;,
+<a href=#457 id=457 data-nosnippet>457</a>        tunables: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>Tunables,
+<a href=#458 id=458 data-nosnippet>458</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
+<a href=#459 id=459 data-nosnippet>459</a>
+<a href=#460 id=460 data-nosnippet>460</a>    <span class="doccomment">/// Creates a new System V Common Information Entry for the ISA.
+<a href=#461 id=461 data-nosnippet>461</a>    ///
+<a href=#462 id=462 data-nosnippet>462</a>    /// Returns `None` if the ISA does not support System V unwind information.
+<a href=#463 id=463 data-nosnippet>463</a>    </span><span class="kw">fn </span>create_systemv_cie(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;gimli::write::CommonInformationEntry&gt; {
+<a href=#464 id=464 data-nosnippet>464</a>        <span class="comment">// By default, an ISA cannot create a System V CIE.
+<a href=#465 id=465 data-nosnippet>465</a>        </span><span class="prelude-val">None
+<a href=#466 id=466 data-nosnippet>466</a>    </span>}
+<a href=#467 id=467 data-nosnippet>467</a>}
+<a href=#468 id=468 data-nosnippet>468</a>
+<a href=#469 id=469 data-nosnippet>469</a><span class="doccomment">/// An inlining compiler.
+<a href=#470 id=470 data-nosnippet>470</a></span><span class="kw">pub trait </span>InliningCompiler: Sync + Send {
+<a href=#471 id=471 data-nosnippet>471</a>    <span class="doccomment">/// Enumerate the function calls that the given `func` makes.
+<a href=#472 id=472 data-nosnippet>472</a>    </span><span class="kw">fn </span>calls(<span class="kw-2">&amp;</span><span class="self">self</span>, func: <span class="kw-2">&amp;</span>CompiledFunctionBody, calls: <span class="kw-2">&amp;mut </span>IndexSet&lt;FuncIndex&gt;) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
+<a href=#473 id=473 data-nosnippet>473</a>
+<a href=#474 id=474 data-nosnippet>474</a>    <span class="doccomment">/// Get the abstract size of the given function, for the purposes of
+<a href=#475 id=475 data-nosnippet>475</a>    /// inlining heuristics.
+<a href=#476 id=476 data-nosnippet>476</a>    </span><span class="kw">fn </span>size(<span class="kw-2">&amp;</span><span class="self">self</span>, func: <span class="kw-2">&amp;</span>CompiledFunctionBody) -&gt; u32;
+<a href=#477 id=477 data-nosnippet>477</a>
+<a href=#478 id=478 data-nosnippet>478</a>    <span class="doccomment">/// Process this function for inlining.
+<a href=#479 id=479 data-nosnippet>479</a>    ///
+<a href=#480 id=480 data-nosnippet>480</a>    /// Implementations should call `get_callee` for each of their direct
+<a href=#481 id=481 data-nosnippet>481</a>    /// function call sites and if `get_callee` returns `Some(_)`, they should
+<a href=#482 id=482 data-nosnippet>482</a>    /// inline the given function body into that call site.
+<a href=#483 id=483 data-nosnippet>483</a>    </span><span class="kw">fn </span>inline&lt;<span class="lifetime">'a</span>&gt;(
+<a href=#484 id=484 data-nosnippet>484</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#485 id=485 data-nosnippet>485</a>        func: <span class="kw-2">&amp;mut </span>CompiledFunctionBody,
+<a href=#486 id=486 data-nosnippet>486</a>        get_callee: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span><span class="kw">dyn </span>FnMut(FuncIndex) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span><span class="lifetime">'a </span>CompiledFunctionBody&gt;,
+<a href=#487 id=487 data-nosnippet>487</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
+<a href=#488 id=488 data-nosnippet>488</a>
+<a href=#489 id=489 data-nosnippet>489</a>    <span class="doccomment">/// Finish compiling the given function.
+<a href=#490 id=490 data-nosnippet>490</a>    ///
+<a href=#491 id=491 data-nosnippet>491</a>    /// This method **must** be called before passing the
+<a href=#492 id=492 data-nosnippet>492</a>    /// `CompiledFunctionBody`'s contents to `Compiler::append_code`, even if no
+<a href=#493 id=493 data-nosnippet>493</a>    /// inlining was performed.
+<a href=#494 id=494 data-nosnippet>494</a>    </span><span class="kw">fn </span>finish_compiling(
+<a href=#495 id=495 data-nosnippet>495</a>        <span class="kw-2">&amp;</span><span class="self">self</span>,
+<a href=#496 id=496 data-nosnippet>496</a>        func: <span class="kw-2">&amp;mut </span>CompiledFunctionBody,
+<a href=#497 id=497 data-nosnippet>497</a>        input: <span class="prelude-ty">Option</span>&lt;wasmparser::FunctionBody&lt;<span class="lifetime">'_</span>&gt;&gt;,
+<a href=#498 id=498 data-nosnippet>498</a>        symbol: <span class="kw-2">&amp;</span>str,
+<a href=#499 id=499 data-nosnippet>499</a>    ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt;;
+<a href=#500 id=500 data-nosnippet>500</a>}
 </code></pre></div></section></main></body></html>

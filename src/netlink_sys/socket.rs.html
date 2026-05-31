@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/netlink-sys-0.8.7/src/socket.rs`."><title>socket.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="netlink_sys" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">netlink_sys/</div>socket.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// SPDX-License-Identifier: MIT
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/netlink-sys-0.8.8/src/socket.rs`."><title>socket.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="netlink_sys" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">netlink_sys/</div>socket.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// SPDX-License-Identifier: MIT
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a></span><span class="kw">use </span>std::{
 <a href=#4 id=4 data-nosnippet>4</a>    io::{Error, <span class="prelude-ty">Result</span>},
@@ -410,7 +410,7 @@
 <a href=#410 id=410 data-nosnippet>410</a>        <span class="prelude-val">Ok</span>(res <span class="kw">as </span>usize)
 <a href=#411 id=411 data-nosnippet>411</a>    }
 <a href=#412 id=412 data-nosnippet>412</a>
-<a href=#413 id=413 data-nosnippet>413</a>    <span class="kw">pub fn </span>set_pktinfo(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#413 id=413 data-nosnippet>413</a>    <span class="kw">pub fn </span>set_pktinfo(<span class="kw-2">&amp;</span><span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
 <a href=#414 id=414 data-nosnippet>414</a>        <span class="kw">let </span>value: libc::c_int = value.into();
 <a href=#415 id=415 data-nosnippet>415</a>        setsockopt(
 <a href=#416 id=416 data-nosnippet>416</a>            <span class="self">self</span>.as_raw_fd(),
@@ -429,7 +429,7 @@
 <a href=#429 id=429 data-nosnippet>429</a>        <span class="prelude-val">Ok</span>(res == <span class="number">1</span>)
 <a href=#430 id=430 data-nosnippet>430</a>    }
 <a href=#431 id=431 data-nosnippet>431</a>
-<a href=#432 id=432 data-nosnippet>432</a>    <span class="kw">pub fn </span>add_membership(<span class="kw-2">&amp;mut </span><span class="self">self</span>, group: u32) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#432 id=432 data-nosnippet>432</a>    <span class="kw">pub fn </span>add_membership(<span class="kw-2">&amp;</span><span class="self">self</span>, group: u32) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
 <a href=#433 id=433 data-nosnippet>433</a>        setsockopt(
 <a href=#434 id=434 data-nosnippet>434</a>            <span class="self">self</span>.as_raw_fd(),
 <a href=#435 id=435 data-nosnippet>435</a>            libc::SOL_NETLINK,
@@ -438,7 +438,7 @@
 <a href=#438 id=438 data-nosnippet>438</a>        )
 <a href=#439 id=439 data-nosnippet>439</a>    }
 <a href=#440 id=440 data-nosnippet>440</a>
-<a href=#441 id=441 data-nosnippet>441</a>    <span class="kw">pub fn </span>drop_membership(<span class="kw-2">&amp;mut </span><span class="self">self</span>, group: u32) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#441 id=441 data-nosnippet>441</a>    <span class="kw">pub fn </span>drop_membership(<span class="kw-2">&amp;</span><span class="self">self</span>, group: u32) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
 <a href=#442 id=442 data-nosnippet>442</a>        setsockopt(
 <a href=#443 id=443 data-nosnippet>443</a>            <span class="self">self</span>.as_raw_fd(),
 <a href=#444 id=444 data-nosnippet>444</a>            libc::SOL_NETLINK,
@@ -457,7 +457,7 @@
 <a href=#457 id=457 data-nosnippet>457</a>    </span><span class="doccomment">/// `NETLINK_BROADCAST_ERROR` (since Linux 2.6.30). When not set,
 <a href=#458 id=458 data-nosnippet>458</a>    /// `netlink_broadcast()` only reports `ESRCH` errors and silently
 <a href=#459 id=459 data-nosnippet>459</a>    /// ignore `NOBUFS` errors.
-<a href=#460 id=460 data-nosnippet>460</a>    </span><span class="kw">pub fn </span>set_broadcast_error(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#460 id=460 data-nosnippet>460</a>    </span><span class="kw">pub fn </span>set_broadcast_error(<span class="kw-2">&amp;</span><span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
 <a href=#461 id=461 data-nosnippet>461</a>        <span class="kw">let </span>value: libc::c_int = value.into();
 <a href=#462 id=462 data-nosnippet>462</a>        setsockopt(
 <a href=#463 id=463 data-nosnippet>463</a>            <span class="self">self</span>.as_raw_fd(),
@@ -478,7 +478,7 @@
 <a href=#478 id=478 data-nosnippet>478</a>
 <a href=#479 id=479 data-nosnippet>479</a>    <span class="doccomment">/// `NETLINK_NO_ENOBUFS` (since Linux 2.6.30). This flag can be used by
 <a href=#480 id=480 data-nosnippet>480</a>    /// unicast and broadcast listeners to avoid receiving `ENOBUFS` errors.
-<a href=#481 id=481 data-nosnippet>481</a>    </span><span class="kw">pub fn </span>set_no_enobufs(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#481 id=481 data-nosnippet>481</a>    </span><span class="kw">pub fn </span>set_no_enobufs(<span class="kw-2">&amp;</span><span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
 <a href=#482 id=482 data-nosnippet>482</a>        <span class="kw">let </span>value: libc::c_int = value.into();
 <a href=#483 id=483 data-nosnippet>483</a>        setsockopt(
 <a href=#484 id=484 data-nosnippet>484</a>            <span class="self">self</span>.as_raw_fd(),
@@ -502,7 +502,7 @@
 <a href=#502 id=502 data-nosnippet>502</a>    /// have an nsid assigned into the network namespace where the socket
 <a href=#503 id=503 data-nosnippet>503</a>    /// has been opened. The nsid is sent to user space via an ancillary
 <a href=#504 id=504 data-nosnippet>504</a>    /// data.
-<a href=#505 id=505 data-nosnippet>505</a>    </span><span class="kw">pub fn </span>set_listen_all_namespaces(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#505 id=505 data-nosnippet>505</a>    </span><span class="kw">pub fn </span>set_listen_all_namespaces(<span class="kw-2">&amp;</span><span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
 <a href=#506 id=506 data-nosnippet>506</a>        <span class="kw">let </span>value: libc::c_int = value.into();
 <a href=#507 id=507 data-nosnippet>507</a>        setsockopt(
 <a href=#508 id=508 data-nosnippet>508</a>            <span class="self">self</span>.as_raw_fd(),
@@ -527,7 +527,7 @@
 <a href=#527 id=527 data-nosnippet>527</a>    /// The netlink message header is still included, so the user can
 <a href=#528 id=528 data-nosnippet>528</a>    /// guess from the sequence  number which message triggered the
 <a href=#529 id=529 data-nosnippet>529</a>    /// acknowledgment.
-<a href=#530 id=530 data-nosnippet>530</a>    </span><span class="kw">pub fn </span>set_cap_ack(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#530 id=530 data-nosnippet>530</a>    </span><span class="kw">pub fn </span>set_cap_ack(<span class="kw-2">&amp;</span><span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
 <a href=#531 id=531 data-nosnippet>531</a>        <span class="kw">let </span>value: libc::c_int = value.into();
 <a href=#532 id=532 data-nosnippet>532</a>        setsockopt(
 <a href=#533 id=533 data-nosnippet>533</a>            <span class="self">self</span>.as_raw_fd(),
@@ -549,7 +549,7 @@
 <a href=#549 id=549 data-nosnippet>549</a>    <span class="doccomment">/// `NETLINK_EXT_ACK`
 <a href=#550 id=550 data-nosnippet>550</a>    /// Extended ACK controls reporting of additional error/warning TLVs in
 <a href=#551 id=551 data-nosnippet>551</a>    /// NLMSG_ERROR and NLMSG_DONE messages.
-<a href=#552 id=552 data-nosnippet>552</a>    </span><span class="kw">pub fn </span>set_ext_ack(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+<a href=#552 id=552 data-nosnippet>552</a>    </span><span class="kw">pub fn </span>set_ext_ack(<span class="kw-2">&amp;</span><span class="self">self</span>, value: bool) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
 <a href=#553 id=553 data-nosnippet>553</a>        <span class="kw">let </span>value: libc::c_int = value.into();
 <a href=#554 id=554 data-nosnippet>554</a>        setsockopt(
 <a href=#555 id=555 data-nosnippet>555</a>            <span class="self">self</span>.as_raw_fd(),
@@ -660,7 +660,7 @@
 <a href=#660 id=660 data-nosnippet>660</a>
 <a href=#661 id=661 data-nosnippet>661</a><span class="attr">#[cfg(test)]
 <a href=#662 id=662 data-nosnippet>662</a></span><span class="kw">mod </span>test {
-<a href=#663 id=663 data-nosnippet>663</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#663 id=663 data-nosnippet>663</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#664 id=664 data-nosnippet>664</a>    <span class="kw">use </span><span class="kw">crate</span>::protocols::NETLINK_ROUTE;
 <a href=#665 id=665 data-nosnippet>665</a>
 <a href=#666 id=666 data-nosnippet>666</a>    <span class="attr">#[test]
@@ -697,7 +697,7 @@
 <a href=#697 id=697 data-nosnippet>697</a>
 <a href=#698 id=698 data-nosnippet>698</a>    <span class="attr">#[test]
 <a href=#699 id=699 data-nosnippet>699</a>    </span><span class="kw">fn </span>options() {
-<a href=#700 id=700 data-nosnippet>700</a>        <span class="kw">let </span><span class="kw-2">mut </span>sock = Socket::new(NETLINK_ROUTE).unwrap();
+<a href=#700 id=700 data-nosnippet>700</a>        <span class="kw">let </span>sock = Socket::new(NETLINK_ROUTE).unwrap();
 <a href=#701 id=701 data-nosnippet>701</a>
 <a href=#702 id=702 data-nosnippet>702</a>        sock.set_cap_ack(<span class="bool-val">true</span>).unwrap();
 <a href=#703 id=703 data-nosnippet>703</a>        <span class="macro">assert!</span>(sock.get_cap_ack().unwrap());

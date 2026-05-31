@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cranelift-frontend-0.122.0/src/frontend.rs`."><title>frontend.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cranelift_frontend" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">cranelift_frontend/</div>frontend.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! A frontend for building Cranelift IR from other languages.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cranelift-frontend-0.123.10/src/frontend.rs`."><title>frontend.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="cranelift_frontend" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">cranelift_frontend/</div>frontend.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! A frontend for building Cranelift IR from other languages.
 <a href=#2 id=2 data-nosnippet>2</a></span><span class="kw">use </span><span class="kw">crate</span>::ssa::{SSABuilder, SideEffects};
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span><span class="kw">crate</span>::variable::Variable;
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span>alloc::vec::Vec;
@@ -143,7 +143,7 @@
 <a href=#143 id=143 data-nosnippet>143</a>                <span class="kw">let </span>block_else = branch_else.block(<span class="kw-2">&amp;</span><span class="self">self</span>.builder.func.dfg.value_lists);
 <a href=#144 id=144 data-nosnippet>144</a>
 <a href=#145 id=145 data-nosnippet>145</a>                <span class="self">self</span>.builder.declare_successor(block_then, inst);
-<a href=#146 id=146 data-nosnippet>146</a>                <span class="kw">if </span>block_then != block_else {
+<a href=#146 id=146 data-nosnippet>146</a>                <span class="kw">if </span><span class="macro">block_then !</span>= block_else {
 <a href=#147 id=147 data-nosnippet>147</a>                    <span class="self">self</span>.builder.declare_successor(block_else, inst);
 <a href=#148 id=148 data-nosnippet>148</a>                }
 <a href=#149 id=149 data-nosnippet>149</a>            }
@@ -433,7 +433,7 @@
 <a href=#433 id=433 data-nosnippet>433</a>    </span><span class="kw">pub fn </span>declare_var_needs_stack_map(<span class="kw-2">&amp;mut </span><span class="self">self</span>, var: Variable) {
 <a href=#434 id=434 data-nosnippet>434</a>        <span class="macro">log::trace!</span>(<span class="string">"declare_var_needs_stack_map({var:?})"</span>);
 <a href=#435 id=435 data-nosnippet>435</a>        <span class="kw">let </span>ty = <span class="self">self</span>.func_ctx.variables[var];
-<a href=#436 id=436 data-nosnippet>436</a>        <span class="macro">assert!</span>(ty != types::INVALID);
+<a href=#436 id=436 data-nosnippet>436</a>        <span class="macro">assert!</span>(<span class="macro">ty !</span>= types::INVALID);
 <a href=#437 id=437 data-nosnippet>437</a>        <span class="macro">assert!</span>(ty.bytes() &lt;= <span class="number">16</span>);
 <a href=#438 id=438 data-nosnippet>438</a>        <span class="self">self</span>.func_ctx.stack_map_vars.insert(var);
 <a href=#439 id=439 data-nosnippet>439</a>    }
@@ -486,7 +486,7 @@
 <a href=#486 id=486 data-nosnippet>486</a>            .variables
 <a href=#487 id=487 data-nosnippet>487</a>            .get(var)
 <a href=#488 id=488 data-nosnippet>488</a>            .ok_or(DefVariableError::DefinedBeforeDeclared(var))<span class="question-mark">?</span>;
-<a href=#489 id=489 data-nosnippet>489</a>        <span class="kw">if </span>var_ty != <span class="self">self</span>.func.dfg.value_type(val) {
+<a href=#489 id=489 data-nosnippet>489</a>        <span class="kw">if </span><span class="macro">var_ty !</span>= <span class="self">self</span>.func.dfg.value_type(val) {
 <a href=#490 id=490 data-nosnippet>490</a>            <span class="kw">return </span><span class="prelude-val">Err</span>(DefVariableError::TypeMismatch(var, val));
 <a href=#491 id=491 data-nosnippet>491</a>        }
 <a href=#492 id=492 data-nosnippet>492</a>
@@ -1972,60 +1972,58 @@
 <a href=#1972 id=1972 data-nosnippet>1972</a>        <span class="kw">let </span>one = builder.ins().iconst(I32, <span class="number">1</span>);
 <a href=#1973 id=1973 data-nosnippet>1973</a>        builder.def_var(my_var, one);
 <a href=#1974 id=1974 data-nosnippet>1974</a>
-<a href=#1975 id=1975 data-nosnippet>1975</a>        <span class="kw">let </span>normal_return =
-<a href=#1976 id=1976 data-nosnippet>1976</a>            BlockCall::new(block3, [].into_iter(), <span class="kw-2">&amp;mut </span>builder.func.dfg.value_lists);
-<a href=#1977 id=1977 data-nosnippet>1977</a>        <span class="kw">let </span>exception_table = builder
-<a href=#1978 id=1978 data-nosnippet>1978</a>            .func
-<a href=#1979 id=1979 data-nosnippet>1979</a>            .dfg
-<a href=#1980 id=1980 data-nosnippet>1980</a>            .exception_tables
-<a href=#1981 id=1981 data-nosnippet>1981</a>            .push(ExceptionTableData::new(sig0, normal_return, []));
-<a href=#1982 id=1982 data-nosnippet>1982</a>        builder.ins().try_call(fn0, <span class="kw-2">&amp;</span>[], exception_table);
-<a href=#1983 id=1983 data-nosnippet>1983</a>
-<a href=#1984 id=1984 data-nosnippet>1984</a>        builder.switch_to_block(block2);
-<a href=#1985 id=1985 data-nosnippet>1985</a>        <span class="kw">let </span>two = builder.ins().iconst(I32, <span class="number">2</span>);
-<a href=#1986 id=1986 data-nosnippet>1986</a>        builder.def_var(my_var, two);
-<a href=#1987 id=1987 data-nosnippet>1987</a>
-<a href=#1988 id=1988 data-nosnippet>1988</a>        <span class="kw">let </span>normal_return =
-<a href=#1989 id=1989 data-nosnippet>1989</a>            BlockCall::new(block3, [].into_iter(), <span class="kw-2">&amp;mut </span>builder.func.dfg.value_lists);
-<a href=#1990 id=1990 data-nosnippet>1990</a>        <span class="kw">let </span>exception_table = builder
-<a href=#1991 id=1991 data-nosnippet>1991</a>            .func
-<a href=#1992 id=1992 data-nosnippet>1992</a>            .dfg
-<a href=#1993 id=1993 data-nosnippet>1993</a>            .exception_tables
-<a href=#1994 id=1994 data-nosnippet>1994</a>            .push(ExceptionTableData::new(sig0, normal_return, []));
-<a href=#1995 id=1995 data-nosnippet>1995</a>        builder.ins().try_call(fn0, <span class="kw-2">&amp;</span>[], exception_table);
-<a href=#1996 id=1996 data-nosnippet>1996</a>
-<a href=#1997 id=1997 data-nosnippet>1997</a>        builder.switch_to_block(block3);
-<a href=#1998 id=1998 data-nosnippet>1998</a>        <span class="kw">let </span>ret_val = builder.use_var(my_var);
-<a href=#1999 id=1999 data-nosnippet>1999</a>        builder.ins().return_(<span class="kw-2">&amp;</span>[ret_val]);
-<a href=#2000 id=2000 data-nosnippet>2000</a>
-<a href=#2001 id=2001 data-nosnippet>2001</a>        builder.seal_all_blocks();
-<a href=#2002 id=2002 data-nosnippet>2002</a>        builder.finalize();
-<a href=#2003 id=2003 data-nosnippet>2003</a>
-<a href=#2004 id=2004 data-nosnippet>2004</a>        <span class="kw">let </span>flags = cranelift_codegen::settings::Flags::new(cranelift_codegen::settings::builder());
-<a href=#2005 id=2005 data-nosnippet>2005</a>        <span class="kw">let </span>ctx = cranelift_codegen::Context::for_function(func);
-<a href=#2006 id=2006 data-nosnippet>2006</a>        ctx.verify(<span class="kw-2">&amp;</span>flags).expect(<span class="string">"should be valid"</span>);
-<a href=#2007 id=2007 data-nosnippet>2007</a>
-<a href=#2008 id=2008 data-nosnippet>2008</a>        check(
-<a href=#2009 id=2009 data-nosnippet>2009</a>            <span class="kw-2">&amp;</span>ctx.func,
-<a href=#2010 id=2010 data-nosnippet>2010</a>            <span class="string">"function %sample(i8) -&gt; i32 system_v {
-<a href=#2011 id=2011 data-nosnippet>2011</a>    sig0 = () system_v
-<a href=#2012 id=2012 data-nosnippet>2012</a>    fn0 = u0:0 sig0
-<a href=#2013 id=2013 data-nosnippet>2013</a>
-<a href=#2014 id=2014 data-nosnippet>2014</a>block0(v0: i8):
-<a href=#2015 id=2015 data-nosnippet>2015</a>    brif v0, block1, block2
-<a href=#2016 id=2016 data-nosnippet>2016</a>
-<a href=#2017 id=2017 data-nosnippet>2017</a>block1:
-<a href=#2018 id=2018 data-nosnippet>2018</a>    v1 = iconst.i32 1
-<a href=#2019 id=2019 data-nosnippet>2019</a>    try_call fn0(), sig0, block3(v1), []  ; v1 = 1
-<a href=#2020 id=2020 data-nosnippet>2020</a>
-<a href=#2021 id=2021 data-nosnippet>2021</a>block2:
-<a href=#2022 id=2022 data-nosnippet>2022</a>    v2 = iconst.i32 2
-<a href=#2023 id=2023 data-nosnippet>2023</a>    try_call fn0(), sig0, block3(v2), []  ; v2 = 2
-<a href=#2024 id=2024 data-nosnippet>2024</a>
-<a href=#2025 id=2025 data-nosnippet>2025</a>block3(v3: i32):
-<a href=#2026 id=2026 data-nosnippet>2026</a>    return v3
-<a href=#2027 id=2027 data-nosnippet>2027</a>}"</span>,
-<a href=#2028 id=2028 data-nosnippet>2028</a>        );
-<a href=#2029 id=2029 data-nosnippet>2029</a>    }
-<a href=#2030 id=2030 data-nosnippet>2030</a>}
+<a href=#1975 id=1975 data-nosnippet>1975</a>        <span class="kw">let </span>normal_return = BlockCall::new(block3, [], <span class="kw-2">&amp;mut </span>builder.func.dfg.value_lists);
+<a href=#1976 id=1976 data-nosnippet>1976</a>        <span class="kw">let </span>exception_table = builder
+<a href=#1977 id=1977 data-nosnippet>1977</a>            .func
+<a href=#1978 id=1978 data-nosnippet>1978</a>            .dfg
+<a href=#1979 id=1979 data-nosnippet>1979</a>            .exception_tables
+<a href=#1980 id=1980 data-nosnippet>1980</a>            .push(ExceptionTableData::new(sig0, normal_return, []));
+<a href=#1981 id=1981 data-nosnippet>1981</a>        builder.ins().try_call(fn0, <span class="kw-2">&amp;</span>[], exception_table);
+<a href=#1982 id=1982 data-nosnippet>1982</a>
+<a href=#1983 id=1983 data-nosnippet>1983</a>        builder.switch_to_block(block2);
+<a href=#1984 id=1984 data-nosnippet>1984</a>        <span class="kw">let </span>two = builder.ins().iconst(I32, <span class="number">2</span>);
+<a href=#1985 id=1985 data-nosnippet>1985</a>        builder.def_var(my_var, two);
+<a href=#1986 id=1986 data-nosnippet>1986</a>
+<a href=#1987 id=1987 data-nosnippet>1987</a>        <span class="kw">let </span>normal_return = BlockCall::new(block3, [], <span class="kw-2">&amp;mut </span>builder.func.dfg.value_lists);
+<a href=#1988 id=1988 data-nosnippet>1988</a>        <span class="kw">let </span>exception_table = builder
+<a href=#1989 id=1989 data-nosnippet>1989</a>            .func
+<a href=#1990 id=1990 data-nosnippet>1990</a>            .dfg
+<a href=#1991 id=1991 data-nosnippet>1991</a>            .exception_tables
+<a href=#1992 id=1992 data-nosnippet>1992</a>            .push(ExceptionTableData::new(sig0, normal_return, []));
+<a href=#1993 id=1993 data-nosnippet>1993</a>        builder.ins().try_call(fn0, <span class="kw-2">&amp;</span>[], exception_table);
+<a href=#1994 id=1994 data-nosnippet>1994</a>
+<a href=#1995 id=1995 data-nosnippet>1995</a>        builder.switch_to_block(block3);
+<a href=#1996 id=1996 data-nosnippet>1996</a>        <span class="kw">let </span>ret_val = builder.use_var(my_var);
+<a href=#1997 id=1997 data-nosnippet>1997</a>        builder.ins().return_(<span class="kw-2">&amp;</span>[ret_val]);
+<a href=#1998 id=1998 data-nosnippet>1998</a>
+<a href=#1999 id=1999 data-nosnippet>1999</a>        builder.seal_all_blocks();
+<a href=#2000 id=2000 data-nosnippet>2000</a>        builder.finalize();
+<a href=#2001 id=2001 data-nosnippet>2001</a>
+<a href=#2002 id=2002 data-nosnippet>2002</a>        <span class="kw">let </span>flags = cranelift_codegen::settings::Flags::new(cranelift_codegen::settings::builder());
+<a href=#2003 id=2003 data-nosnippet>2003</a>        <span class="kw">let </span>ctx = cranelift_codegen::Context::for_function(func);
+<a href=#2004 id=2004 data-nosnippet>2004</a>        ctx.verify(<span class="kw-2">&amp;</span>flags).expect(<span class="string">"should be valid"</span>);
+<a href=#2005 id=2005 data-nosnippet>2005</a>
+<a href=#2006 id=2006 data-nosnippet>2006</a>        check(
+<a href=#2007 id=2007 data-nosnippet>2007</a>            <span class="kw-2">&amp;</span>ctx.func,
+<a href=#2008 id=2008 data-nosnippet>2008</a>            <span class="string">"function %sample(i8) -&gt; i32 system_v {
+<a href=#2009 id=2009 data-nosnippet>2009</a>    sig0 = () system_v
+<a href=#2010 id=2010 data-nosnippet>2010</a>    fn0 = u0:0 sig0
+<a href=#2011 id=2011 data-nosnippet>2011</a>
+<a href=#2012 id=2012 data-nosnippet>2012</a>block0(v0: i8):
+<a href=#2013 id=2013 data-nosnippet>2013</a>    brif v0, block1, block2
+<a href=#2014 id=2014 data-nosnippet>2014</a>
+<a href=#2015 id=2015 data-nosnippet>2015</a>block1:
+<a href=#2016 id=2016 data-nosnippet>2016</a>    v1 = iconst.i32 1
+<a href=#2017 id=2017 data-nosnippet>2017</a>    try_call fn0(), sig0, block3(v1), []  ; v1 = 1
+<a href=#2018 id=2018 data-nosnippet>2018</a>
+<a href=#2019 id=2019 data-nosnippet>2019</a>block2:
+<a href=#2020 id=2020 data-nosnippet>2020</a>    v2 = iconst.i32 2
+<a href=#2021 id=2021 data-nosnippet>2021</a>    try_call fn0(), sig0, block3(v2), []  ; v2 = 2
+<a href=#2022 id=2022 data-nosnippet>2022</a>
+<a href=#2023 id=2023 data-nosnippet>2023</a>block3(v3: i32):
+<a href=#2024 id=2024 data-nosnippet>2024</a>    return v3
+<a href=#2025 id=2025 data-nosnippet>2025</a>}"</span>,
+<a href=#2026 id=2026 data-nosnippet>2026</a>        );
+<a href=#2027 id=2027 data-nosnippet>2027</a>    }
+<a href=#2028 id=2028 data-nosnippet>2028</a>}
 </code></pre></div></section></main></body></html>

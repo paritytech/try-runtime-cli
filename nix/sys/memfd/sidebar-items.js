@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["memfd_create"],"struct":["MemFdCreateFlag"]};
+window.SIDEBAR_ITEMS = {"fn":["memfd_create"],"struct":["MFdFlags"],"type":["MemFdCreateFlag"]};

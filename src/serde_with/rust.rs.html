@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with-3.16.1/src/rust.rs`."><title>rust.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="serde_with" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">serde_with/</div>rust.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! De/Serialization for Rust's builtin and std types
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_with-3.20.0/src/rust.rs`."><title>rust.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="serde_with" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">serde_with/</div>rust.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="doccomment">//! De/Serialization for Rust's builtin and std types
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a></span><span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
 <a href=#4 id=4 data-nosnippet>4</a>
@@ -58,7 +58,7 @@
 <a href=#58 id=58 data-nosnippet>58</a>/// ```
 <a href=#59 id=59 data-nosnippet>59</a></span><span class="attr">#[allow(clippy::option_option)]
 <a href=#60 id=60 data-nosnippet>60</a></span><span class="kw">pub mod </span>double_option {
-<a href=#61 id=61 data-nosnippet>61</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#61 id=61 data-nosnippet>61</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#62 id=62 data-nosnippet>62</a>
 <a href=#63 id=63 data-nosnippet>63</a>    <span class="doccomment">/// Deserialize potentially non-existing optional value
 <a href=#64 id=64 data-nosnippet>64</a>    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">'de</span>, T, D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;<span class="prelude-ty">Option</span>&lt;T&gt;&gt;, D::Error&gt;
@@ -141,7 +141,7 @@
 <a href=#141 id=141 data-nosnippet>141</a>/// assert_eq!(s, ron::ser::to_string_pretty(&amp;v, pretty_config).unwrap());
 <a href=#142 id=142 data-nosnippet>142</a>/// ```
 <a href=#143 id=143 data-nosnippet>143</a></span><span class="kw">pub mod </span>unwrap_or_skip {
-<a href=#144 id=144 data-nosnippet>144</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#144 id=144 data-nosnippet>144</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#145 id=145 data-nosnippet>145</a>
 <a href=#146 id=146 data-nosnippet>146</a>    <span class="doccomment">/// Deserialize value wrapped in Some(T)
 <a href=#147 id=147 data-nosnippet>147</a>    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">'de</span>, D, T&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;T&gt;, D::Error&gt;
@@ -222,7 +222,7 @@
 <a href=#222 id=222 data-nosnippet>222</a>/// ```
 <a href=#223 id=223 data-nosnippet>223</a></span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 <a href=#224 id=224 data-nosnippet>224</a></span><span class="kw">pub mod </span>sets_duplicate_value_is_error {
-<a href=#225 id=225 data-nosnippet>225</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#225 id=225 data-nosnippet>225</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#226 id=226 data-nosnippet>226</a>    <span class="kw">use </span><span class="kw">crate</span>::duplicate_key_impls::PreventDuplicateInsertsSet;
 <a href=#227 id=227 data-nosnippet>227</a>
 <a href=#228 id=228 data-nosnippet>228</a>    <span class="doccomment">/// Deserialize a set and return an error on duplicate values
@@ -341,7 +341,7 @@
 <a href=#341 id=341 data-nosnippet>341</a>/// ```
 <a href=#342 id=342 data-nosnippet>342</a></span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 <a href=#343 id=343 data-nosnippet>343</a></span><span class="kw">pub mod </span>maps_duplicate_key_is_error {
-<a href=#344 id=344 data-nosnippet>344</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#344 id=344 data-nosnippet>344</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#345 id=345 data-nosnippet>345</a>    <span class="kw">use </span><span class="kw">crate</span>::duplicate_key_impls::PreventDuplicateInsertsMap;
 <a href=#346 id=346 data-nosnippet>346</a>
 <a href=#347 id=347 data-nosnippet>347</a>    <span class="doccomment">/// Deserialize a map and return an error on duplicate keys
@@ -432,7 +432,7 @@
 <a href=#432 id=432 data-nosnippet>432</a>/// [`BTreeSet`]: std::collections::HashSet
 <a href=#433 id=433 data-nosnippet>433</a></span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 <a href=#434 id=434 data-nosnippet>434</a></span><span class="kw">pub mod </span>sets_last_value_wins {
-<a href=#435 id=435 data-nosnippet>435</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#435 id=435 data-nosnippet>435</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#436 id=436 data-nosnippet>436</a>    <span class="kw">use </span><span class="kw">crate</span>::duplicate_key_impls::DuplicateInsertsLastWinsSet;
 <a href=#437 id=437 data-nosnippet>437</a>
 <a href=#438 id=438 data-nosnippet>438</a>    <span class="doccomment">/// Deserialize a set and keep the last of equal values
@@ -550,7 +550,7 @@
 <a href=#550 id=550 data-nosnippet>550</a>/// ```
 <a href=#551 id=551 data-nosnippet>551</a></span><span class="attr">#[cfg(feature = <span class="string">"alloc"</span>)]
 <a href=#552 id=552 data-nosnippet>552</a></span><span class="kw">pub mod </span>maps_first_key_wins {
-<a href=#553 id=553 data-nosnippet>553</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#553 id=553 data-nosnippet>553</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#554 id=554 data-nosnippet>554</a>    <span class="kw">use </span><span class="kw">crate</span>::duplicate_key_impls::DuplicateInsertsFirstWinsMap;
 <a href=#555 id=555 data-nosnippet>555</a>
 <a href=#556 id=556 data-nosnippet>556</a>    <span class="doccomment">/// Deserialize a map and return an error on duplicate keys

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/litep2p-0.12.3/src/protocol/notification/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">litep2p/protocol/notification/</div>mod.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2023 litep2p developers
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/litep2p-0.14.0/src/protocol/notification/mod.rs`."><title>mod.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="litep2p" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">litep2p/protocol/notification/</div>mod.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// Copyright 2023 litep2p developers
 <a href=#2 id=2 data-nosnippet>2</a>//
 <a href=#3 id=3 data-nosnippet>3</a>// Permission is hereby granted, free of charge, to any person obtaining a
 <a href=#4 id=4 data-nosnippet>4</a>// copy of this software and associated documentation files (the "Software"),
@@ -20,7 +20,7 @@
 <a href=#20 id=20 data-nosnippet>20</a>
 <a href=#21 id=21 data-nosnippet>21</a></span><span class="doccomment">//! Notification protocol implementation.
 <a href=#22 id=22 data-nosnippet>22</a>
-<a href=#23 id=23 data-nosnippet>23</a></span><span class="kw">use </span>crate::{
+<a href=#23 id=23 data-nosnippet>23</a></span><span class="kw">use crate</span>::{
 <a href=#24 id=24 data-nosnippet>24</a>    error::{Error, SubstreamError},
 <a href=#25 id=25 data-nosnippet>25</a>    executor::Executor,
 <a href=#26 id=26 data-nosnippet>26</a>    protocol::{
@@ -385,7 +385,7 @@
 <a href=#385 id=385 data-nosnippet>385</a>    </span><span class="kw">async fn </span>on_connection_closed(<span class="kw-2">&amp;mut </span><span class="self">self</span>, peer: PeerId) -&gt; <span class="kw">crate</span>::Result&lt;()&gt; {
 <a href=#386 id=386 data-nosnippet>386</a>        <span class="macro">tracing::trace!</span>(target: LOG_TARGET, <span class="question-mark">?</span>peer, protocol = %<span class="self">self</span>.protocol, <span class="string">"connection closed"</span>);
 <a href=#387 id=387 data-nosnippet>387</a>
-<a href=#388 id=388 data-nosnippet>388</a>        <span class="self">self</span>.pending_outbound.retain(|<span class="kw">_</span>, p| p != <span class="kw-2">&amp;</span>peer);
+<a href=#388 id=388 data-nosnippet>388</a>        <span class="self">self</span>.pending_outbound.retain(|<span class="kw">_</span>, p| <span class="macro">p !</span>= <span class="kw-2">&amp;</span>peer);
 <a href=#389 id=389 data-nosnippet>389</a>
 <a href=#390 id=390 data-nosnippet>390</a>        <span class="kw">let </span><span class="prelude-val">Some</span>(context) = <span class="self">self</span>.peers.remove(<span class="kw-2">&amp;</span>peer) <span class="kw">else </span>{
 <a href=#391 id=391 data-nosnippet>391</a>            <span class="macro">tracing::error!</span>(
@@ -1773,68 +1773,76 @@
 <a href=#1773 id=1773 data-nosnippet>1773</a>                    <span class="self">self</span>.on_substream_open_failure(substream, error).<span class="kw">await</span>;
 <a href=#1774 id=1774 data-nosnippet>1774</a>                }
 <a href=#1775 id=1775 data-nosnippet>1775</a>                <span class="prelude-val">Some</span>(TransportEvent::DialFailure { peer, addresses }) =&gt; <span class="self">self</span>.on_dial_failure(peer, addresses).<span class="kw">await</span>,
-<a href=#1776 id=1776 data-nosnippet>1776</a>                <span class="prelude-val">None </span>=&gt; (),
-<a href=#1777 id=1777 data-nosnippet>1777</a>            },
-<a href=#1778 id=1778 data-nosnippet>1778</a>            result = <span class="self">self</span>.pending_validations.select_next_some(), <span class="kw">if </span>!<span class="self">self</span>.pending_validations.is_empty() =&gt; {
-<a href=#1779 id=1779 data-nosnippet>1779</a>                <span class="kw">if let </span><span class="prelude-val">Err</span>(error) = <span class="self">self</span>.on_validation_result(result.<span class="number">0</span>, result.<span class="number">1</span>).<span class="kw">await </span>{
-<a href=#1780 id=1780 data-nosnippet>1780</a>                    <span class="macro">tracing::debug!</span>(
-<a href=#1781 id=1781 data-nosnippet>1781</a>                        target: LOG_TARGET,
-<a href=#1782 id=1782 data-nosnippet>1782</a>                        peer = <span class="question-mark">?</span>result.<span class="number">0</span>,
-<a href=#1783 id=1783 data-nosnippet>1783</a>                        result = <span class="question-mark">?</span>result.<span class="number">1</span>,
-<a href=#1784 id=1784 data-nosnippet>1784</a>                        <span class="question-mark">?</span>error,
-<a href=#1785 id=1785 data-nosnippet>1785</a>                        <span class="string">"failed to handle validation result"</span>,
-<a href=#1786 id=1786 data-nosnippet>1786</a>                    );
-<a href=#1787 id=1787 data-nosnippet>1787</a>                }
-<a href=#1788 id=1788 data-nosnippet>1788</a>            }
-<a href=#1789 id=1789 data-nosnippet>1789</a>
-<a href=#1790 id=1790 data-nosnippet>1790</a>            <span class="comment">// User commands.
-<a href=#1791 id=1791 data-nosnippet>1791</a>            </span>command = <span class="self">self</span>.command_rx.recv() =&gt; <span class="kw">match </span>command {
-<a href=#1792 id=1792 data-nosnippet>1792</a>                <span class="prelude-val">None </span>=&gt; {
-<a href=#1793 id=1793 data-nosnippet>1793</a>                    <span class="macro">tracing::debug!</span>(
-<a href=#1794 id=1794 data-nosnippet>1794</a>                        target: LOG_TARGET,
-<a href=#1795 id=1795 data-nosnippet>1795</a>                        protocol = %<span class="self">self</span>.protocol,
-<a href=#1796 id=1796 data-nosnippet>1796</a>                        <span class="string">"user protocol has exited, exiting"
-<a href=#1797 id=1797 data-nosnippet>1797</a>                    </span>);
-<a href=#1798 id=1798 data-nosnippet>1798</a>
-<a href=#1799 id=1799 data-nosnippet>1799</a>                    <span class="self">self</span>.service.unregister_protocol();
-<a href=#1800 id=1800 data-nosnippet>1800</a>
-<a href=#1801 id=1801 data-nosnippet>1801</a>                    <span class="kw">return </span><span class="bool-val">true</span>;
-<a href=#1802 id=1802 data-nosnippet>1802</a>                }
-<a href=#1803 id=1803 data-nosnippet>1803</a>                <span class="prelude-val">Some</span>(command) =&gt; <span class="kw">match </span>command {
-<a href=#1804 id=1804 data-nosnippet>1804</a>                    NotificationCommand::OpenSubstream { peers } =&gt; {
-<a href=#1805 id=1805 data-nosnippet>1805</a>                        <span class="kw">for </span>peer <span class="kw">in </span>peers {
-<a href=#1806 id=1806 data-nosnippet>1806</a>                            <span class="kw">if let </span><span class="prelude-val">Err</span>(error) = <span class="self">self</span>.on_open_substream(peer).<span class="kw">await </span>{
-<a href=#1807 id=1807 data-nosnippet>1807</a>                                <span class="macro">tracing::debug!</span>(
-<a href=#1808 id=1808 data-nosnippet>1808</a>                                    target: LOG_TARGET,
-<a href=#1809 id=1809 data-nosnippet>1809</a>                                    <span class="question-mark">?</span>peer,
-<a href=#1810 id=1810 data-nosnippet>1810</a>                                    <span class="question-mark">?</span>error,
-<a href=#1811 id=1811 data-nosnippet>1811</a>                                    <span class="string">"failed to open substream"</span>,
-<a href=#1812 id=1812 data-nosnippet>1812</a>                                );
-<a href=#1813 id=1813 data-nosnippet>1813</a>                            }
-<a href=#1814 id=1814 data-nosnippet>1814</a>                        }
-<a href=#1815 id=1815 data-nosnippet>1815</a>                    }
-<a href=#1816 id=1816 data-nosnippet>1816</a>                    NotificationCommand::CloseSubstream { peers } =&gt; {
-<a href=#1817 id=1817 data-nosnippet>1817</a>                        <span class="kw">for </span>peer <span class="kw">in </span>peers {
-<a href=#1818 id=1818 data-nosnippet>1818</a>                            <span class="self">self</span>.on_close_substream(peer).<span class="kw">await</span>;
-<a href=#1819 id=1819 data-nosnippet>1819</a>                        }
-<a href=#1820 id=1820 data-nosnippet>1820</a>                    }
-<a href=#1821 id=1821 data-nosnippet>1821</a>                    NotificationCommand::ForceClose { peer } =&gt; {
-<a href=#1822 id=1822 data-nosnippet>1822</a>                        <span class="kw">let _ </span>= <span class="self">self</span>.service.force_close(peer);
+<a href=#1776 id=1776 data-nosnippet>1776</a>                <span class="prelude-val">None </span>=&gt; {
+<a href=#1777 id=1777 data-nosnippet>1777</a>                    <span class="macro">tracing::debug!</span>(
+<a href=#1778 id=1778 data-nosnippet>1778</a>                        target: LOG_TARGET,
+<a href=#1779 id=1779 data-nosnippet>1779</a>                        protocol = %<span class="self">self</span>.protocol,
+<a href=#1780 id=1780 data-nosnippet>1780</a>                        <span class="string">"transport service has exited, exiting"</span>,
+<a href=#1781 id=1781 data-nosnippet>1781</a>                    );
+<a href=#1782 id=1782 data-nosnippet>1782</a>
+<a href=#1783 id=1783 data-nosnippet>1783</a>                    <span class="kw">return </span><span class="bool-val">true</span>;
+<a href=#1784 id=1784 data-nosnippet>1784</a>                }
+<a href=#1785 id=1785 data-nosnippet>1785</a>            },
+<a href=#1786 id=1786 data-nosnippet>1786</a>            result = <span class="self">self</span>.pending_validations.select_next_some(), <span class="kw">if </span>!<span class="self">self</span>.pending_validations.is_empty() =&gt; {
+<a href=#1787 id=1787 data-nosnippet>1787</a>                <span class="kw">if let </span><span class="prelude-val">Err</span>(error) = <span class="self">self</span>.on_validation_result(result.<span class="number">0</span>, result.<span class="number">1</span>).<span class="kw">await </span>{
+<a href=#1788 id=1788 data-nosnippet>1788</a>                    <span class="macro">tracing::debug!</span>(
+<a href=#1789 id=1789 data-nosnippet>1789</a>                        target: LOG_TARGET,
+<a href=#1790 id=1790 data-nosnippet>1790</a>                        peer = <span class="question-mark">?</span>result.<span class="number">0</span>,
+<a href=#1791 id=1791 data-nosnippet>1791</a>                        result = <span class="question-mark">?</span>result.<span class="number">1</span>,
+<a href=#1792 id=1792 data-nosnippet>1792</a>                        <span class="question-mark">?</span>error,
+<a href=#1793 id=1793 data-nosnippet>1793</a>                        <span class="string">"failed to handle validation result"</span>,
+<a href=#1794 id=1794 data-nosnippet>1794</a>                    );
+<a href=#1795 id=1795 data-nosnippet>1795</a>                }
+<a href=#1796 id=1796 data-nosnippet>1796</a>            }
+<a href=#1797 id=1797 data-nosnippet>1797</a>
+<a href=#1798 id=1798 data-nosnippet>1798</a>            <span class="comment">// User commands.
+<a href=#1799 id=1799 data-nosnippet>1799</a>            </span>command = <span class="self">self</span>.command_rx.recv() =&gt; <span class="kw">match </span>command {
+<a href=#1800 id=1800 data-nosnippet>1800</a>                <span class="prelude-val">None </span>=&gt; {
+<a href=#1801 id=1801 data-nosnippet>1801</a>                    <span class="macro">tracing::debug!</span>(
+<a href=#1802 id=1802 data-nosnippet>1802</a>                        target: LOG_TARGET,
+<a href=#1803 id=1803 data-nosnippet>1803</a>                        protocol = %<span class="self">self</span>.protocol,
+<a href=#1804 id=1804 data-nosnippet>1804</a>                        <span class="string">"user protocol has exited, exiting"
+<a href=#1805 id=1805 data-nosnippet>1805</a>                    </span>);
+<a href=#1806 id=1806 data-nosnippet>1806</a>
+<a href=#1807 id=1807 data-nosnippet>1807</a>                    <span class="self">self</span>.service.unregister_protocol();
+<a href=#1808 id=1808 data-nosnippet>1808</a>
+<a href=#1809 id=1809 data-nosnippet>1809</a>                    <span class="kw">return </span><span class="bool-val">true</span>;
+<a href=#1810 id=1810 data-nosnippet>1810</a>                }
+<a href=#1811 id=1811 data-nosnippet>1811</a>                <span class="prelude-val">Some</span>(command) =&gt; <span class="kw">match </span>command {
+<a href=#1812 id=1812 data-nosnippet>1812</a>                    NotificationCommand::OpenSubstream { peers } =&gt; {
+<a href=#1813 id=1813 data-nosnippet>1813</a>                        <span class="kw">for </span>peer <span class="kw">in </span>peers {
+<a href=#1814 id=1814 data-nosnippet>1814</a>                            <span class="kw">if let </span><span class="prelude-val">Err</span>(error) = <span class="self">self</span>.on_open_substream(peer).<span class="kw">await </span>{
+<a href=#1815 id=1815 data-nosnippet>1815</a>                                <span class="macro">tracing::debug!</span>(
+<a href=#1816 id=1816 data-nosnippet>1816</a>                                    target: LOG_TARGET,
+<a href=#1817 id=1817 data-nosnippet>1817</a>                                    <span class="question-mark">?</span>peer,
+<a href=#1818 id=1818 data-nosnippet>1818</a>                                    <span class="question-mark">?</span>error,
+<a href=#1819 id=1819 data-nosnippet>1819</a>                                    <span class="string">"failed to open substream"</span>,
+<a href=#1820 id=1820 data-nosnippet>1820</a>                                );
+<a href=#1821 id=1821 data-nosnippet>1821</a>                            }
+<a href=#1822 id=1822 data-nosnippet>1822</a>                        }
 <a href=#1823 id=1823 data-nosnippet>1823</a>                    }
-<a href=#1824 id=1824 data-nosnippet>1824</a>                    <span class="attr">#[cfg(feature = <span class="string">"fuzz"</span>)]
-<a href=#1825 id=1825 data-nosnippet>1825</a>                    </span>NotificationCommand::SendNotification{ .. } =&gt; <span class="macro">unreachable!</span>()
-<a href=#1826 id=1826 data-nosnippet>1826</a>                }
-<a href=#1827 id=1827 data-nosnippet>1827</a>            },
-<a href=#1828 id=1828 data-nosnippet>1828</a>        }
-<a href=#1829 id=1829 data-nosnippet>1829</a>
-<a href=#1830 id=1830 data-nosnippet>1830</a>        <span class="bool-val">false
-<a href=#1831 id=1831 data-nosnippet>1831</a>    </span>}
-<a href=#1832 id=1832 data-nosnippet>1832</a>
-<a href=#1833 id=1833 data-nosnippet>1833</a>    <span class="doccomment">/// Start [`NotificationProtocol`] event loop.
-<a href=#1834 id=1834 data-nosnippet>1834</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>run(<span class="kw-2">mut </span><span class="self">self</span>) {
-<a href=#1835 id=1835 data-nosnippet>1835</a>        <span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"starting notification event loop"</span>);
-<a href=#1836 id=1836 data-nosnippet>1836</a>
-<a href=#1837 id=1837 data-nosnippet>1837</a>        <span class="kw">while </span>!<span class="self">self</span>.next_event().<span class="kw">await </span>{}
-<a href=#1838 id=1838 data-nosnippet>1838</a>    }
-<a href=#1839 id=1839 data-nosnippet>1839</a>}
+<a href=#1824 id=1824 data-nosnippet>1824</a>                    NotificationCommand::CloseSubstream { peers } =&gt; {
+<a href=#1825 id=1825 data-nosnippet>1825</a>                        <span class="kw">for </span>peer <span class="kw">in </span>peers {
+<a href=#1826 id=1826 data-nosnippet>1826</a>                            <span class="self">self</span>.on_close_substream(peer).<span class="kw">await</span>;
+<a href=#1827 id=1827 data-nosnippet>1827</a>                        }
+<a href=#1828 id=1828 data-nosnippet>1828</a>                    }
+<a href=#1829 id=1829 data-nosnippet>1829</a>                    NotificationCommand::ForceClose { peer } =&gt; {
+<a href=#1830 id=1830 data-nosnippet>1830</a>                        <span class="kw">let _ </span>= <span class="self">self</span>.service.force_close(peer);
+<a href=#1831 id=1831 data-nosnippet>1831</a>                    }
+<a href=#1832 id=1832 data-nosnippet>1832</a>                    <span class="attr">#[cfg(feature = <span class="string">"fuzz"</span>)]
+<a href=#1833 id=1833 data-nosnippet>1833</a>                    </span>NotificationCommand::SendNotification{ .. } =&gt; <span class="macro">unreachable!</span>()
+<a href=#1834 id=1834 data-nosnippet>1834</a>                }
+<a href=#1835 id=1835 data-nosnippet>1835</a>            },
+<a href=#1836 id=1836 data-nosnippet>1836</a>        }
+<a href=#1837 id=1837 data-nosnippet>1837</a>
+<a href=#1838 id=1838 data-nosnippet>1838</a>        <span class="bool-val">false
+<a href=#1839 id=1839 data-nosnippet>1839</a>    </span>}
+<a href=#1840 id=1840 data-nosnippet>1840</a>
+<a href=#1841 id=1841 data-nosnippet>1841</a>    <span class="doccomment">/// Start [`NotificationProtocol`] event loop.
+<a href=#1842 id=1842 data-nosnippet>1842</a>    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>run(<span class="kw-2">mut </span><span class="self">self</span>) {
+<a href=#1843 id=1843 data-nosnippet>1843</a>        <span class="macro">tracing::debug!</span>(target: LOG_TARGET, <span class="string">"starting notification event loop"</span>);
+<a href=#1844 id=1844 data-nosnippet>1844</a>
+<a href=#1845 id=1845 data-nosnippet>1845</a>        <span class="kw">while </span>!<span class="self">self</span>.next_event().<span class="kw">await </span>{}
+<a href=#1846 id=1846 data-nosnippet>1846</a>    }
+<a href=#1847 id=1847 data-nosnippet>1847</a>}
 </code></pre></div></section></main></body></html>

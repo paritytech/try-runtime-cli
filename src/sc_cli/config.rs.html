@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/client/cli/src/config.rs`."><title>config.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sc_cli/</div>config.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/client/cli/src/config.rs`."><title>config.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sc_cli" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sc_cli/</div>config.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
@@ -18,7 +18,7 @@
 <a href=#18 id=18 data-nosnippet>18</a>
 <a href=#19 id=19 data-nosnippet>19</a></span><span class="doccomment">//! Configuration trait for a CLI based on substrate
 <a href=#20 id=20 data-nosnippet>20</a>
-<a href=#21 id=21 data-nosnippet>21</a></span><span class="kw">use </span>crate::{
+<a href=#21 id=21 data-nosnippet>21</a></span><span class="kw">use crate</span>::{
 <a href=#22 id=22 data-nosnippet>22</a>	arg_enums::Database, error::Result, DatabaseParams, ImportParams, KeystoreParams,
 <a href=#23 id=23 data-nosnippet>23</a>	NetworkParams, NodeKeyParams, OffchainWorkerParams, PruningParams, RpcEndpoint, SharedParams,
 <a href=#24 id=24 data-nosnippet>24</a>	SubstrateCli,
@@ -660,71 +660,72 @@
 <a href=#660 id=660 data-nosnippet>660</a>		logger.init()<span class="question-mark">?</span>;
 <a href=#661 id=661 data-nosnippet>661</a>
 <a href=#662 id=662 data-nosnippet>662</a>		<span class="kw">match </span>fdlimit::raise_fd_limit() {
-<a href=#663 id=663 data-nosnippet>663</a>			<span class="prelude-val">Ok</span>(fdlimit::Outcome::LimitRaised { to, .. }) =&gt;
+<a href=#663 id=663 data-nosnippet>663</a>			<span class="prelude-val">Ok</span>(fdlimit::Outcome::LimitRaised { to, .. }) =&gt; {
 <a href=#664 id=664 data-nosnippet>664</a>				<span class="kw">if </span>to &lt; RECOMMENDED_OPEN_FILE_DESCRIPTOR_LIMIT {
 <a href=#665 id=665 data-nosnippet>665</a>					<span class="macro">warn!</span>(
 <a href=#666 id=666 data-nosnippet>666</a>						<span class="string">"Low open file descriptor limit configured for the process. \
 <a href=#667 id=667 data-nosnippet>667</a>						Current value: {:?}, recommended value: {:?}."</span>,
 <a href=#668 id=668 data-nosnippet>668</a>						to, RECOMMENDED_OPEN_FILE_DESCRIPTOR_LIMIT,
 <a href=#669 id=669 data-nosnippet>669</a>					);
-<a href=#670 id=670 data-nosnippet>670</a>				},
-<a href=#671 id=671 data-nosnippet>671</a>			<span class="prelude-val">Ok</span>(fdlimit::Outcome::Unsupported) =&gt; {
-<a href=#672 id=672 data-nosnippet>672</a>				<span class="comment">// Unsupported platform (non-Linux)
-<a href=#673 id=673 data-nosnippet>673</a>			</span>},
-<a href=#674 id=674 data-nosnippet>674</a>			<span class="prelude-val">Err</span>(error) =&gt; {
-<a href=#675 id=675 data-nosnippet>675</a>				<span class="macro">warn!</span>(
-<a href=#676 id=676 data-nosnippet>676</a>					<span class="string">"Failed to configure file descriptor limit for the process: \
-<a href=#677 id=677 data-nosnippet>677</a>					{}, recommended value: {:?}."</span>,
-<a href=#678 id=678 data-nosnippet>678</a>					error, RECOMMENDED_OPEN_FILE_DESCRIPTOR_LIMIT,
-<a href=#679 id=679 data-nosnippet>679</a>				);
-<a href=#680 id=680 data-nosnippet>680</a>			},
-<a href=#681 id=681 data-nosnippet>681</a>		}
-<a href=#682 id=682 data-nosnippet>682</a>
-<a href=#683 id=683 data-nosnippet>683</a>		<span class="prelude-val">Ok</span>(())
-<a href=#684 id=684 data-nosnippet>684</a>	}
-<a href=#685 id=685 data-nosnippet>685</a>}
-<a href=#686 id=686 data-nosnippet>686</a>
-<a href=#687 id=687 data-nosnippet>687</a><span class="doccomment">/// Generate a valid random name for the node
-<a href=#688 id=688 data-nosnippet>688</a></span><span class="kw">pub fn </span>generate_node_name() -&gt; String {
-<a href=#689 id=689 data-nosnippet>689</a>	<span class="kw">loop </span>{
-<a href=#690 id=690 data-nosnippet>690</a>		<span class="kw">let </span>node_name = Generator::with_naming(Name::Numbered)
-<a href=#691 id=691 data-nosnippet>691</a>			.next()
-<a href=#692 id=692 data-nosnippet>692</a>			.expect(<span class="string">"RNG is available on all supported platforms; qed"</span>);
-<a href=#693 id=693 data-nosnippet>693</a>		<span class="kw">let </span>count = node_name.chars().count();
-<a href=#694 id=694 data-nosnippet>694</a>
-<a href=#695 id=695 data-nosnippet>695</a>		<span class="kw">if </span>count &lt; NODE_NAME_MAX_LENGTH {
-<a href=#696 id=696 data-nosnippet>696</a>			<span class="kw">return </span>node_name
-<a href=#697 id=697 data-nosnippet>697</a>		}
-<a href=#698 id=698 data-nosnippet>698</a>	}
-<a href=#699 id=699 data-nosnippet>699</a>}
-<a href=#700 id=700 data-nosnippet>700</a>
-<a href=#701 id=701 data-nosnippet>701</a><span class="doccomment">/// Returns the value of `base_path` or the default_path if it is None
-<a href=#702 id=702 data-nosnippet>702</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>base_path_or_default(
-<a href=#703 id=703 data-nosnippet>703</a>	base_path: <span class="prelude-ty">Option</span>&lt;BasePath&gt;,
-<a href=#704 id=704 data-nosnippet>704</a>	executable_name: <span class="kw-2">&amp;</span>String,
-<a href=#705 id=705 data-nosnippet>705</a>) -&gt; BasePath {
-<a href=#706 id=706 data-nosnippet>706</a>	base_path.unwrap_or_else(|| BasePath::from_project(<span class="string">""</span>, <span class="string">""</span>, executable_name))
-<a href=#707 id=707 data-nosnippet>707</a>}
-<a href=#708 id=708 data-nosnippet>708</a>
-<a href=#709 id=709 data-nosnippet>709</a><span class="doccomment">/// Returns the default path for configuration  directory based on the chain_spec
-<a href=#710 id=710 data-nosnippet>710</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>build_config_dir(base_path: <span class="kw-2">&amp;</span>BasePath, chain_spec_id: <span class="kw-2">&amp;</span>str) -&gt; PathBuf {
-<a href=#711 id=711 data-nosnippet>711</a>	base_path.config_dir(chain_spec_id)
-<a href=#712 id=712 data-nosnippet>712</a>}
-<a href=#713 id=713 data-nosnippet>713</a>
-<a href=#714 id=714 data-nosnippet>714</a><span class="doccomment">/// Returns the default path for the network configuration inside the configuration dir
-<a href=#715 id=715 data-nosnippet>715</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>build_net_config_dir(config_dir: <span class="kw-2">&amp;</span>PathBuf) -&gt; PathBuf {
-<a href=#716 id=716 data-nosnippet>716</a>	config_dir.join(DEFAULT_NETWORK_CONFIG_PATH)
-<a href=#717 id=717 data-nosnippet>717</a>}
-<a href=#718 id=718 data-nosnippet>718</a>
-<a href=#719 id=719 data-nosnippet>719</a><span class="doccomment">/// Returns the default path for the network directory starting from the provided base_path
-<a href=#720 id=720 data-nosnippet>720</a>/// or from the default base_path.
-<a href=#721 id=721 data-nosnippet>721</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>build_network_key_dir_or_default(
-<a href=#722 id=722 data-nosnippet>722</a>	base_path: <span class="prelude-ty">Option</span>&lt;BasePath&gt;,
-<a href=#723 id=723 data-nosnippet>723</a>	chain_spec_id: <span class="kw-2">&amp;</span>str,
-<a href=#724 id=724 data-nosnippet>724</a>	executable_name: <span class="kw-2">&amp;</span>String,
-<a href=#725 id=725 data-nosnippet>725</a>) -&gt; PathBuf {
-<a href=#726 id=726 data-nosnippet>726</a>	<span class="kw">let </span>config_dir =
-<a href=#727 id=727 data-nosnippet>727</a>		build_config_dir(<span class="kw-2">&amp;</span>base_path_or_default(base_path, executable_name), chain_spec_id);
-<a href=#728 id=728 data-nosnippet>728</a>	build_net_config_dir(<span class="kw-2">&amp;</span>config_dir)
-<a href=#729 id=729 data-nosnippet>729</a>}
+<a href=#670 id=670 data-nosnippet>670</a>				}
+<a href=#671 id=671 data-nosnippet>671</a>			},
+<a href=#672 id=672 data-nosnippet>672</a>			<span class="prelude-val">Ok</span>(fdlimit::Outcome::Unsupported) =&gt; {
+<a href=#673 id=673 data-nosnippet>673</a>				<span class="comment">// Unsupported platform (non-Linux)
+<a href=#674 id=674 data-nosnippet>674</a>			</span>},
+<a href=#675 id=675 data-nosnippet>675</a>			<span class="prelude-val">Err</span>(error) =&gt; {
+<a href=#676 id=676 data-nosnippet>676</a>				<span class="macro">warn!</span>(
+<a href=#677 id=677 data-nosnippet>677</a>					<span class="string">"Failed to configure file descriptor limit for the process: \
+<a href=#678 id=678 data-nosnippet>678</a>					{}, recommended value: {:?}."</span>,
+<a href=#679 id=679 data-nosnippet>679</a>					error, RECOMMENDED_OPEN_FILE_DESCRIPTOR_LIMIT,
+<a href=#680 id=680 data-nosnippet>680</a>				);
+<a href=#681 id=681 data-nosnippet>681</a>			},
+<a href=#682 id=682 data-nosnippet>682</a>		}
+<a href=#683 id=683 data-nosnippet>683</a>
+<a href=#684 id=684 data-nosnippet>684</a>		<span class="prelude-val">Ok</span>(())
+<a href=#685 id=685 data-nosnippet>685</a>	}
+<a href=#686 id=686 data-nosnippet>686</a>}
+<a href=#687 id=687 data-nosnippet>687</a>
+<a href=#688 id=688 data-nosnippet>688</a><span class="doccomment">/// Generate a valid random name for the node
+<a href=#689 id=689 data-nosnippet>689</a></span><span class="kw">pub fn </span>generate_node_name() -&gt; String {
+<a href=#690 id=690 data-nosnippet>690</a>	<span class="kw">loop </span>{
+<a href=#691 id=691 data-nosnippet>691</a>		<span class="kw">let </span>node_name = Generator::with_naming(Name::Numbered)
+<a href=#692 id=692 data-nosnippet>692</a>			.next()
+<a href=#693 id=693 data-nosnippet>693</a>			.expect(<span class="string">"RNG is available on all supported platforms; qed"</span>);
+<a href=#694 id=694 data-nosnippet>694</a>		<span class="kw">let </span>count = node_name.chars().count();
+<a href=#695 id=695 data-nosnippet>695</a>
+<a href=#696 id=696 data-nosnippet>696</a>		<span class="kw">if </span>count &lt; NODE_NAME_MAX_LENGTH {
+<a href=#697 id=697 data-nosnippet>697</a>			<span class="kw">return </span>node_name;
+<a href=#698 id=698 data-nosnippet>698</a>		}
+<a href=#699 id=699 data-nosnippet>699</a>	}
+<a href=#700 id=700 data-nosnippet>700</a>}
+<a href=#701 id=701 data-nosnippet>701</a>
+<a href=#702 id=702 data-nosnippet>702</a><span class="doccomment">/// Returns the value of `base_path` or the default_path if it is None
+<a href=#703 id=703 data-nosnippet>703</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>base_path_or_default(
+<a href=#704 id=704 data-nosnippet>704</a>	base_path: <span class="prelude-ty">Option</span>&lt;BasePath&gt;,
+<a href=#705 id=705 data-nosnippet>705</a>	executable_name: <span class="kw-2">&amp;</span>String,
+<a href=#706 id=706 data-nosnippet>706</a>) -&gt; BasePath {
+<a href=#707 id=707 data-nosnippet>707</a>	base_path.unwrap_or_else(|| BasePath::from_project(<span class="string">""</span>, <span class="string">""</span>, executable_name))
+<a href=#708 id=708 data-nosnippet>708</a>}
+<a href=#709 id=709 data-nosnippet>709</a>
+<a href=#710 id=710 data-nosnippet>710</a><span class="doccomment">/// Returns the default path for configuration  directory based on the chain_spec
+<a href=#711 id=711 data-nosnippet>711</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>build_config_dir(base_path: <span class="kw-2">&amp;</span>BasePath, chain_spec_id: <span class="kw-2">&amp;</span>str) -&gt; PathBuf {
+<a href=#712 id=712 data-nosnippet>712</a>	base_path.config_dir(chain_spec_id)
+<a href=#713 id=713 data-nosnippet>713</a>}
+<a href=#714 id=714 data-nosnippet>714</a>
+<a href=#715 id=715 data-nosnippet>715</a><span class="doccomment">/// Returns the default path for the network configuration inside the configuration dir
+<a href=#716 id=716 data-nosnippet>716</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>build_net_config_dir(config_dir: <span class="kw-2">&amp;</span>PathBuf) -&gt; PathBuf {
+<a href=#717 id=717 data-nosnippet>717</a>	config_dir.join(DEFAULT_NETWORK_CONFIG_PATH)
+<a href=#718 id=718 data-nosnippet>718</a>}
+<a href=#719 id=719 data-nosnippet>719</a>
+<a href=#720 id=720 data-nosnippet>720</a><span class="doccomment">/// Returns the default path for the network directory starting from the provided base_path
+<a href=#721 id=721 data-nosnippet>721</a>/// or from the default base_path.
+<a href=#722 id=722 data-nosnippet>722</a></span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>build_network_key_dir_or_default(
+<a href=#723 id=723 data-nosnippet>723</a>	base_path: <span class="prelude-ty">Option</span>&lt;BasePath&gt;,
+<a href=#724 id=724 data-nosnippet>724</a>	chain_spec_id: <span class="kw-2">&amp;</span>str,
+<a href=#725 id=725 data-nosnippet>725</a>	executable_name: <span class="kw-2">&amp;</span>String,
+<a href=#726 id=726 data-nosnippet>726</a>) -&gt; PathBuf {
+<a href=#727 id=727 data-nosnippet>727</a>	<span class="kw">let </span>config_dir =
+<a href=#728 id=728 data-nosnippet>728</a>		build_config_dir(<span class="kw-2">&amp;</span>base_path_or_default(base_path, executable_name), chain_spec_id);
+<a href=#729 id=729 data-nosnippet>729</a>	build_net_config_dir(<span class="kw-2">&amp;</span>config_dir)
+<a href=#730 id=730 data-nosnippet>730</a>}
 </code></pre></div></section></main></body></html>

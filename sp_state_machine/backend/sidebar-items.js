@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["BackendRuntimeCode","IterArgs","KeysIter","PairsIter"],"trait":["AsTrieBackend","Backend","StorageIterator"],"type":["BackendTransaction"]};
+window.SIDEBAR_ITEMS = {"enum":["TryPendingCode"],"struct":["BackendRuntimeCode","IterArgs","KeysIter","PairsIter"],"trait":["AsTrieBackend","Backend","StorageIterator"],"type":["BackendTransaction"]};

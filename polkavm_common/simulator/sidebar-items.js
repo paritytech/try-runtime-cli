@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["CacheModel","EventKind"],"fn":["timeline_for_instructions","trap_cost"],"struct":["InstCost","Simulator","TimelineConfig"],"trait":["Tracer"]};
+window.SIDEBAR_ITEMS = {"enum":["EventKind"],"fn":["timeline_for_instructions","trap_cost"],"struct":["CacheModel","InstCost","Simulator","TimelineConfig"],"trait":["Tracer"]};

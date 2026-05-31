@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-35.0.0/src/runtime/vm/gc/gc_ref.rs`."><title>gc_ref.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="wasmtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">wasmtime/runtime/vm/gc/</div>gc_ref.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wasmtime-36.0.10/src/runtime/vm/gc/gc_ref.rs`."><title>gc_ref.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../../" data-static-root-path="../../../../../static.files/" data-current-crate="wasmtime" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../../src-files.js"></script><script defer src="../../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">wasmtime/runtime/vm/gc/</div>gc_ref.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="kw">use </span><span class="kw">crate</span>::prelude::<span class="kw-2">*</span>;
 <a href=#2 id=2 data-nosnippet>2</a><span class="kw">use </span><span class="kw">crate</span>::runtime::vm::{GcHeap, GcStore, I31};
 <a href=#3 id=3 data-nosnippet>3</a><span class="kw">use </span>core::fmt;
 <a href=#4 id=4 data-nosnippet>4</a><span class="kw">use </span>core::marker;
@@ -72,36 +72,36 @@
 <a href=#72 id=72 data-nosnippet>72</a>        VMGcKind::from_high_bits_of_u32(<span class="self">self</span>.kind)
 <a href=#73 id=73 data-nosnippet>73</a>    }
 <a href=#74 id=74 data-nosnippet>74</a>
-<a href=#75 id=75 data-nosnippet>75</a>    <span class="doccomment">/// Get the reserved 27 bits in this header.
+<a href=#75 id=75 data-nosnippet>75</a>    <span class="doccomment">/// Get the reserved 26 bits in this header.
 <a href=#76 id=76 data-nosnippet>76</a>    ///
 <a href=#77 id=77 data-nosnippet>77</a>    /// These are bits are reserved for `GcRuntime` implementations to make use
 <a href=#78 id=78 data-nosnippet>78</a>    /// of however they see fit.
-<a href=#79 id=79 data-nosnippet>79</a>    </span><span class="kw">pub fn </span>reserved_u27(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
+<a href=#79 id=79 data-nosnippet>79</a>    </span><span class="kw">pub fn </span>reserved_u26(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; u32 {
 <a href=#80 id=80 data-nosnippet>80</a>        <span class="self">self</span>.kind &amp; VMGcKind::UNUSED_MASK
 <a href=#81 id=81 data-nosnippet>81</a>    }
 <a href=#82 id=82 data-nosnippet>82</a>
-<a href=#83 id=83 data-nosnippet>83</a>    <span class="doccomment">/// Set the 27-bit reserved value.
+<a href=#83 id=83 data-nosnippet>83</a>    <span class="doccomment">/// Set the 26-bit reserved value.
 <a href=#84 id=84 data-nosnippet>84</a>    ///
 <a href=#85 id=85 data-nosnippet>85</a>    /// # Panics
 <a href=#86 id=86 data-nosnippet>86</a>    ///
 <a href=#87 id=87 data-nosnippet>87</a>    /// Panics if the given `value` has any of the upper 6 bits set.
-<a href=#88 id=88 data-nosnippet>88</a>    </span><span class="kw">pub fn </span>set_reserved_u27(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: u32) {
+<a href=#88 id=88 data-nosnippet>88</a>    </span><span class="kw">pub fn </span>set_reserved_u26(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: u32) {
 <a href=#89 id=89 data-nosnippet>89</a>        <span class="macro">assert!</span>(
 <a href=#90 id=90 data-nosnippet>90</a>            VMGcKind::value_fits_in_unused_bits(value),
-<a href=#91 id=91 data-nosnippet>91</a>            <span class="string">"VMGcHeader::set_reserved_u27 with value using more than 27 bits: \
+<a href=#91 id=91 data-nosnippet>91</a>            <span class="string">"VMGcHeader::set_reserved_u26 with value using more than 26 bits: \
 <a href=#92 id=92 data-nosnippet>92</a>             {value:#034b} ({value}, {value:#010x})"
 <a href=#93 id=93 data-nosnippet>93</a>        </span>);
 <a href=#94 id=94 data-nosnippet>94</a>        <span class="self">self</span>.kind &amp;= VMGcKind::MASK;
 <a href=#95 id=95 data-nosnippet>95</a>        <span class="self">self</span>.kind |= value;
 <a href=#96 id=96 data-nosnippet>96</a>    }
 <a href=#97 id=97 data-nosnippet>97</a>
-<a href=#98 id=98 data-nosnippet>98</a>    <span class="doccomment">/// Set the 27-bit reserved value.
+<a href=#98 id=98 data-nosnippet>98</a>    <span class="doccomment">/// Set the 26-bit reserved value.
 <a href=#99 id=99 data-nosnippet>99</a>    ///
 <a href=#100 id=100 data-nosnippet>100</a>    /// # Safety
 <a href=#101 id=101 data-nosnippet>101</a>    ///
-<a href=#102 id=102 data-nosnippet>102</a>    /// The given `value` must only use the lower 27 bits; its upper 5 bits must
+<a href=#102 id=102 data-nosnippet>102</a>    /// The given `value` must only use the lower 26 bits; its upper 6 bits must
 <a href=#103 id=103 data-nosnippet>103</a>    /// be unset.
-<a href=#104 id=104 data-nosnippet>104</a>    </span><span class="kw">pub unsafe fn </span>unchecked_set_reserved_u27(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: u32) {
+<a href=#104 id=104 data-nosnippet>104</a>    </span><span class="kw">pub unsafe fn </span>unchecked_set_reserved_u26(<span class="kw-2">&amp;mut </span><span class="self">self</span>, value: u32) {
 <a href=#105 id=105 data-nosnippet>105</a>        <span class="macro">debug_assert_eq!</span>(value &amp; VMGcKind::MASK, <span class="number">0</span>);
 <a href=#106 id=106 data-nosnippet>106</a>        <span class="self">self</span>.kind &amp;= VMGcKind::MASK;
 <a href=#107 id=107 data-nosnippet>107</a>        <span class="self">self</span>.kind |= value;
@@ -490,7 +490,7 @@
 <a href=#490 id=490 data-nosnippet>490</a>
 <a href=#491 id=491 data-nosnippet>491</a><span class="attr">#[cfg(test)]
 <a href=#492 id=492 data-nosnippet>492</a></span><span class="kw">mod </span>tests {
-<a href=#493 id=493 data-nosnippet>493</a>    <span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#493 id=493 data-nosnippet>493</a>    <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#494 id=494 data-nosnippet>494</a>
 <a href=#495 id=495 data-nosnippet>495</a>    <span class="attr">#[test]
 <a href=#496 id=496 data-nosnippet>496</a>    </span><span class="kw">fn </span>reserved_bits() {
@@ -498,27 +498,27 @@
 <a href=#498 id=498 data-nosnippet>498</a>        <span class="kw">let </span>ty = VMSharedTypeIndex::new(<span class="number">1234</span>);
 <a href=#499 id=499 data-nosnippet>499</a>        <span class="kw">let </span><span class="kw-2">mut </span>header = VMGcHeader::from_kind_and_index(kind, ty);
 <a href=#500 id=500 data-nosnippet>500</a>
-<a href=#501 id=501 data-nosnippet>501</a>        <span class="macro">assert_eq!</span>(header.reserved_u27(), <span class="number">0</span>);
+<a href=#501 id=501 data-nosnippet>501</a>        <span class="macro">assert_eq!</span>(header.reserved_u26(), <span class="number">0</span>);
 <a href=#502 id=502 data-nosnippet>502</a>        <span class="macro">assert_eq!</span>(header.kind(), kind);
 <a href=#503 id=503 data-nosnippet>503</a>        <span class="macro">assert_eq!</span>(header.ty(), <span class="prelude-val">Some</span>(ty));
 <a href=#504 id=504 data-nosnippet>504</a>
-<a href=#505 id=505 data-nosnippet>505</a>        header.set_reserved_u27(<span class="number">36</span>);
-<a href=#506 id=506 data-nosnippet>506</a>        <span class="macro">assert_eq!</span>(header.reserved_u27(), <span class="number">36</span>);
+<a href=#505 id=505 data-nosnippet>505</a>        header.set_reserved_u26(<span class="number">36</span>);
+<a href=#506 id=506 data-nosnippet>506</a>        <span class="macro">assert_eq!</span>(header.reserved_u26(), <span class="number">36</span>);
 <a href=#507 id=507 data-nosnippet>507</a>        <span class="macro">assert_eq!</span>(header.kind(), kind);
 <a href=#508 id=508 data-nosnippet>508</a>        <span class="macro">assert_eq!</span>(header.ty(), <span class="prelude-val">Some</span>(ty));
 <a href=#509 id=509 data-nosnippet>509</a>
-<a href=#510 id=510 data-nosnippet>510</a>        <span class="kw">let </span>max = (<span class="number">1 </span>&lt;&lt; <span class="number">27</span>) - <span class="number">1</span>;
-<a href=#511 id=511 data-nosnippet>511</a>        header.set_reserved_u27(max);
-<a href=#512 id=512 data-nosnippet>512</a>        <span class="macro">assert_eq!</span>(header.reserved_u27(), max);
+<a href=#510 id=510 data-nosnippet>510</a>        <span class="kw">let </span>max = (<span class="number">1 </span>&lt;&lt; <span class="number">26</span>) - <span class="number">1</span>;
+<a href=#511 id=511 data-nosnippet>511</a>        header.set_reserved_u26(max);
+<a href=#512 id=512 data-nosnippet>512</a>        <span class="macro">assert_eq!</span>(header.reserved_u26(), max);
 <a href=#513 id=513 data-nosnippet>513</a>        <span class="macro">assert_eq!</span>(header.kind(), kind);
 <a href=#514 id=514 data-nosnippet>514</a>        <span class="macro">assert_eq!</span>(header.ty(), <span class="prelude-val">Some</span>(ty));
 <a href=#515 id=515 data-nosnippet>515</a>
-<a href=#516 id=516 data-nosnippet>516</a>        header.set_reserved_u27(<span class="number">0</span>);
-<a href=#517 id=517 data-nosnippet>517</a>        <span class="macro">assert_eq!</span>(header.reserved_u27(), <span class="number">0</span>);
+<a href=#516 id=516 data-nosnippet>516</a>        header.set_reserved_u26(<span class="number">0</span>);
+<a href=#517 id=517 data-nosnippet>517</a>        <span class="macro">assert_eq!</span>(header.reserved_u26(), <span class="number">0</span>);
 <a href=#518 id=518 data-nosnippet>518</a>        <span class="macro">assert_eq!</span>(header.kind(), kind);
 <a href=#519 id=519 data-nosnippet>519</a>        <span class="macro">assert_eq!</span>(header.ty(), <span class="prelude-val">Some</span>(ty));
 <a href=#520 id=520 data-nosnippet>520</a>
-<a href=#521 id=521 data-nosnippet>521</a>        <span class="kw">let </span>result = std::panic::catch_unwind(<span class="kw">move </span>|| header.set_reserved_u27(max + <span class="number">1</span>));
+<a href=#521 id=521 data-nosnippet>521</a>        <span class="kw">let </span>result = std::panic::catch_unwind(<span class="kw">move </span>|| header.set_reserved_u26(max + <span class="number">1</span>));
 <a href=#522 id=522 data-nosnippet>522</a>        <span class="macro">assert!</span>(result.is_err());
 <a href=#523 id=523 data-nosnippet>523</a>    }
 <a href=#524 id=524 data-nosnippet>524</a>}

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/primitives/arithmetic/src/rational.rs`."><title>rational.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_arithmetic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sp_arithmetic/</div>rational.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/primitives/arithmetic/src/rational.rs`."><title>rational.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_arithmetic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sp_arithmetic/</div>rational.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 <a href=#15 id=15 data-nosnippet>15</a>// See the License for the specific language governing permissions and
 <a href=#16 id=16 data-nosnippet>16</a>// limitations under the License.
 <a href=#17 id=17 data-nosnippet>17</a>
-<a href=#18 id=18 data-nosnippet>18</a></span><span class="kw">use </span>crate::{biguint::BigUint, helpers_128bit, Rounding};
+<a href=#18 id=18 data-nosnippet>18</a></span><span class="kw">use crate</span>::{biguint::BigUint, helpers_128bit, Rounding};
 <a href=#19 id=19 data-nosnippet>19</a><span class="kw">use </span>core::cmp::Ordering;
 <a href=#20 id=20 data-nosnippet>20</a><span class="kw">use </span>num_traits::{Bounded, One, Zero};
 <a href=#21 id=21 data-nosnippet>21</a>
@@ -166,7 +166,7 @@
 <a href=#166 id=166 data-nosnippet>166</a>	</span><span class="kw">pub fn </span>lcm(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;u128&gt; {
 <a href=#167 id=167 data-nosnippet>167</a>		<span class="comment">// this should be tested better: two large numbers that are almost the same.
 <a href=#168 id=168 data-nosnippet>168</a>		</span><span class="kw">if </span><span class="self">self</span>.<span class="number">1 </span>== other.<span class="number">1 </span>{
-<a href=#169 id=169 data-nosnippet>169</a>			<span class="kw">return </span><span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="number">1</span>)
+<a href=#169 id=169 data-nosnippet>169</a>			<span class="kw">return </span><span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="number">1</span>);
 <a href=#170 id=170 data-nosnippet>170</a>		}
 <a href=#171 id=171 data-nosnippet>171</a>		<span class="kw">let </span>g = helpers_128bit::gcd(<span class="self">self</span>.<span class="number">1</span>, other.<span class="number">1</span>);
 <a href=#172 id=172 data-nosnippet>172</a>		helpers_128bit::multiply_by_rational_with_rounding(
@@ -293,8 +293,8 @@
 <a href=#293 id=293 data-nosnippet>293</a>		<span class="kw">impl </span>MultiplyRational <span class="kw">for </span><span class="macro-nonterminal">$ulow </span>{
 <a href=#294 id=294 data-nosnippet>294</a>			<span class="kw">fn </span>multiply_rational(<span class="self">self</span>, n: <span class="self">Self</span>, d: <span class="self">Self</span>, r: Rounding) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="self">Self</span>&gt; {
 <a href=#295 id=295 data-nosnippet>295</a>				<span class="kw">if </span>d.is_zero() {
-<a href=#296 id=296 data-nosnippet>296</a>					<span class="kw">return </span><span class="prelude-val">None
-<a href=#297 id=297 data-nosnippet>297</a>				</span>}
+<a href=#296 id=296 data-nosnippet>296</a>					<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#297 id=297 data-nosnippet>297</a>				}
 <a href=#298 id=298 data-nosnippet>298</a>
 <a href=#299 id=299 data-nosnippet>299</a>				<span class="kw">let </span>sn = (<span class="self">self </span><span class="kw">as </span><span class="macro-nonterminal">$uhi</span>) * (n <span class="kw">as </span><span class="macro-nonterminal">$uhi</span>);
 <a href=#300 id=300 data-nosnippet>300</a>				<span class="kw">let </span><span class="kw-2">mut </span>result = sn / (d <span class="kw">as </span><span class="macro-nonterminal">$uhi</span>);
@@ -334,7 +334,7 @@
 <a href=#334 id=334 data-nosnippet>334</a>
 <a href=#335 id=335 data-nosnippet>335</a><span class="attr">#[cfg(test)]
 <a href=#336 id=336 data-nosnippet>336</a></span><span class="kw">mod </span>tests {
-<a href=#337 id=337 data-nosnippet>337</a>	<span class="kw">use </span>super::{helpers_128bit::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
+<a href=#337 id=337 data-nosnippet>337</a>	<span class="kw">use super</span>::{helpers_128bit::<span class="kw-2">*</span>, <span class="kw-2">*</span>};
 <a href=#338 id=338 data-nosnippet>338</a>	<span class="kw">use </span>static_assertions::const_assert;
 <a href=#339 id=339 data-nosnippet>339</a>
 <a href=#340 id=340 data-nosnippet>340</a>	<span class="kw">const </span>MAX128: u128 = u128::MAX;
@@ -348,7 +348,7 @@
 <a href=#348 id=348 data-nosnippet>348</a>	<span class="kw">fn </span>mul_div(a: u128, b: u128, c: u128) -&gt; u128 {
 <a href=#349 id=349 data-nosnippet>349</a>		<span class="kw">use </span>primitive_types::U256;
 <a href=#350 id=350 data-nosnippet>350</a>		<span class="kw">if </span>a.is_zero() {
-<a href=#351 id=351 data-nosnippet>351</a>			<span class="kw">return </span>Zero::zero()
+<a href=#351 id=351 data-nosnippet>351</a>			<span class="kw">return </span>Zero::zero();
 <a href=#352 id=352 data-nosnippet>352</a>		}
 <a href=#353 id=353 data-nosnippet>353</a>		<span class="kw">let </span>c = c.max(<span class="number">1</span>);
 <a href=#354 id=354 data-nosnippet>354</a>

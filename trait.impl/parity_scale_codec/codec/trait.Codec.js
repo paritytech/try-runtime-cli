@@ -1,9 +1,9 @@
 (function() {
-    const implementors = Object.fromEntries([["parity_scale_codec",[]],["sc_executor",[]]]);
+    var implementors = Object.fromEntries([["parity_scale_codec",[]],["sc_executor",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":59,"fragment_lengths":[25,19]}
+//{"start":57,"fragment_lengths":[25,19]}

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/primitives/consensus/babe/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_consensus_babe" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sp_consensus_babe/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/primitives/consensus/babe/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_consensus_babe" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sp_consensus_babe/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -294,8 +294,8 @@
 <a href=#294 id=294 data-nosnippet>294</a>		<span class="kw">let </span>pre_hash = header.hash();
 <a href=#295 id=295 data-nosnippet>295</a>
 <a href=#296 id=296 data-nosnippet>296</a>		<span class="kw">if </span>!offender.verify(<span class="kw-2">&amp;</span>pre_hash.as_ref(), <span class="kw-2">&amp;</span>seal) {
-<a href=#297 id=297 data-nosnippet>297</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#298 id=298 data-nosnippet>298</a>		</span>}
+<a href=#297 id=297 data-nosnippet>297</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#298 id=298 data-nosnippet>298</a>		}
 <a href=#299 id=299 data-nosnippet>299</a>
 <a href=#300 id=300 data-nosnippet>300</a>		<span class="prelude-val">Some</span>(())
 <a href=#301 id=301 data-nosnippet>301</a>	};
@@ -303,24 +303,24 @@
 <a href=#303 id=303 data-nosnippet>303</a>	<span class="kw">let </span>verify_proof = || {
 <a href=#304 id=304 data-nosnippet>304</a>		<span class="comment">// we must have different headers for the equivocation to be valid
 <a href=#305 id=305 data-nosnippet>305</a>		</span><span class="kw">if </span>proof.first_header.hash() == proof.second_header.hash() {
-<a href=#306 id=306 data-nosnippet>306</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#307 id=307 data-nosnippet>307</a>		</span>}
+<a href=#306 id=306 data-nosnippet>306</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#307 id=307 data-nosnippet>307</a>		}
 <a href=#308 id=308 data-nosnippet>308</a>
 <a href=#309 id=309 data-nosnippet>309</a>		<span class="kw">let </span>first_pre_digest = find_pre_digest(<span class="kw-2">&amp;</span>proof.first_header)<span class="question-mark">?</span>;
 <a href=#310 id=310 data-nosnippet>310</a>		<span class="kw">let </span>second_pre_digest = find_pre_digest(<span class="kw-2">&amp;</span>proof.second_header)<span class="question-mark">?</span>;
 <a href=#311 id=311 data-nosnippet>311</a>
 <a href=#312 id=312 data-nosnippet>312</a>		<span class="comment">// both headers must be targeting the same slot and it must
 <a href=#313 id=313 data-nosnippet>313</a>		// be the same as the one in the proof.
-<a href=#314 id=314 data-nosnippet>314</a>		</span><span class="kw">if </span>proof.slot != first_pre_digest.slot() ||
+<a href=#314 id=314 data-nosnippet>314</a>		</span><span class="kw">if </span>proof.<span class="macro">slot !</span>= first_pre_digest.slot() ||
 <a href=#315 id=315 data-nosnippet>315</a>			first_pre_digest.slot() != second_pre_digest.slot()
 <a href=#316 id=316 data-nosnippet>316</a>		{
-<a href=#317 id=317 data-nosnippet>317</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#318 id=318 data-nosnippet>318</a>		</span>}
+<a href=#317 id=317 data-nosnippet>317</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#318 id=318 data-nosnippet>318</a>		}
 <a href=#319 id=319 data-nosnippet>319</a>
 <a href=#320 id=320 data-nosnippet>320</a>		<span class="comment">// both headers must have been authored by the same authority
 <a href=#321 id=321 data-nosnippet>321</a>		</span><span class="kw">if </span>first_pre_digest.authority_index() != second_pre_digest.authority_index() {
-<a href=#322 id=322 data-nosnippet>322</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#323 id=323 data-nosnippet>323</a>		</span>}
+<a href=#322 id=322 data-nosnippet>322</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#323 id=323 data-nosnippet>323</a>		}
 <a href=#324 id=324 data-nosnippet>324</a>
 <a href=#325 id=325 data-nosnippet>325</a>		<span class="comment">// we finally verify that the expected authority has signed both headers and
 <a href=#326 id=326 data-nosnippet>326</a>		// that the signature is valid.

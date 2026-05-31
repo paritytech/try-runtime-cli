@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/primitives/state-machine/src/ext.rs`."><title>ext.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_state_machine" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sp_state_machine/</div>ext.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/primitives/state-machine/src/ext.rs`."><title>ext.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_state_machine" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sp_state_machine/</div>ext.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -19,7 +19,7 @@
 <a href=#19 id=19 data-nosnippet>19</a>
 <a href=#20 id=20 data-nosnippet>20</a></span><span class="attr">#[cfg(feature = <span class="string">"std"</span>)]
 <a href=#21 id=21 data-nosnippet>21</a></span><span class="kw">use </span><span class="kw">crate</span>::overlayed_changes::OverlayedExtensions;
-<a href=#22 id=22 data-nosnippet>22</a><span class="kw">use </span>crate::{
+<a href=#22 id=22 data-nosnippet>22</a><span class="kw">use crate</span>::{
 <a href=#23 id=23 data-nosnippet>23</a>	backend::Backend, IndexOperation, IterArgs, OverlayedChanges, StorageKey, StorageValue,
 <a href=#24 id=24 data-nosnippet>24</a>};
 <a href=#25 id=25 data-nosnippet>25</a><span class="kw">use </span>codec::{Compact, CompactLen, Decode, Encode};
@@ -33,7 +33,7 @@
 <a href=#33 id=33 data-nosnippet>33</a></span><span class="kw">use </span>sp_externalities::TransactionType;
 <a href=#34 id=34 data-nosnippet>34</a><span class="kw">use </span>sp_externalities::{Extension, ExtensionStore, Externalities, MultiRemovalResults};
 <a href=#35 id=35 data-nosnippet>35</a>
-<a href=#36 id=36 data-nosnippet>36</a><span class="kw">use </span>crate::{trace, warn};
+<a href=#36 id=36 data-nosnippet>36</a><span class="kw">use crate</span>::{trace, warn};
 <a href=#37 id=37 data-nosnippet>37</a><span class="kw">use </span>alloc::{boxed::Box, vec::Vec};
 <a href=#38 id=38 data-nosnippet>38</a><span class="kw">use </span>core::{
 <a href=#39 id=39 data-nosnippet>39</a>	any::{Any, TypeId},
@@ -275,11 +275,11 @@
 <a href=#275 id=275 data-nosnippet>275</a>
 <a href=#276 id=276 data-nosnippet>276</a>					<span class="comment">// If `backend_key` is less than the `overlay_key`, we found out next key.
 <a href=#277 id=277 data-nosnippet>277</a>					</span><span class="kw">if </span>cmp == <span class="prelude-val">Some</span>(Ordering::Less) {
-<a href=#278 id=278 data-nosnippet>278</a>						<span class="kw">return </span>next_backend_key
+<a href=#278 id=278 data-nosnippet>278</a>						<span class="kw">return </span>next_backend_key;
 <a href=#279 id=279 data-nosnippet>279</a>					} <span class="kw">else if </span>overlay_key.<span class="number">1</span>.value().is_some() {
 <a href=#280 id=280 data-nosnippet>280</a>						<span class="comment">// If there exists a value for the `overlay_key` in the overlay
 <a href=#281 id=281 data-nosnippet>281</a>						// (aka the key is still valid), it means we have found our next key.
-<a href=#282 id=282 data-nosnippet>282</a>						</span><span class="kw">return </span><span class="prelude-val">Some</span>(overlay_key.<span class="number">0</span>.to_vec())
+<a href=#282 id=282 data-nosnippet>282</a>						</span><span class="kw">return </span><span class="prelude-val">Some</span>(overlay_key.<span class="number">0</span>.to_vec());
 <a href=#283 id=283 data-nosnippet>283</a>					} <span class="kw">else if </span>cmp == <span class="prelude-val">Some</span>(Ordering::Equal) {
 <a href=#284 id=284 data-nosnippet>284</a>						<span class="comment">// If the `backend_key` and `overlay_key` are equal, it means that we need
 <a href=#285 id=285 data-nosnippet>285</a>						// to search for the next backend key, because the overlay has overwritten
@@ -316,11 +316,11 @@
 <a href=#316 id=316 data-nosnippet>316</a>
 <a href=#317 id=317 data-nosnippet>317</a>					<span class="comment">// If `backend_key` is less than the `overlay_key`, we found out next key.
 <a href=#318 id=318 data-nosnippet>318</a>					</span><span class="kw">if </span>cmp == <span class="prelude-val">Some</span>(Ordering::Less) {
-<a href=#319 id=319 data-nosnippet>319</a>						<span class="kw">return </span>next_backend_key
+<a href=#319 id=319 data-nosnippet>319</a>						<span class="kw">return </span>next_backend_key;
 <a href=#320 id=320 data-nosnippet>320</a>					} <span class="kw">else if </span>overlay_key.<span class="number">1</span>.value().is_some() {
 <a href=#321 id=321 data-nosnippet>321</a>						<span class="comment">// If there exists a value for the `overlay_key` in the overlay
 <a href=#322 id=322 data-nosnippet>322</a>						// (aka the key is still valid), it means we have found our next key.
-<a href=#323 id=323 data-nosnippet>323</a>						</span><span class="kw">return </span><span class="prelude-val">Some</span>(overlay_key.<span class="number">0</span>.to_vec())
+<a href=#323 id=323 data-nosnippet>323</a>						</span><span class="kw">return </span><span class="prelude-val">Some</span>(overlay_key.<span class="number">0</span>.to_vec());
 <a href=#324 id=324 data-nosnippet>324</a>					} <span class="kw">else if </span>cmp == <span class="prelude-val">Some</span>(Ordering::Equal) {
 <a href=#325 id=325 data-nosnippet>325</a>						<span class="comment">// If the `backend_key` and `overlay_key` are equal, it means that we need
 <a href=#326 id=326 data-nosnippet>326</a>						// to search for the next backend key, because the overlay has overwritten
@@ -345,8 +345,8 @@
 <a href=#345 id=345 data-nosnippet>345</a>		<span class="kw">let </span>_guard = guard();
 <a href=#346 id=346 data-nosnippet>346</a>		<span class="kw">if </span>is_child_storage_key(<span class="kw-2">&amp;</span>key) {
 <a href=#347 id=347 data-nosnippet>347</a>			<span class="macro">warn!</span>(target: <span class="string">"trie"</span>, <span class="string">"Refuse to directly set child storage key"</span>);
-<a href=#348 id=348 data-nosnippet>348</a>			<span class="kw">return
-<a href=#349 id=349 data-nosnippet>349</a>		</span>}
+<a href=#348 id=348 data-nosnippet>348</a>			<span class="kw">return</span>;
+<a href=#349 id=349 data-nosnippet>349</a>		}
 <a href=#350 id=350 data-nosnippet>350</a>
 <a href=#351 id=351 data-nosnippet>351</a>		<span class="comment">// NOTE: be careful about touching the key names – used outside substrate!
 <a href=#352 id=352 data-nosnippet>352</a>		</span><span class="macro">trace!</span>(
@@ -423,7 +423,7 @@
 <a href=#423 id=423 data-nosnippet>423</a>				target: <span class="string">"trie"</span>,
 <a href=#424 id=424 data-nosnippet>424</a>				<span class="string">"Refuse to directly clear prefix that is part or contains of child storage key"</span>,
 <a href=#425 id=425 data-nosnippet>425</a>			);
-<a href=#426 id=426 data-nosnippet>426</a>			<span class="kw">return </span>MultiRemovalResults { maybe_cursor: <span class="prelude-val">None</span>, backend: <span class="number">0</span>, unique: <span class="number">0</span>, loops: <span class="number">0 </span>}
+<a href=#426 id=426 data-nosnippet>426</a>			<span class="kw">return </span>MultiRemovalResults { maybe_cursor: <span class="prelude-val">None</span>, backend: <span class="number">0</span>, unique: <span class="number">0</span>, loops: <span class="number">0 </span>};
 <a href=#427 id=427 data-nosnippet>427</a>		}
 <a href=#428 id=428 data-nosnippet>428</a>
 <a href=#429 id=429 data-nosnippet>429</a>		<span class="kw">let </span>overlay = <span class="self">self</span>.overlay.clear_prefix(prefix);
@@ -660,7 +660,7 @@
 <a href=#660 id=660 data-nosnippet>660</a>			<span class="prelude-val">Ok</span>(iter) =&gt; iter,
 <a href=#661 id=661 data-nosnippet>661</a>			<span class="prelude-val">Err</span>(error) =&gt; {
 <a href=#662 id=662 data-nosnippet>662</a>				<span class="macro">log::debug!</span>(target: <span class="string">"trie"</span>, <span class="string">"Error while iterating the storage: {}"</span>, error);
-<a href=#663 id=663 data-nosnippet>663</a>				<span class="kw">return </span>(<span class="prelude-val">None</span>, <span class="number">0</span>, <span class="number">0</span>)
+<a href=#663 id=663 data-nosnippet>663</a>				<span class="kw">return </span>(<span class="prelude-val">None</span>, <span class="number">0</span>, <span class="number">0</span>);
 <a href=#664 id=664 data-nosnippet>664</a>			},
 <a href=#665 id=665 data-nosnippet>665</a>		};
 <a href=#666 id=666 data-nosnippet>666</a>
@@ -672,14 +672,14 @@
 <a href=#672 id=672 data-nosnippet>672</a>				<span class="prelude-val">Ok</span>(key) =&gt; key,
 <a href=#673 id=673 data-nosnippet>673</a>				<span class="prelude-val">Err</span>(error) =&gt; {
 <a href=#674 id=674 data-nosnippet>674</a>					<span class="macro">log::debug!</span>(target: <span class="string">"trie"</span>, <span class="string">"Error while iterating the storage: {}"</span>, error);
-<a href=#675 id=675 data-nosnippet>675</a>					<span class="kw">break
-<a href=#676 id=676 data-nosnippet>676</a>				</span>},
+<a href=#675 id=675 data-nosnippet>675</a>					<span class="kw">break</span>;
+<a href=#676 id=676 data-nosnippet>676</a>				},
 <a href=#677 id=677 data-nosnippet>677</a>			};
 <a href=#678 id=678 data-nosnippet>678</a>
 <a href=#679 id=679 data-nosnippet>679</a>			<span class="kw">if </span>maybe_limit.map_or(<span class="bool-val">false</span>, |limit| loop_count == limit) {
 <a href=#680 id=680 data-nosnippet>680</a>				maybe_next_key = <span class="prelude-val">Some</span>(key);
-<a href=#681 id=681 data-nosnippet>681</a>				<span class="kw">break
-<a href=#682 id=682 data-nosnippet>682</a>			</span>}
+<a href=#681 id=681 data-nosnippet>681</a>				<span class="kw">break</span>;
+<a href=#682 id=682 data-nosnippet>682</a>			}
 <a href=#683 id=683 data-nosnippet>683</a>			<span class="kw">let </span>overlay = <span class="kw">match </span>child_info {
 <a href=#684 id=684 data-nosnippet>684</a>				<span class="prelude-val">Some</span>(child_info) =&gt; <span class="self">self</span>.overlay.child_storage(child_info, <span class="kw-2">&amp;</span>key),
 <a href=#685 id=685 data-nosnippet>685</a>				<span class="prelude-val">None </span>=&gt; <span class="self">self</span>.overlay.storage(<span class="kw-2">&amp;</span>key),
@@ -831,7 +831,7 @@
 <a href=#831 id=831 data-nosnippet>831</a>
 <a href=#832 id=832 data-nosnippet>832</a><span class="attr">#[cfg(test)]
 <a href=#833 id=833 data-nosnippet>833</a></span><span class="kw">mod </span>tests {
-<a href=#834 id=834 data-nosnippet>834</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#834 id=834 data-nosnippet>834</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#835 id=835 data-nosnippet>835</a>	<span class="kw">use </span><span class="kw">crate</span>::InMemoryBackend;
 <a href=#836 id=836 data-nosnippet>836</a>	<span class="kw">use </span>codec::{Decode, Encode};
 <a href=#837 id=837 data-nosnippet>837</a>	<span class="kw">use </span>sp_core::{

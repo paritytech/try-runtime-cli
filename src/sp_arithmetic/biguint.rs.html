@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/primitives/arithmetic/src/biguint.rs`."><title>biguint.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_arithmetic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">sp_arithmetic/</div>biguint.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/primitives/arithmetic/src/biguint.rs`."><title>biguint.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sp_arithmetic" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">sp_arithmetic/</div>biguint.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -160,9 +160,9 @@
 <a href=#160 id=160 data-nosnippet>160</a>		// has the ability to cause this. There is nothing to do if the number already has 1
 <a href=#161 id=161 data-nosnippet>161</a>		// limb only. call it a day and return.
 <a href=#162 id=162 data-nosnippet>162</a>		</span><span class="kw">if </span><span class="self">self</span>.len().is_zero() {
-<a href=#163 id=163 data-nosnippet>163</a>			<span class="kw">return
-<a href=#164 id=164 data-nosnippet>164</a>		</span>}
-<a href=#165 id=165 data-nosnippet>165</a>		<span class="kw">let </span>index = <span class="self">self</span>.digits.iter().position(|<span class="kw-2">&amp;</span>elem| elem != <span class="number">0</span>).unwrap_or(<span class="self">self</span>.len() - <span class="number">1</span>);
+<a href=#163 id=163 data-nosnippet>163</a>			<span class="kw">return</span>;
+<a href=#164 id=164 data-nosnippet>164</a>		}
+<a href=#165 id=165 data-nosnippet>165</a>		<span class="kw">let </span>index = <span class="self">self</span>.digits.iter().position(|<span class="kw-2">&amp;</span>elem| <span class="macro">elem !</span>= <span class="number">0</span>).unwrap_or(<span class="self">self</span>.len() - <span class="number">1</span>);
 <a href=#166 id=166 data-nosnippet>166</a>
 <a href=#167 id=167 data-nosnippet>167</a>		<span class="kw">if </span>index &gt; <span class="number">0 </span>{
 <a href=#168 id=168 data-nosnippet>168</a>			<span class="self">self</span>.digits = <span class="self">self</span>.digits[index..].to_vec()
@@ -174,8 +174,8 @@
 <a href=#174 id=174 data-nosnippet>174</a>	</span><span class="kw">pub fn </span>lpad(<span class="kw-2">&amp;mut </span><span class="self">self</span>, size: usize) {
 <a href=#175 id=175 data-nosnippet>175</a>		<span class="kw">let </span>n = <span class="self">self</span>.len();
 <a href=#176 id=176 data-nosnippet>176</a>		<span class="kw">if </span>n &gt;= size {
-<a href=#177 id=177 data-nosnippet>177</a>			<span class="kw">return
-<a href=#178 id=178 data-nosnippet>178</a>		</span>}
+<a href=#177 id=177 data-nosnippet>177</a>			<span class="kw">return</span>;
+<a href=#178 id=178 data-nosnippet>178</a>		}
 <a href=#179 id=179 data-nosnippet>179</a>		<span class="kw">let </span>pad = size - n;
 <a href=#180 id=180 data-nosnippet>180</a>		<span class="kw">let </span><span class="kw-2">mut </span>new_digits = (<span class="number">0</span>..pad).map(|<span class="kw">_</span>| <span class="number">0</span>).collect::&lt;Vec&lt;Single&gt;&gt;();
 <a href=#181 id=181 data-nosnippet>181</a>		new_digits.extend(<span class="self">self</span>.digits.iter());
@@ -267,8 +267,8 @@
 <a href=#267 id=267 data-nosnippet>267</a>			<span class="kw">if </span><span class="self">self</span>.get(j) == <span class="number">0 </span>{
 <a href=#268 id=268 data-nosnippet>268</a>				<span class="comment">// Note: `with_capacity` allocates with 0. Explicitly set j + m to zero if
 <a href=#269 id=269 data-nosnippet>269</a>				// otherwise.
-<a href=#270 id=270 data-nosnippet>270</a>				</span><span class="kw">continue
-<a href=#271 id=271 data-nosnippet>271</a>			</span>}
+<a href=#270 id=270 data-nosnippet>270</a>				</span><span class="kw">continue</span>;
+<a href=#271 id=271 data-nosnippet>271</a>			}
 <a href=#272 id=272 data-nosnippet>272</a>
 <a href=#273 id=273 data-nosnippet>273</a>			<span class="kw">let </span><span class="kw-2">mut </span>k = <span class="number">0</span>;
 <a href=#274 id=274 data-nosnippet>274</a>			<span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..m {
@@ -319,8 +319,8 @@
 <a href=#319 id=319 data-nosnippet>319</a>	/// Taken from "The Art of Computer Programming" by D.E. Knuth, vol 2, chapter 4.
 <a href=#320 id=320 data-nosnippet>320</a>	</span><span class="kw">pub fn </span>div(<span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>, rem: bool) -&gt; <span class="prelude-ty">Option</span>&lt;(<span class="self">Self</span>, <span class="self">Self</span>)&gt; {
 <a href=#321 id=321 data-nosnippet>321</a>		<span class="kw">if </span>other.len() &lt;= <span class="number">1 </span>|| other.msb() == <span class="number">0 </span>|| <span class="self">self</span>.msb() == <span class="number">0 </span>|| <span class="self">self</span>.len() &lt;= other.len() {
-<a href=#322 id=322 data-nosnippet>322</a>			<span class="kw">return </span><span class="prelude-val">None
-<a href=#323 id=323 data-nosnippet>323</a>		</span>}
+<a href=#322 id=322 data-nosnippet>322</a>			<span class="kw">return </span><span class="prelude-val">None</span>;
+<a href=#323 id=323 data-nosnippet>323</a>		}
 <a href=#324 id=324 data-nosnippet>324</a>		<span class="kw">let </span>n = other.len();
 <a href=#325 id=325 data-nosnippet>325</a>		<span class="kw">let </span>m = <span class="self">self</span>.len() - n;
 <a href=#326 id=326 data-nosnippet>326</a>
@@ -379,8 +379,8 @@
 <a href=#379 id=379 data-nosnippet>379</a>			test();
 <a href=#380 id=380 data-nosnippet>380</a>			<span class="kw">while </span>(<span class="kw-2">*</span>rhat.borrow() <span class="kw">as </span>Double) &lt; B {
 <a href=#381 id=381 data-nosnippet>381</a>				<span class="kw">if </span>!test() {
-<a href=#382 id=382 data-nosnippet>382</a>					<span class="kw">break
-<a href=#383 id=383 data-nosnippet>383</a>				</span>}
+<a href=#382 id=382 data-nosnippet>382</a>					<span class="kw">break</span>;
+<a href=#383 id=383 data-nosnippet>383</a>				}
 <a href=#384 id=384 data-nosnippet>384</a>			}
 <a href=#385 id=385 data-nosnippet>385</a>
 <a href=#386 id=386 data-nosnippet>386</a>			<span class="kw">let </span>qhat = qhat.into_inner();
@@ -467,8 +467,8 @@
 <a href=#467 id=467 data-nosnippet>467</a>
 <a href=#468 id=468 data-nosnippet>468</a><span class="kw">impl </span>Ord <span class="kw">for </span>BigUint {
 <a href=#469 id=469 data-nosnippet>469</a>	<span class="kw">fn </span>cmp(<span class="kw-2">&amp;</span><span class="self">self</span>, other: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; Ordering {
-<a href=#470 id=470 data-nosnippet>470</a>		<span class="kw">let </span>lhs_first = <span class="self">self</span>.digits.iter().position(|<span class="kw-2">&amp;</span>e| e != <span class="number">0</span>);
-<a href=#471 id=471 data-nosnippet>471</a>		<span class="kw">let </span>rhs_first = other.digits.iter().position(|<span class="kw-2">&amp;</span>e| e != <span class="number">0</span>);
+<a href=#470 id=470 data-nosnippet>470</a>		<span class="kw">let </span>lhs_first = <span class="self">self</span>.digits.iter().position(|<span class="kw-2">&amp;</span>e| <span class="macro">e !</span>= <span class="number">0</span>);
+<a href=#471 id=471 data-nosnippet>471</a>		<span class="kw">let </span>rhs_first = other.digits.iter().position(|<span class="kw-2">&amp;</span>e| <span class="macro">e !</span>= <span class="number">0</span>);
 <a href=#472 id=472 data-nosnippet>472</a>
 <a href=#473 id=473 data-nosnippet>473</a>		<span class="kw">match </span>(lhs_first, rhs_first) {
 <a href=#474 id=474 data-nosnippet>474</a>			<span class="comment">// edge cases that should not happen. This basically means that one or both were
@@ -584,7 +584,7 @@
 <a href=#584 id=584 data-nosnippet>584</a>
 <a href=#585 id=585 data-nosnippet>585</a><span class="attr">#[cfg(test)]
 <a href=#586 id=586 data-nosnippet>586</a></span><span class="kw">pub mod </span>tests {
-<a href=#587 id=587 data-nosnippet>587</a>	<span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#587 id=587 data-nosnippet>587</a>	<span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#588 id=588 data-nosnippet>588</a>
 <a href=#589 id=589 data-nosnippet>589</a>	<span class="kw">fn </span>with_limbs(n: usize) -&gt; BigUint {
 <a href=#590 id=590 data-nosnippet>590</a>		BigUint { digits: <span class="macro">vec!</span>[<span class="number">1</span>; n] }

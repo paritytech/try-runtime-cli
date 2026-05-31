@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/frame/support/src/storage/generator/double_map.rs`."><title>double_map.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../../../static.files/storage-41dd4d93.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/generator/</div>double_map.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/frame/support/src/storage/generator/double_map.rs`."><title>double_map.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="frame_support" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../../../static.files/storage-e2aeef58.js"></script><script defer src="../../../../static.files/src-script-813739b1.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_support/storage/generator/</div>double_map.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-3"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -15,7 +15,7 @@
 <a href=#15 id=15 data-nosnippet>15</a>// See the License for the specific language governing permissions and
 <a href=#16 id=16 data-nosnippet>16</a>// limitations under the License.
 <a href=#17 id=17 data-nosnippet>17</a>
-<a href=#18 id=18 data-nosnippet>18</a></span><span class="kw">use </span>crate::{
+<a href=#18 id=18 data-nosnippet>18</a></span><span class="kw">use crate</span>::{
 <a href=#19 id=19 data-nosnippet>19</a>	hash::{ReversibleStorageHasher, StorageHasher},
 <a href=#20 id=20 data-nosnippet>20</a>	storage::{<span class="self">self</span>, storage_prefix, unhashed, KeyPrefixIterator, PrefixIterator, StorageAppend},
 <a href=#21 id=21 data-nosnippet>21</a>	Never,
@@ -257,7 +257,7 @@
 <a href=#257 id=257 data-nosnippet>257</a>		KArg2: EncodeLike&lt;K2&gt;,
 <a href=#258 id=258 data-nosnippet>258</a>		F: FnOnce(<span class="kw-2">&amp;mut </span><span class="self">Self</span>::Query) -&gt; R,
 <a href=#259 id=259 data-nosnippet>259</a>	{
-<a href=#260 id=260 data-nosnippet>260</a>		<span class="self">Self</span>::try_mutate(k1, k2, |v| Ok::&lt;R, Never&gt;(f(v)))
+<a href=#260 id=260 data-nosnippet>260</a>		<span class="self">Self</span>::try_mutate(k1, k2, |v| <span class="prelude-val">Ok</span>::&lt;R, Never&gt;(f(v)))
 <a href=#261 id=261 data-nosnippet>261</a>			.expect(<span class="string">"`Never` can not be constructed; qed"</span>)
 <a href=#262 id=262 data-nosnippet>262</a>	}
 <a href=#263 id=263 data-nosnippet>263</a>
@@ -267,7 +267,7 @@
 <a href=#267 id=267 data-nosnippet>267</a>		KArg2: EncodeLike&lt;K2&gt;,
 <a href=#268 id=268 data-nosnippet>268</a>		F: FnOnce(<span class="kw-2">&amp;mut </span><span class="prelude-ty">Option</span>&lt;V&gt;) -&gt; R,
 <a href=#269 id=269 data-nosnippet>269</a>	{
-<a href=#270 id=270 data-nosnippet>270</a>		<span class="self">Self</span>::try_mutate_exists(k1, k2, |v| Ok::&lt;R, Never&gt;(f(v)))
+<a href=#270 id=270 data-nosnippet>270</a>		<span class="self">Self</span>::try_mutate_exists(k1, k2, |v| <span class="prelude-val">Ok</span>::&lt;R, Never&gt;(f(v)))
 <a href=#271 id=271 data-nosnippet>271</a>			.expect(<span class="string">"`Never` can not be constructed; qed"</span>)
 <a href=#272 id=272 data-nosnippet>272</a>	}
 <a href=#273 id=273 data-nosnippet>273</a>
@@ -476,16 +476,16 @@
 <a href=#476 id=476 data-nosnippet>476</a>				<span class="prelude-val">Some</span>(value) =&gt; value,
 <a href=#477 id=477 data-nosnippet>477</a>				<span class="prelude-val">None </span>=&gt; {
 <a href=#478 id=478 data-nosnippet>478</a>					<span class="macro">log::error!</span>(<span class="string">"Invalid translate: fail to decode old value"</span>);
-<a href=#479 id=479 data-nosnippet>479</a>					<span class="kw">continue
-<a href=#480 id=480 data-nosnippet>480</a>				</span>},
+<a href=#479 id=479 data-nosnippet>479</a>					<span class="kw">continue</span>;
+<a href=#480 id=480 data-nosnippet>480</a>				},
 <a href=#481 id=481 data-nosnippet>481</a>			};
 <a href=#482 id=482 data-nosnippet>482</a>			<span class="kw">let </span><span class="kw-2">mut </span>key_material = G::Hasher1::reverse(<span class="kw-2">&amp;</span>previous_key[prefix.len()..]);
 <a href=#483 id=483 data-nosnippet>483</a>			<span class="kw">let </span>key1 = <span class="kw">match </span>K1::decode(<span class="kw-2">&amp;mut </span>key_material) {
 <a href=#484 id=484 data-nosnippet>484</a>				<span class="prelude-val">Ok</span>(key1) =&gt; key1,
 <a href=#485 id=485 data-nosnippet>485</a>				<span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
 <a href=#486 id=486 data-nosnippet>486</a>					<span class="macro">log::error!</span>(<span class="string">"Invalid translate: fail to decode key1"</span>);
-<a href=#487 id=487 data-nosnippet>487</a>					<span class="kw">continue
-<a href=#488 id=488 data-nosnippet>488</a>				</span>},
+<a href=#487 id=487 data-nosnippet>487</a>					<span class="kw">continue</span>;
+<a href=#488 id=488 data-nosnippet>488</a>				},
 <a href=#489 id=489 data-nosnippet>489</a>			};
 <a href=#490 id=490 data-nosnippet>490</a>
 <a href=#491 id=491 data-nosnippet>491</a>			<span class="kw">let </span><span class="kw-2">mut </span>key2_material = G::Hasher2::reverse(key_material);
@@ -493,8 +493,8 @@
 <a href=#493 id=493 data-nosnippet>493</a>				<span class="prelude-val">Ok</span>(key2) =&gt; key2,
 <a href=#494 id=494 data-nosnippet>494</a>				<span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
 <a href=#495 id=495 data-nosnippet>495</a>					<span class="macro">log::error!</span>(<span class="string">"Invalid translate: fail to decode key2"</span>);
-<a href=#496 id=496 data-nosnippet>496</a>					<span class="kw">continue
-<a href=#497 id=497 data-nosnippet>497</a>				</span>},
+<a href=#496 id=496 data-nosnippet>496</a>					<span class="kw">continue</span>;
+<a href=#497 id=497 data-nosnippet>497</a>				},
 <a href=#498 id=498 data-nosnippet>498</a>			};
 <a href=#499 id=499 data-nosnippet>499</a>
 <a href=#500 id=500 data-nosnippet>500</a>			<span class="kw">match </span>f(key1, key2, value) {
@@ -508,7 +508,7 @@
 <a href=#508 id=508 data-nosnippet>508</a><span class="doccomment">/// Test iterators for StorageDoubleMap
 <a href=#509 id=509 data-nosnippet>509</a></span><span class="attr">#[cfg(test)]
 <a href=#510 id=510 data-nosnippet>510</a></span><span class="kw">mod </span>test_iterators {
-<a href=#511 id=511 data-nosnippet>511</a>	<span class="kw">use </span>crate::{
+<a href=#511 id=511 data-nosnippet>511</a>	<span class="kw">use crate</span>::{
 <a href=#512 id=512 data-nosnippet>512</a>		hash::StorageHasher,
 <a href=#513 id=513 data-nosnippet>513</a>		storage::{
 <a href=#514 id=514 data-nosnippet>514</a>			generator::{tests::<span class="kw-2">*</span>, StorageDoubleMap},

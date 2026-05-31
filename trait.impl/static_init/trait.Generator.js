@@ -1,9 +1,9 @@
 (function() {
-    const implementors = Object.fromEntries([["static_init",[]]]);
+    var implementors = Object.fromEntries([["static_init",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":59,"fragment_lengths":[18]}
+//{"start":57,"fragment_lengths":[18]}

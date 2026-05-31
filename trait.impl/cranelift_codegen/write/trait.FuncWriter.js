@@ -1,9 +1,9 @@
 (function() {
-    const implementors = Object.fromEntries([["cranelift_codegen",[]]]);
+    var implementors = Object.fromEntries([["cranelift_codegen",[]]]);
     if (window.register_implementors) {
         window.register_implementors(implementors);
     } else {
         window.pending_implementors = implementors;
     }
 })()
-//{"start":59,"fragment_lengths":[24]}
+//{"start":57,"fragment_lengths":[24]}

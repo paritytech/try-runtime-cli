@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/11be995/substrate/utils/frame/remote-externalities/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-17e0aaed.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="frame_remote_externalities" data-themes="" data-resource-suffix="" data-rustdoc-version="1.96.0 (ac68faa20 2026-05-25)" data-channel="1.96.0" data-search-js="search-b5634cc7.js" data-stringdex-js="stringdex-2da4960a.js" data-settings-js="settings-170eb4bf.js" ><script src="../../static.files/storage-41dd4d93.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-5013f961.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-f7c3ffd8.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><a class="skip-main-content" href="#main-content">Skip to main content</a><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content" tabindex="-1"><div class="main-heading"><h1><div class="sub-heading">frame_remote_externalities/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/git/checkouts/polkadot-sdk-dee0edd6eefa0594/e1c5425/substrate/utils/frame/remote-externalities/src/lib.rs`."><title>lib.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Italic-81dc35de.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-MediumItalic-ccf7e434.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2"href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../static.files/rustdoc-ca0dd0c4.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="frame_remote_externalities" data-themes="" data-resource-suffix="" data-rustdoc-version="1.93.0 (254b59607 2026-01-19)" data-channel="1.93.0" data-search-js="search-9e2438ea.js" data-stringdex-js="stringdex-a3946164.js" data-settings-js="settings-c38705f0.js" ><script src="../../static.files/storage-e2aeef58.js"></script><script defer src="../../static.files/src-script-813739b1.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-a410ff4d.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-263c88ec.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-eab170b8.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer" title="Drag to resize sidebar"></div><main><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">frame_remote_externalities/</div>lib.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap digits-4"><pre class="rust"><code><a href=#1 id=1 data-nosnippet>1</a><span class="comment">// This file is part of Substrate.
 <a href=#2 id=2 data-nosnippet>2</a>
 <a href=#3 id=3 data-nosnippet>3</a>// Copyright (C) Parity Technologies (UK) Ltd.
 <a href=#4 id=4 data-nosnippet>4</a>// SPDX-License-Identifier: Apache-2.0
@@ -32,7 +32,7 @@
 <a href=#32 id=32 data-nosnippet>32</a><span class="kw">use </span>codec::Encode;
 <a href=#33 id=33 data-nosnippet>33</a><span class="kw">use </span>config::Snapshot;
 <a href=#34 id=34 data-nosnippet>34</a><span class="attr">#[cfg(all(test, feature = <span class="string">"remote-test"</span>))]
-<a href=#35 id=35 data-nosnippet>35</a></span><span class="kw">use </span>config::DEFAULT_HTTP_ENDPOINT;
+<a href=#35 id=35 data-nosnippet>35</a></span><span class="kw">use </span>config::DEFAULT_WS_ENDPOINT;
 <a href=#36 id=36 data-nosnippet>36</a><span class="kw">use </span>indicatif::{ProgressBar, ProgressStyle};
 <a href=#37 id=37 data-nosnippet>37</a><span class="kw">use </span>jsonrpsee::core::params::ArrayParams;
 <a href=#38 id=38 data-nosnippet>38</a><span class="kw">use </span>log::<span class="kw-2">*</span>;
@@ -94,7 +94,7 @@
 <a href=#94 id=94 data-nosnippet>94</a>	}
 <a href=#95 id=95 data-nosnippet>95</a>}
 <a href=#96 id=96 data-nosnippet>96</a>
-<a href=#97 id=97 data-nosnippet>97</a><span class="doccomment">/// Builder for remote-externalities.
+<a href=#97 id=97 data-nosnippet>97</a><span class="doccomment">/// Builder for [`RemoteExternalities`].
 <a href=#98 id=98 data-nosnippet>98</a></span><span class="attr">#[derive(Clone)]
 <a href=#99 id=99 data-nosnippet>99</a></span><span class="kw">pub struct </span>Builder&lt;B: BlockT&gt; {
 <a href=#100 id=100 data-nosnippet>100</a>	<span class="doccomment">/// Custom key-pairs to be injected into the final externalities. The *hashed* keys and values
@@ -486,7 +486,7 @@
 <a href=#486 id=486 data-nosnippet>486</a>		.<span class="kw">await</span><span class="question-mark">?</span>;
 <a href=#487 id=487 data-nosnippet>487</a>
 <a href=#488 id=488 data-nosnippet>488</a>		<span class="kw">if </span>keys.is_empty() {
-<a href=#489 id=489 data-nosnippet>489</a>			<span class="kw">return </span><span class="prelude-val">Ok</span>(Default::default())
+<a href=#489 id=489 data-nosnippet>489</a>			<span class="kw">return </span><span class="prelude-val">Ok</span>(Default::default());
 <a href=#490 id=490 data-nosnippet>490</a>		}
 <a href=#491 id=491 data-nosnippet>491</a>
 <a href=#492 id=492 data-nosnippet>492</a>		<span class="kw">let </span>conn_manager = <span class="self">self</span>.conn_manager()<span class="question-mark">?</span>;
@@ -735,7 +735,7 @@
 <a href=#735 id=735 data-nosnippet>735</a>
 <a href=#736 id=736 data-nosnippet>736</a>		<span class="kw">if </span>child_roots.is_empty() {
 <a href=#737 id=737 data-nosnippet>737</a>			<span class="macro">info!</span>(target: LOG_TARGET, <span class="string">"👩‍👦 no child roots found to scrape"</span>);
-<a href=#738 id=738 data-nosnippet>738</a>			<span class="kw">return </span><span class="prelude-val">Ok</span>(Default::default())
+<a href=#738 id=738 data-nosnippet>738</a>			<span class="kw">return </span><span class="prelude-val">Ok</span>(Default::default());
 <a href=#739 id=739 data-nosnippet>739</a>		}
 <a href=#740 id=740 data-nosnippet>740</a>
 <a href=#741 id=741 data-nosnippet>741</a>		<span class="kw">let </span>total_count = child_roots.len();
@@ -910,7 +910,7 @@
 <a href=#910 id=910 data-nosnippet>910</a>		</span><span class="kw">if </span>online_config
 <a href=#911 id=911 data-nosnippet>911</a>			.hashed_prefixes
 <a href=#912 id=912 data-nosnippet>912</a>			.iter()
-<a href=#913 id=913 data-nosnippet>913</a>			.filter(|p| <span class="kw-2">*</span>p != DEFAULT_CHILD_STORAGE_KEY_PREFIX)
+<a href=#913 id=913 data-nosnippet>913</a>			.filter(|p| <span class="kw-2">*</span><span class="macro">p !</span>= DEFAULT_CHILD_STORAGE_KEY_PREFIX)
 <a href=#914 id=914 data-nosnippet>914</a>			.count() == <span class="number">0
 <a href=#915 id=915 data-nosnippet>915</a>		</span>{
 <a href=#916 id=916 data-nosnippet>916</a>			<span class="macro">info!</span>(
@@ -1112,7 +1112,7 @@
 <a href=#1112 id=1112 data-nosnippet>1112</a>
 <a href=#1113 id=1113 data-nosnippet>1113</a><span class="attr">#[cfg(test)]
 <a href=#1114 id=1114 data-nosnippet>1114</a></span><span class="kw">mod </span>test_prelude {
-<a href=#1115 id=1115 data-nosnippet>1115</a>	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>super::<span class="kw-2">*</span>;
+<a href=#1115 id=1115 data-nosnippet>1115</a>	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use super</span>::<span class="kw-2">*</span>;
 <a href=#1116 id=1116 data-nosnippet>1116</a>	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use </span>sp_runtime::testing::{Block <span class="kw">as </span>RawBlock, MockCallU64};
 <a href=#1117 id=1117 data-nosnippet>1117</a>	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>UncheckedXt = sp_runtime::testing::TestXt&lt;MockCallU64, ()&gt;;
 <a href=#1118 id=1118 data-nosnippet>1118</a>	<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">type </span>Block = RawBlock&lt;UncheckedXt&gt;;
@@ -1177,7 +1177,7 @@
 <a href=#1177 id=1177 data-nosnippet>1177</a>	<span class="kw">use </span>std::{env, os::unix::fs::MetadataExt, path::Path};
 <a href=#1178 id=1178 data-nosnippet>1178</a>
 <a href=#1179 id=1179 data-nosnippet>1179</a>	<span class="kw">fn </span>endpoint() -&gt; String {
-<a href=#1180 id=1180 data-nosnippet>1180</a>		env::var(<span class="string">"TEST_WS"</span>).unwrap_or_else(|<span class="kw">_</span>| DEFAULT_HTTP_ENDPOINT.to_string())
+<a href=#1180 id=1180 data-nosnippet>1180</a>		env::var(<span class="string">"TEST_WS"</span>).unwrap_or_else(|<span class="kw">_</span>| DEFAULT_WS_ENDPOINT.to_string())
 <a href=#1181 id=1181 data-nosnippet>1181</a>	}
 <a href=#1182 id=1182 data-nosnippet>1182</a>
 <a href=#1183 id=1183 data-nosnippet>1183</a>	<span class="attr">#[tokio::test]
@@ -1255,299 +1255,360 @@
 <a href=#1255 id=1255 data-nosnippet>1255</a>		<span class="kw">const </span>CACHE: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"snapshot_retains_storage"</span>;
 <a href=#1256 id=1256 data-nosnippet>1256</a>		init_logger();
 <a href=#1257 id=1257 data-nosnippet>1257</a>
-<a href=#1258 id=1258 data-nosnippet>1258</a>		<span class="comment">// create an ext with children keys
-<a href=#1259 id=1259 data-nosnippet>1259</a>		</span><span class="kw">let </span><span class="kw-2">mut </span>child_ext = Builder::&lt;Block&gt;::new()
-<a href=#1260 id=1260 data-nosnippet>1260</a>			.mode(Mode::Online(OnlineConfig {
-<a href=#1261 id=1261 data-nosnippet>1261</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
-<a href=#1262 id=1262 data-nosnippet>1262</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
-<a href=#1263 id=1263 data-nosnippet>1263</a>				child_trie: <span class="bool-val">true</span>,
-<a href=#1264 id=1264 data-nosnippet>1264</a>				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
-<a href=#1265 id=1265 data-nosnippet>1265</a>				..Default::default()
-<a href=#1266 id=1266 data-nosnippet>1266</a>			}))
-<a href=#1267 id=1267 data-nosnippet>1267</a>			.build()
-<a href=#1268 id=1268 data-nosnippet>1268</a>			.<span class="kw">await
-<a href=#1269 id=1269 data-nosnippet>1269</a>			</span>.unwrap();
-<a href=#1270 id=1270 data-nosnippet>1270</a>
-<a href=#1271 id=1271 data-nosnippet>1271</a>		<span class="comment">// create an ext without children keys
-<a href=#1272 id=1272 data-nosnippet>1272</a>		</span><span class="kw">let </span><span class="kw-2">mut </span>ext = Builder::&lt;Block&gt;::new()
-<a href=#1273 id=1273 data-nosnippet>1273</a>			.mode(Mode::Online(OnlineConfig {
-<a href=#1274 id=1274 data-nosnippet>1274</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
-<a href=#1275 id=1275 data-nosnippet>1275</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
-<a href=#1276 id=1276 data-nosnippet>1276</a>				child_trie: <span class="bool-val">false</span>,
-<a href=#1277 id=1277 data-nosnippet>1277</a>				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
-<a href=#1278 id=1278 data-nosnippet>1278</a>				..Default::default()
-<a href=#1279 id=1279 data-nosnippet>1279</a>			}))
-<a href=#1280 id=1280 data-nosnippet>1280</a>			.build()
-<a href=#1281 id=1281 data-nosnippet>1281</a>			.<span class="kw">await
-<a href=#1282 id=1282 data-nosnippet>1282</a>			</span>.unwrap();
-<a href=#1283 id=1283 data-nosnippet>1283</a>
-<a href=#1284 id=1284 data-nosnippet>1284</a>		<span class="comment">// there should be more keys in the child ext.
-<a href=#1285 id=1285 data-nosnippet>1285</a>		</span><span class="macro">assert!</span>(
-<a href=#1286 id=1286 data-nosnippet>1286</a>			child_ext.as_backend().backend_storage().keys().len() &gt;
-<a href=#1287 id=1287 data-nosnippet>1287</a>				ext.as_backend().backend_storage().keys().len()
-<a href=#1288 id=1288 data-nosnippet>1288</a>		);
-<a href=#1289 id=1289 data-nosnippet>1289</a>	}
-<a href=#1290 id=1290 data-nosnippet>1290</a>
-<a href=#1291 id=1291 data-nosnippet>1291</a>	<span class="attr">#[tokio::test]
-<a href=#1292 id=1292 data-nosnippet>1292</a>	</span><span class="kw">async fn </span>offline_else_online_works() {
-<a href=#1293 id=1293 data-nosnippet>1293</a>		<span class="kw">const </span>CACHE: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"offline_else_online_works_data"</span>;
-<a href=#1294 id=1294 data-nosnippet>1294</a>		init_logger();
-<a href=#1295 id=1295 data-nosnippet>1295</a>		<span class="comment">// this shows that in the second run, we use the remote and create a snapshot.
-<a href=#1296 id=1296 data-nosnippet>1296</a>		</span>Builder::&lt;Block&gt;::new()
-<a href=#1297 id=1297 data-nosnippet>1297</a>			.mode(Mode::OfflineOrElseOnline(
-<a href=#1298 id=1298 data-nosnippet>1298</a>				OfflineConfig { state_snapshot: SnapshotConfig::new(CACHE) },
-<a href=#1299 id=1299 data-nosnippet>1299</a>				OnlineConfig {
-<a href=#1300 id=1300 data-nosnippet>1300</a>					transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
-<a href=#1301 id=1301 data-nosnippet>1301</a>					pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
-<a href=#1302 id=1302 data-nosnippet>1302</a>					child_trie: <span class="bool-val">false</span>,
-<a href=#1303 id=1303 data-nosnippet>1303</a>					state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
-<a href=#1304 id=1304 data-nosnippet>1304</a>					..Default::default()
-<a href=#1305 id=1305 data-nosnippet>1305</a>				},
-<a href=#1306 id=1306 data-nosnippet>1306</a>			))
-<a href=#1307 id=1307 data-nosnippet>1307</a>			.build()
-<a href=#1308 id=1308 data-nosnippet>1308</a>			.<span class="kw">await
-<a href=#1309 id=1309 data-nosnippet>1309</a>			</span>.unwrap()
-<a href=#1310 id=1310 data-nosnippet>1310</a>			.execute_with(|| {});
-<a href=#1311 id=1311 data-nosnippet>1311</a>
-<a href=#1312 id=1312 data-nosnippet>1312</a>		<span class="comment">// this shows that in the second run, we are not using the remote
-<a href=#1313 id=1313 data-nosnippet>1313</a>		</span>Builder::&lt;Block&gt;::new()
-<a href=#1314 id=1314 data-nosnippet>1314</a>			.mode(Mode::OfflineOrElseOnline(
-<a href=#1315 id=1315 data-nosnippet>1315</a>				OfflineConfig { state_snapshot: SnapshotConfig::new(CACHE) },
-<a href=#1316 id=1316 data-nosnippet>1316</a>				OnlineConfig {
-<a href=#1317 id=1317 data-nosnippet>1317</a>					transport_uris: <span class="macro">vec!</span>[<span class="string">"ws://non-existent:666"</span>.to_owned()],
-<a href=#1318 id=1318 data-nosnippet>1318</a>					..Default::default()
-<a href=#1319 id=1319 data-nosnippet>1319</a>				},
-<a href=#1320 id=1320 data-nosnippet>1320</a>			))
-<a href=#1321 id=1321 data-nosnippet>1321</a>			.build()
-<a href=#1322 id=1322 data-nosnippet>1322</a>			.<span class="kw">await
-<a href=#1323 id=1323 data-nosnippet>1323</a>			</span>.unwrap()
-<a href=#1324 id=1324 data-nosnippet>1324</a>			.execute_with(|| {});
-<a href=#1325 id=1325 data-nosnippet>1325</a>
-<a href=#1326 id=1326 data-nosnippet>1326</a>		<span class="kw">let </span>to_delete = std::fs::read_dir(Path::new(<span class="string">"."</span>))
-<a href=#1327 id=1327 data-nosnippet>1327</a>			.unwrap()
-<a href=#1328 id=1328 data-nosnippet>1328</a>			.into_iter()
-<a href=#1329 id=1329 data-nosnippet>1329</a>			.map(|d| d.unwrap())
-<a href=#1330 id=1330 data-nosnippet>1330</a>			.filter(|p| p.path().file_name().unwrap_or_default() == CACHE)
-<a href=#1331 id=1331 data-nosnippet>1331</a>			.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
-<a href=#1332 id=1332 data-nosnippet>1332</a>
-<a href=#1333 id=1333 data-nosnippet>1333</a>		<span class="macro">assert!</span>(to_delete.len() == <span class="number">1</span>);
-<a href=#1334 id=1334 data-nosnippet>1334</a>		std::fs::remove_file(to_delete[<span class="number">0</span>].path()).unwrap();
-<a href=#1335 id=1335 data-nosnippet>1335</a>	}
-<a href=#1336 id=1336 data-nosnippet>1336</a>
-<a href=#1337 id=1337 data-nosnippet>1337</a>	<span class="attr">#[tokio::test]
-<a href=#1338 id=1338 data-nosnippet>1338</a>	</span><span class="kw">async fn </span>can_build_one_small_pallet() {
-<a href=#1339 id=1339 data-nosnippet>1339</a>		init_logger();
-<a href=#1340 id=1340 data-nosnippet>1340</a>		Builder::&lt;Block&gt;::new()
-<a href=#1341 id=1341 data-nosnippet>1341</a>			.mode(Mode::Online(OnlineConfig {
-<a href=#1342 id=1342 data-nosnippet>1342</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
-<a href=#1343 id=1343 data-nosnippet>1343</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
-<a href=#1344 id=1344 data-nosnippet>1344</a>				child_trie: <span class="bool-val">false</span>,
-<a href=#1345 id=1345 data-nosnippet>1345</a>				..Default::default()
-<a href=#1346 id=1346 data-nosnippet>1346</a>			}))
-<a href=#1347 id=1347 data-nosnippet>1347</a>			.build()
-<a href=#1348 id=1348 data-nosnippet>1348</a>			.<span class="kw">await
-<a href=#1349 id=1349 data-nosnippet>1349</a>			</span>.unwrap()
-<a href=#1350 id=1350 data-nosnippet>1350</a>			.execute_with(|| {});
-<a href=#1351 id=1351 data-nosnippet>1351</a>	}
-<a href=#1352 id=1352 data-nosnippet>1352</a>
-<a href=#1353 id=1353 data-nosnippet>1353</a>	<span class="attr">#[tokio::test]
-<a href=#1354 id=1354 data-nosnippet>1354</a>	</span><span class="kw">async fn </span>can_build_few_pallet() {
-<a href=#1355 id=1355 data-nosnippet>1355</a>		init_logger();
-<a href=#1356 id=1356 data-nosnippet>1356</a>		Builder::&lt;Block&gt;::new()
-<a href=#1357 id=1357 data-nosnippet>1357</a>			.mode(Mode::Online(OnlineConfig {
-<a href=#1358 id=1358 data-nosnippet>1358</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
-<a href=#1359 id=1359 data-nosnippet>1359</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned(), <span class="string">"Multisig"</span>.to_owned()],
-<a href=#1360 id=1360 data-nosnippet>1360</a>				child_trie: <span class="bool-val">false</span>,
-<a href=#1361 id=1361 data-nosnippet>1361</a>				..Default::default()
-<a href=#1362 id=1362 data-nosnippet>1362</a>			}))
-<a href=#1363 id=1363 data-nosnippet>1363</a>			.build()
-<a href=#1364 id=1364 data-nosnippet>1364</a>			.<span class="kw">await
-<a href=#1365 id=1365 data-nosnippet>1365</a>			</span>.unwrap()
-<a href=#1366 id=1366 data-nosnippet>1366</a>			.execute_with(|| {});
-<a href=#1367 id=1367 data-nosnippet>1367</a>	}
-<a href=#1368 id=1368 data-nosnippet>1368</a>
-<a href=#1369 id=1369 data-nosnippet>1369</a>	<span class="attr">#[tokio::test(flavor = <span class="string">"multi_thread"</span>)]
-<a href=#1370 id=1370 data-nosnippet>1370</a>	</span><span class="kw">async fn </span>can_create_snapshot() {
-<a href=#1371 id=1371 data-nosnippet>1371</a>		<span class="kw">const </span>CACHE: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"can_create_snapshot"</span>;
-<a href=#1372 id=1372 data-nosnippet>1372</a>		init_logger();
-<a href=#1373 id=1373 data-nosnippet>1373</a>
-<a href=#1374 id=1374 data-nosnippet>1374</a>		Builder::&lt;Block&gt;::new()
-<a href=#1375 id=1375 data-nosnippet>1375</a>			.mode(Mode::Online(OnlineConfig {
-<a href=#1376 id=1376 data-nosnippet>1376</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
-<a href=#1377 id=1377 data-nosnippet>1377</a>				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
-<a href=#1378 id=1378 data-nosnippet>1378</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
-<a href=#1379 id=1379 data-nosnippet>1379</a>				child_trie: <span class="bool-val">false</span>,
-<a href=#1380 id=1380 data-nosnippet>1380</a>				..Default::default()
-<a href=#1381 id=1381 data-nosnippet>1381</a>			}))
-<a href=#1382 id=1382 data-nosnippet>1382</a>			.build()
-<a href=#1383 id=1383 data-nosnippet>1383</a>			.<span class="kw">await
-<a href=#1384 id=1384 data-nosnippet>1384</a>			</span>.unwrap()
-<a href=#1385 id=1385 data-nosnippet>1385</a>			.execute_with(|| {});
-<a href=#1386 id=1386 data-nosnippet>1386</a>
-<a href=#1387 id=1387 data-nosnippet>1387</a>		<span class="kw">let </span>to_delete = std::fs::read_dir(Path::new(<span class="string">"."</span>))
-<a href=#1388 id=1388 data-nosnippet>1388</a>			.unwrap()
-<a href=#1389 id=1389 data-nosnippet>1389</a>			.into_iter()
-<a href=#1390 id=1390 data-nosnippet>1390</a>			.map(|d| d.unwrap())
-<a href=#1391 id=1391 data-nosnippet>1391</a>			.filter(|p| p.path().file_name().unwrap_or_default() == CACHE)
-<a href=#1392 id=1392 data-nosnippet>1392</a>			.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
-<a href=#1393 id=1393 data-nosnippet>1393</a>
-<a href=#1394 id=1394 data-nosnippet>1394</a>		<span class="macro">assert!</span>(to_delete.len() == <span class="number">1</span>);
-<a href=#1395 id=1395 data-nosnippet>1395</a>		<span class="kw">let </span>to_delete = to_delete.first().unwrap();
-<a href=#1396 id=1396 data-nosnippet>1396</a>		<span class="macro">assert!</span>(std::fs::metadata(to_delete.path()).unwrap().size() &gt; <span class="number">1</span>);
-<a href=#1397 id=1397 data-nosnippet>1397</a>		std::fs::remove_file(to_delete.path()).unwrap();
-<a href=#1398 id=1398 data-nosnippet>1398</a>	}
-<a href=#1399 id=1399 data-nosnippet>1399</a>
-<a href=#1400 id=1400 data-nosnippet>1400</a>	<span class="attr">#[tokio::test]
-<a href=#1401 id=1401 data-nosnippet>1401</a>	</span><span class="kw">async fn </span>can_create_child_snapshot() {
-<a href=#1402 id=1402 data-nosnippet>1402</a>		<span class="kw">const </span>CACHE: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"can_create_child_snapshot"</span>;
-<a href=#1403 id=1403 data-nosnippet>1403</a>		init_logger();
-<a href=#1404 id=1404 data-nosnippet>1404</a>		Builder::&lt;Block&gt;::new()
-<a href=#1405 id=1405 data-nosnippet>1405</a>			.mode(Mode::Online(OnlineConfig {
-<a href=#1406 id=1406 data-nosnippet>1406</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
-<a href=#1407 id=1407 data-nosnippet>1407</a>				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
-<a href=#1408 id=1408 data-nosnippet>1408</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Crowdloan"</span>.to_owned()],
-<a href=#1409 id=1409 data-nosnippet>1409</a>				child_trie: <span class="bool-val">true</span>,
-<a href=#1410 id=1410 data-nosnippet>1410</a>				..Default::default()
-<a href=#1411 id=1411 data-nosnippet>1411</a>			}))
-<a href=#1412 id=1412 data-nosnippet>1412</a>			.build()
-<a href=#1413 id=1413 data-nosnippet>1413</a>			.<span class="kw">await
-<a href=#1414 id=1414 data-nosnippet>1414</a>			</span>.unwrap()
-<a href=#1415 id=1415 data-nosnippet>1415</a>			.execute_with(|| {});
-<a href=#1416 id=1416 data-nosnippet>1416</a>
-<a href=#1417 id=1417 data-nosnippet>1417</a>		<span class="kw">let </span>to_delete = std::fs::read_dir(Path::new(<span class="string">"."</span>))
-<a href=#1418 id=1418 data-nosnippet>1418</a>			.unwrap()
-<a href=#1419 id=1419 data-nosnippet>1419</a>			.into_iter()
-<a href=#1420 id=1420 data-nosnippet>1420</a>			.map(|d| d.unwrap())
-<a href=#1421 id=1421 data-nosnippet>1421</a>			.filter(|p| p.path().file_name().unwrap_or_default() == CACHE)
-<a href=#1422 id=1422 data-nosnippet>1422</a>			.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
-<a href=#1423 id=1423 data-nosnippet>1423</a>
-<a href=#1424 id=1424 data-nosnippet>1424</a>		<span class="macro">assert!</span>(to_delete.len() == <span class="number">1</span>);
-<a href=#1425 id=1425 data-nosnippet>1425</a>		<span class="kw">let </span>to_delete = to_delete.first().unwrap();
-<a href=#1426 id=1426 data-nosnippet>1426</a>		<span class="macro">assert!</span>(std::fs::metadata(to_delete.path()).unwrap().size() &gt; <span class="number">1</span>);
-<a href=#1427 id=1427 data-nosnippet>1427</a>		std::fs::remove_file(to_delete.path()).unwrap();
-<a href=#1428 id=1428 data-nosnippet>1428</a>	}
-<a href=#1429 id=1429 data-nosnippet>1429</a>
-<a href=#1430 id=1430 data-nosnippet>1430</a>	<span class="attr">#[tokio::test]
-<a href=#1431 id=1431 data-nosnippet>1431</a>	</span><span class="kw">async fn </span>can_build_big_pallet() {
-<a href=#1432 id=1432 data-nosnippet>1432</a>		<span class="kw">if </span><span class="macro">std::option_env!</span>(<span class="string">"TEST_WS"</span>).is_none() {
-<a href=#1433 id=1433 data-nosnippet>1433</a>			<span class="kw">return
-<a href=#1434 id=1434 data-nosnippet>1434</a>		</span>}
-<a href=#1435 id=1435 data-nosnippet>1435</a>		init_logger();
-<a href=#1436 id=1436 data-nosnippet>1436</a>		Builder::&lt;Block&gt;::new()
-<a href=#1437 id=1437 data-nosnippet>1437</a>			.mode(Mode::Online(OnlineConfig {
-<a href=#1438 id=1438 data-nosnippet>1438</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
-<a href=#1439 id=1439 data-nosnippet>1439</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Staking"</span>.to_owned()],
-<a href=#1440 id=1440 data-nosnippet>1440</a>				child_trie: <span class="bool-val">false</span>,
-<a href=#1441 id=1441 data-nosnippet>1441</a>				..Default::default()
-<a href=#1442 id=1442 data-nosnippet>1442</a>			}))
-<a href=#1443 id=1443 data-nosnippet>1443</a>			.build()
-<a href=#1444 id=1444 data-nosnippet>1444</a>			.<span class="kw">await
-<a href=#1445 id=1445 data-nosnippet>1445</a>			</span>.unwrap()
-<a href=#1446 id=1446 data-nosnippet>1446</a>			.execute_with(|| {});
-<a href=#1447 id=1447 data-nosnippet>1447</a>	}
-<a href=#1448 id=1448 data-nosnippet>1448</a>
-<a href=#1449 id=1449 data-nosnippet>1449</a>	<span class="attr">#[tokio::test]
-<a href=#1450 id=1450 data-nosnippet>1450</a>	</span><span class="kw">async fn </span>can_fetch_all() {
-<a href=#1451 id=1451 data-nosnippet>1451</a>		<span class="kw">if </span><span class="macro">std::option_env!</span>(<span class="string">"TEST_WS"</span>).is_none() {
-<a href=#1452 id=1452 data-nosnippet>1452</a>			<span class="kw">return
-<a href=#1453 id=1453 data-nosnippet>1453</a>		</span>}
-<a href=#1454 id=1454 data-nosnippet>1454</a>		init_logger();
-<a href=#1455 id=1455 data-nosnippet>1455</a>		Builder::&lt;Block&gt;::new()
-<a href=#1456 id=1456 data-nosnippet>1456</a>			.mode(Mode::Online(OnlineConfig {
-<a href=#1457 id=1457 data-nosnippet>1457</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
-<a href=#1458 id=1458 data-nosnippet>1458</a>				..Default::default()
-<a href=#1459 id=1459 data-nosnippet>1459</a>			}))
-<a href=#1460 id=1460 data-nosnippet>1460</a>			.build()
-<a href=#1461 id=1461 data-nosnippet>1461</a>			.<span class="kw">await
-<a href=#1462 id=1462 data-nosnippet>1462</a>			</span>.unwrap()
-<a href=#1463 id=1463 data-nosnippet>1463</a>			.execute_with(|| {});
-<a href=#1464 id=1464 data-nosnippet>1464</a>	}
-<a href=#1465 id=1465 data-nosnippet>1465</a>
-<a href=#1466 id=1466 data-nosnippet>1466</a>	<span class="attr">#[tokio::test]
-<a href=#1467 id=1467 data-nosnippet>1467</a>	</span><span class="kw">async fn </span>can_fetch_in_parallel() {
-<a href=#1468 id=1468 data-nosnippet>1468</a>		init_logger();
-<a href=#1469 id=1469 data-nosnippet>1469</a>
-<a href=#1470 id=1470 data-nosnippet>1470</a>		<span class="kw">let </span><span class="kw-2">mut </span>builder = Builder::&lt;Block&gt;::new().mode(Mode::Online(OnlineConfig {
-<a href=#1471 id=1471 data-nosnippet>1471</a>			transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
-<a href=#1472 id=1472 data-nosnippet>1472</a>			..Default::default()
-<a href=#1473 id=1473 data-nosnippet>1473</a>		}));
-<a href=#1474 id=1474 data-nosnippet>1474</a>		builder.init_remote_client().<span class="kw">await</span>.unwrap();
-<a href=#1475 id=1475 data-nosnippet>1475</a>
-<a href=#1476 id=1476 data-nosnippet>1476</a>		<span class="kw">let </span>at = builder.as_online().at.unwrap();
-<a href=#1477 id=1477 data-nosnippet>1477</a>
-<a href=#1478 id=1478 data-nosnippet>1478</a>		<span class="comment">// Test with a specific prefix
-<a href=#1479 id=1479 data-nosnippet>1479</a>		</span><span class="kw">let </span>prefix = StorageKey(<span class="macro">vec!</span>[<span class="number">13</span>]);
-<a href=#1480 id=1480 data-nosnippet>1480</a>		<span class="kw">let </span>para = builder.rpc_get_keys_parallel(<span class="kw-2">&amp;</span>prefix, at, <span class="number">4</span>).<span class="kw">await</span>.unwrap();
-<a href=#1481 id=1481 data-nosnippet>1481</a>		<span class="macro">assert!</span>(!para.is_empty(), <span class="string">"Should fetch some keys with prefix"</span>);
-<a href=#1482 id=1482 data-nosnippet>1482</a>
-<a href=#1483 id=1483 data-nosnippet>1483</a>		<span class="comment">// Test with empty prefix (all keys)
-<a href=#1484 id=1484 data-nosnippet>1484</a>		</span><span class="kw">let </span>prefix = StorageKey(<span class="macro">vec!</span>[]);
-<a href=#1485 id=1485 data-nosnippet>1485</a>		<span class="kw">let </span>para = builder.rpc_get_keys_parallel(<span class="kw-2">&amp;</span>prefix, at, <span class="number">8</span>).<span class="kw">await</span>.unwrap();
-<a href=#1486 id=1486 data-nosnippet>1486</a>		<span class="macro">assert!</span>(!para.is_empty(), <span class="string">"Should fetch some keys with empty prefix"</span>);
-<a href=#1487 id=1487 data-nosnippet>1487</a>	}
-<a href=#1488 id=1488 data-nosnippet>1488</a>
-<a href=#1489 id=1489 data-nosnippet>1489</a>	<span class="attr">#[tokio::test]
-<a href=#1490 id=1490 data-nosnippet>1490</a>	#[ignore] </span><span class="comment">// This test takes a long time, run with --ignored
-<a href=#1491 id=1491 data-nosnippet>1491</a>	</span><span class="kw">async fn </span>bridge_hub_polkadot_storage_root_matches() {
-<a href=#1492 id=1492 data-nosnippet>1492</a>		init_logger();
-<a href=#1493 id=1493 data-nosnippet>1493</a>
-<a href=#1494 id=1494 data-nosnippet>1494</a>		<span class="comment">// Use multiple RPC providers for load distribution
-<a href=#1495 id=1495 data-nosnippet>1495</a>		</span><span class="kw">let </span>endpoints = <span class="macro">vec!</span>[
-<a href=#1496 id=1496 data-nosnippet>1496</a>			<span class="string">"wss://bridge-hub-polkadot-rpc.n.dwellir.com"</span>,
-<a href=#1497 id=1497 data-nosnippet>1497</a>			<span class="string">"wss://sys.ibp.network/bridgehub-polkadot"</span>,
-<a href=#1498 id=1498 data-nosnippet>1498</a>			<span class="string">"wss://bridgehub-polkadot.api.onfinality.io/public"</span>,
-<a href=#1499 id=1499 data-nosnippet>1499</a>			<span class="string">"wss://dot-rpc.stakeworld.io/bridgehub"</span>,
-<a href=#1500 id=1500 data-nosnippet>1500</a>		];
-<a href=#1501 id=1501 data-nosnippet>1501</a>
-<a href=#1502 id=1502 data-nosnippet>1502</a>		<span class="macro">info!</span>(target: LOG_TARGET, <span class="string">"Connecting to Bridge Hub Polkadot using {} RPC providers"</span>, endpoints.len());
-<a href=#1503 id=1503 data-nosnippet>1503</a>
-<a href=#1504 id=1504 data-nosnippet>1504</a>		<span class="kw">let </span><span class="kw-2">mut </span>ext = Builder::&lt;Block&gt;::new()
-<a href=#1505 id=1505 data-nosnippet>1505</a>			.mode(Mode::Online(OnlineConfig {
-<a href=#1506 id=1506 data-nosnippet>1506</a>				transport_uris: endpoints.into_iter().map(|e| e.to_owned()).collect(),
-<a href=#1507 id=1507 data-nosnippet>1507</a>				child_trie: <span class="bool-val">true</span>,
-<a href=#1508 id=1508 data-nosnippet>1508</a>				..Default::default()
-<a href=#1509 id=1509 data-nosnippet>1509</a>			}))
-<a href=#1510 id=1510 data-nosnippet>1510</a>			.build()
-<a href=#1511 id=1511 data-nosnippet>1511</a>			.<span class="kw">await
-<a href=#1512 id=1512 data-nosnippet>1512</a>			</span>.expect(<span class="string">"Failed to build remote externalities"</span>);
-<a href=#1513 id=1513 data-nosnippet>1513</a>
-<a href=#1514 id=1514 data-nosnippet>1514</a>		<span class="comment">// Get the computed storage root from our downloaded state
-<a href=#1515 id=1515 data-nosnippet>1515</a>		</span><span class="kw">let </span>backend = ext.as_backend();
-<a href=#1516 id=1516 data-nosnippet>1516</a>		<span class="kw">let </span>computed_root = <span class="kw-2">*</span>backend.root();
-<a href=#1517 id=1517 data-nosnippet>1517</a>		<span class="comment">// Get the expected storage root from the block header
-<a href=#1518 id=1518 data-nosnippet>1518</a>		</span><span class="kw">let </span>expected_root = ext.header.state_root;
-<a href=#1519 id=1519 data-nosnippet>1519</a>
-<a href=#1520 id=1520 data-nosnippet>1520</a>		<span class="macro">info!</span>(
-<a href=#1521 id=1521 data-nosnippet>1521</a>			target: LOG_TARGET,
-<a href=#1522 id=1522 data-nosnippet>1522</a>			<span class="string">"Computed storage root: {:?}"</span>,
-<a href=#1523 id=1523 data-nosnippet>1523</a>			computed_root
-<a href=#1524 id=1524 data-nosnippet>1524</a>		);
-<a href=#1525 id=1525 data-nosnippet>1525</a>		<span class="macro">info!</span>(
-<a href=#1526 id=1526 data-nosnippet>1526</a>			target: LOG_TARGET,
-<a href=#1527 id=1527 data-nosnippet>1527</a>			<span class="string">"Expected storage root (from header): {:?}"</span>,
-<a href=#1528 id=1528 data-nosnippet>1528</a>			expected_root
-<a href=#1529 id=1529 data-nosnippet>1529</a>		);
-<a href=#1530 id=1530 data-nosnippet>1530</a>
-<a href=#1531 id=1531 data-nosnippet>1531</a>		<span class="comment">// The storage roots must match exactly - this proves we downloaded all keys correctly
-<a href=#1532 id=1532 data-nosnippet>1532</a>		</span><span class="macro">assert_eq!</span>(
-<a href=#1533 id=1533 data-nosnippet>1533</a>			computed_root, expected_root,
-<a href=#1534 id=1534 data-nosnippet>1534</a>			<span class="string">"Storage root mismatch! Computed: {:?}, Expected: {:?}. \
-<a href=#1535 id=1535 data-nosnippet>1535</a>			This indicates that not all keys were fetched or there were duplicates."</span>,
-<a href=#1536 id=1536 data-nosnippet>1536</a>			computed_root, expected_root
-<a href=#1537 id=1537 data-nosnippet>1537</a>		);
-<a href=#1538 id=1538 data-nosnippet>1538</a>
-<a href=#1539 id=1539 data-nosnippet>1539</a>		<span class="comment">// Verify we actually got some keys
-<a href=#1540 id=1540 data-nosnippet>1540</a>		</span>ext.execute_with(|| {
-<a href=#1541 id=1541 data-nosnippet>1541</a>			<span class="kw">let </span>key_count = KeyPrefixIterator::&lt;()&gt;::new(<span class="macro">vec!</span>[], <span class="macro">vec!</span>[], |<span class="kw">_</span>| <span class="prelude-val">Ok</span>(())).count();
-<a href=#1542 id=1542 data-nosnippet>1542</a>
-<a href=#1543 id=1543 data-nosnippet>1543</a>			<span class="macro">info!</span>(target: LOG_TARGET, <span class="string">"Total keys in state: {}"</span>, key_count);
-<a href=#1544 id=1544 data-nosnippet>1544</a>			<span class="macro">assert!</span>(key_count &gt; <span class="number">0</span>, <span class="string">"Should have fetched some keys"</span>);
-<a href=#1545 id=1545 data-nosnippet>1545</a>		});
-<a href=#1546 id=1546 data-nosnippet>1546</a>
+<a href=#1258 id=1258 data-nosnippet>1258</a>		<span class="comment">// This test does not rely on the remote endpoint having child tries. A synthetic child
+<a href=#1259 id=1259 data-nosnippet>1259</a>		// storage entry is inserted locally and then asserted on.
+<a href=#1260 id=1260 data-nosnippet>1260</a>		</span><span class="kw">use </span>sp_state_machine::Backend;
+<a href=#1261 id=1261 data-nosnippet>1261</a>
+<a href=#1262 id=1262 data-nosnippet>1262</a>		<span class="comment">// Create an externality with child trie scraping enabled.
+<a href=#1263 id=1263 data-nosnippet>1263</a>		</span><span class="kw">let </span><span class="kw-2">mut </span>child_ext = Builder::&lt;Block&gt;::new()
+<a href=#1264 id=1264 data-nosnippet>1264</a>			.mode(Mode::Online(OnlineConfig {
+<a href=#1265 id=1265 data-nosnippet>1265</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
+<a href=#1266 id=1266 data-nosnippet>1266</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
+<a href=#1267 id=1267 data-nosnippet>1267</a>				child_trie: <span class="bool-val">true</span>,
+<a href=#1268 id=1268 data-nosnippet>1268</a>				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
+<a href=#1269 id=1269 data-nosnippet>1269</a>				..Default::default()
+<a href=#1270 id=1270 data-nosnippet>1270</a>			}))
+<a href=#1271 id=1271 data-nosnippet>1271</a>			.build()
+<a href=#1272 id=1272 data-nosnippet>1272</a>			.<span class="kw">await
+<a href=#1273 id=1273 data-nosnippet>1273</a>			</span>.unwrap();
+<a href=#1274 id=1274 data-nosnippet>1274</a>
+<a href=#1275 id=1275 data-nosnippet>1275</a>		<span class="comment">// Create an externality without looking for children keys
+<a href=#1276 id=1276 data-nosnippet>1276</a>		</span><span class="kw">let </span><span class="kw-2">mut </span>ext = Builder::&lt;Block&gt;::new()
+<a href=#1277 id=1277 data-nosnippet>1277</a>			.mode(Mode::Online(OnlineConfig {
+<a href=#1278 id=1278 data-nosnippet>1278</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
+<a href=#1279 id=1279 data-nosnippet>1279</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
+<a href=#1280 id=1280 data-nosnippet>1280</a>				child_trie: <span class="bool-val">false</span>,
+<a href=#1281 id=1281 data-nosnippet>1281</a>				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
+<a href=#1282 id=1282 data-nosnippet>1282</a>				..Default::default()
+<a href=#1283 id=1283 data-nosnippet>1283</a>			}))
+<a href=#1284 id=1284 data-nosnippet>1284</a>			.build()
+<a href=#1285 id=1285 data-nosnippet>1285</a>			.<span class="kw">await
+<a href=#1286 id=1286 data-nosnippet>1286</a>			</span>.unwrap();
+<a href=#1287 id=1287 data-nosnippet>1287</a>
+<a href=#1288 id=1288 data-nosnippet>1288</a>		<span class="comment">// Generate artificial child storage entry, to ensure the test's assertion is valid.
+<a href=#1289 id=1289 data-nosnippet>1289</a>		</span><span class="kw">let </span>child_info = sp_core::storage::ChildInfo::new_default(<span class="string">b"test_child"</span>);
+<a href=#1290 id=1290 data-nosnippet>1290</a>		<span class="kw">let </span>child_key: Vec&lt;u8&gt; = <span class="string">b"k1"</span>.to_vec();
+<a href=#1291 id=1291 data-nosnippet>1291</a>		<span class="kw">let </span>child_value: Vec&lt;u8&gt; = <span class="string">b"v1"</span>.to_vec();
+<a href=#1292 id=1292 data-nosnippet>1292</a>
+<a href=#1293 id=1293 data-nosnippet>1293</a>		<span class="comment">// Record the size of the underlying trie DB before inserting the child entry.
+<a href=#1294 id=1294 data-nosnippet>1294</a>		</span><span class="kw">let </span>child_db_keys_before = child_ext.as_backend().backend_storage().keys().len();
+<a href=#1295 id=1295 data-nosnippet>1295</a>
+<a href=#1296 id=1296 data-nosnippet>1296</a>		<span class="comment">// Insert child storage only into `child_ext`.
+<a href=#1297 id=1297 data-nosnippet>1297</a>		</span>child_ext.insert_child(child_info.clone(), child_key.clone(), child_value.clone());
+<a href=#1298 id=1298 data-nosnippet>1298</a>
+<a href=#1299 id=1299 data-nosnippet>1299</a>		<span class="comment">// Assert: the child key exists only in the externalities where it is inserted.
+<a href=#1300 id=1300 data-nosnippet>1300</a>		</span><span class="kw">let </span>child_backend = child_ext.as_backend();
+<a href=#1301 id=1301 data-nosnippet>1301</a>		<span class="kw">let </span>backend = ext.as_backend();
+<a href=#1302 id=1302 data-nosnippet>1302</a>		<span class="macro">assert_eq!</span>(
+<a href=#1303 id=1303 data-nosnippet>1303</a>			child_backend.child_storage(<span class="kw-2">&amp;</span>child_info, <span class="kw-2">&amp;</span>child_key).unwrap(),
+<a href=#1304 id=1304 data-nosnippet>1304</a>			<span class="prelude-val">Some</span>(child_value)
+<a href=#1305 id=1305 data-nosnippet>1305</a>		);
+<a href=#1306 id=1306 data-nosnippet>1306</a>		<span class="macro">assert_eq!</span>(backend.child_storage(<span class="kw-2">&amp;</span>child_info, <span class="kw-2">&amp;</span>child_key).unwrap(), <span class="prelude-val">None</span>);
+<a href=#1307 id=1307 data-nosnippet>1307</a>
+<a href=#1308 id=1308 data-nosnippet>1308</a>		<span class="comment">// Structural assertion: insertion increased the underlying DB entry count.
+<a href=#1309 id=1309 data-nosnippet>1309</a>		</span><span class="kw">let </span>child_db_keys_after = child_backend.backend_storage().keys().len();
+<a href=#1310 id=1310 data-nosnippet>1310</a>		<span class="macro">assert!</span>(child_db_keys_after &gt; child_db_keys_before);
+<a href=#1311 id=1311 data-nosnippet>1311</a>	}
+<a href=#1312 id=1312 data-nosnippet>1312</a>
+<a href=#1313 id=1313 data-nosnippet>1313</a>	<span class="attr">#[tokio::test]
+<a href=#1314 id=1314 data-nosnippet>1314</a>	</span><span class="kw">async fn </span>offline_else_online_works() {
+<a href=#1315 id=1315 data-nosnippet>1315</a>		<span class="kw">const </span>CACHE: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"offline_else_online_works_data"</span>;
+<a href=#1316 id=1316 data-nosnippet>1316</a>		init_logger();
+<a href=#1317 id=1317 data-nosnippet>1317</a>		<span class="comment">// this shows that in the second run, we use the remote and create a snapshot.
+<a href=#1318 id=1318 data-nosnippet>1318</a>		</span>Builder::&lt;Block&gt;::new()
+<a href=#1319 id=1319 data-nosnippet>1319</a>			.mode(Mode::OfflineOrElseOnline(
+<a href=#1320 id=1320 data-nosnippet>1320</a>				OfflineConfig { state_snapshot: SnapshotConfig::new(CACHE) },
+<a href=#1321 id=1321 data-nosnippet>1321</a>				OnlineConfig {
+<a href=#1322 id=1322 data-nosnippet>1322</a>					transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
+<a href=#1323 id=1323 data-nosnippet>1323</a>					pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
+<a href=#1324 id=1324 data-nosnippet>1324</a>					child_trie: <span class="bool-val">false</span>,
+<a href=#1325 id=1325 data-nosnippet>1325</a>					state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
+<a href=#1326 id=1326 data-nosnippet>1326</a>					..Default::default()
+<a href=#1327 id=1327 data-nosnippet>1327</a>				},
+<a href=#1328 id=1328 data-nosnippet>1328</a>			))
+<a href=#1329 id=1329 data-nosnippet>1329</a>			.build()
+<a href=#1330 id=1330 data-nosnippet>1330</a>			.<span class="kw">await
+<a href=#1331 id=1331 data-nosnippet>1331</a>			</span>.unwrap()
+<a href=#1332 id=1332 data-nosnippet>1332</a>			.execute_with(|| {});
+<a href=#1333 id=1333 data-nosnippet>1333</a>
+<a href=#1334 id=1334 data-nosnippet>1334</a>		<span class="comment">// this shows that in the second run, we are not using the remote
+<a href=#1335 id=1335 data-nosnippet>1335</a>		</span>Builder::&lt;Block&gt;::new()
+<a href=#1336 id=1336 data-nosnippet>1336</a>			.mode(Mode::OfflineOrElseOnline(
+<a href=#1337 id=1337 data-nosnippet>1337</a>				OfflineConfig { state_snapshot: SnapshotConfig::new(CACHE) },
+<a href=#1338 id=1338 data-nosnippet>1338</a>				OnlineConfig {
+<a href=#1339 id=1339 data-nosnippet>1339</a>					transport_uris: <span class="macro">vec!</span>[<span class="string">"ws://non-existent:666"</span>.to_owned()],
+<a href=#1340 id=1340 data-nosnippet>1340</a>					..Default::default()
+<a href=#1341 id=1341 data-nosnippet>1341</a>				},
+<a href=#1342 id=1342 data-nosnippet>1342</a>			))
+<a href=#1343 id=1343 data-nosnippet>1343</a>			.build()
+<a href=#1344 id=1344 data-nosnippet>1344</a>			.<span class="kw">await
+<a href=#1345 id=1345 data-nosnippet>1345</a>			</span>.unwrap()
+<a href=#1346 id=1346 data-nosnippet>1346</a>			.execute_with(|| {});
+<a href=#1347 id=1347 data-nosnippet>1347</a>
+<a href=#1348 id=1348 data-nosnippet>1348</a>		<span class="kw">let </span>to_delete = std::fs::read_dir(Path::new(<span class="string">"."</span>))
+<a href=#1349 id=1349 data-nosnippet>1349</a>			.unwrap()
+<a href=#1350 id=1350 data-nosnippet>1350</a>			.into_iter()
+<a href=#1351 id=1351 data-nosnippet>1351</a>			.map(|d| d.unwrap())
+<a href=#1352 id=1352 data-nosnippet>1352</a>			.filter(|p| p.path().file_name().unwrap_or_default() == CACHE)
+<a href=#1353 id=1353 data-nosnippet>1353</a>			.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+<a href=#1354 id=1354 data-nosnippet>1354</a>
+<a href=#1355 id=1355 data-nosnippet>1355</a>		<span class="macro">assert!</span>(to_delete.len() == <span class="number">1</span>);
+<a href=#1356 id=1356 data-nosnippet>1356</a>		std::fs::remove_file(to_delete[<span class="number">0</span>].path()).unwrap();
+<a href=#1357 id=1357 data-nosnippet>1357</a>	}
+<a href=#1358 id=1358 data-nosnippet>1358</a>
+<a href=#1359 id=1359 data-nosnippet>1359</a>	<span class="attr">#[tokio::test]
+<a href=#1360 id=1360 data-nosnippet>1360</a>	</span><span class="kw">async fn </span>can_build_one_small_pallet() {
+<a href=#1361 id=1361 data-nosnippet>1361</a>		init_logger();
+<a href=#1362 id=1362 data-nosnippet>1362</a>		Builder::&lt;Block&gt;::new()
+<a href=#1363 id=1363 data-nosnippet>1363</a>			.mode(Mode::Online(OnlineConfig {
+<a href=#1364 id=1364 data-nosnippet>1364</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
+<a href=#1365 id=1365 data-nosnippet>1365</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
+<a href=#1366 id=1366 data-nosnippet>1366</a>				child_trie: <span class="bool-val">false</span>,
+<a href=#1367 id=1367 data-nosnippet>1367</a>				..Default::default()
+<a href=#1368 id=1368 data-nosnippet>1368</a>			}))
+<a href=#1369 id=1369 data-nosnippet>1369</a>			.build()
+<a href=#1370 id=1370 data-nosnippet>1370</a>			.<span class="kw">await
+<a href=#1371 id=1371 data-nosnippet>1371</a>			</span>.unwrap()
+<a href=#1372 id=1372 data-nosnippet>1372</a>			.execute_with(|| {});
+<a href=#1373 id=1373 data-nosnippet>1373</a>	}
+<a href=#1374 id=1374 data-nosnippet>1374</a>
+<a href=#1375 id=1375 data-nosnippet>1375</a>	<span class="attr">#[tokio::test]
+<a href=#1376 id=1376 data-nosnippet>1376</a>	</span><span class="kw">async fn </span>can_build_few_pallet() {
+<a href=#1377 id=1377 data-nosnippet>1377</a>		init_logger();
+<a href=#1378 id=1378 data-nosnippet>1378</a>		Builder::&lt;Block&gt;::new()
+<a href=#1379 id=1379 data-nosnippet>1379</a>			.mode(Mode::Online(OnlineConfig {
+<a href=#1380 id=1380 data-nosnippet>1380</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
+<a href=#1381 id=1381 data-nosnippet>1381</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned(), <span class="string">"Multisig"</span>.to_owned()],
+<a href=#1382 id=1382 data-nosnippet>1382</a>				child_trie: <span class="bool-val">false</span>,
+<a href=#1383 id=1383 data-nosnippet>1383</a>				..Default::default()
+<a href=#1384 id=1384 data-nosnippet>1384</a>			}))
+<a href=#1385 id=1385 data-nosnippet>1385</a>			.build()
+<a href=#1386 id=1386 data-nosnippet>1386</a>			.<span class="kw">await
+<a href=#1387 id=1387 data-nosnippet>1387</a>			</span>.unwrap()
+<a href=#1388 id=1388 data-nosnippet>1388</a>			.execute_with(|| {});
+<a href=#1389 id=1389 data-nosnippet>1389</a>	}
+<a href=#1390 id=1390 data-nosnippet>1390</a>
+<a href=#1391 id=1391 data-nosnippet>1391</a>	<span class="attr">#[tokio::test(flavor = <span class="string">"multi_thread"</span>)]
+<a href=#1392 id=1392 data-nosnippet>1392</a>	</span><span class="kw">async fn </span>can_create_snapshot() {
+<a href=#1393 id=1393 data-nosnippet>1393</a>		<span class="kw">const </span>CACHE: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"can_create_snapshot"</span>;
+<a href=#1394 id=1394 data-nosnippet>1394</a>		init_logger();
+<a href=#1395 id=1395 data-nosnippet>1395</a>
+<a href=#1396 id=1396 data-nosnippet>1396</a>		Builder::&lt;Block&gt;::new()
+<a href=#1397 id=1397 data-nosnippet>1397</a>			.mode(Mode::Online(OnlineConfig {
+<a href=#1398 id=1398 data-nosnippet>1398</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
+<a href=#1399 id=1399 data-nosnippet>1399</a>				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
+<a href=#1400 id=1400 data-nosnippet>1400</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
+<a href=#1401 id=1401 data-nosnippet>1401</a>				child_trie: <span class="bool-val">false</span>,
+<a href=#1402 id=1402 data-nosnippet>1402</a>				..Default::default()
+<a href=#1403 id=1403 data-nosnippet>1403</a>			}))
+<a href=#1404 id=1404 data-nosnippet>1404</a>			.build()
+<a href=#1405 id=1405 data-nosnippet>1405</a>			.<span class="kw">await
+<a href=#1406 id=1406 data-nosnippet>1406</a>			</span>.unwrap()
+<a href=#1407 id=1407 data-nosnippet>1407</a>			.execute_with(|| {});
+<a href=#1408 id=1408 data-nosnippet>1408</a>
+<a href=#1409 id=1409 data-nosnippet>1409</a>		<span class="kw">let </span>to_delete = std::fs::read_dir(Path::new(<span class="string">"."</span>))
+<a href=#1410 id=1410 data-nosnippet>1410</a>			.unwrap()
+<a href=#1411 id=1411 data-nosnippet>1411</a>			.into_iter()
+<a href=#1412 id=1412 data-nosnippet>1412</a>			.map(|d| d.unwrap())
+<a href=#1413 id=1413 data-nosnippet>1413</a>			.filter(|p| p.path().file_name().unwrap_or_default() == CACHE)
+<a href=#1414 id=1414 data-nosnippet>1414</a>			.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+<a href=#1415 id=1415 data-nosnippet>1415</a>
+<a href=#1416 id=1416 data-nosnippet>1416</a>		<span class="macro">assert!</span>(to_delete.len() == <span class="number">1</span>);
+<a href=#1417 id=1417 data-nosnippet>1417</a>		<span class="kw">let </span>to_delete = to_delete.first().unwrap();
+<a href=#1418 id=1418 data-nosnippet>1418</a>		<span class="macro">assert!</span>(std::fs::metadata(to_delete.path()).unwrap().size() &gt; <span class="number">1</span>);
+<a href=#1419 id=1419 data-nosnippet>1419</a>		std::fs::remove_file(to_delete.path()).unwrap();
+<a href=#1420 id=1420 data-nosnippet>1420</a>	}
+<a href=#1421 id=1421 data-nosnippet>1421</a>
+<a href=#1422 id=1422 data-nosnippet>1422</a>	<span class="attr">#[tokio::test]
+<a href=#1423 id=1423 data-nosnippet>1423</a>	</span><span class="kw">async fn </span>can_create_child_snapshot() {
+<a href=#1424 id=1424 data-nosnippet>1424</a>		<span class="kw">const </span>CACHE: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">"can_create_child_snapshot"</span>;
+<a href=#1425 id=1425 data-nosnippet>1425</a>		init_logger();
+<a href=#1426 id=1426 data-nosnippet>1426</a>		Builder::&lt;Block&gt;::new()
+<a href=#1427 id=1427 data-nosnippet>1427</a>			.mode(Mode::Online(OnlineConfig {
+<a href=#1428 id=1428 data-nosnippet>1428</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
+<a href=#1429 id=1429 data-nosnippet>1429</a>				state_snapshot: <span class="prelude-val">Some</span>(SnapshotConfig::new(CACHE)),
+<a href=#1430 id=1430 data-nosnippet>1430</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Crowdloan"</span>.to_owned()],
+<a href=#1431 id=1431 data-nosnippet>1431</a>				child_trie: <span class="bool-val">true</span>,
+<a href=#1432 id=1432 data-nosnippet>1432</a>				..Default::default()
+<a href=#1433 id=1433 data-nosnippet>1433</a>			}))
+<a href=#1434 id=1434 data-nosnippet>1434</a>			.build()
+<a href=#1435 id=1435 data-nosnippet>1435</a>			.<span class="kw">await
+<a href=#1436 id=1436 data-nosnippet>1436</a>			</span>.unwrap()
+<a href=#1437 id=1437 data-nosnippet>1437</a>			.execute_with(|| {});
+<a href=#1438 id=1438 data-nosnippet>1438</a>
+<a href=#1439 id=1439 data-nosnippet>1439</a>		<span class="kw">let </span>to_delete = std::fs::read_dir(Path::new(<span class="string">"."</span>))
+<a href=#1440 id=1440 data-nosnippet>1440</a>			.unwrap()
+<a href=#1441 id=1441 data-nosnippet>1441</a>			.into_iter()
+<a href=#1442 id=1442 data-nosnippet>1442</a>			.map(|d| d.unwrap())
+<a href=#1443 id=1443 data-nosnippet>1443</a>			.filter(|p| p.path().file_name().unwrap_or_default() == CACHE)
+<a href=#1444 id=1444 data-nosnippet>1444</a>			.collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+<a href=#1445 id=1445 data-nosnippet>1445</a>
+<a href=#1446 id=1446 data-nosnippet>1446</a>		<span class="macro">assert!</span>(to_delete.len() == <span class="number">1</span>);
+<a href=#1447 id=1447 data-nosnippet>1447</a>		<span class="kw">let </span>to_delete = to_delete.first().unwrap();
+<a href=#1448 id=1448 data-nosnippet>1448</a>		<span class="macro">assert!</span>(std::fs::metadata(to_delete.path()).unwrap().size() &gt; <span class="number">1</span>);
+<a href=#1449 id=1449 data-nosnippet>1449</a>		std::fs::remove_file(to_delete.path()).unwrap();
+<a href=#1450 id=1450 data-nosnippet>1450</a>	}
+<a href=#1451 id=1451 data-nosnippet>1451</a>
+<a href=#1452 id=1452 data-nosnippet>1452</a>	<span class="attr">#[tokio::test]
+<a href=#1453 id=1453 data-nosnippet>1453</a>	</span><span class="kw">async fn </span>can_build_big_pallet() {
+<a href=#1454 id=1454 data-nosnippet>1454</a>		<span class="kw">if </span><span class="macro">std::option_env!</span>(<span class="string">"TEST_WS"</span>).is_none() {
+<a href=#1455 id=1455 data-nosnippet>1455</a>			<span class="kw">return</span>;
+<a href=#1456 id=1456 data-nosnippet>1456</a>		}
+<a href=#1457 id=1457 data-nosnippet>1457</a>		init_logger();
+<a href=#1458 id=1458 data-nosnippet>1458</a>		Builder::&lt;Block&gt;::new()
+<a href=#1459 id=1459 data-nosnippet>1459</a>			.mode(Mode::Online(OnlineConfig {
+<a href=#1460 id=1460 data-nosnippet>1460</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
+<a href=#1461 id=1461 data-nosnippet>1461</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Staking"</span>.to_owned()],
+<a href=#1462 id=1462 data-nosnippet>1462</a>				child_trie: <span class="bool-val">false</span>,
+<a href=#1463 id=1463 data-nosnippet>1463</a>				..Default::default()
+<a href=#1464 id=1464 data-nosnippet>1464</a>			}))
+<a href=#1465 id=1465 data-nosnippet>1465</a>			.build()
+<a href=#1466 id=1466 data-nosnippet>1466</a>			.<span class="kw">await
+<a href=#1467 id=1467 data-nosnippet>1467</a>			</span>.unwrap()
+<a href=#1468 id=1468 data-nosnippet>1468</a>			.execute_with(|| {});
+<a href=#1469 id=1469 data-nosnippet>1469</a>	}
+<a href=#1470 id=1470 data-nosnippet>1470</a>
+<a href=#1471 id=1471 data-nosnippet>1471</a>	<span class="attr">#[tokio::test]
+<a href=#1472 id=1472 data-nosnippet>1472</a>	</span><span class="kw">async fn </span>can_fetch_all() {
+<a href=#1473 id=1473 data-nosnippet>1473</a>		<span class="kw">if </span><span class="macro">std::option_env!</span>(<span class="string">"TEST_WS"</span>).is_none() {
+<a href=#1474 id=1474 data-nosnippet>1474</a>			<span class="kw">return</span>;
+<a href=#1475 id=1475 data-nosnippet>1475</a>		}
+<a href=#1476 id=1476 data-nosnippet>1476</a>		init_logger();
+<a href=#1477 id=1477 data-nosnippet>1477</a>		Builder::&lt;Block&gt;::new()
+<a href=#1478 id=1478 data-nosnippet>1478</a>			.mode(Mode::Online(OnlineConfig {
+<a href=#1479 id=1479 data-nosnippet>1479</a>				transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
+<a href=#1480 id=1480 data-nosnippet>1480</a>				..Default::default()
+<a href=#1481 id=1481 data-nosnippet>1481</a>			}))
+<a href=#1482 id=1482 data-nosnippet>1482</a>			.build()
+<a href=#1483 id=1483 data-nosnippet>1483</a>			.<span class="kw">await
+<a href=#1484 id=1484 data-nosnippet>1484</a>			</span>.unwrap()
+<a href=#1485 id=1485 data-nosnippet>1485</a>			.execute_with(|| {});
+<a href=#1486 id=1486 data-nosnippet>1486</a>	}
+<a href=#1487 id=1487 data-nosnippet>1487</a>
+<a href=#1488 id=1488 data-nosnippet>1488</a>	<span class="attr">#[tokio::test]
+<a href=#1489 id=1489 data-nosnippet>1489</a>	</span><span class="kw">async fn </span>can_fetch_in_parallel() {
+<a href=#1490 id=1490 data-nosnippet>1490</a>		init_logger();
+<a href=#1491 id=1491 data-nosnippet>1491</a>
+<a href=#1492 id=1492 data-nosnippet>1492</a>		<span class="kw">let </span><span class="kw-2">mut </span>builder = Builder::&lt;Block&gt;::new().mode(Mode::Online(OnlineConfig {
+<a href=#1493 id=1493 data-nosnippet>1493</a>			transport_uris: <span class="macro">vec!</span>[endpoint().clone()],
+<a href=#1494 id=1494 data-nosnippet>1494</a>			..Default::default()
+<a href=#1495 id=1495 data-nosnippet>1495</a>		}));
+<a href=#1496 id=1496 data-nosnippet>1496</a>		builder.init_remote_client().<span class="kw">await</span>.unwrap();
+<a href=#1497 id=1497 data-nosnippet>1497</a>
+<a href=#1498 id=1498 data-nosnippet>1498</a>		<span class="kw">let </span>at = builder.as_online().at.unwrap();
+<a href=#1499 id=1499 data-nosnippet>1499</a>
+<a href=#1500 id=1500 data-nosnippet>1500</a>		<span class="comment">// Test with a specific prefix
+<a href=#1501 id=1501 data-nosnippet>1501</a>		</span><span class="kw">let </span>prefix = StorageKey(<span class="macro">vec!</span>[<span class="number">13</span>]);
+<a href=#1502 id=1502 data-nosnippet>1502</a>		<span class="kw">let </span>para = builder.rpc_get_keys_parallel(<span class="kw-2">&amp;</span>prefix, at, <span class="number">4</span>).<span class="kw">await</span>.unwrap();
+<a href=#1503 id=1503 data-nosnippet>1503</a>		<span class="macro">assert!</span>(!para.is_empty(), <span class="string">"Should fetch some keys with prefix"</span>);
+<a href=#1504 id=1504 data-nosnippet>1504</a>
+<a href=#1505 id=1505 data-nosnippet>1505</a>		<span class="comment">// Test with empty prefix (all keys)
+<a href=#1506 id=1506 data-nosnippet>1506</a>		</span><span class="kw">let </span>prefix = StorageKey(<span class="macro">vec!</span>[]);
+<a href=#1507 id=1507 data-nosnippet>1507</a>		<span class="kw">let </span>para = builder.rpc_get_keys_parallel(<span class="kw-2">&amp;</span>prefix, at, <span class="number">8</span>).<span class="kw">await</span>.unwrap();
+<a href=#1508 id=1508 data-nosnippet>1508</a>		<span class="macro">assert!</span>(!para.is_empty(), <span class="string">"Should fetch some keys with empty prefix"</span>);
+<a href=#1509 id=1509 data-nosnippet>1509</a>	}
+<a href=#1510 id=1510 data-nosnippet>1510</a>
+<a href=#1511 id=1511 data-nosnippet>1511</a>	<span class="attr">#[tokio::test]
+<a href=#1512 id=1512 data-nosnippet>1512</a>	#[ignore] </span><span class="comment">// This test takes a long time, run with --ignored
+<a href=#1513 id=1513 data-nosnippet>1513</a>	</span><span class="kw">async fn </span>bridge_hub_polkadot_storage_root_matches() {
+<a href=#1514 id=1514 data-nosnippet>1514</a>		init_logger();
+<a href=#1515 id=1515 data-nosnippet>1515</a>
+<a href=#1516 id=1516 data-nosnippet>1516</a>		<span class="comment">// Use multiple RPC providers for load distribution
+<a href=#1517 id=1517 data-nosnippet>1517</a>		</span><span class="kw">let </span>endpoints = <span class="macro">vec!</span>[
+<a href=#1518 id=1518 data-nosnippet>1518</a>			<span class="string">"wss://bridge-hub-polkadot-rpc.n.dwellir.com"</span>,
+<a href=#1519 id=1519 data-nosnippet>1519</a>			<span class="string">"wss://sys.ibp.network/bridgehub-polkadot"</span>,
+<a href=#1520 id=1520 data-nosnippet>1520</a>			<span class="string">"wss://bridgehub-polkadot.api.onfinality.io/public"</span>,
+<a href=#1521 id=1521 data-nosnippet>1521</a>			<span class="string">"wss://dot-rpc.stakeworld.io/bridgehub"</span>,
+<a href=#1522 id=1522 data-nosnippet>1522</a>		];
+<a href=#1523 id=1523 data-nosnippet>1523</a>
+<a href=#1524 id=1524 data-nosnippet>1524</a>		<span class="macro">info!</span>(target: LOG_TARGET, <span class="string">"Connecting to Bridge Hub Polkadot using {} RPC providers"</span>, endpoints.len());
+<a href=#1525 id=1525 data-nosnippet>1525</a>
+<a href=#1526 id=1526 data-nosnippet>1526</a>		<span class="kw">let </span><span class="kw-2">mut </span>ext = Builder::&lt;Block&gt;::new()
+<a href=#1527 id=1527 data-nosnippet>1527</a>			.mode(Mode::Online(OnlineConfig {
+<a href=#1528 id=1528 data-nosnippet>1528</a>				transport_uris: endpoints.into_iter().map(|e| e.to_owned()).collect(),
+<a href=#1529 id=1529 data-nosnippet>1529</a>				child_trie: <span class="bool-val">true</span>,
+<a href=#1530 id=1530 data-nosnippet>1530</a>				..Default::default()
+<a href=#1531 id=1531 data-nosnippet>1531</a>			}))
+<a href=#1532 id=1532 data-nosnippet>1532</a>			.build()
+<a href=#1533 id=1533 data-nosnippet>1533</a>			.<span class="kw">await
+<a href=#1534 id=1534 data-nosnippet>1534</a>			</span>.expect(<span class="string">"Failed to build remote externalities"</span>);
+<a href=#1535 id=1535 data-nosnippet>1535</a>
+<a href=#1536 id=1536 data-nosnippet>1536</a>		<span class="comment">// Get the computed storage root from our downloaded state
+<a href=#1537 id=1537 data-nosnippet>1537</a>		</span><span class="kw">let </span>backend = ext.as_backend();
+<a href=#1538 id=1538 data-nosnippet>1538</a>		<span class="kw">let </span>computed_root = <span class="kw-2">*</span>backend.root();
+<a href=#1539 id=1539 data-nosnippet>1539</a>		<span class="comment">// Get the expected storage root from the block header
+<a href=#1540 id=1540 data-nosnippet>1540</a>		</span><span class="kw">let </span>expected_root = ext.header.state_root;
+<a href=#1541 id=1541 data-nosnippet>1541</a>
+<a href=#1542 id=1542 data-nosnippet>1542</a>		<span class="macro">info!</span>(
+<a href=#1543 id=1543 data-nosnippet>1543</a>			target: LOG_TARGET,
+<a href=#1544 id=1544 data-nosnippet>1544</a>			<span class="string">"Computed storage root: {:?}"</span>,
+<a href=#1545 id=1545 data-nosnippet>1545</a>			computed_root
+<a href=#1546 id=1546 data-nosnippet>1546</a>		);
 <a href=#1547 id=1547 data-nosnippet>1547</a>		<span class="macro">info!</span>(
 <a href=#1548 id=1548 data-nosnippet>1548</a>			target: LOG_TARGET,
-<a href=#1549 id=1549 data-nosnippet>1549</a>			<span class="string">"✅ Storage root verification successful! All keys were fetched correctly."
-<a href=#1550 id=1550 data-nosnippet>1550</a>		</span>);
-<a href=#1551 id=1551 data-nosnippet>1551</a>	}
-<a href=#1552 id=1552 data-nosnippet>1552</a>}
+<a href=#1549 id=1549 data-nosnippet>1549</a>			<span class="string">"Expected storage root (from header): {:?}"</span>,
+<a href=#1550 id=1550 data-nosnippet>1550</a>			expected_root
+<a href=#1551 id=1551 data-nosnippet>1551</a>		);
+<a href=#1552 id=1552 data-nosnippet>1552</a>
+<a href=#1553 id=1553 data-nosnippet>1553</a>		<span class="comment">// The storage roots must match exactly - this proves we downloaded all keys correctly
+<a href=#1554 id=1554 data-nosnippet>1554</a>		</span><span class="macro">assert_eq!</span>(
+<a href=#1555 id=1555 data-nosnippet>1555</a>			computed_root, expected_root,
+<a href=#1556 id=1556 data-nosnippet>1556</a>			<span class="string">"Storage root mismatch! Computed: {:?}, Expected: {:?}. \
+<a href=#1557 id=1557 data-nosnippet>1557</a>			This indicates that not all keys were fetched or there were duplicates."</span>,
+<a href=#1558 id=1558 data-nosnippet>1558</a>			computed_root, expected_root
+<a href=#1559 id=1559 data-nosnippet>1559</a>		);
+<a href=#1560 id=1560 data-nosnippet>1560</a>
+<a href=#1561 id=1561 data-nosnippet>1561</a>		<span class="comment">// Verify we actually got some keys
+<a href=#1562 id=1562 data-nosnippet>1562</a>		</span>ext.execute_with(|| {
+<a href=#1563 id=1563 data-nosnippet>1563</a>			<span class="kw">let </span>key_count = KeyPrefixIterator::&lt;()&gt;::new(<span class="macro">vec!</span>[], <span class="macro">vec!</span>[], |<span class="kw">_</span>| <span class="prelude-val">Ok</span>(())).count();
+<a href=#1564 id=1564 data-nosnippet>1564</a>
+<a href=#1565 id=1565 data-nosnippet>1565</a>			<span class="macro">info!</span>(target: LOG_TARGET, <span class="string">"Total keys in state: {}"</span>, key_count);
+<a href=#1566 id=1566 data-nosnippet>1566</a>			<span class="macro">assert!</span>(key_count &gt; <span class="number">0</span>, <span class="string">"Should have fetched some keys"</span>);
+<a href=#1567 id=1567 data-nosnippet>1567</a>		});
+<a href=#1568 id=1568 data-nosnippet>1568</a>
+<a href=#1569 id=1569 data-nosnippet>1569</a>		<span class="macro">info!</span>(
+<a href=#1570 id=1570 data-nosnippet>1570</a>			target: LOG_TARGET,
+<a href=#1571 id=1571 data-nosnippet>1571</a>			<span class="string">"✅ Storage root verification successful! All keys were fetched correctly."
+<a href=#1572 id=1572 data-nosnippet>1572</a>		</span>);
+<a href=#1573 id=1573 data-nosnippet>1573</a>	}
+<a href=#1574 id=1574 data-nosnippet>1574</a>
+<a href=#1575 id=1575 data-nosnippet>1575</a>	<span class="attr">#[tokio::test]
+<a href=#1576 id=1576 data-nosnippet>1576</a>	</span><span class="kw">async fn </span>builder_fails_with_invalid_transport_uris() {
+<a href=#1577 id=1577 data-nosnippet>1577</a>		init_logger();
+<a href=#1578 id=1578 data-nosnippet>1578</a>
+<a href=#1579 id=1579 data-nosnippet>1579</a>		<span class="comment">// Using HTTP/HTTPS URIs should fail because Client::new() returns None for non-WS URIs
+<a href=#1580 id=1580 data-nosnippet>1580</a>		</span><span class="kw">let </span>result = Builder::&lt;Block&gt;::new()
+<a href=#1581 id=1581 data-nosnippet>1581</a>			.mode(Mode::Online(OnlineConfig {
+<a href=#1582 id=1582 data-nosnippet>1582</a>				transport_uris: <span class="macro">vec!</span>[<span class="string">"http://try-runtime.polkadot.io:443"</span>.to_string()],
+<a href=#1583 id=1583 data-nosnippet>1583</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
+<a href=#1584 id=1584 data-nosnippet>1584</a>				..Default::default()
+<a href=#1585 id=1585 data-nosnippet>1585</a>			}))
+<a href=#1586 id=1586 data-nosnippet>1586</a>			.build()
+<a href=#1587 id=1587 data-nosnippet>1587</a>			.<span class="kw">await</span>;
+<a href=#1588 id=1588 data-nosnippet>1588</a>
+<a href=#1589 id=1589 data-nosnippet>1589</a>		<span class="kw">match </span>result {
+<a href=#1590 id=1590 data-nosnippet>1590</a>			<span class="prelude-val">Err</span>(e) =&gt; <span class="macro">assert_eq!</span>(e, <span class="string">"At least one client must be provided"</span>),
+<a href=#1591 id=1591 data-nosnippet>1591</a>			<span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="macro">panic!</span>(<span class="string">"Expected error but got success"</span>),
+<a href=#1592 id=1592 data-nosnippet>1592</a>		}
+<a href=#1593 id=1593 data-nosnippet>1593</a>
+<a href=#1594 id=1594 data-nosnippet>1594</a>		<span class="comment">// Multiple invalid URIs should also fail
+<a href=#1595 id=1595 data-nosnippet>1595</a>		</span><span class="kw">let </span>result = Builder::&lt;Block&gt;::new()
+<a href=#1596 id=1596 data-nosnippet>1596</a>			.mode(Mode::Online(OnlineConfig {
+<a href=#1597 id=1597 data-nosnippet>1597</a>				transport_uris: <span class="macro">vec!</span>[
+<a href=#1598 id=1598 data-nosnippet>1598</a>					<span class="string">"http://try-runtime.polkadot.io:443"</span>.to_string(),
+<a href=#1599 id=1599 data-nosnippet>1599</a>					<span class="string">"https://try-runtime.polkadot.io:443"</span>.to_string(),
+<a href=#1600 id=1600 data-nosnippet>1600</a>					<span class="string">"garbage"</span>.to_string(),
+<a href=#1601 id=1601 data-nosnippet>1601</a>				],
+<a href=#1602 id=1602 data-nosnippet>1602</a>				pallets: <span class="macro">vec!</span>[<span class="string">"Proxy"</span>.to_owned()],
+<a href=#1603 id=1603 data-nosnippet>1603</a>				..Default::default()
+<a href=#1604 id=1604 data-nosnippet>1604</a>			}))
+<a href=#1605 id=1605 data-nosnippet>1605</a>			.build()
+<a href=#1606 id=1606 data-nosnippet>1606</a>			.<span class="kw">await</span>;
+<a href=#1607 id=1607 data-nosnippet>1607</a>
+<a href=#1608 id=1608 data-nosnippet>1608</a>		<span class="kw">match </span>result {
+<a href=#1609 id=1609 data-nosnippet>1609</a>			<span class="prelude-val">Err</span>(e) =&gt; <span class="macro">assert_eq!</span>(e, <span class="string">"At least one client must be provided"</span>),
+<a href=#1610 id=1610 data-nosnippet>1610</a>			<span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; <span class="macro">panic!</span>(<span class="string">"Expected error but got success"</span>),
+<a href=#1611 id=1611 data-nosnippet>1611</a>		}
+<a href=#1612 id=1612 data-nosnippet>1612</a>	}
+<a href=#1613 id=1613 data-nosnippet>1613</a>}
 </code></pre></div></section></main></body></html>

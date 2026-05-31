@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["atomic"],"struct":["SyncView"]};
+window.SIDEBAR_ITEMS = {"mod":["atomic"],"struct":["Exclusive"]};
