@@ -27,8 +27,9 @@ use sc_executor::{
 };
 use sp_api::{CallContext, StorageProof};
 use sp_core::{
-    hexdisplay::HexDisplay, storage::well_known_keys, traits::ReadRuntimeVersion, twox_128, Hasher,
+    hexdisplay::HexDisplay, storage::well_known_keys, traits::ReadRuntimeVersion, Hasher,
 };
+use sp_crypto_hashing::twox_128;
 use sp_externalities::Extensions;
 use sp_runtime::{
     traits::{BlakeTwo256, Block as BlockT, HashingFor, Header as HeaderT},
@@ -382,7 +383,11 @@ pub(crate) fn state_machine_call<Block: BlockT, HostFns: HostFunctions>(
         method,
         data,
         &mut extensions,
-        &sp_state_machine::backend::BackendRuntimeCode::new(&ext.backend).runtime_code()?,
+        &sp_state_machine::backend::BackendRuntimeCode::new(
+            &ext.backend,
+            sp_state_machine::backend::TryPendingCode::No,
+        )
+        .runtime_code()?,
         CallContext::Offchain,
     )
     .execute()
@@ -405,7 +410,10 @@ pub(crate) fn state_machine_call_with_proof<Block: BlockT, HostFns: HostFunction
     mut extensions: Extensions,
     maybe_export_proof: Option<PathBuf>,
 ) -> sc_cli::Result<(StorageProof, Vec<u8>)> {
-    let runtime_code_backend = sp_state_machine::backend::BackendRuntimeCode::new(&ext.backend);
+    let runtime_code_backend = sp_state_machine::backend::BackendRuntimeCode::new(
+        &ext.backend,
+        sp_state_machine::backend::TryPendingCode::No,
+    );
     let proving_backend = TrieBackendBuilder::wrap(&ext.backend)
         .with_recorder(Default::default())
         .build();

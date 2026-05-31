@@ -17,7 +17,8 @@
 
 use cumulus_primitives_parachain_inherent::MessageQueueChain;
 use parity_scale_codec::Encode;
-use sp_core::{twox_128, H256};
+use sp_core::H256;
+use sp_crypto_hashing::twox_128;
 use sp_runtime::traits::{Block as BlockT, HashingFor};
 use sp_state_machine::TestExternalities;
 

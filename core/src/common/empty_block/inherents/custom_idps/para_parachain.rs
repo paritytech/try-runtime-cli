@@ -23,7 +23,7 @@ use std::{ops::DerefMut, sync::Arc};
 use parity_scale_codec::{Decode, Encode};
 use polkadot_primitives::HeadData;
 use sp_consensus_babe::SlotDuration;
-use sp_core::twox_128;
+use sp_crypto_hashing::twox_128;
 use sp_inherents::InherentIdentifier;
 use sp_runtime::traits::{Block as BlockT, HashingFor};
 use sp_state_machine::TestExternalities;
