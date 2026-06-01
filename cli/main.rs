@@ -200,21 +200,28 @@
 //!
 //! ```bash
 //! # Assuming local nodes are running (e.g., `./substrate --dev --tmp --ws-port 9999`).
-//! # Multiple --uri flags can be provided for parallel state download.
+//! # Multiple URIs can be provided for parallel state download, either
+//! # comma-separated or via repeated --uri flags.
 //! try-runtime \
 //!     --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
 //!     on-runtime-upgrade \
 //!     --disable-mbm-checks \
 //!     live \
-//!     --uri ws://localhost:9999 \
-//!     --uri ws://localhost:9998
+//!     --uri ws://localhost:9999,ws://localhost:9998
 //!     ...
 //! ```
 //!
 //! To speed up state download, you can provide multiple URIs for parallel fetching:
 //!
 //! ```bash
-//! # assuming multiple substrate nodes running on ports 9999, 9998, 9997
+//! # comma-separated:
+//! try-runtime \
+//!     --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
+//!     on-runtime-upgrade \
+//!     live \
+//!     --uri ws://localhost:9999,ws://localhost:9998,ws://localhost:9997
+//!
+//! # or repeated flags:
 //! try-runtime \
 //!     --runtime /path-to-substrate/target/release/wbuild/my-runtime.wasm \
 //!     on-runtime-upgrade \
@@ -226,8 +233,8 @@
 //!
 //! * Same as the previous example, but run it at specific block number's state and using the live
 //!   polkadot network. This means that this block hash's state should not yet have been pruned by
-//!   the node running at `rpc.polkadot.io`. Multiple `--uri` flags can be provided for parallel
-//!   state download.
+//!   the node running at `rpc.polkadot.io`. Multiple URIs can be provided for parallel state
+//!   download (comma-separated or via repeated `--uri` flags).
 //!
 //! ```bash
 //! try-runtime \
@@ -252,8 +259,7 @@
 //!
 //! ```bash
 //! try-runtime --runtime existing create-snapshot \
-//!     --uri ws://localhost:9999 \
-//!     --uri ws://localhost:9998 \
+//!     --uri ws://localhost:9999,ws://localhost:9998 \
 //!     -- my-snapshot.snap
 //! ```
 //!
