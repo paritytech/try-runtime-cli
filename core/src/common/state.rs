@@ -483,3 +483,110 @@ fn storage_proof_to_raw_json(storage_proof: &sp_state_machine::StorageProof) -> 
     )
     .to_string()
 }
+
+#[cfg(test)]
+mod tests {
+    use clap::Parser;
+
+    use super::*;
+
+    #[derive(Parser)]
+    struct TestCli {
+        #[command(subcommand)]
+        state: State,
+    }
+
+    /// Multiple URIs via repeated `--uri` flags.
+    #[test]
+    fn uri_repeated_flags() {
+        let cli = TestCli::parse_from([
+            "test",
+            "live",
+            "--uri",
+            "ws://localhost:9999",
+            "--uri",
+            "ws://localhost:9998",
+        ]);
+        match cli.state {
+            State::Live(live) => {
+                assert_eq!(live.uri, vec!["ws://localhost:9999", "ws://localhost:9998"]);
+            }
+            _ => panic!("expected Live variant"),
+        }
+    }
+
+    /// Multiple URIs via comma-separated value in a single `--uri`.
+    #[test]
+    fn uri_comma_separated() {
+        let cli = TestCli::parse_from([
+            "test",
+            "live",
+            "--uri",
+            "ws://localhost:9999,ws://localhost:9998",
+        ]);
+        match cli.state {
+            State::Live(live) => {
+                assert_eq!(live.uri, vec!["ws://localhost:9999", "ws://localhost:9998"]);
+            }
+            _ => panic!("expected Live variant"),
+        }
+    }
+
+    /// Mixing repeated flags with comma-separated values in a single invocation.
+    #[test]
+    fn uri_mixed_repeated_and_comma() {
+        let cli = TestCli::parse_from([
+            "test",
+            "live",
+            "--uri",
+            "ws://localhost:9999,ws://localhost:9998",
+            "--uri",
+            "ws://localhost:9997",
+        ]);
+        match cli.state {
+            State::Live(live) => {
+                assert_eq!(
+                    live.uri,
+                    vec![
+                        "ws://localhost:9999",
+                        "ws://localhost:9998",
+                        "ws://localhost:9997",
+                    ]
+                );
+            }
+            _ => panic!("expected Live variant"),
+        }
+    }
+
+    /// Single URI, the common case.
+    #[test]
+    fn uri_single_value() {
+        let cli = TestCli::parse_from(["test", "live", "--uri", "wss://rpc.polkadot.io:443"]);
+        match cli.state {
+            State::Live(live) => {
+                assert_eq!(live.uri, vec!["wss://rpc.polkadot.io:443"]);
+            }
+            _ => panic!("expected Live variant"),
+        }
+    }
+
+    /// Arguments after `--uri` are not greedily consumed (the original bug).
+    #[test]
+    fn uri_positional_not_swallowed() {
+        let cli = TestCli::parse_from([
+            "test",
+            "live",
+            "--uri",
+            "ws://localhost:9999",
+            "--pallet",
+            "System",
+        ]);
+        match cli.state {
+            State::Live(live) => {
+                assert_eq!(live.uri, vec!["ws://localhost:9999"]);
+                assert_eq!(live.pallet, vec!["System"]);
+            }
+            _ => panic!("expected Live variant"),
+        }
+    }
+}
