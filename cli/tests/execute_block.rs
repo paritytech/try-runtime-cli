@@ -121,5 +121,45 @@ async fn execute_block_works() {
             .status
             .success());
     })
+    .await;
+
+    // Test passing --from and --to to execute a range of blocks.
+    common::run_with_timeout(Duration::from_secs(120), async move {
+        let ws_url = format!("ws://localhost:{}", port);
+        let from = 3u64;
+        let to = 5u64;
+
+        fn execute_block_range(ws_url: &str, from: u64, to: u64) -> tokio::process::Child {
+            Command::new(cargo_bin("try-runtime"))
+                .stdout(std::process::Stdio::piped())
+                .stderr(std::process::Stdio::piped())
+                .arg("--runtime=existing")
+                .args(["execute-block"])
+                .args([format!("--from={}", from), format!("--to={}", to)])
+                .args(["live", format!("--uri={}", ws_url).as_str()])
+                .kill_on_drop(true)
+                .spawn()
+                .unwrap()
+        }
+
+        let mut block_execution = execute_block_range(&ws_url, from, to);
+
+        // Expect the last block in the range to be successfully executed.
+        let expected_output = format!(r#".*Block #{} successfully executed"#, to);
+        let re = Regex::new(expected_output.as_str()).unwrap();
+        let matched =
+            common::wait_for_stream_pattern_match(block_execution.stderr.take().unwrap(), re).await;
+
+        // Assert that all blocks in the range were executed.
+        assert!(matched.is_ok());
+
+        // Assert that the block-execution exited successfully.
+        assert!(block_execution
+            .wait_with_output()
+            .await
+            .unwrap()
+            .status
+            .success());
+    })
     .await
 }
