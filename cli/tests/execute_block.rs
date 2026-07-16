@@ -158,7 +158,10 @@ async fn execute_block_works() {
         for block_number in from..=to {
             let expected_output = format!(r#".*Block #{block_number} successfully executed"#);
             let re = Regex::new(&expected_output).unwrap();
-            assert!(re.is_match(&stderr), "expected block {block_number} to be executed");
+            assert!(
+                re.is_match(&stderr),
+                "expected block {block_number} to be executed"
+            );
         }
 
         // Assert that the blocks immediately outside the range were not executed.
