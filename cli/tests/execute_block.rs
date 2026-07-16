@@ -154,15 +154,22 @@ async fn execute_block_works() {
         let output = block_execution.wait_with_output().await.unwrap();
         let stderr = String::from_utf8_lossy(&output.stderr);
 
-        // Expect the last block in the range to be successfully executed.
-        let expected_output = format!(r#".*Block #{} successfully executed"#, to);
-        let re = Regex::new(expected_output.as_str()).unwrap();
-        assert!(re.is_match(&stderr));
+        // Assert that every block from `from` to `to` was executed.
+        for block_number in from..=to {
+            let expected_output = format!(r#".*Block #{block_number} successfully executed"#);
+            let re = Regex::new(&expected_output).unwrap();
+            assert!(re.is_match(&stderr), "expected block {block_number} to be executed");
+        }
 
-        // Assert that the block after is not executed.
-        let expected_output = format!(r#".*Block #{} successfully executed"#, to + 1);
-        let re = Regex::new(expected_output.as_str()).unwrap();
-        assert!(!re.is_match(&stderr));
+        // Assert that the blocks immediately outside the range were not executed.
+        for block_number in [from - 1, to + 1] {
+            let expected_output = format!(r#".*Block #{block_number} successfully executed"#);
+            let re = Regex::new(&expected_output).unwrap();
+            assert!(
+                !re.is_match(&stderr),
+                "block {block_number} should not have been executed"
+            );
+        }
 
         // Assert that the block-execution exited successfully.
         assert!(output.status.success());
