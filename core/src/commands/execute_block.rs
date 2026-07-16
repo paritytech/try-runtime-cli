@@ -150,9 +150,8 @@ where
                     child_tree: Default::default(),
                 };
 
-                let _ =
-                    execute_block::<Block, HostFns>(&shared, &command, &executor, &rpc, live_state)
-                        .await;
+                execute_block::<Block, HostFns>(&shared, &command, &executor, &rpc, live_state)
+                    .await?;
             }
         }
 

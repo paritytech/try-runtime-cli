@@ -25,6 +25,13 @@ use regex::Regex;
 use substrate_cli_test_utils as common;
 use tokio::process::Command;
 
+/*
+ * Test that `execute-block` works as expected.
+ * It covers three scenarios:
+ *   1. Passing --at to execute a specific block.
+ *   2. Not passing --at to execute the latest block.
+ *   3. Passing --from and --to to execute an inclusive range of blocks.
+ */
 #[tokio::test]
 async fn execute_block_works() {
     let port = 45789;
@@ -45,7 +52,7 @@ async fn execute_block_works() {
     // Wait some time to ensure the node is warmed up.
     std::thread::sleep(Duration::from_secs(90));
 
-    // Test passing --at
+    // 1. Test passing --at to execute a specific block.
     common::run_with_timeout(Duration::from_secs(60), async move {
         let ws_url = format!("ws://localhost:{}", port);
 
@@ -87,7 +94,7 @@ async fn execute_block_works() {
     })
     .await;
 
-    // Test not passing --at
+    // 2. Test not passing --at should execute the latest block.
     common::run_with_timeout(Duration::from_secs(60), async move {
         let ws_url = format!("ws://localhost:{}", port);
 
@@ -123,7 +130,7 @@ async fn execute_block_works() {
     })
     .await;
 
-    // Test passing --from and --to to execute a range of blocks.
+    // 3. Test passing --from and --to to execute a range of blocks (inclusive).
     common::run_with_timeout(Duration::from_secs(120), async move {
         let ws_url = format!("ws://localhost:{}", port);
         let from = 3u64;
@@ -142,24 +149,23 @@ async fn execute_block_works() {
                 .unwrap()
         }
 
-        let mut block_execution = execute_block_range(&ws_url, from, to);
+        let block_execution = execute_block_range(&ws_url, from, to);
+
+        let output = block_execution.wait_with_output().await.unwrap();
+        let stderr = String::from_utf8_lossy(&output.stderr);
 
         // Expect the last block in the range to be successfully executed.
         let expected_output = format!(r#".*Block #{} successfully executed"#, to);
         let re = Regex::new(expected_output.as_str()).unwrap();
-        let matched =
-            common::wait_for_stream_pattern_match(block_execution.stderr.take().unwrap(), re).await;
+        assert!(re.is_match(&stderr));
 
-        // Assert that all blocks in the range were executed.
-        assert!(matched.is_ok());
+        // Assert that the block after is not executed.
+        let expected_output = format!(r#".*Block #{} successfully executed"#, to + 1);
+        let re = Regex::new(expected_output.as_str()).unwrap();
+        assert!(!re.is_match(&stderr));
 
         // Assert that the block-execution exited successfully.
-        assert!(block_execution
-            .wait_with_output()
-            .await
-            .unwrap()
-            .status
-            .success());
+        assert!(output.status.success());
     })
     .await
 }
