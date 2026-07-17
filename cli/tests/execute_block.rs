@@ -25,6 +25,13 @@ use regex::Regex;
 use substrate_cli_test_utils as common;
 use tokio::process::Command;
 
+/*
+ * Test that `execute-block` works as expected.
+ * It covers three scenarios:
+ *   1. Passing --at to execute a specific block.
+ *   2. Not passing --at to execute the latest block.
+ *   3. Passing --from and --to to execute an inclusive range of blocks.
+ */
 #[tokio::test]
 async fn execute_block_works() {
     let port = 45789;
@@ -45,7 +52,7 @@ async fn execute_block_works() {
     // Wait some time to ensure the node is warmed up.
     std::thread::sleep(Duration::from_secs(90));
 
-    // Test passing --at
+    // 1. Test passing --at to execute a specific block.
     common::run_with_timeout(Duration::from_secs(60), async move {
         let ws_url = format!("ws://localhost:{}", port);
 
@@ -87,7 +94,7 @@ async fn execute_block_works() {
     })
     .await;
 
-    // Test not passing --at
+    // 2. Test not passing --at should execute the latest block.
     common::run_with_timeout(Duration::from_secs(60), async move {
         let ws_url = format!("ws://localhost:{}", port);
 
@@ -120,6 +127,55 @@ async fn execute_block_works() {
             .unwrap()
             .status
             .success());
+    })
+    .await;
+
+    // 3. Test passing --from and --to to execute a range of blocks (inclusive).
+    common::run_with_timeout(Duration::from_secs(120), async move {
+        let ws_url = format!("ws://localhost:{}", port);
+        let from = 3u64;
+        let to = 5u64;
+
+        fn execute_block_range(ws_url: &str, from: u64, to: u64) -> tokio::process::Child {
+            Command::new(cargo_bin("try-runtime"))
+                .stdout(std::process::Stdio::piped())
+                .stderr(std::process::Stdio::piped())
+                .arg("--runtime=existing")
+                .args(["execute-block"])
+                .args([format!("--from={}", from), format!("--to={}", to)])
+                .args(["live", format!("--uri={}", ws_url).as_str()])
+                .kill_on_drop(true)
+                .spawn()
+                .unwrap()
+        }
+
+        let block_execution = execute_block_range(&ws_url, from, to);
+
+        let output = block_execution.wait_with_output().await.unwrap();
+        let stderr = String::from_utf8_lossy(&output.stderr);
+
+        // Assert that every block from `from` to `to` was executed.
+        for block_number in from..=to {
+            let expected_output = format!(r#".*Block #{block_number} successfully executed"#);
+            let re = Regex::new(&expected_output).unwrap();
+            assert!(
+                re.is_match(&stderr),
+                "expected block {block_number} to be executed"
+            );
+        }
+
+        // Assert that the blocks immediately outside the range were not executed.
+        for block_number in [from - 1, to + 1] {
+            let expected_output = format!(r#".*Block #{block_number} successfully executed"#);
+            let re = Regex::new(&expected_output).unwrap();
+            assert!(
+                !re.is_match(&stderr),
+                "block {block_number} should not have been executed"
+            );
+        }
+
+        // Assert that the block-execution exited successfully.
+        assert!(output.status.success());
     })
     .await
 }

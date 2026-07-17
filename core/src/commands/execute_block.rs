@@ -18,12 +18,13 @@
 use std::{fmt::Debug, str::FromStr};
 
 use parity_scale_codec::Encode;
-use sc_executor::sp_wasm_interface::HostFunctions;
+use sc_executor::{sp_wasm_interface::HostFunctions, WasmExecutor};
+use sp_rpc::{list::ListOrValue, number::NumberOrHex};
 use sp_runtime::{
     generic::SignedBlock,
     traits::{Block as BlockT, Header as HeaderT, NumberFor},
 };
-use substrate_rpc_client::{ws_client, ChainApi};
+use substrate_rpc_client::{ws_client, ChainApi, WsClient};
 
 use crate::{
     common::state::{
@@ -49,6 +50,14 @@ pub struct Command {
     ///   round-robin fashion.
     #[arg(long, default_value = "all")]
     pub try_state: frame_try_runtime::TryStateSelect,
+
+    /// Block number to start execution from.
+    #[arg(long, requires = "to")]
+    pub from: Option<u64>,
+
+    /// Block number to stop execution at.
+    #[arg(long, requires = "from")]
+    pub to: Option<u64>,
 
     /// The ws uri from which to fetch the block.
     ///
@@ -98,33 +107,103 @@ where
     let block_ws_uri = command.block_ws_uri();
     let rpc = ws_client(&block_ws_uri).await?;
 
-    let live_state = match command.state {
-        State::Live(live_state) => {
-            // If no --at is provided, get the latest block to replay
-            if live_state.at.is_some() {
-                live_state
-            } else {
+    // If --from and --to is passed, they take precedence over LiveState --at.
+    if let (Some(from), Some(to)) = (command.from, command.to) {
+        if from > to {
+            return Err(sc_cli::Error::Application(
+                format!("--from ({from}) must be less than or equal to --to ({to})").into(),
+            ));
+        }
+
+        let block_numbers = (from..=to).map(NumberOrHex::Number).collect::<Vec<_>>();
+
+        let hash_list = ChainApi::<(), Block::Hash, Block::Header, SignedBlock<Block>>::block_hash(
+            &rpc,
+            Some(ListOrValue::List(block_numbers)),
+        )
+        .await
+        .map_err(rpc_err_handler)?;
+
+        if let ListOrValue::List(hashes) = hash_list {
+            for (block_number, hash) in (from..=to).zip(hashes) {
+                let Some(hash) = hash else {
+                    log::warn!(target: LOG_TARGET, "skipping block {block_number}, hash was None");
+                    continue;
+                };
+
+                log::info!(target: LOG_TARGET, "hash found, block number: {block_number}, hash: {hash}");
+
                 let header =
                     ChainApi::<(), Block::Hash, Block::Header, SignedBlock<Block>>::header(
-                        &rpc, None,
+                        &rpc,
+                        Some(hash),
                     )
                     .await
                     .map_err(rpc_err_handler)?
-                    .expect("header exists, block should also exist; qed");
-                LiveState {
-                    uri: vec![block_ws_uri],
+                    .expect("hash exists, header should exist;");
+
+                let live_state = LiveState {
+                    uri: vec![block_ws_uri.clone()],
                     at: Some(hex::encode(header.hash().encode())),
                     pallet: Default::default(),
                     hashed_prefixes: Default::default(),
                     child_tree: Default::default(),
-                }
+                };
+
+                execute_block::<Block, HostFns>(&shared, &command, &executor, &rpc, live_state)
+                    .await?;
             }
         }
-        _ => {
-            unreachable!("execute block currently only supports Live state")
-        }
-    };
 
+        Ok(())
+    } else {
+        let live_state = match &command.state {
+            State::Live(live_state) => {
+                // If no --at is provided, get the latest block to replay
+                if live_state.at.is_some() {
+                    live_state.clone()
+                } else {
+                    let header =
+                        ChainApi::<(), Block::Hash, Block::Header, SignedBlock<Block>>::header(
+                            &rpc, None,
+                        )
+                        .await
+                        .map_err(rpc_err_handler)?
+                        .expect("header exists, block should also exist; qed");
+                    LiveState {
+                        uri: vec![block_ws_uri],
+                        at: Some(hex::encode(header.hash().encode())),
+                        pallet: Default::default(),
+                        hashed_prefixes: Default::default(),
+                        child_tree: Default::default(),
+                    }
+                }
+            }
+            _ => {
+                unreachable!("execute block currently only supports Live state")
+            }
+        };
+
+        execute_block::<Block, HostFns>(&shared, &command, &executor, &rpc, live_state).await
+    }
+}
+
+// Perform block execution on live state
+pub async fn execute_block<Block, HostFns>(
+    shared: &SharedParams,
+    command: &Command,
+    executor: &WasmExecutor<HostFns>,
+    rpc: &WsClient,
+    live_state: LiveState,
+) -> sc_cli::Result<()>
+where
+    Block: BlockT + serde::de::DeserializeOwned,
+    <Block::Hash as FromStr>::Err: Debug,
+    Block::Hash: serde::de::DeserializeOwned,
+    Block::Header: serde::de::DeserializeOwned,
+    <NumberFor<Block> as TryInto<u64>>::Error: Debug,
+    HostFns: HostFunctions,
+{
     // The block we want to *execute* at is the block passed by the user
     let execute_at = live_state.at::<Block>()?;
 
@@ -137,12 +216,12 @@ where
         try_runtime_feature_enabled: true,
     };
     let ext = State::Live(prev_block_live_state)
-        .to_ext::<Block, HostFns>(&shared, &executor, None, runtime_checks)
+        .to_ext::<Block, HostFns>(shared, executor, None, runtime_checks)
         .await?;
 
     // Execute the desired block on top of it
     let block =
-        ChainApi::<(), Block::Hash, Block::Header, SignedBlock<Block>>::block(&rpc, execute_at)
+        ChainApi::<(), Block::Hash, Block::Header, SignedBlock<Block>>::block(rpc, execute_at)
             .await
             .map_err(rpc_err_handler)?
             .expect("header exists, block should also exist; qed")
@@ -161,18 +240,18 @@ where
         block.clone(),
         state_root_check,
         signature_check,
-        command.try_state,
+        command.try_state.clone(),
     )
         .encode();
 
     let _ = state_machine_call_with_proof::<Block, HostFns>(
         &ext,
         &mut Default::default(),
-        &executor,
+        executor,
         "TryRuntime_execute_block",
         &payload,
         full_extensions(executor.clone()),
-        shared.export_proof,
+        shared.export_proof.clone(),
     )?;
 
     Ok(())
