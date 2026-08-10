@@ -364,6 +364,6 @@ async fn main() {
         sp_io::SubstrateHostFunctions,
         cumulus_primitives_proof_size_hostfunction::storage_proof_size::HostFunctions,
     )>()
-        .await
-        .unwrap();
+    .await
+    .unwrap();
 }
