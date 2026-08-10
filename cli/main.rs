@@ -360,6 +360,11 @@ async fn main() {
     init_env();
 
     let cmd = TryRuntime::parse();
+    // The cumulus `storage_proof_size` host function must be registered in addition to the
+    // substrate ones: runtimes built with `cumulus-pallet-weight-reclaim` (all current system
+    // chains) call it during the dispatch of every signed extrinsic, and block execution traps
+    // with "call to a missing function" if it is absent. Without proof recording (the case
+    // here) it returns `u64::MAX`, which weight-reclaim interprets as "recording disabled".
     cmd.run::<Block<Header<u32, BlakeTwo256>, OpaqueExtrinsic>, (
         sp_io::SubstrateHostFunctions,
         cumulus_primitives_proof_size_hostfunction::storage_proof_size::HostFunctions,
