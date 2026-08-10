@@ -360,7 +360,10 @@ async fn main() {
     init_env();
 
     let cmd = TryRuntime::parse();
-    cmd.run::<Block<Header<u32, BlakeTwo256>, OpaqueExtrinsic>, sp_io::SubstrateHostFunctions>()
+    cmd.run::<Block<Header<u32, BlakeTwo256>, OpaqueExtrinsic>, (
+        sp_io::SubstrateHostFunctions,
+        cumulus_primitives_proof_size_hostfunction::storage_proof_size::HostFunctions,
+    )>()
         .await
         .unwrap();
 }
