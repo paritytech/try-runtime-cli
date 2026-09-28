@@ -38,7 +38,8 @@ pub struct Command {
 
     /// The snapshot path to write to.
     ///
-    /// If not provided `<spec-name>-<spec-version>@<block-hash>.snap` will be used.
+    /// If not provided `<spec-name>-<spec-version>_<block-hash>.snap` will be used
+    /// (`latest` instead of the hash if no block is given).
     #[clap(index = 1)]
     pub snapshot_path: Option<String>,
 }
@@ -67,7 +68,7 @@ where
                 .await
                 .unwrap();
             let path_str = format!(
-                "{}-{}@{}.snap",
+                "{}-{}_{}.snap",
                 remote_spec.spec_name.to_lowercase(),
                 remote_spec.spec_version,
                 command.from.at.clone().unwrap_or("latest".to_owned())

@@ -251,7 +251,7 @@
 //! try-runtime --runtime existing create-snapshot --uri ws://localhost:9999 -- my-snapshot.snap
 //! 2022-12-13 10:28:17.516  INFO                 main remote-ext: since no at is provided, setting it to latest finalized head, 0xe7d0b614dfe89af65b33577aae46a6f958c974bf52f8a5e865a0f4faeb578d22
 //! 2022-12-13 10:28:17.516  INFO                 main remote-ext: since no prefix is filtered, the data for all pallets will be downloaded
-//! 2022-12-13 10:28:17.550  INFO                 main remote-ext: writing snapshot of 1611464 bytes to "node-268@latest.snap"
+//! 2022-12-13 10:28:17.550  INFO                 main remote-ext: writing snapshot of 1611464 bytes to "node-268_latest.snap"
 //! 2022-12-13 10:28:17.551  INFO                 main remote-ext: initialized state externalities with storage root 0x925e4e95de4c08474fb7f976c4472fa9b8a1091619cd7820a793bf796ee6d932 and state_version V1
 //! ```
 //!
