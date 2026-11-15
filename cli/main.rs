@@ -152,9 +152,18 @@
 //! arbitrary encoded data (usually some pre-upgrade state) which will be passed to
 //! [`OnRuntimeUpgrade::pre_upgrade`] after upgrading and used for post checking.
 //!
-//! **Note on Multi-Block Migrations (MBM):** If the runtime uses MBMs, the standard
-//! `pre_upgrade` and `post_upgrade` checks might be skipped by the executive. To
-//! force these hooks to run synchronously for testing, use the `--disable-mbm-checks` flag.
+//! Use either `--checks` or both `--sbm-checks` and `--mbm-checks`; mixing modes or
+//! providing only one new selector is rejected. All accept `none`, `pre-and-post`,
+//! `try-state`, or `all`; a flag without a value selects `all`.
+//!
+//! `--checks` retains its original behavior (default: `pre-and-post`): checks run
+//! after MBMs, or around SBMs when `--disable-mbm-checks` is set.
+//! The paired selectors independently control checks around SBMs on original state
+//! and the upgrade checks run again after MBMs finish. For SBM pre/post hooks and
+//! all final invariants, use `--sbm-checks=pre-and-post --mbm-checks=all`.
+//! Only enable SBM `try-state` checks if invariants hold before MBMs finish.
+//! MBMs' own pre/post hooks run inside the runtime independently of these selectors.
+//! `--mbm-checks=none` still executes MBMs; `--disable-mbm-checks` skips that execution.
 //!
 //! ### [`VersionedMigration`]
 //!

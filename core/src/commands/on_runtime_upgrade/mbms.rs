@@ -47,7 +47,7 @@ where
             Level::Info,
             &format!(
                 "🔬 Running Multi-Block-Migrations with checks: {:?}",
-                self.command.checks
+                self.command.multi_block_checks()
             ),
         );
 
@@ -114,7 +114,7 @@ where
             &mut Default::default(),
             &executor,
             "TryRuntime_on_runtime_upgrade",
-            self.command.checks.encode().as_ref(),
+            self.command.multi_block_checks().encode().as_ref(),
             Default::default(), // TODO
             None,
         )?;

@@ -153,7 +153,7 @@ mod on_runtime_upgrade {
     async fn pre_upgrade_fail_pre_and_postfails() {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_pre_upgrade_fail")
-                .with_sub_command_args(&["--checks=pre-and-post"]),
+                .with_sub_command_args(&["--sbm-checks=pre-and-post", "--mbm-checks=none"]),
             false,
         )
         .await;
@@ -163,7 +163,7 @@ mod on_runtime_upgrade {
     async fn pre_upgrade_fail_can_be_ignored() {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_pre_upgrade_fail")
-                .with_sub_command_args(&["--checks=none"]),
+                .with_sub_command_args(&["--sbm-checks=none", "--mbm-checks=none"]),
             true,
         )
         .await;
@@ -182,7 +182,7 @@ mod on_runtime_upgrade {
     async fn post_upgrade_fail_pre_and_postfails() {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_post_upgrade_fail")
-                .with_sub_command_args(&["--checks=pre-and-post"]),
+                .with_sub_command_args(&["--sbm-checks=pre-and-post", "--mbm-checks=none"]),
             false,
         )
         .await;
@@ -192,7 +192,7 @@ mod on_runtime_upgrade {
     async fn post_upgrade_fail_can_be_ignored() {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_post_upgrade_fail")
-                .with_sub_command_args(&["--checks=none"]),
+                .with_sub_command_args(&["--sbm-checks=none", "--mbm-checks=none"]),
             true,
         )
         .await;
