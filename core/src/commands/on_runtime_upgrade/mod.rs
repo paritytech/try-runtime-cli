@@ -52,29 +52,43 @@ pub struct Command {
     #[command(subcommand)]
     pub state: State,
 
-    /// Legacy check selection: after MBMs, or around SBMs with --disable-mbm-checks.
+    /// Select which optional checks to perform. Selects all when no value is given.
     ///
-    /// Select none, pre-and-post, try-state, or all. Bare --checks selects all.
-    #[clap(long, default_value = "pre-and-post", default_missing_value = "all", num_args = 0..=1,
-        conflicts_with_all = ["sbm_checks", "mbm_checks"])]
+    /// - `none`: Perform no checks.
+    /// - `all`: Perform all checks (default when --checks is present with no value).
+    /// - `pre-and-post`: Perform pre- and post-upgrade checks (default when the arg is not
+    ///   present).
+    /// - `try-state`: Perform the try-state checks.
+    ///
+    /// Checks run after MBMs, or around SBMs with --disable-mbm-checks.
+    /// Cannot be combined with --sbm-checks or --mbm-checks.
+    // NOTE: The clap attributes make it backwards compatible with the previous `--checks` flag.
+    #[clap(long,
+        default_value = "pre-and-post",
+        default_missing_value = "all",
+        num_args = 0..=1,
+        conflicts_with_all = ["sbm_checks", "mbm_checks"],
+        verbatim_doc_comment
+    )]
     pub checks: UpgradeCheckSelect,
 
     /// Checks around single-block migrations on the original state.
     ///
-    /// Select none, pre-and-post, try-state, or all. Bare --sbm-checks selects all.
-    /// Must be supplied together with --mbm-checks, instead of --checks.
+    /// Accepts the same values as --checks. Bare --sbm-checks selects all.
+    /// Requires --mbm-checks unless --disable-mbm-checks is set.
     /// Only select try-state or all if invariants hold before MBMs finish.
     #[clap(long, default_missing_value = "all", num_args = 0..=1, requires = "mbm_checks")]
     pub sbm_checks: Option<UpgradeCheckSelect>,
 
     /// Checks on the migrated state after multi-block migrations finish.
     ///
-    /// Select none, pre-and-post, try-state, or all. Bare --mbm-checks selects all.
+    /// Accepts the same values as --checks. Bare --mbm-checks selects all.
     /// These are passed to TryRuntime_on_runtime_upgrade after block execution;
     /// they do not control the MBMs' own pre/post hooks inside the runtime.
     /// Selecting none still executes MBMs. Use --disable-mbm-checks to skip them.
-    /// Must be supplied together with --sbm-checks, instead of --checks.
-    #[clap(long, default_missing_value = "all", num_args = 0..=1, requires = "sbm_checks")]
+    /// Requires --sbm-checks; conflicts with --disable-mbm-checks.
+    #[clap(long, default_missing_value = "all", num_args = 0..=1, requires = "sbm_checks",
+        conflicts_with = "disable_mbm_checks")]
     pub mbm_checks: Option<UpgradeCheckSelect>,
 
     /// Whether to disable weight warnings. Useful if a relay chain's runtime is being tested.
@@ -123,7 +137,11 @@ impl Command {
     }
 
     fn multi_block_checks(&self) -> UpgradeCheckSelect {
-        self.mbm_checks.unwrap_or(self.checks)
+        match (self.sbm_checks, self.mbm_checks) {
+            (_, Some(checks)) => checks,
+            (Some(_), None) => UpgradeCheckSelect::None,
+            (None, None) => self.checks,
+        }
     }
 }
 
@@ -189,14 +207,14 @@ mod selector_tests {
             command.multi_block_checks(),
             UpgradeCheckSelect::TryState
         ));
-        let command = parse(&["--sbm-checks", "--mbm-checks", "--disable-mbm-checks"]).unwrap();
+        let command = parse(&["--sbm-checks", "--disable-mbm-checks"]).unwrap();
         assert!(matches!(
             command.single_block_checks(),
             UpgradeCheckSelect::All
         ));
         assert!(matches!(
             command.multi_block_checks(),
-            UpgradeCheckSelect::All
+            UpgradeCheckSelect::None
         ));
     }
 
@@ -214,6 +232,12 @@ mod selector_tests {
         }
         assert_eq!(
             parse(&["--checks=all", "--sbm-checks=all", "--mbm-checks=all"])
+                .unwrap_err()
+                .kind(),
+            ErrorKind::ArgumentConflict,
+        );
+        assert_eq!(
+            parse(&["--sbm-checks", "--mbm-checks", "--disable-mbm-checks"])
                 .unwrap_err()
                 .kind(),
             ErrorKind::ArgumentConflict,

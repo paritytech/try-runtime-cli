@@ -152,18 +152,21 @@
 //! arbitrary encoded data (usually some pre-upgrade state) which will be passed to
 //! [`OnRuntimeUpgrade::pre_upgrade`] after upgrading and used for post checking.
 //!
-//! Use either `--checks` or both `--sbm-checks` and `--mbm-checks`; mixing modes or
-//! providing only one new selector is rejected. All accept `none`, `pre-and-post`,
-//! `try-state`, or `all`; a flag without a value selects `all`.
+//! Use either `--checks` or the per-phase `--sbm-checks` and `--mbm-checks`; mixing
+//! them is rejected. All accept `none`, `pre-and-post`, `try-state`, or `all`; a flag
+//! without a value selects `all`.
 //!
 //! `--checks` retains its original behavior (default: `pre-and-post`): checks run
 //! after MBMs, or around SBMs when `--disable-mbm-checks` is set.
-//! The paired selectors independently control checks around SBMs on original state
-//! and the upgrade checks run again after MBMs finish. For SBM pre/post hooks and
-//! all final invariants, use `--sbm-checks=pre-and-post --mbm-checks=all`.
+//!
+//! `--sbm-checks` selects the checks around SBMs on the original state. `--mbm-checks`
+//! selects the checks of the upgrade run after MBMs finish; its pre/post checks run the
+//! SBM hooks again on the migrated state. Both are required, except that
+//! `--disable-mbm-checks` skips MBMs and takes `--sbm-checks` alone.
+//! Recommended: `--sbm-checks=pre-and-post --mbm-checks=try-state`.
 //! Only enable SBM `try-state` checks if invariants hold before MBMs finish.
 //! MBMs' own pre/post hooks run inside the runtime independently of these selectors.
-//! `--mbm-checks=none` still executes MBMs; `--disable-mbm-checks` skips that execution.
+//! `--mbm-checks=none` still executes MBMs.
 //!
 //! ### [`VersionedMigration`]
 //!

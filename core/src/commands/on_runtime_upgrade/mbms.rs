@@ -59,7 +59,7 @@ where
             .await?;
 
         if core_version::<Block, HostFns>(&ext, &executor)? < 5 {
-            return Err("Your runtime does not support Multi-Block-Migrations. Please disable the check with `--mbms false` or update your runtime.".into());
+            return Err("Your runtime does not support Multi-Block-Migrations. Please disable the check with `--disable-mbm-checks` or update your runtime.".into());
         }
 
         let inner_ext = Arc::new(Mutex::new(ext.inner_ext));
