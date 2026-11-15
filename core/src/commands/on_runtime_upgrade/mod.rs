@@ -129,8 +129,9 @@ impl Command {
 
 #[cfg(test)]
 mod selector_tests {
-    use super::*;
     use clap::{error::ErrorKind, Parser};
+
+    use super::*;
 
     fn parse(args: &[&str]) -> Result<Command, clap::Error> {
         Command::try_parse_from(
