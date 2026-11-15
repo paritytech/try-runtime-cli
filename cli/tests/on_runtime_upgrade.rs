@@ -170,6 +170,36 @@ mod on_runtime_upgrade {
     }
 
     #[tokio::test]
+    async fn pre_upgrade_fail_sbm_checks_fails() {
+        run_test(
+            TestConfig::new("rococo-people", "people_rococo_runtime_pre_upgrade_fail")
+                .with_sub_command_args(&["--sbm-checks=pre-and-post", "--mbm-checks=none"]),
+            false,
+        )
+        .await;
+    }
+
+    #[tokio::test]
+    async fn pre_upgrade_fail_mbm_checks_fails() {
+        run_test(
+            TestConfig::new("rococo-people", "people_rococo_runtime_pre_upgrade_fail")
+                .with_sub_command_args(&["--sbm-checks=none", "--mbm-checks=pre-and-post"]),
+            false,
+        )
+        .await;
+    }
+
+    #[tokio::test]
+    async fn pre_upgrade_fail_sbm_and_mbm_checks_can_be_ignored() {
+        run_test(
+            TestConfig::new("rococo-people", "people_rococo_runtime_pre_upgrade_fail")
+                .with_sub_command_args(&["--sbm-checks=none", "--mbm-checks=none"]),
+            true,
+        )
+        .await;
+    }
+
+    #[tokio::test]
     async fn post_upgrade_fail_fails() {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_post_upgrade_fail"),
@@ -383,8 +413,8 @@ mod on_runtime_upgrade {
     async fn mbm_fail_ignore_mbms() {
         run_test(
             TestConfig::new("rococo-people", "people_rococo_runtime_mbm_fails")
-                .with_sub_command_args(&["--disable-mbms-checks"]),
-            false,
+                .with_sub_command_args(&["--disable-mbm-checks"]),
+            true,
         )
         .await;
     }

@@ -60,15 +60,28 @@ pub struct Command {
     ///   present).
     /// - `try-state`: Perform the try-state checks.
     ///
-    /// Performing any checks will potentially invalidate the measured PoV/Weight.
+    /// Runs after MBMs, or around SBMs with --disable-mbm-checks. Performing any checks will
+    /// potentially invalidate the measured PoV/Weight.
     // NOTE: The clap attributes make it backwards compatible with the previous `--checks` flag.
     #[clap(long,
 		default_value = "pre-and-post",
 		default_missing_value = "all",
 		num_args = 0..=1,
+		conflicts_with_all = ["sbm_checks", "mbm_checks"],
 		verbatim_doc_comment
     )]
     pub checks: UpgradeCheckSelect,
+
+    /// Checks around single-block migrations, like --checks. Requires --mbm-checks unless
+    /// --disable-mbm-checks is set.
+    #[clap(long, default_missing_value = "all", num_args = 0..=1, requires = "mbm_checks")]
+    pub sbm_checks: Option<UpgradeCheckSelect>,
+
+    /// Checks after multi-block migrations finish, like --checks. Does not affect the MBMs' own
+    /// pre/post hooks. Requires --sbm-checks.
+    #[clap(long, default_missing_value = "all", num_args = 0..=1, requires = "sbm_checks",
+        conflicts_with = "disable_mbm_checks")]
+    pub mbm_checks: Option<UpgradeCheckSelect>,
 
     /// Whether to disable weight warnings. Useful if a relay chain's runtime is being tested.
     #[clap(long, default_value = "false", default_missing_value = "true")]
@@ -104,6 +117,84 @@ pub struct Command {
     pub blocktime: u64,
 }
 
+impl Command {
+    fn single_block_checks(&self) -> UpgradeCheckSelect {
+        match self.sbm_checks {
+            Some(checks) => checks,
+            None if self.disable_mbm_checks => self.checks,
+            None => UpgradeCheckSelect::None,
+        }
+    }
+
+    fn multi_block_checks(&self) -> UpgradeCheckSelect {
+        match (self.sbm_checks, self.mbm_checks) {
+            (_, Some(checks)) => checks,
+            (Some(_), None) => UpgradeCheckSelect::None,
+            (None, None) => self.checks,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use clap::{error::ErrorKind, Parser};
+    use UpgradeCheckSelect::{All, PreAndPost, TryState};
+
+    use super::*;
+
+    fn parse(args: &[&str]) -> Result<Command, clap::Error> {
+        Command::try_parse_from(
+            ["on-runtime-upgrade"]
+                .into_iter()
+                .chain(args.iter().copied())
+                .chain(["--blocktime=6000", "snap", "--path=unused.snap"]),
+        )
+    }
+
+    #[test]
+    fn check_selection() {
+        for (args, sbm, mbm) in [
+            (&[][..], UpgradeCheckSelect::None, PreAndPost),
+            (&["--checks"], UpgradeCheckSelect::None, All),
+            (&["--checks=all", "--disable-mbm-checks"], All, All),
+            (
+                &["--sbm-checks=pre-and-post", "--mbm-checks=try-state"],
+                PreAndPost,
+                TryState,
+            ),
+            (
+                &["--sbm-checks", "--disable-mbm-checks"],
+                All,
+                UpgradeCheckSelect::None,
+            ),
+        ] {
+            let command = parse(args).unwrap();
+            assert_eq!(
+                (command.single_block_checks(), command.multi_block_checks()),
+                (sbm, mbm)
+            );
+        }
+    }
+
+    #[test]
+    fn invalid_check_selection() {
+        for (args, kind) in [
+            (&["--sbm-checks"][..], ErrorKind::MissingRequiredArgument),
+            (&["--mbm-checks"], ErrorKind::MissingRequiredArgument),
+            (
+                &["--checks", "--sbm-checks", "--mbm-checks"],
+                ErrorKind::ArgumentConflict,
+            ),
+            (
+                &["--sbm-checks", "--mbm-checks", "--disable-mbm-checks"],
+                ErrorKind::ArgumentConflict,
+            ),
+        ] {
+            assert_eq!(parse(args).unwrap_err().kind(), kind, "{args:?}");
+        }
+    }
+}
+
 /// Convenience struct to hold all the generic args and where clauses.
 pub(crate) struct CheckOnRuntimeUpgrade<Block, HostFns> {
     pub shared: SharedParams,
@@ -136,11 +227,7 @@ where
             .to_ext::<Block, HostFns>(shared, &executor, None, runtime_checks)
             .await?;
 
-        let sync_checks = if command.disable_mbm_checks {
-            command.checks
-        } else {
-            UpgradeCheckSelect::None
-        };
+        let sync_checks = command.single_block_checks();
 
         // Run `TryRuntime_on_runtime_upgrade` with the given checks.
         basti_log(
@@ -187,11 +274,7 @@ where
         if !self.command.disable_idempotency_checks {
             basti_log(
                 Level::Info,
-                format!(
-                    "🔬 Running TryRuntime_on_runtime_upgrade again to check idempotency: {:?}",
-                    self.command.checks
-                )
-                .as_str(),
+                "🔬 Running TryRuntime_on_runtime_upgrade again to check idempotency",
             );
             let executor = build_executor(&self.shared);
 
