@@ -60,33 +60,25 @@ pub struct Command {
     ///   present).
     /// - `try-state`: Perform the try-state checks.
     ///
-    /// Checks run after MBMs, or around SBMs with --disable-mbm-checks.
-    /// Cannot be combined with --sbm-checks or --mbm-checks.
+    /// Runs after MBMs, or around SBMs with --disable-mbm-checks. Performing any checks will
+    /// potentially invalidate the measured PoV/Weight.
     // NOTE: The clap attributes make it backwards compatible with the previous `--checks` flag.
     #[clap(long,
-        default_value = "pre-and-post",
-        default_missing_value = "all",
-        num_args = 0..=1,
-        conflicts_with_all = ["sbm_checks", "mbm_checks"],
-        verbatim_doc_comment
+		default_value = "pre-and-post",
+		default_missing_value = "all",
+		num_args = 0..=1,
+		conflicts_with_all = ["sbm_checks", "mbm_checks"],
+		verbatim_doc_comment
     )]
     pub checks: UpgradeCheckSelect,
 
-    /// Checks around single-block migrations on the original state.
-    ///
-    /// Accepts the same values as --checks. Bare --sbm-checks selects all.
-    /// Requires --mbm-checks unless --disable-mbm-checks is set.
-    /// Only select try-state or all if invariants hold before MBMs finish.
+    /// Checks around single-block migrations, like --checks. Requires --mbm-checks unless
+    /// --disable-mbm-checks is set.
     #[clap(long, default_missing_value = "all", num_args = 0..=1, requires = "mbm_checks")]
     pub sbm_checks: Option<UpgradeCheckSelect>,
 
-    /// Checks on the migrated state after multi-block migrations finish.
-    ///
-    /// Accepts the same values as --checks. Bare --mbm-checks selects all.
-    /// These are passed to TryRuntime_on_runtime_upgrade after block execution;
-    /// they do not control the MBMs' own pre/post hooks inside the runtime.
-    /// Selecting none still executes MBMs. Use --disable-mbm-checks to skip them.
-    /// Requires --sbm-checks; conflicts with --disable-mbm-checks.
+    /// Checks after multi-block migrations finish, like --checks. Does not affect the MBMs' own
+    /// pre/post hooks. Requires --sbm-checks.
     #[clap(long, default_missing_value = "all", num_args = 0..=1, requires = "sbm_checks",
         conflicts_with = "disable_mbm_checks")]
     pub mbm_checks: Option<UpgradeCheckSelect>,
@@ -127,13 +119,11 @@ pub struct Command {
 
 impl Command {
     fn single_block_checks(&self) -> UpgradeCheckSelect {
-        self.sbm_checks.unwrap_or_else(|| {
-            if self.disable_mbm_checks {
-                self.checks
-            } else {
-                UpgradeCheckSelect::None
-            }
-        })
+        match self.sbm_checks {
+            Some(checks) => checks,
+            None if self.disable_mbm_checks => self.checks,
+            None => UpgradeCheckSelect::None,
+        }
     }
 
     fn multi_block_checks(&self) -> UpgradeCheckSelect {
@@ -146,8 +136,9 @@ impl Command {
 }
 
 #[cfg(test)]
-mod selector_tests {
+mod tests {
     use clap::{error::ErrorKind, Parser};
+    use UpgradeCheckSelect::{All, PreAndPost, TryState};
 
     use super::*;
 
@@ -161,87 +152,46 @@ mod selector_tests {
     }
 
     #[test]
-    fn legacy_selection_preserves_scheduling() {
-        let command = parse(&[]).unwrap();
-        assert!(matches!(
-            command.single_block_checks(),
-            UpgradeCheckSelect::None
-        ));
-        assert!(matches!(
-            command.multi_block_checks(),
-            UpgradeCheckSelect::PreAndPost
-        ));
-        let command = parse(&["--checks"]).unwrap();
-        assert!(matches!(
-            command.single_block_checks(),
-            UpgradeCheckSelect::None
-        ));
-        assert!(matches!(
-            command.multi_block_checks(),
-            UpgradeCheckSelect::All
-        ));
-        let command = parse(&["--checks=all", "--disable-mbm-checks"]).unwrap();
-        assert!(matches!(
-            command.single_block_checks(),
-            UpgradeCheckSelect::All
-        ));
-    }
-
-    #[test]
-    fn paired_selection_is_independent() {
-        let command = parse(&["--sbm-checks=pre-and-post", "--mbm-checks=all"]).unwrap();
-        assert!(matches!(
-            command.single_block_checks(),
-            UpgradeCheckSelect::PreAndPost
-        ));
-        assert!(matches!(
-            command.multi_block_checks(),
-            UpgradeCheckSelect::All
-        ));
-        let command = parse(&["--sbm-checks=none", "--mbm-checks=try-state"]).unwrap();
-        assert!(matches!(
-            command.single_block_checks(),
-            UpgradeCheckSelect::None
-        ));
-        assert!(matches!(
-            command.multi_block_checks(),
-            UpgradeCheckSelect::TryState
-        ));
-        let command = parse(&["--sbm-checks", "--disable-mbm-checks"]).unwrap();
-        assert!(matches!(
-            command.single_block_checks(),
-            UpgradeCheckSelect::All
-        ));
-        assert!(matches!(
-            command.multi_block_checks(),
-            UpgradeCheckSelect::None
-        ));
-    }
-
-    #[test]
-    fn rejects_incomplete_or_mixed_selection() {
-        for flag in ["--sbm-checks=all", "--mbm-checks=all"] {
+    fn check_selection() {
+        for (args, sbm, mbm) in [
+            (&[][..], UpgradeCheckSelect::None, PreAndPost),
+            (&["--checks"], UpgradeCheckSelect::None, All),
+            (&["--checks=all", "--disable-mbm-checks"], All, All),
+            (
+                &["--sbm-checks=pre-and-post", "--mbm-checks=try-state"],
+                PreAndPost,
+                TryState,
+            ),
+            (
+                &["--sbm-checks", "--disable-mbm-checks"],
+                All,
+                UpgradeCheckSelect::None,
+            ),
+        ] {
+            let command = parse(args).unwrap();
             assert_eq!(
-                parse(&[flag]).unwrap_err().kind(),
-                ErrorKind::MissingRequiredArgument
-            );
-            assert_eq!(
-                parse(&["--checks=all", flag]).unwrap_err().kind(),
-                ErrorKind::ArgumentConflict,
+                (command.single_block_checks(), command.multi_block_checks()),
+                (sbm, mbm)
             );
         }
-        assert_eq!(
-            parse(&["--checks=all", "--sbm-checks=all", "--mbm-checks=all"])
-                .unwrap_err()
-                .kind(),
-            ErrorKind::ArgumentConflict,
-        );
-        assert_eq!(
-            parse(&["--sbm-checks", "--mbm-checks", "--disable-mbm-checks"])
-                .unwrap_err()
-                .kind(),
-            ErrorKind::ArgumentConflict,
-        );
+    }
+
+    #[test]
+    fn invalid_check_selection() {
+        for (args, kind) in [
+            (&["--sbm-checks"][..], ErrorKind::MissingRequiredArgument),
+            (&["--mbm-checks"], ErrorKind::MissingRequiredArgument),
+            (
+                &["--checks", "--sbm-checks", "--mbm-checks"],
+                ErrorKind::ArgumentConflict,
+            ),
+            (
+                &["--sbm-checks", "--mbm-checks", "--disable-mbm-checks"],
+                ErrorKind::ArgumentConflict,
+            ),
+        ] {
+            assert_eq!(parse(args).unwrap_err().kind(), kind, "{args:?}");
+        }
     }
 }
 
@@ -277,12 +227,14 @@ where
             .to_ext::<Block, HostFns>(shared, &executor, None, runtime_checks)
             .await?;
 
+        let sync_checks = command.single_block_checks();
+
         // Run `TryRuntime_on_runtime_upgrade` with the given checks.
         basti_log(
             Level::Info,
             format!(
                 "🔬 Running TryRuntime_on_runtime_upgrade with checks: {:?}",
-                command.single_block_checks()
+                sync_checks
             )
             .as_str(),
         );
@@ -294,7 +246,7 @@ where
             &mut overlayed_changes,
             &executor,
             "TryRuntime_on_runtime_upgrade",
-            command.single_block_checks().encode().as_ref(),
+            sync_checks.encode().as_ref(),
             Default::default(), // we don't really need any extensions here.
             shared.export_proof.clone(),
         )?;
@@ -322,7 +274,7 @@ where
         if !self.command.disable_idempotency_checks {
             basti_log(
                 Level::Info,
-                "🔬 Running TryRuntime_on_runtime_upgrade again to check idempotency without optional checks.",
+                "🔬 Running TryRuntime_on_runtime_upgrade again to check idempotency",
             );
             let executor = build_executor(&self.shared);
 

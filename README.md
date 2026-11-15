@@ -136,21 +136,11 @@ after the migration. [`OnRuntimeUpgrade::pre_upgrade`] returns a [`Vec<u8>`] tha
 arbitrary encoded data (usually some pre-upgrade state) which will be passed to
 [`OnRuntimeUpgrade::pre_upgrade`] after upgrading and used for post checking.
 
-Use either `--checks` or the per-phase `--sbm-checks` and `--mbm-checks`; mixing
-them is rejected. All accept `none`, `pre-and-post`, `try-state`, or `all`; a flag
-without a value selects `all`.
-
-`--checks` retains its original behavior (default: `pre-and-post`): checks run
-after MBMs, or around SBMs when `--disable-mbm-checks` is set.
-
-`--sbm-checks` selects the checks around SBMs on the original state. `--mbm-checks`
-selects the checks of the upgrade run after MBMs finish; its pre/post checks run the
-SBM hooks again on the migrated state. Both are required, except that
-`--disable-mbm-checks` skips MBMs and takes `--sbm-checks` alone.
-Recommended: `--sbm-checks=pre-and-post --mbm-checks=try-state`.
-Only enable SBM `try-state` checks if invariants hold before MBMs finish.
-MBMs' own pre/post hooks run inside the runtime independently of these selectors.
-`--mbm-checks=none` still executes MBMs.
+`--checks` (default `pre-and-post`) selects the checks run after multi-block migrations (MBMs),
+or around single-block migrations (SBMs) with `--disable-mbm-checks`. To select both phases
+separately, use `--sbm-checks` and `--mbm-checks` instead, e.g.
+`--sbm-checks=pre-and-post --mbm-checks=try-state`. `--mbm-checks=pre-and-post` runs the SBM
+hooks again on the migrated state. The MBMs' own pre/post hooks always run.
 
 ### [`VersionedMigration`]
 
